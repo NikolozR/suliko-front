@@ -15,6 +15,7 @@ import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
+import SulikoFormParticles from "./SulikoFormParticles";
 
 const formSchema = z.object({
   mobile: z
@@ -49,13 +50,15 @@ const SulikoForm: React.FC = () => {
   }
 
   return (
+    <>
+    <SulikoFormParticles />
     <Form {...form}>
-      <div className="flex flex-col justify-center items-center w-full h-full">
-        <div className="pb-[60px] flex flex-col gap-5">
-          <h3 className="text-4xl text-suliko-default-color font-bold text-center">
+      <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
+        <div className="pb-[20px] lg:pb-[40px] flex flex-col gap-5 overflow-hidden">
+          <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center">
             ავტორიზაცია
           </h3>
-          <p className="text-center text-[1rem]">
+          <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem]">
             შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი
           </p>
         </div>
@@ -118,6 +121,7 @@ const SulikoForm: React.FC = () => {
         </form>
       </div>
     </Form>
+    </>
   );
 };
 
