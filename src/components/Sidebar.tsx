@@ -1,44 +1,60 @@
+'use client'
 import { FC } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Plus, Clock, HelpCircle, MessageSquare, User } from 'lucide-react';
+import SulikoLogoBlack from "../../public/Suliko_logo_black.svg";
+import { usePathname } from 'next/navigation';
 
 const Sidebar: FC = () => {
+  const pathname = usePathname();
+
+  const isActive = (path: string) => pathname === path;
+
+  const getLinkClasses = (path: string) => {
+    const baseClasses = "flex items-center space-x-3 p-2 rounded transition-all duration-200 group";
+    const activeClasses = "suliko-default-bg text-white hover:opacity-90 hover:scale-[1.02]";
+    const inactiveClasses = "hover:bg-gray-100 hover:translate-x-1";
+    
+    return `${baseClasses} ${isActive(path) ? activeClasses : inactiveClasses}`;
+  };
+
   return (
-    <div className="w-64 h-screen bg-suliko-default-color text-white p-4 fixed left-0 top-0">
+    <div className="w-64 h-screen bg-white text-gray-900 p-4 fixed left-0 top-0 border-r">
       <div className="mb-8">
-        <h1 className="text-xl font-bold">Suliko</h1>
+        <Image src={SulikoLogoBlack} width={100} alt="Suliko Black Logo" />
       </div>
       
-      <nav className="space-y-4">
+      <nav className="space-y-2">
         <Link 
-          href="/new-project"
-          className="flex items-center space-x-3 p-2 rounded hover:bg-gray-800 transition-colors"
+          href="/"
+          className={getLinkClasses('/')}
         >
-          <Plus className="text-xl" />
+          <Plus className="text-xl transition-transform group-hover:scale-110" />
           <span>New Project</span>
         </Link>
 
         <Link 
           href="/history"
-          className="flex items-center space-x-3 p-2 rounded hover:bg-gray-800 transition-colors"
+          className={getLinkClasses('/history')}
         >
-          <Clock className="text-xl" />
+          <Clock className="text-xl transition-transform group-hover:scale-110" />
           <span>History</span>
         </Link>
 
         <Link 
           href="/help"
-          className="flex items-center space-x-3 p-2 rounded hover:bg-gray-800 transition-colors"
+          className={getLinkClasses('/help')}
         >
-          <HelpCircle className="text-xl" />
+          <HelpCircle className="text-xl transition-transform group-hover:scale-110" />
           <span>Help</span>
         </Link>
 
         <Link 
           href="/feedback"
-          className="flex items-center space-x-3 p-2 rounded hover:bg-gray-800 transition-colors"
+          className={getLinkClasses('/feedback')}
         >
-          <MessageSquare className="text-xl" />
+          <MessageSquare className="text-xl transition-transform group-hover:scale-110" />
           <span>Feedback</span>
         </Link>
       </nav>
@@ -46,9 +62,9 @@ const Sidebar: FC = () => {
       <div className="absolute bottom-4 w-full left-0 px-4">
         <Link 
           href="/profile"
-          className="flex items-center space-x-3 p-2 rounded hover:bg-gray-800 transition-colors"
+          className={getLinkClasses('/profile')}
         >
-          <User className="text-xl" />
+          <User className="text-xl transition-transform group-hover:scale-110" />
           <span>Profile</span>
         </Link>
       </div>
