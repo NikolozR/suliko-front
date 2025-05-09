@@ -13,6 +13,7 @@
   --color-background: var(--background);
   --color-suliko-default-color: var(--suliko-default-color);
   --color-suliko-default-hover-color: var(--suliko-default-hover-color);
+  --color-suliko-main-content-bg-color: var(--suliko-main-content-bg-color);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -66,6 +67,7 @@ body {
 :root {
   --suliko-default-color: #3b59f3;
   --suliko-default-hover-color: #11289c;
+  --suliko-main-content-bg-color: #e6e6e7;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);

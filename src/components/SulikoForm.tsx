@@ -45,6 +45,7 @@ const SulikoForm: React.FC = () => {
   }
 
   function onSubmit(values: z.infer<typeof formSchema>) {
+    // TODO: Implement sign up logic when backend is ready
     console.log(values);
   }
 
