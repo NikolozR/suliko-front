@@ -12,12 +12,12 @@ const MainContent: FC = () => {
     <div className="min-h-screen p-8 bg-suliko-main-content-bg-color">
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-gray-900">თარჯიმანი</h1>
-          <p className="text-gray-600 mt-2">აირჩიე მეთოდი</p>
+          <h1 className="text-3xl font-semibold text-foreground">თარჯიმანი</h1>
+          <p className="text-muted-foreground mt-2">აირჩიე მეთოდი</p>
         </div>
         
         <Tabs defaultValue="text" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 bg-white">
+          <TabsList className="grid w-full grid-cols-2 bg-card">
             <TabsTrigger 
               value="text" 
               className="cursor-pointer flex items-center gap-2 data-[state=active]:!bg-suliko-default-color data-[state=active]:text-white"
@@ -37,11 +37,11 @@ const MainContent: FC = () => {
           <TabsContent value="text">
             <Card className="border-none">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-gray-900">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <Type className="h-5 w-5" />
                   შეიყვანე ტექსტი
                 </CardTitle>
-                <CardDescription className="text-gray-600">
+                <CardDescription className="text-muted-foreground">
                   რამე ტექსტი თარგმნის აღწერისთვის
                 </CardDescription>
               </CardHeader>
@@ -54,7 +54,6 @@ const MainContent: FC = () => {
                   className="w-full suliko-default-bg hover:opacity-90 transition-opacity" 
                   size="lg"
                 >
-                  {/* <Type className="mr-2 h-5 w-5" /> */}
                   თარგმნე
                 </Button>
               </CardContent>
@@ -64,19 +63,19 @@ const MainContent: FC = () => {
           <TabsContent value="document">
             <Card className="border-none">
               <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-gray-900">
+                <CardTitle className="flex items-center gap-2 text-foreground">
                   <Upload className="h-5 w-5" />
                   ატვირთე დოკუმენტი
                 </CardTitle>
-                <CardDescription className="text-gray-600">
+                <CardDescription className="text-muted-foreground">
                   რამე ტექსტი დოკუმენტების ატვირთვის აღწერისთვის (ფოტო, პდფ და ეგენი რო შეილება)
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-suliko-default-color transition-colors cursor-pointer">
                   <div className="cursor-pointer">
-                    <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                    <p className="mt-4 text-sm text-gray-600">
+                    <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
+                    <p className="mt-4 text-sm text-muted-foreground">
                       Drag and drop your file here, or click to select
                     </p>
                     <Input 
@@ -90,7 +89,6 @@ const MainContent: FC = () => {
                   className="w-full mt-4 suliko-default-bg hover:opacity-90 transition-opacity" 
                   size="lg"
                 >
-                  {/* <Upload className="mr-2 h-5 w-5" /> */}
                   თარგმნე
                 </Button>
               </CardContent>
@@ -100,10 +98,10 @@ const MainContent: FC = () => {
 
         <Card className="mt-12 border-none">
           <CardHeader>
-            <CardTitle className="text-gray-900">Recent Documents</CardTitle>
+            <CardTitle className="text-foreground">Recent Documents</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-gray-600">
+            <p className="text-muted-foreground">
               Your recently uploaded documents will appear here
             </p>
           </CardContent>
