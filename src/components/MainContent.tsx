@@ -51,7 +51,7 @@ const MainContent: FC = () => {
                   placeholder="რამე საცაცილო ტექსტი..."
                 />
                 <Button 
-                  className="w-full suliko-default-bg hover:opacity-90 transition-opacity" 
+                  className="w-full text-white suliko-default-bg hover:opacity-90 transition-opacity" 
                   size="lg"
                 >
                   თარგმნე
@@ -86,7 +86,7 @@ const MainContent: FC = () => {
                   </div>
                 </div>
                 <Button 
-                  className="w-full mt-4 suliko-default-bg hover:opacity-90 transition-opacity" 
+                  className="w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-opacity" 
                   size="lg"
                 >
                   თარგმნე
