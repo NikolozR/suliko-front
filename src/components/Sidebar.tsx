@@ -8,6 +8,7 @@ import SulikoLogoWhite from "../../public/suliko_logo_white.svg";
 import { usePathname } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useAuthStore } from '../store/authStore';
 
 interface SidebarProps {
   onCollapse: (collapsed: boolean) => void;
@@ -17,7 +18,7 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
   const pathname = usePathname();
   const { theme } = useTheme();
   const [isCollapsed, setIsCollapsed] = useLocalStorage('sidebar-collapsed', false);
-
+  const token = useAuthStore((state) => state.token);
 
   function handleCollapse() {
     onCollapse(!isCollapsed);
@@ -96,15 +97,27 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
       </nav>
 
       <div className="absolute bottom-4 w-full left-0 px-4">
-        <Link 
-          href="/profile"
-          className={getLinkClasses('/profile')}
-        >
-          <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
-            <User className="text-xl group-hover:scale-110" />
-            <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Profile</span>
-          </div>
-        </Link>
+        {token ? (
+          <Link 
+            href="/profile"
+            className={getLinkClasses('/profile')}
+          >
+            <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
+              <User className="text-xl group-hover:scale-110" />
+              <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Profile</span>
+            </div>
+          </Link>
+        ) : (
+          <Link 
+            href="/sign-up"
+            className={getLinkClasses('/sign-up')}
+          >
+            <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
+              <User className="text-xl group-hover:scale-110" />
+              <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Sign Up</span>
+            </div>
+          </Link>
+        )}
       </div>
     </div>
   );
