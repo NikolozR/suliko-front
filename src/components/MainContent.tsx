@@ -1,13 +1,119 @@
 'use client'
-import { FC } from 'react';
+import { FC, useState, ChangeEvent, FormEvent } from 'react';
 import { Upload, Type } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { translateUserContent } from '../services/translationService';
+import { useAuthStore } from '../store/authStore';
+import { AuthModal } from './AuthModal';
+import { useRouter } from 'next/navigation';
+import TextTranslationCard, { TranslationResult } from './TextTranslationCard';
+import DocumentTranslationCard from './DocumentTranslationCard';
+import RecentDocumentsCard from './RecentDocumentsCard';
 
 const MainContent: FC = () => {
+  const [files, setFiles] = useState<FileList | null>(null);
+  const [isPdf, setIsPdf] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [translationResult, setTranslationResult] = useState<TranslationResult>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [textValue, setTextValue] = useState('');
+  const [textLoading, setTextLoading] = useState(false);
+  const [textError, setTextError] = useState<string | null>(null);
+  const [textResult, setTextResult] = useState<TranslationResult>(null);
+
+  const token = useAuthStore((state) => state.token);
+  const router = useRouter();
+
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files) {
+      setFiles(event.target.files);
+      if (event.target.files.length > 0) {
+        setIsPdf(event.target.files[0].type === 'application/pdf');
+      }
+    }
+  };
+
+  const handleTextSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!token) {
+      setShowAuthModal(true);
+      return;
+    }
+    setTextError(null);
+    setTextResult(null);
+    if (!textValue.trim()) {
+      setTextError('Please enter text to translate.');
+      return;
+    }
+    setTextLoading(true);
+    try {
+      const params = {
+        description: textValue,
+        LanguageId: 1,
+        SourceLanguageId: 2,
+        Files: [],
+        IsPdf: false,
+      };
+      const result = await translateUserContent(params);
+      setTextResult(typeof result === 'string' ? result : JSON.stringify(result));
+    } catch (err) {
+      if (err instanceof Error) {
+        setTextError(err.message || 'An unexpected error occurred.');
+      } else {
+        setTextError('An unexpected error occurred.');
+      }
+    } finally {
+      setTextLoading(false);
+    }
+  };
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+
+    if (!token) {
+      setShowAuthModal(true);
+      return;
+    }
+
+    setError(null);
+    setTranslationResult(null);
+
+    if (!files || files.length === 0) {
+      setError("Please select a file to translate.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const params = {
+        description: "",
+        LanguageId: 1,
+        SourceLanguageId: 2,
+        Files: Array.from(files),
+        IsPdf: isPdf,
+      };
+      const result = await translateUserContent(params);
+      setTranslationResult(result);
+    } catch (err) {
+      if (err instanceof Error) {
+        setError(err.message || "An unexpected error occurred.");
+      } else {
+        setError("An unexpected error occurred.");
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSignIn = () => {
+    router.push('/sign-up');
+  };
+
+  const handleSignUp = () => {
+    router.push('/sign-up');
+  };
+
   return (
     <div className="min-h-screen p-8 bg-suliko-main-content-bg-color">
       <div className="max-w-4xl mx-auto">
@@ -15,7 +121,6 @@ const MainContent: FC = () => {
           <h1 className="text-3xl font-semibold text-foreground">თარჯიმანი</h1>
           <p className="text-muted-foreground mt-2">აირჩიე მეთოდი</p>
         </div>
-        
         <Tabs defaultValue="text" className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-card">
             <TabsTrigger 
@@ -33,80 +138,33 @@ const MainContent: FC = () => {
               დოკუმენტი
             </TabsTrigger>
           </TabsList>
-
-          <TabsContent value="text">
-            <Card className="border-none">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-foreground">
-                  <Type className="h-5 w-5" />
-                  შეიყვანე ტექსტი
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  რამე ტექსტი თარგმნის აღწერისთვის
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <Textarea 
-                  className="min-h-[150px] mb-4 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color" 
-                  placeholder="რამე საცაცილო ტექსტი..."
-                />
-                <Button 
-                  className="w-full text-white suliko-default-bg hover:opacity-90 transition-opacity" 
-                  size="lg"
-                >
-                  თარგმნე
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="document">
-            <Card className="border-none">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-foreground">
-                  <Upload className="h-5 w-5" />
-                  ატვირთე დოკუმენტი
-                </CardTitle>
-                <CardDescription className="text-muted-foreground">
-                  რამე ტექსტი დოკუმენტების ატვირთვის აღწერისთვის (ფოტო, პდფ და ეგენი რო შეილება)
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="border-2 border-dashed rounded-lg p-8 text-center hover:border-suliko-default-color transition-colors cursor-pointer">
-                  <div className="cursor-pointer">
-                    <Upload className="mx-auto h-12 w-12 text-muted-foreground" />
-                    <p className="mt-4 text-sm text-muted-foreground">
-                      Drag and drop your file here, or click to select
-                    </p>
-                    <Input 
-                      type="file" 
-                      className="hidden" 
-                      id="file-upload"
-                    />
-                  </div>
-                </div>
-                <Button 
-                  className="w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-opacity" 
-                  size="lg"
-                >
-                  თარგმნე
-                </Button>
-              </CardContent>
-            </Card>
-          </TabsContent>
+          <TextTranslationCard
+            value={textValue}
+            onChange={e => setTextValue(e.target.value)}
+            isLoading={textLoading}
+            error={textError}
+            translationResult={textResult}
+            onSubmit={handleTextSubmit}
+            showAuthModal={() => setShowAuthModal(true)}
+            token={token}
+          />
+          <DocumentTranslationCard 
+            files={files}
+            isLoading={isLoading}
+            error={error}
+            translationResult={translationResult}
+            onFileChange={handleFileChange}
+            onSubmit={handleSubmit}
+          />
         </Tabs>
-
-        <Card className="mt-12 border-none">
-          <CardHeader>
-            <CardTitle className="text-foreground">Recent Documents</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground">
-              Your recently uploaded documents will appear here
-            </p>
-          </CardContent>
-        </Card>
+        <RecentDocumentsCard />
       </div>
+      <AuthModal 
+        isOpen={showAuthModal} 
+        onClose={() => setShowAuthModal(false)} 
+        onSignIn={handleSignIn}
+        onSignUp={handleSignUp}
+      />
     </div>
   );
 };
