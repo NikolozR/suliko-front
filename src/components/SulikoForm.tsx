@@ -16,12 +16,16 @@ import { Input } from "./ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import SulikoFormParticles from "./SulikoFormParticles";
+import { login } from "@/services/authorizationService";
+import ErrorAlert from "./ErrorAlert";
+import { useAuthStore } from "@/store/authStore";
+import { useRouter } from "next/navigation";
 
 const formSchema = z.object({
   mobile: z
     .string()
     .min(1, { message: "Mobile number is required" })
-    .regex(/^\+?[0-9]{10,15}$/, "Invalid mobile number format"),
+    .regex(/^5\d{8}$/, "Mobile number must be in Georgian format: 5XXXXXXXX"),
   password: z
     .string()
     .min(8, { message: "Password must be at least 6 characters long" })
@@ -32,7 +36,9 @@ const formSchema = z.object({
 });
 
 const SulikoForm: React.FC = () => {
+  const { setToken, setRefreshToken} = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,88 +46,106 @@ const SulikoForm: React.FC = () => {
       password: "",
     },
   });
+  const router = useRouter();
 
+  
   function togglePasswordVisibility() {
     setIsPasswordVisible((prev) => !prev);
   }
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // TODO: Implement sign up logic when backend is ready
-    console.log(values);
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+    setAuthError(null);
+    try {
+      const data = await login({
+        userName: values.mobile,
+        password: values.password,
+      });
+      setToken(data.token);
+      setRefreshToken(data.refreshToken);
+      router.push("/");
+    } catch {
+      setAuthError("Authentication failed, Invalid credentials");
+    }
   }
 
   return (
     <>
-    <SulikoFormParticles />
-    <Form {...form}>
-      <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
-        <div className="pb-[20px] lg:pb-[40px] flex flex-col gap-5 overflow-hidden">
-          <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center">
-            ავტორიზაცია
-          </h3>
-          <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem]">
-            შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი
-          </p>
-        </div>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="flex flex-col gap-8 w-[60%]"
-        >
-          <FormField
-            control={form.control}
-            name="mobile"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold">ტელეფონი</FormLabel>
-                <FormControl>
-                  <Input placeholder="5XX 11 22 33" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="font-bold">პაროლი</FormLabel>
-                <FormControl>
-                  <div className="relative w-full">
-                    <Input
-                      className=""
-                      type={isPasswordVisible ? "text" : "password"}
-                      placeholder="********"
-                      {...field}
-                    />
-                    {isPasswordVisible ? (
-                      <Eye
-                        size={25}
-                        className="absolute cursor-pointer right-0 top-[50%] translate-[-50%]"
-                        onClick={togglePasswordVisibility}
-                      />
-                    ) : (
-                      <EyeOff
-                        size={25}
-                        className="absolute cursor-pointer right-0 top-[50%] translate-[-50%]"
-                        onClick={togglePasswordVisibility}
-                      />
-                    )}
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button
-            className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color"
-            type="submit"
+      <SulikoFormParticles />
+      <Form {...form}>
+        <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
+          <div className="pb-[20px] lg:pb-[40px] flex flex-col gap-5 overflow-hidden">
+            <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center">
+              ავტორიზაცია
+            </h3>
+            <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem]">
+              შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი
+            </p>
+          </div>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="flex flex-col gap-8 w-[60%]"
           >
-            რეგისტრაცია
-          </Button>
-        </form>
-      </div>
-    </Form>
+            {authError && (
+              <ErrorAlert
+                message={authError}
+                onClose={() => setAuthError(null)}
+              />
+            )}
+            <FormField
+              control={form.control}
+              name="mobile"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-bold">ტელეფონი</FormLabel>
+                  <FormControl>
+                    <Input placeholder="5XX 11 22 33" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="password"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="font-bold">პაროლი</FormLabel>
+                  <FormControl>
+                    <div className="relative w-full">
+                      <Input
+                        className=""
+                        type={isPasswordVisible ? "text" : "password"}
+                        placeholder="********"
+                        {...field}
+                      />
+                      {isPasswordVisible ? (
+                        <Eye
+                          size={25}
+                          className="absolute cursor-pointer right-0 top-[50%] translate-[-50%]"
+                          onClick={togglePasswordVisibility}
+                        />
+                      ) : (
+                        <EyeOff
+                          size={25}
+                          className="absolute cursor-pointer right-0 top-[50%] translate-[-50%]"
+                          onClick={togglePasswordVisibility}
+                        />
+                      )}
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button
+              className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color"
+              type="submit"
+            >
+              რეგისტრაცია
+            </Button>
+          </form>
+        </div>
+      </Form>
     </>
   );
 };

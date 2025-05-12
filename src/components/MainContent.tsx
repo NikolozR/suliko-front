@@ -22,7 +22,7 @@ const MainContent: FC = () => {
   const [textError, setTextError] = useState<string | null>(null);
   const [textResult, setTextResult] = useState<TranslationResult>(null);
 
-  const token = useAuthStore((state) => state.token);
+  const { token } = useAuthStore();
   const router = useRouter();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
