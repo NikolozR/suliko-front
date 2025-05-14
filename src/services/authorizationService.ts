@@ -29,4 +29,31 @@ export async function login({ userName, password }: LoginParams) {
   }
 }
 
+export async function reaccessToken(accessToken: string, refreshToken: string) {
+  console.log(refreshToken);
+  console.log(accessToken);
+  const endpoint = "/Auth/refresh-token";
+  try {
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        accessToken, refreshToken,
+      }),
+    });
+    console.log(await response.json());
+    if (response.status === 200) {
+      const data = await response.json();
+      return data;
+    } else {
+      throw new Error("Refresh token failed");
+    }
+
+  } catch (error) {
+    console.log("error", error);
+  }
+}
+
 export type { LoginParams };

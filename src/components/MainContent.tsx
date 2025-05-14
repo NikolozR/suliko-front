@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import TextTranslationCard, { TranslationResult } from './TextTranslationCard';
 import DocumentTranslationCard from './DocumentTranslationCard';
 import RecentDocumentsCard from './RecentDocumentsCard';
+import ErrorAlert from './ErrorAlert';
 
 const MainContent: FC = () => {
   const [files, setFiles] = useState<FileList | null>(null);
@@ -56,6 +57,7 @@ const MainContent: FC = () => {
         IsPdf: false,
       };
       const result = await translateUserContent(params);
+      console.log(result);
       setTextResult(typeof result === 'string' ? result : JSON.stringify(result));
     } catch (err) {
       if (err instanceof Error) {
@@ -121,6 +123,9 @@ const MainContent: FC = () => {
           <h1 className="text-3xl font-semibold text-foreground">თარჯიმანი</h1>
           <p className="text-muted-foreground mt-2">აირჩიე მეთოდი</p>
         </div>
+        {textError && (
+          <ErrorAlert message={textError} onClose={() => setTextError(null)} />
+        )}
         <Tabs defaultValue="text" className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-card">
             <TabsTrigger 

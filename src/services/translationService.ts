@@ -1,4 +1,5 @@
-import { useAuthStore } from '../store/authStore'; // Assuming store is at src/store/authStore.ts
+import { useAuthStore } from "../store/authStore";
+import { reaccessToken } from "./authorizationService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -10,59 +11,57 @@ interface TranslateUserContentParams {
   IsPdf: boolean;
 }
 
-export const translateUserContent = async (params: TranslateUserContentParams) => {
+export const translateUserContent = async (
+  params: TranslateUserContentParams
+): Promise<string> => {
   const formData = new FormData();
 
-  formData.append('description', params.description);
-  formData.append('LanguageId', params.LanguageId.toString());
-  formData.append('SourceLanguageId', params.SourceLanguageId.toString());
+  formData.append("description", params.description);
+  formData.append("LanguageId", params.LanguageId.toString());
+  formData.append("SourceLanguageId", params.SourceLanguageId.toString());
   params.Files.forEach((file) => {
-    formData.append('Files', file);
+    formData.append("Files", file);
   });
-  formData.append('IsPdf', params.IsPdf.toString());
+  formData.append("IsPdf", params.IsPdf.toString());
 
-  const endpoint = '/UserContent/translate';
+  const endpoint = "/UserContent/translate";
   const token = useAuthStore.getState().token;
-
+  const refreshToken = useAuthStore.getState().refreshToken;
+  
+  
   const headers = new Headers();
-  // FormData sets Content-Type to multipart/form-data automatically, so we don't set it manually.
-  // However, if you were sending JSON, you would do:
-  // headers.append('Content-Type', 'application/json'); 
   if (token) {
-    headers.append('Authorization', `Bearer ${token}`);
+    headers.append("Authorization", `Bearer ${token}`);
   }
 
-  try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      method: 'POST',
-      headers: headers, // Add the headers object here
-      body: formData
-    });
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
 
-    if (!response.ok) {
-      let errorMessage = `API Error: ${response.status} ${response.statusText}`;
-      try {
-        const errorData = await response.json();
-        errorMessage = errorData.message || errorData.detail || JSON.stringify(errorData) || errorMessage;
-      } catch {
-        try {
-          const textError = await response.text();
-          errorMessage = textError || errorMessage; 
-        } catch {
-          console.error('Error occurred while parsing error response:', errorMessage);
-        }
-      }
-      console.error('Translation API Error:', errorMessage);
-      throw new Error(errorMessage);
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = await reaccessToken(token, refreshToken);
+      useAuthStore.getState().setToken(newTokens.accessToken);
+      useAuthStore.getState().setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+    } catch {
+      throw new Error("Token refresh failed");
     }
-    console.log(await response.json());
-    return await response.json();
-  } catch (error) {
-    console.error('Network or other error in translateUserContent:', error);
-    if (error instanceof Error) {
-      throw error; 
-    } else {
-      throw new Error(String(error));
-    }
+  }
+
+  if (response.status !== 200) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Translation failed");
+  } else {
+    const data = await response.json();
+    console.log(data);
+    return data;
   }
 };
