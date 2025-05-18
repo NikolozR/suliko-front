@@ -1,4 +1,4 @@
-import { FC, FormEvent, ChangeEvent } from 'react';
+import { FC, FormEvent, useState } from 'react';
 import { TabsContent } from '@/components/ui/tabs';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { Type } from 'lucide-react';
@@ -6,33 +6,65 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import LanguageSelect from './LanguageSelect';
 import React from 'react';
+import { translateUserContent, TranslateUserContentParams } from '@/services/translationService';
+import { useAuthStore } from '@/store/authStore';
 
 type TranslationResult = string | null;
 
 interface TextTranslationCardProps {
-  value: string;
-  onChange: (e: ChangeEvent<HTMLTextAreaElement>) => void;
-  isLoading: boolean;
-  error: string | null;
-  translationResult: TranslationResult;
-  onSubmit: (e: FormEvent) => void;
   showAuthModal: () => void;
   token: string | null;
   languageId?: string | number;
-  onLanguageChange?: (id: number) => void;
 }
-const TextTranslationCard: FC<TextTranslationCardProps> = ({ value, onChange, isLoading, error, translationResult, onSubmit, showAuthModal, token, languageId, onLanguageChange }) => {
+const TextTranslationCard: FC<TextTranslationCardProps> = ({ showAuthModal, token }) => {
   const [languageError, setLanguageError] = React.useState<string | null>(null);
+  const [textValue, setTextValue] = useState('');
+  const [textError, setTextError] = useState<string | null>(null);
+  const [textResult, setTextResult] = useState<TranslationResult>(null);
+  const [textLoading, setTextLoading] = useState(false);
+  const { languageId, setLanguageId } = useAuthStore();
 
-  const handleSubmit = (e: FormEvent) => {
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    if (!token) {
+      showAuthModal();
+      return;
+    }
+    setTextResult(null);
     if (!languageId) {
-      e.preventDefault();
+      event.preventDefault();
       setLanguageError('გთხოვთ, აირჩიეთ ენა');
       return;
     }
     setLanguageError(null);
-    onSubmit(e);
+    if (!textValue.trim()) {
+      setTextError('გთხოვთ, შეიყვანოთ ტექსტი თარგმნისთვის.');
+      return;
+    }
+    setTextLoading(true);
+    try {
+      const params: TranslateUserContentParams = {
+        Description: textValue,
+        LanguageId: languageId ?? 0,
+        SourceLanguageId: 2,
+        Files: [],
+        IsPdf: false,
+      };
+      const result = await translateUserContent(params);
+      console.log(result);
+      setTextResult(typeof result === 'string' ? result : JSON.stringify(result));
+    } catch (err) {
+      if (err instanceof Error) {
+        setTextError(err.message || 'An unexpected error occurred.');
+      } else {
+        setTextError('An unexpected error occurred.');
+      }
+    } finally {
+      setTextLoading(false);
+    }
   };
+
 
   return (
     <TabsContent value="text">
@@ -48,22 +80,22 @@ const TextTranslationCard: FC<TextTranslationCardProps> = ({ value, onChange, is
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit}>
-            {onLanguageChange && (
+            {setLanguageId && (
               <div className="mb-4">
-                <LanguageSelect value={languageId} onChange={onLanguageChange} placeholder="აირჩიე ენა" />
+                <LanguageSelect value={languageId} onChange={setLanguageId} placeholder="აირჩიე ენა" />
               </div>
             )}
             <Textarea 
               className="min-h-[150px] mb-4 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color" 
               placeholder="რამე საცაცილო ტექსტი..."
-              value={value}
-              onChange={onChange}
+              value={textValue}
+              onChange={e => setTextValue(e.target.value)}
             />
             <Button 
               className="w-full text-white suliko-default-bg hover:opacity-90 transition-opacity" 
               size="lg"
               type="submit"
-              disabled={isLoading || !languageId}
+              disabled={textLoading}
               onClick={e => {
                 if (!token) {
                   e.preventDefault();
@@ -71,19 +103,19 @@ const TextTranslationCard: FC<TextTranslationCardProps> = ({ value, onChange, is
                 }
               }}
             >
-              {isLoading ? 'მუშავდება...' : 'თარგმნე'}
+              {textLoading ? 'მუშავდება...' : 'თარგმნე'}
             </Button>
             {languageError && (
               <p className="mt-2 text-sm text-red-600 bg-red-100 p-2 rounded">{languageError}</p>
             )}
           </form>
-          {error && (
-            <p className="mt-4 text-sm text-red-600 bg-red-100 p-3 rounded-md">{error}</p>
+          {textError && (
+            <p className="mt-4 text-sm text-red-600 bg-red-100 p-3 rounded-md">{textError}</p>
           )}
-          {translationResult && (
+          {textResult && (
             <div className="mt-4 p-3 rounded-md bg-green-100">
               <h4 className="font-semibold text-green-700">თარგმანის შედეგი:</h4>
-              <pre className="mt-2 text-sm text-green-600 overflow-x-auto">{translationResult}</pre>
+              <pre className="mt-2 text-sm text-green-600 overflow-x-auto">{textResult}</pre>
             </div>
           )}
         </CardContent>

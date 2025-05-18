@@ -63,7 +63,7 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
           className={getLinkClasses('/')}
         >
           <div className={`flex items-center ${isCollapsed ? 'justify-start w-full' : 'space-x-3'}`}>
-            <Plus className="text-xl group-hover:scale-110" />
+            <Plus className={`${isCollapsed ? 'h-8 w-8' : 'text-xl'} ${!isCollapsed && 'group-hover:scale-110'}`} />
             <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>New Project</span>
           </div>
         </Link>
@@ -73,7 +73,7 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
           className={getLinkClasses('/history')}
         >
           <div className={`flex items-center ${isCollapsed ? 'justify-start w-full' : 'space-x-3'}`}>
-            <Clock className="text-xl group-hover:scale-110" />
+            <Clock className={`${isCollapsed ? 'h-8 w-8' : 'text-xl'} ${!isCollapsed && 'group-hover:scale-110'}`} />
             <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>History</span>
           </div>
         </Link>
@@ -83,7 +83,7 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
           className={getLinkClasses('/help')}
         >
           <div className={`flex items-center ${isCollapsed ? 'justify-start w-full' : 'space-x-3'}`}>
-            <HelpCircle className="text-xl group-hover:scale-110" />
+            <HelpCircle className={`${isCollapsed ? 'h-8 w-8' : 'text-xl'} ${!isCollapsed && 'group-hover:scale-110'}`} />
             <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Help</span>
           </div>
         </Link>
@@ -93,7 +93,7 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
           className={getLinkClasses('/feedback')}
         >
           <div className={`flex items-center ${isCollapsed ? 'justify-start w-full' : 'space-x-3'}`}>
-            <MessageSquare className="text-xl group-hover:scale-110" />
+            <MessageSquare className={`${isCollapsed ? 'h-8 w-8' : 'text-xl'} ${!isCollapsed && 'group-hover:scale-110'}`} />
             <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Feedback</span>
           </div>
         </Link>
@@ -107,7 +107,7 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
               className={getLinkClasses('/profile')}
             >
               <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
-                <User className="text-xl group-hover:scale-110" />
+                <User className={`${isCollapsed ? 'h-8 w-8' : 'text-xl'} ${!isCollapsed && 'group-hover:scale-110'}`} />
                 <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Profile</span>
               </div>
             </Link>
@@ -119,7 +119,7 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
                 router.push('/sign-up');
               }}
             >
-              <LogOut className="text-xl group-hover:scale-110" />
+              <LogOut className={`${isCollapsed ? 'h-8 w-8' : 'text-xl'} ${!isCollapsed && 'group-hover:scale-110'}`} />
               <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Sign Out</span>
             </Button>
           </div>
@@ -129,7 +129,7 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
             className={getLinkClasses('/sign-up')}
           >
             <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
-              <User className="text-xl group-hover:scale-110" />
+              <User className={`${isCollapsed ? 'h-8 w-8' : 'text-xl'} ${!isCollapsed && 'group-hover:scale-110'}`} />
               <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Sign Up</span>
             </div>
           </Link>

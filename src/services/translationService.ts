@@ -3,7 +3,7 @@ import { reaccessToken } from "./authorizationService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-interface TranslateUserContentParams {
+export interface TranslateUserContentParams {
   Description: string;
   LanguageId: number;
   SourceLanguageId: number;
