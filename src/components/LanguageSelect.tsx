@@ -9,7 +9,9 @@ import {
 } from "@/components/ui/select";
 import { useAuthStore } from "@/store/authStore";
 import { AuthModal } from "./AuthModal";
+import { signIn, signUp } from "@/lib/utils";
 import { useRouter } from "next/navigation";
+
 
 interface LanguageSelectProps {
   value?: string | number;
@@ -25,17 +27,9 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   const [languages, setLanguages] = useState<Language[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const router = useRouter();
   const { token } = useAuthStore();
   const [open, setOpen] = useState(false);
-
-  const handleSignIn = () => {
-    router.push("/sign-up");
-  };
-
-  const handleSignUp = () => {
-    router.push("/sign-up");
-  };
+  const router = useRouter();
 
   useEffect(() => {
     setLoading(true);
@@ -88,8 +82,8 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
-        onSignIn={handleSignIn}
-        onSignUp={handleSignUp}
+        onSignIn={() => signIn(router)}
+        onSignUp={() => signUp(router)}
       />
     </>
   );

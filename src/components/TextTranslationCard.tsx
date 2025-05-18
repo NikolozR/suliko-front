@@ -1,45 +1,54 @@
-import { FC, FormEvent, useState } from 'react';
-import { TabsContent } from '@/components/ui/tabs';
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
-import { Type } from 'lucide-react';
-import { Textarea } from '@/components/ui/textarea';
-import { Button } from '@/components/ui/button';
-import LanguageSelect from './LanguageSelect';
-import React from 'react';
-import { translateUserContent, TranslateUserContentParams } from '@/services/translationService';
-import { useAuthStore } from '@/store/authStore';
+"use client";
+import { FormEvent, useState } from "react";
+import { TabsContent } from "@/components/ui/tabs";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent
+} from "@/components/ui/card";
+import { Type } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/components/ui/button";
+import LanguageSelect from "./LanguageSelect";
+import React from "react";
+import {
+  translateUserContent,
+} from "@/services/translationService";
+import { useAuthStore } from "@/store/authStore";
+import { AuthModal } from "./AuthModal";
+import { useRouter } from "next/navigation";
+import { TranslateUserContentParams, TranslationResult } from "@/types/translation";
+import { signIn, signUp } from "@/lib/utils";
 
-type TranslationResult = string | null;
 
-interface TextTranslationCardProps {
-  showAuthModal: () => void;
-  token: string | null;
-  languageId?: string | number;
-}
-const TextTranslationCard: FC<TextTranslationCardProps> = ({ showAuthModal, token }) => {
+
+const TextTranslationCard = () => {
   const [languageError, setLanguageError] = React.useState<string | null>(null);
-  const [textValue, setTextValue] = useState('');
+  const [textValue, setTextValue] = useState("");
   const [textError, setTextError] = useState<string | null>(null);
   const [textResult, setTextResult] = useState<TranslationResult>(null);
   const [textLoading, setTextLoading] = useState(false);
-  const { languageId, setLanguageId } = useAuthStore();
-
-
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const { languageId, setLanguageId, token } = useAuthStore();
+  const router = useRouter();
+  
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     if (!token) {
-      showAuthModal();
+      setShowAuthModal(true);
       return;
     }
     setTextResult(null);
     if (!languageId) {
       event.preventDefault();
-      setLanguageError('გთხოვთ, აირჩიეთ ენა');
+      setLanguageError("გთხოვთ, აირჩიეთ ენა");
       return;
     }
     setLanguageError(null);
     if (!textValue.trim()) {
-      setTextError('გთხოვთ, შეიყვანოთ ტექსტი თარგმნისთვის.');
+      setTextError("გთხოვთ, შეიყვანოთ ტექსტი თარგმნისთვის.");
       return;
     }
     setTextLoading(true);
@@ -53,18 +62,19 @@ const TextTranslationCard: FC<TextTranslationCardProps> = ({ showAuthModal, toke
       };
       const result = await translateUserContent(params);
       console.log(result);
-      setTextResult(typeof result === 'string' ? result : JSON.stringify(result));
+      setTextResult(
+        typeof result === "string" ? result : JSON.stringify(result)
+      );
     } catch (err) {
       if (err instanceof Error) {
-        setTextError(err.message || 'An unexpected error occurred.');
+        setTextError(err.message || "An unexpected error occurred.");
       } else {
-        setTextError('An unexpected error occurred.');
+        setTextError("An unexpected error occurred.");
       }
     } finally {
       setTextLoading(false);
     }
   };
-
 
   return (
     <TabsContent value="text">
@@ -82,47 +92,65 @@ const TextTranslationCard: FC<TextTranslationCardProps> = ({ showAuthModal, toke
           <form onSubmit={handleSubmit}>
             {setLanguageId && (
               <div className="mb-4">
-                <LanguageSelect value={languageId} onChange={setLanguageId} placeholder="აირჩიე ენა" />
+                <LanguageSelect
+                  value={languageId}
+                  onChange={setLanguageId}
+                  placeholder="აირჩიე ენა"
+                />
               </div>
             )}
-            <Textarea 
-              className="min-h-[150px] mb-4 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color" 
+            <Textarea
+              className="min-h-[150px] mb-4 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color"
               placeholder="რამე საცაცილო ტექსტი..."
               value={textValue}
-              onChange={e => setTextValue(e.target.value)}
+              onChange={(e) => setTextValue(e.target.value)}
             />
-            <Button 
-              className="w-full text-white suliko-default-bg hover:opacity-90 transition-opacity" 
+            <Button
+              className="w-full text-white suliko-default-bg hover:opacity-90 transition-opacity"
               size="lg"
               type="submit"
               disabled={textLoading}
-              onClick={e => {
+              onClick={(e) => {
                 if (!token) {
                   e.preventDefault();
-                  showAuthModal();
+                  setShowAuthModal(true);
                 }
               }}
             >
-              {textLoading ? 'მუშავდება...' : 'თარგმნე'}
+              {textLoading ? "მუშავდება..." : "თარგმნე"}
             </Button>
             {languageError && (
-              <p className="mt-2 text-sm text-red-600 bg-red-100 p-2 rounded">{languageError}</p>
+              <p className="mt-2 text-sm text-red-600 bg-red-100 p-2 rounded">
+                {languageError}
+              </p>
             )}
           </form>
           {textError && (
-            <p className="mt-4 text-sm text-red-600 bg-red-100 p-3 rounded-md">{textError}</p>
+            <p className="mt-4 text-sm text-red-600 bg-red-100 p-3 rounded-md">
+              {textError}
+            </p>
           )}
           {textResult && (
             <div className="mt-4 p-3 rounded-md bg-green-100">
-              <h4 className="font-semibold text-green-700">თარგმანის შედეგი:</h4>
-              <pre className="mt-2 text-sm text-green-600 overflow-x-auto">{textResult}</pre>
+              <h4 className="font-semibold text-green-700">
+                თარგმანის შედეგი:
+              </h4>
+              <pre className="mt-2 text-sm text-green-600 overflow-x-auto">
+                {textResult}
+              </pre>
             </div>
           )}
         </CardContent>
       </Card>
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        onSignIn={() => signIn(router)}
+        onSignUp={() => signUp(router)}
+      />
     </TabsContent>
   );
 };
 
-export type { TextTranslationCardProps, TranslationResult };
-export default TextTranslationCard; 
+export type { TranslationResult };
+export default TextTranslationCard;

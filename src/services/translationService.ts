@@ -1,15 +1,9 @@
+import { TranslateUserContentParams } from "@/types/translation";
 import { useAuthStore } from "../store/authStore";
 import { reaccessToken } from "./authorizationService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export interface TranslateUserContentParams {
-  Description: string;
-  LanguageId: number;
-  SourceLanguageId: number;
-  Files: File[];
-  IsPdf: boolean;
-}
 
 export const translateUserContent = async (
   params: TranslateUserContentParams
