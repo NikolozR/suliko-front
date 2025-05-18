@@ -4,7 +4,7 @@ import { reaccessToken } from "./authorizationService";
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface TranslateUserContentParams {
-  description: string;
+  Description: string;
   LanguageId: number;
   SourceLanguageId: number;
   Files: File[];
@@ -16,7 +16,7 @@ export const translateUserContent = async (
 ): Promise<string> => {
   const formData = new FormData();
 
-  formData.append("description", params.description);
+  formData.append("Description", params.Description);
   formData.append("LanguageId", params.LanguageId.toString());
   formData.append("SourceLanguageId", params.SourceLanguageId.toString());
   params.Files.forEach((file) => {
@@ -27,7 +27,7 @@ export const translateUserContent = async (
   const endpoint = "/UserContent/translate";
   const token = useAuthStore.getState().token;
   const refreshToken = useAuthStore.getState().refreshToken;
-  
+  console.log(refreshToken);
   
   const headers = new Headers();
   if (token) {

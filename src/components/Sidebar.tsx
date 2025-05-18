@@ -2,13 +2,14 @@
 import { FC } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Plus, Clock, HelpCircle, MessageSquare, User, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, Clock, HelpCircle, MessageSquare, User, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import SulikoLogoBlack from "../../public/Suliko_logo_black.svg";
 import SulikoLogoWhite from "../../public/suliko_logo_white.svg";
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useTheme } from 'next-themes';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { useAuthStore } from '../store/authStore';
+import { Button } from '@/components/ui/button';
 
 interface SidebarProps {
   onCollapse: (collapsed: boolean) => void;
@@ -19,6 +20,8 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
   const { theme } = useTheme();
   const [isCollapsed, setIsCollapsed] = useLocalStorage('sidebar-collapsed', false);
   const token = useAuthStore((state) => state.token);
+  const { setToken, setRefreshToken } = useAuthStore();
+  const router = useRouter();
 
   function handleCollapse() {
     onCollapse(!isCollapsed);
@@ -98,15 +101,28 @@ const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
 
       <div className="absolute bottom-4 w-full left-0 px-4">
         {token ? (
-          <Link 
-            href="/profile"
-            className={getLinkClasses('/profile')}
-          >
-            <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
-              <User className="text-xl group-hover:scale-110" />
-              <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Profile</span>
-            </div>
-          </Link>
+          <div className="flex flex-col gap-2">
+            <Link 
+              href="/profile"
+              className={getLinkClasses('/profile')}
+            >
+              <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
+                <User className="text-xl group-hover:scale-110" />
+                <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Profile</span>
+              </div>
+            </Link>
+            <Button
+              className={`w-full mt-1 flex items-center ${isCollapsed ? 'justify-center' : 'justify-start space-x-3'} suliko-default-bg text-white hover:opacity-90 hover:scale-[1.02] transition-all p-2 rounded group`}
+              onClick={() => {
+                setToken(null);
+                setRefreshToken(null);
+                router.push('/sign-up');
+              }}
+            >
+              <LogOut className="text-xl group-hover:scale-110" />
+              <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Sign Out</span>
+            </Button>
+          </div>
         ) : (
           <Link 
             href="/sign-up"

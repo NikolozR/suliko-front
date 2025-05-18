@@ -30,8 +30,8 @@ export async function login({ userName, password }: LoginParams) {
 }
 
 export async function reaccessToken(accessToken: string, refreshToken: string) {
-  console.log(refreshToken);
   console.log(accessToken);
+  console.log(refreshToken);
   const endpoint = "/Auth/refresh-token";
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {

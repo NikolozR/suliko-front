@@ -22,6 +22,7 @@ const MainContent: FC = () => {
   const [textLoading, setTextLoading] = useState(false);
   const [textError, setTextError] = useState<string | null>(null);
   const [textResult, setTextResult] = useState<TranslationResult>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<number | undefined>(undefined);
 
   const { token } = useAuthStore();
   const router = useRouter();
@@ -50,8 +51,8 @@ const MainContent: FC = () => {
     setTextLoading(true);
     try {
       const params = {
-        description: textValue,
-        LanguageId: 1,
+        Description: textValue,
+        LanguageId: selectedLanguage ?? 0,
         SourceLanguageId: 2,
         Files: [],
         IsPdf: false,
@@ -89,7 +90,7 @@ const MainContent: FC = () => {
     setIsLoading(true);
     try {
       const params = {
-        description: "",
+        Description: "",
         LanguageId: 1,
         SourceLanguageId: 2,
         Files: Array.from(files),
@@ -152,6 +153,8 @@ const MainContent: FC = () => {
             onSubmit={handleTextSubmit}
             showAuthModal={() => setShowAuthModal(true)}
             token={token}
+            languageId={selectedLanguage}
+            onLanguageChange={setSelectedLanguage}
           />
           <DocumentTranslationCard 
             files={files}
