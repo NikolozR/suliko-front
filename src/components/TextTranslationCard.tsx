@@ -18,9 +18,7 @@ import {
 } from "@/services/translationService";
 import { useAuthStore } from "@/store/authStore";
 import { AuthModal } from "./AuthModal";
-import { useRouter } from "next/navigation";
 import { TranslateUserContentParams, TranslationResult } from "@/types/translation";
-import { signIn, signUp } from "@/lib/utils";
 
 
 
@@ -32,7 +30,6 @@ const TextTranslationCard = () => {
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { languageId, setLanguageId, token } = useAuthStore();
-  const router = useRouter();
   
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -145,8 +142,6 @@ const TextTranslationCard = () => {
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
-        onSignIn={() => signIn(router)}
-        onSignUp={() => signUp(router)}
       />
     </TabsContent>
   );

@@ -1,5 +1,3 @@
-'use client'
-
 import {
   Dialog,
   DialogContent,
@@ -9,24 +7,20 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
+import { useRouter } from "next/navigation";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSignIn: () => void;
-  onSignUp: () => void;
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSignIn, onSignUp }) => {
+export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose}) => {
+  const router = useRouter();
+  
   if (!isOpen) return null;
 
-  const handleSignInClick = () => {
-    onSignIn();
-    onClose(); 
-  };
 
   const handleSignUpClick = () => {
-    onSignUp();
+    router.push("/sign-up");
     onClose(); 
   };
 
@@ -41,7 +35,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSignIn,
         </DialogHeader>
         <DialogFooter className="flex !justify-center items-center gap-2 mt-4">
           <Button 
-            onClick={handleSignInClick} 
+            onClick={handleSignUpClick} 
             className="cursor-pointer suliko-default-bg text-white hover:opacity-90"
           >
             Sign In

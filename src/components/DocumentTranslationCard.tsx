@@ -15,9 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { translateUserContent } from "@/services/translationService";
 import { AuthModal } from "./AuthModal";
-import { useRouter } from "next/navigation";
 import { TranslationResult, TranslateUserContentParams } from "@/types/translation";
-import { signIn, signUp } from "@/lib/utils";
 
 const DocumentTranslationCard = () => {
   const [files, setFiles] = useState<FileList | null>(null);
@@ -28,7 +26,6 @@ const DocumentTranslationCard = () => {
   const [error, setError] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const { token, languageId } = useAuthStore();
-  const router = useRouter();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -138,8 +135,6 @@ const DocumentTranslationCard = () => {
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
-        onSignIn={() => signIn(router)}
-        onSignUp={() => signUp(router)}
       />
     </TabsContent>
   );
