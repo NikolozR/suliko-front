@@ -36,7 +36,7 @@ export const translateUserContent = async (
 
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(token, refreshToken);
+      const newTokens = await reaccessToken(refreshToken);
       useAuthStore.getState().setToken(newTokens.accessToken);
       useAuthStore.getState().setRefreshToken(newTokens.refreshToken);
       headers.set("Authorization", `Bearer ${newTokens.accessToken}`);

@@ -29,9 +29,7 @@ export async function login({ userName, password }: LoginParams) {
   }
 }
 
-export async function reaccessToken(accessToken: string, refreshToken: string) {
-  console.log(accessToken);
-  console.log(refreshToken);
+export async function reaccessToken(refreshToken: string) {
   const endpoint = "/Auth/refresh-token";
   try {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -40,10 +38,10 @@ export async function reaccessToken(accessToken: string, refreshToken: string) {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        accessToken, refreshToken,
+        refreshToken,
       }),
     });
-    console.log(await response.json());
+    
     if (response.status === 200) {
       const data = await response.json();
       return data;

@@ -61,7 +61,6 @@ export default function Sidebar({ onCollapse }: { onCollapse: (collapsed: boolea
     <aside
       className={`flex flex-col h-screen fixed left-0 top-0 z-40 bg-background border-r transition-all duration-300 ${isCollapsed ? "w-16" : "w-64"}`}
     >
-      {/* Logo and collapse */}
       <div className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
         {!isCollapsed && (
           <Image
@@ -81,7 +80,6 @@ export default function Sidebar({ onCollapse }: { onCollapse: (collapsed: boolea
         </button>
       </div>
 
-      {/* Nav links */}
       <nav className="flex-1 px-2 space-y-1">
         {NAV_ITEMS.map(({ label, href, icon: Icon }) => (
           <Link
@@ -89,7 +87,7 @@ export default function Sidebar({ onCollapse }: { onCollapse: (collapsed: boolea
             href={href}
             className={`group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
               isActive(href)
-                ? "suliko-default-bg text-primary-foreground font-medium"
+                ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
                 : "hover:bg-accent hover:text-accent-foreground"
             } ${isCollapsed ? "justify-center" : ""}`}
             aria-current={isActive(href) ? "page" : undefined}
@@ -108,7 +106,6 @@ export default function Sidebar({ onCollapse }: { onCollapse: (collapsed: boolea
         ))}
       </nav>
 
-      {/* Bottom section: profile/sign out or sign up, theme toggle */}
       <div className="mt-auto flex flex-col gap-2 p-3">
         {token ? (
           <>
@@ -132,7 +129,7 @@ export default function Sidebar({ onCollapse }: { onCollapse: (collapsed: boolea
               )}
             </Link>
             <Button
-              className={`w-full flex items-center gap-3 suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
+              className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
                 isCollapsed ? "justify-center px-0" : "justify-start px-3"
               }`}
               onClick={() => {

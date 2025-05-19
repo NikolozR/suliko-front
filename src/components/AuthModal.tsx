@@ -28,24 +28,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose}) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-fit rounded-lg py-[40px] px-[70px]">
         <DialogHeader>
-          <DialogTitle className="text-center">Authentication Required</DialogTitle>
+          <DialogTitle className="text-center">გთხოვთ გაიაროთ რეგისტრაცია</DialogTitle>
           <DialogDescription className="text-center">
-            Please sign in or sign up to continue.
+            გთხოვთ გაიაროთ რეგისტრაცია თარგმნის მიზნით
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex !justify-center items-center gap-2 mt-4">
           <Button 
             onClick={handleSignUpClick} 
-            className="cursor-pointer suliko-default-bg text-white hover:opacity-90"
-          >
-            Sign In
-          </Button>
-          <Button 
-            onClick={handleSignUpClick} 
-            variant="outline"
             className="cursor-pointer"
           >
-            Sign Up
+            შესვლა
           </Button>
         </DialogFooter>
       </DialogContent>

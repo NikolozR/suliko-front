@@ -23,9 +23,8 @@ import { TranslateUserContentParams, TranslationResult } from "@/types/translati
 
 
 const TextTranslationCard = () => {
-  const [languageError, setLanguageError] = React.useState<string | null>(null);
   const [textValue, setTextValue] = useState("");
-  const [textError, setTextError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
   const [textResult, setTextResult] = useState<TranslationResult>(null);
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -38,16 +37,16 @@ const TextTranslationCard = () => {
       return;
     }
     setTextResult(null);
-    if (!languageId) {
+    if (languageId < 0) {
       event.preventDefault();
-      setLanguageError("გთხოვთ, აირჩიეთ ენა");
+      setFormError("გთხოვთ, აირჩიეთ ენა");
       return;
     }
-    setLanguageError(null);
     if (!textValue.trim()) {
-      setTextError("გთხოვთ, შეიყვანოთ ტექსტი თარგმნისთვის.");
+      setFormError("გთხოვთ, შეიყვანოთ ტექსტი თარგმნისთვის.");
       return;
     }
+    setFormError(null);
     setTextLoading(true);
     try {
       const params: TranslateUserContentParams = {
@@ -58,16 +57,13 @@ const TextTranslationCard = () => {
         IsPdf: false,
       };
       const result = await translateUserContent(params);
-      console.log(result);
+      // TODO: handle result
       setTextResult(
         typeof result === "string" ? result : JSON.stringify(result)
       );
     } catch (err) {
-      if (err instanceof Error) {
-        setTextError(err.message || "An unexpected error occurred.");
-      } else {
-        setTextError("An unexpected error occurred.");
-      }
+      console.log(err);
+      setFormError("თარგმნის დროს დაფიქსირდა შეცდომა");
     } finally {
       setTextLoading(false);
     }
@@ -116,17 +112,13 @@ const TextTranslationCard = () => {
             >
               {textLoading ? "მუშავდება..." : "თარგმნე"}
             </Button>
-            {languageError && (
+            {formError && (
               <p className="mt-2 text-sm text-red-600 bg-red-100 p-2 rounded">
-                {languageError}
+                {formError}
               </p>
             )}
           </form>
-          {textError && (
-            <p className="mt-4 text-sm text-red-600 bg-red-100 p-3 rounded-md">
-              {textError}
-            </p>
-          )}
+          {/* TODO: handle result, whole new logic */}
           {textResult && (
             <div className="mt-4 p-3 rounded-md bg-green-100">
               <h4 className="font-semibold text-green-700">
