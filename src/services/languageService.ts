@@ -15,20 +15,35 @@ export async function getAllLanguages() {
   const headers = new Headers();
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
+  } else {
+    throw new Error("No token found");
   }
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers,
   });
 
   if (response.status === 401 && token && refreshToken) {
-    const newTokens = await reaccessToken(refreshToken);
-    useAuthStore.getState().setToken(newTokens.accessToken);
-    useAuthStore.getState().setRefreshToken(newTokens.refreshToken);
-    headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+    try {
+      const newTokens = await reaccessToken(refreshToken);
+      useAuthStore.getState().setToken(newTokens.accessToken);
+      useAuthStore.getState().setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        headers,
+      });
+    } catch (error) {
+      useAuthStore.getState().reset();
+      throw new Error("Failed to refresh token " + error);
+    }
   }
-  if (!response.ok) {
-    throw new Error("Failed to fetch languages");
+
+
+  if (response.status !== 200) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Translation failed");
+  } else {
+    const data = await response.json();
+    return data;
   }
-  const data = await response.json();
-  return data;
 }

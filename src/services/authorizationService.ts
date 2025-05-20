@@ -50,7 +50,7 @@ export async function reaccessToken(refreshToken: string) {
     }
 
   } catch (error) {
-    console.log("error", error);
+    throw new Error("Refresh token failed " + error);
   }
 }
 

@@ -4,12 +4,12 @@ import { reaccessToken } from "./authorizationService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-
 export const translateUserContent = async (
   params: TranslateUserContentParams
 ): Promise<string> => {
-  const formData = new FormData();
+  const endpoint = "/UserContent/translate";
 
+  const formData = new FormData();
   formData.append("Description", params.Description);
   formData.append("LanguageId", params.LanguageId.toString());
   formData.append("SourceLanguageId", params.SourceLanguageId.toString());
@@ -18,14 +18,13 @@ export const translateUserContent = async (
   });
   formData.append("IsPdf", params.IsPdf.toString());
 
-  const endpoint = "/UserContent/translate";
-  const token = useAuthStore.getState().token;
-  const refreshToken = useAuthStore.getState().refreshToken;
-  console.log(refreshToken);
-  
+  const {token, refreshToken} = useAuthStore.getState();
+
   const headers = new Headers();
   if (token) {
     headers.append("Authorization", `Bearer ${token}`);
+  } else {
+    throw new Error("No token found");
   }
 
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -35,6 +34,7 @@ export const translateUserContent = async (
   });
 
   if (response.status === 401 && token && refreshToken) {
+    console.log("Refreshing token");
     try {
       const newTokens = await reaccessToken(refreshToken);
       useAuthStore.getState().setToken(newTokens.accessToken);
@@ -46,16 +46,17 @@ export const translateUserContent = async (
         body: formData,
       });
     } catch {
+      useAuthStore.getState().reset();
       throw new Error("Token refresh failed");
     }
   }
 
   if (response.status !== 200) {
+    console.log("What is happening here?", response);
     const errorData = await response.json();
     throw new Error(errorData.message || "Translation failed");
   } else {
     const data = await response.json();
-    console.log(data);
     return data;
   }
 };

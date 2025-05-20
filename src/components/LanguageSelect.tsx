@@ -33,8 +33,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
         setLoading(true);
         const data = await getAllLanguages();
         setLanguages(data);
-      } catch (error) {
-        console.error("Failed to fetch languages:", error);
+      } catch {
         setLanguages([]);
       } finally {
         setLoading(false);

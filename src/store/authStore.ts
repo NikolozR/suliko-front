@@ -8,6 +8,7 @@ interface AuthState {
   setRefreshToken: (refreshToken: string | null) => void;
   languageId: number;
   setLanguageId: (languageId: number) => void;
+  reset: () => void;
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -19,6 +20,7 @@ export const useAuthStore = create<AuthState>()(
       setRefreshToken: (refreshToken) => set({ refreshToken }),
       languageId: -1,
       setLanguageId: (languageId) => set({ languageId }),
+      reset: () => set({ token: null, refreshToken: null, languageId: -1 }),
     }),
     {
       name: 'auth-storage',
