@@ -13,12 +13,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import LanguageSelect from "./LanguageSelect";
 import React from "react";
-import {
-  translateUserContent,
-} from "@/services/translationService";
 import { useAuthStore } from "@/store/authStore";
 import { AuthModal } from "./AuthModal";
 import { TranslateUserContentParams, TranslationResult } from "@/types/translation";
+import { mockTranslateUserContent } from "@/services/mockTranslationService";
 
 
 
@@ -49,6 +47,7 @@ const TextTranslationCard = () => {
     setFormError(null);
     setTextLoading(true);
     try {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const params: TranslateUserContentParams = {
         Description: textValue,
         LanguageId: languageId ?? 0,
@@ -56,7 +55,8 @@ const TextTranslationCard = () => {
         Files: [],
         IsPdf: false,
       };
-      const result = await translateUserContent(params);
+      const result = await mockTranslateUserContent();
+      // const result = await translateUserContent(params);
       // TODO: handle result
       setTextResult(
         typeof result === "string" ? result : JSON.stringify(result)

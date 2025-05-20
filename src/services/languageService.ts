@@ -13,6 +13,7 @@ export async function getAllLanguages() {
   const endpoint = "/Language";
   const { refreshToken, token } = useAuthStore.getState();
   const headers = new Headers();
+
   if (token) {
     headers.set("Authorization", `Bearer ${token}`);
   } else {
@@ -26,14 +27,15 @@ export async function getAllLanguages() {
   if (response.status === 401 && token && refreshToken) {
     try {
       const newTokens = await reaccessToken(refreshToken);
-      useAuthStore.getState().setToken(newTokens.accessToken);
+      console.log(newTokens, "newTokens");
+      useAuthStore.getState().setToken(newTokens.token);
       useAuthStore.getState().setRefreshToken(newTokens.refreshToken);
-      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers,
       });
     } catch (error) {
-      useAuthStore.getState().reset();
+      // useAuthStore.getState().reset();
       throw new Error("Failed to refresh token " + error);
     }
   }

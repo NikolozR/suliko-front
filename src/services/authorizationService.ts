@@ -41,7 +41,7 @@ export async function reaccessToken(refreshToken: string) {
         refreshToken,
       }),
     });
-    
+    console.log(response);
     if (response.status === 200) {
       const data = await response.json();
       return data;
