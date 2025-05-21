@@ -4,7 +4,7 @@ export interface TextTranslateUserContentParams {
   Description: string;
   LanguageId: number;
   SourceLanguageId: number;
-  IsPdf: false;
+  IsPdf: boolean;
 } 
 
 export interface TextTranslateUserContentResponse {

@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { translateUserContent } from "@/services/translationService";
 import { AuthModal } from "./AuthModal";
-import { TranslateUserContentParams } from "@/types/translation";
+import { TextTranslateUserContentParams } from "@/types/translation";
 import { useTranslationStore } from "@/store/translationStore";
 
 const DocumentTranslationCard = () => {
@@ -53,16 +53,15 @@ const DocumentTranslationCard = () => {
 
     setIsLoading(true);
     try {
-      const params: TranslateUserContentParams = {
+      const params: TextTranslateUserContentParams = {
         Description: "",
         LanguageId: 1,
         SourceLanguageId: languageId ?? 0,
-        Files: Array.from(files),
         IsPdf: isPdf,
       };
       setOriginalText(`File: ${files[0].name}`);
       const result = await translateUserContent(params);
-      setTranslatedText(result);
+      setTranslatedText(result.text);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message || "An unexpected error occurred.");
