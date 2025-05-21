@@ -1,5 +1,3 @@
-'use client'
-
 import {
   Dialog,
   DialogContent,
@@ -9,24 +7,20 @@ import {
   DialogTitle
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
+import { useRouter } from "next/navigation";
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSignIn: () => void;
-  onSignUp: () => void;
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSignIn, onSignUp }) => {
+export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose}) => {
+  const router = useRouter();
+  
   if (!isOpen) return null;
 
-  const handleSignInClick = () => {
-    onSignIn();
-    onClose(); 
-  };
 
   const handleSignUpClick = () => {
-    onSignUp();
+    router.push("/sign-up");
     onClose(); 
   };
 
@@ -34,24 +28,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onSignIn,
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-fit rounded-lg py-[40px] px-[70px]">
         <DialogHeader>
-          <DialogTitle className="text-center">Authentication Required</DialogTitle>
+          <DialogTitle className="text-center">გთხოვთ გაიაროთ რეგისტრაცია</DialogTitle>
           <DialogDescription className="text-center">
-            Please sign in or sign up to continue.
+            გთხოვთ გაიაროთ რეგისტრაცია თარგმნის მიზნით
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex !justify-center items-center gap-2 mt-4">
           <Button 
-            onClick={handleSignInClick} 
-            className="cursor-pointer suliko-default-bg text-white hover:opacity-90"
-          >
-            Sign In
-          </Button>
-          <Button 
             onClick={handleSignUpClick} 
-            variant="outline"
             className="cursor-pointer"
           >
-            Sign Up
+            შესვლა
           </Button>
         </DialogFooter>
       </DialogContent>

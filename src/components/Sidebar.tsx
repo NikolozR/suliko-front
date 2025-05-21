@@ -1,126 +1,177 @@
-'use client'
-import { FC } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Plus, Clock, HelpCircle, MessageSquare, User, ChevronLeft, ChevronRight } from 'lucide-react';
+"use client";
+import Link from "next/link";
+import Image from "next/image";
+import { usePathname, useRouter } from "next/navigation";
+import { useTheme } from "next-themes";
+import { useAuthStore } from "../store/authStore";
+import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "./ThemeToggle";
+import {
+  Plus,
+  Clock,
+  HelpCircle,
+  MessageSquare,
+  User,
+  ChevronLeft,
+  ChevronRight,
+  LogOut,
+} from "lucide-react";
 import SulikoLogoBlack from "../../public/Suliko_logo_black.svg";
 import SulikoLogoWhite from "../../public/suliko_logo_white.svg";
-import { usePathname } from 'next/navigation';
-import { useTheme } from 'next-themes';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
-import { useAuthStore } from '../store/authStore';
+import { useSidebarStore } from "@/store/sidebarStore";
 
-interface SidebarProps {
-  onCollapse: (collapsed: boolean) => void;
-}
+const NAV_ITEMS = [
+  {
+    label: "New Project",
+    href: "/",
+    icon: Plus,
+  },
+  {
+    label: "History",
+    href: "/history",
+    icon: Clock,
+  },
+  {
+    label: "Help",
+    href: "/help",
+    icon: HelpCircle,
+  },
+  {
+    label: "Feedback",
+    href: "/feedback",
+    icon: MessageSquare,
+  },
+];
 
-const Sidebar: FC<SidebarProps> = ({ onCollapse }) => {
+export default function Sidebar() {
   const pathname = usePathname();
   const { theme } = useTheme();
-  const [isCollapsed, setIsCollapsed] = useLocalStorage('sidebar-collapsed', false);
-  const token = useAuthStore((state) => state.token);
+  const { token, setToken, setRefreshToken } = useAuthStore();
+  const { isCollapsed, setIsCollapsed } = useSidebarStore();
+  const router = useRouter();
 
-  function handleCollapse() {
-    onCollapse(!isCollapsed);
+  const handleCollapse = () => {
     setIsCollapsed(!isCollapsed);
-  }
-
-  const isActive = (path: string) => pathname === path;
-
-  const getLinkClasses = (path: string) => {
-    const baseClasses = "flex items-center space-x-3 p-2 rounded group";
-    const activeClasses = "suliko-default-bg text-white hover:opacity-90 hover:scale-[1.02]";
-    const inactiveClasses = "hover:bg-accent hover:text-accent-foreground hover:translate-x-1";
-    
-    return `${baseClasses} ${isActive(path) ? activeClasses : inactiveClasses}`;
   };
 
+  const isActive = (href: string) => pathname === href;
+
   return (
-    <div className={`${isCollapsed ? 'w-16' : 'w-64'} h-screen p-4 fixed left-0 top-0 transition-all duration-300`}>
-      <div className="flex justify-between items-center mb-8">
+    <aside
+      className={`flex flex-col h-screen fixed left-0 top-0 z-40 bg-background border-r transition-all duration-300 ${isCollapsed ? "w-16" : "w-64"}`}
+    >
+      <div className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
         {!isCollapsed && (
-          <Image 
-            src={theme === 'dark' ? SulikoLogoWhite : SulikoLogoBlack} 
-            width={100} 
-            alt="Suliko Logo" 
+          <Image
+            src={theme === "dark" ? SulikoLogoWhite : SulikoLogoBlack}
+            width={120}
+            height={30}
+            alt="Suliko Logo"
             className="transition-all duration-300"
           />
         )}
         <button
           onClick={handleCollapse}
-          className="p-2 rounded-lg hover:bg-accent hover:text-accent-foreground cursor-pointer"
+          className="flex-shrink-0 p-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground cursor-pointer"
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
-          {isCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
+          {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
         </button>
       </div>
-      
-      <nav className="space-y-2">
-        <Link 
-          href="/"
-          className={getLinkClasses('/')}
-        >
-          <div className={`flex items-center ${isCollapsed ? 'justify-start w-full' : 'space-x-3'}`}>
-            <Plus className="text-xl group-hover:scale-110" />
-            <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>New Project</span>
-          </div>
-        </Link>
 
-        <Link 
-          href="/history"
-          className={getLinkClasses('/history')}
-        >
-          <div className={`flex items-center ${isCollapsed ? 'justify-start w-full' : 'space-x-3'}`}>
-            <Clock className="text-xl group-hover:scale-110" />
-            <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>History</span>
-          </div>
-        </Link>
-
-        <Link 
-          href="/help"
-          className={getLinkClasses('/help')}
-        >
-          <div className={`flex items-center ${isCollapsed ? 'justify-start w-full' : 'space-x-3'}`}>
-            <HelpCircle className="text-xl group-hover:scale-110" />
-            <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Help</span>
-          </div>
-        </Link>
-
-        <Link 
-          href="/feedback"
-          className={getLinkClasses('/feedback')}
-        >
-          <div className={`flex items-center ${isCollapsed ? 'justify-start w-full' : 'space-x-3'}`}>
-            <MessageSquare className="text-xl group-hover:scale-110" />
-            <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Feedback</span>
-          </div>
-        </Link>
+      <nav className="flex-1 px-2 space-y-1">
+        {NAV_ITEMS.map(({ label, href, icon: Icon }) => (
+          <Link
+            key={href}
+            href={href}
+            className={`group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
+              isActive(href)
+                ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                : "hover:bg-accent hover:text-accent-foreground"
+            } ${isCollapsed ? "justify-center" : ""}`}
+            aria-current={isActive(href) ? "page" : undefined}
+          >
+            <Icon
+              className={`transition-transform duration-200 ${
+                isCollapsed ? "h-5 w-5" : "h-5 w-5"
+              } group-hover:scale-105`}
+            />
+            {!isCollapsed && (
+              <span className="whitespace-nowrap">
+                {label}
+              </span>
+            )}
+          </Link>
+        ))}
       </nav>
 
-      <div className="absolute bottom-4 w-full left-0 px-4">
+      <div className="mt-auto flex flex-col gap-2 p-3">
         {token ? (
-          <Link 
-            href="/profile"
-            className={getLinkClasses('/profile')}
-          >
-            <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
-              <User className="text-xl group-hover:scale-110" />
-              <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Profile</span>
-            </div>
-          </Link>
+          <>
+            <Link
+              href="/profile"
+              className={`group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
+                isActive("/profile")
+                  ? "suliko-default-bg text-primary-foreground font-medium"
+                  : "hover:bg-accent hover:text-accent-foreground"
+              } ${isCollapsed ? "justify-center" : ""}`}
+            >
+              <User
+                className={`transition-transform duration-200 ${
+                  isCollapsed ? "h-5 w-5" : "h-5 w-5"
+                } group-hover:scale-105`}
+              />
+              {!isCollapsed && (
+                <span className="whitespace-nowrap">
+                  Profile
+                </span>
+              )}
+            </Link>
+            <Button
+              className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
+                isCollapsed ? "justify-center px-0" : "justify-start px-3"
+              }`}
+              onClick={() => {
+                setToken(null);
+                setRefreshToken(null);
+                router.push("/sign-up");
+              }}
+            >
+              <LogOut
+                className={`transition-transform duration-200 ${
+                  isCollapsed ? "h-5 w-5" : "h-5 w-5"
+                } group-hover:scale-105`}
+              />
+              {!isCollapsed && (
+                <span className="whitespace-nowrap">
+                  Sign Out
+                </span>
+              )}
+            </Button>
+          </>
         ) : (
-          <Link 
+          <Link
             href="/sign-up"
-            className={getLinkClasses('/sign-up')}
+            className={`group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors hover:bg-accent hover:text-accent-foreground ${
+              isCollapsed ? "justify-center" : ""
+            }`}
           >
-            <div className={`flex items-center ${isCollapsed ? 'justify-center w-full' : 'space-x-3'}`}>
-              <User className="text-xl group-hover:scale-110" />
-              <span className={`${isCollapsed ? 'w-0 opacity-0' : 'w-auto opacity-100'} overflow-hidden whitespace-nowrap`}>Sign Up</span>
-            </div>
+            <User
+              className={`transition-transform duration-200 ${
+                isCollapsed ? "h-5 w-5" : "h-5 w-5"
+              } group-hover:scale-105`}
+            />
+            {!isCollapsed && (
+              <span className="whitespace-nowrap">
+                Sign Up
+              </span>
+            )}
           </Link>
         )}
+        <div className="mt-3 flex justify-center">
+          <ThemeToggle />
+        </div>
       </div>
-    </div>
+    </aside>
   );
-};
-
-export default Sidebar; 
+} 
