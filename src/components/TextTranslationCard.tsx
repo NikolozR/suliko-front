@@ -131,7 +131,7 @@ const TextTranslationCard = () => {
           </CardContent>
         </Card>
         {translatedText && (
-          <div className="flex-1 min-w-0 bg-slate-50 border border-slate-200 rounded-lg p-4 min-h-[150px] overflow-auto shadow-sm">
+          <div className="flex-1 min-w-0 bg-slate-50 dark:bg-input/30 border border-slate-200 dark:border-slate-700 rounded-lg p-4 min-h-[150px] overflow-auto shadow-sm">
             <div className="font-semibold mb-2 text-suliko-default-color">
               თარგმნილი ტექსტი
             </div>
