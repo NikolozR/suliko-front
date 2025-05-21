@@ -20,7 +20,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose}) => {
 
 
   const handleSignUpClick = () => {
-    router.push("/sign-up");
+    router.push("/sign-in");
     onClose(); 
   };
 

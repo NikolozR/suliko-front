@@ -73,10 +73,10 @@ const SulikoForm: React.FC = () => {
       <Form {...form}>
         <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
           <div className="pb-[20px] lg:pb-[40px] flex flex-col gap-5 overflow-hidden">
-            <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center">
+            <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center dark:text-primary">
               ავტორიზაცია
             </h3>
-            <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem]">
+            <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem] dark:text-muted-foreground">
               შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი
             </p>
           </div>
@@ -95,7 +95,7 @@ const SulikoForm: React.FC = () => {
               name="mobile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold">ტელეფონი</FormLabel>
+                  <FormLabel className="font-bold dark:text-white">ტელეფონი</FormLabel>
                   <FormControl>
                     <Input placeholder="5XX 11 22 33" {...field} />
                   </FormControl>
@@ -108,7 +108,7 @@ const SulikoForm: React.FC = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold">პაროლი</FormLabel>
+                  <FormLabel className="font-bold dark:text-white">პაროლი</FormLabel>
                   <FormControl>
                     <div className="relative w-full">
                       <Input
@@ -137,7 +137,7 @@ const SulikoForm: React.FC = () => {
               )}
             />
             <Button
-              className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color"
+              className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
               type="submit"
             >
               რეგისტრაცია

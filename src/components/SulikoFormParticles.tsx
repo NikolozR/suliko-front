@@ -3,8 +3,10 @@ import type { Container, Engine } from "tsparticles-engine";
 import Particles from "react-particles";
 //import { loadFull } from "tsparticles"; // if you are going to use `loadFull`, install the "tsparticles" package too.
 import { loadSlim } from "tsparticles-slim"; // if you are going to use `loadSlim`, install the "tsparticles-slim" package too.
+import { useTheme } from "next-themes";
 
 const SulikoFormParticles: React.FC = () => {
+  const { theme } = useTheme();
   const particlesInit = useCallback(async (engine: Engine) => {
     // you can initialize the tsParticles instance (engine) here, adding custom shapes or presets
     // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
@@ -19,6 +21,12 @@ const SulikoFormParticles: React.FC = () => {
     },
     []
   );
+
+  // Colors for light and dark mode
+  const isDark = theme === "dark";
+  const backgroundColor = isDark ? "#181c2a" : "#fffff";
+  const particleColor = isDark ? "#3b59f3" : "#11289c";
+  const linkColor = isDark ? "#6c7ae0" : "#4e5da5";
 
   return (
     <Particles
@@ -35,7 +43,7 @@ const SulikoFormParticles: React.FC = () => {
         fullScreen: {enable: false},
         background: {
           color: {
-            value: "#fffff",
+            value: backgroundColor,
           },
         },
         fpsLimit: 120,
@@ -63,10 +71,10 @@ const SulikoFormParticles: React.FC = () => {
         },
         particles: {
           color: {
-            value: "#11289c",
+            value: particleColor,
           },
           links: {
-            color: "#4e5da5",
+            color: linkColor,
             distance: 150,
             enable: true,
             opacity: 0.5,

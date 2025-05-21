@@ -5,7 +5,10 @@
 
 @layer utilities {
   .suliko-default-bg {
-    background-image: radial-gradient(circle, #2d355a, #2e3f7f, #2f49a5, #3251cc, #3b59f3); 
+    background-image: radial-gradient(circle, #2d355a, #2e3f7f, #2f49a5, #3251cc, #3b59f3);
+  }
+  .suliko-default-bg-dark {
+    background-image: radial-gradient(circle, #181c2a, #232a45, #1a2337, #232a45, #2d355a);
   }
 }
 

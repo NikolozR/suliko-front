@@ -7,9 +7,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function signIn(router: AppRouterInstance) {
-  router.push("/sign-up");
+  router.push("/sign-in");
 }
 
 export function signUp(router: AppRouterInstance) {
-  router.push("/sign-up");
+  router.push("/sign-in");
 }

@@ -96,6 +96,15 @@ const TextTranslationCard = () => {
                 placeholder="რამე საცაცილო ტექსტი..."
                 value={textValue}
                 onChange={(e) => setTextValue(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.shiftKey && e.key === "Enter") {
+                    e.preventDefault();
+                    const form = e.currentTarget.form;
+                    if (form) {
+                      form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+                    }
+                  }
+                }}
               />
               <Button
                 className="w-full text-white suliko-default-bg hover:opacity-90 transition-opacity"

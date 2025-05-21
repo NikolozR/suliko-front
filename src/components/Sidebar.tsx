@@ -1,8 +1,6 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import { useTheme } from "next-themes";
 import { useAuthStore } from "../store/authStore";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
@@ -16,9 +14,8 @@ import {
   ChevronRight,
   LogOut,
 } from "lucide-react";
-import SulikoLogoBlack from "../../public/Suliko_logo_black.svg";
-import SulikoLogoWhite from "../../public/suliko_logo_white.svg";
 import { useSidebarStore } from "@/store/sidebarStore";
+import SulikoLogo from "./SulikoLogo";
 
 const NAV_ITEMS = [
   {
@@ -45,7 +42,6 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { theme } = useTheme();
   const { token, setToken, setRefreshToken } = useAuthStore();
   const { isCollapsed, setIsCollapsed } = useSidebarStore();
   const router = useRouter();
@@ -62,13 +58,7 @@ export default function Sidebar() {
     >
       <div className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
         {!isCollapsed && (
-          <Image
-            src={theme === "dark" ? SulikoLogoWhite : SulikoLogoBlack}
-            width={120}
-            height={30}
-            alt="Suliko Logo"
-            className="transition-all duration-300"
-          />
+          <SulikoLogo className="transition-all duration-300" />
         )}
         <button
           onClick={handleCollapse}
@@ -134,7 +124,7 @@ export default function Sidebar() {
               onClick={() => {
                 setToken(null);
                 setRefreshToken(null);
-                router.push("/sign-up");
+                router.push("/sign-in");
               }}
             >
               <LogOut
@@ -151,7 +141,7 @@ export default function Sidebar() {
           </>
         ) : (
           <Link
-            href="/sign-up"
+            href="/sign-in"
             className={`group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors hover:bg-accent hover:text-accent-foreground ${
               isCollapsed ? "justify-center" : ""
             }`}
