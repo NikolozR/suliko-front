@@ -3,7 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
-import { useLocalStorage } from "@/hooks/useLocalStorage";
 import { useAuthStore } from "../store/authStore";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "./ThemeToggle";
@@ -19,6 +18,7 @@ import {
 } from "lucide-react";
 import SulikoLogoBlack from "../../public/Suliko_logo_black.svg";
 import SulikoLogoWhite from "../../public/suliko_logo_white.svg";
+import { useSidebarStore } from "@/store/sidebarStore";
 
 const NAV_ITEMS = [
   {
@@ -43,15 +43,14 @@ const NAV_ITEMS = [
   },
 ];
 
-export default function Sidebar({ onCollapse }: { onCollapse: (collapsed: boolean) => void }) {
+export default function Sidebar() {
   const pathname = usePathname();
   const { theme } = useTheme();
-  const [isCollapsed, setIsCollapsed] = useLocalStorage("sidebar-collapsed", false);
   const { token, setToken, setRefreshToken } = useAuthStore();
+  const { isCollapsed, setIsCollapsed } = useSidebarStore();
   const router = useRouter();
 
   const handleCollapse = () => {
-    onCollapse(!isCollapsed);
     setIsCollapsed(!isCollapsed);
   };
 

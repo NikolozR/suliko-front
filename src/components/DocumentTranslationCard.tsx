@@ -15,17 +15,17 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { translateUserContent } from "@/services/translationService";
 import { AuthModal } from "./AuthModal";
-import { TranslationResult, TranslateUserContentParams } from "@/types/translation";
+import { TranslateUserContentParams } from "@/types/translation";
+import { useTranslationStore } from "@/store/translationStore";
 
 const DocumentTranslationCard = () => {
   const [files, setFiles] = useState<FileList | null>(null);
   const [isPdf, setIsPdf] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [translationResult, setTranslationResult] =
-    useState<TranslationResult>(null);
   const [error, setError] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const { token, languageId } = useAuthStore();
+  const { setOriginalText, setTranslatedText } = useTranslationStore();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -45,7 +45,6 @@ const DocumentTranslationCard = () => {
     }
 
     setError(null);
-    setTranslationResult(null);
 
     if (!files || files.length === 0) {
       setError("Please select a file to translate.");
@@ -61,8 +60,9 @@ const DocumentTranslationCard = () => {
         Files: Array.from(files),
         IsPdf: isPdf,
       };
+      setOriginalText(`File: ${files[0].name}`);
       const result = await translateUserContent(params);
-      setTranslationResult(result);
+      setTranslatedText(result);
     } catch (err) {
       if (err instanceof Error) {
         setError(err.message || "An unexpected error occurred.");
@@ -120,16 +120,7 @@ const DocumentTranslationCard = () => {
               {error}
             </p>
           )}
-          {translationResult && (
-            <div className="mt-4 p-3 rounded-md bg-green-100">
-              <h4 className="font-semibold text-green-700">
-                თარგმანის შედეგი:
-              </h4>
-              <pre className="mt-2 text-sm text-green-600 overflow-x-auto">
-                {translationResult}
-              </pre>
-            </div>
-          )}
+          
         </CardContent>
       </Card>
       <AuthModal
@@ -140,5 +131,4 @@ const DocumentTranslationCard = () => {
   );
 };
 
-export type { TranslationResult };
 export default DocumentTranslationCard;

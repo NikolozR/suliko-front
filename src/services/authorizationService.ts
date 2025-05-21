@@ -21,7 +21,6 @@ export async function login({ userName, password }: LoginParams) {
   });
   if (response.status === 200) {
     const data = await response.json();
-    console.log(data);
     return data;
   } else {
     const errorData = await response.json();
@@ -41,7 +40,6 @@ export async function reaccessToken(refreshToken: string) {
         refreshToken,
       }),
     });
-    console.log(response);
     if (response.status === 200) {
       const data = await response.json();
       return data;

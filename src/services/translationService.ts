@@ -1,21 +1,18 @@
-import { TranslateUserContentParams } from "@/types/translation";
+import { TextTranslateUserContentParams, TextTranslateUserContentResponse } from "@/types/translation";
 import { useAuthStore } from "../store/authStore";
 import { reaccessToken } from "./authorizationService";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const translateUserContent = async (
-  params: TranslateUserContentParams
-): Promise<string> => {
+  params: TextTranslateUserContentParams
+): Promise<TextTranslateUserContentResponse> => {
   const endpoint = "/UserContent/translate";
 
   const formData = new FormData();
   formData.append("Description", params.Description);
-  formData.append("LanguageId", params.LanguageId.toString());
-  formData.append("SourceLanguageId", params.SourceLanguageId.toString());
-  params.Files.forEach((file) => {
-    formData.append("Files", file);
-  });
+  formData.append("LanguageId", String(params.LanguageId));
+  formData.append("SourceLanguageId", String(params.SourceLanguageId));
   formData.append("IsPdf", params.IsPdf.toString());
 
   const {token, refreshToken} = useAuthStore.getState();
@@ -34,7 +31,6 @@ export const translateUserContent = async (
   });
 
   if (response.status === 401 && token && refreshToken) {
-    console.log("Refreshing token");
     try {
       const newTokens = await reaccessToken(refreshToken);
       useAuthStore.getState().setToken(newTokens.accessToken);
@@ -52,11 +48,11 @@ export const translateUserContent = async (
   }
 
   if (response.status !== 200) {
-    console.log("What is happening here?", response);
     const errorData = await response.json();
     throw new Error(errorData.message || "Translation failed");
   } else {
     const data = await response.json();
+    console.log(data);
     return data;
   }
 };

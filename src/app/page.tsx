@@ -1,17 +1,17 @@
-'use client'
-import Sidebar from '@/components/Sidebar';
-import MainContent from '@/components/MainContent';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+"use client";
+import MainContent from "@/components/MainContent";
+import { useSidebarStore } from "@/store/sidebarStore";
 
 export default function Home() {
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useLocalStorage('sidebar-collapsed', false);
+  const { isCollapsed } = useSidebarStore();
 
   return (
-    <div className="flex">
-      <Sidebar onCollapse={setIsSidebarCollapsed} />
-      <div className={`flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'ml-16' : 'ml-64'}`}>
-        <MainContent />
-      </div>
+    <div
+      className={`flex-1 transition-all duration-300 ${
+        isCollapsed ? "ml-16" : "ml-64"
+      }`}
+    >
+      <MainContent />
     </div>
   );
 }
