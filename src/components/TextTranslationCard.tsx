@@ -139,15 +139,5 @@ const TextTranslationCard = () => {
     </TabsContent>
   );
 };
-      </div>
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-      />
-    </TabsContent>
-  );
-};
-
-export default TextTranslationCard;
 
 export default TextTranslationCard;
