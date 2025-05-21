@@ -1,21 +1,48 @@
+import { LoginResponse } from "@/types/types.Auth";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface LoginParams {
-  userName: string;
+  phoneNumber: string;
   password: string;
 }
 
-export async function login({ userName, password }: LoginParams) {
-  console.log(userName);
-  const endpoint = "/Auth/login";
+export async function register({ phoneNumber, password }: LoginParams) {
+  const endpoint = "/Auth/register-with-phone";
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    // TODO: remove this after testing, when mobile + password endpoint is ready
     body: JSON.stringify({
-      userName: "nika.rusishvili.95@gmail.com",
+      phoneNUmber: phoneNumber,
+      password,
+    }),
+  });
+  if (response.status === 200 || response.status === 500) {
+    try {
+      const loginResponse = await login({ phoneNumber, password });
+      return loginResponse;
+    } catch {
+      throw new Error("Login Failed");
+    }
+  } else {
+    throw new Error("Register failed");
+  }
+}
+
+export async function login({
+  phoneNumber,
+  password,
+}: LoginParams): Promise<LoginResponse> {
+  const endpoint = "/Auth/login-with-phone";
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      userName: phoneNumber,
       password,
     }),
   });
@@ -23,8 +50,7 @@ export async function login({ userName, password }: LoginParams) {
     const data = await response.json();
     return data;
   } else {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Login failed");
+    throw new Error("Login failed");
   }
 }
 
@@ -46,7 +72,6 @@ export async function reaccessToken(refreshToken: string) {
     } else {
       throw new Error("Refresh token failed");
     }
-
   } catch (error) {
     throw new Error("Refresh token failed " + error);
   }

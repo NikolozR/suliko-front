@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { useAuthStore } from "@/store/authStore";
 import { translateUserContent } from "@/services/translationService";
 import { AuthModal } from "./AuthModal";
-import { TextTranslateUserContentParams } from "@/types/translation";
+import { TextTranslateUserContentParams } from "@/types/types.translation";
 import { useTranslationStore } from "@/store/translationStore";
 
 const DocumentTranslationCard = () => {

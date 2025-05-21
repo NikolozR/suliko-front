@@ -1,4 +1,4 @@
-import { TextTranslateUserContentParams, TextTranslateUserContentResponse } from "@/types/translation";
+import { TextTranslateUserContentParams, TextTranslateUserContentResponse } from "@/types/types.translation";
 import { useAuthStore } from "../store/authStore";
 import { reaccessToken } from "./authorizationService";
 

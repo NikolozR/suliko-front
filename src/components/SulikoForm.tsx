@@ -16,7 +16,7 @@ import { Input } from "./ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import SulikoFormParticles from "./SulikoFormParticles";
-import { login } from "@/services/authorizationService";
+import { register } from "@/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
@@ -36,7 +36,7 @@ const formSchema = z.object({
 });
 
 const SulikoForm: React.FC = () => {
-  const { setToken, setRefreshToken} = useAuthStore();
+  const { setToken, setRefreshToken } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const form = useForm<z.infer<typeof formSchema>>({
@@ -48,7 +48,6 @@ const SulikoForm: React.FC = () => {
   });
   const router = useRouter();
 
-  
   function togglePasswordVisibility() {
     setIsPasswordVisible((prev) => !prev);
   }
@@ -56,8 +55,8 @@ const SulikoForm: React.FC = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setAuthError(null);
     try {
-      const data = await login({
-        userName: values.mobile,
+      const data = await register({
+        phoneNumber: values.mobile,
         password: values.password,
       });
       setToken(data.token);

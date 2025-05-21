@@ -15,7 +15,7 @@ import LanguageSelect from "./LanguageSelect";
 import React from "react";
 import { useAuthStore } from "@/store/authStore";
 import { AuthModal } from "./AuthModal";
-import { TextTranslateUserContentParams, TextTranslateUserContentResponse } from "@/types/translation";
+import { TextTranslateUserContentParams, TextTranslateUserContentResponse } from "@/types/types.translation";
 import { useTranslationStore } from "@/store/translationStore";
 import { translateUserContent } from "@/services/translationService";
 
