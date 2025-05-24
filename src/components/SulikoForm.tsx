@@ -97,7 +97,7 @@ const SulikoForm: React.FC = () => {
                 <FormItem>
                   <FormLabel className="font-bold dark:text-white">ტელეფონი</FormLabel>
                   <FormControl>
-                    <Input placeholder="5XX 11 22 33" {...field} />
+                    <Input placeholder="5XX 11 22 33" className="border-2 shadow-md dark:border-slate-600" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -112,7 +112,7 @@ const SulikoForm: React.FC = () => {
                   <FormControl>
                     <div className="relative w-full">
                       <Input
-                        className=""
+                        className="border-2 shadow-md dark:border-slate-600"
                         type={isPasswordVisible ? "text" : "password"}
                         placeholder="********"
                         {...field}
