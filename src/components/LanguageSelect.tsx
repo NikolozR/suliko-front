@@ -14,12 +14,14 @@ interface LanguageSelectProps {
   value?: number;
   onChange: (value: number) => void;
   placeholder: string;
+  detectOption?: string;
 }
 
 const LanguageSelect: React.FC<LanguageSelectProps> = ({
   value,
   onChange,
   placeholder,
+  detectOption,
 }) => {
   const [languages, setLanguages] = useState<Language[]>([]);
   const [loading, setLoading] = useState(true);
@@ -60,7 +62,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
     return (
       <>
         <Select open={open} onOpenChange={handleOpenChange}>
-          <SelectTrigger className="cursor-pointer w-[220px]">
+          <SelectTrigger className="cursor-pointer w-full min-w-0">
             <SelectValue placeholder={placeholder} />
           </SelectTrigger>
         </Select>
@@ -75,15 +77,20 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   return (
     <>
       <Select
-        value={value ? (value >= 0 ? value?.toString() : "") : ""}
+        value={value !== undefined ? (value >= 0 ? value?.toString() : "") : ""}
         onValueChange={(val) => onChange(Number(val))}
         open={open}
         onOpenChange={handleOpenChange}
       >
-        <SelectTrigger className="cursor-pointer w-[220px]">
+        <SelectTrigger className="cursor-pointer w-full">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent className="cursor-pointer">
+          {detectOption && (
+            <SelectItem className="cursor-pointer" key={0} value={"0"}>
+              {detectOption}
+            </SelectItem>
+          )}
           {languages.map((lang) => (
             <SelectItem
               className="cursor-pointer"

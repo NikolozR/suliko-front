@@ -1,5 +1,5 @@
 "use client";
-import { FormEvent, useState } from "react";
+import { FormEvent, useState, useRef, useEffect } from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import {
   Card,
@@ -15,7 +15,10 @@ import LanguageSelect from "./LanguageSelect";
 import React from "react";
 import { useAuthStore } from "@/store/authStore";
 import { AuthModal } from "./AuthModal";
-import { TextTranslateUserContentParams, TextTranslateUserContentResponse } from "@/types/types.translation";
+import {
+  TextTranslateUserContentParams,
+  TextTranslateUserContentResponse,
+} from "@/types/types.translation";
 import { useTranslationStore } from "@/store/translationStore";
 import { translateUserContent } from "@/services/translationService";
 
@@ -24,9 +27,54 @@ const TextTranslationCard = () => {
   const [formError, setFormError] = useState<string | null>(null);
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const { languageId, setLanguageId, token } = useAuthStore();
+  const {
+    targetLanguageId,
+    sourceLanguageId,
+    setTargetLanguageId,
+    setSourceLanguageId,
+    token,
+  } = useAuthStore();
   const { setOriginalText, setTranslatedText, originalText, translatedText } =
     useTranslationStore();
+  const [lastTargetLanguageId, setLastTargetLanguageId] = useState<
+    number | null
+  >(null);
+  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const translatedRef = useRef<HTMLDivElement | null>(null);
+  const isScrolling = useRef(false);
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    const translated = translatedRef.current?.querySelector("div:last-child");
+    if (!textarea || !translated || !translatedText) return;
+
+    const syncScroll = (source: Element, target: Element, event: Event) => {
+      if (isScrolling.current) return;
+      event.preventDefault();
+
+      isScrolling.current = true;
+      requestAnimationFrame(() => {
+        const sourceScrollPercent =
+          source.scrollTop / (source.scrollHeight - source.clientHeight);
+        const targetScrollMax = target.scrollHeight - target.clientHeight;
+        target.scrollTop = sourceScrollPercent * targetScrollMax;
+        isScrolling.current = false;
+      });
+    };
+
+    const handleTextareaScroll = (e: Event) =>
+      syncScroll(textarea, translated, e);
+    const handleTranslatedScroll = (e: Event) =>
+      syncScroll(translated, textarea, e);
+
+    textarea.addEventListener("scroll", handleTextareaScroll);
+    translated.addEventListener("scroll", handleTranslatedScroll);
+
+    return () => {
+      textarea.removeEventListener("scroll", handleTextareaScroll);
+      translated.removeEventListener("scroll", handleTranslatedScroll);
+    };
+  }, [translatedText]);
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -34,7 +82,7 @@ const TextTranslationCard = () => {
       setShowAuthModal(true);
       return;
     }
-    if (languageId < 0) {
+    if (targetLanguageId < 0 || sourceLanguageId < 0) {
       event.preventDefault();
       setFormError("გთხოვთ, აირჩიეთ ენა");
       return;
@@ -46,15 +94,16 @@ const TextTranslationCard = () => {
     setFormError(null);
     setTextLoading(true);
     try {
-      console.log(languageId, "languageId");
       const params: TextTranslateUserContentParams = {
         Description: textValue,
-        LanguageId: languageId ?? 0,
-        SourceLanguageId: 2,
+        LanguageId: targetLanguageId ?? 0,
+        SourceLanguageId: sourceLanguageId === 0 ? 2 : sourceLanguageId,
         IsPdf: false,
       };
       setOriginalText(textValue);
-      const result: TextTranslateUserContentResponse = await translateUserContent(params);
+      setLastTargetLanguageId(targetLanguageId);
+      const result: TextTranslateUserContentResponse =
+        await translateUserContent(params);
       setTranslatedText(result.text);
     } catch (err) {
       console.log(err);
@@ -78,40 +127,81 @@ const TextTranslationCard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form
-              onSubmit={handleSubmit}
-              className={translatedText ? "flex-1" : undefined}
-            >
-              {setLanguageId && (
-                <div className="mb-4">
-                  <LanguageSelect
-                    value={languageId}
-                    onChange={setLanguageId}
-                    placeholder="აირჩიე ენა"
-                  />
+            <form onSubmit={handleSubmit}>
+              <div className="flex gap-2 md:gap-4 items-end flex-col md:flex-row">
+                <div className="w-full md:flex-1 min-w-0">
+                  <div className={`flex gap-2 md:gap-4 ${translatedText ? "flex-col sm:flex-row md:flex-col" : "flex-col sm:flex-row"}`}>
+                    <div className="w-full sm:flex-1">
+                      <span className="block text-xs text-muted-foreground mb-1">
+                        სამიზნე ენა
+                      </span>
+                      <LanguageSelect
+                        value={targetLanguageId}
+                        onChange={setTargetLanguageId}
+                        placeholder="აირჩიე სამიზნე ენა"
+                      />
+                    </div>
+                    <div className="w-full sm:flex-1">
+                      <span className="block text-xs text-muted-foreground mb-1">
+                        საწყისი ენა
+                      </span>
+                      <LanguageSelect
+                        value={sourceLanguageId}
+                        onChange={setSourceLanguageId}
+                        placeholder="აირჩიე საწყისი ენა"
+                        detectOption="ავტომატური დაფიქსირება"
+                      />
+                    </div>
+                  </div>
+                  <div className={"mt-4 h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full " + (translatedText ? "md:flex-1" : "")}>
+                    <Textarea
+                      ref={textareaRef}
+                      className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
+                      placeholder="რამე საცაცილო ტექსტი..."
+                      value={textValue}
+                      onChange={(e) => setTextValue(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.shiftKey && e.key === "Enter") {
+                          e.preventDefault();
+                          const form = e.currentTarget.form;
+                          if (form) {
+                            form.dispatchEvent(
+                              new Event("submit", {
+                                cancelable: true,
+                                bubbles: true,
+                              })
+                            );
+                          }
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
-              )}
-              <Textarea
-                className="min-h-[150px] mb-4 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color"
-                placeholder="რამე საცაცილო ტექსტი..."
-                value={textValue}
-                onChange={(e) => setTextValue(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.shiftKey && e.key === "Enter") {
-                    e.preventDefault();
-                    const form = e.currentTarget.form;
-                    if (form) {
-                      form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
-                    }
-                  }
-                }}
-              />
+                {translatedText && (
+                  <div className="w-full md:flex-1 min-w-0">
+                    <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
+                      თარგმნილი ტექსტი
+                    </div>
+                    <div
+                      ref={translatedRef}
+                      className="w-full flex-1 px-2 py-2 md:px-3 h-[300px] max-h-[300px] bg-slate-50 dark:bg-input/30 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm flex flex-col"
+                    >
+                      <div className="text-foreground flex-1 overflow-y-auto text-sm md:text-base">
+                        {translatedText}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
               <Button
-                className="w-full text-white suliko-default-bg hover:opacity-90 transition-opacity"
-                size="lg"
+                className="w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-opacity text-sm md:text-base"
+                size={translatedText ? "default" : "lg"}
                 type="submit"
                 disabled={
-                  textLoading || (!!originalText && textValue.trim() === originalText.trim())
+                  textLoading ||
+                  (!!originalText &&
+                    textValue.trim() === originalText.trim() &&
+                    lastTargetLanguageId === targetLanguageId)
                 }
                 onClick={(e) => {
                   if (!token) {
@@ -120,31 +210,18 @@ const TextTranslationCard = () => {
                   }
                 }}
               >
-                {textLoading ? "მუშავდება..." : "თარგმნე"}
+                <span className="text-sm md:text-base">
+                  {textLoading ? "მუშავდება..." : "თარგმნე"}
+                </span>
               </Button>
               {formError && (
-                <p className="mt-2 text-sm text-red-600 bg-red-100 p-2 rounded">
-                  {formError}
-                </p>
+                <div className="text-red-500 text-sm mt-2">{formError}</div>
               )}
             </form>
           </CardContent>
         </Card>
-        {translatedText && (
-          <div className="flex-1 min-w-0 bg-slate-50 dark:bg-input/30 border border-slate-200 dark:border-slate-700 rounded-lg p-4 min-h-[150px] overflow-auto shadow-sm">
-            <div className="font-semibold mb-2 text-suliko-default-color">
-              თარგმნილი ტექსტი
-            </div>
-            <div className="whitespace-pre-line text-foreground">
-              {translatedText}
-            </div>
-          </div>
-        )}
       </div>
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-      />
+      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
     </TabsContent>
   );
 };

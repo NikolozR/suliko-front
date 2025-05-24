@@ -1,8 +1,7 @@
 import { useCallback } from "react";
 import type { Container, Engine } from "tsparticles-engine";
 import Particles from "react-particles";
-//import { loadFull } from "tsparticles"; // if you are going to use `loadFull`, install the "tsparticles" package too.
-import { loadSlim } from "tsparticles-slim"; // if you are going to use `loadSlim`, install the "tsparticles-slim" package too.
+import { loadSlim } from "tsparticles-slim";
 import { useTheme } from "next-themes";
 
 const SulikoFormParticles: React.FC = () => {
@@ -22,7 +21,6 @@ const SulikoFormParticles: React.FC = () => {
     []
   );
 
-  // Colors for light and dark mode
   const isDark = theme === "dark";
   const backgroundColor = isDark ? "#181c2a" : "#fffff";
   const particleColor = isDark ? "#3b59f3" : "#11289c";
@@ -87,7 +85,7 @@ const SulikoFormParticles: React.FC = () => {
               default: "bounce",
             },
             random: false,
-            speed: 3,
+            speed: 1,
             straight: false,
           },
           number: {

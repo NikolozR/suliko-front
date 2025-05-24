@@ -1,17 +1,11 @@
 "use client";
 import MainContent from "@/components/MainContent";
-import { useSidebarStore } from "@/store/sidebarStore";
+import { PageWrapper } from "@/components/PageWrapper";
 
 export default function Home() {
-  const { isCollapsed } = useSidebarStore();
-
   return (
-    <div
-      className={`flex-1 transition-all duration-300 ${
-        isCollapsed ? "ml-16" : "ml-64"
-      }`}
-    >
+    <PageWrapper>
       <MainContent />
-    </div>
+    </PageWrapper>
   );
 }

@@ -7,9 +7,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex">
+    <div className="relative">
       <Sidebar />
-      {children}
+      <main>
+        {children}
+      </main>
     </div>
   );
 }

@@ -1,4 +1,7 @@
-import { TextTranslateUserContentParams, TextTranslateUserContentResponse } from "@/types/types.translation";
+import {
+  TextTranslateUserContentParams,
+  TextTranslateUserContentResponse,
+} from "@/types/types.translation";
 import { useAuthStore } from "../store/authStore";
 import { reaccessToken } from "./authorizationService";
 
@@ -15,7 +18,7 @@ export const translateUserContent = async (
   formData.append("SourceLanguageId", String(params.SourceLanguageId));
   formData.append("IsPdf", params.IsPdf.toString());
 
-  const {token, refreshToken} = useAuthStore.getState();
+  const { token, refreshToken } = useAuthStore.getState();
 
   const headers = new Headers();
   if (token) {
