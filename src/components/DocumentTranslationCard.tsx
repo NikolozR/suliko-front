@@ -24,7 +24,7 @@ const DocumentTranslationCard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
-  const { token, languageId } = useAuthStore();
+  const { token, sourceLanguageId } = useAuthStore();
   const { setOriginalText, setTranslatedText } = useTranslationStore();
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -56,7 +56,7 @@ const DocumentTranslationCard = () => {
       const params: TextTranslateUserContentParams = {
         Description: "",
         LanguageId: 1,
-        SourceLanguageId: languageId ?? 0,
+        SourceLanguageId: sourceLanguageId ?? 0,
         IsPdf: isPdf,
       };
       setOriginalText(`File: ${files[0].name}`);
