@@ -24,7 +24,15 @@ export const useAuthStore = create<AuthState>()(
       setTargetLanguageId: (targetLanguageId) => set({ targetLanguageId }),
       sourceLanguageId: -1,
       setSourceLanguageId: (sourceLanguageId) => set({ sourceLanguageId }),
-      reset: () => set({ token: null, refreshToken: null, targetLanguageId: -1, sourceLanguageId: -1 }),
+      reset: () => {
+        set({ token: null, refreshToken: null, targetLanguageId: -1, sourceLanguageId: -1 });
+        
+        // Clear user data when logging out
+        // We import this dynamically to avoid circular dependencies
+        import('./userStore').then(({ useUserStore }) => {
+          useUserStore.getState().clearUserData();
+        });
+      },
     }),
     {
       name: 'auth-storage',

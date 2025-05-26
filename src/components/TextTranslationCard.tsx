@@ -18,7 +18,7 @@ import { AuthModal } from "./AuthModal";
 import {
   TextTranslateUserContentParams,
   TextTranslateUserContentResponse,
-} from "@/types/types.translation";
+} from "@/types/types.Translation";
 import { useTranslationStore } from "@/store/translationStore";
 import { translateUserContent } from "@/services/translationService";
 

@@ -1,7 +1,7 @@
 import {
   TextTranslateUserContentParams,
   TextTranslateUserContentResponse,
-} from "@/types/types.translation";
+} from "@/types/types.Translation";
 import { useAuthStore } from "../store/authStore";
 import { reaccessToken } from "./authorizationService";
 

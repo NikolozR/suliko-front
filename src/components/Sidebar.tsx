@@ -30,6 +30,12 @@ const NAV_ITEMS = [
     icon: Clock,
   },
   {
+    label: "Profile",
+    href: "/profile",
+    icon: User,
+    requiresAuth: true,
+  },
+  {
     label: "Help",
     href: "/help",
     icon: HelpCircle,
@@ -47,15 +53,13 @@ export default function Sidebar() {
   const { isCollapsed, setIsCollapsed } = useSidebarStore();
   const router = useRouter();
 
-  // Auto-collapse on mobile and handle responsive behavior
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) { // md breakpoint
+      if (window.innerWidth < 768) {
         setIsCollapsed(true);
       }
     };
 
-    // Set initial state
     handleResize();
     
     window.addEventListener('resize', handleResize);
@@ -68,9 +72,16 @@ export default function Sidebar() {
 
   const isActive = (href: string) => pathname === href;
 
+  // Filter nav items based on auth status
+  const visibleNavItems = NAV_ITEMS.filter(item => {
+    if (item.requiresAuth) {
+      return !!token;
+    }
+    return true;
+  });
+
   return (
     <>
-      {/* Backdrop overlay for mobile when expanded */}
       {!isCollapsed && (
         <div 
           className="fixed inset-0 bg-black/20 z-30 md:hidden" 
@@ -97,7 +108,7 @@ export default function Sidebar() {
         </div>
 
         <nav className="flex-1 px-2 space-y-1">
-          {NAV_ITEMS.map(({ label, href, icon: Icon }) => (
+          {visibleNavItems.map(({ label, href, icon: Icon }) => (
             <Link
               key={href}
               href={href}
@@ -124,48 +135,27 @@ export default function Sidebar() {
 
         <div className="mt-auto flex flex-col gap-2 p-3">
           {token ? (
-            <>
-              <Link
-                href="/profile"
-                className={`group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
-                  isActive("/profile")
-                    ? "suliko-default-bg text-primary-foreground font-medium"
-                    : "hover:bg-accent hover:text-accent-foreground"
-                } ${isCollapsed ? "justify-center" : ""}`}
-              >
-                <User
-                  className={`transition-transform duration-200 ${
-                    isCollapsed ? "h-5 w-5" : "h-5 w-5"
-                  } group-hover:scale-105`}
-                />
-                {!isCollapsed && (
-                  <span className="whitespace-nowrap">
-                    Profile
-                  </span>
-                )}
-              </Link>
-              <Button
-                className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
-                  isCollapsed ? "justify-center px-0" : "justify-start px-3"
-                }`}
-                onClick={() => {
-                  setToken(null);
-                  setRefreshToken(null);
-                  router.push("/sign-in");
-                }}
-              >
-                <LogOut
-                  className={`transition-transform duration-200 ${
-                    isCollapsed ? "h-5 w-5" : "h-5 w-5"
-                  } group-hover:scale-105`}
-                />
-                {!isCollapsed && (
-                  <span className="whitespace-nowrap">
-                    Sign Out
-                  </span>
-                )}
-              </Button>
-            </>
+            <Button
+              className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
+                isCollapsed ? "justify-center px-0" : "justify-start px-3"
+              }`}
+              onClick={() => {
+                setToken(null);
+                setRefreshToken(null);
+                router.push("/sign-in");
+              }}
+            >
+              <LogOut
+                className={`transition-transform duration-200 ${
+                  isCollapsed ? "h-5 w-5" : "h-5 w-5"
+                } group-hover:scale-105`}
+              />
+              {!isCollapsed && (
+                <span className="whitespace-nowrap">
+                  Sign Out
+                </span>
+              )}
+            </Button>
           ) : (
             <Link
               href="/sign-in"
@@ -180,7 +170,7 @@ export default function Sidebar() {
               />
               {!isCollapsed && (
                 <span className="whitespace-nowrap">
-                  Sign Up
+                  Sign In
                 </span>
               )}
             </Link>

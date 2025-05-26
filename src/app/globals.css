@@ -10,6 +10,25 @@
   .suliko-default-bg-dark {
     background-image: radial-gradient(circle, #181c2a, #232a45, #1a2337, #232a45, #2d355a);
   }
+
+  
+  /* Sidebar layout utilities */
+  .sidebar-content {
+    margin-left: var(--sidebar-width, 4rem);
+    transition: margin-left 300ms ease;
+  }
+  
+  @media (min-width: 768px) {
+    .sidebar-content {
+      margin-left: var(--sidebar-width-md, var(--sidebar-width, 14rem));
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .sidebar-content {
+      margin-left: var(--sidebar-width-lg, var(--sidebar-width, 16rem));
+    }
+  }
 }
 
 @theme inline {
