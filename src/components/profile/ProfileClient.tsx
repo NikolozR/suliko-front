@@ -12,8 +12,9 @@ import {
   ProfileError,
   ProfileNotFound,
 } from "./";
-import { Button } from "@/components/ui/button";
-import { UserProfile } from "@/types/types.User";
+import { UpdateUserProfile } from "@/types/types.User";
+import { updateUserProfile } from "@/services/userService";
+import ErrorAlert from "@/components/ErrorAlert";
 
 export const ProfileClient = () => {
   const { token, reset } = useAuthStore();
@@ -27,7 +28,9 @@ export const ProfileClient = () => {
   const router = useRouter();
 
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState<UserProfile | null>(null);
+  const [editData, setEditData] = useState<UpdateUserProfile | null>(null);
+  const [updateError, setUpdateError] = useState<string | null>(null);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   useEffect(() => {
     if (!token) {
@@ -41,7 +44,16 @@ export const ProfileClient = () => {
 
   useEffect(() => {
     if (isEditing && userProfile) {
-      setEditData(userProfile);
+      setEditData({
+        id: userProfile.id,
+        firstName: userProfile.firstName,
+        lastName: userProfile.lastName,
+        phoneNUmber: userProfile.phoneNUmber,
+        email: userProfile.email,
+        userName: userProfile.userName,
+        roleId: userProfile.roleId,
+        balance: userProfile.balance,
+      });
     }
     if (!isEditing) {
       setEditData(null);
@@ -54,17 +66,44 @@ export const ProfileClient = () => {
   };
 
   const handleEdit = () => setIsEditing(true);
-  const handleCancel = () => setIsEditing(false);
+  const handleCancel = () => {
+    setIsEditing(false);
+    setUpdateError(null);
+  };
 
-  const handleChange = (field: keyof UserProfile, value: string) => {
+  const handleChange = (field: keyof UpdateUserProfile, value: string) => {
     if (!editData) return;
     setEditData({ ...editData, [field]: value });
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (editData) {
-      setUserProfile(editData);
-      setIsEditing(false);
+      setIsUpdating(true);
+      setUpdateError(null);
+      const prevUserProfile = userProfile;
+      setUserProfile({
+        ...editData,
+        roleName: userProfile?.roleName || "",
+      });
+      try {
+        console.log(editData);
+        await updateUserProfile(editData);
+        setIsEditing(false);
+      } catch (error: unknown) {
+        setUserProfile(prevUserProfile);
+        let message = "პროფილის განახლებისას მოხდა შეცდომა. გთხოვთ, სცადეთ თავიდან.";
+        if (
+          error &&
+          typeof error === "object" &&
+          "message" in error &&
+          typeof (error as Record<string, unknown>).message === "string"
+        ) {
+          message = (error as Record<string, unknown>).message as string;
+        }
+        setUpdateError(message);
+      } finally {
+        setIsUpdating(false);
+      }
     }
   };
 
@@ -85,31 +124,44 @@ export const ProfileClient = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-[#181c2a] dark:via-[#232a45] dark:to-[#232a45]">
       <div className="container mx-auto px-4 py-8">
+        {updateError && (
+          <ErrorAlert
+            message={updateError}
+            onClose={() => setUpdateError(null)}
+            className="mb-6"
+          />
+        )}
         <ProfileHero
-          userProfile={isEditing && editData ? editData : userProfile}
+          userProfile={isEditing && editData ? {
+            ...editData,
+            roleName: userProfile?.roleName || "",
+          } : userProfile}
           onLogout={handleLogout}
           isEditing={isEditing}
           onEdit={handleEdit}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          isUpdating={isUpdating}
         />
         <div className="space-y-6">
           <ProfilePersonalInfo
-            userProfile={isEditing && editData ? editData : userProfile}
+            userProfile={isEditing && editData ? {
+              ...editData,
+              roleName: userProfile?.roleName || "",
+            } : userProfile}
             isEditing={isEditing}
             onChange={handleChange}
           />
           <ProfileContactInfo
-            userProfile={isEditing && editData ? editData : userProfile}
+            userProfile={isEditing && editData ? {
+              ...editData,
+              roleName: userProfile?.roleName || "",
+            } : userProfile}
             isEditing={isEditing}
             onChange={handleChange}
           />
-          {isEditing && (
-            <div className="flex gap-3 justify-end pt-2">
-              <Button variant="outline" onClick={handleCancel}>გაუქმება</Button>
-              <Button onClick={handleSave} className="bg-gradient-to-r from-blue-600 to-purple-600 text-white">შენახვა</Button>
-            </div>
-          )}
         </div>
       </div>
     </div>

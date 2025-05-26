@@ -2,17 +2,17 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import { User } from "lucide-react";
-import { UserProfile } from "@/types/types.User";
+import { UpdateUserProfile, UserProfile } from "@/types/types.User";
 
 export interface ProfilePersonalInfoProps {
   userProfile: UserProfile;
   isEditing?: boolean;
-  onChange?: (field: keyof UserProfile, value: string) => void;
+  onChange?: (field: keyof UpdateUserProfile, value: string) => void;
 }
 
 export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({ userProfile, isEditing, onChange }) => {
   return (
-    <Card className="border-0 shadow-xl bg-white/80 backdrop-blur-sm rounded-2xl">
+    <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm rounded-2xl">
       <CardHeader className="pb-2 pt-6 px-8">
         <CardTitle className="flex items-center gap-2 text-xl">
           <div className="p-2 bg-blue-100 rounded-lg">
@@ -24,7 +24,7 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({ userPr
       <CardContent className="space-y-6 px-8 pb-8 pt-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+            <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
               სახელი
             </label>
             {isEditing ? (
@@ -34,9 +34,9 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({ userPr
                 placeholder="შეიყვანეთ სახელი"
               />
             ) : (
-              <p className="text-lg font-medium text-gray-900">
+              <p className="text-lg font-medium text-foreground">
                 {userProfile.firstName || (
-                  <span className="text-gray-400 italic">
+                  <span className="text-muted-foreground italic">
                     არ არის მითითებული
                   </span>
                 )}
@@ -44,7 +44,7 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({ userPr
             )}
           </div>
           <div className="space-y-2">
-            <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+            <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
               გვარი
             </label>
             {isEditing ? (
@@ -54,9 +54,9 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({ userPr
                 placeholder="შეიყვანეთ გვარი"
               />
             ) : (
-              <p className="text-lg font-medium text-gray-900">
+              <p className="text-lg font-medium text-foreground">
                 {userProfile.lastName || (
-                  <span className="text-gray-400 italic">
+                  <span className="text-muted-foreground italic">
                     არ არის მითითებული
                   </span>
                 )}
@@ -68,7 +68,7 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({ userPr
         <Separator />
 
         <div className="space-y-2">
-          <label className="text-sm font-medium text-gray-500 uppercase tracking-wide">
+          <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             მომხმარებლის სახელი
           </label>
           {isEditing ? (
@@ -78,7 +78,7 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({ userPr
               placeholder="შეიყვანეთ მომხმარებლის სახელი"
             />
           ) : (
-            <p className="text-lg font-medium text-gray-900">
+            <p className="text-lg font-medium text-foreground">
               @{userProfile.userName}
             </p>
           )}

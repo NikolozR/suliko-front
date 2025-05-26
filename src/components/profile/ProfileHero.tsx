@@ -10,9 +10,12 @@ interface ProfileHeroProps {
   onLogout: () => void;
   isEditing?: boolean;
   onEdit?: () => void;
+  onSave?: () => void;
+  onCancel?: () => void;
+  isUpdating?: boolean;
 }
 
-export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit }: ProfileHeroProps) => {
+export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, onCancel, isUpdating }: ProfileHeroProps) => {
   const { displayName, initials } = useUser();
 
   return (
@@ -21,26 +24,44 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit }: Profil
 
       {/* Action Buttons */}
       <div className="absolute top-4 right-4 flex gap-2 z-20">
-        {!isEditing && onEdit && (
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={onEdit}
-            className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
-          >
-            <Edit className="h-4 w-4 mr-2" />
-            რედაქტირება
-          </Button>
+        {isEditing ? (
+          <>
+            <Button variant="outline" size="sm" onClick={onCancel} disabled={isUpdating}>
+              გაუქმება
+            </Button>
+            <Button
+              size="sm"
+              onClick={onSave}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
+              disabled={isUpdating}
+            >
+              {isUpdating ? "შენახვა..." : "შენახვა"}
+            </Button>
+          </>
+        ) : (
+          <>
+            {onEdit && (
+              <Button
+                variant="secondary"
+                size="sm"
+                onClick={onEdit}
+                className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+              >
+                <Edit className="h-4 w-4 mr-2" />
+                რედაქტირება
+              </Button>
+            )}
+            <Button
+              variant="secondary"
+              size="sm"
+              onClick={onLogout}
+              className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+            >
+              <LogOut className="h-4 w-4 mr-2" />
+              გამოსვლა
+            </Button>
+          </>
         )}
-        <Button
-          variant="secondary"
-          size="sm"
-          onClick={onLogout}
-          className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
-        >
-          <LogOut className="h-4 w-4 mr-2" />
-          გამოსვლა
-        </Button>
       </div>
 
       <div className="relative z-10">
@@ -60,7 +81,11 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit }: Profil
                 სრული სახელი
               </Badge>
               <h1 className="text-4xl font-bold mb-2">
-                {displayName}
+                {isEditing
+                  ? (userProfile.firstName || userProfile.lastName
+                      ? `${userProfile.firstName || ""} ${userProfile.lastName || ""}`.trim()
+                      : userProfile.userName)
+                  : displayName}
               </h1>
             </div>
             <div>

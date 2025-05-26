@@ -1,11 +1,14 @@
-export interface UserProfile {
-    id: string;
-    userName: string;
-    email: string;
-    phoneNUmber: string;
-    firstName: string;
-    lastName: string;
-    roleId: string;
-    roleName: string;
-    balance: number;
-  }
+export interface UpdateUserProfile {
+  id: string;
+  firstName: string;
+  lastName: string;
+  phoneNUmber: string;
+  email: string;
+  userName: string;
+  roleId: string;
+  balance: number;
+}
+
+export interface UserProfile extends UpdateUserProfile {
+  roleName: string;
+}
