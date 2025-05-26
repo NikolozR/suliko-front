@@ -28,6 +28,7 @@ const NAV_ITEMS = [
     label: "History",
     href: "/history",
     icon: Clock,
+    disabled: true,
   },
   {
     label: "Profile",
@@ -39,11 +40,13 @@ const NAV_ITEMS = [
     label: "Help",
     href: "/help",
     icon: HelpCircle,
+    disabled: true,
   },
   {
     label: "Feedback",
     href: "/feedback",
     icon: MessageSquare,
+    disabled: true,
   },
 ];
 
@@ -108,28 +111,42 @@ export default function Sidebar() {
         </div>
 
         <nav className="flex-1 px-2 space-y-1">
-          {visibleNavItems.map(({ label, href, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
-                isActive(href)
-                  ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
-                  : "hover:bg-accent hover:text-accent-foreground"
-              } ${isCollapsed ? "justify-center" : ""}`}
-              aria-current={isActive(href) ? "page" : undefined}
-            >
-              <Icon
-                className={`transition-transform duration-200 ${
-                  isCollapsed ? "h-5 w-5" : "h-5 w-5"
-                } group-hover:scale-105`}
-              />
-              {!isCollapsed && (
-                <span className="whitespace-nowrap">
-                  {label}
-                </span>
-              )}
-            </Link>
+          {visibleNavItems.map(({ label, href, icon: Icon, disabled }) => (
+            disabled ? (
+              <span
+                key={href}
+                className={`group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 opacity-50 cursor-not-allowed select-none ${isCollapsed ? "justify-center" : ""}`}
+                aria-disabled="true"
+                tabIndex={-1}
+              >
+                <Icon className={`transition-transform duration-200 ${isCollapsed ? "h-5 w-5" : "h-5 w-5"}`} />
+                {!isCollapsed && (
+                  <span className="whitespace-nowrap">{label}</span>
+                )}
+              </span>
+            ) : (
+              <Link
+                key={href}
+                href={href}
+                className={`group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
+                  isActive(href)
+                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                    : "hover:bg-accent hover:text-accent-foreground"
+                } ${isCollapsed ? "justify-center" : ""}`}
+                aria-current={isActive(href) ? "page" : undefined}
+              >
+                <Icon
+                  className={`transition-transform duration-200 ${
+                    isCollapsed ? "h-5 w-5" : "h-5 w-5"
+                  } group-hover:scale-105`}
+                />
+                {!isCollapsed && (
+                  <span className="whitespace-nowrap">
+                    {label}
+                  </span>
+                )}
+              </Link>
+            )
           ))}
         </nav>
 
