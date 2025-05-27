@@ -1,10 +1,9 @@
 export type TranslationResult = string | null;
 
 export interface TextTranslateUserContentParams {
-  Description: string;
+  UserText: string;
   LanguageId: number;
   SourceLanguageId: number;
-  IsPdf: boolean;
 } 
 
 export interface TextTranslateUserContentResponse {

@@ -23,22 +23,26 @@ import { useTranslationStore } from "@/store/translationStore";
 import { translateUserContent } from "@/services/translationService";
 
 const TextTranslationCard = () => {
-  const [textValue, setTextValue] = useState("");
   const [formError, setFormError] = useState<string | null>(null);
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const { token } = useAuthStore();
   const {
-    targetLanguageId,
+    setCurrentTextValue,
+    setOriginalText,
+    setTranslatedText,
+    originalText,
+    translatedText,
+    currentTextValue,
+    currentTargetLanguageId,
+    originalTargetLanguageId,
+    currentSourceLanguageId,
     sourceLanguageId,
-    setTargetLanguageId,
+    setCurrentSourceLanguageId,
+    setCurrentTargetLanguageId,
+    setOriginalTargetLanguageId,
     setSourceLanguageId,
-    token,
-  } = useAuthStore();
-  const { setOriginalText, setTranslatedText, originalText, translatedText } =
-    useTranslationStore();
-  const [lastTargetLanguageId, setLastTargetLanguageId] = useState<
-    number | null
-  >(null);
+  } = useTranslationStore();
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const translatedRef = useRef<HTMLDivElement | null>(null);
   const isScrolling = useRef(false);
@@ -82,12 +86,12 @@ const TextTranslationCard = () => {
       setShowAuthModal(true);
       return;
     }
-    if (targetLanguageId < 0 || sourceLanguageId < 0) {
+    if (currentTargetLanguageId < 0 || currentSourceLanguageId < 0) {
       event.preventDefault();
       setFormError("გთხოვთ, აირჩიეთ ენა");
       return;
     }
-    if (!textValue.trim()) {
+    if (!currentTextValue.trim()) {
       setFormError("გთხოვთ, შეიყვანოთ ტექსტი თარგმნისთვის.");
       return;
     }
@@ -95,13 +99,13 @@ const TextTranslationCard = () => {
     setTextLoading(true);
     try {
       const params: TextTranslateUserContentParams = {
-        Description: textValue,
-        LanguageId: targetLanguageId ?? 0,
-        SourceLanguageId: sourceLanguageId === 0 ? 2 : sourceLanguageId,
-        IsPdf: false,
+        UserText: currentTextValue,
+        LanguageId: currentTargetLanguageId ?? 0,
+        SourceLanguageId: currentSourceLanguageId === 0 ? 2 : currentSourceLanguageId,
       };
-      setOriginalText(textValue);
-      setLastTargetLanguageId(targetLanguageId);
+      setOriginalText(currentTextValue);
+      setOriginalTargetLanguageId(currentTargetLanguageId);
+      setSourceLanguageId(currentSourceLanguageId);
       const result: TextTranslateUserContentResponse =
         await translateUserContent(params);
       setTranslatedText(result.text);
@@ -130,14 +134,20 @@ const TextTranslationCard = () => {
             <form onSubmit={handleSubmit}>
               <div className="flex gap-2 md:gap-4 items-end flex-col md:flex-row">
                 <div className="w-full md:flex-1 min-w-0">
-                  <div className={`flex gap-2 md:gap-4 ${translatedText ? "flex-col sm:flex-row md:flex-col" : "flex-col sm:flex-row"}`}>
+                  <div
+                    className={`flex gap-2 md:gap-4 ${
+                      translatedText
+                        ? "flex-col sm:flex-row md:flex-col"
+                        : "flex-col sm:flex-row"
+                    }`}
+                  >
                     <div className="w-full sm:flex-1">
                       <span className="block text-xs text-muted-foreground mb-1">
                         რა ენაზე გსურთ თარგმნა?
                       </span>
                       <LanguageSelect
-                        value={targetLanguageId}
-                        onChange={setTargetLanguageId}
+                        value={currentTargetLanguageId}
+                        onChange={setCurrentTargetLanguageId}
                         placeholder="აირჩიე ენა"
                       />
                     </div>
@@ -146,20 +156,25 @@ const TextTranslationCard = () => {
                         რა ენაზეა ტექსტი?
                       </span>
                       <LanguageSelect
-                        value={sourceLanguageId}
-                        onChange={setSourceLanguageId}
+                        value={currentSourceLanguageId}
+                        onChange={setCurrentSourceLanguageId}
                         placeholder="აირჩიე ენა"
                         detectOption="ავტომატური დაფიქსირება"
                       />
                     </div>
                   </div>
-                  <div className={"mt-4 h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full " + (translatedText ? "md:flex-1" : "")}>
+                  <div
+                    className={
+                      "mt-4 h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full " +
+                      (translatedText ? "md:flex-1" : "")
+                    }
+                  >
                     <Textarea
                       ref={textareaRef}
                       className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
                       placeholder="იყო და არა იყო რა..."
-                      value={textValue}
-                      onChange={(e) => setTextValue(e.target.value)}
+                      value={currentTextValue}
+                      onChange={(e) => setCurrentTextValue(e.target.value)}
                       onKeyDown={(e) => {
                         if (e.shiftKey && e.key === "Enter") {
                           e.preventDefault();
@@ -200,8 +215,9 @@ const TextTranslationCard = () => {
                 disabled={
                   textLoading ||
                   (!!originalText &&
-                    textValue.trim() === originalText.trim() &&
-                    lastTargetLanguageId === targetLanguageId)
+                    currentTextValue.trim() === originalText.trim() &&
+                    currentTargetLanguageId === originalTargetLanguageId &&
+                    currentSourceLanguageId === sourceLanguageId)
                 }
                 onClick={(e) => {
                   if (!token) {
@@ -221,7 +237,10 @@ const TextTranslationCard = () => {
           </CardContent>
         </Card>
       </div>
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+      />
     </TabsContent>
   );
 };

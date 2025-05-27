@@ -13,10 +13,10 @@ export const translateUserContent = async (
   const endpoint = "/UserContent/translate";
 
   const formData = new FormData();
-  formData.append("Description", params.Description);
+
+  formData.append("UserText", params.UserText);
   formData.append("LanguageId", String(params.LanguageId));
   formData.append("SourceLanguageId", String(params.SourceLanguageId));
-  formData.append("IsPdf", params.IsPdf.toString());
 
   const { token, refreshToken } = useAuthStore.getState();
 
@@ -32,6 +32,8 @@ export const translateUserContent = async (
     headers,
     body: formData,
   });
+
+
 
   if (response.status === 401 && token && refreshToken) {
     try {
@@ -55,7 +57,6 @@ export const translateUserContent = async (
     throw new Error(errorData.message || "Translation failed");
   } else {
     const data = await response.json();
-    console.log(data);
     return data;
   }
 };
