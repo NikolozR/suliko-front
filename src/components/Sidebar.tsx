@@ -20,30 +20,30 @@ import SulikoLogo from "./SulikoLogo";
 
 const NAV_ITEMS = [
   {
-    label: "New Project",
+    label: "ახალი პროექტი",
     href: "/",
     icon: Plus,
   },
   {
-    label: "History",
+    label: "ისტორია",
     href: "/history",
     icon: Clock,
     disabled: true,
   },
   {
-    label: "Profile",
+    label: "პროფილი",
     href: "/profile",
     icon: User,
     requiresAuth: true,
   },
   {
-    label: "Help",
+    label: "დახმარება",
     href: "/help",
     icon: HelpCircle,
     disabled: true,
   },
   {
-    label: "Feedback",
+    label: "გამოხმაურება",
     href: "/feedback",
     icon: MessageSquare,
     disabled: true,
@@ -169,7 +169,7 @@ export default function Sidebar() {
               />
               {!isCollapsed && (
                 <span className="whitespace-nowrap">
-                  Sign Out
+                  გამოსვლა
                 </span>
               )}
             </Button>
@@ -187,7 +187,7 @@ export default function Sidebar() {
               />
               {!isCollapsed && (
                 <span className="whitespace-nowrap">
-                  Sign In
+                  შესვლა
                 </span>
               )}
             </Link>

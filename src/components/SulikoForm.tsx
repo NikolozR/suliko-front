@@ -24,14 +24,14 @@ import { useRouter } from "next/navigation";
 const formSchema = z.object({
   mobile: z
     .string()
-    .min(1, { message: "Mobile number is required" })
-    .regex(/^5\d{8}$/, "Mobile number must be in Georgian format: 5XXXXXXXX"),
+    .min(1, { message: "ტელეფონის ნომერი სავალდებულოა" })
+    .regex(/^5\d{8}$/, "ტელეფონის ნომერი უნდა იყოს ქართული ფორმატით: 5XXXXXXXX"),
   password: z
     .string()
-    .min(8, { message: "Password must be at least 6 characters long" })
+    .min(8, { message: "პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან" })
     .regex(
       /(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
-      "Password must contain at least one digit and one symbol"
+      "პაროლი უნდა შედგებოდეს მინიმუმ ერთი ციფრისა და ერთი სიმბოლოსგან"
     ),
 });
 

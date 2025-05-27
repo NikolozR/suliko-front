@@ -120,10 +120,10 @@ const TextTranslationCard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
               <Type className="h-5 w-5" />
-              შეიყვანე ტექსტი
+              აკრიფე ტექსტი
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              რამე ტექსტი თარგმნის აღწერისთვის
+              აკრიფე ტექსტი ანალიზისთვის
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -133,22 +133,22 @@ const TextTranslationCard = () => {
                   <div className={`flex gap-2 md:gap-4 ${translatedText ? "flex-col sm:flex-row md:flex-col" : "flex-col sm:flex-row"}`}>
                     <div className="w-full sm:flex-1">
                       <span className="block text-xs text-muted-foreground mb-1">
-                        სამიზნე ენა
+                        რა ენაზე გსურთ თარგმნა?
                       </span>
                       <LanguageSelect
                         value={targetLanguageId}
                         onChange={setTargetLanguageId}
-                        placeholder="აირჩიე სამიზნე ენა"
+                        placeholder="აირჩიე ენა"
                       />
                     </div>
                     <div className="w-full sm:flex-1">
                       <span className="block text-xs text-muted-foreground mb-1">
-                        საწყისი ენა
+                        რა ენაზეა ტექსტი?
                       </span>
                       <LanguageSelect
                         value={sourceLanguageId}
                         onChange={setSourceLanguageId}
-                        placeholder="აირჩიე საწყისი ენა"
+                        placeholder="აირჩიე ენა"
                         detectOption="ავტომატური დაფიქსირება"
                       />
                     </div>
@@ -157,7 +157,7 @@ const TextTranslationCard = () => {
                     <Textarea
                       ref={textareaRef}
                       className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
-                      placeholder="რამე საცაცილო ტექსტი..."
+                      placeholder="იყო და არა იყო რა..."
                       value={textValue}
                       onChange={(e) => setTextValue(e.target.value)}
                       onKeyDown={(e) => {

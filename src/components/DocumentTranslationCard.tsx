@@ -82,7 +82,7 @@ const DocumentTranslationCard = () => {
             ატვირთე დოკუმენტი
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            ატვირთეთ ფაილი თარგმნისთვის. (PDF, DOCX, TXT, და ა.შ.)
+            ატვირთეთ ფაილი თარგმნისთვის.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -94,7 +94,7 @@ const DocumentTranslationCard = () => {
                   <p className="mt-4 text-sm text-muted-foreground">
                     {files && files.length > 0
                       ? files[0].name
-                      : "Drag and drop your file here, or click to select"}
+                      : "ჩააგდე ფაილი ან დააკლიკეე ასარჩევად მხარდაჭერილი ფაილის ტიპები: PDF, DOCX, TXT, და ა.შ."}
                   </p>
                   <Input
                     type="file"
