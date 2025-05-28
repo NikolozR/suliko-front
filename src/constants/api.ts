@@ -1,0 +1,1 @@
+export const API_BASE_URL = 'https://content.api24.ge/api'; 

@@ -2,8 +2,8 @@ import { useAuthStore } from "@/store/authStore";
 import { reaccessToken } from "./authorizationService";
 import { UpdateUserProfile, UserProfile } from "@/types/types.User";
 import { getUserID } from "@/lib/utils";
+import { API_BASE_URL } from "@/constants/api";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export const getUserProfile = async (): Promise<UserProfile> => {
   const { refreshToken, token } = useAuthStore.getState();

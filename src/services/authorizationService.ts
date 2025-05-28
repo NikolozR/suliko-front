@@ -1,6 +1,6 @@
+import { API_BASE_URL } from "@/constants/api";
 import { LoginResponse } from "@/types/types.Auth";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 interface LoginParams {
   phoneNumber: string;

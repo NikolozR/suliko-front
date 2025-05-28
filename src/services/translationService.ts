@@ -1,11 +1,10 @@
+import { API_BASE_URL } from "@/constants/api";
 import {
   TextTranslateUserContentParams,
   TextTranslateUserContentResponse,
 } from "@/types/types.Translation";
 import { useAuthStore } from "../store/authStore";
 import { reaccessToken } from "./authorizationService";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const translateUserContent = async (
   params: TextTranslateUserContentParams
