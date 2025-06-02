@@ -2,7 +2,6 @@ import SulikoForm from "@/shared/components/SulikoForm";
 import SulikoFormBanner from "@/shared/components/SulikoFormBanner";
 import SulikoLogo from "@/shared/components/SulikoLogo";
 
-
 export default function SignIn() {
   return (
     <div className="flex flex-col-reverse sm:flex-row justify-center items-center h-screen">
@@ -16,4 +15,4 @@ export default function SignIn() {
       <SulikoFormBanner />
     </div>
   );
-}
+} 

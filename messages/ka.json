@@ -1,0 +1,35 @@
+{
+  "Navigation": {
+    "home": "მთავარი",
+    "profile": "პროფილი",
+    "settings": "პარამეტრები"
+  },
+  "Common": {
+    "welcome": "კეთილი იყოს თქვენი მობრძანება",
+    "loading": "იტვირთება...",
+    "error": "რაღაც არასწორადაა",
+    "save": "შენახვა",
+    "cancel": "გაუქმება",
+    "edit": "რედაქტირება",
+    "delete": "წაშლა",
+    "search": "ძებნა",
+    "language": "ენა"
+  },
+  "Index": {
+    "title": "შენი თარჯიმანი",
+    "description": "აირჩიე მეთოდი",
+    "textTab": "ტექსტი",
+    "documentTab": "დოკუმენტი"
+  },
+  "Language": {
+    "select": "აირჩიეთ ენა",
+    "english": "English",
+    "georgian": "ქართული"
+  },
+  "Theme": {
+    "toggle": "თემის შეცვლა",
+    "light": "ნათელი",
+    "dark": "მუქი",
+    "system": "სისტემური"
+  }
+} 

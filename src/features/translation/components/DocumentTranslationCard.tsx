@@ -22,14 +22,26 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
+// Safe check for browser environment
+const isFileListAvailable = typeof window !== 'undefined' && 'FileList' in window;
+
 // Zod validation schema for document translation
 const documentTranslationSchema = z.object({
   currentFile: z
-    .instanceof(FileList)
+    .any()
     .nullable()
-    .refine((files) => files && files.length > 0, "Please select a file to translate.")
+    .refine((files) => {
+      if (!files) return false;
+      // Check if it's a FileList-like object or has the expected structure
+      return (isFileListAvailable && files instanceof FileList && files.length > 0) || 
+             (files && typeof files === 'object' && files.length > 0);
+    }, "Please select a file to translate.")
     .refine(
-      (files) => files && files.length > 0 && files[0].size <= 10 * 1024 * 1024, // 10MB limit
+      (files) => {
+        if (!files || !files.length) return false;
+        const file = files[0];
+        return file && file.size <= 10 * 1024 * 1024; // 10MB limit
+      },
       "File size must be less than 10MB."
     ),
   currentTargetLanguageId: z
@@ -148,10 +160,16 @@ const DocumentTranslationCard = () => {
   };
 
   // Get the first error message to display
-  const getFormError = () => {
-    if (errors.currentFile) return errors.currentFile.message;
-    if (errors.currentTargetLanguageId) return errors.currentTargetLanguageId.message;
-    if (errors.currentSourceLanguageId) return errors.currentSourceLanguageId.message;
+  const getFormError = (): string | null => {
+    if (errors.currentFile?.message) {
+      return typeof errors.currentFile.message === 'string' ? errors.currentFile.message : 'Please select a file to translate.';
+    }
+    if (errors.currentTargetLanguageId?.message) {
+      return typeof errors.currentTargetLanguageId.message === 'string' ? errors.currentTargetLanguageId.message : 'Please select a target language.';
+    }
+    if (errors.currentSourceLanguageId?.message) {
+      return typeof errors.currentSourceLanguageId.message === 'string' ? errors.currentSourceLanguageId.message : 'Please select a source language.';
+    }
     return null;
   };
 

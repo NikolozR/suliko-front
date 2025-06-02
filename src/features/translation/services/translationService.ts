@@ -104,7 +104,7 @@ export const translateDocumentUserContent = async (
         body: formData,
       });
     } catch {
-      // useAuthStore.getState().reset();
+      useAuthStore.getState().reset();
       throw new Error("Token refresh failed");
     }
   }

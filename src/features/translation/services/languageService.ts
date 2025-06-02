@@ -34,7 +34,7 @@ export async function getAllLanguages() {
         headers,
       });
     } catch (error) {
-      // useAuthStore.getState().reset();
+      useAuthStore.getState().reset();
       throw new Error("Failed to refresh token " + error);
     }
   }

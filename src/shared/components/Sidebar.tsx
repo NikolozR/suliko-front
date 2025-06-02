@@ -93,7 +93,7 @@ export default function Sidebar() {
       )}
       
       <aside
-        className={`flex flex-col h-screen fixed left-0 top-0 z-40 bg-background border-r transition-all duration-300 ${
+        className={`sidebar-main flex flex-col h-screen fixed left-0 top-0 z-40 border-r transition-all duration-300 ${
           isCollapsed ? "w-16" : "w-48 md:w-56 lg:w-64"
         } ${!isCollapsed ? "md:shadow-none shadow-2xl" : ""}`}
       >
@@ -103,7 +103,7 @@ export default function Sidebar() {
           )}
           <button
             onClick={handleCollapse}
-            className="flex-shrink-0 p-1.5 rounded-lg hover:bg-accent hover:text-accent-foreground cursor-pointer"
+            className="sidebar-button flex-shrink-0 p-1.5 rounded-lg cursor-pointer transition-colors"
             aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
@@ -115,7 +115,7 @@ export default function Sidebar() {
             disabled ? (
               <span
                 key={href}
-                className={`group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 opacity-50 cursor-not-allowed select-none ${isCollapsed ? "justify-center" : ""}`}
+                className={`sidebar-item-disabled group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 opacity-50 cursor-not-allowed select-none ${isCollapsed ? "justify-center" : ""}`}
                 aria-disabled="true"
                 tabIndex={-1}
               >
@@ -128,10 +128,10 @@ export default function Sidebar() {
               <Link
                 key={href}
                 href={href}
-                className={`group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
+                className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
                   isActive(href)
                     ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
-                    : "hover:bg-accent hover:text-accent-foreground"
+                    : ""
                 } ${isCollapsed ? "justify-center" : ""}`}
                 aria-current={isActive(href) ? "page" : undefined}
               >
@@ -176,7 +176,7 @@ export default function Sidebar() {
           ) : (
             <Link
               href="/sign-in"
-              className={`group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors hover:bg-accent hover:text-accent-foreground ${
+              className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
                 isCollapsed ? "justify-center" : ""
               }`}
             >

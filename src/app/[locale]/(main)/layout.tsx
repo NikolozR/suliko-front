@@ -1,9 +1,8 @@
 'use client'
-import "../globals.css";
 import Sidebar from "@/shared/components/Sidebar";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 
-export default function RootLayout({
+export default function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -22,4 +21,4 @@ export default function RootLayout({
       </main>
     </div>
   );
-}
+} 

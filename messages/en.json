@@ -1,0 +1,35 @@
+{
+  "Navigation": {
+    "home": "Home",
+    "profile": "Profile",
+    "settings": "Settings"
+  },
+  "Common": {
+    "welcome": "Welcome",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "search": "Search",
+    "language": "Language"
+  },
+  "Index": {
+    "title": "Your Translator",
+    "description": "Choose a method",
+    "textTab": "Text",
+    "documentTab": "Document"
+  },
+  "Language": {
+    "select": "Select Language",
+    "english": "English",
+    "georgian": "ქართული"
+  },
+  "Theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  }
+} 

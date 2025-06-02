@@ -11,4 +11,4 @@ export default function AuthorizationLayout({
   children: React.ReactNode;
 }) {
   return <>{children}</>;
-}
+} 

@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
+  DialogDescription,
+  DialogFooter,
 } from "@/features/ui/components/ui/dialog";
 import { Button } from "@/features/ui/components/ui/button";
 import { useRouter } from "next/navigation";

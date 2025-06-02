@@ -4,4 +4,4 @@ export default function SignUpLayout({
   children: React.ReactNode;
 }) {
   return <>{children}</>;
-}
+} 

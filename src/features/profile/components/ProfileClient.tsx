@@ -17,7 +17,7 @@ import { updateUserProfile } from "@/features/auth/services/userService";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 
 
-export const ProfileClient = () => {
+export default function ProfileClient() {
   const { token, reset } = useAuthStore();
   const {
     userProfile,
