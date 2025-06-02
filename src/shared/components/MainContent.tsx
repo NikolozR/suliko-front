@@ -1,12 +1,14 @@
+"use client";
 import { Upload, Type } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from "@/features/ui/components/ui/tabs";
 import TextTranslationCard from "@/features/translation/components/TextTranslationCard";
 import DocumentTranslationCard from "@/features/translation/components/DocumentTranslationCard";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
 
-const MainContent = async () => {
-  const t = await getTranslations('Index');
-
+const MainContent = () => {
+  const t = useTranslations('MainContent');
+  const [activeTab, setActiveTab] = useState("text");
 
   return (
     <div className="min-h-screen p-8 bg-suliko-main-content-bg-color">
@@ -15,7 +17,7 @@ const MainContent = async () => {
           <h1 className="text-3xl font-semibold text-foreground">{t('title')}</h1>
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
-        <Tabs defaultValue="text" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 bg-card">
             <TabsTrigger
               value="text"

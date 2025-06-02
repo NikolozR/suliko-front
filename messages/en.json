@@ -1,35 +1,43 @@
 {
-  "Navigation": {
-    "home": "Home",
+  "Sidebar": {
+    "newProject": "New Project",
+    "history": "History",
     "profile": "Profile",
-    "settings": "Settings"
+    "logout": "Logout",
+    "help": "Help",
+    "feedback": "Feedback",
+    "login": "Login"
   },
-  "Common": {
-    "welcome": "Welcome",
-    "loading": "Loading...",
-    "error": "Something went wrong",
-    "save": "Save",
-    "cancel": "Cancel",
-    "edit": "Edit",
-    "delete": "Delete",
-    "search": "Search",
-    "language": "Language"
-  },
-  "Index": {
+  "MainContent": {
     "title": "Your Translator",
     "description": "Choose a method",
     "textTab": "Text",
     "documentTab": "Document"
   },
-  "Language": {
-    "select": "Select Language",
-    "english": "English",
-    "georgian": "ქართული"
+  "TextTranslationCard": {
+    "title": "Type text",
+    "description": "Type text for analysis",
+    "textIputPlaceholder": "Once upon a time..."
   },
-  "Theme": {
-    "toggle": "Toggle theme",
-    "light": "Light",
-    "dark": "Dark",
-    "system": "System"
+  "CommonLanguageSelect": {
+    "targetLanguageQuestion": "What language do you want to translate to",
+    "sourceLanguageQuestion": "What language is the text in",
+    "selectLanguagePlaceholder": "Select Language",
+    "automaticDetection": "Automatic detection"
+  },
+  "TranslationButton": {
+    "translate": "Translate",
+    "loading": "Loading..."
+  },
+  "DocumentTranslationCard": {
+    "title": "Upload document",
+    "description": "Upload document for translation",
+    "dragAndDrop": "Drag and drop file or click to select",
+    "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc."
+  },
+  "LanguageSwitcher": {
+    "english": "English",
+    "georgian": "ქართული",
+    "select": "Select Language"
   }
-} 
+}

@@ -13,15 +13,13 @@ import { routing } from '@/i18n/routing';
 import { Languages } from 'lucide-react';
 
 export function LanguageSwitcher() {
-  const t = useTranslations('Language');
+  const t = useTranslations('LanguageSwitcher');
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
 
   const onSelectChange = (value: string) => {
-    // Remove the current locale from the pathname
     const pathWithoutLocale = pathname.replace(`/${locale}`, '');
-    // Navigate to the new locale
     router.push(`/${value}${pathWithoutLocale}`);
   };
 

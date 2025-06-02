@@ -17,33 +17,34 @@ import {
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
+import { useTranslations } from "next-intl";
 
 const NAV_ITEMS = [
   {
-    label: "ახალი პროექტი",
+    label: "newProject",
     href: "/",
     icon: Plus,
   },
   {
-    label: "ისტორია",
+    label: "history",
     href: "/history",
     icon: Clock,
     disabled: true,
   },
   {
-    label: "პროფილი",
+    label: "profile",
     href: "/profile",
     icon: User,
     requiresAuth: true,
   },
   {
-    label: "დახმარება",
+    label: "help",
     href: "/help",
     icon: HelpCircle,
     disabled: true,
   },
   {
-    label: "გამოხმაურება",
+    label: "feedback",
     href: "/feedback",
     icon: MessageSquare,
     disabled: true,
@@ -55,6 +56,7 @@ export default function Sidebar() {
   const { token, setToken, setRefreshToken } = useAuthStore();
   const { isCollapsed, setIsCollapsed } = useSidebarStore();
   const router = useRouter();
+  const t = useTranslations('Sidebar');
 
   useEffect(() => {
     const handleResize = () => {
@@ -75,7 +77,6 @@ export default function Sidebar() {
 
   const isActive = (href: string) => pathname === href;
 
-  // Filter nav items based on auth status
   const visibleNavItems = NAV_ITEMS.filter(item => {
     if (item.requiresAuth) {
       return !!token;
@@ -121,7 +122,7 @@ export default function Sidebar() {
               >
                 <Icon className={`transition-transform duration-200 ${isCollapsed ? "h-5 w-5" : "h-5 w-5"}`} />
                 {!isCollapsed && (
-                  <span className="whitespace-nowrap">{label}</span>
+                  <span className="whitespace-nowrap">{t(label)}</span>
                 )}
               </span>
             ) : (
@@ -142,7 +143,7 @@ export default function Sidebar() {
                 />
                 {!isCollapsed && (
                   <span className="whitespace-nowrap">
-                    {label}
+                    {t(label)}
                   </span>
                 )}
               </Link>
@@ -169,7 +170,7 @@ export default function Sidebar() {
               />
               {!isCollapsed && (
                 <span className="whitespace-nowrap">
-                  გამოსვლა
+                  {t('logout')}
                 </span>
               )}
             </Button>
@@ -187,7 +188,7 @@ export default function Sidebar() {
               />
               {!isCollapsed && (
                 <span className="whitespace-nowrap">
-                  შესვლა
+                  {t('login')}
                 </span>
               )}
             </Link>

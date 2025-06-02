@@ -1,35 +1,43 @@
 {
-  "Navigation": {
-    "home": "მთავარი",
+  "Sidebar": {
+    "newProject": "ახალი პროექტი",
+    "history": "ისტორია",
     "profile": "პროფილი",
-    "settings": "პარამეტრები"
+    "logout": "გასვლა",
+    "help": "დახმარება", 
+    "feedback": "გამოხმაურება",
+    "login": "შესვლა"
   },
-  "Common": {
-    "welcome": "კეთილი იყოს თქვენი მობრძანება",
-    "loading": "იტვირთება...",
-    "error": "რაღაც არასწორადაა",
-    "save": "შენახვა",
-    "cancel": "გაუქმება",
-    "edit": "რედაქტირება",
-    "delete": "წაშლა",
-    "search": "ძებნა",
-    "language": "ენა"
-  },
-  "Index": {
+  "MainContent": {
     "title": "შენი თარჯიმანი",
     "description": "აირჩიე მეთოდი",
     "textTab": "ტექსტი",
     "documentTab": "დოკუმენტი"
   },
-  "Language": {
-    "select": "აირჩიეთ ენა",
-    "english": "English",
-    "georgian": "ქართული"
+  "TextTranslationCard": {
+    "title": "აკრიფე ტექსტი",
+    "description": "აკრიფე ტექსტი ანალიზისთვის",
+    "textIputPlaceholder": "იყო და არა იყო რა..."
   },
-  "Theme": {
-    "toggle": "თემის შეცვლა",
-    "light": "ნათელი",
-    "dark": "მუქი",
-    "system": "სისტემური"
+  "CommonLanguageSelect": {
+    "targetLanguageQuestion": "რა ენაზე გსურთ თარგმნა",
+    "sourceLanguageQuestion": "რა ენაზეა ტექსტი",
+    "selectLanguagePlaceholder": "აირჩიეთ ენა",
+    "automaticDetection": "ავტომატური დაფიქსირება"
+  },
+  "TranslationButton": {
+    "translate": "თარგმნა",
+    "loading": "მუშავდება..."
+  },
+  "DocumentTranslationCard": {
+    "title": "ატვირთე დოკუმენტი",
+    "description": "ატვირთე დოკუმენტი თარგმნისთვის",
+    "dragAndDrop": "ჩააგდე ფაილი ან დააკლიკე ასარჩევად",
+    "supportedFormats": "მხარდაჭერილი ფაილის ტიპები: PDF, DOCX, TXT, და ა.შ."
+  },
+  "LanguageSwitcher": {
+    "english": "English",
+    "georgian": "ქართული",
+    "select": "აირჩიეთ ენა"
   }
 } 

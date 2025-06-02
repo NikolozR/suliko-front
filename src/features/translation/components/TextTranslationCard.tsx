@@ -24,6 +24,7 @@ import { translateUserContent } from "@/features/translation/services/translatio
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 
 // Zod validation schema
 const textTranslationSchema = z.object({
@@ -42,6 +43,9 @@ const textTranslationSchema = z.object({
 type FormData = z.infer<typeof textTranslationSchema>;
 
 const TextTranslationCard = () => {
+  const t = useTranslations('TextTranslationCard');
+  const tCommon = useTranslations('CommonLanguageSelect');
+  const tTranslationButton = useTranslations('TranslationButton');
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { token } = useAuthStore();
@@ -168,10 +172,10 @@ const TextTranslationCard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
               <Type className="h-5 w-5" />
-              აკრიფე ტექსტი
+              {t('title')}
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              აკრიფე ტექსტი ანალიზისთვის
+              {t('description')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -187,7 +191,7 @@ const TextTranslationCard = () => {
                   >
                     <div className="w-full sm:flex-1">
                       <span className="block text-xs text-muted-foreground mb-1">
-                        რა ენაზე გსურთ თარგმნა?
+                        {tCommon('targetLanguageQuestion')}?
                       </span>
                       <LanguageSelect
                         value={currentTargetLanguageId}
@@ -196,12 +200,12 @@ const TextTranslationCard = () => {
                           setValue("currentTargetLanguageId", value);
                           clearErrors("currentTargetLanguageId");
                         }}
-                        placeholder="აირჩიე ენა"
+                        placeholder={tCommon('selectLanguagePlaceholder')}
                       />
                     </div>
                     <div className="w-full sm:flex-1">
                       <span className="block text-xs text-muted-foreground mb-1">
-                        რა ენაზეა ტექსტი?
+                        {tCommon('sourceLanguageQuestion')}?
                       </span>
                       <LanguageSelect
                         value={currentSourceLanguageId}
@@ -210,8 +214,8 @@ const TextTranslationCard = () => {
                           setValue("currentSourceLanguageId", value);
                           clearErrors("currentSourceLanguageId");
                         }}
-                        placeholder="აირჩიე ენა"
-                        detectOption="ავტომატური დაფიქსირება"
+                        placeholder={tCommon('selectLanguagePlaceholder')}
+                        detectOption={tCommon('automaticDetection')}
                       />
                     </div>
                   </div>
@@ -224,7 +228,7 @@ const TextTranslationCard = () => {
                     <Textarea
                       ref={textareaRef}
                       className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
-                      placeholder="იყო და არა იყო რა..."
+                      placeholder={t('textIputPlaceholder')}
                       value={currentTextValue}
                       onChange={(e) => {
                         setCurrentTextValue(e.target.value);
@@ -275,7 +279,7 @@ const TextTranslationCard = () => {
                 }}
               >
                 <span className="text-sm md:text-base">
-                  {textLoading ? "მუშავდება..." : "თარგმნე"}
+                  {textLoading ? tTranslationButton('loading') : tTranslationButton('translate')}
                 </span>
               </Button>
               {getFormError() && (

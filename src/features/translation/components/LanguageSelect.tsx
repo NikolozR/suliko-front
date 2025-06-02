@@ -9,6 +9,7 @@ import {
 } from "@/features/ui/components/ui/select";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
+import { useLocale } from 'next-intl';
 
 interface LanguageSelectProps {
   value?: number;
@@ -28,6 +29,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { token } = useAuthStore();
   const [open, setOpen] = useState(false);
+  const locale = useLocale();
 
   useEffect(() => {
     const fetchLanguages = async () => {
@@ -97,7 +99,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
               key={lang.id}
               value={lang.id.toString()}
             >
-              {lang.nameGeo}
+              {locale === "ka" ? lang.nameGeo : lang.name.replace(" Language", "")}
             </SelectItem>
           ))}
         </SelectContent>

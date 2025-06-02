@@ -21,6 +21,7 @@ import DocumentUploadView from "./DocumentUploadView";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useTranslations } from "next-intl";
 
 // Safe check for browser environment
 const isFileListAvailable = typeof window !== 'undefined' && 'FileList' in window;
@@ -55,6 +56,8 @@ const documentTranslationSchema = z.object({
 type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
 const DocumentTranslationCard = () => {
+  const t = useTranslations('DocumentTranslationCard');
+  const tTranslationButton = useTranslations('TranslationButton');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const { token } = useAuthStore();
@@ -69,7 +72,6 @@ const DocumentTranslationCard = () => {
     setCurrentSourceLanguageId,
   } = useDocumentTranslationStore();
 
-  // React Hook Form with Zod validation
   const {
     handleSubmit,
     formState: { errors },
@@ -97,8 +99,6 @@ const DocumentTranslationCard = () => {
     setCurrentFile(null);
     setValue("currentFile", null);
     clearErrors("currentFile");
-    
-    // Reset the file input element
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
@@ -112,7 +112,7 @@ const DocumentTranslationCard = () => {
     }
 
     if (!data.currentFile || data.currentFile.length === 0) {
-      return; // This should be caught by validation, but adding as safety
+      return;
     }
 
     setIsLoading(true);
@@ -183,10 +183,10 @@ const DocumentTranslationCard = () => {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
               <Upload className="h-5 w-5" />
-              ატვირთე დოკუმენტი
+              {t('title')}
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              ატვირთეთ ფაილი თარგმნისთვის.
+              {t('description')}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -251,7 +251,7 @@ const DocumentTranslationCard = () => {
                 disabled={isLoading || !hasFile}
               >
                 <span className="text-sm md:text-base">
-                  {isLoading ? "მუშავდება..." : "თარგმნე"}
+                  {isLoading ? tTranslationButton('loading') : tTranslationButton('translate')}
                 </span>
               </Button>
               

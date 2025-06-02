@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import LanguageSelect from "./LanguageSelect";
 
 interface LanguageSelectionPanelProps {
@@ -16,6 +17,7 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
   onSourceLanguageChange,
   layout = "horizontal"
 }) => {
+  const t = useTranslations('CommonLanguageSelect');
   const containerClasses = layout === "horizontal" 
     ? "flex gap-2 md:gap-4 flex-col sm:flex-row mb-6"
     : "flex gap-2 md:gap-4 flex-col sm:flex-row md:flex-col mb-6";
@@ -24,7 +26,7 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
     <div className={containerClasses}>
       <div className="w-full sm:flex-1">
         <span className="block text-xs text-muted-foreground mb-1">
-          რა ენაზე გსურთ თარგმნა?
+          {t('targetLanguageQuestion')}?
         </span>
         <LanguageSelect
           value={targetLanguageId}
@@ -34,13 +36,13 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
       </div>
       <div className="w-full sm:flex-1">
         <span className="block text-xs text-muted-foreground mb-1">
-          რა ენაზეა ტექსტი?
+          {t('sourceLanguageQuestion')}?
         </span>
         <LanguageSelect
           value={sourceLanguageId}
           onChange={onSourceLanguageChange}
-          placeholder="აირჩიე ენა"
-          detectOption="ავტომატური დაფიქსირება"
+          placeholder={t('selectLanguagePlaceholder')}
+          detectOption={t('automaticDetection')}
         />
       </div>
     </div>
