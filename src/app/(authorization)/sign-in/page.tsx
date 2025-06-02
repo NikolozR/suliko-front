@@ -1,6 +1,6 @@
-import SulikoForm from "@/components/SulikoForm";
-import SulikoFormBanner from "@/components/SulikoFormBanner";
-import SulikoLogo from "@/components/SulikoLogo";
+import SulikoForm from "@/shared/components/SulikoForm";
+import SulikoFormBanner from "@/shared/components/SulikoFormBanner";
+import SulikoLogo from "@/shared/components/SulikoLogo";
 
 
 export default function SignIn() {
