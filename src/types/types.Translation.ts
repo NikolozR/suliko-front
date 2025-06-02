@@ -10,3 +10,10 @@ export interface TextTranslateUserContentResponse {
   text: string;
   files: null;
 }
+
+export interface  DocumentTranslateUserContentParams {
+  File: File;
+  TargetLanguageId: number;
+  SourceLanguageId: number;
+  OutputFormat: number;
+}

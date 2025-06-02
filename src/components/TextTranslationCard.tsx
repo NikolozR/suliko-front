@@ -1,5 +1,5 @@
 "use client";
-import { FormEvent, useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect } from "react";
 import { TabsContent } from "@/components/ui/tabs";
 import {
   Card,
@@ -19,11 +19,29 @@ import {
   TextTranslateUserContentParams,
   TextTranslateUserContentResponse,
 } from "@/types/types.Translation";
-import { useTranslationStore } from "@/store/translationStore";
+import { useTextTranslationStore } from "@/store/textTranslationStore";
 import { translateUserContent } from "@/services/translationService";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+
+// Zod validation schema
+const textTranslationSchema = z.object({
+  currentTextValue: z
+    .string()
+    .min(1, "გთხოვთ, შეიყვანოთ ტექსტი თარგმნისთვის.")
+    .trim(),
+  currentTargetLanguageId: z
+    .number()
+    .min(0, "გთხოვთ, აირჩიეთ სამიზნე ენა"),
+  currentSourceLanguageId: z
+    .number()
+    .min(0, "გთხოვთ, აირჩიეთ წყარო ენა"),
+});
+
+type FormData = z.infer<typeof textTranslationSchema>;
 
 const TextTranslationCard = () => {
-  const [formError, setFormError] = useState<string | null>(null);
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { token } = useAuthStore();
@@ -42,7 +60,29 @@ const TextTranslationCard = () => {
     setCurrentTargetLanguageId,
     setOriginalTargetLanguageId,
     setSourceLanguageId,
-  } = useTranslationStore();
+  } = useTextTranslationStore();
+
+  // React Hook Form with Zod validation
+  const {
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    clearErrors,
+  } = useForm<FormData>({
+    resolver: zodResolver(textTranslationSchema),
+    defaultValues: {
+      currentTextValue,
+      currentTargetLanguageId,
+      currentSourceLanguageId,
+    },
+  });
+  
+  useEffect(() => {
+    setValue("currentTextValue", currentTextValue);
+    setValue("currentTargetLanguageId", currentTargetLanguageId);
+    setValue("currentSourceLanguageId", currentSourceLanguageId);
+  }, [currentTextValue, currentTargetLanguageId, currentSourceLanguageId, setValue]);
+
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const translatedRef = useRef<HTMLDivElement | null>(null);
   const isScrolling = useRef(false);
@@ -80,41 +120,45 @@ const TextTranslationCard = () => {
     };
   }, [translatedText]);
 
-  const handleSubmit = async (event: FormEvent) => {
-    event.preventDefault();
+  const onSubmit = async (data: FormData) => {
     if (!token) {
       setShowAuthModal(true);
       return;
     }
-    if (currentTargetLanguageId < 0 || currentSourceLanguageId < 0) {
-      event.preventDefault();
-      setFormError("გთხოვთ, აირჩიეთ ენა");
-      return;
-    }
-    if (!currentTextValue.trim()) {
-      setFormError("გთხოვთ, შეიყვანოთ ტექსტი თარგმნისთვის.");
-      return;
-    }
-    setFormError(null);
+
     setTextLoading(true);
     try {
       const params: TextTranslateUserContentParams = {
-        UserText: currentTextValue,
-        LanguageId: currentTargetLanguageId ?? 0,
-        SourceLanguageId: currentSourceLanguageId === 0 ? 2 : currentSourceLanguageId,
+        UserText: data.currentTextValue,
+        LanguageId: data.currentTargetLanguageId,
+        SourceLanguageId: data.currentSourceLanguageId === 0 ? 2 : data.currentSourceLanguageId,
       };
-      setOriginalText(currentTextValue);
-      setOriginalTargetLanguageId(currentTargetLanguageId);
-      setSourceLanguageId(currentSourceLanguageId);
+      setOriginalText(data.currentTextValue);
+      setOriginalTargetLanguageId(data.currentTargetLanguageId);
+      setSourceLanguageId(data.currentSourceLanguageId);
       const result: TextTranslateUserContentResponse =
         await translateUserContent(params);
       setTranslatedText(result.text);
     } catch (err) {
       console.log(err);
-      setFormError("თარგმნის დროს დაფიქსირდა შეცდომა");
+      // You could also set form errors here if needed
     } finally {
       setTextLoading(false);
     }
+  };
+
+  const handleFormError = () => {
+    if (!token) {
+      setShowAuthModal(true);
+    }
+  };
+
+  // Get the first error message to display
+  const getFormError = () => {
+    if (errors.currentTextValue) return errors.currentTextValue.message;
+    if (errors.currentTargetLanguageId) return errors.currentTargetLanguageId.message;
+    if (errors.currentSourceLanguageId) return errors.currentSourceLanguageId.message;
+    return null;
   };
 
   return (
@@ -131,7 +175,7 @@ const TextTranslationCard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onSubmit, handleFormError)}>
               <div className="flex gap-2 md:gap-4 items-end flex-col md:flex-row">
                 <div className="w-full md:flex-1 min-w-0">
                   <div
@@ -147,7 +191,11 @@ const TextTranslationCard = () => {
                       </span>
                       <LanguageSelect
                         value={currentTargetLanguageId}
-                        onChange={setCurrentTargetLanguageId}
+                        onChange={(value) => {
+                          setCurrentTargetLanguageId(value);
+                          setValue("currentTargetLanguageId", value);
+                          clearErrors("currentTargetLanguageId");
+                        }}
                         placeholder="აირჩიე ენა"
                       />
                     </div>
@@ -157,7 +205,11 @@ const TextTranslationCard = () => {
                       </span>
                       <LanguageSelect
                         value={currentSourceLanguageId}
-                        onChange={setCurrentSourceLanguageId}
+                        onChange={(value) => {
+                          setCurrentSourceLanguageId(value);
+                          setValue("currentSourceLanguageId", value);
+                          clearErrors("currentSourceLanguageId");
+                        }}
                         placeholder="აირჩიე ენა"
                         detectOption="ავტომატური დაფიქსირება"
                       />
@@ -174,19 +226,15 @@ const TextTranslationCard = () => {
                       className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
                       placeholder="იყო და არა იყო რა..."
                       value={currentTextValue}
-                      onChange={(e) => setCurrentTextValue(e.target.value)}
+                      onChange={(e) => {
+                        setCurrentTextValue(e.target.value);
+                        setValue("currentTextValue", e.target.value);
+                        clearErrors("currentTextValue");
+                      }}
                       onKeyDown={(e) => {
                         if (e.shiftKey && e.key === "Enter") {
                           e.preventDefault();
-                          const form = e.currentTarget.form;
-                          if (form) {
-                            form.dispatchEvent(
-                              new Event("submit", {
-                                cancelable: true,
-                                bubbles: true,
-                              })
-                            );
-                          }
+                          handleSubmit(onSubmit, handleFormError)();
                         }
                       }}
                     />
@@ -230,8 +278,8 @@ const TextTranslationCard = () => {
                   {textLoading ? "მუშავდება..." : "თარგმნე"}
                 </span>
               </Button>
-              {formError && (
-                <div className="text-red-500 text-sm mt-2">{formError}</div>
+              {getFormError() && (
+                <div className="text-red-500 text-sm mt-2">{getFormError()}</div>
               )}
             </form>
           </CardContent>

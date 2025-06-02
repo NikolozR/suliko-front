@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-interface TranslationState {
+interface TextTranslationState {
   currentTextValue: string;
   originalText: string;
   translatedText: string;
@@ -18,7 +18,7 @@ interface TranslationState {
   reset: () => void;
 }
 
-export const useTranslationStore = create<TranslationState>()((set) => ({
+export const useTextTranslationStore = create<TextTranslationState>()((set) => ({
   currentTextValue: '',
   originalText: '',
   translatedText: '',
