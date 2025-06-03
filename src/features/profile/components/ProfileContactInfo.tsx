@@ -2,14 +2,28 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui/componen
 import { Input } from "@/features/ui/components/ui/input";
 import { Phone, Mail } from "lucide-react";
 import { UpdateUserProfile, UserProfile } from "@/features/auth/types/types.User";
+import { useTranslations } from "next-intl";
+import { FieldErrors } from "react-hook-form";
 
 interface ProfileContactInfoProps {
   userProfile: UserProfile;
   isEditing?: boolean;
   onChange?: (field: keyof UpdateUserProfile, value: string) => void;
+  errors?: FieldErrors<{
+    firstName: string;
+    lastName: string;
+    email: string;
+    userName: string;
+  }>;
 }
 
-export const ProfileContactInfo = ({ userProfile, isEditing, onChange }: ProfileContactInfoProps) => {
+export const ProfileContactInfo = ({ 
+  userProfile, 
+  isEditing, 
+  onChange, 
+  errors = {} 
+}: ProfileContactInfoProps) => {
+  const t = useTranslations("Profile");
   return (
     <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm rounded-2xl">
       <CardHeader className="pb-2 pt-6 px-8">
@@ -17,7 +31,7 @@ export const ProfileContactInfo = ({ userProfile, isEditing, onChange }: Profile
           <div className="p-2 bg-green-100 rounded-lg">
             <Mail className="h-5 w-5 text-green-600" />
           </div>
-          საკონტაქტო ინფორმაცია
+          {t("contactInformation")}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-6 px-8 pb-8 pt-2">
@@ -27,7 +41,7 @@ export const ProfileContactInfo = ({ userProfile, isEditing, onChange }: Profile
           </div>
           <div className="flex-1">
             <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-              ტელეფონის ნომერი
+              {t("phoneNumber")}
             </label>
             <p className="text-lg font-medium text-foreground">
               {userProfile.phoneNUmber}
@@ -41,20 +55,26 @@ export const ProfileContactInfo = ({ userProfile, isEditing, onChange }: Profile
           </div>
           <div className="flex-1">
             <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
-              ელექტრონული ფოსტა
+              {t("email")}
             </label>
             {isEditing ? (
-              <Input
-                value={userProfile.email || ""}
-                onChange={e => onChange && onChange("email", e.target.value)}
-                placeholder="შეიყვანეთ ელ. ფოსტა"
-                type="email"
-              />
+              <div className="space-y-1 mt-1">
+                <Input
+                  value={userProfile.email || ""}
+                  onChange={e => onChange && onChange("email", e.target.value)}
+                  placeholder={t("emailPlaceholder")}
+                  type="email"
+                  className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
+                />
+                {errors.email && (
+                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                )}
+              </div>
             ) : (
               <p className="text-lg font-medium text-foreground">
                 {userProfile.email || (
                   <span className="text-muted-foreground italic">
-                    არ არის მითითებული
+                    {t("notSpecified")}
                   </span>
                 )}
               </p>

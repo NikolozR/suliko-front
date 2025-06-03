@@ -15,10 +15,21 @@ import {
 import { UpdateUserProfile } from "@/features/auth/types/types.User";
 import { updateUserProfile } from "@/features/auth/services/userService";
 import ErrorAlert from "@/shared/components/ErrorAlert";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 
+const profileUpdateSchema = z.object({
+  firstName: z.string().min(1, "სახელი სავალდებულოა"),
+  lastName: z.string().min(1, "გვარი სავალდებულოა"),
+  email: z.string().min(1, "ელ.ფოსტა სავალდებულოა").email("არასწორი ელ.ფოსტის ფორმატი"),
+  userName: z.string().min(1, "მომხმარებლის სახელი სავალდებულოა"),
+});
+
+type ProfileFormData = z.infer<typeof profileUpdateSchema>;
 
 export default function ProfileClient() {
-  const { token, reset } = useAuthStore();
+  const { reset } = useAuthStore();
   const {
     userProfile,
     loading,
@@ -27,143 +38,160 @@ export default function ProfileClient() {
     setUserProfile,
   } = useUserStore();
   const router = useRouter();
-
   const [isEditing, setIsEditing] = useState(false);
-  const [editData, setEditData] = useState<UpdateUserProfile | null>(null);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
 
+  const form = useForm<ProfileFormData>({
+    resolver: zodResolver(profileUpdateSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      userName: "",
+    },
+  });
+
   useEffect(() => {
-    if (!token) {
-      router.push("/authorization");
-      return;
-    }
     if (!userProfile && !loading && !error) {
       fetchUserProfile();
     }
-  }, [token, userProfile, loading, error, fetchUserProfile, router]);
 
-  useEffect(() => {
     if (isEditing && userProfile) {
-      setEditData({
-        id: userProfile.id,
-        firstName: userProfile.firstName,
-        lastName: userProfile.lastName,
-        phoneNUmber: userProfile.phoneNUmber,
-        email: userProfile.email,
-        userName: userProfile.userName,
-        roleId: userProfile.roleId,
-        balance: userProfile.balance,
+      form.reset({
+        firstName: userProfile.firstName || "",
+        lastName: userProfile.lastName || "",
+        email: userProfile.email || "",
+        userName: userProfile.userName || "",
       });
     }
-    if (!isEditing) {
-      setEditData(null);
-    }
-  }, [isEditing, userProfile]);
+  }, [userProfile, loading, error, fetchUserProfile, isEditing, form]);
 
   const handleLogout = () => {
     reset();
-    router.push("/authorization");
+    router.push("/sign-in");
   };
 
   const handleEdit = () => setIsEditing(true);
+  
   const handleCancel = () => {
     setIsEditing(false);
     setUpdateError(null);
+    form.clearErrors();
   };
 
   const handleChange = (field: keyof UpdateUserProfile, value: string) => {
-    if (!editData) return;
-    setEditData({ ...editData, [field]: value });
+    form.setValue(field as keyof ProfileFormData, value);
+    form.clearErrors(field as keyof ProfileFormData);
   };
 
   const handleSave = async () => {
-    if (editData) {
-      setIsUpdating(true);
-      setUpdateError(null);
-      const prevUserProfile = userProfile;
-      setUserProfile({
-        ...editData,
-        roleName: userProfile?.roleName || "",
-      });
-      try {
-        console.log(editData);
-        await updateUserProfile(editData);
-        setIsEditing(false);
-      } catch (error: unknown) {
-        setUserProfile(prevUserProfile);
-        let message = "პროფილის განახლებისას მოხდა შეცდომა. გთხოვთ, სცადეთ თავიდან.";
-        if (
-          error &&
-          typeof error === "object" &&
-          "message" in error &&
-          typeof (error as Record<string, unknown>).message === "string"
-        ) {
-          message = (error as Record<string, unknown>).message as string;
-        }
-        setUpdateError(message);
-      } finally {
-        setIsUpdating(false);
+    const isValid = await form.trigger();
+    if (!isValid) {
+      return;
+    }
+
+    const formData = form.getValues();
+    if (!userProfile) return;
+    
+    const editData: UpdateUserProfile = {
+      id: userProfile.id,
+      firstName: formData.firstName,
+      lastName: formData.lastName,
+      phoneNUmber: userProfile.phoneNUmber,
+      email: formData.email,
+      userName: formData.userName,
+      roleId: userProfile.roleId,
+      balance: userProfile.balance,
+    };
+    
+    setIsUpdating(true);
+    setUpdateError(null);
+    const prevUserProfile = userProfile;
+    
+    setUserProfile({
+      ...editData,
+      roleName: userProfile?.roleName || "",
+    });
+    
+    try {
+      await updateUserProfile(editData);
+      setIsEditing(false);
+    } catch (error: unknown) {
+      setUserProfile(prevUserProfile);
+      let message = "პროფილის განახლებისას მოხდა შეცდომა. გთხოვთ, სცადეთ თავიდან.";
+      if (
+        error &&
+        typeof error === "object" &&
+        "message" in error &&
+        typeof (error as Record<string, unknown>).message === "string"
+      ) {
+        message = (error as Record<string, unknown>).message as string;
       }
+      setUpdateError(message);
+    } finally {
+      setIsUpdating(false);
     }
   };
 
-  if (!token) {
-    return null; // Will redirect in useEffect
-  }
-
-  if (loading) {
+  if (loading || (!userProfile && !error)) {
     return <ProfileSkeleton />;
   }
 
   if (error) {
-    return <ProfileError error={error} onRetry={fetchUserProfile} />;
+    return (
+      <div className="flex items-center justify-center py-12">
+        <ProfileError error={error} onRetry={fetchUserProfile} />
+      </div>
+    );
   }
 
   if (!userProfile) {
-    return <ProfileNotFound />;
+    return (
+      <div className="flex items-center justify-center py-12">
+        <ProfileNotFound />
+      </div>
+    );
   }
 
+  const currentUserProfile = isEditing ? {
+    ...userProfile,
+    ...form.getValues(),
+  } : userProfile;
+
+  const validationErrors = form.formState.errors;
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 dark:from-[#181c2a] dark:via-[#232a45] dark:to-[#232a45]">
-      <div className="container mx-auto px-4 py-8">
-        {updateError && (
-          <ErrorAlert
-            message={updateError}
-            onClose={() => setUpdateError(null)}
-            className="mb-6"
-          />
-        )}
-        <ProfileHero
-          userProfile={isEditing && editData ? {
-            ...editData,
-            roleName: userProfile?.roleName || "",
-          } : userProfile}
-          onLogout={handleLogout}
-          isEditing={isEditing}
-          onEdit={handleEdit}
-          onSave={handleSave}
-          onCancel={handleCancel}
-          isUpdating={isUpdating}
+    <div className="container mx-auto px-4 py-8">
+      {updateError && (
+        <ErrorAlert
+          message={updateError}
+          onClose={() => setUpdateError(null)}
+          className="mb-6"
         />
-        <div className="space-y-6">
-          <ProfilePersonalInfo
-            userProfile={isEditing && editData ? {
-              ...editData,
-              roleName: userProfile?.roleName || "",
-            } : userProfile}
-            isEditing={isEditing}
-            onChange={handleChange}
-          />
-          <ProfileContactInfo
-            userProfile={isEditing && editData ? {
-              ...editData,
-              roleName: userProfile?.roleName || "",
-            } : userProfile}
-            isEditing={isEditing}
-            onChange={handleChange}
-          />
-        </div>
+      )}
+      <ProfileHero
+        userProfile={currentUserProfile}
+        onLogout={handleLogout}
+        isEditing={isEditing}
+        onEdit={handleEdit}
+        onSave={handleSave}
+        onCancel={handleCancel}
+        isUpdating={isUpdating}
+      />
+      <div className="space-y-6">
+        <ProfilePersonalInfo
+          userProfile={currentUserProfile}
+          isEditing={isEditing}
+          onChange={handleChange}
+          errors={validationErrors}
+        />
+        <ProfileContactInfo
+          userProfile={currentUserProfile}
+          isEditing={isEditing}
+          onChange={handleChange}
+          errors={validationErrors}
+        />
       </div>
     </div>
   );

@@ -53,6 +53,26 @@
     "dragAndDrop": "Drag and drop file or click to select",
     "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc."
   },
+  "Profile": {
+    "fullName": "Full Name",
+    "name": "Name",
+    "surname": "Surname",
+    "userName": "Username",
+    "personalInformation": "Personal Information",
+    "contactInformation": "Contact Information",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "edit": "Edit",
+    "logout": "Logout",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "notSpecified": "Not specified",
+    "userNamePlaceholder": "Enter username",
+    "surnamePlaceholder": "Enter surname",
+    "namePlaceholder": "Enter name",
+    "emailPlaceholder": "Enter email"
+  },
   "LanguageSwitcher": {
     "english": "English",
     "georgian": "ქართული",

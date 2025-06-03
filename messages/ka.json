@@ -53,6 +53,26 @@
     "dragAndDrop": "ჩააგდე ფაილი ან დააკლიკე ასარჩევად",
     "supportedFormats": "მხარდაჭერილი ფაილის ტიპები: PDF, DOCX, TXT, და ა.შ."
   },
+  "Profile": {
+    "fullName": "სრული სახელი",
+    "name": "სახელი",
+    "surname": "გვარი",
+    "userName": "მომხმარებლის სახელი",
+    "personalInformation": "პერსონალური ინფორმაცია",
+    "contactInformation": "საკონტაქტო ინფორმაცია",
+    "email": "ელექტრონული ფოსტა",
+    "phoneNumber": "ტელეფონის ნომერი",
+    "edit": "რედაქტირება",
+    "logout": "გასვლა",
+    "cancel": "გაუქმება",
+    "save": "შენახვა",
+    "saving": "შენახვა...",
+    "notSpecified": "არ არის მითითებული",
+    "userNamePlaceholder": "შეიყვანეთ მომხმარებლის სახელი",
+    "surnamePlaceholder": "შეიყვანეთ გვარი",
+    "namePlaceholder": "შეიყვანეთ სახელი",
+    "emailPlaceholder": "შეიყვანეთ ელ. ფოსტა"
+  },
   "LanguageSwitcher": {
     "english": "English",
     "georgian": "ქართული",

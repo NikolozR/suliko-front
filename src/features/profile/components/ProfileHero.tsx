@@ -4,6 +4,7 @@ import { Avatar, AvatarFallback } from "@/features/ui/components/ui/avatar";
 import { Edit, LogOut } from "lucide-react";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { useUser } from "@/features/auth/hooks/useUser";
+import { useTranslations } from "next-intl";
 
 interface ProfileHeroProps {
   userProfile: UserProfile;
@@ -17,6 +18,8 @@ interface ProfileHeroProps {
 
 export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, onCancel, isUpdating }: ProfileHeroProps) => {
   const { displayName, initials } = useUser();
+  const t = useTranslations("Profile");
+
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 p-8 mb-8 shadow-2xl">
@@ -27,7 +30,7 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
         {isEditing ? (
           <>
             <Button variant="outline" size="sm" onClick={onCancel} disabled={isUpdating}>
-              გაუქმება
+              {t("cancel")}
             </Button>
             <Button
               size="sm"
@@ -35,7 +38,7 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
               className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
               disabled={isUpdating}
             >
-              {isUpdating ? "შენახვა..." : "შენახვა"}
+              {isUpdating ? t("saving") : t("save")}
             </Button>
           </>
         ) : (
@@ -48,7 +51,7 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
                 className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
               >
                 <Edit className="h-4 w-4 mr-2" />
-                რედაქტირება
+                {t("edit")}
               </Button>
             )}
             <Button
@@ -58,7 +61,7 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
               className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
             >
               <LogOut className="h-4 w-4 mr-2" />
-              გამოსვლა
+              {t("logout")}
             </Button>
           </>
         )}
@@ -78,7 +81,7 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
           <div className="text-center lg:text-left text-white flex-1 space-y-2">
             <div>
               <Badge variant="secondary" className="bg-white/20 text-white mb-1 pointer-events-none select-none">
-                სრული სახელი
+                {t("fullName")}
               </Badge>
               <h1 className="text-4xl font-bold mb-2">
                 {isEditing
@@ -90,7 +93,7 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
             </div>
             <div>
               <Badge variant="secondary" className="bg-white/20 text-white mb-1 pointer-events-none select-none">
-                მომხმარებლის სახელი
+                {t("userName")}
               </Badge>
               <p className="text-xl text-white/80 mb-4">
                 @{userProfile.userName}
