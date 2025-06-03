@@ -31,7 +31,7 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
         <LanguageSelect
           value={targetLanguageId}
           onChange={onTargetLanguageChange}
-          placeholder="აირჩიე ენა"
+          placeholder={t('selectLanguagePlaceholder')}
         />
       </div>
       <div className="w-full sm:flex-1">
