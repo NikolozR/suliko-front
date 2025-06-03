@@ -8,7 +8,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/features/ui/components/ui/card";
-import { Type } from "lucide-react";
+import { Type, ArrowRightLeft } from "lucide-react";
 import { Textarea } from "@/features/ui/components/ui/textarea";
 import { Button } from "@/features/ui/components/ui/button";
 import LanguageSelect from "./LanguageSelect";
@@ -26,7 +26,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 
-// Zod validation schema
 const textTranslationSchema = z.object({
   currentTextValue: z
     .string()
@@ -66,7 +65,6 @@ const TextTranslationCard = () => {
     setSourceLanguageId,
   } = useTextTranslationStore();
 
-  // React Hook Form with Zod validation
   const {
     handleSubmit,
     formState: { errors },
@@ -145,7 +143,6 @@ const TextTranslationCard = () => {
       setTranslatedText(result.text);
     } catch (err) {
       console.log(err);
-      // You could also set form errors here if needed
     } finally {
       setTextLoading(false);
     }
@@ -157,7 +154,6 @@ const TextTranslationCard = () => {
     }
   };
 
-  // Get the first error message to display
   const getFormError = () => {
     if (errors.currentTextValue) return errors.currentTextValue.message;
     if (errors.currentTargetLanguageId) return errors.currentTargetLanguageId.message;
@@ -180,51 +176,69 @@ const TextTranslationCard = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit, handleFormError)}>
-              <div className="flex gap-2 md:gap-4 items-end flex-col md:flex-row">
-                <div className="w-full md:flex-1 min-w-0">
-                  <div
-                    className={`flex gap-2 md:gap-4 ${
-                      translatedText
-                        ? "flex-col sm:flex-row md:flex-col"
-                        : "flex-col sm:flex-row"
-                    }`}
+              <div className="flex gap-2 md:gap-4 flex-col sm:flex-row mb-4">
+                <div className="w-full sm:flex-1">
+                  <span className="block text-xs text-muted-foreground mb-1">
+                    {tCommon('sourceLanguageQuestion')}?
+                  </span>
+                  <LanguageSelect
+                    value={currentSourceLanguageId}
+                    onChange={(value) => {
+                      setCurrentSourceLanguageId(value);
+                      setValue("currentSourceLanguageId", value);
+                      clearErrors("currentSourceLanguageId");
+                    }}
+                    placeholder={tCommon('selectLanguagePlaceholder')}
+                    detectOption={tCommon('automaticDetection')}
+                  />
+                </div>
+                
+                <div className="flex items-end justify-center sm:justify-start">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-10 w-10 border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
+                    disabled={currentSourceLanguageId === 0}
+                    onClick={() => {
+                      if (currentSourceLanguageId !== 0) {
+                        const tempSource = currentSourceLanguageId;
+                        const tempTarget = currentTargetLanguageId;
+                        
+                        setCurrentSourceLanguageId(tempTarget);
+                        setCurrentTargetLanguageId(tempSource);
+                        setValue("currentSourceLanguageId", tempTarget);
+                        setValue("currentTargetLanguageId", tempSource);
+                        clearErrors("currentSourceLanguageId");
+                        clearErrors("currentTargetLanguageId");
+                      }
+                    }}
                   >
-                    <div className="w-full sm:flex-1">
-                      <span className="block text-xs text-muted-foreground mb-1">
-                        {tCommon('targetLanguageQuestion')}?
-                      </span>
-                      <LanguageSelect
-                        value={currentTargetLanguageId}
-                        onChange={(value) => {
-                          setCurrentTargetLanguageId(value);
-                          setValue("currentTargetLanguageId", value);
-                          clearErrors("currentTargetLanguageId");
-                        }}
-                        placeholder={tCommon('selectLanguagePlaceholder')}
-                      />
-                    </div>
-                    <div className="w-full sm:flex-1">
-                      <span className="block text-xs text-muted-foreground mb-1">
-                        {tCommon('sourceLanguageQuestion')}?
-                      </span>
-                      <LanguageSelect
-                        value={currentSourceLanguageId}
-                        onChange={(value) => {
-                          setCurrentSourceLanguageId(value);
-                          setValue("currentSourceLanguageId", value);
-                          clearErrors("currentSourceLanguageId");
-                        }}
-                        placeholder={tCommon('selectLanguagePlaceholder')}
-                        detectOption={tCommon('automaticDetection')}
-                      />
-                    </div>
+                    <ArrowRightLeft className="h-4 w-4" />
+                  </Button>
+                </div>
+
+                <div className="w-full sm:flex-1">
+                  <span className="block text-xs text-muted-foreground mb-1">
+                    {tCommon('targetLanguageQuestion')}?
+                  </span>
+                  <LanguageSelect
+                    value={currentTargetLanguageId}
+                    onChange={(value) => {
+                      setCurrentTargetLanguageId(value);
+                      setValue("currentTargetLanguageId", value);
+                      clearErrors("currentTargetLanguageId");
+                    }}
+                    placeholder={tCommon('selectLanguagePlaceholder')}
+                  />
+                </div>
+              </div>
+              <div className={translatedText ? "flex gap-4 md:gap-8" : undefined}>
+                <div className="w-full flex-1 min-w-0">
+                  <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
+                    {t('yourText')}
                   </div>
-                  <div
-                    className={
-                      "mt-4 h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full " +
-                      (translatedText ? "md:flex-1" : "")
-                    }
-                  >
+                  <div className="h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full">
                     <Textarea
                       ref={textareaRef}
                       className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
@@ -245,9 +259,9 @@ const TextTranslationCard = () => {
                   </div>
                 </div>
                 {translatedText && (
-                  <div className="w-full md:flex-1 min-w-0">
+                  <div className="w-full flex-1 min-w-0">
                     <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
-                      თარგმნილი ტექსტი
+                      {t('result')}
                     </div>
                     <div
                       ref={translatedRef}
@@ -282,6 +296,14 @@ const TextTranslationCard = () => {
                   {textLoading ? tTranslationButton('loading') : tTranslationButton('translate')}
                 </span>
               </Button>
+              <div className="flex justify-center mt-2">
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  {t('orPress')}{' '}
+                  <kbd className="px-1 py-0.5 bg-muted border border-border rounded text-xs font-mono">
+                    Shift + Enter
+                  </kbd>
+                </span>
+              </div>
               {getFormError() && (
                 <div className="text-red-500 text-sm mt-2">{getFormError()}</div>
               )}

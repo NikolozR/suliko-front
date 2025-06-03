@@ -35,7 +35,10 @@
   "TextTranslationCard": {
     "title": "Type text",
     "description": "Type text for analysis",
-    "textIputPlaceholder": "Once upon a time..."
+    "textIputPlaceholder": "Once upon a time...",
+    "result": "Translated text",
+    "yourText": "Your text",
+    "orPress": "or press"
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "What language do you want to translate to",

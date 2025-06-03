@@ -35,7 +35,10 @@
   "TextTranslationCard": {
     "title": "აკრიფე ტექსტი",
     "description": "აკრიფე ტექსტი ანალიზისთვის",
-    "textIputPlaceholder": "იყო და არა იყო რა..."
+    "textIputPlaceholder": "იყო და არა იყო რა...",
+    "result": "თარგმნილი ტექსტი",
+    "yourText": "შენი ტექსტი",
+    "orPress": "ან დააჭირეთ"
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "რა ენაზე გსურთ თარგმნა",

@@ -1,11 +1,17 @@
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import type { Container, Engine } from "tsparticles-engine";
 import Particles from "react-particles";
 import { loadSlim } from "tsparticles-slim";
 import { useTheme } from "next-themes";
 
 const SulikoFormParticles: React.FC = () => {
-  const { theme } = useTheme();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const particlesInit = useCallback(async (engine: Engine) => {
     // you can initialize the tsParticles instance (engine) here, adding custom shapes or presets
     // this loads the tsparticles package bundle, it's the easiest method for getting everything ready
@@ -21,7 +27,7 @@ const SulikoFormParticles: React.FC = () => {
     []
   );
 
-  const isDark = theme === "dark";
+  const isDark = mounted && resolvedTheme === "dark";
   const backgroundColor = isDark ? "#181c2a" : "#fffff";
   const particleColor = isDark ? "#3b59f3" : "#11289c";
   const linkColor = isDark ? "#6c7ae0" : "#4e5da5";

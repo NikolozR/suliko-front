@@ -23,10 +23,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 
-// Safe check for browser environment
 const isFileListAvailable = typeof window !== 'undefined' && 'FileList' in window;
 
-// Zod validation schema for document translation
 const documentTranslationSchema = z.object({
   currentFile: z
     .any()
@@ -46,11 +44,9 @@ const documentTranslationSchema = z.object({
       "File size must be less than 10MB."
     ),
   currentTargetLanguageId: z
-    .number()
-    .min(0, "გთხოვთ, აირჩიეთ სამიზნე ენა"),
+    .number(),
   currentSourceLanguageId: z
     .number()
-    .min(0, "გთხოვთ, აირჩიეთ წყარო ენა"),
 });
 
 type DocumentFormData = z.infer<typeof documentTranslationSchema>;
@@ -90,7 +86,6 @@ const DocumentTranslationCard = () => {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {
       setShowAuthModal(true);
-      // Reset the file input
       event.target.value = '';
       return;
     }
@@ -159,14 +154,12 @@ const DocumentTranslationCard = () => {
       currentSourceLanguageId,
     });
     
-    // Reset the file input element
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = '';
     }
   };
 
-  // Get the first error message to display
   const getFormError = (): string | null => {
     if (errors.currentFile?.message) {
       return typeof errors.currentFile.message === 'string' ? errors.currentFile.message : 'Please select a file to translate.';
