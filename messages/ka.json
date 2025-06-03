@@ -1,4 +1,22 @@
 {
+  "Authorization": {
+    "title": "ავტორიზაცია",
+    "description": "შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი",
+    "phoneNumber": "ტელეფონი",
+    "password": "პაროლი",
+    "login": "შესვლა",
+    "register": "რეგისტრაცია", 
+    "phoneNumberRequiredError": "ტელეფონის ნომერი სავალდებულოა",
+    "phoneNumberFormatError": "ტელეფონის ნომერი უნდა იყოს ქართული ფორმატით: 5XXXXXXXX",
+    "passwordMinLengthError": "პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან",
+    "passwordRegexError": "პაროლი უნდა შედგებოდეს მინიმუმ ერთი ციფრისა და ერთი სიმბოლოსგან",
+    "AuthenticationFailed": "ავტორიზაცია ვერ მოხერხდა, არასწორი მონაცემები"
+  },
+  "AuthModal": {
+    "title": "გთხოვთ გაიაროთ რეგისტრაცია",
+    "description": "გთხოვთ გაიაროთ რეგისტრაცია თარგმნის მიზნით",
+    "login": "შესვლა"
+  },
   "Sidebar": {
     "newProject": "ახალი პროექტი",
     "history": "ისტორია",

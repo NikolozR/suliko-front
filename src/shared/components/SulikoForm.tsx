@@ -14,31 +14,34 @@ import {
 import { Button } from "@/features/ui/components/ui/button";
 import { Input } from "@/features/ui/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import SulikoFormParticles from "./SulikoFormParticles";
 import { register } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useRouter } from "next/navigation";
-
-const formSchema = z.object({
-  mobile: z
-    .string()
-    .min(1, { message: "ტელეფონის ნომერი სავალდებულოა" })
-    .regex(/^5\d{8}$/, "ტელეფონის ნომერი უნდა იყოს ქართული ფორმატით: 5XXXXXXXX"),
-  password: z
-    .string()
-    .min(8, { message: "პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან" })
-    .regex(
-      /(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
-      "პაროლი უნდა შედგებოდეს მინიმუმ ერთი ციფრისა და ერთი სიმბოლოსგან"
-    ),
-});
+import { useTranslations } from "next-intl";
 
 const SulikoForm: React.FC = () => {
+  const t = useTranslations('Authorization');
   const { setToken, setRefreshToken } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+
+  const formSchema = useMemo(() => z.object({
+    mobile: z
+      .string()
+      .min(1, { message: t('phoneNumberRequiredError') })
+      .regex(/^5\d{8}$/, { message: t('phoneNumberFormatError') }),
+    password: z
+      .string()
+      .min(8, { message: t('passwordMinLengthError') })
+      .regex(
+        /(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
+        { message: t('passwordRegexError') }
+      ),
+  }), [t]);
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -63,39 +66,42 @@ const SulikoForm: React.FC = () => {
       setRefreshToken(data.refreshToken);
       router.push("/");
     } catch {
-      setAuthError("Authentication failed, Invalid credentials");
+      setAuthError(t('AuthenticationFailed'));
     }
   }
 
   return (
     <>
       <SulikoFormParticles />
+      {authError && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-md animate-in slide-in-from-top-2 duration-300">
+          <ErrorAlert
+            message={authError}
+            onClose={() => setAuthError(null)}
+            timeout={3000}
+          />
+        </div>
+      )}
       <Form {...form}>
         <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
           <div className="pb-[20px] lg:pb-[40px] flex flex-col gap-5 overflow-hidden">
             <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center dark:text-primary">
-              ავტორიზაცია
+              {t('title')}
             </h3>
             <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem] dark:text-muted-foreground">
-              შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი
+              {t('description')}
             </p>
           </div>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="flex flex-col gap-8 w-[60%]"
           >
-            {authError && (
-              <ErrorAlert
-                message={authError}
-                onClose={() => setAuthError(null)}
-              />
-            )}
             <FormField
               control={form.control}
               name="mobile"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold dark:text-white">ტელეფონი</FormLabel>
+                  <FormLabel className="font-bold dark:text-white">{t('phoneNumber')}</FormLabel>
                   <FormControl>
                     <Input placeholder="5XX 11 22 33" className="border-2 shadow-md dark:border-slate-600" {...field} />
                   </FormControl>
@@ -108,7 +114,7 @@ const SulikoForm: React.FC = () => {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className="font-bold dark:text-white">პაროლი</FormLabel>
+                  <FormLabel className="font-bold dark:text-white">{t('password')}</FormLabel>
                   <FormControl>
                     <div className="relative w-full">
                       <Input
@@ -140,7 +146,7 @@ const SulikoForm: React.FC = () => {
               className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
               type="submit"
             >
-              რეგისტრაცია
+              {t('register')}
             </Button>
           </form>
         </div>

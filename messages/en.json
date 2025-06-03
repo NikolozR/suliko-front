@@ -1,4 +1,22 @@
 {
+  "Authorization": {
+    "title": "Authorization",
+    "description": "Enter your phone number and password",
+    "phoneNumber": "Phone",
+    "password": "Password",
+    "login": "Login",
+    "register": "Register",
+    "phoneNumberRequiredError": "Phone number is required",
+    "phoneNumberFormatError": "Phone number must be in Georgian format: 5XXXXXXXX",
+    "passwordMinLengthError": "Password must be at least 8 characters long",
+    "passwordRegexError": "Password must contain at least one number and one symbol",
+    "AuthenticationFailed": "Authentication failed, Invalid credentials"
+  },
+  "AuthModal": {
+    "title": "Please register",
+    "description": "Please register to use translation services",
+    "login": "Login"
+  },
   "Sidebar": {
     "newProject": "New Project",
     "history": "History",

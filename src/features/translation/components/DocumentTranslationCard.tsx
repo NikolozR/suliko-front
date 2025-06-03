@@ -88,6 +88,13 @@ const DocumentTranslationCard = () => {
   });
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    if (!token) {
+      setShowAuthModal(true);
+      // Reset the file input
+      event.target.value = '';
+      return;
+    }
+    
     if (event.target.files && event.target.files.length > 0) {
       setCurrentFile(event.target.files);
       setValue("currentFile", event.target.files);
@@ -176,6 +183,17 @@ const DocumentTranslationCard = () => {
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
 
+  const handleFormSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!token) {
+      setShowAuthModal(true);
+      return;
+    }
+    
+    handleSubmit(onSubmit, handleFormError)();
+  };
+
   return (
     <TabsContent value="document">
       <div className={translatedMarkdown ? "flex gap-8" : undefined}>
@@ -190,7 +208,7 @@ const DocumentTranslationCard = () => {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit(onSubmit, handleFormError)}>
+            <form onSubmit={handleFormSubmit}>
               {translatedMarkdown ? (
                 <>
                   <LanguageSelectionPanel
@@ -248,7 +266,7 @@ const DocumentTranslationCard = () => {
                 type="submit"
                 className="w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-opacity text-sm md:text-base"
                 size={translatedMarkdown ? "default" : "lg"}
-                disabled={isLoading || !hasFile}
+                disabled={isLoading || (!token ? false : !hasFile)}
               >
                 <span className="text-sm md:text-base">
                   {isLoading ? tTranslationButton('loading') : tTranslationButton('translate')}
@@ -266,7 +284,7 @@ const DocumentTranslationCard = () => {
                 </Button>
               )}
 
-              {getFormError() && (
+              {token && getFormError() && (
                 <p className="mt-4 text-sm text-red-600 bg-red-100 p-3 rounded-md">
                   {getFormError()}
                 </p>

@@ -9,6 +9,7 @@ import {
 } from "@/features/ui/components/ui/dialog";
 import { Button } from "@/features/ui/components/ui/button";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -16,7 +17,10 @@ interface AuthModalProps {
 }
 
 export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose}) => {
+  const t = useTranslations("AuthModal");
   const router = useRouter();
+  
+  
   
   if (!isOpen) return null;
 
@@ -30,9 +34,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose}) => {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="w-fit rounded-lg py-[40px] px-[70px]">
         <DialogHeader>
-          <DialogTitle className="text-center">გთხოვთ გაიაროთ რეგისტრაცია</DialogTitle>
+          <DialogTitle className="text-center">{t("title")}</DialogTitle>
           <DialogDescription className="text-center">
-            გთხოვთ გაიაროთ რეგისტრაცია თარგმნის მიზნით
+            {t("description")}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex !justify-center items-center gap-2 mt-4">
@@ -40,7 +44,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose}) => {
             onClick={handleSignUpClick} 
             className="cursor-pointer"
           >
-            შესვლა
+            {t("login")}
           </Button>
         </DialogFooter>
       </DialogContent>
