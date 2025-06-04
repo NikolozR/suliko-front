@@ -31,7 +31,8 @@
     "logout": "Logout",
     "help": "Help",
     "feedback": "Feedback",
-    "login": "Login"
+    "login": "Login",
+    "balance": "Balance"
   },
   "MainContent": {
     "title": "Your Translator",
@@ -81,7 +82,9 @@
     "userNamePlaceholder": "Enter username",
     "surnamePlaceholder": "Enter surname",
     "namePlaceholder": "Enter name",
-    "emailPlaceholder": "Enter email"
+    "emailPlaceholder": "Enter email",
+    "balance": "Balance",
+    "currentBalance": "Current Balance"
   },
   "LanguageSwitcher": {
     "english": "English",

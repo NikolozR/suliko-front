@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
+import { useUserStore } from "@/features/auth/store/userStore";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import { Button } from "@/features/ui/components/ui/button";
@@ -16,6 +17,7 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  Wallet,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
@@ -56,6 +58,7 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { token, reset } = useAuthStore();
+  const { userProfile, fetchUserProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
   const { isCollapsed, setIsCollapsed } = useSidebarStore();
@@ -74,6 +77,12 @@ export default function Sidebar() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [setIsCollapsed]);
+
+  useEffect(() => {
+    if (token && !userProfile) {
+      fetchUserProfile();
+    }
+  }, [token, userProfile, fetchUserProfile]);
 
   const handleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -157,28 +166,45 @@ export default function Sidebar() {
 
         <div className="mt-auto flex flex-col gap-2 p-3">
           {token ? (
-            <Button
-              className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
-                isCollapsed ? "justify-center px-0" : "justify-start px-3"
-              }`}
-              onClick={() => {
-                reset();
-                resetTextTranslation();
-                resetDocumentTranslation();
-                router.push("/sign-in");
-              }}
-            >
-              <LogOut
-                className={`transition-transform duration-200 ${
-                  isCollapsed ? "h-5 w-5" : "h-5 w-5"
-                } group-hover:scale-105`}
-              />
-              {!isCollapsed && (
-                <span className="whitespace-nowrap">
-                  {t('logout')}
-                </span>
+            <>
+              {userProfile && (
+                <div className={`flex items-center gap-3 p-3 rounded-lg bg-muted/50 mb-2 ${
+                  isCollapsed ? "justify-center" : ""
+                }`}>
+                  <Wallet className="h-5 w-5 text-green-600 flex-shrink-0" />
+                  {!isCollapsed && (
+                    <div className="flex flex-col min-w-0">
+                      <span className="text-xs text-muted-foreground">{t('balance')}</span>
+                      <span className="font-semibold text-green-600">
+                        ₾{userProfile.balance?.toFixed(2) || '0.00'}
+                      </span>
+                    </div>
+                  )}
+                </div>
               )}
-            </Button>
+              <Button
+                className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
+                  isCollapsed ? "justify-center px-0" : "justify-start px-3"
+                }`}
+                onClick={() => {
+                  reset();
+                  resetTextTranslation();
+                  resetDocumentTranslation();
+                  router.push("/sign-in");
+                }}
+              >
+                <LogOut
+                  className={`transition-transform duration-200 ${
+                    isCollapsed ? "h-5 w-5" : "h-5 w-5"
+                  } group-hover:scale-105`}
+                />
+                {!isCollapsed && (
+                  <span className="whitespace-nowrap">
+                    {t('logout')}
+                  </span>
+                )}
+              </Button>
+            </>
           ) : (
             <Link
               href="/sign-in"

@@ -31,7 +31,8 @@
     "logout": "გასვლა",
     "help": "დახმარება", 
     "feedback": "გამოხმაურება",
-    "login": "შესვლა"
+    "login": "შესვლა",
+    "balance": "ბალანსი"
   },
   "MainContent": {
     "title": "შენი თარჯიმანი",
@@ -81,7 +82,9 @@
     "userNamePlaceholder": "შეიყვანეთ მომხმარებლის სახელი",
     "surnamePlaceholder": "შეიყვანეთ გვარი",
     "namePlaceholder": "შეიყვანეთ სახელი",
-    "emailPlaceholder": "შეიყვანეთ ელ. ფოსტა"
+    "emailPlaceholder": "შეიყვანეთ ელ. ფოსტა",
+    "balance": "ბალანსი",
+    "currentBalance": "მიმდინარე ბალანსი"
   },
   "LanguageSwitcher": {
     "english": "English",

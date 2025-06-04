@@ -25,7 +25,6 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 p-8 mb-8 shadow-2xl">
       <div className="absolute inset-0 bg-black/10"></div>
 
-      {/* Action Buttons */}
       <div className="absolute top-4 right-4 flex gap-2 z-20">
         {isEditing ? (
           <>
@@ -69,7 +68,6 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
 
       <div className="relative z-10">
         <div className="flex flex-col lg:flex-row items-center gap-6">
-          {/* Avatar */}
           <div className="relative">
             <Avatar className="h-32 w-32 border-4 border-white/30 backdrop-blur-sm">
               <AvatarFallback className="bg-white/20 text-white text-4xl font-bold">
@@ -97,6 +95,14 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
               </Badge>
               <p className="text-xl text-white/80 mb-4">
                 @{userProfile.userName}
+              </p>
+            </div>
+            <div>
+              <Badge variant="secondary" className="bg-white/20 text-white mb-1 pointer-events-none select-none">
+                {t("currentBalance")}
+              </Badge>
+              <p className="text-xl text-white/80">
+                ₾{userProfile.balance?.toFixed(2) || '0.00'}
               </p>
             </div>
           </div>
