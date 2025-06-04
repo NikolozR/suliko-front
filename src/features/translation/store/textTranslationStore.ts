@@ -33,5 +33,13 @@ export const useTextTranslationStore = create<TextTranslationState>()((set) => (
   setCurrentTextValue: (text) => set({ currentTextValue: text }),
   setOriginalText: (text) => set({ originalText: text }),
   setTranslatedText: (text) => set({ translatedText: text }),
-  reset: () => set({ originalText: '', translatedText: '', currentTextValue: '' }),
+  reset: () => set({ 
+    originalText: '', 
+    translatedText: '', 
+    currentTextValue: '',
+    currentSourceLanguageId: 0,
+    currentTargetLanguageId: 2,
+    originalTargetLanguageId: 2,
+    sourceLanguageId: 0
+  }),
 })); 

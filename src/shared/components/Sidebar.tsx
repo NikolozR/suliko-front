@@ -3,6 +3,8 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
+import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
+import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 import {
@@ -53,7 +55,9 @@ const NAV_ITEMS = [
 
 export default function Sidebar() {
   const pathname = usePathname();
-  const { token, setToken, setRefreshToken } = useAuthStore();
+  const { token, reset } = useAuthStore();
+  const { reset: resetTextTranslation } = useTextTranslationStore();
+  const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
   const { isCollapsed, setIsCollapsed } = useSidebarStore();
   const router = useRouter();
   const t = useTranslations('Sidebar');
@@ -158,8 +162,9 @@ export default function Sidebar() {
                 isCollapsed ? "justify-center px-0" : "justify-start px-3"
               }`}
               onClick={() => {
-                setToken(null);
-                setRefreshToken(null);
+                reset();
+                resetTextTranslation();
+                resetDocumentTranslation();
                 router.push("/sign-in");
               }}
             >

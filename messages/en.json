@@ -4,13 +4,20 @@
     "description": "Enter your phone number and password",
     "phoneNumber": "Phone",
     "password": "Password",
+    "name": "Name",
+    "surname": "Surname",
+    "optional": "Optional",
+    "namePlaceholder": "Enter name",
+    "surnamePlaceholder": "Enter surname",
     "login": "Login",
     "register": "Register",
     "phoneNumberRequiredError": "Phone number is required",
     "phoneNumberFormatError": "Phone number must be in Georgian format: 5XXXXXXXX",
     "passwordMinLengthError": "Password must be at least 8 characters long",
     "passwordRegexError": "Password must contain at least one number and one symbol",
-    "AuthenticationFailed": "Authentication failed, Invalid credentials"
+    "AuthenticationFailed": "Authentication failed, Invalid credentials",
+    "switchToLoginRecommended": "Switching to login mode is recommended.",
+    "switchingToRegistrationMode": "Switching to registration mode..."
   },
   "AuthModal": {
     "title": "Please register",

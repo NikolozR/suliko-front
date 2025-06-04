@@ -7,7 +7,12 @@ interface LoginParams {
   password: string;
 }
 
-export async function register({ phoneNumber, password }: LoginParams) {
+interface RegisterParams extends LoginParams {
+  name?: string;
+  surname?: string;
+}
+
+export async function register({ phoneNumber, password, name, surname }: RegisterParams) {
   const endpoint = "/Auth/register-with-phone";
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
@@ -15,8 +20,10 @@ export async function register({ phoneNumber, password }: LoginParams) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      phoneNumber: phoneNumber,
+      phoneNumber,
       password,
+      ...(name && { name }),
+      ...(surname && { surname }),
     }),
   });
   
@@ -60,7 +67,7 @@ export async function login({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      phoneNumber: phoneNumber,
+      phoneNumber,
       password,
     }),
   });
@@ -104,4 +111,4 @@ export async function reaccessToken(refreshToken: string) {
   }
 }
 
-export type { LoginParams };
+export type { LoginParams, RegisterParams };

@@ -33,5 +33,13 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   setCurrentFile: (file) => set({ currentFile: file }),
   setTranslatedMarkdown: (text) => set({ translatedMarkdown: text, shouldResetZoom: true }),
   setShouldResetZoom: (shouldReset) => set({ shouldResetZoom: shouldReset }),
-  reset: () => set({ currentFile: null, translatedMarkdown: '', shouldResetZoom: false }),
+  reset: () => set({ 
+    currentFile: null, 
+    translatedMarkdown: '', 
+    shouldResetZoom: false,
+    currentSourceLanguageId: 0,
+    currentTargetLanguageId: 2,
+    originalTargetLanguageId: 2,
+    sourceLanguageId: 0
+  }),
 })); 

@@ -115,7 +115,40 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4 p-3 bg-muted/30 rounded-lg flex-shrink-0">
+      <div 
+        ref={containerRef} 
+        className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-y-auto mb-4"
+      >
+        <Document
+          file={fileUrl}
+          onLoadSuccess={onDocumentLoadSuccess}
+          onLoadError={onDocumentLoadError}
+          loading={
+            <div className="flex justify-center items-center h-full text-muted-foreground">
+              <p>Loading PDF...</p>
+            </div>
+          }
+          error={
+            <div className="flex justify-center items-center h-full text-red-500">
+              <p>Failed to load PDF. Check console for details.</p>
+            </div>
+          }
+        >
+          {numPages && Array.from(new Array(numPages), (_, index) => (
+            <Page
+              key={`page_${index + 1}`}
+              pageNumber={index + 1}
+              width={containerWidth}
+              scale={scale}
+              renderTextLayer={true}
+              renderAnnotationLayer={true}
+              className="flex justify-center mb-2 shadow-md"
+            />
+          ))}
+        </Document>
+      </div>
+
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">Zoom:</span>
           <Button
@@ -162,39 +195,6 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
             </span>
           )}
         </div>
-      </div>
-
-      <div 
-        ref={containerRef} 
-        className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-y-auto"
-      >
-        <Document
-          file={fileUrl}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onLoadError={onDocumentLoadError}
-          loading={
-            <div className="flex justify-center items-center h-full text-muted-foreground">
-              <p>Loading PDF...</p>
-            </div>
-          }
-          error={
-            <div className="flex justify-center items-center h-full text-red-500">
-              <p>Failed to load PDF. Check console for details.</p>
-            </div>
-          }
-        >
-          {numPages && Array.from(new Array(numPages), (_, index) => (
-            <Page
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              width={containerWidth}
-              scale={scale}
-              renderTextLayer={true}
-              renderAnnotationLayer={true}
-              className="flex justify-center mb-2 shadow-md"
-            />
-          ))}
-        </Document>
       </div>
     </div>
   );

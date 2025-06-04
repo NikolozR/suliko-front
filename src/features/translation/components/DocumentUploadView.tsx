@@ -23,14 +23,14 @@ const DocumentUploadView: React.FC<DocumentUploadViewProps> = ({
         <FileUploadArea onFileChange={onFileChange} />
       ) : (
         <div className="space-y-4 h-full flex flex-col">
+          <div className="flex-1 min-h-0">
+            <DocumentPreview file={currentFile} />
+          </div>
           <FileInfoDisplay
             file={currentFile}
             onFileChange={onFileChange}
             onRemoveFile={onRemoveFile}
           />
-          <div className="flex-1 min-h-0">
-            <DocumentPreview file={currentFile} />
-          </div>
         </div>
       )}
     </div>

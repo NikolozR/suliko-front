@@ -8,10 +8,10 @@ import {
   CardDescription,
   CardContent,
 } from "@/features/ui/components/ui/card";
-import { Type, ArrowRightLeft } from "lucide-react";
+import { Type } from "lucide-react";
 import { Textarea } from "@/features/ui/components/ui/textarea";
-import { Button } from "@/features/ui/components/ui/button";
-import LanguageSelect from "./LanguageSelect";
+import LanguageSelectionPanel from "./LanguageSelectionPanel";
+import TranslationSubmitButton from "./TranslationSubmitButton";
 import React from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
@@ -43,8 +43,6 @@ type FormData = z.infer<typeof textTranslationSchema>;
 
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
-  const tCommon = useTranslations('CommonLanguageSelect');
-  const tTranslationButton = useTranslations('TranslationButton');
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { token } = useAuthStore();
@@ -176,64 +174,23 @@ const TextTranslationCard = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit, handleFormError)}>
-              <div className="flex gap-2 md:gap-4 flex-col sm:flex-row mb-4">
-                <div className="w-full sm:flex-1">
-                  <span className="block text-xs text-muted-foreground mb-1">
-                    {tCommon('sourceLanguageQuestion')}?
-                  </span>
-                  <LanguageSelect
-                    value={currentSourceLanguageId}
-                    onChange={(value) => {
-                      setCurrentSourceLanguageId(value);
-                      setValue("currentSourceLanguageId", value);
-                      clearErrors("currentSourceLanguageId");
-                    }}
-                    placeholder={tCommon('selectLanguagePlaceholder')}
-                    detectOption={tCommon('automaticDetection')}
-                  />
-                </div>
-                
-                <div className="flex items-end justify-center sm:justify-start">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    className="h-10 w-10 border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
-                    disabled={currentSourceLanguageId === 0}
-                    onClick={() => {
-                      if (currentSourceLanguageId !== 0) {
-                        const tempSource = currentSourceLanguageId;
-                        const tempTarget = currentTargetLanguageId;
-                        
-                        setCurrentSourceLanguageId(tempTarget);
-                        setCurrentTargetLanguageId(tempSource);
-                        setValue("currentSourceLanguageId", tempTarget);
-                        setValue("currentTargetLanguageId", tempSource);
-                        clearErrors("currentSourceLanguageId");
-                        clearErrors("currentTargetLanguageId");
-                      }
-                    }}
-                  >
-                    <ArrowRightLeft className="h-4 w-4" />
-                  </Button>
-                </div>
-
-                <div className="w-full sm:flex-1">
-                  <span className="block text-xs text-muted-foreground mb-1">
-                    {tCommon('targetLanguageQuestion')}?
-                  </span>
-                  <LanguageSelect
-                    value={currentTargetLanguageId}
-                    onChange={(value) => {
-                      setCurrentTargetLanguageId(value);
-                      setValue("currentTargetLanguageId", value);
-                      clearErrors("currentTargetLanguageId");
-                    }}
-                    placeholder={tCommon('selectLanguagePlaceholder')}
-                  />
-                </div>
-              </div>
-              <div className={translatedText ? "flex gap-4 md:gap-8" : undefined}>
+              <LanguageSelectionPanel
+                sourceLanguageId={currentSourceLanguageId}
+                targetLanguageId={currentTargetLanguageId}
+                onSourceLanguageChange={(value) => {
+                  setCurrentSourceLanguageId(value);
+                  setValue("currentSourceLanguageId", value);
+                  clearErrors("currentSourceLanguageId");
+                }}
+                onTargetLanguageChange={(value) => {
+                  setCurrentTargetLanguageId(value);
+                  setValue("currentTargetLanguageId", value);
+                  clearErrors("currentTargetLanguageId");
+                }}
+                layout="horizontal"
+                showSwapButton={true}
+              />
+              <div className={translatedText ? "flex gap-4 md:gap-8 items-end" : undefined}>
                 <div className="w-full flex-1 min-w-0">
                   <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
                     {t('yourText')}
@@ -274,10 +231,9 @@ const TextTranslationCard = () => {
                   </div>
                 )}
               </div>
-              <Button
-                className="w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-opacity text-sm md:text-base"
-                size={translatedText ? "default" : "lg"}
-                type="submit"
+              <TranslationSubmitButton
+                isLoading={textLoading}
+                hasResult={!!translatedText}
                 disabled={
                   textLoading ||
                   (!!originalText &&
@@ -285,28 +241,14 @@ const TextTranslationCard = () => {
                     currentTargetLanguageId === originalTargetLanguageId &&
                     currentSourceLanguageId === sourceLanguageId)
                 }
+                formError={getFormError()}
                 onClick={(e) => {
                   if (!token) {
                     e.preventDefault();
                     setShowAuthModal(true);
                   }
                 }}
-              >
-                <span className="text-sm md:text-base">
-                  {textLoading ? tTranslationButton('loading') : tTranslationButton('translate')}
-                </span>
-              </Button>
-              <div className="flex justify-center mt-2">
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  {t('orPress')}{' '}
-                  <kbd className="px-1 py-0.5 bg-muted border border-border rounded text-xs font-mono">
-                    Shift + Enter
-                  </kbd>
-                </span>
-              </div>
-              {getFormError() && (
-                <div className="text-red-500 text-sm mt-2">{getFormError()}</div>
-              )}
+              />
             </form>
           </CardContent>
         </Card>

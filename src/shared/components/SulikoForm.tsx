@@ -17,10 +17,12 @@ import { Eye, EyeOff } from "lucide-react";
 import { useState, useMemo } from "react";
 import SulikoFormParticles from "./SulikoFormParticles";
 import { register, login } from "@/features/auth/services/authorizationService";
+import type { RegisterParams } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 
 const SulikoForm: React.FC = () => {
   const t = useTranslations('Authorization');
@@ -40,6 +42,8 @@ const SulikoForm: React.FC = () => {
         /(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
         { message: t('passwordRegexError') }
       ),
+    name: z.string().optional(),
+    surname: z.string().optional(),
   }), [t]);
 
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -48,6 +52,8 @@ const SulikoForm: React.FC = () => {
     defaultValues: {
       mobile: "",
       password: "",
+      name: "",
+      surname: "",
     },
   });
   const router = useRouter();
@@ -65,27 +71,36 @@ const SulikoForm: React.FC = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setAuthError(null);
     try {
-      const data = isLoginMode 
-        ? await login({
-            phoneNumber: values.mobile,
-            password: values.password,
-          })
-        : await register({
-            phoneNumber: values.mobile,
-            password: values.password,
-          });
-      setToken(data.token);
-      setRefreshToken(data.refreshToken);
-      router.push("/");
+      if (isLoginMode) {
+        const data = await login({
+          phoneNumber: values.mobile,
+          password: values.password,
+        });
+        setToken(data.token);
+        setRefreshToken(data.refreshToken);
+        router.push("/");
+      } else {
+        let name = values.name;
+        let surname = values.surname;
+        if (!name) name = generateDefaultName();
+        if (!surname) surname = generateDefaultName();
+        const data = await register({
+          phoneNumber: values.mobile,
+          password: values.password,
+          name,
+          surname,
+        } as RegisterParams);
+        setToken(data.token);
+        setRefreshToken(data.refreshToken);
+        router.push("/");
+      }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : "Authentication failed, Invalid credentials";
       
-      // If registration failed because user already exists, suggest switching to login
       if (!isLoginMode && errorMessage.includes("უკვე რეგისტრირებულია")) {
-        setAuthError(`${errorMessage}. შესვლის რეჟიმზე გადასვლა რეკომენდებულია.`);
+        setAuthError(`${errorMessage}. ${t('switchToLoginRecommended')}`);
       } else if (isLoginMode && errorMessage.includes("ვერ მოიძებნა")) {
-        setAuthError(`${errorMessage}. რეგისტრაციის რეჟიმზე გადასვლა...`);
-        // Automatically switch to register mode after showing the message
+        setAuthError(`${errorMessage}. ${t('switchingToRegistrationMode')}`);
         setTimeout(() => {
           setIsLoginMode(false);
           setAuthError(null);
@@ -111,35 +126,34 @@ const SulikoForm: React.FC = () => {
       )}
       <Form {...form}>
         <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
-          {/* Toggle Bar */}
           <div className="mb-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 flex w-[60%] max-w-md">
             <button
               type="button"
               onClick={() => !isLoginMode && toggleAuthMode()}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+              className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
                 isLoginMode
                   ? "bg-suliko-default-color text-white shadow-sm"
                   : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
               }`}
             >
-              შესვლა
+              {t('login')}
             </button>
             <button
               type="button"
               onClick={() => isLoginMode && toggleAuthMode()}
-              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+              className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
                 !isLoginMode
                   ? "bg-suliko-default-color text-white shadow-sm"
                   : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
               }`}
             >
-              რეგისტრაცია
+              {t('register')}
             </button>
           </div>
 
           <div className="pb-[20px] lg:pb-[40px] flex flex-col gap-5 overflow-hidden">
             <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center dark:text-primary">
-              {isLoginMode ? "შესვლა" : "რეგისტრაცია"}
+              {isLoginMode ? t('login') : t('register')}
             </h3>
             <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem] dark:text-muted-foreground">
               {t('description')}
@@ -195,11 +209,41 @@ const SulikoForm: React.FC = () => {
                 </FormItem>
               )}
             />
+            {!isLoginMode && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="name"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold dark:text-white">{t('name')} ({t('optional')})</FormLabel>
+                      <FormControl>
+                        <Input placeholder={t('namePlaceholder')} className="border-2 shadow-md dark:border-slate-600" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="surname"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold dark:text-white">{t('surname')} ({t('optional')})</FormLabel>
+                      <FormControl>
+                        <Input placeholder={t('surnamePlaceholder')} className="border-2 shadow-md dark:border-slate-600" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </>
+            )}
             <Button
               className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
               type="submit"
             >
-              {isLoginMode ? "შესვლა" : "რეგისტრაცია"}
+              {isLoginMode ? t('login') : t('register')}
             </Button>
           </form>
         </div>

@@ -9,7 +9,6 @@ import {
   CardContent,
 } from "@/features/ui/components/ui/card";
 import { Upload } from "lucide-react";
-import { Button } from "@/features/ui/components/ui/button";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { translateDocumentUserContent } from "@/features/translation/services/translationService";
 import { AuthModal } from "@/features/auth";
@@ -18,6 +17,7 @@ import { useDocumentTranslationStore } from "@/features/translation/store/docume
 import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationResultView from "./TranslationResultView";
 import DocumentUploadView from "./DocumentUploadView";
+import TranslationSubmitButton from "./TranslationSubmitButton";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -31,7 +31,6 @@ const documentTranslationSchema = z.object({
     .nullable()
     .refine((files) => {
       if (!files) return false;
-      // Check if it's a FileList-like object or has the expected structure
       return (isFileListAvailable && files instanceof FileList && files.length > 0) || 
              (files && typeof files === 'object' && files.length > 0);
     }, "Please select a file to translate.")
@@ -53,7 +52,6 @@ type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
 const DocumentTranslationCard = () => {
   const t = useTranslations('DocumentTranslationCard');
-  const tTranslationButton = useTranslations('TranslationButton');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const { token } = useAuthStore();
@@ -73,7 +71,6 @@ const DocumentTranslationCard = () => {
     formState: { errors },
     setValue,
     clearErrors,
-    reset,
   } = useForm<DocumentFormData>({
     resolver: zodResolver(documentTranslationSchema),
     defaultValues: {
@@ -129,7 +126,6 @@ const DocumentTranslationCard = () => {
       setTranslatedMarkdown(result);
     } catch (err) {
       if (err instanceof Error) {
-        // You could set form errors here if needed
         console.error(err.message || "An unexpected error occurred.");
       } else {
         console.error("An unexpected error occurred.");
@@ -145,20 +141,6 @@ const DocumentTranslationCard = () => {
     }
   };
 
-  const handleNewTranslation = () => {
-    setTranslatedMarkdown("");
-    setCurrentFile(null);
-    reset({
-      currentFile: null,
-      currentTargetLanguageId,
-      currentSourceLanguageId,
-    });
-    
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = '';
-    }
-  };
 
   const getFormError = (): string | null => {
     if (errors.currentFile?.message) {
@@ -218,6 +200,7 @@ const DocumentTranslationCard = () => {
                       clearErrors("currentSourceLanguageId");
                     }}
                     layout="horizontal"
+                    showSwapButton={true}
                   />
                   
                   <TranslationResultView
@@ -244,6 +227,7 @@ const DocumentTranslationCard = () => {
                         clearErrors("currentSourceLanguageId");
                       }}
                       layout="horizontal"
+                      showSwapButton={true}
                     />
 
                     <DocumentUploadView
@@ -255,33 +239,14 @@ const DocumentTranslationCard = () => {
                 </div>
               )}
 
-              <Button
-                type="submit"
-                className="w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-opacity text-sm md:text-base"
-                size={translatedMarkdown ? "default" : "lg"}
+              <TranslationSubmitButton
+                isLoading={isLoading}
+                hasResult={!!translatedMarkdown}
                 disabled={isLoading || (!token ? false : !hasFile)}
-              >
-                <span className="text-sm md:text-base">
-                  {isLoading ? tTranslationButton('loading') : tTranslationButton('translate')}
-                </span>
-              </Button>
+                showShiftEnter={true}
+                formError={token ? getFormError() : null}
+              />
               
-              {translatedMarkdown && (
-                <Button
-                  onClick={handleNewTranslation}
-                  variant="outline"
-                  className="w-full mt-2"
-                  type="button"
-                >
-                  ახალი თარგმნა
-                </Button>
-              )}
-
-              {token && getFormError() && (
-                <p className="mt-4 text-sm text-red-600 bg-red-100 p-3 rounded-md">
-                  {getFormError()}
-                </p>
-              )}
             </form>
           </CardContent>
         </Card>

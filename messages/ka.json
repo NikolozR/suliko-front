@@ -4,13 +4,20 @@
     "description": "შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი",
     "phoneNumber": "ტელეფონი",
     "password": "პაროლი",
+    "name": "სახელი",
+    "surname": "გვარი",
+    "optional": "არასავალდებულო",
+    "namePlaceholder": "შეიყვანეთ სახელი",
+    "surnamePlaceholder": "შეიყვანეთ გვარი",
     "login": "შესვლა",
     "register": "რეგისტრაცია", 
     "phoneNumberRequiredError": "ტელეფონის ნომერი სავალდებულოა",
     "phoneNumberFormatError": "ტელეფონის ნომერი უნდა იყოს ქართული ფორმატით: 5XXXXXXXX",
     "passwordMinLengthError": "პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან",
     "passwordRegexError": "პაროლი უნდა შედგებოდეს მინიმუმ ერთი ციფრისა და ერთი სიმბოლოსგან",
-    "AuthenticationFailed": "ავტორიზაცია ვერ მოხერხდა, არასწორი მონაცემები"
+    "AuthenticationFailed": "ავტორიზაცია ვერ მოხერხდა, არასწორი მონაცემები",
+    "switchToLoginRecommended": "შესვლის რეჟიმზე გადასვლა რეკომენდებულია.",
+    "switchingToRegistrationMode": "რეგისტრაციის რეჟიმზე გადასვლა..."
   },
   "AuthModal": {
     "title": "გთხოვთ გაიაროთ რეგისტრაცია",
