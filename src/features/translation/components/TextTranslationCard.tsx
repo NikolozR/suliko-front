@@ -12,6 +12,7 @@ import { Type } from "lucide-react";
 import { Textarea } from "@/features/ui/components/ui/textarea";
 import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationSubmitButton from "./TranslationSubmitButton";
+import CopyButton from "./CopyButton";
 import React from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
@@ -217,8 +218,15 @@ const TextTranslationCard = () => {
                 </div>
                 {translatedText && (
                   <div className="w-full flex-1 min-w-0">
-                    <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
-                      {t('result')}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                        {t('result')}
+                      </div>
+                      <CopyButton 
+                        content={translatedText}
+                        size="sm"
+                        variant="outline"
+                      />
                     </div>
                     <div
                       ref={translatedRef}

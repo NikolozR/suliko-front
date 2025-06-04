@@ -96,6 +96,7 @@ const DocumentTranslationCard = () => {
 
   const handleRemoveFile = () => {
     setCurrentFile(null);
+    setTranslatedMarkdown("");
     setValue("currentFile", null);
     clearErrors("currentFile");
     const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
