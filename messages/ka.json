@@ -1,0 +1,84 @@
+{
+  "Authorization": {
+    "title": "ავტორიზაცია",
+    "description": "შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი",
+    "phoneNumber": "ტელეფონი",
+    "password": "პაროლი",
+    "login": "შესვლა",
+    "register": "რეგისტრაცია", 
+    "phoneNumberRequiredError": "ტელეფონის ნომერი სავალდებულოა",
+    "phoneNumberFormatError": "ტელეფონის ნომერი უნდა იყოს ქართული ფორმატით: 5XXXXXXXX",
+    "passwordMinLengthError": "პაროლი უნდა შედგებოდეს მინიმუმ 8 სიმბოლოსგან",
+    "passwordRegexError": "პაროლი უნდა შედგებოდეს მინიმუმ ერთი ციფრისა და ერთი სიმბოლოსგან",
+    "AuthenticationFailed": "ავტორიზაცია ვერ მოხერხდა, არასწორი მონაცემები"
+  },
+  "AuthModal": {
+    "title": "გთხოვთ გაიაროთ რეგისტრაცია",
+    "description": "გთხოვთ გაიაროთ რეგისტრაცია თარგმნის მიზნით",
+    "login": "შესვლა"
+  },
+  "Sidebar": {
+    "newProject": "ახალი პროექტი",
+    "history": "ისტორია",
+    "profile": "პროფილი",
+    "logout": "გასვლა",
+    "help": "დახმარება", 
+    "feedback": "გამოხმაურება",
+    "login": "შესვლა"
+  },
+  "MainContent": {
+    "title": "შენი თარჯიმანი",
+    "description": "აირჩიე მეთოდი",
+    "textTab": "ტექსტი",
+    "documentTab": "დოკუმენტი"
+  },
+  "TextTranslationCard": {
+    "title": "აკრიფე ტექსტი",
+    "description": "აკრიფე ტექსტი ანალიზისთვის",
+    "textIputPlaceholder": "იყო და არა იყო რა...",
+    "result": "თარგმნილი ტექსტი",
+    "yourText": "შენი ტექსტი",
+    "orPress": "ან დააჭირეთ"
+  },
+  "CommonLanguageSelect": {
+    "targetLanguageQuestion": "რა ენაზე გსურთ თარგმნა",
+    "sourceLanguageQuestion": "რა ენაზეა ტექსტი",
+    "selectLanguagePlaceholder": "აირჩიეთ ენა",
+    "automaticDetection": "ავტომატური დაფიქსირება"
+  },
+  "TranslationButton": {
+    "translate": "თარგმნა",
+    "loading": "მუშავდება..."
+  },
+  "DocumentTranslationCard": {
+    "title": "ატვირთე დოკუმენტი",
+    "description": "ატვირთე დოკუმენტი თარგმნისთვის",
+    "dragAndDrop": "ჩააგდე ფაილი ან დააკლიკე ასარჩევად",
+    "supportedFormats": "მხარდაჭერილი ფაილის ტიპები: PDF, DOCX, TXT, და ა.შ."
+  },
+  "Profile": {
+    "fullName": "სრული სახელი",
+    "name": "სახელი",
+    "surname": "გვარი",
+    "userName": "მომხმარებლის სახელი",
+    "personalInformation": "პერსონალური ინფორმაცია",
+    "contactInformation": "საკონტაქტო ინფორმაცია",
+    "email": "ელექტრონული ფოსტა",
+    "phoneNumber": "ტელეფონის ნომერი",
+    "edit": "რედაქტირება",
+    "logout": "გასვლა",
+    "cancel": "გაუქმება",
+    "save": "შენახვა",
+    "saving": "შენახვა...",
+    "notSpecified": "არ არის მითითებული",
+    "userNamePlaceholder": "შეიყვანეთ მომხმარებლის სახელი",
+    "surnamePlaceholder": "შეიყვანეთ გვარი",
+    "namePlaceholder": "შეიყვანეთ სახელი",
+    "emailPlaceholder": "შეიყვანეთ ელ. ფოსტა"
+  },
+  "LanguageSwitcher": {
+    "english": "English",
+    "georgian": "ქართული",
+    "select": "აირჩიეთ ენა"
+  }
+} 

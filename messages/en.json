@@ -1,0 +1,84 @@
+{
+  "Authorization": {
+    "title": "Authorization",
+    "description": "Enter your phone number and password",
+    "phoneNumber": "Phone",
+    "password": "Password",
+    "login": "Login",
+    "register": "Register",
+    "phoneNumberRequiredError": "Phone number is required",
+    "phoneNumberFormatError": "Phone number must be in Georgian format: 5XXXXXXXX",
+    "passwordMinLengthError": "Password must be at least 8 characters long",
+    "passwordRegexError": "Password must contain at least one number and one symbol",
+    "AuthenticationFailed": "Authentication failed, Invalid credentials"
+  },
+  "AuthModal": {
+    "title": "Please register",
+    "description": "Please register to use translation services",
+    "login": "Login"
+  },
+  "Sidebar": {
+    "newProject": "New Project",
+    "history": "History",
+    "profile": "Profile",
+    "logout": "Logout",
+    "help": "Help",
+    "feedback": "Feedback",
+    "login": "Login"
+  },
+  "MainContent": {
+    "title": "Your Translator",
+    "description": "Choose a method",
+    "textTab": "Text",
+    "documentTab": "Document"
+  },
+  "TextTranslationCard": {
+    "title": "Type text",
+    "description": "Type text for analysis",
+    "textIputPlaceholder": "Once upon a time...",
+    "result": "Translated text",
+    "yourText": "Your text",
+    "orPress": "or press"
+  },
+  "CommonLanguageSelect": {
+    "targetLanguageQuestion": "What language do you want to translate to",
+    "sourceLanguageQuestion": "What language is the text in",
+    "selectLanguagePlaceholder": "Select Language",
+    "automaticDetection": "Automatic detection"
+  },
+  "TranslationButton": {
+    "translate": "Translate",
+    "loading": "Loading..."
+  },
+  "DocumentTranslationCard": {
+    "title": "Upload document",
+    "description": "Upload document for translation",
+    "dragAndDrop": "Drag and drop file or click to select",
+    "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc."
+  },
+  "Profile": {
+    "fullName": "Full Name",
+    "name": "Name",
+    "surname": "Surname",
+    "userName": "Username",
+    "personalInformation": "Personal Information",
+    "contactInformation": "Contact Information",
+    "email": "Email",
+    "phoneNumber": "Phone Number",
+    "edit": "Edit",
+    "logout": "Logout",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "notSpecified": "Not specified",
+    "userNamePlaceholder": "Enter username",
+    "surnamePlaceholder": "Enter surname",
+    "namePlaceholder": "Enter name",
+    "emailPlaceholder": "Enter email"
+  },
+  "LanguageSwitcher": {
+    "english": "English",
+    "georgian": "ქართული",
+    "select": "Select Language"
+  }
+}

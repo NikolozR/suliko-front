@@ -3,6 +3,18 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Critical CSS to prevent sidebar flashing - must be at the top */
+.sidebar-main {
+  background-color: #f8f9fa !important; /* Light mode fallback */
+  transition: none !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .sidebar-main {
+    background-color: #343a46 !important; /* Dark mode fallback */
+  }
+}
+
 @layer utilities {
   .suliko-default-bg {
     background-image: radial-gradient(circle, #2d355a, #2e3f7f, #2f49a5, #3251cc, #3b59f3);
@@ -74,6 +86,7 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
+
 @media (prefers-color-scheme: dark) {
   :root {
     /* --background: #0a0a0a; */
@@ -122,6 +135,8 @@ body {
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  --sidebar-bg-light: oklch(0.985 0 0);
+  --sidebar-bg-dark: oklch(0.205 0 0);
 }
 
 .dark {
@@ -166,4 +181,55 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* ErrorAlert countdown animation */
+  @keyframes countdown {
+    from {
+      width: 100%;
+    }
+    to {
+      width: 0%;
+    }
+  }
+}
+
+/* Sidebar styles to prevent flashing */
+.sidebar-main {
+  background-color: var(--sidebar) !important;
+  border-color: var(--sidebar-border) !important;
+  color: var(--sidebar-foreground) !important;
+  transition: none !important;
+}
+
+.sidebar-button {
+  background-color: transparent !important;
+  color: var(--sidebar-foreground) !important;
+}
+
+.sidebar-button:hover {
+  background-color: var(--sidebar-accent) !important;
+  color: var(--sidebar-accent-foreground) !important;
+}
+
+.sidebar-item:not(.suliko-default-bg) {
+  background-color: transparent !important;
+  color: var(--sidebar-foreground) !important;
+}
+
+.sidebar-item:not(.suliko-default-bg):hover {
+  background-color: var(--sidebar-accent) !important;
+  color: var(--sidebar-accent-foreground) !important;
+}
+
+.sidebar-item-disabled {
+  color: var(--sidebar-foreground) !important;
+}
+
+/* Force sidebar background consistency during theme changes */
+html:not(.dark) .sidebar-main {
+  background-color: var(--sidebar-bg-light) !important;
+}
+
+html.dark .sidebar-main {
+  background-color: var(--sidebar-bg-dark) !important;
 }
