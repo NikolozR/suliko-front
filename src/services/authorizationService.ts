@@ -15,19 +15,37 @@ export async function register({ phoneNumber, password }: LoginParams) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      phoneNUmber: phoneNumber,
+      phoneNumber: phoneNumber,
       password,
     }),
   });
-  if (response.status === 200 || response.status === 500) {
+  
+  if (response.status === 200) {
     try {
       const loginResponse = await login({ phoneNumber, password });
       return loginResponse;
     } catch {
-      throw new Error("Login Failed");
+      throw new Error("რეგისტრაცია წარმატებულია, მაგრამ შესვლა ვერ მოხერხდა");
+    }
+  } else if (response.status === 400) {
+    const errorData = await response.json().catch(() => null);
+    if (errorData && errorData.message) {
+      throw new Error(errorData.message);
+    }
+    throw new Error("ეს ტელეფონის ნომერი უკვე რეგისტრირებულია");
+  } else if (response.status === 409) {
+    throw new Error("ეს ტელეფონის ნომერი უკვე რეგისტრირებულია");
+  } else if (response.status === 422) {
+    throw new Error("არასწორი მონაცემების ფორმატი");
+  } else if (response.status === 500) {
+    try {
+      const loginResponse = await login({ phoneNumber, password });
+      return loginResponse;
+    } catch {
+      throw new Error("სერვერის შეცდომა. გთხოვთ სცადოთ მოგვიანებით");
     }
   } else {
-    throw new Error("Register failed");
+    throw new Error("რეგისტრაცია ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით");
   }
 }
 
@@ -42,15 +60,24 @@ export async function login({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      userName: phoneNumber,
+      phoneNumber: phoneNumber,
       password,
     }),
   });
+  
   if (response.status === 200) {
     const data = await response.json();
     return data;
+  } else if (response.status === 400 || response.status === 401) {
+    throw new Error("არასწორი ტელეფონის ნომერი ან პაროლი");
+  } else if (response.status === 404) {
+    throw new Error("მომხმარებელი ვერ მოიძებნა. გთხოვთ ჯერ გაიაროთ რეგისტრაცია");
+  } else if (response.status === 422) {
+    throw new Error("არასწორი მონაცემების ფორმატი");
+  } else if (response.status === 500) {
+    throw new Error("სერვერის შეცდომა. გთხოვთ სცადოთ მოგვიანებით");
   } else {
-    throw new Error("Login failed");
+    throw new Error("შესვლა ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით");
   }
 }
 

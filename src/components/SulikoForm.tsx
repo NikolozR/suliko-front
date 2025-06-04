@@ -16,7 +16,7 @@ import { Input } from "./ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import SulikoFormParticles from "./SulikoFormParticles";
-import { register } from "@/services/authorizationService";
+import { register, login } from "@/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/store/authStore";
 import { useRouter } from "next/navigation";
@@ -39,6 +39,7 @@ const SulikoForm: React.FC = () => {
   const { setToken, setRefreshToken } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isLoginMode, setIsLoginMode] = useState(true);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -52,18 +53,44 @@ const SulikoForm: React.FC = () => {
     setIsPasswordVisible((prev) => !prev);
   }
 
+  function toggleAuthMode() {
+    setIsLoginMode((prev) => !prev);
+    setAuthError(null);
+    form.reset();
+  }
+
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setAuthError(null);
     try {
-      const data = await register({
-        phoneNumber: values.mobile,
-        password: values.password,
-      });
+      const data = isLoginMode 
+        ? await login({
+            phoneNumber: values.mobile,
+            password: values.password,
+          })
+        : await register({
+            phoneNumber: values.mobile,
+            password: values.password,
+          });
       setToken(data.token);
       setRefreshToken(data.refreshToken);
       router.push("/");
-    } catch {
-      setAuthError("Authentication failed, Invalid credentials");
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Authentication failed, Invalid credentials";
+      
+      // If registration failed because user already exists, suggest switching to login
+      if (!isLoginMode && errorMessage.includes("უკვე რეგისტრირებულია")) {
+        setAuthError(`${errorMessage}. შესვლის რეჟიმზე გადასვლა რეკომენდებულია.`);
+      } else if (isLoginMode && errorMessage.includes("ვერ მოიძებნა")) {
+        setAuthError(`${errorMessage}. რეგისტრაციის რეჟიმზე გადასვლა...`);
+        // Automatically switch to register mode after showing the message
+        setTimeout(() => {
+          setIsLoginMode(false);
+          setAuthError(null);
+          form.reset();
+        }, 2000);
+      } else {
+        setAuthError(errorMessage);
+      }
     }
   }
 
@@ -72,9 +99,35 @@ const SulikoForm: React.FC = () => {
       <SulikoFormParticles />
       <Form {...form}>
         <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
+          {/* Toggle Bar */}
+          <div className="mb-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 flex w-[60%] max-w-md">
+            <button
+              type="button"
+              onClick={() => !isLoginMode && toggleAuthMode()}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                isLoginMode
+                  ? "bg-suliko-default-color text-white shadow-sm"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+              }`}
+            >
+              შესვლა
+            </button>
+            <button
+              type="button"
+              onClick={() => isLoginMode && toggleAuthMode()}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
+                !isLoginMode
+                  ? "bg-suliko-default-color text-white shadow-sm"
+                  : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+              }`}
+            >
+              რეგისტრაცია
+            </button>
+          </div>
+
           <div className="pb-[20px] lg:pb-[40px] flex flex-col gap-5 overflow-hidden">
             <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center dark:text-primary">
-              ავტორიზაცია
+              {isLoginMode ? "შესვლა" : "რეგისტრაცია"}
             </h3>
             <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem] dark:text-muted-foreground">
               შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი
@@ -140,7 +193,7 @@ const SulikoForm: React.FC = () => {
               className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
               type="submit"
             >
-              რეგისტრაცია
+              {isLoginMode ? "შესვლა" : "რეგისტრაცია"}
             </Button>
           </form>
         </div>
