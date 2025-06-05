@@ -1,13 +1,14 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
+import { UserProfile } from "@/features/auth/types/types.User";
 import {
   Plus,
   Clock,
@@ -55,31 +56,56 @@ const NAV_ITEMS = [
   },
 ];
 
-export default function Sidebar() {
+interface SidebarProps {
+  initialUserProfile?: UserProfile | null;
+}
+
+export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const pathname = usePathname();
   const { token, reset } = useAuthStore();
-  const { userProfile } = useUserStore();
+  const { userProfile, setUserProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
-  const { isCollapsed, setIsCollapsed } = useSidebarStore();
+  
+  const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed);
+  const storeSetIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   const router = useRouter();
   const t = useTranslations('Sidebar');
 
+  // Hydrate userStore with server-fetched data
   useEffect(() => {
+    if (initialUserProfile && !userProfile) {
+      setUserProfile(initialUserProfile);
+    }
+  }, [initialUserProfile, userProfile, setUserProfile]);
+
+  // Handle responsive collapsing based on window size, only on client
+  useEffect(() => {
+    if (!isClient) return;
+
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        setIsCollapsed(true);
+        if (storeIsCollapsed === false) { // Only update if needed
+          storeSetIsCollapsed(true);
+        }
       }
+      // Note: This effect does not automatically expand the sidebar on larger screens.
+      // Expansion is based on persisted state or user interaction.
     };
 
-    handleResize();
-    
+    handleResize(); // Call on client mount after isClient is true
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
-  }, [setIsCollapsed]);
+  }, [isClient, storeIsCollapsed, storeSetIsCollapsed]);
 
-  const handleCollapse = () => {
-    setIsCollapsed(!isCollapsed);
+  const handleCollapseToggle = () => {
+    storeSetIsCollapsed(!storeIsCollapsed);
   };
 
   const isActive = (href: string) => pathname === href;
@@ -91,30 +117,33 @@ export default function Sidebar() {
     return true;
   });
 
+  // Determine effective collapsed state for rendering to prevent hydration mismatch
+  const effectiveIsCollapsed = !isClient ? true : storeIsCollapsed;
+
   return (
     <>
-      {!isCollapsed && (
+      {!effectiveIsCollapsed && (
         <div 
           className="fixed inset-0 bg-black/20 z-30 md:hidden" 
-          onClick={() => setIsCollapsed(true)}
+          onClick={() => storeSetIsCollapsed(true)} // Collapse when overlay is clicked
         />
       )}
       
       <aside
         className={`sidebar-main flex flex-col h-screen fixed left-0 top-0 z-40 border-r transition-all duration-300 ${
-          isCollapsed ? "w-16" : "w-48 md:w-56 lg:w-64"
-        } ${!isCollapsed ? "md:shadow-none shadow-2xl" : ""}`}
+          effectiveIsCollapsed ? "w-16" : "w-48 md:w-56 lg:w-64"
+        } ${!effectiveIsCollapsed ? "md:shadow-none shadow-2xl" : ""}`}
       >
-        <div className={`flex items-center ${isCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
-          {!isCollapsed && (
+        <div className={`flex items-center ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
+          {!effectiveIsCollapsed && (
             <SulikoLogo className="transition-all duration-300" />
           )}
           <button
-            onClick={handleCollapse}
+            onClick={handleCollapseToggle}
             className="sidebar-button flex-shrink-0 p-1.5 rounded-lg cursor-pointer transition-colors"
-            aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            aria-label={effectiveIsCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
-            {isCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+            {effectiveIsCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
           </button>
         </div>
 
@@ -123,12 +152,12 @@ export default function Sidebar() {
             disabled ? (
               <span
                 key={href}
-                className={`sidebar-item-disabled group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 opacity-50 cursor-not-allowed select-none ${isCollapsed ? "justify-center" : ""}`}
+                className={`sidebar-item-disabled group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 opacity-50 cursor-not-allowed select-none ${effectiveIsCollapsed ? "justify-center" : ""}`}
                 aria-disabled="true"
                 tabIndex={-1}
               >
-                <Icon className={`transition-transform duration-200 ${isCollapsed ? "h-5 w-5" : "h-5 w-5"}`} />
-                {!isCollapsed && (
+                <Icon className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"}`} />
+                {!effectiveIsCollapsed && (
                   <span className="whitespace-nowrap">{t(label)}</span>
                 )}
               </span>
@@ -140,15 +169,15 @@ export default function Sidebar() {
                   isActive(href)
                     ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
                     : ""
-                } ${isCollapsed ? "justify-center" : ""}`}
+                } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                 aria-current={isActive(href) ? "page" : undefined}
               >
                 <Icon
                   className={`transition-transform duration-200 ${
-                    isCollapsed ? "h-5 w-5" : "h-5 w-5"
+                    effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
                   } group-hover:scale-105`}
                 />
-                {!isCollapsed && (
+                {!effectiveIsCollapsed && (
                   <span className="whitespace-nowrap">
                     {t(label)}
                   </span>
@@ -163,10 +192,10 @@ export default function Sidebar() {
             <>
               {userProfile && (
                 <div className={`flex items-center gap-3 p-3 rounded-lg bg-muted/50 mb-2 ${
-                  isCollapsed ? "justify-center" : ""
+                  effectiveIsCollapsed ? "justify-center" : ""
                 }`}>
                   <Wallet className="h-5 w-5 text-green-600 flex-shrink-0" />
-                  {!isCollapsed && (
+                  {!effectiveIsCollapsed && (
                     <div className="flex flex-col min-w-0">
                       <span className="text-xs text-muted-foreground">{t('balance')}</span>
                       <span className="font-semibold text-green-600">
@@ -178,7 +207,7 @@ export default function Sidebar() {
               )}
               <Button
                 className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
-                  isCollapsed ? "justify-center px-0" : "justify-start px-3"
+                  effectiveIsCollapsed ? "justify-center px-0" : "justify-start px-3"
                 }`}
                 onClick={() => {
                   reset();
@@ -189,10 +218,10 @@ export default function Sidebar() {
               >
                 <LogOut
                   className={`transition-transform duration-200 ${
-                    isCollapsed ? "h-5 w-5" : "h-5 w-5"
+                    effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
                   } group-hover:scale-105`}
                 />
-                {!isCollapsed && (
+                {!effectiveIsCollapsed && (
                   <span className="whitespace-nowrap">
                     {t('logout')}
                   </span>
@@ -203,15 +232,15 @@ export default function Sidebar() {
             <Link
               href="/sign-in"
               className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
-                isCollapsed ? "justify-center" : ""
+                effectiveIsCollapsed ? "justify-center" : ""
               }`}
             >
               <User
                 className={`transition-transform duration-200 ${
-                  isCollapsed ? "h-5 w-5" : "h-5 w-5"
+                  effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
                 } group-hover:scale-105`}
               />
-              {!isCollapsed && (
+              {!effectiveIsCollapsed && (
                 <span className="whitespace-nowrap">
                   {t('login')}
                 </span>

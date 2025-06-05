@@ -1,24 +1,42 @@
-'use client'
 import Sidebar from "@/shared/components/Sidebar";
-import { useSidebarStore } from "@/shared/store/sidebarStore";
+import { cookies } from "next/headers";
+import { getUserProfile } from "@/features/auth/services/userService";
+import ResponsiveMainContent from "@/shared/components/ResponsiveMainContent";
 
-export default function MainLayout({
+export default async function MainLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { isCollapsed } = useSidebarStore();
-
-  const mainClass = isCollapsed
-    ? "!ml-16 md:!ml-16 lg:!ml-16 transition-all duration-300"
-    : "!ml-16 md:!ml-56 lg:!ml-64 transition-all duration-300";
+  const cookieStore = await cookies();
+  const token = cookieStore.get('token')?.value;
+  console.log(token, "FROM COOKIES");
+  let userProfile = null;
+  if (token) {
+    try {
+      const { useAuthStore } = await import("@/features/auth/store/authStore");
+      const originalState = useAuthStore.getState();
+      
+      useAuthStore.setState({ 
+        ...originalState, 
+        token, 
+        refreshToken: cookieStore.get('refreshToken')?.value || null 
+      });
+      
+      userProfile = await getUserProfile();
+      
+      useAuthStore.setState(originalState);
+    } catch (error) {
+      console.error("Failed to fetch user profile:", error);
+    }
+  }
 
   return (
     <div className="relative">
-      <Sidebar />
-      <main className={`sidebar-content ${mainClass}`}>
+      <Sidebar initialUserProfile={userProfile} />
+      <ResponsiveMainContent>
         {children}
-      </main>
+      </ResponsiveMainContent>
     </div>
   );
 } 

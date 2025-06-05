@@ -27,8 +27,9 @@ export async function getAllLanguages() {
   if (response.status === 401 && token && refreshToken) {
     try {
       const newTokens = await reaccessToken(refreshToken);
-      useAuthStore.getState().setToken(newTokens.token);
-      useAuthStore.getState().setRefreshToken(newTokens.refreshToken);
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
       headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers,
