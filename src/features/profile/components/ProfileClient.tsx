@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
@@ -30,11 +30,12 @@ type ProfileFormData = z.infer<typeof profileUpdateSchema>;
 
 export default function ProfileClient() {
   const { reset } = useAuthStore();
+  const { token } = useAuthStore();
   const {
     userProfile,
     loading,
     error,
-    fetchUserProfile,
+    fetchUserProfile: originalFetchUserProfile,
     setUserProfile,
   } = useUserStore();
   const router = useRouter();
@@ -52,12 +53,24 @@ export default function ProfileClient() {
     },
   });
 
+  const fetchUserProfile = useCallback(() => {
+    originalFetchUserProfile();
+  }, [originalFetchUserProfile]);
+
   useEffect(() => {
-    if (!userProfile && !loading && !error) {
+    if (token && !userProfile && !loading && !error) {
       fetchUserProfile();
     }
+  }, [token, userProfile, loading, error, fetchUserProfile]);
 
-    if (isEditing && userProfile) {
+  const handleLogout = () => {
+    reset();
+    router.push("/sign-in");
+  };
+
+  const handleEdit = () => {
+    setIsEditing(true);
+    if (userProfile) {
       form.reset({
         firstName: userProfile.firstName || "",
         lastName: userProfile.lastName || "",
@@ -65,14 +78,7 @@ export default function ProfileClient() {
         userName: userProfile.userName || "",
       });
     }
-  }, [userProfile, loading, error, fetchUserProfile, isEditing, form]);
-
-  const handleLogout = () => {
-    reset();
-    router.push("/sign-in");
   };
-
-  const handleEdit = () => setIsEditing(true);
   
   const handleCancel = () => {
     setIsEditing(false);

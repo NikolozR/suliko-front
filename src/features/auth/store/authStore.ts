@@ -1,5 +1,6 @@
 import {create} from 'zustand';
 import { persist } from 'zustand/middleware';
+import { useUserStore } from './userStore';
 
 interface AuthState {
   token: string | null;
@@ -18,10 +19,7 @@ export const useAuthStore = create<AuthState>()(
       setRefreshToken: (refreshToken) => set({ refreshToken }),
       reset: () => {
         set({ token: null, refreshToken: null });
-        
-        import('./userStore').then(({ useUserStore }) => {
-          useUserStore.getState().clearUserData();
-        });
+        useUserStore.getState().clearUserData();
       },
     }),
     {

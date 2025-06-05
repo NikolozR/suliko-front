@@ -58,7 +58,7 @@ const NAV_ITEMS = [
 export default function Sidebar() {
   const pathname = usePathname();
   const { token, reset } = useAuthStore();
-  const { userProfile, fetchUserProfile } = useUserStore();
+  const { userProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
   const { isCollapsed, setIsCollapsed } = useSidebarStore();
@@ -77,12 +77,6 @@ export default function Sidebar() {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [setIsCollapsed]);
-
-  useEffect(() => {
-    if (token && !userProfile) {
-      fetchUserProfile();
-    }
-  }, [token, userProfile, fetchUserProfile]);
 
   const handleCollapse = () => {
     setIsCollapsed(!isCollapsed);

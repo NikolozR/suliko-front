@@ -7,8 +7,6 @@ interface UserState {
   userProfile: UserProfile | null;
   loading: boolean;
   error: string | null;
-  
-  // Actions
   setUserProfile: (profile: UserProfile | null) => void;
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;

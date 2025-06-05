@@ -1,5 +1,4 @@
 "use client";
-
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -22,7 +21,7 @@ import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { generateDefaultName } from "@/shared/utils/generateDefaultName";
+// import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 
 const SulikoForm: React.FC = () => {
   const t = useTranslations('Authorization');
@@ -42,8 +41,8 @@ const SulikoForm: React.FC = () => {
         /(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/,
         { message: t('passwordRegexError') }
       ),
-    name: z.string().optional(),
-    surname: z.string().optional(),
+    // name: z.string().optional(),
+    // surname: z.string().optional(),
   }), [t]);
 
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -52,8 +51,8 @@ const SulikoForm: React.FC = () => {
     defaultValues: {
       mobile: "",
       password: "",
-      name: "",
-      surname: "",
+      // name: "",
+      // surname: "",
     },
   });
   const router = useRouter();
@@ -80,15 +79,15 @@ const SulikoForm: React.FC = () => {
         setRefreshToken(data.refreshToken);
         router.push("/");
       } else {
-        let name = values.name;
-        let surname = values.surname;
-        if (!name) name = generateDefaultName();
-        if (!surname) surname = generateDefaultName();
+        // let name = values.name;
+        // let surname = values.surname;
+        // if (!name) name = generateDefaultName();
+        // if (!surname) surname = generateDefaultName();
         const data = await register({
           phoneNumber: values.mobile,
           password: values.password,
-          name,
-          surname,
+          // name,
+          // surname,
         } as RegisterParams);
         setToken(data.token);
         setRefreshToken(data.refreshToken);
@@ -211,7 +210,7 @@ const SulikoForm: React.FC = () => {
             />
             {!isLoginMode && (
               <>
-                <FormField
+                {/* <FormField
                   control={form.control}
                   name="name"
                   render={({ field }) => (
@@ -236,7 +235,7 @@ const SulikoForm: React.FC = () => {
                       <FormMessage />
                     </FormItem>
                   )}
-                />
+                /> */}
               </>
             )}
             <Button
