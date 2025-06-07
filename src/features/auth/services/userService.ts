@@ -72,7 +72,6 @@ export const updateUserProfile = async (userProfile: UpdateUserProfile) => {
     method: "PUT",
     body: JSON.stringify(userProfile),
   });
-  console.log(response);
   if (response.status === 401 && token && refreshToken) {
     try {
       const newTokens = await reaccessToken(refreshToken);

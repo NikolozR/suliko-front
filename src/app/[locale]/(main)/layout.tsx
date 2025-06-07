@@ -10,7 +10,6 @@ export default async function MainLayout({
 }>) {
   const cookieStore = await cookies();
   const token = cookieStore.get('token')?.value;
-  console.log(token, "FROM COOKIES");
   let userProfile = null;
   if (token) {
     try {

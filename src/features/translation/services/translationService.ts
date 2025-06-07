@@ -91,7 +91,6 @@ export const translateDocumentUserContent = async (
     body: formData,
   });
 
-  console.log(response);
   
   if (response.status === 401 && token && refreshToken) {
     try {

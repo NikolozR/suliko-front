@@ -8,11 +8,11 @@ interface LoginParams {
 }
 
 interface RegisterParams extends LoginParams {
-  name?: string;
-  surname?: string;
+  firstname: string;
+  lastname: string;
 }
 
-export async function register({ phoneNumber, password, name, surname }: RegisterParams) {
+export async function register({ phoneNumber, password, firstname, lastname }: RegisterParams) {
   const endpoint = "/Auth/register-with-phone";
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
@@ -22,8 +22,8 @@ export async function register({ phoneNumber, password, name, surname }: Registe
     body: JSON.stringify({
       phoneNumber,
       password,
-      ...(name && { name }),
-      ...(surname && { surname }),
+      firstname,
+      lastname,
     }),
   });
   
@@ -45,12 +45,7 @@ export async function register({ phoneNumber, password, name, surname }: Registe
   } else if (response.status === 422) {
     throw new Error("არასწორი მონაცემების ფორმატი");
   } else if (response.status === 500) {
-    try {
-      const loginResponse = await login({ phoneNumber, password });
-      return loginResponse;
-    } catch {
-      throw new Error("სერვერის შეცდომა. გთხოვთ სცადოთ მოგვიანებით");
-    }
+    throw new Error("ეს ტელეფონის ნომერი უკვე რეგისტრირებულია");
   } else {
     throw new Error("რეგისტრაცია ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით");
   }
@@ -111,4 +106,29 @@ export async function reaccessToken(refreshToken: string) {
   }
 }
 
+export async function sendVerificationCode(phoneNumber: string) {
+  const endpoint = "/Auth/send-verification-code";
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      phoneNumber,
+    }),
+  });
+  if (response.status === 200) {
+    const data = await response.json();
+    console.log(data);
+    return data;
+  } else {
+    throw new Error("Verification code sending failed");
+  }
+}
+
+// Export alias for convenience
+export const sendCode = sendVerificationCode;
+
 export type { LoginParams, RegisterParams };
+
+
