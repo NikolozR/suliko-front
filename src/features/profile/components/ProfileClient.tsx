@@ -21,9 +21,8 @@ import { z } from "zod";
 
 const profileUpdateSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
-  lastName: z.string().min(1, "გვარი სავალდებულოა"),
+  lastName: z.string().optional(),
   email: z.string().min(1, "ელ.ფოსტა სავალდებულოა").email("არასწორი ელ.ფოსტის ფორმატი"),
-  userName: z.string().min(1, "მომხმარებლის სახელი სავალდებულოა"),
 });
 
 type ProfileFormData = z.infer<typeof profileUpdateSchema>;
@@ -42,14 +41,13 @@ export default function ProfileClient() {
   const [isEditing, setIsEditing] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-
+  console.log(userProfile);
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
       firstName: "",
       lastName: "",
       email: "",
-      userName: "",
     },
   });
 
@@ -75,7 +73,6 @@ export default function ProfileClient() {
         firstName: userProfile.firstName || "",
         lastName: userProfile.lastName || "",
         email: userProfile.email || "",
-        userName: userProfile.userName || "",
       });
     }
   };
@@ -103,10 +100,10 @@ export default function ProfileClient() {
     const editData: UpdateUserProfile = {
       id: userProfile.id,
       firstName: formData.firstName,
-      lastName: formData.lastName,
+      lastName: formData.lastName || "",
       phoneNUmber: userProfile.phoneNUmber,
       email: formData.email,
-      userName: formData.userName,
+      userName: userProfile.userName,
       roleId: userProfile.roleId,
       balance: userProfile.balance,
     };

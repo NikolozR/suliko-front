@@ -3,20 +3,20 @@ import { Input } from "@/features/ui/components/ui/input";
 import { Eye, EyeOff } from "lucide-react";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { AuthFormData } from "@/features/auth/types/types.Auth";
+import { LoginFormData, RegisterFormData } from "@/features/auth/types/types.Auth";
 
 interface PasswordSectionProps {
-  form: UseFormReturn<AuthFormData>;
+  form: UseFormReturn<LoginFormData | RegisterFormData>;
   isLoginMode: boolean;
   isPasswordVisible: boolean;
-  onTogglePasswordVisibility: () => void;
+  setIsPasswordVisible: (value: boolean | ((prev: boolean) => boolean)) => void;
 }
 
 const PasswordSection = ({
   form,
   isLoginMode,
   isPasswordVisible,
-  onTogglePasswordVisibility
+  setIsPasswordVisible,
 }: PasswordSectionProps) => {
   const t = useTranslations('Authorization');
 
@@ -40,13 +40,13 @@ const PasswordSection = ({
                   <Eye
                     size={25}
                     className="absolute cursor-pointer right-3 top-[50%] translate-y-[-50%]"
-                    onClick={onTogglePasswordVisibility}
+                    onClick={() => setIsPasswordVisible((prev) => !prev)}
                   />
                 ) : (
                   <EyeOff
                     size={25}
                     className="absolute cursor-pointer right-3 top-[50%] translate-y-[-50%]"
-                    onClick={onTogglePasswordVisibility}
+                    onClick={() => setIsPasswordVisible((prev) => !prev)}
                   />
                 )}
               </div>
@@ -74,13 +74,13 @@ const PasswordSection = ({
                     <Eye
                       size={25}
                       className="absolute cursor-pointer right-3 top-[50%] translate-y-[-50%]"
-                      onClick={onTogglePasswordVisibility}
+                      onClick={() => setIsPasswordVisible((prev) => !prev)}
                     />
                   ) : (
                     <EyeOff
                       size={25}
                       className="absolute cursor-pointer right-3 top-[50%] translate-y-[-50%]"
-                      onClick={onTogglePasswordVisibility}
+                      onClick={() => setIsPasswordVisible((prev) => !prev)}
                     />
                   )}
                 </div>

@@ -1,10 +1,34 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Input } from "@/features/ui/components/ui/input";
+import { cva, type VariantProps } from "class-variance-authority";
+import { cn } from "@/shared/lib/utils";
 
-interface VerificationCodeInputProps {
+const verificationInputVariants = cva(
+  "w-12 h-12 text-center text-lg font-semibold border-2",
+  {
+    variants: {
+      isInvalid: {
+        true: "border-red-500 dark:border-red-400",
+      },
+      isValid: {
+        true: "border-green-500 dark:border-green-400",
+      },
+      disabled: {
+        true: "bg-gray-100 dark:bg-gray-800",
+      },
+    },
+    defaultVariants: {
+      isInvalid: false,
+      isValid: false,
+      disabled: false,
+    },
+  }
+);
+
+interface VerificationCodeInputProps
+  extends VariantProps<typeof verificationInputVariants> {
   value: string;
   onChange: (value: string) => void;
-  isValid: boolean;
   disabled?: boolean;
 }
 
@@ -12,7 +36,8 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({
   value,
   onChange,
   isValid,
-  disabled = false
+  isInvalid,
+  disabled = false,
 }) => {
   const [individualDigits, setIndividualDigits] = useState<string[]>(Array(6).fill(''));
   const inputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
@@ -41,18 +66,36 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({
   };
 
   const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && !individualDigits[index] && index > 0) {
-      // Move to previous input on backspace if current input is empty
-      inputRefs.current[index - 1]?.focus();
+    if (e.key === 'Backspace') {
+      e.preventDefault();
+      const newDigits = [...individualDigits];
+      if (newDigits[index]) {
+        newDigits[index] = '';
+        setIndividualDigits(newDigits);
+        onChange(newDigits.join(''));
+      } else if (index > 0) {
+        newDigits[index - 1] = '';
+        setIndividualDigits(newDigits);
+        onChange(newDigits.join(''));
+        inputRefs.current[index - 1]?.focus();
+      }
     }
   };
 
-  const handlePaste = (e: React.ClipboardEvent) => {
+  const handlePaste = (index: number, e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData('text').replace(/[^\d]/g, '').slice(0, 6);
-    const newDigits = [...pastedData.split(''), ...Array(6 - pastedData.length).fill('')];
+    const pastedData = e.clipboardData.getData('text').replace(/[^\d]/g, '');
+    if (!pastedData) return;
+
+    const newDigits = [...individualDigits];
+    for (let i = 0; i < pastedData.length && index + i < 6; i++) {
+      newDigits[index + i] = pastedData[i];
+    }
     setIndividualDigits(newDigits);
-    onChange(pastedData);
+    onChange(newDigits.join(''));
+
+    const nextFocusIndex = Math.min(index + pastedData.length, 5);
+    inputRefs.current[nextFocusIndex]?.focus();
   };
 
   return (
@@ -60,7 +103,9 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({
       {individualDigits.map((digit, index) => (
         <Input
           key={index}
-          ref={el => inputRefs.current[index] = el}
+          ref={(el) => {
+            if (el) inputRefs.current[index] = el;
+          }}
           type="text"
           inputMode="numeric"
           maxLength={1}
@@ -68,13 +113,14 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({
           disabled={disabled}
           onChange={(e) => handleDigitChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
-          onPaste={handlePaste}
-          className={`w-12 h-12 text-center text-lg font-semibold border-2 
-            ${isValid && digit ? 'border-green-500 dark:border-green-400' : 
-              !isValid && digit ? 'border-red-500 dark:border-red-400' : 
-              'border-gray-300 dark:border-slate-600'}
-            ${disabled ? 'bg-gray-100 dark:bg-gray-800' : ''}
-          `}
+          onPaste={(e) => handlePaste(index, e)}
+          className={cn(
+            verificationInputVariants({
+              isValid: isValid && !!digit,
+              isInvalid: isInvalid && !!digit,
+              disabled,
+            })
+          )}
         />
       ))}
     </div>

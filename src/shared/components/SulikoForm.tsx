@@ -200,7 +200,7 @@ const SulikoForm: React.FC = () => {
     <>
       <SulikoFormParticles />
       {authError && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 w-[90%] max-w-md animate-in slide-in-from-top-2 duration-300">
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[50] w-[90%] max-w-md animate-in slide-in-from-top-2 duration-300">
           <ErrorAlert
             message={authError}
             onClose={() => setAuthError(null)}
@@ -208,7 +208,7 @@ const SulikoForm: React.FC = () => {
           />
         </div>
       )}
-      <div className="w-[85%] dark:z-2 dark:bg-transparent bg-suliko-main-content-bg-color z-100 pt-[100px]">
+      <div className="w-[85%] dark:z-[2] dark:bg-transparent bg-suliko-main-content-bg-color z-[100] pt-[100px]">
         <Form {...form}>
           <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
             <div className="mb-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 flex w-[60%] max-w-md">
@@ -251,14 +251,14 @@ const SulikoForm: React.FC = () => {
               <PhoneVerificationSection
                 form={form}
                 isLoginMode={isLoginMode}
+                onPhoneChange={handlePhoneChange}
+                onSendCode={handleSendCode}
                 isCodeSent={isCodeSent}
                 isSendingCode={isSendingCode}
-                isCodeVerified={isCodeVerified}
                 resendTimer={resendTimer}
-                sentVerificationCode={sentVerificationCode}
-                onSendCode={handleSendCode}
                 onResendCode={handleResendCode}
-                onPhoneChange={handlePhoneChange}
+                isCodeVerified={isCodeVerified}
+                sentVerificationCode={sentVerificationCode}
               />
 
               {!isLoginMode && <NameSection form={form} />}
@@ -267,9 +267,7 @@ const SulikoForm: React.FC = () => {
                 form={form}
                 isLoginMode={isLoginMode}
                 isPasswordVisible={isPasswordVisible}
-                onTogglePasswordVisibility={() =>
-                  setIsPasswordVisible((prev) => !prev)
-                }
+                setIsPasswordVisible={setIsPasswordVisible}
               />
 
               <Button

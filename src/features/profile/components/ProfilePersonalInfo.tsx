@@ -97,23 +97,9 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({
           <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
             {t("userName")}
           </label>
-          {isEditing ? (
-            <div className="space-y-1">
-              <Input
-                value={userProfile.userName || ""}
-                onChange={e => onChange && onChange("userName", e.target.value)}
-                placeholder={t("userNamePlaceholder")}
-                className={errors.userName ? "border-red-500 focus-visible:ring-red-500" : ""}
-              />
-              {errors.userName && (
-                <p className="text-sm text-red-500">{errors.userName.message}</p>
-              )}
-            </div>
-          ) : (
-            <p className="text-lg font-medium text-foreground">
-              @{userProfile.userName}
-            </p>
-          )}
+          <p className="text-lg font-medium text-foreground">
+            @{userProfile.userName}
+          </p>
         </div>
       </CardContent>
     </Card>

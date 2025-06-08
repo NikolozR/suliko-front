@@ -83,6 +83,7 @@ const PhoneVerificationSection = ({
                     value={field.value || ''}
                     onChange={(value) => field.onChange(value)}
                     isValid={field.value === sentVerificationCode}
+                    isInvalid={!!field.value && field.value !== sentVerificationCode}
                     disabled={isCodeVerified}
                   />
                   {isCodeVerified && (

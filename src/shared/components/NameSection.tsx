@@ -2,10 +2,10 @@ import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/feat
 import { Input } from "@/features/ui/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
 import { useTranslations } from "next-intl";
-import { AuthFormData } from "@/features/auth/types/types.Auth";
+import { LoginFormData, RegisterFormData } from "@/features/auth/types/types.Auth";
 
 interface NameSectionProps {
-  form: UseFormReturn<AuthFormData>;
+  form: UseFormReturn<LoginFormData | RegisterFormData>;
 }
 
 const NameSection = ({ form }: NameSectionProps) => {

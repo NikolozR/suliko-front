@@ -9,16 +9,10 @@ export const useUser = () => {
     clearUserData,
   } = useUserStore();
 
-  // Helper to get user display name
   const getDisplayName = () => {
-    if (!userProfile) return null;
-    if (userProfile.firstName && userProfile.lastName) {
-      return `${userProfile.firstName} ${userProfile.lastName}`;
-    }
-    return userProfile.userName;
+    return `${userProfile?.firstName} ${userProfile?.lastName}`;
   };
 
-  // Helper to get user initials
   const getInitials = () => {
     if (!userProfile) return '';
     const first = userProfile.firstName?.charAt(0)?.toUpperCase() || '';
