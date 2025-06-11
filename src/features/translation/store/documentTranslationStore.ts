@@ -7,6 +7,7 @@ interface DocumentTranslationState {
   currentTargetLanguageId: number;
   originalTargetLanguageId: number;
   sourceLanguageId: number;
+  jobId: string;
   shouldResetZoom: boolean;
   setCurrentSourceLanguageId: (languageId: number) => void;
   setCurrentTargetLanguageId: (languageId: number) => void;
@@ -15,6 +16,7 @@ interface DocumentTranslationState {
   setCurrentFile: (file: FileList | null) => void;
   setTranslatedMarkdown: (text: string) => void;
   setShouldResetZoom: (shouldReset: boolean) => void;
+  setJobId: (jobId: string) => void;
   reset: () => void;
 }
 
@@ -26,6 +28,8 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   originalTargetLanguageId: 2,
   sourceLanguageId: 0,
   shouldResetZoom: false,
+  jobId: '',
+  setJobId: (jobId: string) => set({ jobId: jobId }),
   setCurrentSourceLanguageId: (languageId) => set({ currentSourceLanguageId: languageId }),
   setCurrentTargetLanguageId: (languageId) => set({ currentTargetLanguageId: languageId }),
   setOriginalTargetLanguageId: (languageId) => set({ originalTargetLanguageId: languageId }),

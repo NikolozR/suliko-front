@@ -85,39 +85,3 @@ export async function getResult(jobId: string): Promise<Blob | JobResultResponse
     throw new Error("Failed to get job result");
   }
 }
-
-// {
-//     "jobId": "14bb66f6-9fbb-4823-9361-ee529071fd0e",
-//     "status": "Processing",
-//     "progress": 10,
-//     "message": "Translation in progress...",
-//     "estimatedRemainingMinutes": 3
-//   }
-
-// after some time for /status endpoint
-// {
-//     "jobId": "14bb66f6-9fbb-4823-9361-ee529071fd0e",
-//     "status": "Processing",
-//     "progress": 10,
-//     "message": "Translation in progress...",
-//     "estimatedRemainingMinutes": 2
-//   }
-
-// when it is done for /status endpoint
-// {
-//     "jobId": "14bb66f6-9fbb-4823-9361-ee529071fd0e",
-//     "status": "Completed",
-//     "progress": 100,
-//     "message": "Translation completed successfully",
-//     "estimatedRemainingMinutes": 0
-//   }
-
-// for result endpoint when not done, error 400
-// {
-//     "jobId": "14bb66f6-9fbb-4823-9361-ee529071fd0e",
-//     "status": "Processing",
-//     "message": "Translation not completed yet"
-//   }
-
-// for result endpoint when done, code 200
-// respoonse body downloadeable file

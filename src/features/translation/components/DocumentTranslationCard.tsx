@@ -22,8 +22,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { getResult, getStatus } from "../services/jobService";
+import ErrorAlert from "@/shared/components/ErrorAlert";
 
-const isFileListAvailable = typeof window !== 'undefined' && 'FileList' in window;
+const isFileListAvailable =
+  typeof window !== "undefined" && "FileList" in window;
 
 const documentTranslationSchema = z.object({
   currentFile: z
@@ -31,29 +34,29 @@ const documentTranslationSchema = z.object({
     .nullable()
     .refine((files) => {
       if (!files) return false;
-      return (isFileListAvailable && files instanceof FileList && files.length > 0) || 
-             (files && typeof files === 'object' && files.length > 0);
+      return (
+        (isFileListAvailable &&
+          files instanceof FileList &&
+          files.length > 0) ||
+        (files && typeof files === "object" && files.length > 0)
+      );
     }, "Please select a file to translate.")
-    .refine(
-      (files) => {
-        if (!files || !files.length) return false;
-        const file = files[0];
-        return file && file.size <= 10 * 1024 * 1024; // 10MB limit
-      },
-      "File size must be less than 10MB."
-    ),
-  currentTargetLanguageId: z
-    .number(),
-  currentSourceLanguageId: z
-    .number()
+    .refine((files) => {
+      if (!files || !files.length) return false;
+      const file = files[0];
+      return file && file.size <= 10 * 1024 * 1024; // 10MB limit
+    }, "File size must be less than 10MB."),
+  currentTargetLanguageId: z.number(),
+  currentSourceLanguageId: z.number(),
 });
 
 type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
 const DocumentTranslationCard = () => {
-  const t = useTranslations('DocumentTranslationCard');
+  const t = useTranslations("DocumentTranslationCard");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
   const { token } = useAuthStore();
   const {
     currentFile,
@@ -64,6 +67,7 @@ const DocumentTranslationCard = () => {
     setCurrentTargetLanguageId,
     currentSourceLanguageId,
     setCurrentSourceLanguageId,
+    setJobId,
   } = useDocumentTranslationStore();
 
   const {
@@ -83,10 +87,10 @@ const DocumentTranslationCard = () => {
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {
       setShowAuthModal(true);
-      event.target.value = '';
+      event.target.value = "";
       return;
     }
-    
+
     if (event.target.files && event.target.files.length > 0) {
       setCurrentFile(event.target.files);
       setValue("currentFile", event.target.files);
@@ -99,9 +103,11 @@ const DocumentTranslationCard = () => {
     setTranslatedMarkdown("");
     setValue("currentFile", null);
     clearErrors("currentFile");
-    const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+    const fileInput = document.querySelector(
+      'input[type="file"]'
+    ) as HTMLInputElement;
     if (fileInput) {
-      fileInput.value = '';
+      fileInput.value = "";
     }
   };
 
@@ -124,13 +130,36 @@ const DocumentTranslationCard = () => {
         OutputFormat: 0,
       };
       const result = await translateDocumentUserContent(params);
-      setTranslatedMarkdown(result);
-    } catch (err) {
-      if (err instanceof Error) {
-        console.error(err.message || "An unexpected error occurred.");
-      } else {
-        console.error("An unexpected error occurred.");
+      const currentJobId = result.jobId
+      setJobId(currentJobId);
+      let completed = false;
+      if (currentJobId) {
+        while (true) {
+          const result = await getStatus(currentJobId);
+          if (result.status === "Completed") {
+            completed = true;
+            break;
+          } else if (result.status === "Failed") {
+            break;
+          }
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+        }        
+        if (completed) {
+          const result = await getResult(currentJobId) as Blob;
+          const text = await result.text();
+          setTranslatedMarkdown(text);
+        } else {
+          setError("Failed to get translation result");
+        }
       }
+      setIsLoading(false);
+    } catch (err) {
+      console.log(err); 
+      let message = "An unexpected error occurred during translation.";
+      if (err instanceof Error) {
+        message = err.message || message;
+      }
+      setError(message);
     } finally {
       setIsLoading(false);
     }
@@ -142,16 +171,21 @@ const DocumentTranslationCard = () => {
     }
   };
 
-
   const getFormError = (): string | null => {
     if (errors.currentFile?.message) {
-      return typeof errors.currentFile.message === 'string' ? errors.currentFile.message : 'Please select a file to translate.';
+      return typeof errors.currentFile.message === "string"
+        ? errors.currentFile.message
+        : "Please select a file to translate.";
     }
     if (errors.currentTargetLanguageId?.message) {
-      return typeof errors.currentTargetLanguageId.message === 'string' ? errors.currentTargetLanguageId.message : 'Please select a target language.';
+      return typeof errors.currentTargetLanguageId.message === "string"
+        ? errors.currentTargetLanguageId.message
+        : "Please select a target language.";
     }
     if (errors.currentSourceLanguageId?.message) {
-      return typeof errors.currentSourceLanguageId.message === 'string' ? errors.currentSourceLanguageId.message : 'Please select a source language.';
+      return typeof errors.currentSourceLanguageId.message === "string"
+        ? errors.currentSourceLanguageId.message
+        : "Please select a source language.";
     }
     return null;
   };
@@ -161,26 +195,33 @@ const DocumentTranslationCard = () => {
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!token) {
       setShowAuthModal(true);
       return;
     }
-    
+
     handleSubmit(onSubmit, handleFormError)();
   };
 
   return (
     <TabsContent value="document">
+      {error && (
+        <ErrorAlert
+          message={error}
+          onClose={() => setError(null)}
+          className="mb-6"
+        />
+      )}
       <div className={translatedMarkdown ? "flex gap-8" : undefined}>
         <Card className="border-none flex-1 min-w-0">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
               <Upload className="h-5 w-5" />
-              {t('title')}
+              {t("title")}
             </CardTitle>
             <CardDescription className="text-muted-foreground">
-              {t('description')}
+              {t("description")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -203,7 +244,7 @@ const DocumentTranslationCard = () => {
                     layout="horizontal"
                     showSwapButton={true}
                   />
-                  
+
                   <TranslationResultView
                     currentFile={currentFileObj!}
                     translatedMarkdown={translatedMarkdown}
@@ -247,7 +288,6 @@ const DocumentTranslationCard = () => {
                 showShiftEnter={true}
                 formError={token ? getFormError() : null}
               />
-              
             </form>
           </CardContent>
         </Card>
