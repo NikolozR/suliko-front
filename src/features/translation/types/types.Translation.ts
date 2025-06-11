@@ -17,3 +17,25 @@ export interface  DocumentTranslateUserContentParams {
   SourceLanguageId: number;
   OutputFormat: number;
 }
+
+export interface JobStatusResponse {
+  jobId: string;
+  status: string;
+  progress: number;
+  message: string;
+  estimatedRemainingMinutes: number;
+}
+
+export interface JobResultResponseOnError {
+  jobId: string;
+  status: string;
+  message: string;
+}
+
+export interface DocumentTranslationResponse {
+  jobId: string;
+  message: string;
+  estimatedTimeMinutes: number;
+  fileType: string;
+  fileSizeKB: number;
+}

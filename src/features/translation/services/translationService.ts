@@ -1,6 +1,7 @@
 import { API_BASE_URL } from "@/shared/constants/api";
 import {
   DocumentTranslateUserContentParams,
+  DocumentTranslationResponse,
   TextTranslateUserContentParams,
   TextTranslateUserContentResponse,
 } from "@/features/translation/types/types.Translation";
@@ -65,7 +66,7 @@ export const translateUserContent = async (
 
 export const translateDocumentUserContent = async (
   params: DocumentTranslateUserContentParams
-) => {
+): Promise<DocumentTranslationResponse> => {
   const claudedEndpoint = "/Document/translate";
   const tesseractEndpoint = "/Document/tesseract/translate";
   const endpoint = params.SourceLanguageId === 1 ? claudedEndpoint : tesseractEndpoint;
@@ -110,12 +111,11 @@ export const translateDocumentUserContent = async (
     }
   }
 
-  if (response.status !== 200) {
+  if (response.status < 200 || response.status >= 300) {
     const errorData = await response.json();
     throw new Error(errorData.message || "Translation failed");
   } else {
-    const dataBlob = await response.blob();
-    const data = await dataBlob.text();
+    const data = await response.json();
     return data;
   }
 };
