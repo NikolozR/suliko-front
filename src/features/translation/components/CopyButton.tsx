@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
+import markdownToTxt from 'markdown-to-txt'
 
 interface CopyButtonProps {
   content: string;
@@ -20,7 +21,8 @@ const CopyButton: React.FC<CopyButtonProps> = ({
 
   const handleCopy = async () => {
     try {
-      await navigator.clipboard.writeText(content);
+      const plainText = markdownToTxt(content);
+      await navigator.clipboard.writeText(plainText);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
