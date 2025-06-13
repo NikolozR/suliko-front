@@ -10,6 +10,7 @@ import {
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
 import { useLocale } from 'next-intl';
+import { LoadingSpinner } from "@/features/ui/components/loading";
 
 interface LanguageSelectProps {
   value?: number;
@@ -49,7 +50,10 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
 
   if (loading)
     return (
-      <div className="text-sm text-muted-foreground">იტვირთება...</div>
+      <div className="flex items-center gap-2 p-3 border rounded-md">
+        <LoadingSpinner size="sm" variant="primary" />
+        <span className="text-sm text-muted-foreground">იტვირთება...</span>
+      </div>
     );
 
   const handleOpenChange = (nextOpen: boolean) => {

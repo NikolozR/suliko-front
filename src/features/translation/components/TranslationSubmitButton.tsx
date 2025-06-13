@@ -1,5 +1,5 @@
 "use client";
-import { Button } from "@/features/ui/components/ui/button";
+import { LoadingButton } from "@/features/ui/components/loading";
 import { useTranslations } from "next-intl";
 
 interface TranslationSubmitButtonProps {
@@ -26,17 +26,21 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
 
   return (
     <>
-      <Button
+      <LoadingButton
         className="w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-opacity text-sm md:text-base"
         size={hasResult ? "default" : "lg"}
         type={type}
-        disabled={isLoading || disabled}
+        disabled={disabled}
+        isLoading={isLoading}
         onClick={onClick}
+        loadingText={t('loading')}
+        loadingAnimation="spinner"
+        fullWidth={true}
       >
         <span className="text-sm md:text-base">
-          {isLoading ? t('loading') : t('translate')}
+          {t('translate')}
         </span>
-      </Button>
+      </LoadingButton>
       
       {showShiftEnter && (
         <div className="flex justify-center mt-2">

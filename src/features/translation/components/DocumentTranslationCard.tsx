@@ -22,6 +22,7 @@ import { z } from "zod";
 import { useTranslations } from "next-intl";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { documentTranslatingWithJobId } from "../utils/documentTranslation";
+import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -52,9 +53,12 @@ export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
 const DocumentTranslationCard = () => {
   const t = useTranslations("DocumentTranslationCard");
+  const tButton = useTranslations("TranslationButton");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
+  const [loadingProgress, setLoadingProgress] = useState<number>(0);
+  const [loadingMessage, setLoadingMessage] = useState<string>("");
   const { token } = useAuthStore();
   const {
     currentFile,
@@ -119,9 +123,18 @@ const DocumentTranslationCard = () => {
     }
     console.log(data, "DEBUGGING data");
     setIsLoading(true);
+    setLoadingProgress(0);
+    setLoadingMessage("Preparing translation...");
+    
     try {
-      await documentTranslatingWithJobId(data, setError);
-      setIsLoading(false);
+      await documentTranslatingWithJobId(
+        data, 
+        setError, 
+        (progress, message) => {
+          setLoadingProgress(progress);
+          setLoadingMessage(message);
+        }
+      );
     } catch (err) {
       console.log(err); 
       let message = "An unexpected error occurred during translation.";
@@ -131,6 +144,8 @@ const DocumentTranslationCard = () => {
       setError(message);
     } finally {
       setIsLoading(false);
+      setLoadingProgress(0);
+      setLoadingMessage("");
     }
   };
 
@@ -183,7 +198,13 @@ const DocumentTranslationCard = () => {
         />
       )}
       <div className={translatedMarkdown ? "flex gap-8" : undefined}>
-        <Card className="border-none flex-1 min-w-0">
+        <Card className="border-none flex-1 min-w-0 relative">
+          <TranslationLoadingOverlay
+            isVisible={isLoading}
+            type="document"
+            message={loadingMessage || tButton('loading')}
+            progress={loadingProgress}
+          />
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
               <Upload className="h-5 w-5" />

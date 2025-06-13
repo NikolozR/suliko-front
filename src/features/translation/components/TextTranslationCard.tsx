@@ -14,6 +14,7 @@ import TranslationSubmitButton from "./TranslationSubmitButton";
 import CopyButton from "./CopyButton";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
+import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
 import {
   TextTranslateUserContentParams,
   TextTranslateUserContentResponse,
@@ -42,6 +43,7 @@ type FormData = z.infer<typeof textTranslationSchema>;
 
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
+  const tButton = useTranslations('TranslationButton');
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { token } = useAuthStore();
@@ -160,7 +162,12 @@ const TextTranslationCard = () => {
 
   return (
     <div className={translatedText ? "flex gap-8" : undefined}>
-      <Card className="border-none flex-1 min-w-0">
+      <Card className="border-none flex-1 min-w-0 relative">
+        <TranslationLoadingOverlay
+          isVisible={textLoading}
+          type="text"
+          message={tButton('loading')}
+        />
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-foreground">
             <Type className="h-5 w-5" />

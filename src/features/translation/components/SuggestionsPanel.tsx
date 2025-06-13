@@ -1,26 +1,36 @@
 import { Check, X } from 'lucide-react';
+import { useState } from 'react';
 import { Suggestion } from '../types/types.Translation';
 import { useSuggestionsStore } from '../store/suggestionsStore';
 import { applySuggestion } from '../services/suggestionsService';
 import { useDocumentTranslationStore } from '../store/documentTranslationStore';
+import { LoadingSpinner } from '@/features/ui/components/loading';
 
 const SuggestionsPanel: React.FC = () => {
   const {suggestions, removeSuggestion, acceptSuggestion} = useSuggestionsStore();
   const {translatedMarkdown, currentTargetLanguageId, setTranslatedMarkdown} = useDocumentTranslationStore();
+  const [loadingSuggestionId, setLoadingSuggestionId] = useState<string | null>(null);
 
   const handleRemoveSuggestion = (id: string) => {
     removeSuggestion(id);
   };
 
   const handleAcceptSuggestion = async (id: string) => {
-    const data = await applySuggestion({
-      translatedContent: translatedMarkdown,
-      suggestionId: id,
-      suggestion: suggestions.find((s: Suggestion) => s.id === id)!,
-      targetLanguageId: currentTargetLanguageId,
-    });
-    setTranslatedMarkdown(data.updatedContent);
-    acceptSuggestion(id);
+    setLoadingSuggestionId(id);
+    try {
+      const data = await applySuggestion({
+        translatedContent: translatedMarkdown,
+        suggestionId: id,
+        suggestion: suggestions.find((s: Suggestion) => s.id === id)!,
+        targetLanguageId: currentTargetLanguageId,
+      });
+      setTranslatedMarkdown(data.updatedContent);
+      acceptSuggestion(id);
+    } catch (error) {
+      console.error('Error applying suggestion:', error);
+    } finally {
+      setLoadingSuggestionId(null);
+    }
   };
 
   if (!suggestions.length) return null;
@@ -41,10 +51,26 @@ const SuggestionsPanel: React.FC = () => {
                 <div className="flex items-center justify-between gap-2">
                   <div className="font-semibold text-foreground" title={s.title}>{s.title}</div>
                   <div className="flex gap-1">
-                    <button type='button' onClick={() => handleAcceptSuggestion(s.id)} className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors group" title="Accept">
-                      <Check className="w-4 cursor-pointer h-4 text-green-600 dark:text-green-500 group-hover:text-green-700 dark:group-hover:text-green-400" />
+                    <button 
+                      type='button' 
+                      onClick={() => handleAcceptSuggestion(s.id)} 
+                      disabled={loadingSuggestionId === s.id}
+                      className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed" 
+                      title="Accept"
+                    >
+                      {loadingSuggestionId === s.id ? (
+                        <LoadingSpinner size="sm" variant="primary" />
+                      ) : (
+                        <Check className="w-4 cursor-pointer h-4 text-green-600 dark:text-green-500 group-hover:text-green-700 dark:group-hover:text-green-400" />
+                      )}
                     </button>
-                    <button type='button' onClick={() => handleRemoveSuggestion(s.id)} className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group" title="Reject">
+                    <button 
+                      type='button' 
+                      onClick={() => handleRemoveSuggestion(s.id)} 
+                      disabled={loadingSuggestionId === s.id}
+                      className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed" 
+                      title="Reject"
+                    >
                       <X className="w-4 cursor-pointer h-4 text-red-500 dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300" />
                     </button>
                   </div>
