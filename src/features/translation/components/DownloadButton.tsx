@@ -7,7 +7,7 @@ import { markdownToPdf, pdfToWord } from "@/features/translation/services/conver
 interface DownloadButtonProps {
   content: string;
   filename?: string;
-  fileType?: 'txt' | 'md' | 'docx' | 'pdf';
+  fileType?: 'txt' | 'md' | 'docx' | 'pdf' | 'srt';
   className?: string;
   size?: "sm" | "default" | "lg" | "icon";
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
@@ -34,6 +34,8 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         return 'application/pdf';
       case 'docx':
         return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+      case 'srt':
+        return 'text/srt';
       default:
         return 'text/plain';
     }
@@ -48,6 +50,8 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         return `translated_document_${timestamp}.pdf`;
       case 'docx':
         return `translated_document_${timestamp}.docx`;
+      case 'srt':
+        return `translated_subtitles_${timestamp}.srt`;
       default:
         return `translated_text_${timestamp}.txt`;
     }
@@ -69,7 +73,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       setIsConverting(true);
       const fileName = filename || getDefaultFilename();
 
-      if (fileType === 'txt' || fileType === 'md') {
+      if (fileType === 'txt' || fileType === 'md' || fileType === 'srt') {
         const blob = new Blob([content], { type: getMimeType(fileType) });
         downloadBlob(blob, fileName);
       } else if (fileType === 'pdf') {

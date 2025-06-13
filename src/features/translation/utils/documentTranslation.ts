@@ -24,7 +24,7 @@ export async function documentTranslatingWithJobId(
     OutputFormat: 0,
   };
   onProgress?.(10, "Uploading document...");
-  const result = await translateDocumentUserContent(params);
+  const result = await translateDocumentUserContent(params, data.isSrt);
   const currentJobId = result.jobId;
   setJobId(currentJobId);
   let completed = false;

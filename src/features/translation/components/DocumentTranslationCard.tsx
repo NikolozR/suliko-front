@@ -47,6 +47,7 @@ const documentTranslationSchema = z.object({
     }, "File size must be less than 10MB."),
   currentTargetLanguageId: z.number(),
   currentSourceLanguageId: z.number(),
+  isSrt: z.boolean().optional(),
 });
 
 export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
@@ -82,6 +83,7 @@ const DocumentTranslationCard = () => {
       currentFile: null,
       currentTargetLanguageId,
       currentSourceLanguageId,
+      isSrt: false,
     },
   });
 
@@ -93,8 +95,13 @@ const DocumentTranslationCard = () => {
     }
 
     if (event.target.files && event.target.files.length > 0) {
+      const file = event.target.files[0];
+      const fileExtension = file.name.split('.').pop()?.toLowerCase();
+      const isSrtFile = fileExtension === 'srt';
+      
       setCurrentFile(event.target.files);
       setValue("currentFile", event.target.files);
+      setValue("isSrt", isSrtFile);
       clearErrors("currentFile");
     }
   };
@@ -103,6 +110,7 @@ const DocumentTranslationCard = () => {
     setCurrentFile(null);
     setTranslatedMarkdown("");
     setValue("currentFile", null);
+    setValue("isSrt", false);
     clearErrors("currentFile");
     const fileInput = document.querySelector(
       'input[type="file"]'

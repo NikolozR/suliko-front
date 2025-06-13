@@ -65,12 +65,19 @@ export const translateUserContent = async (
 
 
 export const translateDocumentUserContent = async (
-  params: DocumentTranslateUserContentParams
+  params: DocumentTranslateUserContentParams, 
+  isSrt: boolean = false
 ): Promise<DocumentTranslationResponse> => {
   const claudedEndpoint = "/Document/translate";
   const tesseractEndpoint = "/Document/tesseract/translate";
-  const endpoint = params.SourceLanguageId === 1 ? claudedEndpoint : tesseractEndpoint;
-  
+  const srtEndpoint = "/Document/srt/translate";
+  let endpoint = "";
+  if (isSrt) {
+    endpoint = srtEndpoint;
+  } else {
+    endpoint = params.SourceLanguageId === 1 ? claudedEndpoint : tesseractEndpoint;
+  }
+  console.log(endpoint);
   const formData = new FormData();
 
   formData.append("File", params.File);

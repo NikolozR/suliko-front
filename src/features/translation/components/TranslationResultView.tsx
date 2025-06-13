@@ -34,6 +34,12 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
 
+  // Helper function to detect if the original file is SRT
+  const isOriginalFileSrt = () => {
+    const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
+    return fileExtension === 'srt';
+  };
+
   useEffect(() => {
     const documentContainer =
       documentPreviewRef.current?.querySelector(".overflow-y-auto");
@@ -102,20 +108,34 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
             თარგმნილი ტექსტი
           </div>
           <div className="flex items-center gap-2 absolute right-0 bottom-[-4px]">
-            <LocalizedFormatSelector
-              selectedFormat={selectedDownloadFormat}
-              onFormatChange={setSelectedDownloadFormat}
-              contentType="document"
-              size="sm"
-              variant="outline"
-            />
-            <DownloadButton
-              content={translatedMarkdown}
-              size="sm"
-              variant="outline"
-              fileType={selectedDownloadFormat.extension as 'txt' | 'docx' | 'pdf'}
-              label={tButton('download')}
-            />
+            {isOriginalFileSrt() ? (
+              // For SRT files: Direct download only, no format selector
+              <DownloadButton
+                content={translatedMarkdown}
+                size="sm"
+                variant="outline"
+                fileType="srt"
+                label={tButton('download')}
+              />
+            ) : (
+              // For other files: Show format selector and download
+              <>
+                <LocalizedFormatSelector
+                  selectedFormat={selectedDownloadFormat}
+                  onFormatChange={setSelectedDownloadFormat}
+                  contentType="document"
+                  size="sm"
+                  variant="outline"
+                />
+                <DownloadButton
+                  content={translatedMarkdown}
+                  size="sm"
+                  variant="outline"
+                  fileType={selectedDownloadFormat.extension as 'txt' | 'docx' | 'pdf'}
+                  label={tButton('download')}
+                />
+              </>
+            )}
             <CopyButton
               content={translatedMarkdown}
               size="sm"
