@@ -70,3 +70,12 @@ export interface ApplySuggestionParams {
   suggestion: Suggestion;
   targetLanguageId: number;
 }
+
+
+export interface ApplySuggestionResponse {
+  updatedContent: string;
+  success: boolean;
+  errorMessage: string | null;
+  newSuggestions: Suggestion[];
+  changeDescription: string;
+}

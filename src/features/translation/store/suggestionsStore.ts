@@ -5,7 +5,7 @@ interface SuggestionsState {
   suggestions: Suggestion[];
   setSuggestions: (suggestions: Suggestion[]) => void;
   removeSuggestion: (id: string) => void;
-  applySuggestion: (id: string) => void;
+  acceptSuggestion: (id: string) => void;
   reset: () => void;
 }
 
@@ -15,7 +15,7 @@ export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
   removeSuggestion: (id) => set((state) => ({ 
     suggestions: state.suggestions.filter((s) => s.id !== id) 
   })),
-  applySuggestion: (id) => set((state) => ({ 
+  acceptSuggestion: (id) => set((state) => ({ 
     suggestions: state.suggestions.filter((s) => s.id !== id) 
   })),
   reset: () => set({ 

@@ -1,6 +1,7 @@
 import { reaccessToken, useAuthStore } from "@/features/auth";
 import {
     ApplySuggestionParams,
+  ApplySuggestionResponse,
   SuggestionsResponse,
   SuggestionsResponseProcessing,
 } from "../types/types.Translation";
@@ -51,15 +52,18 @@ export async function getSuggestions(
 }
 
 
-export async function applySuggestion(params: ApplySuggestionParams) {
+export async function applySuggestion(params: ApplySuggestionParams): Promise<ApplySuggestionResponse> {
     const endpoint = `/Document/apply-suggestion`;
     const {token, refreshToken} = useAuthStore.getState();
     const headers = new Headers();
     if (token) {
         headers.append("Authorization", `Bearer ${token}`);
+        headers.append("Content-Type", "application/json");
     } else {
         throw new Error("No token found");
     }
+
+    console.log(params, "DEBUGGING apply suggestion");
     let response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers,
         method: "POST",
@@ -85,7 +89,10 @@ export async function applySuggestion(params: ApplySuggestionParams) {
     }
 
 
-    const data = await response.json();
-    console.log(data, "DEBUGGING application of suggestions");
-    return data;
+    if (response.status >= 200 && response.status < 300) {
+      const data = await response.json();
+      return data;
+    }
+
+    throw new Error("Failed to apply suggestion");
 }

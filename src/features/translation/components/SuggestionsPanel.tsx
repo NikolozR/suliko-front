@@ -1,12 +1,26 @@
 import { Check, X } from 'lucide-react';
 import { Suggestion } from '../types/types.Translation';
 import { useSuggestionsStore } from '../store/suggestionsStore';
+import { applySuggestion } from '../services/suggestionsService';
+import { useDocumentTranslationStore } from '../store/documentTranslationStore';
 
 const SuggestionsPanel: React.FC = () => {
-  const {suggestions, removeSuggestion} = useSuggestionsStore();
+  const {suggestions, removeSuggestion, acceptSuggestion} = useSuggestionsStore();
+  const {translatedMarkdown, currentTargetLanguageId, setTranslatedMarkdown} = useDocumentTranslationStore();
 
   const handleRemoveSuggestion = (id: string) => {
     removeSuggestion(id);
+  };
+
+  const handleAcceptSuggestion = async (id: string) => {
+    const data = await applySuggestion({
+      translatedContent: translatedMarkdown,
+      suggestionId: id,
+      suggestion: suggestions.find((s: Suggestion) => s.id === id)!,
+      targetLanguageId: currentTargetLanguageId,
+    });
+    setTranslatedMarkdown(data.updatedContent);
+    acceptSuggestion(id);
   };
 
   if (!suggestions.length) return null;
@@ -27,10 +41,10 @@ const SuggestionsPanel: React.FC = () => {
                 <div className="flex items-center justify-between gap-2">
                   <div className="font-semibold text-foreground" title={s.title}>{s.title}</div>
                   <div className="flex gap-1">
-                    <button className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors group" title="Accept">
+                    <button type='button' onClick={() => handleAcceptSuggestion(s.id)} className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors group" title="Accept">
                       <Check className="w-4 cursor-pointer h-4 text-green-600 dark:text-green-500 group-hover:text-green-700 dark:group-hover:text-green-400" />
                     </button>
-                    <button onClick={() => handleRemoveSuggestion(s.id)} className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group" title="Reject">
+                    <button type='button' onClick={() => handleRemoveSuggestion(s.id)} className="p-1.5 rounded-md hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors group" title="Reject">
                       <X className="w-4 cursor-pointer h-4 text-red-500 dark:text-red-400 group-hover:text-red-600 dark:group-hover:text-red-300" />
                     </button>
                   </div>

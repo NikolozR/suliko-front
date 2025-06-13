@@ -99,7 +99,14 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
               key={lang.id}
               value={lang.id.toString()}
             >
-              {locale === "ka" ? lang.nameGeo : lang.name.replace(" Language", "")}
+              {(() => {
+                // Handle edge case for "Serbian language"
+                if (locale !== "ka" && lang.name === "Serbian language") {
+                  return "Serbian";
+                }
+                return locale === "ka" ? lang.nameGeo : lang.name.replace(" Language", "");
+              })()}
+              {/* {locale === "ka" ? lang.nameGeo : lang.name.replace(" Language", "")} */}
             </SelectItem>
           ))}
         </SelectContent>
