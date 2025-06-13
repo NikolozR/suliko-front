@@ -22,7 +22,6 @@ const LocalizedFormatSelector: React.FC<LocalizedFormatSelectorProps> = ({
 }) => {
   const t = useTranslations('DownloadFormats');
 
-  // Generate formats based on content type with translations
   const getFormats = (): DownloadFormat[] => {
     const baseFormats: DownloadFormat[] = [
       {

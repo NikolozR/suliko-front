@@ -25,11 +25,10 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 }) => {
   const tButton = useTranslations('TranslationButton');
   const [selectedDownloadFormat, setSelectedDownloadFormat] = useState<DownloadFormat>({
-    value: "md",
-    label: "Markdown",
-    extension: "md",
+    value: "pdf",
+    label: "PDF Document",
+    extension: "pdf",
     icon: <></>,
-    description: "Markdown format with formatting"
   });
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
@@ -114,7 +113,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
               content={translatedMarkdown}
               size="sm"
               variant="outline"
-              fileType={selectedDownloadFormat.extension as 'txt' | 'md' | 'docx'}
+              fileType={selectedDownloadFormat.extension as 'txt' | 'docx' | 'pdf'}
               label={tButton('download')}
             />
             <CopyButton

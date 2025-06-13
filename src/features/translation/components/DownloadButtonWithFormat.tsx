@@ -16,7 +16,6 @@ interface DownloadButtonWithFormatProps {
   disabled?: boolean;
 }
 
-// Default formats for different content types
 const defaultFormats: DownloadFormat[] = [
   {
     value: "txt",
@@ -24,13 +23,6 @@ const defaultFormats: DownloadFormat[] = [
     extension: "txt",
     icon: <FileText className="w-4 h-4" />,
     description: "Plain text format"
-  },
-  {
-    value: "md",
-    label: "Markdown",
-    extension: "md",
-    icon: <File className="w-4 h-4" />,
-    description: "Markdown format with formatting"
   },
   {
     value: "pdf",
@@ -64,8 +56,6 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
 
   const getMimeType = (format: DownloadFormat) => {
     switch (format.value) {
-      case 'md':
-        return 'text/markdown';
       case 'pdf':
         return 'application/pdf';
       case 'docx':
@@ -84,12 +74,10 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
     if (disabled || !content.trim()) return;
 
     try {
-      // If custom download handler is provided, use it
       if (onDownload) {
         onDownload(selectedFormat, content);
       } else {
-        // Default download behavior for basic formats
-        if (selectedFormat.value === 'txt' || selectedFormat.value === 'md') {
+        if (selectedFormat.value === 'txt') {
           const blob = new Blob([content], { type: getMimeType(selectedFormat) });
           const url = URL.createObjectURL(blob);
           const link = document.createElement('a');
@@ -100,9 +88,7 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
         } else {
-          // For PDF/DOCX, we'll need backend integration
           console.log(`Download requested for format: ${selectedFormat.value}`);
-          // This is where you'll add the backend call
         }
       }
       
