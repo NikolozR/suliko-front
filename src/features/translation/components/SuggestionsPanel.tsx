@@ -5,9 +5,10 @@ import { useSuggestionsStore } from '../store/suggestionsStore';
 import { applySuggestion } from '../services/suggestionsService';
 import { useDocumentTranslationStore } from '../store/documentTranslationStore';
 import { LoadingSpinner } from '@/features/ui/components/loading';
+import { Textarea } from '@/features/ui/components/ui/textarea';
 
 const SuggestionsPanel: React.FC = () => {
-  const {suggestions, removeSuggestion, acceptSuggestion} = useSuggestionsStore();
+  const {suggestions, removeSuggestion, acceptSuggestion, updateSuggestionText} = useSuggestionsStore();
   const {translatedMarkdown, currentTargetLanguageId, setTranslatedMarkdown} = useDocumentTranslationStore();
   const [loadingSuggestionId, setLoadingSuggestionId] = useState<string | null>(null);
 
@@ -31,6 +32,10 @@ const SuggestionsPanel: React.FC = () => {
     } finally {
       setLoadingSuggestionId(null);
     }
+  };
+
+  const handleSuggestionTextChange = (id: string, newText: string) => {
+    updateSuggestionText(id, newText);
   };
 
   if (!suggestions.length) return null;
@@ -76,9 +81,13 @@ const SuggestionsPanel: React.FC = () => {
                   </div>
                 </div>
                 <div className="text-sm text-foreground mb-2 leading-relaxed">{s.description}</div>
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded p-2 text-xs text-muted-foreground font-mono whitespace-pre-wrap leading-relaxed">
-                  {s.suggestedText}
-                </div>
+                <Textarea
+                  value={s.suggestedText}
+                  onChange={(e) => handleSuggestionTextChange(s.id, e.target.value)}
+                  className="text-xs font-mono resize-none min-h-[80px] max-h-[200px]"
+                  placeholder="Edit suggestion text..."
+                  disabled={loadingSuggestionId === s.id}
+                />
               </div>
             ))}
           </div>

@@ -6,6 +6,7 @@ interface SuggestionsState {
   setSuggestions: (suggestions: Suggestion[]) => void;
   removeSuggestion: (id: string) => void;
   acceptSuggestion: (id: string) => void;
+  updateSuggestionText: (id: string, newText: string) => void;
   reset: () => void;
 }
 
@@ -17,6 +18,11 @@ export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
   })),
   acceptSuggestion: (id) => set((state) => ({ 
     suggestions: state.suggestions.filter((s) => s.id !== id) 
+  })),
+  updateSuggestionText: (id, newText) => set((state) => ({
+    suggestions: state.suggestions.map((s) => 
+      s.id === id ? { ...s, suggestedText: newText } : s
+    )
   })),
   reset: () => set({ 
     suggestions: [],

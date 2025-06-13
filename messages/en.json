@@ -92,7 +92,17 @@
     "description": "Upload document for translation",
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
-    "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc."
+    "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc.",
+    "progress": {
+      "preparing": "Preparing document...",
+      "analyzing": "Analyzing content...",
+      "translating": "Translating...",
+      "enhancing": "Enhancing translation...",
+      "finalizing": "Finalizing...",
+      "waiting": "Waiting for completion...",
+      "starting": "Starting translation...",
+      "complete": "Translation complete!"
+    }
   },
   "Profile": {
     "fullName": "Full Name",

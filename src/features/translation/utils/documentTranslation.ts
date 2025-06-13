@@ -58,7 +58,7 @@ export async function documentTranslatingWithJobId(
       onProgress?.(90, "Retrieving results...");
       const result = (await getResult(currentJobId)) as Blob;
       const text = await result.text();
-      onProgress?.(100, "Complete!");
+      onProgress?.(97, "Finalizing...");
       setTranslatedMarkdown(text);
     } else {
       setError("Failed to get translation result");

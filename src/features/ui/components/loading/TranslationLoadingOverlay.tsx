@@ -1,6 +1,5 @@
 import React from 'react';
 import { cn } from '@/shared/lib/utils';
-import LoadingSpinner from './LoadingSpinner';
 import LoadingDots from './LoadingDots';
 import { Languages, FileText, Zap } from 'lucide-react';
 
@@ -56,7 +55,6 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
       role="status"
       aria-live="polite"
     >
-      {/* Icon with pulse animation */}
       <div className="relative">
         <div className="absolute inset-0 rounded-full bg-suliko-default-color/20 animate-ping" />
         <div className="relative bg-background rounded-full p-4 border-2 border-suliko-default-color/20">
@@ -64,10 +62,6 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
         </div>
       </div>
 
-      {/* Loading spinner */}
-      <LoadingSpinner size="lg" variant="primary" />
-
-      {/* Message */}
       <div className="text-center space-y-2">
         <p className="text-lg font-medium text-foreground">
           {message || getDefaultMessage()}
@@ -77,7 +71,6 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
         </div>
       </div>
 
-      {/* Progress bar (if provided) */}
       {typeof progress === 'number' && (
         <div className="w-full max-w-xs">
           <div className="flex justify-between text-sm text-muted-foreground mb-1">

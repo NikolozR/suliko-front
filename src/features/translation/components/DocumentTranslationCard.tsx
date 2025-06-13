@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useState, useEffect } from "react";
 
 import {
   Card,
@@ -87,6 +87,65 @@ const DocumentTranslationCard = () => {
     },
   });
 
+  useEffect(() => {
+    if (!isLoading) {
+      setLoadingProgress(0);
+      return;
+    }
+
+    // Define anchor points with their progress, timing, and message keys
+    const anchorPoints = [
+      { progress: 15, time: 3000, messageKey: "progress.preparing" },
+      { progress: 35, time: 7000, messageKey: "progress.analyzing" },
+      { progress: 55, time: 12000, messageKey: "progress.translating" },
+      { progress: 75, time: 16000, messageKey: "progress.enhancing" },
+      { progress: 90, time: 20000, messageKey: "progress.finalizing" },
+      { progress: 97, time: 23000, messageKey: "progress.waiting" }
+    ];
+
+    // Function to get current target based on elapsed time
+    const getCurrentTarget = (elapsedTime: number) => {
+      // Handle initial case
+      if (elapsedTime <= 0) return 0;
+      
+      const currentAnchor = anchorPoints.find(point => point.time >= elapsedTime) || anchorPoints[anchorPoints.length - 1];
+      // If we're before the first anchor point, interpolate from 0
+      if (currentAnchor === anchorPoints[0]) {
+        const timeRatio = elapsedTime / currentAnchor.time;
+        return Math.min(currentAnchor.progress * timeRatio, 97);
+      }
+      
+      const previousAnchor = anchorPoints[Math.max(anchorPoints.indexOf(currentAnchor) - 1, 0)];
+      
+      // Calculate progress between anchor points
+      const timeRatio = (elapsedTime - previousAnchor.time) / (currentAnchor.time - previousAnchor.time);
+      const progressDiff = currentAnchor.progress - previousAnchor.progress;
+      return Math.min(previousAnchor.progress + (progressDiff * timeRatio), 97);
+    };
+
+    const startTime = Date.now();
+    const interval = 50; // Update every 50ms for smoother animation
+
+    const timer = setInterval(() => {
+      const elapsedTime = Date.now() - startTime;
+      
+      // Find appropriate message for current time
+      const currentAnchor = anchorPoints.find(point => point.time >= elapsedTime) || anchorPoints[anchorPoints.length - 1];
+      setLoadingMessage(t(currentAnchor.messageKey));
+
+      if (elapsedTime >= 23000) {
+        setLoadingProgress(97);
+        clearInterval(timer);
+        return;
+      }
+
+      const targetProgress = getCurrentTarget(elapsedTime);
+      setLoadingProgress(targetProgress);
+    }, interval);
+
+    return () => clearInterval(timer);
+  }, [isLoading, t]);
+
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {
       setShowAuthModal(true);
@@ -129,22 +188,25 @@ const DocumentTranslationCard = () => {
     if (!data.currentFile || data.currentFile.length === 0) {
       return;
     }
-    console.log(data, "DEBUGGING data");
+    
     setIsLoading(true);
     setLoadingProgress(0);
-    setLoadingMessage("Preparing translation...");
+    setLoadingMessage(t("progress.starting"));
     
     try {
-      await documentTranslatingWithJobId(
-        data, 
-        setError, 
-        (progress, message) => {
-          setLoadingProgress(progress);
+      await documentTranslatingWithJobId(data, setError, (_progress, message) => {
+        // We'll keep the backend messages for error handling only
+        if (message.toLowerCase().includes("error") || message.toLowerCase().includes("failed")) {
           setLoadingMessage(message);
         }
-      );
+      });
+      
+      // Only set to 100% when actually complete
+      setLoadingProgress(100);
+      setLoadingMessage(t("progress.complete"));
+      await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (err) {
-      console.log(err); 
+      console.log(err);
       let message = "An unexpected error occurred during translation.";
       if (err instanceof Error) {
         message = err.message || message;
