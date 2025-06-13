@@ -12,6 +12,9 @@ import { Textarea } from "@/features/ui/components/ui/textarea";
 import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationSubmitButton from "./TranslationSubmitButton";
 import CopyButton from "./CopyButton";
+import DownloadButton from "./DownloadButton";
+import LocalizedFormatSelector from "./LocalizedFormatSelector";
+import { DownloadFormat } from "./FormatSelector";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
 import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
@@ -46,6 +49,13 @@ const TextTranslationCard = () => {
   const tButton = useTranslations('TranslationButton');
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [selectedDownloadFormat, setSelectedDownloadFormat] = useState<DownloadFormat>({
+    value: "txt",
+    label: "Text File",
+    extension: "txt",
+    icon: <></>,
+    description: "Plain text format"
+  });
   const { token } = useAuthStore();
   const {
     setCurrentTextValue,
@@ -226,11 +236,27 @@ const TextTranslationCard = () => {
                     <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                       {t('result')}
                     </div>
-                    <CopyButton 
-                      content={translatedText}
-                      size="sm"
-                      variant="outline"
-                    />
+                    <div className="flex items-center gap-2">
+                      <LocalizedFormatSelector
+                        selectedFormat={selectedDownloadFormat}
+                        onFormatChange={setSelectedDownloadFormat}
+                        contentType="text"
+                        size="sm"
+                        variant="outline"
+                      />
+                      <DownloadButton 
+                        content={translatedText}
+                        size="sm"
+                        variant="outline"
+                        fileType={selectedDownloadFormat.extension as 'txt' | 'md' | 'docx'}
+                        label={tButton('download')}
+                      />
+                      <CopyButton 
+                        content={translatedText}
+                        size="sm"
+                        variant="outline"
+                      />
+                    </div>
                   </div>
                   <div
                     ref={translatedRef}

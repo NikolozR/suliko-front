@@ -75,7 +75,17 @@
   },
   "TranslationButton": {
     "translate": "Translate",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "download": "Download",
+    "copy": "Copy"
+  },
+  "DownloadFormats": {
+    "chooseFormat": "Choose download format",
+    "textFile": "Text File",
+    "markdown": "Markdown",
+    "pdfDocument": "PDF Document",
+    "wordDocument": "Word Document",
+    "downloaded": "Downloaded!"
   },
   "DocumentTranslationCard": {
     "title": "Upload document",

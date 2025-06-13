@@ -73,7 +73,17 @@
   },
   "TranslationButton": {
     "translate": "თარგმნა",
-    "loading": "მუშავდება..."
+    "loading": "მუშავდება...",
+    "download": "ჩამოტვირთვა",
+    "copy": "კოპირება"
+  },
+  "DownloadFormats": {
+    "chooseFormat": "აირჩიეთ ჩამოტვირთვის ფორმატი",
+    "textFile": "ტექსტური ფაილი",
+    "markdown": "მარკდაუნი",
+    "pdfDocument": "PDF დოკუმენტი",
+    "wordDocument": "Word დოკუმენტი",
+    "downloaded": "ჩამოტვირთულია!"
   },
   "DocumentTranslationCard": {
     "title": "ატვირთე დოკუმენტი",

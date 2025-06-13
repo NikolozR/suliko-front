@@ -1,9 +1,13 @@
 "use client";
-import { ChangeEvent, useRef, useEffect } from "react";
+import { ChangeEvent, useRef, useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import DocumentPreview from "./DocumentPreview";
 import MarkdownPreview from "./MarkdownPreview";
 import FileInfoDisplay from "./FileInfoDisplay";
 import CopyButton from "./CopyButton";
+import DownloadButton from "./DownloadButton";
+import LocalizedFormatSelector from "./LocalizedFormatSelector";
+import { DownloadFormat } from "./FormatSelector";
 import SuggestionsPanel from './SuggestionsPanel';
 
 interface TranslationResultViewProps {
@@ -19,6 +23,14 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   onFileChange,
   onRemoveFile,
 }) => {
+  const tButton = useTranslations('TranslationButton');
+  const [selectedDownloadFormat, setSelectedDownloadFormat] = useState<DownloadFormat>({
+    value: "md",
+    label: "Markdown",
+    extension: "md",
+    icon: <></>,
+    description: "Markdown format with formatting"
+  });
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
@@ -90,12 +102,27 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           <div className="font-semibold text-suliko-default-color text-sm md:text-base">
             თარგმნილი ტექსტი
           </div>
-          <CopyButton
-            content={translatedMarkdown}
-            size="sm"
-            variant="outline"
-            className="absolute right-0 bottom-[-4px]"
-          />
+          <div className="flex items-center gap-2 absolute right-0 bottom-[-4px]">
+            <LocalizedFormatSelector
+              selectedFormat={selectedDownloadFormat}
+              onFormatChange={setSelectedDownloadFormat}
+              contentType="document"
+              size="sm"
+              variant="outline"
+            />
+            <DownloadButton
+              content={translatedMarkdown}
+              size="sm"
+              variant="outline"
+              fileType={selectedDownloadFormat.extension as 'txt' | 'md' | 'docx'}
+              label={tButton('download')}
+            />
+            <CopyButton
+              content={translatedMarkdown}
+              size="sm"
+              variant="outline"
+            />
+          </div>
         </div>
         <div className="h-[800px] max-h-[800px]" ref={markdownPreviewRef}>
           <MarkdownPreview content={translatedMarkdown} className="h-full" />
