@@ -27,7 +27,7 @@ import { useTranslations } from "next-intl";
 const NAV_ITEMS = [
   {
     label: "newProject",
-    href: "/",
+    href: "/text",
     icon: Plus,
   },
   {
@@ -108,7 +108,12 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     storeSetIsCollapsed(!storeIsCollapsed);
   };
 
-  const isActive = (href: string) => pathname === href;
+  const isActive = (href: string) => {
+    if (href === '/text') {
+      return pathname === '/text' || pathname === '/document';
+    }
+    return pathname === href;
+  };
 
   const visibleNavItems = NAV_ITEMS.filter(item => {
     if (item.requiresAuth) {

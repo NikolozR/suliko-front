@@ -1,5 +1,5 @@
-import MainContent from "@/shared/components/MainContent";
+import { redirect } from 'next/navigation';
 
 export default function Home() {
-  return <MainContent />;
+  redirect('/text');
 } 

@@ -4,6 +4,7 @@ import DocumentPreview from "./DocumentPreview";
 import MarkdownPreview from "./MarkdownPreview";
 import FileInfoDisplay from "./FileInfoDisplay";
 import CopyButton from "./CopyButton";
+import SuggestionsPanel from './SuggestionsPanel';
 
 interface TranslationResultViewProps {
   currentFile: File;
@@ -100,6 +101,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           <MarkdownPreview content={translatedMarkdown} className="h-full" />
         </div>
       </div>
+
+      <SuggestionsPanel />
     </div>
   );
 };

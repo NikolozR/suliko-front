@@ -1,6 +1,5 @@
 // Shared Components
 export { default as Sidebar } from './components/Sidebar';
-export { default as MainContent } from './components/MainContent';
 export { default as SulikoLogo } from './components/SulikoLogo';
 
 // Constants

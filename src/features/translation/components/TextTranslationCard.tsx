@@ -1,6 +1,5 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
-import { TabsContent } from "@/features/ui/components/ui/tabs";
 import {
   Card,
   CardHeader,
@@ -13,7 +12,6 @@ import { Textarea } from "@/features/ui/components/ui/textarea";
 import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationSubmitButton from "./TranslationSubmitButton";
 import CopyButton from "./CopyButton";
-import React from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
 import {
@@ -161,111 +159,109 @@ const TextTranslationCard = () => {
   };
 
   return (
-    <TabsContent value="text">
-      <div className={translatedText ? "flex gap-8" : undefined}>
-        <Card className="border-none flex-1 min-w-0">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <Type className="h-5 w-5" />
-              {t('title')}
-            </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              {t('description')}
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit(onSubmit, handleFormError)}>
-              <LanguageSelectionPanel
-                sourceLanguageId={currentSourceLanguageId}
-                targetLanguageId={currentTargetLanguageId}
-                onSourceLanguageChange={(value) => {
-                  setCurrentSourceLanguageId(value);
-                  setValue("currentSourceLanguageId", value);
-                  clearErrors("currentSourceLanguageId");
-                }}
-                onTargetLanguageChange={(value) => {
-                  setCurrentTargetLanguageId(value);
-                  setValue("currentTargetLanguageId", value);
-                  clearErrors("currentTargetLanguageId");
-                }}
-                layout="horizontal"
-                showSwapButton={true}
-              />
-              <div className={translatedText ? "flex gap-4 md:gap-8 items-end" : undefined}>
+    <div className={translatedText ? "flex gap-8" : undefined}>
+      <Card className="border-none flex-1 min-w-0">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-foreground">
+            <Type className="h-5 w-5" />
+            {t('title')}
+          </CardTitle>
+          <CardDescription className="text-muted-foreground">
+            {t('description')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit(onSubmit, handleFormError)}>
+            <LanguageSelectionPanel
+              sourceLanguageId={currentSourceLanguageId}
+              targetLanguageId={currentTargetLanguageId}
+              onSourceLanguageChange={(value) => {
+                setCurrentSourceLanguageId(value);
+                setValue("currentSourceLanguageId", value);
+                clearErrors("currentSourceLanguageId");
+              }}
+              onTargetLanguageChange={(value) => {
+                setCurrentTargetLanguageId(value);
+                setValue("currentTargetLanguageId", value);
+                clearErrors("currentTargetLanguageId");
+              }}
+              layout="horizontal"
+              showSwapButton={true}
+            />
+            <div className={translatedText ? "flex gap-4 md:gap-8 items-end" : undefined}>
+              <div className="w-full flex-1 min-w-0">
+                <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
+                  {t('yourText')}
+                </div>
+                <div className="h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full">
+                  <Textarea
+                    ref={textareaRef}
+                    className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
+                    placeholder={t('textIputPlaceholder')}
+                    value={currentTextValue}
+                    onChange={(e) => {
+                      setCurrentTextValue(e.target.value);
+                      setValue("currentTextValue", e.target.value);
+                      clearErrors("currentTextValue");
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.shiftKey && e.key === "Enter") {
+                        e.preventDefault();
+                        handleSubmit(onSubmit, handleFormError)();
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+              {translatedText && (
                 <div className="w-full flex-1 min-w-0">
-                  <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
-                    {t('yourText')}
-                  </div>
-                  <div className="h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full">
-                    <Textarea
-                      ref={textareaRef}
-                      className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
-                      placeholder={t('textIputPlaceholder')}
-                      value={currentTextValue}
-                      onChange={(e) => {
-                        setCurrentTextValue(e.target.value);
-                        setValue("currentTextValue", e.target.value);
-                        clearErrors("currentTextValue");
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.shiftKey && e.key === "Enter") {
-                          e.preventDefault();
-                          handleSubmit(onSubmit, handleFormError)();
-                        }
-                      }}
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                      {t('result')}
+                    </div>
+                    <CopyButton 
+                      content={translatedText}
+                      size="sm"
+                      variant="outline"
                     />
                   </div>
-                </div>
-                {translatedText && (
-                  <div className="w-full flex-1 min-w-0">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="font-semibold text-suliko-default-color text-sm md:text-base">
-                        {t('result')}
-                      </div>
-                      <CopyButton 
-                        content={translatedText}
-                        size="sm"
-                        variant="outline"
-                      />
-                    </div>
-                    <div
-                      ref={translatedRef}
-                      className="w-full flex-1 px-2 py-2 md:px-3 h-[300px] max-h-[300px] bg-slate-50 dark:bg-input/30 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm flex flex-col"
-                    >
-                      <div className="text-foreground flex-1 overflow-y-auto text-sm md:text-base">
-                        {translatedText}
-                      </div>
+                  <div
+                    ref={translatedRef}
+                    className="w-full flex-1 px-2 py-2 md:px-3 h-[300px] max-h-[300px] bg-slate-50 dark:bg-input/30 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm flex flex-col"
+                  >
+                    <div className="text-foreground flex-1 overflow-y-auto text-sm md:text-base">
+                      {translatedText}
                     </div>
                   </div>
-                )}
-              </div>
-              <TranslationSubmitButton
-                isLoading={textLoading}
-                hasResult={!!translatedText}
-                disabled={
-                  textLoading ||
-                  (!!originalText &&
-                    currentTextValue.trim() === originalText.trim() &&
-                    currentTargetLanguageId === originalTargetLanguageId &&
-                    currentSourceLanguageId === sourceLanguageId)
+                </div>
+              )}
+            </div>
+            <TranslationSubmitButton
+              isLoading={textLoading}
+              hasResult={!!translatedText}
+              disabled={
+                textLoading ||
+                (!!originalText &&
+                  currentTextValue.trim() === originalText.trim() &&
+                  currentTargetLanguageId === originalTargetLanguageId &&
+                  currentSourceLanguageId === sourceLanguageId)
+              }
+              formError={getFormError()}
+              onClick={(e) => {
+                if (!token) {
+                  e.preventDefault();
+                  setShowAuthModal(true);
                 }
-                formError={getFormError()}
-                onClick={(e) => {
-                  if (!token) {
-                    e.preventDefault();
-                    setShowAuthModal(true);
-                  }
-                }}
-              />
-            </form>
-          </CardContent>
-        </Card>
-      </div>
+              }}
+            />
+          </form>
+        </CardContent>
+      </Card>
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
       />
-    </TabsContent>
+    </div>
   );
 };
 

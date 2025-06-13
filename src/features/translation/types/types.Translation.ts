@@ -39,3 +39,34 @@ export interface DocumentTranslationResponse {
   fileType: string;
   fileSizeKB: number;
 }
+
+
+export interface Suggestion {
+  id: string;
+  title: string;
+  description: string;
+  type: number;
+  originalText: string;
+  suggestedText: string;
+  priority: number;
+}
+
+export interface SuggestionsResponse {
+  jobId: string;
+  suggestionCount: number;
+  suggestions: Suggestion[];
+  message: string;
+}
+
+export interface SuggestionsResponseProcessing {
+  jobId: string;
+  status: string;
+  message: string;
+}
+
+export interface ApplySuggestionParams {
+  translatedContent: string;
+  suggestionId: string;
+  suggestion: Suggestion;
+  targetLanguageId: number;
+}

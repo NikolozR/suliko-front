@@ -1,6 +1,6 @@
 "use client";
 import { ChangeEvent, useState } from "react";
-import { TabsContent } from "@/features/ui/components/ui/tabs";
+
 import {
   Card,
   CardHeader,
@@ -10,9 +10,7 @@ import {
 } from "@/features/ui/components/ui/card";
 import { Upload } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
-import { translateDocumentUserContent } from "@/features/translation/services/translationService";
 import { AuthModal } from "@/features/auth";
-import { DocumentTranslateUserContentParams } from "@/features/translation/types/types.Translation";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationResultView from "./TranslationResultView";
@@ -22,8 +20,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
-import { getResult, getStatus } from "../services/jobService";
 import ErrorAlert from "@/shared/components/ErrorAlert";
+import { documentTranslatingWithJobId } from "../utils/documentTranslation";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -50,7 +48,7 @@ const documentTranslationSchema = z.object({
   currentSourceLanguageId: z.number(),
 });
 
-type DocumentFormData = z.infer<typeof documentTranslationSchema>;
+export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
 const DocumentTranslationCard = () => {
   const t = useTranslations("DocumentTranslationCard");
@@ -67,7 +65,6 @@ const DocumentTranslationCard = () => {
     setCurrentTargetLanguageId,
     currentSourceLanguageId,
     setCurrentSourceLanguageId,
-    setJobId,
   } = useDocumentTranslationStore();
 
   const {
@@ -120,38 +117,10 @@ const DocumentTranslationCard = () => {
     if (!data.currentFile || data.currentFile.length === 0) {
       return;
     }
-
+    console.log(data, "DEBUGGING data");
     setIsLoading(true);
     try {
-      const params: DocumentTranslateUserContentParams = {
-        File: data.currentFile[0],
-        TargetLanguageId: data.currentTargetLanguageId,
-        SourceLanguageId: data.currentSourceLanguageId,
-        OutputFormat: 0,
-      };
-      const result = await translateDocumentUserContent(params);
-      const currentJobId = result.jobId
-      setJobId(currentJobId);
-      let completed = false;
-      if (currentJobId) {
-        while (true) {
-          const result = await getStatus(currentJobId);
-          if (result.status === "Completed") {
-            completed = true;
-            break;
-          } else if (result.status === "Failed") {
-            break;
-          }
-          await new Promise((resolve) => setTimeout(resolve, 3000));
-        }        
-        if (completed) {
-          const result = await getResult(currentJobId) as Blob;
-          const text = await result.text();
-          setTranslatedMarkdown(text);
-        } else {
-          setError("Failed to get translation result");
-        }
-      }
+      await documentTranslatingWithJobId(data, setError);
       setIsLoading(false);
     } catch (err) {
       console.log(err); 
@@ -205,7 +174,7 @@ const DocumentTranslationCard = () => {
   };
 
   return (
-    <TabsContent value="document">
+    <>
       {error && (
         <ErrorAlert
           message={error}
@@ -296,7 +265,7 @@ const DocumentTranslationCard = () => {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
       />
-    </TabsContent>
+    </>
   );
 };
 
