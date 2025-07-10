@@ -8,8 +8,8 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 import "./editor.css";
 
-const LICENSE_KEY =
-  "eyJhbGciOiJFUzI1NiJ9.eyJleHAiOjE3NTMwNTU5OTksImp0aSI6Ijc5MzkxNDA5LWUzYWYtNDNlNy1iNDk0LTljZTI0NzI5M2I2NCIsInVzYWdlRW5kcG9pbnQiOiJodHRwczovL3Byb3h5LWV2ZW50LmNrZWRpdG9yLmNvbSIsImRpc3RyaWJ1dGlvbkNoYW5uZWwiOlsiY2xvdWQiLCJkcnVwYWwiLCJzaCJdLCJ3aGl0ZUxhYmVsIjp0cnVlLCJsaWNlbnNlVHlwZSI6InRyaWFsIiwiZmVhdHVyZXMiOlsiKiJdLCJ2YyI6ImEzZGVkMDlmIn0.HW0PuylqjHp0UmxRW56eZUJGE_MllxufdU8Hvo_E51jbkVrKp3pgkapARSH4x1E3OdXxoXbm5xBtXtJl6sZu9Q";
+const LICENSE_KEY = process.env.NEXT_PUBLIC_CKEDITOR_LICENSE_KEY;
+
 
 
 export default function Editor({ value, onChange }) {
