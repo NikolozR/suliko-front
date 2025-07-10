@@ -134,8 +134,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   }, [downloadedFormat, translatedMarkdown]);
 
   return (
-    <div className="flex gap-8">
-      <div className="w-full md:flex-1 min-w-0">
+    <div className="lg:flex gap-8">
+      <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
         <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
           ორიგინალი დოკუმენტი
         </div>

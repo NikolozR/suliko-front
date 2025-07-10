@@ -92,6 +92,7 @@
     "dropFiles": "ჩააგდე ფაილები აქ",
     "supportedFormats": "მხარდაჭერილი ფაილის ტიპები: PDF, DOCX, TXT, და ა.შ.",
     "progress": {
+      "longerThanUsual": "ჭირდება მეტი დრო ვიდრე ველოდით",
       "preparing": "დოკუმენტის მომზადება...",
       "analyzing": "შინაარსის ანალიზი...",
       "translating": "მიმდინარეობს თარგმნა...",

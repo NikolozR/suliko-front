@@ -17,7 +17,6 @@ const DocumentTranslationPage = () => {
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
         
-        {/* Navigation Tabs */}
         <div className="w-full mb-6">
           <div className="bg-muted text-muted-foreground inline-flex h-9 w-full items-center justify-center rounded-lg p-[3px]">
             <div className="grid w-full grid-cols-2 gap-0">

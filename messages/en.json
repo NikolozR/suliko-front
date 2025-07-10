@@ -93,7 +93,9 @@
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
     "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc.",
+   
     "progress": {
+      "longerThanUsual": "Takes longer than usual",
       "preparing": "Preparing document...",
       "analyzing": "Analyzing content...",
       "translating": "Translating...",

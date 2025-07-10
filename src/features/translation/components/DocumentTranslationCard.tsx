@@ -52,6 +52,84 @@ const documentTranslationSchema = z.object({
 
 export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
+// ADD THESE HELPER FUNCTIONS HERE (after the schema definition, before the component)
+const estimatePageCount = (file: File): number => {
+  // Rough estimation based on file size and type
+  const fileSizeKB = file.size / 1024;
+  const fileExtension = file.name.split(".").pop()?.toLowerCase();
+
+  switch (fileExtension) {
+    case "pdf":
+      // PDF: ~50KB per page on average
+      return Math.max(1, Math.ceil(fileSizeKB / 50));
+    case "docx":
+      // DOCX: ~20KB per page on average
+      return Math.max(1, Math.ceil(fileSizeKB / 20));
+    case "txt":
+      // TXT: ~3KB per page (assuming 500 words per page)
+      return Math.max(1, Math.ceil(fileSizeKB / 3));
+    case "rtf":
+      // RTF: ~10KB per page on average
+      return Math.max(1, Math.ceil(fileSizeKB / 10));
+    case "srt":
+      // SRT: Estimate based on file size (~2KB per minute of video)
+      return Math.max(1, Math.ceil(fileSizeKB / 2));
+    default:
+      // Default estimation
+      return Math.max(1, Math.ceil(fileSizeKB / 30));
+  }
+};
+
+const createAnchorPoints = (totalDurationMs: number) => {
+  return [
+    {
+      progress: 10,
+      time: totalDurationMs * 0.05,
+      messageKey: "progress.preparing",
+    },
+    {
+      progress: 25,
+      time: totalDurationMs * 0.15,
+      messageKey: "progress.analyzing",
+    },
+    {
+      progress: 50,
+      time: totalDurationMs * 0.4,
+      messageKey: "progress.translating",
+    },
+    {
+      progress: 75,
+      time: totalDurationMs * 0.7,
+      messageKey: "progress.enhancing",
+    },
+    {
+      progress: 90,
+      time: totalDurationMs * 0.85,
+      messageKey: "progress.finalizing",
+    },
+    {
+      progress: 97,
+      time: totalDurationMs * 0.95,
+      messageKey: "progress.waiting",
+    },
+  ];
+};
+
+// ADD THIS OPTIONAL COMPONENT HERE (before the main component)
+const PageCountDisplay = ({ file }: { file: File | null }) => {
+  if (!file) return null;
+
+  const pageCount = estimatePageCount(file);
+  const estimatedMinutes = pageCount * 2;
+
+  return (
+    <div className="text-sm text-muted-foreground mt-2">
+      Estimated: {pageCount} page{pageCount !== 1 ? "s" : ""}
+      (~{estimatedMinutes} minute{estimatedMinutes !== 1 ? "s" : ""})
+    </div>
+  );
+};
+
 const DocumentTranslationCard = () => {
   const t = useTranslations("DocumentTranslationCard");
   const tButton = useTranslations("TranslationButton");
@@ -87,58 +165,80 @@ const DocumentTranslationCard = () => {
     },
   });
 
+  // REPLACE THE EXISTING useEffect WITH THIS ONE
   useEffect(() => {
     if (!isLoading) {
       setLoadingProgress(0);
       return;
     }
+    const pageCount =
+      currentFile && currentFile.length > 0
+        ? estimatePageCount(currentFile[0])
+        : 1;
 
-    const anchorPoints = [
-      { progress: 15, time: 3000, messageKey: "progress.preparing" },
-      { progress: 35, time: 7000, messageKey: "progress.analyzing" },
-      { progress: 55, time: 12000, messageKey: "progress.translating" },
-      { progress: 75, time: 16000, messageKey: "progress.enhancing" },
-      { progress: 90, time: 20000, messageKey: "progress.finalizing" },
-      { progress: 97, time: 23000, messageKey: "progress.waiting" }
-    ];
+    console.log(pageCount, "PAGEGPEPAGEAPG");
+    const estimatedDurationMs = pageCount * 0.03 * 60 * 1000;
+    const anchorPoints = createAnchorPoints(estimatedDurationMs);
+
+    const finalProgress = Math.floor(Math.random() * 3) + 97; // 97, 98, or 99
 
     const getCurrentTarget = (elapsedTime: number) => {
       if (elapsedTime <= 0) return 0;
-      
-      const currentAnchor = anchorPoints.find(point => point.time >= elapsedTime) || anchorPoints[anchorPoints.length - 1];
+
+      if (elapsedTime >= estimatedDurationMs) {
+        return finalProgress;
+      }
+
+      const currentAnchor =
+        anchorPoints.find((point) => point.time >= elapsedTime) ||
+        anchorPoints[anchorPoints.length - 1];
       if (currentAnchor === anchorPoints[0]) {
         const timeRatio = elapsedTime / currentAnchor.time;
-        return Math.min(currentAnchor.progress * timeRatio, 97);
+        return currentAnchor.progress * timeRatio;
       }
-      
-      const previousAnchor = anchorPoints[Math.max(anchorPoints.indexOf(currentAnchor) - 1, 0)];
-      
-      const timeRatio = (elapsedTime - previousAnchor.time) / (currentAnchor.time - previousAnchor.time);
+
+      const previousAnchor =
+        anchorPoints[Math.max(anchorPoints.indexOf(currentAnchor) - 1, 0)];
+
+      const timeRatio =
+        (elapsedTime - previousAnchor.time) /
+        (currentAnchor.time - previousAnchor.time);
       const progressDiff = currentAnchor.progress - previousAnchor.progress;
-      return Math.min(previousAnchor.progress + (progressDiff * timeRatio), 97);
+      return previousAnchor.progress + progressDiff * timeRatio;
     };
 
     const startTime = Date.now();
-    const interval = 50;
+    const interval = 50; 
 
     const timer = setInterval(() => {
       const elapsedTime = Date.now() - startTime;
-      
-      const currentAnchor = anchorPoints.find(point => point.time >= elapsedTime) || anchorPoints[anchorPoints.length - 1];
-      setLoadingMessage(t(currentAnchor.messageKey));
 
-      if (elapsedTime >= 23000) {
-        setLoadingProgress(97);
-        clearInterval(timer);
+      // Check if we've exceeded the estimated duration
+      if (elapsedTime > estimatedDurationMs) {
+        setLoadingMessage(t("progress.longerThanUsual"));
+        setLoadingProgress(finalProgress);
         return;
       }
 
+      const currentAnchor =
+        anchorPoints.find((point) => point.time >= elapsedTime) ||
+        anchorPoints[anchorPoints.length - 1];
+      setLoadingMessage(t(currentAnchor.messageKey));
+
       const targetProgress = getCurrentTarget(elapsedTime);
+
+      // Stop at final progress and show "taking longer than usual"
+      if (targetProgress >= finalProgress) {
+        setLoadingProgress(finalProgress);
+        setLoadingMessage(t("progress.longerThanUsual"));
+        return;
+      }
+
       setLoadingProgress(targetProgress);
     }, interval);
 
     return () => clearInterval(timer);
-  }, [isLoading, t]);
+  }, [isLoading, t, currentFile]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {
@@ -149,9 +249,9 @@ const DocumentTranslationCard = () => {
 
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
-      const fileExtension = file.name.split('.').pop()?.toLowerCase();
-      const isSrtFile = fileExtension === 'srt';
-      
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      const isSrtFile = fileExtension === "srt";
+
       setCurrentFile(event.target.files);
       setValue("currentFile", event.target.files);
       setValue("isSrt", isSrtFile);
@@ -182,18 +282,25 @@ const DocumentTranslationCard = () => {
     if (!data.currentFile || data.currentFile.length === 0) {
       return;
     }
-    
+
     setIsLoading(true);
     setLoadingProgress(0);
     setLoadingMessage(t("progress.starting"));
-    
+
     try {
-      await documentTranslatingWithJobId(data, setError, (_progress, message) => {
-        if (message.toLowerCase().includes("error") || message.toLowerCase().includes("failed")) {
-          setLoadingMessage(message);
+      await documentTranslatingWithJobId(
+        data,
+        setError,
+        (_progress, message) => {
+          if (
+            message.toLowerCase().includes("error") ||
+            message.toLowerCase().includes("failed")
+          ) {
+            setLoadingMessage(message);
+          }
         }
-      });
-      
+      );
+
       setLoadingProgress(100);
       setLoadingMessage(t("progress.complete"));
       await new Promise((resolve) => setTimeout(resolve, 500));
@@ -263,7 +370,7 @@ const DocumentTranslationCard = () => {
           <TranslationLoadingOverlay
             isVisible={isLoading}
             type="document"
-            message={loadingMessage || tButton('loading')}
+            message={loadingMessage || tButton("loading")}
             progress={loadingProgress}
           />
           <CardHeader>
@@ -329,6 +436,10 @@ const DocumentTranslationCard = () => {
                       onFileChange={handleFileChange}
                       onRemoveFile={handleRemoveFile}
                     />
+                    {/* ADD THIS LINE TO SHOW PAGE COUNT ESTIMATION */}
+                    {currentFileObj && (
+                      <PageCountDisplay file={currentFileObj} />
+                    )}
                   </div>
                 </div>
               )}
