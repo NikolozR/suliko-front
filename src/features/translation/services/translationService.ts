@@ -77,7 +77,6 @@ export const translateDocumentUserContent = async (
   } else {
     endpoint = params.SourceLanguageId === 1 ? claudedEndpoint : tesseractEndpoint;
   }
-  console.log(endpoint);
   const formData = new FormData();
 
   formData.append("File", params.File);

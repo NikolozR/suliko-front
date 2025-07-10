@@ -48,7 +48,6 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
   className = "",
   size = "sm",
   variant = "outline",
-  label = "Download",
   disabled = false
 }) => {
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>(availableFormats[0]);
@@ -120,12 +119,10 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
         {downloaded ? (
           <>
             <Check className="h-4 w-4 mr-1" />
-            <span className="hidden sm:inline">Downloaded!</span>
           </>
         ) : (
           <>
             <Download className="h-4 w-4 mr-1" />
-            <span className="hidden sm:inline">{label}</span>
           </>
         )}
       </Button>

@@ -1,7 +1,7 @@
 import { reaccessToken, useAuthStore } from "@/features/auth";
 import { API_BASE_URL } from "@/shared/constants/api";
 
-export type ConversionType = "markdown-to-pdf" | "pdf-to-word";
+export type ConversionType = "markdown-to-pdf" | "pdf-to-word" | "word-to-pdf";
 
 export type FileType = "markdown" | "pdf" | "docx" | "txt";
 
@@ -31,6 +31,7 @@ function getConversionType(
   const supportedConversions: ConversionType[] = [
     "markdown-to-pdf",
     "pdf-to-word",
+    "word-to-pdf",
   ];
 
   if (!supportedConversions.includes(conversion)) {
@@ -57,6 +58,8 @@ async function convertFile(
         return "/Document/convert/markdown-to-pdf";
       case "pdf-to-word":
         return "/Document/convert/pdf-to-word";
+      case "word-to-pdf":
+        return "/Document/convert/word-to-pdf";
       default:
         throw new Error(`Endpoint not defined for conversion type: ${type}`);
     }
@@ -113,4 +116,8 @@ export async function markdownToPdf(markdown: File): Promise<Blob> {
 
 export async function pdfToWord(pdf: File): Promise<Blob> {
   return convertFile(pdf, "docx", "pdf-to-word");
+}
+
+export async function wordToPdf(word: File): Promise<Blob> {
+  return convertFile(word, "pdf", "word-to-pdf");
 }

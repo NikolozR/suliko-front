@@ -41,7 +41,6 @@ export default function ProfileClient() {
   const [isEditing, setIsEditing] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  console.log(userProfile);
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {

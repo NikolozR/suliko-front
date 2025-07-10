@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-react": "^11.0.0",
     "@cyntler/react-doc-viewer": "^1.17.0",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -21,6 +22,12 @@
     "@tailwindcss/typography": "^0.5.16",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "file-saver": "^2.0.5",
+    "html-docx-js": "^0.3.1",
+    "html2canvas": "^1.4.1",
+    "html2canvas-pro": "^1.5.11",
+    "html2pdf.js": "^0.10.3",
+    "jspdf": "^3.0.1",
     "jwt-decode": "^4.0.0",
     "lodash": "^4.17.21",
     "lucide-react": "^0.507.0",
@@ -44,6 +51,8 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
+    "@types/file-saver": "^2.0.7",
+    "@types/html-docx-js": "^0.3.4",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",

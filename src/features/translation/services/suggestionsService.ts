@@ -63,7 +63,6 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
         throw new Error("No token found");
     }
 
-    console.log(params, "DEBUGGING apply suggestion");
     let response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers,
         method: "POST",

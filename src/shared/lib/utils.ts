@@ -17,6 +17,5 @@ export function signUp(router: AppRouterInstance) {
 
 export function getUserID(token: string) {
   const decodedToken = jwtDecode(token);
-  console.log(decodedToken);
   return decodedToken.sub;
 }

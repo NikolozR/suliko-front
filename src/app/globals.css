@@ -3,6 +3,56 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* Fix CKEditor list item indent and visibility */
+.ck-editor__editable ol,
+.ck-editor__editable ul {
+  padding-left: 40px; /* increase indent */
+  margin-left: 0;      /* reset margin if needed */
+  list-style-position: outside; /* ensures bullet/number is outside content box */
+  overflow: visible;   /* prevent number from being cut off */
+}
+.ck-editor__editable h1 {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 0.67em 0;
+}
+
+.ck-editor__editable h2 {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0.75em 0;
+}
+
+.ck-editor__editable h3 {
+  font-size: 1.17em;
+  font-weight: bold;
+  margin: 0.83em 0;
+}
+
+.ck-editor__editable h4 {
+  font-size: 1em;
+  font-weight: bold;
+  margin: 1.12em 0;
+}
+
+.ck-editor__editable h5 {
+  font-size: 0.83em;
+  font-weight: bold;
+  margin: 1.5em 0;
+}
+
+.ck-editor__editable h6 {
+  font-size: 0.67em;
+  font-weight: bold;
+  margin: 1.67em 0;
+}
+
+
+.ck-editor__editable {
+  overflow-x: visible !important;
+}
+
+
 /* Critical CSS to prevent sidebar flashing - must be at the top */
 .sidebar-main {
   background-color: #f8f9fa !important; /* Light mode fallback */

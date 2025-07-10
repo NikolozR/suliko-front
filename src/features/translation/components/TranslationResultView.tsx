@@ -2,19 +2,24 @@
 import { ChangeEvent, useRef, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import DocumentPreview from "./DocumentPreview";
-import MarkdownPreview from "./MarkdownPreview";
 import FileInfoDisplay from "./FileInfoDisplay";
 import CopyButton from "./CopyButton";
 import DownloadButton from "./DownloadButton";
-import LocalizedFormatSelector from "./LocalizedFormatSelector";
-import { DownloadFormat } from "./FormatSelector";
 import SuggestionsPanel from './SuggestionsPanel';
+import Editor from "@/features/editor/Editor";
+import { Button } from "@/features/ui/components/ui/button";
+import { Lightbulb } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
+import { FileText, File, Download, X } from "lucide-react";
+import React from "react";
+
 
 interface TranslationResultViewProps {
   currentFile: File;
   translatedMarkdown: string;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onRemoveFile: () => void;
+  onEdit: (content: string) => void;
 }
 
 const TranslationResultView: React.FC<TranslationResultViewProps> = ({
@@ -22,19 +27,17 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   translatedMarkdown,
   onFileChange,
   onRemoveFile,
+  onEdit,
 }) => {
   const tButton = useTranslations('TranslationButton');
-  const [selectedDownloadFormat, setSelectedDownloadFormat] = useState<DownloadFormat>({
-    value: "pdf",
-    label: "PDF Document",
-    extension: "pdf",
-    icon: <></>,
-  });
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
+  const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
 
-  // Helper function to detect if the original file is SRT
   const isOriginalFileSrt = () => {
     const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
     return fileExtension === 'srt';
@@ -76,6 +79,60 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
     };
   }, [translatedMarkdown]);
 
+  useEffect(() => {
+    if (!downloadedFormat) return;
+    // Call DownloadButton logic here
+    const triggerDownload = async () => {
+      // mimic DownloadButton logic
+      const fileType = downloadedFormat.value;
+      const fileName = `translated_document.${fileType}`;
+      if (["txt", "md", "srt"].includes(fileType)) {
+        const text = translatedMarkdown.replace(/<[^>]+>/g, "");
+        const blob = new Blob([text], { type: fileType === "md" ? "text/markdown" : fileType === "srt" ? "text/srt" : "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else if (fileType === "pdf") {
+        // Convert HTML to docx blob
+        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedMarkdown}</body></html>`;
+        // @ts-expect-error Type errors, nothing special
+        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
+        const docxBlob = htmlDocx.asBlob(fullHtml);
+        const docxFile = new (window.File || File)([docxBlob], "temp.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+        const { wordToPdf } = await import("@/features/translation/services/conversionsService");
+        const pdfBlob = await wordToPdf(docxFile);
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else if (fileType === "docx") {
+        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedMarkdown}</body></html>`;
+        // @ts-expect-error Type errors, nothing special
+        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
+        const blob = htmlDocx.asBlob(fullHtml);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+      setDownloadedFormat(null);
+    };
+    triggerDownload();
+  }, [downloadedFormat, translatedMarkdown]);
+
   return (
     <div className="flex gap-8">
       <div className="w-full md:flex-1 min-w-0">
@@ -109,7 +166,6 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           </div>
           <div className="flex items-center gap-2 absolute right-0 bottom-[-4px]">
             {isOriginalFileSrt() ? (
-              // For SRT files: Direct download only, no format selector
               <DownloadButton
                 content={translatedMarkdown}
                 size="sm"
@@ -118,37 +174,74 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                 label={tButton('download')}
               />
             ) : (
-              // For other files: Show format selector and download
               <>
-                <LocalizedFormatSelector
-                  selectedFormat={selectedDownloadFormat}
-                  onFormatChange={setSelectedDownloadFormat}
-                  contentType="document"
-                  size="sm"
+                <Button
+                  type="button"
                   variant="outline"
-                />
-                <DownloadButton
+                  size="sm"
+                  onClick={() => setShowDownloadModal(true)}
+                  className="transition-all duration-200"
+                >
+                  <Download className="h-4 w-4 mr-1" />
+                </Button>
+                <CopyButton
                   content={translatedMarkdown}
                   size="sm"
                   variant="outline"
-                  fileType={selectedDownloadFormat.extension as 'txt' | 'docx' | 'pdf'}
-                  label={tButton('download')}
                 />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowSuggestions(true)}
+                  className="transition-all duration-200"
+                >
+                  <Lightbulb className="h-4 w-4 mr-1" />
+                </Button>
               </>
             )}
-            <CopyButton
-              content={translatedMarkdown}
-              size="sm"
-              variant="outline"
-            />
           </div>
         </div>
-        <div className="h-[800px] max-h-[800px]" ref={markdownPreviewRef}>
-          <MarkdownPreview content={translatedMarkdown} className="h-full" />
+        <div className="h-full max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
+          <Editor value={translatedMarkdown} onChange={onEdit} />
         </div>
       </div>
 
-      <SuggestionsPanel />
+      <SuggestionsPanel visible={showSuggestions} onClose={() => setShowSuggestions(false)} />
+
+      <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
+        <DialogContent className="max-w-xs">
+          <DialogHeader>
+            <DialogTitle>Select Download Format</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-2">
+            {[{ value: "pdf", label: "PDF Document", extension: "pdf", icon: <FileText className='w-4 h-4' /> }, { value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
+              <Button
+                key={format.value}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 justify-start"
+                onClick={() => {
+                  setShowDownloadModal(false);
+                  setDownloadedFormat(format);
+                }}
+              >
+                {format.icon}
+                {format.label}
+              </Button>
+            ))}
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="absolute top-2 right-2"
+            onClick={() => setShowDownloadModal(false)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

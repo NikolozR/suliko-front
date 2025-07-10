@@ -12,9 +12,6 @@ import { Textarea } from "@/features/ui/components/ui/textarea";
 import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationSubmitButton from "./TranslationSubmitButton";
 import CopyButton from "./CopyButton";
-import DownloadButton from "./DownloadButton";
-import LocalizedFormatSelector from "./LocalizedFormatSelector";
-import { DownloadFormat } from "./FormatSelector";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
 import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
@@ -28,6 +25,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { Button } from "@/features/ui/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
+import { FileText, File, Download, X } from "lucide-react";
+import React from "react";
 
 const textTranslationSchema = z.object({
   currentTextValue: z
@@ -43,19 +44,16 @@ const textTranslationSchema = z.object({
 });
 
 type FormData = z.infer<typeof textTranslationSchema>;
+type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
 
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
   const tButton = useTranslations('TranslationButton');
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [selectedDownloadFormat, setSelectedDownloadFormat] = useState<DownloadFormat>({
-    value: "txt",
-    label: "Text File",
-    extension: "txt",
-    icon: <></>,
-    description: "Plain text format"
-  });
+  
+  const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
   const { token } = useAuthStore();
   const {
     setCurrentTextValue,
@@ -130,6 +128,57 @@ const TextTranslationCard = () => {
       translated.removeEventListener("scroll", handleTranslatedScroll);
     };
   }, [translatedText]);
+
+  useEffect(() => {
+    if (!downloadedFormat) return;
+    const triggerDownload = async () => {
+      const fileType = downloadedFormat.value;
+      const fileName = `translated_text.${fileType}`;
+      if (["txt", "md", "srt"].includes(fileType)) {
+        const text = translatedText.replace(/<[^>]+>/g, "");
+        const blob = new Blob([text], { type: fileType === "md" ? "text/markdown" : fileType === "srt" ? "text/srt" : "text/plain" });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else if (fileType === "pdf") {
+        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedText}</body></html>`;
+        // @ts-expect-error Type errors, nothing special
+        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
+        const docxBlob = htmlDocx.asBlob(fullHtml);
+        const docxFile = new (window.File || File)([docxBlob], "temp.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+        const { wordToPdf } = await import("@/features/translation/services/conversionsService");
+        const pdfBlob = await wordToPdf(docxFile);
+        const url = URL.createObjectURL(pdfBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      } else if (fileType === "docx") {
+        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedText}</body></html>`;
+        // @ts-expect-error Type errors, nothing special
+        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
+        const blob = htmlDocx.asBlob(fullHtml);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }
+      setDownloadedFormat(null);
+    };
+    triggerDownload();
+  }, [downloadedFormat, translatedText]);
 
   const onSubmit = async (data: FormData) => {
     if (!token) {
@@ -237,20 +286,15 @@ const TextTranslationCard = () => {
                       {t('result')}
                     </div>
                     <div className="flex items-center gap-2">
-                      <LocalizedFormatSelector
-                        selectedFormat={selectedDownloadFormat}
-                        onFormatChange={setSelectedDownloadFormat}
-                        contentType="text"
-                        size="sm"
+                      <Button
+                        type="button"
                         variant="outline"
-                      />
-                      <DownloadButton 
-                        content={translatedText}
                         size="sm"
-                        variant="outline"
-                        fileType={selectedDownloadFormat.extension as 'txt' | 'md' | 'docx'}
-                        label={tButton('download')}
-                      />
+                        onClick={() => setShowDownloadModal(true)}
+                        className="transition-all duration-200"
+                      >
+                        <Download className="h-4 w-4 mr-1" />
+                      </Button>
                       <CopyButton 
                         content={translatedText}
                         size="sm"
@@ -294,6 +338,39 @@ const TextTranslationCard = () => {
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
       />
+      <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
+        <DialogContent className="max-w-xs">
+          <DialogHeader>
+            <DialogTitle>Select Download Format</DialogTitle>
+          </DialogHeader>
+          <div className="flex flex-col gap-3 mt-2">
+            {[{ value: "pdf", label: "PDF Document", extension: "pdf", icon: <FileText className='w-4 h-4' /> }, { value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
+              <Button
+                key={format.value}
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-2 justify-start"
+                onClick={() => {
+                  setShowDownloadModal(false);
+                  setDownloadedFormat(format);
+                }}
+              >
+                {format.icon}
+                {format.label}
+              </Button>
+            ))}
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            className="absolute top-2 right-2"
+            onClick={() => setShowDownloadModal(false)}
+          >
+            <X className="h-4 w-4" />
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

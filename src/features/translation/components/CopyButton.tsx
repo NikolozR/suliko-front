@@ -42,12 +42,10 @@ const CopyButton: React.FC<CopyButtonProps> = ({
       {copied ? (
         <>
           <Check className="h-4 w-4 mr-1" />
-          Copied!
         </>
       ) : (
         <>
           <Copy className="h-4 w-4 mr-1" />
-          Copy
         </>
       )}
     </Button>

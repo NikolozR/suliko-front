@@ -93,7 +93,6 @@ const DocumentTranslationCard = () => {
       return;
     }
 
-    // Define anchor points with their progress, timing, and message keys
     const anchorPoints = [
       { progress: 15, time: 3000, messageKey: "progress.preparing" },
       { progress: 35, time: 7000, messageKey: "progress.analyzing" },
@@ -103,13 +102,10 @@ const DocumentTranslationCard = () => {
       { progress: 97, time: 23000, messageKey: "progress.waiting" }
     ];
 
-    // Function to get current target based on elapsed time
     const getCurrentTarget = (elapsedTime: number) => {
-      // Handle initial case
       if (elapsedTime <= 0) return 0;
       
       const currentAnchor = anchorPoints.find(point => point.time >= elapsedTime) || anchorPoints[anchorPoints.length - 1];
-      // If we're before the first anchor point, interpolate from 0
       if (currentAnchor === anchorPoints[0]) {
         const timeRatio = elapsedTime / currentAnchor.time;
         return Math.min(currentAnchor.progress * timeRatio, 97);
@@ -117,19 +113,17 @@ const DocumentTranslationCard = () => {
       
       const previousAnchor = anchorPoints[Math.max(anchorPoints.indexOf(currentAnchor) - 1, 0)];
       
-      // Calculate progress between anchor points
       const timeRatio = (elapsedTime - previousAnchor.time) / (currentAnchor.time - previousAnchor.time);
       const progressDiff = currentAnchor.progress - previousAnchor.progress;
       return Math.min(previousAnchor.progress + (progressDiff * timeRatio), 97);
     };
 
     const startTime = Date.now();
-    const interval = 50; // Update every 50ms for smoother animation
+    const interval = 50;
 
     const timer = setInterval(() => {
       const elapsedTime = Date.now() - startTime;
       
-      // Find appropriate message for current time
       const currentAnchor = anchorPoints.find(point => point.time >= elapsedTime) || anchorPoints[anchorPoints.length - 1];
       setLoadingMessage(t(currentAnchor.messageKey));
 
@@ -195,18 +189,15 @@ const DocumentTranslationCard = () => {
     
     try {
       await documentTranslatingWithJobId(data, setError, (_progress, message) => {
-        // We'll keep the backend messages for error handling only
         if (message.toLowerCase().includes("error") || message.toLowerCase().includes("failed")) {
           setLoadingMessage(message);
         }
       });
       
-      // Only set to 100% when actually complete
       setLoadingProgress(100);
       setLoadingMessage(t("progress.complete"));
       await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (err) {
-      console.log(err);
       let message = "An unexpected error occurred during translation.";
       if (err instanceof Error) {
         message = err.message || message;
@@ -310,6 +301,7 @@ const DocumentTranslationCard = () => {
                     translatedMarkdown={translatedMarkdown}
                     onFileChange={handleFileChange}
                     onRemoveFile={handleRemoveFile}
+                    onEdit={setTranslatedMarkdown}
                   />
                 </>
               ) : (

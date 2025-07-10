@@ -34,7 +34,6 @@ export async function getStatus(jobId: string): Promise<JobStatusResponse> {
 
   if (response.status >= 200 && response.status < 300) {
     const data = await response.json();
-    console.log(data);
     return data;
   } else {
     throw new Error("Failed to get job status");
