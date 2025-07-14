@@ -8,7 +8,8 @@ import { settingUpSuggestions } from "./settingUpSuggestions";
 export async function documentTranslatingWithJobId(
   data: DocumentFormData,
   setError: (error: string) => void,
-  onProgress?: (progress: number, message: string) => void
+  onProgress?: (progress: number, message: string) => void,
+  model?: number
 ) {
   const { setJobId, setTranslatedMarkdown } =
     useDocumentTranslationStore.getState();
@@ -17,14 +18,43 @@ export async function documentTranslatingWithJobId(
   if (!currentFile || currentFile.length === 0) {
     throw new Error("No file selected");
   }
-  const params: DocumentTranslateUserContentParams = {
-    File: data.currentFile[0],
-    TargetLanguageId: data.currentTargetLanguageId,
-    SourceLanguageId: data.currentSourceLanguageId,
-    OutputFormat: 0,
-  };
+
   onProgress?.(10, "Uploading document...");
-  const result = await translateDocumentUserContent(params, data.isSrt);
+  let result;
+
+  if (model === -1) {
+    try {
+      const paramsClaude: DocumentTranslateUserContentParams = {
+        File: data.currentFile[0],
+        TargetLanguageId: data.currentTargetLanguageId,
+        SourceLanguageId: data.currentSourceLanguageId,
+        OutputFormat: 0,
+        model: 0, // Claude
+      };
+      const paramsGemini: DocumentTranslateUserContentParams = {
+        ...paramsClaude,
+        model: 2, // Gurami
+      };
+
+      const promiseClaude = translateDocumentUserContent(paramsClaude, data.isSrt);
+      const promiseGemini = translateDocumentUserContent(paramsGemini, data.isSrt);
+
+      result = await Promise.any([promiseClaude, promiseGemini]);
+    } catch (error) {
+      console.error("Both translation models failed:", error);
+      throw new Error("Both translation models failed. Please try again.");
+    }
+  } else {
+    const params: DocumentTranslateUserContentParams = {
+      File: data.currentFile[0],
+      TargetLanguageId: data.currentTargetLanguageId,
+      SourceLanguageId: data.currentSourceLanguageId,
+      OutputFormat: 0,
+      model: model ?? 0,
+    };
+    result = await translateDocumentUserContent(params, data.isSrt);
+  }
+
   const currentJobId = result.jobId;
   setJobId(currentJobId);
   let completed = false;

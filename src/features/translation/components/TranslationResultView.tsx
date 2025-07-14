@@ -8,7 +8,6 @@ import DownloadButton from "./DownloadButton";
 import SuggestionsPanel from './SuggestionsPanel';
 import Editor from "@/features/editor/Editor";
 import { Button } from "@/features/ui/components/ui/button";
-import { Lightbulb } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X } from "lucide-react";
 import React from "react";
@@ -33,7 +32,6 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
-  const [showSuggestions, setShowSuggestions] = useState(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
@@ -134,81 +132,72 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   }, [downloadedFormat, translatedMarkdown]);
 
   return (
-    <div className="lg:flex gap-8">
-      <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
-        <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
-          ორიგინალი დოკუმენტი
-        </div>
-        <div
-          className="h-[800px] max-h-[800px] flex flex-col w-full"
-          ref={documentPreviewRef}
-        >
-          <div className="space-y-4 h-full flex flex-col">
-            <div className="flex-1 min-h-0">
-              <DocumentPreview file={currentFile} />
+    <>
+      <div className="lg:flex gap-8">
+        <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
+          <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
+            ორიგინალი დოკუმენტი
+          </div>
+          <div
+            className="h-[800px] max-h-[800px] flex flex-col w-full"
+            ref={documentPreviewRef}
+          >
+            <div className="space-y-4 h-full flex flex-col">
+              <div className="flex-1 min-h-0">
+                <DocumentPreview file={currentFile} />
+              </div>
+              {currentFile && (
+                <FileInfoDisplay
+                  file={currentFile}
+                  onFileChange={onFileChange}
+                  onRemoveFile={onRemoveFile}
+                  id="file-upload-change-split"
+                />
+              )}
             </div>
-            {currentFile && (
-              <FileInfoDisplay
-                file={currentFile}
-                onFileChange={onFileChange}
-                onRemoveFile={onRemoveFile}
-                id="file-upload-change-split"
-              />
-            )}
           </div>
         </div>
-      </div>
 
-      <div className="w-full md:flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-2 relative">
-          <div className="font-semibold text-suliko-default-color text-sm md:text-base">
-            თარგმნილი ტექსტი
-          </div>
-          <div className="flex items-center gap-2 absolute right-0 bottom-[-4px]">
-            {isOriginalFileSrt() ? (
-              <DownloadButton
-                content={translatedMarkdown}
-                size="sm"
-                variant="outline"
-                fileType="srt"
-                label={tButton('download')}
-              />
-            ) : (
-              <>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowDownloadModal(true)}
-                  className="transition-all duration-200"
-                >
-                  <Download className="h-4 w-4 mr-1" />
-                </Button>
-                <CopyButton
+        <div className="w-full md:flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-2 relative">
+            <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+              თარგმნილი ტექსტი
+            </div>
+            <div className="flex items-center gap-2 absolute right-0 bottom-[-4px]">
+              {isOriginalFileSrt() ? (
+                <DownloadButton
                   content={translatedMarkdown}
                   size="sm"
                   variant="outline"
+                  fileType="srt"
+                  label={tButton('download')}
                 />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setShowSuggestions(true)}
-                  className="transition-all duration-200"
-                >
-                  <Lightbulb className="h-4 w-4 mr-1" />
-                </Button>
-              </>
-            )}
+              ) : (
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowDownloadModal(true)}
+                    className="transition-all duration-200"
+                  >
+                    <Download className="h-4 w-4 mr-1" />
+                  </Button>
+                  <CopyButton
+                    content={translatedMarkdown}
+                    size="sm"
+                    variant="outline"
+                  />
+                </>
+              )}
+            </div>
+          </div>
+          <div className="h-full max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
+            <Editor value={translatedMarkdown} onChange={onEdit} />
           </div>
         </div>
-        <div className="h-full max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
-          <Editor value={translatedMarkdown} onChange={onEdit} />
-        </div>
       </div>
-
-      <SuggestionsPanel visible={showSuggestions} onClose={() => setShowSuggestions(false)} />
-
+      <SuggestionsPanel />
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
         <DialogContent className="max-w-xs">
           <DialogHeader>
@@ -242,7 +231,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           </Button>
         </DialogContent>
       </Dialog>
-    </div>
+    </>
   );
 };
 

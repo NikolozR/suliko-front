@@ -167,7 +167,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
   const [isRendering, setIsRendering] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
-  const { shouldResetZoom, setShouldResetZoom, translatedMarkdown } = useDocumentTranslationStore();
+  const { shouldResetZoom, setShouldResetZoom, translatedMarkdown, setRealPageCount } = useDocumentTranslationStore();
 
   const minScale = 0.5;
   const maxScale = 3.0;
@@ -239,6 +239,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
 
   const onDocumentLoadSuccess = ({ numPages: nextNumPages }: { numPages: number }) => {
     setNumPages(nextNumPages);
+    setRealPageCount(nextNumPages); // Set the real page count from PDF parser for loading progress calculation
     setIsRendering(false);
   };
 

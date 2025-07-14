@@ -23,7 +23,7 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
 }) => {
   const t = useTranslations('CommonLanguageSelect');
   const containerClasses = layout === "horizontal" 
-    ? "flex gap-2 md:gap-4 flex-col sm:flex-row items-end mb-6"
+    ? "flex gap-2 md:gap-4 flex-col sm:flex-row items-end mb-6 h-full justify-end"
     : "flex gap-2 md:gap-4 flex-col sm:flex-row md:flex-col items-end mb-6";
 
   const handleSwapLanguages = () => {

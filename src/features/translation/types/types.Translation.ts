@@ -4,7 +4,7 @@ export interface TextTranslateUserContentParams {
   UserText: string;
   LanguageId: number;
   SourceLanguageId: number;
-} 
+}
 
 export interface TextTranslateUserContentResponse {
   text: string;
@@ -16,6 +16,7 @@ export interface  DocumentTranslateUserContentParams {
   TargetLanguageId: number;
   SourceLanguageId: number;
   OutputFormat: number;
+  model: number;
 }
 
 export interface JobStatusResponse {

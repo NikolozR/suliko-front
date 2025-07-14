@@ -278,6 +278,12 @@ const TextTranslationCard = () => {
                     }}
                   />
                 </div>
+                {/* Cost display for input text */}
+                {currentTextValue && parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
+                  <div className="mt-2 text-suliko-default-color font-semibold text-sm">
+                    Estimated cost: {((currentTextValue.length / 250) * 0.01).toFixed(2)} ლარი
+                  </div>
+                )}
               </div>
               {translatedText && (
                 <div className="w-full flex-1 min-w-0">
@@ -310,6 +316,12 @@ const TextTranslationCard = () => {
                       {translatedText}
                     </div>
                   </div>
+                  {/* Cost display for translated text */}
+                  {parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
+                    <div className="mt-2 text-suliko-default-color font-semibold text-sm">
+                      Estimated cost: {((currentTextValue.length / 250) * 0.01).toFixed(2)} ლარი
+                    </div>
+                  )}
                 </div>
               )}
             </div>

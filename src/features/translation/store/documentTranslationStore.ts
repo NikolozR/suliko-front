@@ -12,6 +12,7 @@ interface DocumentTranslationState {
   sourceLanguageId: number;
   jobId: string;
   shouldResetZoom: boolean;
+  realPageCount: number | null; // Add real page count from PDF parser
   setCurrentSourceLanguageId: (languageId: number) => void;
   setCurrentTargetLanguageId: (languageId: number) => void;
   setOriginalTargetLanguageId: (languageId: number) => void;
@@ -21,6 +22,7 @@ interface DocumentTranslationState {
   setSuggestions: (suggestions: Suggestion[]) => void;
   setShouldResetZoom: (shouldReset: boolean) => void;
   setJobId: (jobId: string) => void;
+  setRealPageCount: (pageCount: number | null) => void; // Add setter for real page count
   reset: () => void;
 }
 
@@ -36,15 +38,17 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()(
       sourceLanguageId: 0,
       shouldResetZoom: false,
       jobId: '',
+      realPageCount: null, // Initialize real page count
       setJobId: (jobId: string) => set({ jobId: jobId }),
       setCurrentSourceLanguageId: (languageId) => set({ currentSourceLanguageId: languageId }),
       setCurrentTargetLanguageId: (languageId) => set({ currentTargetLanguageId: languageId }),
       setOriginalTargetLanguageId: (languageId) => set({ originalTargetLanguageId: languageId }),
       setSourceLanguageId: (languageId) => set({ sourceLanguageId: languageId }),
-      setCurrentFile: (file) => set({ currentFile: file }),
+      setCurrentFile: (file) => set({ currentFile: file, realPageCount: null }), // Reset real page count when file changes
       setTranslatedMarkdown: (text) => set({ translatedMarkdown: text, shouldResetZoom: true }),
       setSuggestions: (suggestions) => set({ suggestions }),
       setShouldResetZoom: (shouldReset) => set({ shouldResetZoom: shouldReset }),
+      setRealPageCount: (pageCount: number | null) => set({ realPageCount: pageCount }), // Implement setter for real page count
       reset: () => set({ 
         currentFile: null, 
         translatedMarkdown: '', 
@@ -55,6 +59,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()(
         originalTargetLanguageId: 2,
         sourceLanguageId: 0,
         jobId: '',
+        realPageCount: null, // Reset real page count
       }),
     }),
     {

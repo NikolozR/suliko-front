@@ -12,7 +12,6 @@ import { Upload } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
-import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationResultView from "./TranslationResultView";
 import DocumentUploadView from "./DocumentUploadView";
 import TranslationSubmitButton from "./TranslationSubmitButton";
@@ -23,6 +22,10 @@ import { useTranslations } from "next-intl";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { documentTranslatingWithJobId } from "../utils/documentTranslation";
 import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
+import LanguageSelect from "./LanguageSelect";
+import { Button } from "@/features/ui/components/ui/button";
+import { ArrowRightLeft } from "lucide-react";
+import ModelSelect from "./ModelSelect";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -117,18 +120,43 @@ const createAnchorPoints = (totalDurationMs: number) => {
 
 // ADD THIS OPTIONAL COMPONENT HERE (before the main component)
 const PageCountDisplay = ({ file }: { file: File | null }) => {
+  const { realPageCount } = useDocumentTranslationStore();
+  
   if (!file) return null;
-
-  const pageCount = estimatePageCount(file);
+  
+  // Use real page count when available (for PDFs), otherwise fall back to estimation
+  const pageCount = (() => {
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    
+    // For PDFs, use the real page count if available
+    if (fileExtension === 'pdf' && realPageCount !== null) {
+      return realPageCount;
+    }
+    
+    // For other file types or PDFs where real count isn't loaded yet, use estimation
+    return estimatePageCount(file);
+  })();
+  
   const estimatedMinutes = pageCount * 2;
+  const isPdfWithRealCount = file.name.split(".").pop()?.toLowerCase() === 'pdf' && realPageCount !== null;
+  const estimatedCost = (pageCount * 0.1).toFixed(2);
 
   return (
     <div className="text-sm text-muted-foreground mt-2">
-      Estimated: {pageCount} page{pageCount !== 1 ? "s" : ""}
+      {isPdfWithRealCount ? 'Actual' : 'Estimated'}: {pageCount} page{pageCount !== 1 ? "s" : ""}
       (~{estimatedMinutes} minute{estimatedMinutes !== 1 ? "s" : ""})
+      <div className="mt-1 text-suliko-default-color font-semibold">
+        Estimated cost: {estimatedCost} ლარი
+      </div>
     </div>
   );
 };
+
+const modelOptions = [
+  { value: 0, label: "კლაუდია" },
+  { value: 1, label: "კლაუდია junior" },
+  { value: 2, label: "გურამი" },
+];
 
 const DocumentTranslationCard = () => {
   const t = useTranslations("DocumentTranslationCard");
@@ -148,7 +176,9 @@ const DocumentTranslationCard = () => {
     setCurrentTargetLanguageId,
     currentSourceLanguageId,
     setCurrentSourceLanguageId,
+    realPageCount,
   } = useDocumentTranslationStore();
+  const [selectedModel, setSelectedModel] = useState<number>(-1);
 
   const {
     handleSubmit,
@@ -165,19 +195,35 @@ const DocumentTranslationCard = () => {
     },
   });
 
-  // REPLACE THE EXISTING useEffect WITH THIS ONE
+  // Use real page count from PDF parser when available, otherwise fall back to estimation
   useEffect(() => {
     if (!isLoading) {
       setLoadingProgress(0);
       return;
     }
-    const pageCount =
-      currentFile && currentFile.length > 0
-        ? estimatePageCount(currentFile[0])
-        : 1;
+    
+    // Use real page count from PDF parser (100% accurate) when available
+    // Otherwise fall back to file size estimation for other file types
+    const pageCount = (() => {
+      if (!currentFile || currentFile.length === 0) return 1;
+      
+      const file = currentFile[0];
+      const fileExtension = file.name.split(".").pop()?.toLowerCase();
+      
+      // For PDFs, use the real page count from react-pdf if available
+      if (fileExtension === 'pdf' && realPageCount !== null) {
+        console.log(`Using REAL page count for PDF: ${realPageCount}`);
+        return realPageCount;
+      }
+      
+      // For other file types or PDFs where real count isn't loaded yet, use estimation
+      const estimated = estimatePageCount(file);
+      console.log(`Using ESTIMATED page count for ${fileExtension}: ${estimated}`);
+      return estimated;
+    })();
 
-    console.log(pageCount, "PAGEGPEPAGEAPG");
-    const estimatedDurationMs = pageCount * 0.03 * 60 * 1000;
+    console.log(pageCount, "FINAL_PAGE_COUNT_FOR_PROGRESS");
+    const estimatedDurationMs = pageCount * 1 * 60 * 1000;
     const anchorPoints = createAnchorPoints(estimatedDurationMs);
 
     const finalProgress = Math.floor(Math.random() * 3) + 97; // 97, 98, or 99
@@ -238,7 +284,7 @@ const DocumentTranslationCard = () => {
     }, interval);
 
     return () => clearInterval(timer);
-  }, [isLoading, t, currentFile]);
+  }, [isLoading, t, currentFile, realPageCount]);
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {
@@ -298,7 +344,8 @@ const DocumentTranslationCard = () => {
           ) {
             setLoadingMessage(message);
           }
-        }
+        },
+        selectedModel
       );
 
       setLoadingProgress(100);
@@ -384,25 +431,60 @@ const DocumentTranslationCard = () => {
           </CardHeader>
           <CardContent>
             <form onSubmit={handleFormSubmit}>
+              {/* Unified select row: source, swap, target, model */}
+              <div className="flex flex-row gap-2 md:gap-4 mb-4 items-end">
+                {/* Source language */}
+                <div className="flex-1 flex flex-col">
+                  <span className="block text-xs text-muted-foreground mb-1">Source Language</span>
+                  <LanguageSelect
+                    value={currentSourceLanguageId}
+                    onChange={setCurrentSourceLanguageId}
+                    placeholder="Source language"
+                    detectOption="Automatic detection"
+                  />
+                </div>
+                {/* Swap button */}
+                <div className="flex flex-col justify-end">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="icon"
+                    className="h-10 w-10 border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
+                    disabled={currentSourceLanguageId === 0}
+                    onClick={() => {
+                      if (currentSourceLanguageId !== 0) {
+                        const tempSource = currentSourceLanguageId;
+                        const tempTarget = currentTargetLanguageId;
+                        setCurrentSourceLanguageId(tempTarget);
+                        setCurrentTargetLanguageId(tempSource);
+                      }
+                    }}
+                  >
+                    <ArrowRightLeft className="h-4 w-4" />
+                  </Button>
+                </div>
+                {/* Target language */}
+                <div className="flex-1 flex flex-col">
+                  <span className="block text-xs text-muted-foreground mb-1">Target Language</span>
+                  <LanguageSelect
+                    value={currentTargetLanguageId}
+                    onChange={setCurrentTargetLanguageId}
+                    placeholder="Target language"
+                  />
+                </div>
+                {/* Model select */}
+                <div className="flex-1 flex flex-col">
+                  <span className="block text-xs text-muted-foreground mb-1">Translation Model</span>
+                  <ModelSelect
+                    value={selectedModel}
+                    onChange={setSelectedModel}
+                    placeholder="აირჩიეთ მოდელი"
+                    options={modelOptions}
+                  />
+                </div>
+              </div>
               {translatedMarkdown ? (
                 <>
-                  <LanguageSelectionPanel
-                    targetLanguageId={currentTargetLanguageId}
-                    sourceLanguageId={currentSourceLanguageId}
-                    onTargetLanguageChange={(value) => {
-                      setCurrentTargetLanguageId(value);
-                      setValue("currentTargetLanguageId", value);
-                      clearErrors("currentTargetLanguageId");
-                    }}
-                    onSourceLanguageChange={(value) => {
-                      setCurrentSourceLanguageId(value);
-                      setValue("currentSourceLanguageId", value);
-                      clearErrors("currentSourceLanguageId");
-                    }}
-                    layout="horizontal"
-                    showSwapButton={true}
-                  />
-
                   <TranslationResultView
                     currentFile={currentFileObj!}
                     translatedMarkdown={translatedMarkdown}
@@ -414,23 +496,6 @@ const DocumentTranslationCard = () => {
               ) : (
                 <div className="flex gap-2 md:gap-4 items-end flex-col md:flex-row">
                   <div className="w-full md:flex-1 min-w-0">
-                    <LanguageSelectionPanel
-                      targetLanguageId={currentTargetLanguageId}
-                      sourceLanguageId={currentSourceLanguageId}
-                      onTargetLanguageChange={(value) => {
-                        setCurrentTargetLanguageId(value);
-                        setValue("currentTargetLanguageId", value);
-                        clearErrors("currentTargetLanguageId");
-                      }}
-                      onSourceLanguageChange={(value) => {
-                        setCurrentSourceLanguageId(value);
-                        setValue("currentSourceLanguageId", value);
-                        clearErrors("currentSourceLanguageId");
-                      }}
-                      layout="horizontal"
-                      showSwapButton={true}
-                    />
-
                     <DocumentUploadView
                       currentFile={currentFileObj}
                       onFileChange={handleFileChange}

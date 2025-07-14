@@ -81,7 +81,9 @@ export const translateDocumentUserContent = async (
 
   formData.append("File", params.File);
   formData.append("TargetLanguageId", String(params.TargetLanguageId));
+  formData.append("SourceLanguageId", String(params.SourceLanguageId));
   formData.append("OutputFormat", String(params.OutputFormat));
+  formData.append("model", String(params.model));
 
   const { token, refreshToken } = useAuthStore.getState();
 

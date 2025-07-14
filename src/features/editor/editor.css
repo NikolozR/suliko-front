@@ -21,3 +21,8 @@
 	min-width: 795px;
 	max-width: 795px;
 }
+
+/* Ensure CKEditor content area matches preview min-height */
+.ck.ck-content {
+  min-height: 800px;
+}
