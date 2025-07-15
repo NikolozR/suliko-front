@@ -45,11 +45,8 @@ const SuggestionsPanel: React.FC = () => {
     
     setIsGeneratingMore(true);
     try {
-      const status = await settingUpSuggestions(jobId);
-      console.log(status);
-      if (status !== 'success') {
-        console.log('Suggestions still processing:', status);
-      }
+      await settingUpSuggestions(jobId);
+      
     } catch (error) {
       console.error('Error generating more suggestions:', error);
     } finally {

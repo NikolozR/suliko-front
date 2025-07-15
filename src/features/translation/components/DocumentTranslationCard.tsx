@@ -209,17 +209,14 @@ const DocumentTranslationCard = () => {
       
       // For PDFs, use the real page count from react-pdf if available
       if (fileExtension === 'pdf' && realPageCount !== null) {
-        console.log(`Using REAL page count for PDF: ${realPageCount}`);
         return realPageCount;
       }
       
       // For other file types or PDFs where real count isn't loaded yet, use estimation
       const estimated = estimatePageCount(file);
-      console.log(`Using ESTIMATED page count for ${fileExtension}: ${estimated}`);
       return estimated;
     })();
 
-    console.log(pageCount, "FINAL_PAGE_COUNT_FOR_PROGRESS");
     const estimatedDurationMs = pageCount * 1 * 60 * 1000;
     const anchorPoints = createAnchorPoints(estimatedDurationMs);
 

@@ -73,7 +73,6 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
         method: "POST",
         body: JSON.stringify(params),
     })
-    console.log(response, "response");
 
     if (response.status === 401 && token && refreshToken) {
         try {

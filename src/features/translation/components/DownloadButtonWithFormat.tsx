@@ -87,7 +87,6 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
         } else {
-          console.log(`Download requested for format: ${selectedFormat.value}`);
         }
       }
       
