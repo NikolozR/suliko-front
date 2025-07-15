@@ -29,6 +29,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X } from "lucide-react";
 import React from "react";
+import { useUserStore } from "@/features/auth/store/userStore";
 
 const textTranslationSchema = z.object({
   currentTextValue: z
@@ -51,6 +52,7 @@ const TextTranslationCard = () => {
   const tButton = useTranslations('TranslationButton');
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const { fetchUserProfile } = useUserStore();
   
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
@@ -199,6 +201,8 @@ const TextTranslationCard = () => {
       const result: TextTranslateUserContentResponse =
         await translateUserContent(params);
       setTranslatedText(result.text);
+      // Revalidate user profile to update balance
+      await fetchUserProfile();
     } catch (err) {
       console.log(err);
     } finally {

@@ -4,6 +4,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles } from 'lucide-react';
 import { Button } from '@/features/ui/components/ui/button';
 import { useDocumentTranslationStore } from '@/features/translation/store/documentTranslationStore';
+import Image from 'next/image';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
 
@@ -18,8 +19,27 @@ interface DocumentPreviewProps {
 
 // Helper function to get file type
 const getFileType = (file: File): string => {
-  const extension = file.name.split('.').pop()?.toLowerCase();
-  return extension || '';
+  const extension = file.name.split('.').pop()?.toLowerCase() || '';
+  
+  // Image types
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension)) {
+    return 'image';
+  }
+  
+  // Document types
+  switch (extension) {
+    case 'pdf':
+      return 'pdf';
+    case 'txt':
+      return 'txt';
+    case 'srt':
+      return 'srt';
+    case 'doc':
+    case 'docx':
+      return 'docx';
+    default:
+      return 'unknown';
+  }
 };
 
 // Helper function to read file as text
@@ -141,18 +161,122 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
 
 // Word Document Preview Component
 const WordPreview: React.FC<{ file: File }> = ({ file }) => {
+  const [content, setContent] = useState<string>('');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [scale, setScale] = useState<number>(1.0);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { shouldResetZoom, setShouldResetZoom } = useDocumentTranslationStore();
+
+  const minScale = 0.5;
+  const maxScale = 3.0;
+  const scaleStep = 0.25;
+
+  const handleZoomIn = () => setScale(Math.min(scale + scaleStep, maxScale));
+  const handleZoomOut = () => setScale(Math.max(scale - scaleStep, minScale));
+  const handleResetZoom = () => setScale(1.0);
+
+  useEffect(() => {
+    const loadContent = async () => {
+      try {
+        setLoading(true);
+        const arrayBuffer = await file.arrayBuffer();
+        const mammoth = (await import('mammoth')).default;
+        const result = await mammoth.convertToHtml({ arrayBuffer });
+        setContent(result.value);
+      } catch (err) {
+        setError('Failed to load Word document');
+        console.error('Word document load error:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadContent();
+  }, [file]);
+
+  // Reset zoom when translation is completed
+  useEffect(() => {
+    if (shouldResetZoom) {
+      setScale(1.0);
+      setShouldResetZoom(false);
+    }
+  }, [shouldResetZoom, setShouldResetZoom]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full text-muted-foreground">
+        <p>Loading Word document...</p>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-full text-red-500">
+        <p>{error}</p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex flex-col justify-center items-center h-full text-muted-foreground p-8">
-      <File className="h-16 w-16 mb-4" />
-      <div className="text-center">
-        <h3 className="font-medium text-lg mb-2">Word Document</h3>
-        <p className="text-sm mb-4">
-          {file.name}
-        </p>
-        <p className="text-xs">
-          Preview not available for Word documents.<br />
-          The document will be processed for translation.
-        </p>
+    <div className="w-full h-full flex flex-col">
+      <div 
+        ref={containerRef}
+        className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-auto mb-4"
+      >
+        <div 
+          className="p-4 min-h-full"
+          style={{
+            transform: `scale(${scale})`,
+            transformOrigin: 'top center',
+            transition: 'transform 0.2s ease-in-out'
+          }}
+        >
+          <div 
+            dangerouslySetInnerHTML={{ __html: content }}
+            className="prose prose-sm max-w-none dark:prose-invert bg-white dark:bg-slate-900 p-8 rounded-lg shadow-sm text-foreground"
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Zoom:</span>
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={handleZoomOut}
+            disabled={scale <= minScale}
+            className="p-2"
+          >
+            <ZoomOut className="h-4 w-4" />
+          </Button>
+          <span className="text-sm font-mono min-w-[4rem] text-center">
+            {(scale * 100).toFixed(0)}%
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={handleZoomIn}
+            disabled={scale >= maxScale}
+            className="p-2"
+          >
+            <ZoomIn className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={handleResetZoom}
+            disabled={scale === 1.0}
+            className="p-2"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -163,7 +287,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(600);
-  const [scale, setScale] = useState<number>(2.0);
+  const [scale, setScale] = useState<number>(1.0);
   const [isRendering, setIsRendering] = useState<boolean>(false);
   const containerRef = useRef<HTMLDivElement>(null);
   
@@ -343,6 +467,138 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
   );
 };
 
+// Image Preview Component
+const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
+  const [scale, setScale] = useState<number>(1.0);
+  const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { shouldResetZoom, setShouldResetZoom } = useDocumentTranslationStore();
+
+  const minScale = 0.5;
+  const maxScale = 3.0;
+  const scaleStep = 0.25;
+
+  const handleZoomIn = () => setScale(Math.min(scale + scaleStep, maxScale));
+  const handleZoomOut = () => setScale(Math.max(scale - scaleStep, minScale));
+  const handleResetZoom = () => setScale(1.0);
+
+  useEffect(() => {
+    if (file) {
+      const url = URL.createObjectURL(file);
+      setImageUrl(url);
+
+      // Get image dimensions
+      const img = new window.Image();
+      img.onload = () => {
+        setDimensions({
+          width: img.width,
+          height: img.height
+        });
+      };
+      img.src = url;
+
+      return () => {
+        URL.revokeObjectURL(url);
+        setImageUrl(null);
+        setDimensions(null);
+      };
+    }
+  }, [file]);
+
+  // Reset zoom when translation is completed
+  useEffect(() => {
+    if (shouldResetZoom) {
+      setScale(1.0);
+      setShouldResetZoom(false);
+    }
+  }, [shouldResetZoom, setShouldResetZoom]);
+
+  if (!imageUrl || !dimensions) {
+    return (
+      <div className="flex justify-center items-center h-full text-muted-foreground">
+        <p>Loading image...</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full h-full flex flex-col">
+      <div 
+        ref={containerRef}
+        className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-auto mb-4"
+      >
+        <div className="flex justify-center min-h-full p-4">
+          <div
+            style={{ 
+              transform: `scale(${scale})`,
+              transformOrigin: 'center',
+              transition: 'transform 0.2s ease-in-out',
+              position: 'relative',
+              width: dimensions.width,
+              height: dimensions.height,
+              maxWidth: '100%',
+              maxHeight: '100%'
+            }}
+          >
+            <Image
+              src={imageUrl}
+              alt="Preview"
+              width={dimensions.width}
+              height={dimensions.height}
+              style={{
+                maxWidth: '100%',
+                maxHeight: '100%',
+                objectFit: 'contain'
+              }}
+              unoptimized // Since we're using a Blob URL
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
+        <div className="flex items-center gap-2">
+          <span className="text-sm font-medium">Zoom:</span>
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={handleZoomOut}
+            disabled={scale <= minScale}
+            className="p-2"
+          >
+            <ZoomOut className="h-4 w-4" />
+          </Button>
+          <span className="text-sm font-mono min-w-[4rem] text-center">
+            {(scale * 100).toFixed(0)}%
+          </span>
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={handleZoomIn}
+            disabled={scale >= maxScale}
+            className="p-2"
+          >
+            <ZoomIn className="h-4 w-4" />
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            type="button"
+            onClick={handleResetZoom}
+            disabled={scale === 1.0}
+            className="p-2"
+          >
+            <RotateCcw className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
   if (!file) {
     return (
@@ -358,6 +614,8 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
   switch (fileType) {
     case 'pdf':
       return <PdfPreview file={file} />;
+    case 'image':
+      return <ImagePreview file={file} />;
     case 'txt':
       return (
         <div className="w-full h-full border rounded-md bg-slate-50 dark:bg-slate-800 overflow-hidden">

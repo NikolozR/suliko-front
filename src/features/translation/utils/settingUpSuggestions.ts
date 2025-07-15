@@ -16,6 +16,7 @@ export async function settingUpSuggestions(jobId: string): Promise<string> {
     const { setSuggestions } = useSuggestionsStore.getState();
     try {
         const suggestionsResponse = await getSuggestions(jobId);
+        console.log(suggestionsResponse);
         if (isSuggestionsResponse(suggestionsResponse)) {
             setSuggestions(suggestionsResponse.suggestions);
         } else {

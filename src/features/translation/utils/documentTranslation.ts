@@ -4,6 +4,7 @@ import { useDocumentTranslationStore } from "../store/documentTranslationStore";
 import { getResult, getStatus } from "../services/jobService";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
 import { settingUpSuggestions } from "./settingUpSuggestions";
+import { useUserStore } from "@/features/auth/store/userStore";
 
 export async function documentTranslatingWithJobId(
   data: DocumentFormData,
@@ -15,6 +16,8 @@ export async function documentTranslatingWithJobId(
     useDocumentTranslationStore.getState();
   const { currentFile } =
     useDocumentTranslationStore.getState();
+  const { fetchUserProfile } = useUserStore.getState();
+  
   if (!currentFile || currentFile.length === 0) {
     throw new Error("No file selected");
   }
@@ -64,6 +67,8 @@ export async function documentTranslatingWithJobId(
       const result = await getStatus(currentJobId);
       if (result.status === "Completed") {
         completed = true;
+        // Revalidate user profile to update balance
+        await fetchUserProfile();
         onProgress?.(60, "Translation completed!");
         break;
       } else if (result.status === "Failed") {

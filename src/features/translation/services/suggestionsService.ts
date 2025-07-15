@@ -17,11 +17,14 @@ export async function getSuggestions(
   const headers = new Headers();
   if (token) {
     headers.append("Authorization", `Bearer ${token}`);
+    headers.append("Cache-Control", "no-cache");
+    headers.append("Pragma", "no-cache");
   } else {
     throw new Error("No token found");
   }
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers,
+    cache: 'no-store'
   });
 
   if (response.status === 401 && token && refreshToken) {
@@ -33,7 +36,9 @@ export async function getSuggestions(
       headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers,
+        cache: 'no-store'
       });
+      
     } catch {
       useAuthStore.getState().reset();
       throw new Error("Token refresh failed");
@@ -68,6 +73,7 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
         method: "POST",
         body: JSON.stringify(params),
     })
+    console.log(response, "response");
 
     if (response.status === 401 && token && refreshToken) {
         try {

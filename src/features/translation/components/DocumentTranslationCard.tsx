@@ -55,30 +55,27 @@ const documentTranslationSchema = z.object({
 
 export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
-// ADD THESE HELPER FUNCTIONS HERE (after the schema definition, before the component)
 const estimatePageCount = (file: File): number => {
-  // Rough estimation based on file size and type
   const fileSizeKB = file.size / 1024;
   const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
+  // Images always count as 1 page
+  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(fileExtension || '')) {
+    return 1;
+  }
+
   switch (fileExtension) {
     case "pdf":
-      // PDF: ~50KB per page on average
       return Math.max(1, Math.ceil(fileSizeKB / 50));
     case "docx":
-      // DOCX: ~20KB per page on average
       return Math.max(1, Math.ceil(fileSizeKB / 20));
     case "txt":
-      // TXT: ~3KB per page (assuming 500 words per page)
       return Math.max(1, Math.ceil(fileSizeKB / 3));
     case "rtf":
-      // RTF: ~10KB per page on average
       return Math.max(1, Math.ceil(fileSizeKB / 10));
     case "srt":
-      // SRT: Estimate based on file size (~2KB per minute of video)
       return Math.max(1, Math.ceil(fileSizeKB / 2));
     default:
-      // Default estimation
       return Math.max(1, Math.ceil(fileSizeKB / 30));
   }
 };
@@ -226,7 +223,7 @@ const DocumentTranslationCard = () => {
     const estimatedDurationMs = pageCount * 1 * 60 * 1000;
     const anchorPoints = createAnchorPoints(estimatedDurationMs);
 
-    const finalProgress = Math.floor(Math.random() * 3) + 97; // 97, 98, or 99
+    const finalProgress = Math.floor(Math.random() * 3) + 97;
 
     const getCurrentTarget = (elapsedTime: number) => {
       if (elapsedTime <= 0) return 0;

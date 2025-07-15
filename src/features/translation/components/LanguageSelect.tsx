@@ -12,12 +12,17 @@ import { AuthModal } from "@/features/auth";
 import { useLocale } from 'next-intl';
 import { LoadingSpinner } from "@/features/ui/components/loading";
 
+interface CustomLanguage {
+  value: number;
+  label: string;
+}
+
 interface LanguageSelectProps {
   value?: number;
   onChange: (value: number) => void;
   placeholder: string;
   detectOption?: string;
-  languages?: { value: number; label: string }[];
+  languages?: CustomLanguage[];
 }
 
 const LanguageSelect: React.FC<LanguageSelectProps> = ({
@@ -27,7 +32,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   detectOption,
   languages: customLanguages,
 }) => {
-  const [languages, setLanguages] = useState<Language[]>([]);
+  const [languages, setLanguages] = useState<(Language | CustomLanguage)[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const { token } = useAuthStore();
@@ -36,7 +41,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
 
   useEffect(() => {
     if (customLanguages) {
-      setLanguages(customLanguages as any);
+      setLanguages(customLanguages);
       setLoading(false);
       return;
     }
@@ -100,17 +105,20 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
         </SelectTrigger>
         <SelectContent className="cursor-pointer">
           {detectOption && (
-            <SelectItem className="cursor-pointer" key={0} value={customLanguages ? "0" : "0"}>
+            <SelectItem className="cursor-pointer" key={0} value="0">
               {detectOption}
             </SelectItem>
           )}
-          {languages.map((lang: any) => (
+          {languages.map((lang) => (
             <SelectItem
               className="cursor-pointer"
-              key={lang.id ?? lang.value}
-              value={(lang.id ?? lang.value).toString()}
+              key={'id' in lang ? lang.id : lang.value}
+              value={('id' in lang ? lang.id : lang.value).toString()}
             >
-              {lang.label ?? (locale === "ka" ? lang.nameGeo : lang.name.replace(" Language", ""))}
+              {'label' in lang 
+                ? lang.label 
+                : (locale === "ka" ? lang.nameGeo : lang.name.replace(" Language", ""))
+              }
             </SelectItem>
           ))}
         </SelectContent>

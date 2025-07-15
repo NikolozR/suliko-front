@@ -45,7 +45,6 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
           type="file"
           className="hidden"
           id={id}
-          accept=".pdf,.docx,.txt,.srt"
           onChange={onFileChange}
         />
         <Button

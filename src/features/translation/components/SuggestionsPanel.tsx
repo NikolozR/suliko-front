@@ -6,13 +6,13 @@ import { applySuggestion } from '../services/suggestionsService';
 import { useDocumentTranslationStore } from '../store/documentTranslationStore';
 import { LoadingSpinner } from '@/features/ui/components/loading';
 import { Textarea } from '@/features/ui/components/ui/textarea';
-
-// Removed interface SuggestionsPanelProps and props
+import { settingUpSuggestions } from '../utils/settingUpSuggestions';
 
 const SuggestionsPanel: React.FC = () => {
   const { suggestions, removeSuggestion, acceptSuggestion, updateSuggestionText } = useSuggestionsStore();
-  const { translatedMarkdown, currentTargetLanguageId, setTranslatedMarkdown } = useDocumentTranslationStore();
+  const { translatedMarkdown, currentTargetLanguageId, setTranslatedMarkdown, jobId } = useDocumentTranslationStore();
   const [loadingSuggestionId, setLoadingSuggestionId] = useState<string | null>(null);
+  const [isGeneratingMore, setIsGeneratingMore] = useState(false);
 
   const handleRemoveSuggestion = (id: string) => {
     removeSuggestion(id);
@@ -38,6 +38,23 @@ const SuggestionsPanel: React.FC = () => {
 
   const handleSuggestionTextChange = (id: string, newText: string) => {
     updateSuggestionText(id, newText);
+  };
+
+  const handleGenerateMore = async () => {
+    if (!jobId) return;
+    
+    setIsGeneratingMore(true);
+    try {
+      const status = await settingUpSuggestions(jobId);
+      console.log(status);
+      if (status !== 'success') {
+        console.log('Suggestions still processing:', status);
+      }
+    } catch (error) {
+      console.error('Error generating more suggestions:', error);
+    } finally {
+      setIsGeneratingMore(false);
+    }
   };
 
   if (!suggestions.length) return null;
@@ -91,11 +108,16 @@ const SuggestionsPanel: React.FC = () => {
       {/* Generate More Suggestions Button below and left-aligned */}
       <div className="mt-3 flex justify-start">
         <button
-        
           type="button"
-          className="min-w-[320px] max-w-[400px] flex flex-col items-center justify-center bg-white dark:bg-slate-900 border-2 border-dashed border-suliko-default-color/40 rounded-lg p-3 text-suliko-default-color font-semibold text-base shadow-sm hover:bg-suliko-default-color/10 transition-all duration-200 focus:outline-none"
+          onClick={handleGenerateMore}
+          disabled={isGeneratingMore || !jobId}
+          className="min-w-[320px] max-w-[400px] flex flex-col items-center justify-center bg-white dark:bg-slate-900 border-2 border-dashed border-suliko-default-color/40 rounded-lg p-3 text-suliko-default-color font-semibold text-base shadow-sm hover:bg-suliko-default-color/10 transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          + Generate More Suggestions
+          {isGeneratingMore ? (
+            <LoadingSpinner size="sm" variant="primary" />
+          ) : (
+            '+ Generate More Suggestions'
+          )}
         </button>
       </div>
     </div>
