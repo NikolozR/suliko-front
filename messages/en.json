@@ -132,5 +132,10 @@
     "english": "English",
     "georgian": "ქართული",
     "select": "Select Language"
+  },
+  "History": {
+    "title": "Translation History",
+    "noHistory": "No translation history found",
+    "loading": "Loading history"
   }
 }

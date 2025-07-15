@@ -41,7 +41,8 @@ export async function documentTranslatingWithJobId(
 
       const promiseClaude = translateDocumentUserContent(paramsClaude, data.isSrt);
       const promiseGemini = translateDocumentUserContent(paramsGemini, data.isSrt);
-
+      console.log(promiseClaude, "promiseClaude");
+      console.log(promiseGemini, "promiseGemini");
       result = await Promise.any([promiseClaude, promiseGemini]);
     } catch (error) {
       console.error("Both translation models failed:", error);

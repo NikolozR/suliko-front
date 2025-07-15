@@ -9,6 +9,7 @@ import { useDocumentTranslationStore } from "@/features/translation/store/docume
 import { Button } from "@/features/ui/components/ui/button";
 import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 import { UserProfile } from "@/features/auth/types/types.User";
+import { HistoryDropdown } from "@/features/chatHistory/components/HistoryDropdown";
 import {
   Plus,
   Clock,
@@ -19,6 +20,8 @@ import {
   ChevronRight,
   LogOut,
   Wallet,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
@@ -29,12 +32,6 @@ const NAV_ITEMS = [
     label: "newProject",
     href: "/text",
     icon: Plus,
-  },
-  {
-    label: "history",
-    href: "/history",
-    icon: Clock,
-    disabled: true,
   },
   {
     label: "profile",
@@ -66,6 +63,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const { userProfile, setUserProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
+  const [isHistoryOpen, setIsHistoryOpen] = useState(false);
   
   const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed);
   const storeSetIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
@@ -91,15 +89,13 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
     const handleResize = () => {
       if (window.innerWidth < 768) {
-        if (storeIsCollapsed === false) { // Only update if needed
+        if (storeIsCollapsed === false) {
           storeSetIsCollapsed(true);
         }
       }
-      // Note: This effect does not automatically expand the sidebar on larger screens.
-      // Expansion is based on persisted state or user interaction.
     };
 
-    handleResize(); // Call on client mount after isClient is true
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, [isClient, storeIsCollapsed, storeSetIsCollapsed]);
@@ -125,15 +121,21 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   // Determine effective collapsed state for rendering to prevent hydration mismatch
   const effectiveIsCollapsed = !isClient ? true : storeIsCollapsed;
 
-  return (
-    <>
-      {!effectiveIsCollapsed && (
+  const renderOverlay = () => {
+    if (!effectiveIsCollapsed) {
+      return (
         <div 
           className="fixed inset-0 bg-black/20 z-30 md:hidden" 
-          onClick={() => storeSetIsCollapsed(true)} // Collapse when overlay is clicked
+          onClick={() => storeSetIsCollapsed(true)}
         />
-      )}
-      
+      );
+    }
+    return null;
+  };
+
+  return (
+    <>
+      {renderOverlay()}
       <aside
         className={`sidebar-main flex flex-col h-screen fixed left-0 top-0 z-40 border-r transition-all duration-300 ${
           effectiveIsCollapsed ? "w-16" : "w-48 md:w-56 lg:w-64"
@@ -190,6 +192,28 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               </Link>
             )
           ))}
+
+          {token && (
+            <div className="relative">
+              <button
+                onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+                className={`sidebar-item group w-full text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : "justify-between"}`}
+              >
+                <div className="flex items-center gap-3">
+                  <Clock className={`transition-transform duration-200 ${
+                    effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
+                  } group-hover:scale-105`} />
+                  {!effectiveIsCollapsed && (
+                    <span className="whitespace-nowrap">{t("history")}</span>
+                  )}
+                </div>
+                {!effectiveIsCollapsed && (
+                  isHistoryOpen ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />
+                )}
+              </button>
+              <HistoryDropdown isCollapsed={effectiveIsCollapsed} isOpen={isHistoryOpen} />
+            </div>
+          )}
         </nav>
 
         <div className="mt-auto flex flex-col gap-2 p-3">

@@ -33,7 +33,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()(
       translatedMarkdown: '',
       suggestions: [],
       currentSourceLanguageId: 0,
-      currentTargetLanguageId: 2,
+      currentTargetLanguageId: 1,
       originalTargetLanguageId: 2,
       sourceLanguageId: 0,
       shouldResetZoom: false,
@@ -41,7 +41,10 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()(
       realPageCount: null, // Initialize real page count
       setJobId: (jobId: string) => set({ jobId: jobId }),
       setCurrentSourceLanguageId: (languageId) => set({ currentSourceLanguageId: languageId }),
-      setCurrentTargetLanguageId: (languageId) => set({ currentTargetLanguageId: languageId }),
+      setCurrentTargetLanguageId: (languageId) => {
+        console.log(languageId, "languageId");
+        set({ currentTargetLanguageId: languageId });
+      },
       setOriginalTargetLanguageId: (languageId) => set({ originalTargetLanguageId: languageId }),
       setSourceLanguageId: (languageId) => set({ sourceLanguageId: languageId }),
       setCurrentFile: (file) => set({ currentFile: file, realPageCount: null }), // Reset real page count when file changes
