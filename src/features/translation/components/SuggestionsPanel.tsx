@@ -9,7 +9,14 @@ import { Textarea } from '@/features/ui/components/ui/textarea';
 import { settingUpSuggestions } from '../utils/settingUpSuggestions';
 
 const SuggestionsPanel: React.FC = () => {
-  const { suggestions, removeSuggestion, acceptSuggestion, updateSuggestionText } = useSuggestionsStore();
+  const { 
+    suggestions, 
+    removeSuggestion, 
+    acceptSuggestion, 
+    updateSuggestionText,
+    hasGeneratedMore,
+    setHasGeneratedMore
+  } = useSuggestionsStore();
   const { translatedMarkdown, currentTargetLanguageId, setTranslatedMarkdown, jobId } = useDocumentTranslationStore();
   const [loadingSuggestionId, setLoadingSuggestionId] = useState<string | null>(null);
   const [isGeneratingMore, setIsGeneratingMore] = useState(false);
@@ -41,12 +48,12 @@ const SuggestionsPanel: React.FC = () => {
   };
 
   const handleGenerateMore = async () => {
-    if (!jobId) return;
+    if (!jobId || hasGeneratedMore) return;
     
     setIsGeneratingMore(true);
     try {
       await settingUpSuggestions(jobId);
-      
+      setHasGeneratedMore(true);
     } catch (error) {
       console.error('Error generating more suggestions:', error);
     } finally {
@@ -107,11 +114,13 @@ const SuggestionsPanel: React.FC = () => {
         <button
           type="button"
           onClick={handleGenerateMore}
-          disabled={isGeneratingMore || !jobId}
+          disabled={isGeneratingMore || !jobId || hasGeneratedMore}
           className="min-w-[320px] max-w-[400px] flex flex-col items-center justify-center bg-white dark:bg-slate-900 border-2 border-dashed border-suliko-default-color/40 rounded-lg p-3 text-suliko-default-color font-semibold text-base shadow-sm hover:bg-suliko-default-color/10 transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isGeneratingMore ? (
             <LoadingSpinner size="sm" variant="primary" />
+          ) : hasGeneratedMore ? (
+            'No More Suggestions Available'
           ) : (
             '+ Generate More Suggestions'
           )}

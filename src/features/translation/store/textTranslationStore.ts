@@ -26,11 +26,13 @@ export const useTextTranslationStore = create<TextTranslationState>()(
       originalText: '',
       translatedText: '',
       currentSourceLanguageId: 0,
-      currentTargetLanguageId: 2,
-      originalTargetLanguageId: 2,
+      currentTargetLanguageId: 1,
+      originalTargetLanguageId: 1,
       sourceLanguageId: 0,
       setCurrentSourceLanguageId: (languageId) => set({ currentSourceLanguageId: languageId }),
-      setCurrentTargetLanguageId: (languageId) => set({ currentTargetLanguageId: languageId }),
+      setCurrentTargetLanguageId: (languageId) => {
+        set({ currentTargetLanguageId: languageId });
+      },
       setOriginalTargetLanguageId: (languageId) => set({ originalTargetLanguageId: languageId }),
       setSourceLanguageId: (languageId) => set({ sourceLanguageId: languageId }),
       setCurrentTextValue: (text) => set({ currentTextValue: text }),
@@ -41,8 +43,8 @@ export const useTextTranslationStore = create<TextTranslationState>()(
         translatedText: '', 
         currentTextValue: '',
         currentSourceLanguageId: 0,
-        currentTargetLanguageId: 2,
-        originalTargetLanguageId: 2,
+        currentTargetLanguageId: 1,
+        originalTargetLanguageId: 1,
         sourceLanguageId: 0
       }),
     }),

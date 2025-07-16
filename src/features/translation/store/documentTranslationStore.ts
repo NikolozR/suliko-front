@@ -12,7 +12,8 @@ interface DocumentTranslationState {
   sourceLanguageId: number;
   jobId: string;
   shouldResetZoom: boolean;
-  realPageCount: number | null; // Add real page count from PDF parser
+  realPageCount: number | null;
+  isCountingPages: boolean;
   setCurrentSourceLanguageId: (languageId: number) => void;
   setCurrentTargetLanguageId: (languageId: number) => void;
   setOriginalTargetLanguageId: (languageId: number) => void;
@@ -22,7 +23,8 @@ interface DocumentTranslationState {
   setSuggestions: (suggestions: Suggestion[]) => void;
   setShouldResetZoom: (shouldReset: boolean) => void;
   setJobId: (jobId: string) => void;
-  setRealPageCount: (pageCount: number | null) => void; // Add setter for real page count
+  setRealPageCount: (pageCount: number | null) => void;
+  setIsCountingPages: (isLoading: boolean) => void;
   reset: () => void;
 }
 
@@ -34,46 +36,56 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()(
       suggestions: [],
       currentSourceLanguageId: 0,
       currentTargetLanguageId: 1,
-      originalTargetLanguageId: 2,
+      originalTargetLanguageId: 1,
       sourceLanguageId: 0,
       shouldResetZoom: false,
       jobId: '',
-      realPageCount: null, // Initialize real page count
+      realPageCount: null,
+      isCountingPages: false,
       setJobId: (jobId: string) => set({ jobId: jobId }),
       setCurrentSourceLanguageId: (languageId) => set({ currentSourceLanguageId: languageId }),
       setCurrentTargetLanguageId: (languageId) => {
-        console.log(languageId, "languageId");
         set({ currentTargetLanguageId: languageId });
       },
       setOriginalTargetLanguageId: (languageId) => set({ originalTargetLanguageId: languageId }),
       setSourceLanguageId: (languageId) => set({ sourceLanguageId: languageId }),
-      setCurrentFile: (file) => set({ currentFile: file, realPageCount: null }), // Reset real page count when file changes
+      setCurrentFile: (file) => set({ currentFile: file, realPageCount: null }),
       setTranslatedMarkdown: (text) => set({ translatedMarkdown: text, shouldResetZoom: true }),
       setSuggestions: (suggestions) => set({ suggestions }),
       setShouldResetZoom: (shouldReset) => set({ shouldResetZoom: shouldReset }),
-      setRealPageCount: (pageCount: number | null) => set({ realPageCount: pageCount }), // Implement setter for real page count
+      setRealPageCount: (pageCount: number | null) => set({ realPageCount: pageCount }),
+      setIsCountingPages: (isLoading: boolean) => set({ isCountingPages: isLoading }),
       reset: () => set({ 
         currentFile: null, 
         translatedMarkdown: '', 
         suggestions: [],
         shouldResetZoom: false,
         currentSourceLanguageId: 0,
-        currentTargetLanguageId: 2,
-        originalTargetLanguageId: 2,
+        currentTargetLanguageId: 1,
+        originalTargetLanguageId: 1,
         sourceLanguageId: 0,
         jobId: '',
-        realPageCount: null, // Reset real page count
+        realPageCount: null,
+        isCountingPages: false,
       }),
     }),
     {
-      name: 'document-translation-languages',
+      name: 'suliko-document-translation',
       storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
-        currentSourceLanguageId: state.currentSourceLanguageId,
+        currentFile: null,
+        translatedMarkdown: state.translatedMarkdown,
+        suggestions: state.suggestions,
         currentTargetLanguageId: state.currentTargetLanguageId,
+        currentSourceLanguageId: state.currentSourceLanguageId,
         originalTargetLanguageId: state.originalTargetLanguageId,
         sourceLanguageId: state.sourceLanguageId,
+        shouldResetZoom: state.shouldResetZoom,
+        jobId: state.jobId,
+        realPageCount: state.realPageCount,
+        isCountingPages: state.isCountingPages,
       }),
+      version: 1,
     }
   )
 ); 

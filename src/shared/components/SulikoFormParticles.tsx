@@ -22,7 +22,8 @@ const SulikoFormParticles: React.FC = () => {
 
   const particlesLoaded = useCallback(
     async (container: Container | undefined) => {
-      await console.log(container);
+      console.log(container, "CONTAINER FROM PARTICLES");
+      // Particles loaded callback
     },
     []
   );

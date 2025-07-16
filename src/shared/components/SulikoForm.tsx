@@ -200,13 +200,10 @@ const SulikoForm: React.FC = () => {
     <>
       <SulikoFormParticles />
       {authError && (
-        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-[50] w-[90%] max-w-md animate-in slide-in-from-top-2 duration-300">
-          <ErrorAlert
-            message={authError}
-            onClose={() => setAuthError(null)}
-            timeout={3000}
-          />
-        </div>
+        <ErrorAlert
+          message={authError}
+          onClose={() => setAuthError(null)}
+        />
       )}
       <div className="w-[85%] dark:z-[2] dark:bg-transparent bg-suliko-main-content-bg-color z-[100] pt-[100px]">
         <Form {...form}>

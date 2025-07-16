@@ -17,6 +17,7 @@ export async function settingUpSuggestions(jobId: string): Promise<string> {
     try {
         const suggestionsResponse = await getSuggestions(jobId);
         if (isSuggestionsResponse(suggestionsResponse)) {
+        
             setSuggestions(suggestionsResponse.suggestions);
         } else {
             return suggestionsResponse.status;

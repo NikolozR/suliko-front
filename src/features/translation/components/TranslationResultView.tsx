@@ -193,7 +193,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
             </div>
           </div>
           <div className="h-full max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
-            <Editor value={translatedMarkdown} onChange={onEdit} />
+            <Editor value={translatedMarkdown || ""} onChange={onEdit} />
           </div>
         </div>
       </div>

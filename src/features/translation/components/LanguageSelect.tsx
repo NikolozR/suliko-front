@@ -18,9 +18,8 @@ interface CustomLanguage {
 }
 
 interface LanguageSelectProps {
-  value?: number;
+  value: number;
   onChange: (value: number) => void;
-  placeholder: string;
   detectOption?: string;
   languages?: CustomLanguage[];
 }
@@ -28,7 +27,6 @@ interface LanguageSelectProps {
 const LanguageSelect: React.FC<LanguageSelectProps> = ({
   value,
   onChange,
-  placeholder,
   detectOption,
   languages: customLanguages,
 }) => {
@@ -38,7 +36,6 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   const { token } = useAuthStore();
   const [open, setOpen] = useState(false);
   const locale = useLocale();
-
   useEffect(() => {
     if (customLanguages) {
       setLanguages(customLanguages);
@@ -59,6 +56,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
 
     fetchLanguages();
   }, [customLanguages]);
+
 
   if (loading)
     return (
@@ -81,7 +79,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
       <>
         <Select open={open} onOpenChange={handleOpenChange}>
           <SelectTrigger className="cursor-pointer w-full min-w-0">
-            <SelectValue placeholder={placeholder} />
+            <SelectValue />
           </SelectTrigger>
         </Select>
         <AuthModal
@@ -92,16 +90,30 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
     );
   }
 
+  const selectedLanguage = languages.find(lang => 'id' in lang ? lang.id === value : lang.value === value);
+  const displayValue = selectedLanguage 
+    ? ('label' in selectedLanguage 
+        ? selectedLanguage.label 
+        : locale === "ka" 
+          ? selectedLanguage.nameGeo 
+          : selectedLanguage.name.replace(" Language", ""))
+    : value === 0 && detectOption 
+      ? detectOption 
+      : '';
+
   return (
     <>
       <Select
-        value={value !== undefined ? (value >= 0 ? value?.toString() : "") : ""}
+        defaultValue={value?.toString()}
+        value={value?.toString()}
         onValueChange={(val) => onChange(Number(val))}
         open={open}
         onOpenChange={handleOpenChange}
       >
         <SelectTrigger className="cursor-pointer w-full">
-          <SelectValue placeholder={placeholder} />
+          <SelectValue>
+            {displayValue}
+          </SelectValue>
         </SelectTrigger>
         <SelectContent className="cursor-pointer">
           {detectOption && (
@@ -109,18 +121,22 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
               {detectOption}
             </SelectItem>
           )}
-          {languages.map((lang) => (
-            <SelectItem
-              className="cursor-pointer"
-              key={'id' in lang ? lang.id : lang.value}
-              value={('id' in lang ? lang.id : lang.value).toString()}
-            >
-              {'label' in lang 
-                ? lang.label 
-                : (locale === "ka" ? lang.nameGeo : lang.name.replace(" Language", ""))
-              }
-            </SelectItem>
-          ))}
+          {languages.map((lang) => {
+            const langId = 'id' in lang ? lang.id : lang.value;
+            const langLabel = 'label' in lang 
+              ? lang.label 
+              : (locale === "ka" ? lang.nameGeo : lang.name.replace(" Language", ""));
+            
+            return (
+              <SelectItem
+                className="cursor-pointer"
+                key={langId}
+                value={langId.toString()}
+              >
+                {langLabel}
+              </SelectItem>
+            );
+          })}
         </SelectContent>
       </Select>
       <AuthModal

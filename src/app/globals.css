@@ -283,3 +283,19 @@ html:not(.dark) .sidebar-main {
 html.dark .sidebar-main {
   background-color: var(--sidebar-bg-dark) !important;
 }
+
+/* Error Alert Animation */
+@keyframes slideInFromTop {
+  0% {
+    transform: translate(-50%, -100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, 0);
+    opacity: 1;
+  }
+}
+
+.animate-slideInFromTop {
+  animation: slideInFromTop 0.3s ease-out forwards;
+}

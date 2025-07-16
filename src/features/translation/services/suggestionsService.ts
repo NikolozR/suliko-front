@@ -18,13 +18,12 @@ export async function getSuggestions(
   if (token) {
     headers.append("Authorization", `Bearer ${token}`);
     headers.append("Cache-Control", "no-cache");
-    headers.append("Pragma", "no-cache");
   } else {
     throw new Error("No token found");
   }
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers,
-    cache: 'no-store'
+    cache: "no-cache"
   });
 
   if (response.status === 401 && token && refreshToken) {

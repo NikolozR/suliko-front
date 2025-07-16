@@ -72,10 +72,15 @@ export const translateDocumentUserContent = async (
   const tesseractEndpoint = "/Document/tesseract/translate";
   const srtEndpoint = "/Document/srt/translate";
   let endpoint = "";
+  
   if (isSrt) {
     endpoint = srtEndpoint;
   } else {
-    endpoint = params.SourceLanguageId === 1 ? claudedEndpoint : tesseractEndpoint;
+    const fileExtension = params.File.name.split('.').pop()?.toLowerCase();
+    
+    const isImageBasedDocument = ['pdf', 'jpg', 'jpeg', 'png', 'bmp', 'tiff', 'gif', 'webp'].includes(fileExtension || '');
+    
+    endpoint = isImageBasedDocument ? tesseractEndpoint : claudedEndpoint;
   }
   const formData = new FormData();
 
@@ -84,7 +89,7 @@ export const translateDocumentUserContent = async (
   formData.append("SourceLanguageId", String(params.SourceLanguageId));
   formData.append("OutputFormat", String(params.OutputFormat));
   formData.append("model", String(params.model));
-  console.log(params, "params");
+
   const { token, refreshToken } = useAuthStore.getState();
 
   const headers = new Headers();

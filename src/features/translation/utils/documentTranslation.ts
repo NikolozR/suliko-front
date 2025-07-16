@@ -41,8 +41,6 @@ export async function documentTranslatingWithJobId(
 
       const promiseClaude = translateDocumentUserContent(paramsClaude, data.isSrt);
       const promiseGemini = translateDocumentUserContent(paramsGemini, data.isSrt);
-      console.log(promiseClaude, "promiseClaude");
-      console.log(promiseGemini, "promiseGemini");
       result = await Promise.any([promiseClaude, promiseGemini]);
     } catch (error) {
       console.error("Both translation models failed:", error);
@@ -73,7 +71,17 @@ export async function documentTranslatingWithJobId(
         onProgress?.(60, "Translation completed!");
         break;
       } else if (result.status === "Failed") {
-        break;
+        // Check if the failure is due to insufficient balance
+        if (result.message && result.message.includes("არასაკმარისი")) {
+          setError("Insufficient balance. Please top up your account to continue translation.");
+        } else {
+          // Generic error message for other failures
+          const errorMessage = result.message || "Translation failed. Please try again.";
+          setError(`Translation failed: ${errorMessage}`);
+        }
+        // Revalidate user profile to update balance even on failure
+        await fetchUserProfile();
+        return; // Exit the function early on failure
       }
       onProgress?.(40, "Translating content...");
       await new Promise((resolve) => setTimeout(resolve, 3000));

@@ -169,7 +169,6 @@ export default function ProfileClient() {
         <ErrorAlert
           message={updateError}
           onClose={() => setUpdateError(null)}
-          className="mb-6"
         />
       )}
       <ProfileHero

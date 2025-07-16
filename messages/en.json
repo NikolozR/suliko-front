@@ -137,5 +137,13 @@
     "title": "Translation History",
     "noHistory": "No translation history found",
     "loading": "Loading history"
+  },
+  "Chat": {
+    "details": "Chat Details",
+    "notFound": "Chat not found",
+    "originalFile": "Original File",
+    "targetLanguage": "Target Language",
+    "created": "Created At",
+    "downloadResult": "Download Result"
   }
 }

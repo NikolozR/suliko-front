@@ -74,7 +74,7 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
         {chats.map((chat) => (
           <button
             key={chat.chatId}
-            onClick={() => router.push(`/document/${chat.chatId}`)}
+            onClick={() => router.push(`/chat/${chat.chatId}`)}
             className="w-full text-left px-2 py-2 rounded-lg hover:bg-muted/50 transition-colors group"
           >
             <div className="flex items-center gap-2">

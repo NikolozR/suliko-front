@@ -26,6 +26,7 @@ import LanguageSelect from "./LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
 import ModelSelect from "./ModelSelect";
+import { countPages } from "@/features/translation/services/countPagesService";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -117,30 +118,42 @@ const createAnchorPoints = (totalDurationMs: number) => {
 
 // ADD THIS OPTIONAL COMPONENT HERE (before the main component)
 const PageCountDisplay = ({ file }: { file: File | null }) => {
-  const { realPageCount } = useDocumentTranslationStore();
+  const { realPageCount, isCountingPages } = useDocumentTranslationStore();
   
   if (!file) return null;
   
-  // Use real page count when available (for PDFs), otherwise fall back to estimation
+  const fileExtension = file.name.split(".").pop()?.toLowerCase();
+  
+  // Show loading state while counting pages for DOCX files
+  if (isCountingPages && fileExtension === 'docx') {
+    return (
+      <div className="text-sm text-muted-foreground mt-2">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 border-2 border-suliko-default-color border-t-transparent rounded-full animate-spin"></div>
+          Counting pages...
+        </div>
+      </div>
+    );
+  }
+  
+  // Use real page count when available (for PDFs and DOCX), otherwise fall back to estimation
   const pageCount = (() => {
-    const fileExtension = file.name.split(".").pop()?.toLowerCase();
-    
-    // For PDFs, use the real page count if available
-    if (fileExtension === 'pdf' && realPageCount !== null) {
+    // For PDFs and DOCX, use the real page count if available
+    if ((fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null) {
       return realPageCount;
     }
     
-    // For other file types or PDFs where real count isn't loaded yet, use estimation
+    // For other file types or when real count isn't loaded yet, use estimation
     return estimatePageCount(file);
   })();
   
   const estimatedMinutes = pageCount * 2;
-  const isPdfWithRealCount = file.name.split(".").pop()?.toLowerCase() === 'pdf' && realPageCount !== null;
+  const hasRealCount = (fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null;
   const estimatedCost = (pageCount * 0.1).toFixed(2);
 
   return (
     <div className="text-sm text-muted-foreground mt-2">
-      {isPdfWithRealCount ? 'Actual' : 'Estimated'}: {pageCount} page{pageCount !== 1 ? "s" : ""}
+      {hasRealCount ? 'Actual' : 'Estimated'}: {pageCount} page{pageCount !== 1 ? "s" : ""}
       (~{estimatedMinutes} minute{estimatedMinutes !== 1 ? "s" : ""})
       <div className="mt-1 text-suliko-default-color font-semibold">
         Estimated cost: {estimatedCost} ლარი
@@ -186,20 +199,25 @@ const DocumentTranslationCard = () => {
     resolver: zodResolver(documentTranslationSchema),
     defaultValues: {
       currentFile: null,
-      currentTargetLanguageId,
-      currentSourceLanguageId,
+      currentTargetLanguageId: 1,  // Set this explicitly to 1
+      currentSourceLanguageId: 0,
       isSrt: false,
     },
   });
 
-  // Use real page count from PDF parser when available, otherwise fall back to estimation
+  useEffect(() => {
+    setValue("currentTargetLanguageId", currentTargetLanguageId);
+    setValue("currentSourceLanguageId", currentSourceLanguageId);
+  }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
+
+  // Use real page count from PDF/DOCX parser when available, otherwise fall back to estimation
   useEffect(() => {
     if (!isLoading) {
       setLoadingProgress(0);
       return;
     }
     
-    // Use real page count from PDF parser (100% accurate) when available
+    // Use real page count (100% accurate) when available for PDF and DOCX
     // Otherwise fall back to file size estimation for other file types
     const pageCount = (() => {
       if (!currentFile || currentFile.length === 0) return 1;
@@ -207,12 +225,12 @@ const DocumentTranslationCard = () => {
       const file = currentFile[0];
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
       
-      // For PDFs, use the real page count from react-pdf if available
-      if (fileExtension === 'pdf' && realPageCount !== null) {
+      // For PDFs and DOCX, use the real page count when available
+      if ((fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null) {
         return realPageCount;
       }
       
-      // For other file types or PDFs where real count isn't loaded yet, use estimation
+      // For other file types or when real count isn't loaded yet, use estimation
       const estimated = estimatePageCount(file);
       return estimated;
     })();
@@ -280,7 +298,7 @@ const DocumentTranslationCard = () => {
     return () => clearInterval(timer);
   }, [isLoading, t, currentFile, realPageCount]);
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {
       setShowAuthModal(true);
       event.target.value = "";
@@ -296,6 +314,32 @@ const DocumentTranslationCard = () => {
       setValue("currentFile", event.target.files);
       setValue("isSrt", isSrtFile);
       clearErrors("currentFile");
+
+      // Get exact page count for DOCX files
+      if (fileExtension === "docx") {
+        const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
+        
+        // Set loading state while counting pages
+        setIsCountingPages(true);
+        setRealPageCount(null); // Reset previous count
+        
+        try {
+          const pageCountResult = await countPages(file);
+          setRealPageCount(pageCountResult.pageCount || pageCountResult.pages || null);
+        } catch (error) {
+          console.error("Failed to count DOCX pages:", error);
+          // Fallback to null so estimation is used
+          setRealPageCount(null);
+        } finally {
+          // Always clear loading state
+          setIsCountingPages(false);
+        }
+      } else if (fileExtension !== "pdf") {
+        // Reset page count for non-PDF, non-DOCX files (PDF count is handled by DocumentPreview)
+        const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
+        setRealPageCount(null);
+        setIsCountingPages(false);
+      }
     }
   };
 
@@ -305,6 +349,12 @@ const DocumentTranslationCard = () => {
     setValue("currentFile", null);
     setValue("isSrt", false);
     clearErrors("currentFile");
+    
+    // Reset page count and loading state when file is removed
+    const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
+    setRealPageCount(null);
+    setIsCountingPages(false);
+    
     const fileInput = document.querySelector(
       'input[type="file"]'
     ) as HTMLInputElement;
@@ -403,7 +453,6 @@ const DocumentTranslationCard = () => {
         <ErrorAlert
           message={error}
           onClose={() => setError(null)}
-          className="mb-6"
         />
       )}
       <div className={translatedMarkdown ? "flex gap-8" : undefined}>
@@ -433,7 +482,6 @@ const DocumentTranslationCard = () => {
                   <LanguageSelect
                     value={currentSourceLanguageId}
                     onChange={setCurrentSourceLanguageId}
-                    placeholder="Source language"
                     detectOption="Automatic detection"
                   />
                 </div>
@@ -463,7 +511,6 @@ const DocumentTranslationCard = () => {
                   <LanguageSelect
                     value={currentTargetLanguageId}
                     onChange={setCurrentTargetLanguageId}
-                    placeholder="Target language"
                   />
                 </div>
                 {/* Model select */}

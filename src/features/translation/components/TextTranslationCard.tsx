@@ -82,9 +82,9 @@ const TextTranslationCard = () => {
   } = useForm<FormData>({
     resolver: zodResolver(textTranslationSchema),
     defaultValues: {
-      currentTextValue,
-      currentTargetLanguageId,
-      currentSourceLanguageId,
+      currentTextValue: '',
+      currentTargetLanguageId: 1,  // Set this explicitly to 1
+      currentSourceLanguageId: 0,
     },
   });
   
@@ -204,7 +204,7 @@ const TextTranslationCard = () => {
       // Revalidate user profile to update balance
       await fetchUserProfile();
     } catch (err) {
-      console.log(err);
+      console.error("Translation failed:", err);
     } finally {
       setTextLoading(false);
     }

@@ -26,6 +26,7 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
     ? "flex gap-2 md:gap-4 flex-col sm:flex-row items-end mb-6 h-full justify-end"
     : "flex gap-2 md:gap-4 flex-col sm:flex-row md:flex-col items-end mb-6";
 
+
   const handleSwapLanguages = () => {
     if (sourceLanguageId !== 0) {
       const tempSource = sourceLanguageId;
@@ -45,7 +46,6 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
         <LanguageSelect
           value={sourceLanguageId}
           onChange={onSourceLanguageChange}
-          placeholder={t('selectLanguagePlaceholder')}
           detectOption={t('automaticDetection')}
         />
       </div>
@@ -72,7 +72,6 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
         <LanguageSelect
           value={targetLanguageId}
           onChange={onTargetLanguageChange}
-          placeholder={t('selectLanguagePlaceholder')}
         />
       </div>
     </div>
