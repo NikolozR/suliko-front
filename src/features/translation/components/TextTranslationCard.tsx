@@ -30,6 +30,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/
 import { FileText, File, Download, X } from "lucide-react";
 import React from "react";
 import { useUserStore } from "@/features/auth/store/userStore";
+import ErrorAlert from "@/shared/components/ErrorAlert";
 
 const textTranslationSchema = z.object({
   currentTextValue: z
@@ -52,6 +53,7 @@ const TextTranslationCard = () => {
   const tButton = useTranslations('TranslationButton');
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { fetchUserProfile } = useUserStore();
   
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -200,10 +202,15 @@ const TextTranslationCard = () => {
       setSourceLanguageId(data.currentSourceLanguageId);
       const result: TextTranslateUserContentResponse =
         await translateUserContent(params);
+      console.log(result);
       setTranslatedText(result.text);
-      // Revalidate user profile to update balance
       await fetchUserProfile();
     } catch (err) {
+      let message = "An unexpected error occurred during translation.";
+      if (err instanceof Error) {
+        message = err.message || message;
+      }
+      setError(message);
       console.error("Translation failed:", err);
     } finally {
       setTextLoading(false);
@@ -224,8 +231,15 @@ const TextTranslationCard = () => {
   };
 
   return (
-    <div className={translatedText ? "flex gap-8" : undefined}>
-      <Card className="border-none flex-1 min-w-0 relative">
+    <>
+      {error && (
+        <ErrorAlert
+          message={error}
+          onClose={() => setError(null)}
+        />
+      )}
+      <div className={translatedText ? "flex gap-8" : undefined}>
+        <Card className="border-none flex-1 min-w-0 relative">
         <TranslationLoadingOverlay
           isVisible={textLoading}
           type="text"
@@ -316,7 +330,10 @@ const TextTranslationCard = () => {
                     ref={translatedRef}
                     className="w-full flex-1 px-2 py-2 md:px-3 h-[300px] max-h-[300px] bg-slate-50 dark:bg-input/30 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm flex flex-col"
                   >
-                    <div className="text-foreground flex-1 overflow-y-auto text-sm md:text-base">
+                    <div 
+                      className="text-foreground flex-1 overflow-y-auto text-sm md:text-base whitespace-pre-wrap"
+                      style={{ lineHeight: '1.6' }}
+                    >
                       {translatedText}
                     </div>
                   </div>
@@ -387,7 +404,8 @@ const TextTranslationCard = () => {
           </Button>
         </DialogContent>
       </Dialog>
-    </div>
+      </div>
+    </>
   );
 };
 

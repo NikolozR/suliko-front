@@ -34,8 +34,6 @@ export const translateUserContent = async (
     body: formData,
   });
 
-
-
   if (response.status === 401 && token && refreshToken) {
     try {
       const newTokens = await reaccessToken(refreshToken);
@@ -56,7 +54,7 @@ export const translateUserContent = async (
 
   if (response.status !== 200) {
     const errorData = await response.json();
-    throw new Error(errorData.message || "Translation failed");
+    throw new Error(errorData.errorText || "Translation failed");
   } else {
     const data = await response.json();
     return data;
@@ -83,7 +81,6 @@ export const translateDocumentUserContent = async (
     endpoint = claudedEndpoint;
   }
   const formData = new FormData();
-  console.log(endpoint);
   formData.append("File", params.File);
   formData.append("TargetLanguageId", String(params.TargetLanguageId));
   formData.append("SourceLanguageId", String(params.SourceLanguageId));
