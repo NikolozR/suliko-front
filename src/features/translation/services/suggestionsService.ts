@@ -10,7 +10,8 @@ import { API_BASE_URL } from "@/shared/constants/api";
 export async function getSuggestions(
   jobId: string
 ): Promise<SuggestionsResponse | SuggestionsResponseProcessing> {
-  const endpoint = `/Document/translate/suggestions/${jobId}`;
+  const timestamp = Date.now();
+  const endpoint = `/Document/translate/suggestions/${jobId}?t=${timestamp}`;
 
   const { token, refreshToken } = useAuthStore.getState();
 
@@ -18,12 +19,14 @@ export async function getSuggestions(
   if (token) {
     headers.append("Authorization", `Bearer ${token}`);
     headers.append("Cache-Control", "no-cache");
+    headers.append("Pragma", "no-cache");
+    headers.append("Expires", "0");
   } else {
     throw new Error("No token found");
   }
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers,
-    cache: "no-cache"
+    cache: "no-store"
   });
 
   if (response.status === 401 && token && refreshToken) {
@@ -35,7 +38,7 @@ export async function getSuggestions(
       headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers,
-        cache: 'no-store'
+        cache: "no-store"
       });
       
     } catch {

@@ -119,6 +119,7 @@ const createAnchorPoints = (totalDurationMs: number) => {
 // ADD THIS OPTIONAL COMPONENT HERE (before the main component)
 const PageCountDisplay = ({ file }: { file: File | null }) => {
   const { realPageCount, isCountingPages } = useDocumentTranslationStore();
+  const t = useTranslations("DocumentTranslationCard");
   
   if (!file) return null;
   
@@ -158,6 +159,11 @@ const PageCountDisplay = ({ file }: { file: File | null }) => {
       <div className="mt-1 text-suliko-default-color font-semibold">
         Estimated cost: {estimatedCost} ლარი
       </div>
+      {pageCount > 3 && (
+        <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800 text-xs">
+          {t("pageCountWarning")}
+        </div>
+      )}
     </div>
   );
 };
@@ -176,6 +182,7 @@ const DocumentTranslationCard = () => {
   const [error, setError] = useState<string | null>(null);
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const [isSuggestionsLoading, setIsSuggestionsLoading] = useState<boolean>(false);
   const { token } = useAuthStore();
   const {
     currentFile,
@@ -216,26 +223,8 @@ const DocumentTranslationCard = () => {
       setLoadingProgress(0);
       return;
     }
-    
-    // Use real page count (100% accurate) when available for PDF and DOCX
-    // Otherwise fall back to file size estimation for other file types
-    const pageCount = (() => {
-      if (!currentFile || currentFile.length === 0) return 1;
-      
-      const file = currentFile[0];
-      const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      
-      // For PDFs and DOCX, use the real page count when available
-      if ((fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null) {
-        return realPageCount;
-      }
-      
-      // For other file types or when real count isn't loaded yet, use estimation
-      const estimated = estimatePageCount(file);
-      return estimated;
-    })();
 
-    const estimatedDurationMs = pageCount * 1 * 60 * 1000;
+    const estimatedDurationMs = 4 * 60 * 1000;
     const anchorPoints = createAnchorPoints(estimatedDurationMs);
 
     const finalProgress = Math.floor(Math.random() * 3) + 97;
@@ -350,7 +339,6 @@ const DocumentTranslationCard = () => {
     setValue("isSrt", false);
     clearErrors("currentFile");
     
-    // Reset page count and loading state when file is removed
     const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
     setRealPageCount(null);
     setIsCountingPages(false);
@@ -389,7 +377,8 @@ const DocumentTranslationCard = () => {
             setLoadingMessage(message);
           }
         },
-        selectedModel
+        selectedModel,
+        setIsSuggestionsLoading
       );
 
       setLoadingProgress(100);
@@ -532,6 +521,7 @@ const DocumentTranslationCard = () => {
                     onFileChange={handleFileChange}
                     onRemoveFile={handleRemoveFile}
                     onEdit={setTranslatedMarkdown}
+                    isSuggestionsLoading={isSuggestionsLoading}
                   />
                 </>
               ) : (

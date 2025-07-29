@@ -13,6 +13,7 @@ interface DocumentTranslationState {
   shouldResetZoom: boolean;
   realPageCount: number | null;
   isCountingPages: boolean;
+  isTranslating: boolean;
   setCurrentSourceLanguageId: (languageId: number) => void;
   setCurrentTargetLanguageId: (languageId: number) => void;
   setOriginalTargetLanguageId: (languageId: number) => void;
@@ -24,6 +25,7 @@ interface DocumentTranslationState {
   setJobId: (jobId: string) => void;
   setRealPageCount: (pageCount: number | null) => void;
   setIsCountingPages: (isLoading: boolean) => void;
+  setIsTranslating: (isTranslating: boolean) => void;
   reset: () => void;
 }
 
@@ -39,6 +41,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   jobId: '',
   realPageCount: null,
   isCountingPages: false,
+  isTranslating: false,
   setJobId: (jobId: string) => set({ jobId: jobId }),
   setCurrentSourceLanguageId: (languageId) => set({ currentSourceLanguageId: languageId }),
   setCurrentTargetLanguageId: (languageId) => {
@@ -52,6 +55,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   setShouldResetZoom: (shouldReset) => set({ shouldResetZoom: shouldReset }),
   setRealPageCount: (pageCount: number | null) => set({ realPageCount: pageCount }),
   setIsCountingPages: (isLoading: boolean) => set({ isCountingPages: isLoading }),
+  setIsTranslating: (isTranslating: boolean) => set({ isTranslating }),
   reset: () => set({ 
     currentFile: null, 
     translatedMarkdown: '', 
@@ -64,5 +68,6 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
     jobId: '',
     realPageCount: null,
     isCountingPages: false,
+    isTranslating: false,
   }),
 })); 

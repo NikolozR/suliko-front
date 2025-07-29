@@ -69,21 +69,21 @@ export const translateDocumentUserContent = async (
   isSrt: boolean = false
 ): Promise<DocumentTranslationResponse> => {
   const claudedEndpoint = "/Document/translate";
-  const tesseractEndpoint = "/Document/tesseract/translate";
+  // const tesseractEndpoint = "/Document/tesseract/translate";
   const srtEndpoint = "/Document/srt/translate";
   let endpoint = "";
   
   if (isSrt) {
     endpoint = srtEndpoint;
   } else {
-    const fileExtension = params.File.name.split('.').pop()?.toLowerCase();
+    // const fileExtension = params.File.name.split('.').pop()?.toLowerCase();
     
-    const isImageBasedDocument = ['pdf', 'jpg', 'jpeg', 'png', 'bmp', 'tiff', 'gif', 'webp'].includes(fileExtension || '');
+    // const isImageBasedDocument = ['pdf', 'jpg', 'jpeg', 'png', 'bmp', 'tiff', 'gif', 'webp'].includes(fileExtension || '');
     
-    endpoint = isImageBasedDocument ? tesseractEndpoint : claudedEndpoint;
+    endpoint = claudedEndpoint;
   }
   const formData = new FormData();
-
+  console.log(endpoint);
   formData.append("File", params.File);
   formData.append("TargetLanguageId", String(params.TargetLanguageId));
   formData.append("SourceLanguageId", String(params.SourceLanguageId));

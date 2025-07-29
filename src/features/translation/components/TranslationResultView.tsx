@@ -19,6 +19,7 @@ interface TranslationResultViewProps {
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
   onRemoveFile: () => void;
   onEdit: (content: string) => void;
+  isSuggestionsLoading: boolean;
 }
 
 const TranslationResultView: React.FC<TranslationResultViewProps> = ({
@@ -27,6 +28,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   onFileChange,
   onRemoveFile,
   onEdit,
+  isSuggestionsLoading,
 }) => {
   const tButton = useTranslations('TranslationButton');
   const documentPreviewRef = useRef<HTMLDivElement>(null);
@@ -197,7 +199,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           </div>
         </div>
       </div>
-      <SuggestionsPanel />
+      <SuggestionsPanel isSuggestionsLoading={isSuggestionsLoading} />
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
         <DialogContent className="max-w-xs">
           <DialogHeader>

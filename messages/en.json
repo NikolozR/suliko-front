@@ -93,6 +93,7 @@
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
     "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc.",
+    "pageCountWarning": "⚠️ Files with more than 3 pages may experience processing issues or longer wait times.",
    
     "progress": {
       "longerThanUsual": "Takes longer than usual",
@@ -145,5 +146,13 @@
     "targetLanguage": "Target Language",
     "created": "Created At",
     "downloadResult": "Download Result"
+  },
+  "BetaBanner": "This website is currently in beta testing. Features may change and bugs may occur",
+  "SuggestionsPanel": {
+    "title": "Suggestions",
+    "noSuggestions": "No suggestions available.",
+    "generateMore": "Generate more suggestions",
+    "generating": "Generating more suggestions...",
+    "allLoaded": "All suggestions loaded"
   }
 }

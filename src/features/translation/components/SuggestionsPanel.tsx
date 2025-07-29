@@ -6,9 +6,14 @@ import { applySuggestion } from '../services/suggestionsService';
 import { useDocumentTranslationStore } from '../store/documentTranslationStore';
 import { LoadingSpinner } from '@/features/ui/components/loading';
 import { Textarea } from '@/features/ui/components/ui/textarea';
-import { settingUpSuggestions } from '../utils/settingUpSuggestions';
+import { generateMoreSuggestions } from '../utils/settingUpSuggestions';
+import { useTranslations } from 'next-intl';
 
-const SuggestionsPanel: React.FC = () => {
+interface SuggestionsPanelProps {
+  isSuggestionsLoading: boolean;
+}
+
+const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ isSuggestionsLoading }) => {
   const { 
     suggestions,
     removeSuggestion, 
@@ -18,8 +23,10 @@ const SuggestionsPanel: React.FC = () => {
     setHasGeneratedMore
   } = useSuggestionsStore();
   const { translatedMarkdown, currentTargetLanguageId, setTranslatedMarkdown, jobId } = useDocumentTranslationStore();
+  const { isTranslating } = useDocumentTranslationStore();
   const [loadingSuggestionId, setLoadingSuggestionId] = useState<string | null>(null);
   const [isGeneratingMore, setIsGeneratingMore] = useState(false);
+  const t = useTranslations();
 
   const handleRemoveSuggestion = (id: string) => {
     removeSuggestion(id);
@@ -52,11 +59,12 @@ const SuggestionsPanel: React.FC = () => {
     
     setIsGeneratingMore(true);
     try {
-      await settingUpSuggestions(jobId);
-      setHasGeneratedMore(true);
+      await generateMoreSuggestions(jobId);
     } catch (error) {
       console.error('Error generating more suggestions:', error);
     } finally {
+      // Always disable after one use - no more suggestions available from backend
+      setHasGeneratedMore(true);
       setIsGeneratingMore(false);
     }
   };
@@ -67,9 +75,13 @@ const SuggestionsPanel: React.FC = () => {
   return (
     <div className="mt-6">
       <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
-        შემოთავაზებები
+        {t('SuggestionsPanel.title', { default: 'Suggestions' })}
       </div>
-      {suggestions.length > 0 && (
+      {(isTranslating || isSuggestionsLoading) && suggestions.length === 0 ? (
+        <div className="flex justify-center items-center py-8">
+          <LoadingSpinner size="md" variant="primary" />
+        </div>
+      ) : suggestions.length > 0 ? (
         <div className="flex flex-row gap-4 overflow-x-auto pb-2">
           {suggestions.map((s: Suggestion) => (
             <div key={s.id} className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col min-w-[320px] max-w-[400px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200">
@@ -111,22 +123,28 @@ const SuggestionsPanel: React.FC = () => {
             </div>
           ))}
         </div>
+      ) : (
+        <div className="text-center text-muted-foreground py-8">
+          {t('SuggestionsPanel.noSuggestions', { default: 'No suggestions available.' })}
+        </div>
       )}
       {/* Generate More Suggestions Button */}
       <div className="mt-3 flex justify-start">
         <button
           type="button"
           onClick={handleGenerateMore}
-          disabled={isGeneratingMore || !jobId || hasGeneratedMore}
+          disabled={isGeneratingMore || !jobId || suggestions.length === 0 || hasGeneratedMore}
           className="min-w-[320px] max-w-[400px] flex flex-col items-center justify-center bg-white dark:bg-slate-900 border-2 border-dashed border-suliko-default-color/40 rounded-lg p-3 text-suliko-default-color font-semibold text-sm md:text-base shadow-sm hover:bg-suliko-default-color/10 transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {isGeneratingMore ? (
             <div className="flex items-center gap-2">
               <LoadingSpinner size="sm" variant="primary" />
-              მეტი შემოთავაზების გენერირება...
+              {t('SuggestionsPanel.generating', { default: 'Generating more suggestions...' })}
             </div>
+          ) : hasGeneratedMore ? (
+            <span>{t('SuggestionsPanel.allLoaded', { default: 'All suggestions loaded' })}</span>
           ) : (
-            <span>მეტი შემოთავაზების გენერირება</span>
+            <span>{t('SuggestionsPanel.generateMore', { default: 'Generate more suggestions' })}</span>
           )}
         </button>
       </div>
