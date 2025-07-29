@@ -9,7 +9,7 @@ import SuggestionsPanel from './SuggestionsPanel';
 import Editor from "@/features/editor/Editor";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff } from "lucide-react";
 import React from "react";
 
 
@@ -31,10 +31,12 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   isSuggestionsLoading,
 }) => {
   const tButton = useTranslations('TranslationButton');
+  const t = useTranslations('DocumentTranslationCard');
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
+  const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
 
@@ -135,35 +137,63 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 
   return (
     <>
-      <div className="lg:flex gap-8">
-        <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
-          <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
-            ორიგინალი დოკუმენტი
-          </div>
-          <div
-            className="h-[800px] max-h-[800px] flex flex-col w-full"
-            ref={documentPreviewRef}
-          >
-            <div className="space-y-4 h-full flex flex-col">
-              <div className="flex-1 min-h-0">
-                <DocumentPreview file={currentFile} />
+      <div className={hideOriginalDocument ? "" : "lg:flex gap-8"}>
+        {!hideOriginalDocument && (
+          <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
+            <div className="flex items-center justify-between mb-2">
+              <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                ორიგინალი დოკუმენტი
               </div>
-              {currentFile && (
-                <FileInfoDisplay
-                  file={currentFile}
-                  onFileChange={onFileChange}
-                  onRemoveFile={onRemoveFile}
-                  id="file-upload-change-split"
-                />
-              )}
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setHideOriginalDocument(true)}
+                className="transition-all duration-200"
+                title={t('hideOriginal')}
+              >
+                <EyeOff className="h-4 w-4" />
+              </Button>
+            </div>
+            <div
+              className="h-[800px] max-h-[800px] flex flex-col w-full"
+              ref={documentPreviewRef}
+            >
+              <div className="space-y-4 h-full flex flex-col">
+                <div className="flex-1 min-h-0">
+                  <DocumentPreview file={currentFile} />
+                </div>
+                {currentFile && (
+                  <FileInfoDisplay
+                    file={currentFile}
+                    onFileChange={onFileChange}
+                    onRemoveFile={onRemoveFile}
+                    id="file-upload-change-split"
+                  />
+                )}
+              </div>
             </div>
           </div>
-        </div>
+        )}
 
-        <div className="w-full md:flex-1 min-w-0">
+        <div className={hideOriginalDocument ? "w-full" : "w-full md:flex-1 min-w-0"}>
           <div className="flex items-center justify-between mb-2 relative">
-            <div className="font-semibold text-suliko-default-color text-sm md:text-base">
-              თარგმნილი ტექსტი
+            <div className="flex items-center gap-2">
+              <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                თარგმნილი ტექსტი
+              </div>
+              {hideOriginalDocument && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setHideOriginalDocument(false)}
+                  className="transition-all duration-200"
+                  title={t('showOriginal')}
+                >
+                  <Eye className="h-4 w-4" />
+                </Button>
+              )}
             </div>
             <div className="flex items-center gap-2 absolute right-0 bottom-[-4px]">
               {isOriginalFileSrt() ? (

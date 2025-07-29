@@ -94,6 +94,8 @@
     "dropFiles": "Drop files here",
     "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc.",
     "pageCountWarning": "⚠️ Files with more than 3 pages may experience processing issues or longer wait times.",
+    "hideOriginal": "Hide original document",
+    "showOriginal": "Show original document",
    
     "progress": {
       "longerThanUsual": "Takes longer than usual",
