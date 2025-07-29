@@ -1,6 +1,8 @@
 "use client";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
+import { useAuthStore } from "@/features/auth/store/authStore";
 import { useEffect, useState } from "react";
+import WelcomeModal from "./WelcomeModal";
 
 interface ResponsiveMainContentProps {
   children: React.ReactNode;
@@ -8,6 +10,7 @@ interface ResponsiveMainContentProps {
 
 export default function ResponsiveMainContent({ children }: ResponsiveMainContentProps) {
   const { isCollapsed } = useSidebarStore();
+  const { showWelcomeModal, setShowWelcomeModal } = useAuthStore();
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
@@ -40,8 +43,14 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
   }
 
   return (
-    <main className="sidebar-content">
-      {children}
-    </main>
+    <>
+      <main className="sidebar-content">
+        {children}
+      </main>
+      <WelcomeModal 
+        isOpen={showWelcomeModal}
+        onClose={() => setShowWelcomeModal(false)}
+      />
+    </>
   );
 } 

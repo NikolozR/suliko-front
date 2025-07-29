@@ -19,8 +19,11 @@ const setCookie = (name: string, value: string | null) => {
 interface AuthState {
   token: string | null;
   refreshToken: string | null;
+  showWelcomeModal: boolean;
   setToken: (token: string | null) => void;
   setRefreshToken: (refreshToken: string | null) => void;
+  setShowWelcomeModal: (show: boolean) => void;
+  triggerWelcomeModal: () => void;
   reset: () => void;
 }
 
@@ -29,6 +32,7 @@ export const useAuthStore = create<AuthState>()(
     (set) => ({
       token: null,
       refreshToken: null,
+      showWelcomeModal: false,
       setToken: (token) => {
         set({ token });
         setCookie('token', token);
@@ -37,8 +41,14 @@ export const useAuthStore = create<AuthState>()(
         set({ refreshToken });
         setCookie('refreshToken', refreshToken);
       },
+      setShowWelcomeModal: (show) => {
+        set({ showWelcomeModal: show });
+      },
+      triggerWelcomeModal: () => {
+        set({ showWelcomeModal: true });
+      },
       reset: () => {
-        set({ token: null, refreshToken: null });
+        set({ token: null, refreshToken: null, showWelcomeModal: false });
         setCookie('token', null);
         setCookie('refreshToken', null);
         useUserStore.getState().clearUserData();
@@ -46,6 +56,11 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      partialize: (state) => ({ 
+        token: state.token, 
+        refreshToken: state.refreshToken 
+        // Don't persist showWelcomeModal - it should only be triggered by manual login
+      }),
     }
   )
 );

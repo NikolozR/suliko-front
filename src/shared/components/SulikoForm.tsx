@@ -30,7 +30,7 @@ import {
 const SulikoForm: React.FC = () => {
   const t = useTranslations("Authorization");
   const router = useRouter();
-  const { setToken, setRefreshToken } = useAuthStore();
+  const { setToken, setRefreshToken, triggerWelcomeModal } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -137,6 +137,7 @@ const SulikoForm: React.FC = () => {
         });
         setToken(data.token);
         setRefreshToken(data.refreshToken);
+        triggerWelcomeModal();
         router.push("/");
       } else {
         const registerValues = values as RegisterFormData;
@@ -163,6 +164,7 @@ const SulikoForm: React.FC = () => {
         } as RegisterParams);
         setToken(data.token);
         setRefreshToken(data.refreshToken);
+        triggerWelcomeModal();
         router.push("/");
       }
     } catch (error: unknown) {

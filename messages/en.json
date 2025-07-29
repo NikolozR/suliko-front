@@ -156,5 +156,17 @@
     "generateMore": "Generate more suggestions",
     "generating": "Generating more suggestions...",
     "allLoaded": "All suggestions loaded"
+  },
+  "WelcomeModal": {
+    "title": "Hello!",
+    "thankYou": "Thank you for using Suliko.",
+    "betaNotice": "Please note that the website is running in beta mode, so you may encounter certain issues.",
+    "workingOnIssues": "We work daily on fixing these issues, and your feedback is very important!",
+    "reportIssues": "Please, if you discover any type of issue (whether in translation or technical), write to us here:",
+    "email": "Info@suliko.ge",
+    "copyEmail": "Copy email",
+    "emailCopied": "Email copied!",
+    "thankYouEnd": "Thank you.",
+    "close": "Close"
   }
 }
