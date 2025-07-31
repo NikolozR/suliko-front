@@ -3,22 +3,30 @@ import { Suggestion } from '../types/types.Translation';
 
 interface SuggestionsState {
   suggestions: Suggestion[];
+  suggestionsLoading: boolean;
   hasGeneratedMore: boolean;
+  suggestionAccepted: boolean;
+  focusedSuggestionId: string | null;
   setSuggestions: (suggestions: Suggestion[]) => void;
   addSuggestions: (newSuggestions: Suggestion[]) => void;
   removeSuggestion: (id: string) => void;
   acceptSuggestion: (id: string) => void;
   updateSuggestionText: (id: string, newText: string) => void;
   setHasGeneratedMore: (value: boolean) => void;
+  setFocusedSuggestionId: (id: string | null) => void;
+  setSuggestionAccepted: (value: boolean) => void;
+  setSuggestionsLoading: (value: boolean) => void;
   reset: () => void;
 }
 
 export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
   suggestions: [],
+  suggestionsLoading: false,
   hasGeneratedMore: false,
+  suggestionAccepted: false,
+  focusedSuggestionId: null,
   setSuggestions: (suggestions) => set({ suggestions }),
   addSuggestions: (newSuggestions) => set((state) => {
-    // Filter out duplicates based on id and limit to maximum 10 suggestions
     const existingIds = new Set(state.suggestions.map(s => s.id));
     const uniqueNewSuggestions = newSuggestions.filter(s => !existingIds.has(s.id));
     const combined = [...state.suggestions, ...uniqueNewSuggestions];
@@ -36,8 +44,12 @@ export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
     )
   })),
   setHasGeneratedMore: (value) => set({ hasGeneratedMore: value }),
+  setFocusedSuggestionId: (id) => set({ focusedSuggestionId: id }),
+  setSuggestionAccepted: (value) => set({ suggestionAccepted: value }),
+  setSuggestionsLoading: (value) => set({ suggestionsLoading: value }),
   reset: () => set({ 
     suggestions: [],
     hasGeneratedMore: false,
+    suggestionAccepted: false,
   }),
 })); 

@@ -14,7 +14,7 @@ function isSuggestionsResponse(obj: SuggestionsResponse | SuggestionsResponsePro
 
 export async function settingUpSuggestions(jobId: string): Promise<string> {
     const { setSuggestions } = useSuggestionsStore.getState();
-    const maxAttempts = 20; 
+    const maxAttempts = 40; 
     const delayMs = 3000; 
     let attempt = 0;
     

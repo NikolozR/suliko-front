@@ -10,7 +10,7 @@ export async function documentTranslatingWithJobId(
   setError: (error: string) => void,
   onProgress?: (progress: number, message: string) => void,
   model?: number,
-  setIsSuggestionsLoading?: (loading: boolean) => void
+  setSuggestionsLoading?: (loading: boolean) => void
 ) {
   const { setJobId, setTranslatedMarkdown } =
     useDocumentTranslationStore.getState();
@@ -88,9 +88,8 @@ export async function documentTranslatingWithJobId(
     setTranslatedMarkdown(text);
     setIsTranslating(false);
     
-    // Start suggestions loading AFTER translation is done and content is shown
-    if (setIsSuggestionsLoading) {
-      setIsSuggestionsLoading(true);
+    if (setSuggestionsLoading) {
+      setSuggestionsLoading(true);
       const { settingUpSuggestions } = await import("./settingUpSuggestions");
       settingUpSuggestions(currentJobId)
         .then((result) => {
@@ -100,7 +99,7 @@ export async function documentTranslatingWithJobId(
           console.error('Error setting up suggestions:', error);
         })
         .finally(() => {
-          setIsSuggestionsLoading(false);
+          setSuggestionsLoading(false);
         });
     }
   } else {

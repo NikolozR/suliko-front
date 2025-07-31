@@ -27,6 +27,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
 import ModelSelect from "./ModelSelect";
 import { countPages } from "@/features/translation/services/countPagesService";
+import { useSuggestionsStore } from "../store/suggestionsStore";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -60,7 +61,6 @@ const estimatePageCount = (file: File): number => {
   const fileSizeKB = file.size / 1024;
   const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
-  // Images always count as 1 page
   if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(fileExtension || '')) {
     return 1;
   }
@@ -182,7 +182,7 @@ const DocumentTranslationCard = () => {
   const [error, setError] = useState<string | null>(null);
   const [loadingProgress, setLoadingProgress] = useState<number>(0);
   const [loadingMessage, setLoadingMessage] = useState<string>("");
-  const [isSuggestionsLoading, setIsSuggestionsLoading] = useState<boolean>(false);
+  const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
   const {
     currentFile,
@@ -378,7 +378,7 @@ const DocumentTranslationCard = () => {
           }
         },
         selectedModel,
-        setIsSuggestionsLoading
+        setSuggestionsLoading
       );
 
       setLoadingProgress(100);
@@ -521,7 +521,7 @@ const DocumentTranslationCard = () => {
                     onFileChange={handleFileChange}
                     onRemoveFile={handleRemoveFile}
                     onEdit={setTranslatedMarkdown}
-                    isSuggestionsLoading={isSuggestionsLoading}
+                    isSuggestionsLoading={suggestionsLoading}
                   />
                 </>
               ) : (

@@ -155,7 +155,11 @@
     "noSuggestions": "No suggestions available.",
     "generateMore": "Generate more suggestions",
     "generating": "Generating more suggestions...",
-    "allLoaded": "All suggestions loaded"
+    "allLoaded": "All suggestions loaded",
+    "accept": "Accept",
+    "reject": "Reject",
+    "editPlaceholder": "Edit suggestion text...",
+    "retrySuggestions": "Retry Suggestions"
   },
   "WelcomeModal": {
     "title": "Hello!",
