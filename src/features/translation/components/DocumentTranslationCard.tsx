@@ -206,7 +206,7 @@ const DocumentTranslationCard = () => {
     resolver: zodResolver(documentTranslationSchema),
     defaultValues: {
       currentFile: null,
-      currentTargetLanguageId: 1,  // Set this explicitly to 1
+      currentTargetLanguageId: 1,
       currentSourceLanguageId: 0,
       isSrt: false,
     },
@@ -217,7 +217,6 @@ const DocumentTranslationCard = () => {
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
-  // Use real page count from PDF/DOCX parser when available, otherwise fall back to estimation
   useEffect(() => {
     if (!isLoading) {
       setLoadingProgress(0);
@@ -260,7 +259,6 @@ const DocumentTranslationCard = () => {
     const timer = setInterval(() => {
       const elapsedTime = Date.now() - startTime;
 
-      // Check if we've exceeded the estimated duration
       if (elapsedTime > estimatedDurationMs) {
         setLoadingMessage(t("progress.longerThanUsual"));
         setLoadingProgress(finalProgress);
@@ -274,7 +272,6 @@ const DocumentTranslationCard = () => {
 
       const targetProgress = getCurrentTarget(elapsedTime);
 
-      // Stop at final progress and show "taking longer than usual"
       if (targetProgress >= finalProgress) {
         setLoadingProgress(finalProgress);
         setLoadingMessage(t("progress.longerThanUsual"));
