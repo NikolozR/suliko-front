@@ -1,4 +1,4 @@
-import { Check, X } from "lucide-react";
+import { Check, X, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { Suggestion } from "../types/types.Translation";
 import { useSuggestionsStore } from "../store/suggestionsStore";
@@ -37,6 +37,9 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
     null
   );
   const [isGeneratingMore, setIsGeneratingMore] = useState(false);
+  const [previewedSuggestionId, setPreviewedSuggestionId] = useState<string | null>(
+    null
+  );
   const t = useTranslations();
 
   const handleRemoveSuggestion = (id: string) => {
@@ -57,7 +60,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
       //   targetLanguageId: currentTargetLanguageId,
       // });
       setTranslatedMarkdown(
-        translatedMarkdown.replace(
+        translatedMarkdown.replaceAll(
           suggestions.find((s: Suggestion) => s.id === id)!.originalText,
           suggestions.find((s: Suggestion) => s.id === id)!.suggestedText
         )
@@ -73,6 +76,18 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
 
   const handleSuggestionTextChange = (id: string, newText: string) => {
     updateSuggestionText(id, newText);
+  };
+
+  const handleTogglePreview = (id: string) => {
+    if (previewedSuggestionId === id) {
+      // If this suggestion is already being previewed, turn off preview
+      setPreviewedSuggestionId(null);
+      setFocusedSuggestionId(null);
+    } else {
+      // Preview this suggestion
+      setPreviewedSuggestionId(id);
+      setFocusedSuggestionId(id);
+    }
   };
 
   const handleGenerateMore = async () => {
@@ -115,6 +130,23 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
                   {s.title}
                 </div>
                 <div className="flex gap-1">
+                  <button
+                    type="button"
+                    onClick={() => handleTogglePreview(s.id)}
+                    disabled={loadingSuggestionId === s.id}
+                    className={`p-1.5 rounded-md transition-colors group disabled:opacity-50 disabled:cursor-not-allowed ${
+                      previewedSuggestionId === s.id
+                        ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
+                        : "hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                    }`}
+                    title={previewedSuggestionId === s.id ? t("SuggestionsPanel.hidePreview") : t("SuggestionsPanel.showPreview")}
+                  >
+                    {previewedSuggestionId === s.id ? (
+                      <EyeOff className="w-4 cursor-pointer h-4 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300" />
+                    ) : (
+                      <Eye className="w-4 cursor-pointer h-4 text-blue-600 dark:text-blue-500 group-hover:text-blue-700 dark:group-hover:text-blue-400" />
+                    )}
+                  </button>
                   <button
                     type="button"
                     onClick={() => handleAcceptSuggestion(s.id)}

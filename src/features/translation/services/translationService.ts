@@ -68,7 +68,7 @@ export const translateDocumentUserContent = async (
 ): Promise<DocumentTranslationResponse> => {
   const claudedEndpoint = "/Document/translate";
   // const tesseractEndpoint = "/Document/tesseract/translate";
-  const srtEndpoint = "/Document/srt/translate";
+  const srtEndpoint = "/Document/srt/translate";  
   let endpoint = "";
   
   if (isSrt) {
