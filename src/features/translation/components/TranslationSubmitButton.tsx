@@ -10,6 +10,7 @@ interface TranslationSubmitButtonProps {
   showShiftEnter?: boolean;
   onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type?: "button" | "submit";
+  isHighlighted?: boolean;
 }
 
 const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
@@ -19,15 +20,23 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
   formError = null,
   showShiftEnter = true,
   onClick,
-  type = "submit"
+  type = "submit",
+  isHighlighted = false
 }) => {
   const t = useTranslations('TranslationButton');
   const tTextCard = useTranslations('TextTranslationCard');
 
+  // Create dynamic className for highlight effect
+  const buttonClassName = `w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-all duration-300 text-sm md:text-base ${
+    isHighlighted 
+      ? "animate-pulse ring-4 ring-suliko-default-color/30 shadow-lg shadow-suliko-default-color/25 brightness-110" 
+      : ""
+  }`;
+
   return (
     <>
       <LoadingButton
-        className="w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-opacity text-sm md:text-base"
+        className={buttonClassName}
         size={hasResult ? "default" : "lg"}
         type={type}
         disabled={disabled}

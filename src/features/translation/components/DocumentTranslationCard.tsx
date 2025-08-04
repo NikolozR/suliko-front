@@ -196,6 +196,7 @@ const DocumentTranslationCard = () => {
     realPageCount,
   } = useDocumentTranslationStore();
   const [selectedModel, setSelectedModel] = useState<number>(-1);
+  const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
 
   const {
     handleSubmit,
@@ -303,6 +304,12 @@ const DocumentTranslationCard = () => {
       setValue("currentFile", event.target.files);
       setValue("isSrt", isSrtFile);
       clearErrors("currentFile");
+
+      // Highlight the translate button after file upload
+      setIsButtonHighlighted(true);
+      setTimeout(() => {
+        setIsButtonHighlighted(false);
+      }, 3000); // Remove highlight after 3 seconds
 
       // Get exact page count for DOCX files
       if (fileExtension === "docx") {
@@ -546,6 +553,7 @@ const DocumentTranslationCard = () => {
                 disabled={isLoading || (!token ? false : !hasFile)}
                 showShiftEnter={true}
                 formError={token ? getFormError() : null}
+                isHighlighted={isButtonHighlighted}
               />
             </form>
           </CardContent>
