@@ -14,7 +14,7 @@ export interface TextTranslateUserContentResponse {
 export interface  DocumentTranslateUserContentParams {
   File: File;
   TargetLanguageId: number;
-  SourceLanguageId: number;
+  OutputLanguageId: number;
   OutputFormat: number;
   model: number;
 }

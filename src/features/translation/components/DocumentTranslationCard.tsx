@@ -25,7 +25,6 @@ import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
 import LanguageSelect from "./LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
-import ModelSelect from "./ModelSelect";
 import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 
@@ -116,7 +115,6 @@ const createAnchorPoints = (totalDurationMs: number) => {
   ];
 };
 
-// ADD THIS OPTIONAL COMPONENT HERE (before the main component)
 const PageCountDisplay = ({ file }: { file: File | null }) => {
   const { realPageCount, isCountingPages } = useDocumentTranslationStore();
   const t = useTranslations("DocumentTranslationCard");
@@ -168,11 +166,11 @@ const PageCountDisplay = ({ file }: { file: File | null }) => {
   );
 };
 
-const modelOptions = [
-  { value: 0, label: "კლაუდია" },
-  { value: 1, label: "კლაუდია junior" },
-  { value: 2, label: "გურამი" },
-];
+// const modelOptions = [
+//   { value: 0, label: "კლაუდია" },
+//   { value: 1, label: "კლაუდია junior" },
+//   { value: 2, label: "გურამი" },
+// ];
 
 const DocumentTranslationCard = () => {
   const t = useTranslations("DocumentTranslationCard");
@@ -195,7 +193,6 @@ const DocumentTranslationCard = () => {
     setCurrentSourceLanguageId,
     realPageCount,
   } = useDocumentTranslationStore();
-  const [selectedModel, setSelectedModel] = useState<number>(-1);
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
 
   const {
@@ -207,7 +204,7 @@ const DocumentTranslationCard = () => {
     resolver: zodResolver(documentTranslationSchema),
     defaultValues: {
       currentFile: null,
-      currentTargetLanguageId: 1,  // Set this explicitly to 1
+      currentTargetLanguageId: 1, 
       currentSourceLanguageId: 0,
       isSrt: false,
     },
@@ -384,7 +381,6 @@ const DocumentTranslationCard = () => {
             setLoadingMessage(message);
           }
         },
-        selectedModel,
         setSuggestionsLoading
       );
 
@@ -507,16 +503,6 @@ const DocumentTranslationCard = () => {
                   <LanguageSelect
                     value={currentTargetLanguageId}
                     onChange={setCurrentTargetLanguageId}
-                  />
-                </div>
-                {/* Model select */}
-                <div className="flex-1 flex flex-col">
-                  <span className="block text-xs text-muted-foreground mb-1">Translation Model</span>
-                  <ModelSelect
-                    value={selectedModel}
-                    onChange={setSelectedModel}
-                    placeholder="აირჩიეთ მოდელი"
-                    options={modelOptions}
                   />
                 </div>
               </div>

@@ -156,7 +156,11 @@
     "accept": "მიღება",
     "reject": "უარყოფა",
     "editPlaceholder": "შეცვალეთ შემოთავაზებული ტექსტი...",
-    "retrySuggestions": "შემოთავაზებების თავიდან ცდა"
+    "retrySuggestions": "შემოთავაზებების თავიდან ცდა",
+    "showPreview": "წინასწარი ნახვა",
+    "hidePreview": "წინასწარი ნახვის დამალვა",
+    "indicatorExact": "ზუსტი დამთხვევა: სწრაფი გამოყენება",
+    "indicatorNonExact": "არაზუსტი: სერვერზე გამოყენება"
   },
   "WelcomeModal": {
     "title": "გამარჯობა!",

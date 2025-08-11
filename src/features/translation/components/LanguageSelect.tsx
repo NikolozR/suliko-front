@@ -57,7 +57,6 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
     fetchLanguages();
   }, [customLanguages]);
 
-
   if (loading)
     return (
       <div className="flex items-center gap-2 p-3 border rounded-md">
