@@ -12,9 +12,10 @@ const LICENSE_KEY = process.env.NEXT_PUBLIC_CKEDITOR_LICENSE_KEY;
 
 
 
-export default function Editor({ value, onChange }) {
+export default function Editor({ translatedMarkdown, onChange }) {
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
+  const editorInstanceRef = useRef(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
   const cloud = useCKEditorCloud({ version: "46.0.0", premium: true });
 
@@ -242,7 +243,6 @@ export default function Editor({ value, onChange }) {
             "resizeImage",
           ],
         },
-        initialData: value || "",
         licenseKey: LICENSE_KEY,
         link: {
           addTargetToExternalLinks: true,
@@ -286,13 +286,24 @@ export default function Editor({ value, onChange }) {
         },
       },
     };
-  }, [cloud, isLayoutReady, value]);
+  }, [cloud, isLayoutReady]);
 
   useEffect(() => {
     if (editorConfig) {
       configUpdateAlert(editorConfig);
     }
   }, [editorConfig]);
+
+  // Keep the editor content in sync with external state changes
+  useEffect(() => {
+    const editor = editorInstanceRef.current;
+    if (!editor) return;
+    const incoming = translatedMarkdown || "";
+    const current = editor.getData();
+    if (current !== incoming) {
+      editor.setData(incoming);
+    }
+  }, [translatedMarkdown]);
 
   return (
     <div className="main-container">
@@ -305,16 +316,14 @@ export default function Editor({ value, onChange }) {
             {ClassicEditor && editorConfig && (
               <CKEditor
                 editor={ClassicEditor}
-                config={{
-                  ...editorConfig,
-                  initialData: value || "",
-                  onChange: (event, editor) =>
-                    onChange && onChange(editor.getData()),
+                config={editorConfig}
+                onReady={(editor) => {
+                  editorInstanceRef.current = editor;
+                  editor.setData(translatedMarkdown || "");
                 }}
-                data={value || ""}
-                onChange={(event, editor) =>
-                  onChange && onChange(editor.getData())
-                }
+                onChange={(event, editor) => {
+                  onChange && onChange(editor.getData());
+                }}
               />
             )}
           </div>

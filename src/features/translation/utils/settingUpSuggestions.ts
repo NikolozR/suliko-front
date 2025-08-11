@@ -21,7 +21,6 @@ export async function settingUpSuggestions(jobId: string): Promise<string> {
     while (attempt < maxAttempts) {
         try {
             const suggestionsResponse = await getSuggestions(jobId);
-            console.log(jobId);
             if (isSuggestionsResponse(suggestionsResponse)) {
                 const filtered = suggestionsResponse.suggestions.filter(s =>
                     s.description !== null || s.originalText !== null || s.suggestedText !== null
@@ -30,11 +29,8 @@ export async function settingUpSuggestions(jobId: string): Promise<string> {
                     setSuggestions(filtered);
                     return 'success';
                 }
-                console.log('Suggestions response successful but empty, attempt:', attempt + 1);
             } else if (suggestionsResponse.status === 'processing') {
-                console.log('Suggestions still processing, attempt:', attempt + 1);
             } else {
-                console.log('Suggestions failed with status:', suggestionsResponse.status);
                 setSuggestions([]);
                 return suggestionsResponse.status;
             }
@@ -49,7 +45,6 @@ export async function settingUpSuggestions(jobId: string): Promise<string> {
         }
     }
     
-    console.log('18 seconds elapsed, no suggestions available');
     setSuggestions([]);
     return 'empty';
 }
@@ -63,7 +58,6 @@ export async function generateMoreSuggestions(jobId: string): Promise<string> {
     while (attempt < maxAttempts) {
         try {
             const suggestionsResponse = await getSuggestions(jobId);
-            console.log(jobId);
             if (isSuggestionsResponse(suggestionsResponse)) {
                 const filtered = suggestionsResponse.suggestions.filter(s =>
                     s.description !== null || s.originalText !== null || s.suggestedText !== null
@@ -72,11 +66,8 @@ export async function generateMoreSuggestions(jobId: string): Promise<string> {
                     addSuggestions(filtered);
                     return 'success';
                 }
-                console.log('More suggestions response successful but empty, attempt:', attempt + 1);
             } else if (suggestionsResponse.status === 'processing') {
-                console.log('More suggestions still processing, attempt:', attempt + 1);
             } else {
-                console.log('More suggestions failed with status:', suggestionsResponse.status);
                 return suggestionsResponse.status;
             }
         } catch (error) {

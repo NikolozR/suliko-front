@@ -159,7 +159,11 @@
     "accept": "Accept",
     "reject": "Reject",
     "editPlaceholder": "Edit suggestion text...",
-    "retrySuggestions": "Retry Suggestions"
+    "retrySuggestions": "Retry Suggestions",
+    "showPreview": "Show preview",
+    "hidePreview": "Hide preview",
+    "indicatorExact": "Exact match: quick apply",
+    "indicatorNonExact": "Non-exact: server apply"
   },
   "WelcomeModal": {
     "title": "Hello!",

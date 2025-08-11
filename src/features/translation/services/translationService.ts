@@ -80,10 +80,10 @@ export const translateDocumentUserContent = async (
     
     endpoint = claudedEndpoint;
   }
-  const formData = new FormData();
+  const formData = new FormData();  
   formData.append("File", params.File);
   formData.append("TargetLanguageId", String(params.TargetLanguageId));
-  formData.append("SourceLanguageId", String(params.SourceLanguageId));
+  formData.append("OutputLanguageId", String(params.OutputLanguageId));
   formData.append("OutputFormat", String(params.OutputFormat));
   formData.append("model", String(params.model));
 

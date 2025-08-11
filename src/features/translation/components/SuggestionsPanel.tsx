@@ -1,6 +1,9 @@
-import { Check, X, Eye, EyeOff } from "lucide-react";
+import { Check, X, Flame, Clock } from "lucide-react";
 import { useState } from "react";
-import { Suggestion } from "../types/types.Translation";
+import {
+  ApplySuggestionResponse,
+  Suggestion,
+} from "../types/types.Translation";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { useDocumentTranslationStore } from "../store/documentTranslationStore";
 import { LoadingSpinner } from "@/features/ui/components/loading";
@@ -25,48 +28,77 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
     updateSuggestionText,
     hasGeneratedMore,
     setHasGeneratedMore,
-    setFocusedSuggestionId,
     suggestionAccepted,
     setSuggestionAccepted,
     setSuggestionsLoading,
+    focusedSuggestionId,
+    setFocusedSuggestionId,
   } = useSuggestionsStore();
-  const { translatedMarkdown, setTranslatedMarkdown, jobId } =
-    useDocumentTranslationStore();
+  const {
+    translatedMarkdown,
+    setTranslatedMarkdown,
+    jobId,
+    currentTargetLanguageId,
+  } = useDocumentTranslationStore();
   const { isTranslating } = useDocumentTranslationStore();
   const [loadingSuggestionId, setLoadingSuggestionId] = useState<string | null>(
     null
   );
   const [isGeneratingMore, setIsGeneratingMore] = useState(false);
-  const [previewedSuggestionId, setPreviewedSuggestionId] = useState<string | null>(
-    null
-  );
+  // const [previewBackup, setPreviewBackup] = useState<string | null>(null);
   const t = useTranslations();
 
   const handleRemoveSuggestion = (id: string) => {
     removeSuggestion(id);
   };
 
-  const handleHoverSuggestion = (id: string | null) => {
-    setFocusedSuggestionId(id);
+  const canExactMatch = (suggestion: Suggestion, content: string) => {
+    return content.includes(suggestion.originalText);
   };
 
   const handleAcceptSuggestion = async (id: string) => {
     setLoadingSuggestionId(id);
     try {
-      // const data = await applySuggestion({
-      //   translatedContent: translatedMarkdown,
-      //   suggestionId: id,
-      //   suggestion: suggestions.find((s: Suggestion) => s.id === id)!,
-      //   targetLanguageId: currentTargetLanguageId,
-      // });
-      setTranslatedMarkdown(
-        translatedMarkdown.replaceAll(
-          suggestions.find((s: Suggestion) => s.id === id)!.originalText,
-          suggestions.find((s: Suggestion) => s.id === id)!.suggestedText
-        )
-      );
-      acceptSuggestion(id);
-      setSuggestionAccepted(true);
+      const s = suggestions.find((sg: Suggestion) => sg.id === id)!;
+      if (canExactMatch(s, translatedMarkdown)) {
+        let newContent = translatedMarkdown;
+        console.log("object");
+        newContent = translatedMarkdown.replaceAll(
+          s.originalText,
+          s.suggestedText
+        );
+        console.log(newContent);
+        setTranslatedMarkdown(newContent);
+        acceptSuggestion(id);
+        setSuggestionAccepted(true);
+        if (focusedSuggestionId === id) {
+          setFocusedSuggestionId(null);
+          // setPreviewBackup(null);
+        }
+      } else {
+        console.log("else");
+        const { applySuggestion } = await import(
+          "@/features/translation/services/suggestionsService"
+        );
+        const data: ApplySuggestionResponse = await applySuggestion({
+          translatedContent: translatedMarkdown,
+          suggestionId: id,
+          suggestion: s,
+          targetLanguageId: currentTargetLanguageId,
+        });
+        if (data.success) {
+          console.log(data.updatedContent);
+          setTranslatedMarkdown(data.updatedContent);
+          acceptSuggestion(id);
+          setSuggestionAccepted(true);
+          if (focusedSuggestionId === id) {
+            setFocusedSuggestionId(null);
+            // setPreviewBackup(null);
+          }
+        } else {
+          console.error("Failed to apply suggestion:", data.errorMessage);
+        }
+      }
     } catch (error) {
       console.error("Error applying suggestion:", error);
     } finally {
@@ -78,17 +110,74 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
     updateSuggestionText(id, newText);
   };
 
-  const handleTogglePreview = (id: string) => {
-    if (previewedSuggestionId === id) {
-      // If this suggestion is already being previewed, turn off preview
-      setPreviewedSuggestionId(null);
-      setFocusedSuggestionId(null);
-    } else {
-      // Preview this suggestion
-      setPreviewedSuggestionId(id);
-      setFocusedSuggestionId(id);
-    }
-  };
+  // const handleTogglePreview = (id: string) => {
+  //   if (focusedSuggestionId === id) {
+  //     // Restore original content when turning preview off
+  //     if (previewBackup !== null) {
+  //       setTranslatedMarkdown(previewBackup);
+  //     }
+  //     setFocusedSuggestionId(null);
+  //     setPreviewBackup(null);
+  //   } else {
+  //     setFocusedSuggestionId(id);
+  //     const suggestion = suggestions.find((s: Suggestion) => s.id === id)!;
+  //     const baseContent =
+  //       previewBackup !== null ? previewBackup : translatedMarkdown;
+  //     if (canExactMatch(suggestion, baseContent)) {
+  //       if (previewBackup === null) {
+  //         setPreviewBackup(translatedMarkdown);
+  //       }
+
+  //       // Use the same robust replacement logic for preview
+  //       let highlighted = baseContent;
+
+  //       // 1. Try direct replacement first
+  //       if (baseContent.includes(suggestion.originalText)) {
+  //         highlighted = baseContent.replaceAll(
+  //           suggestion.originalText,
+  //           `<span class="bg-yellow-200">${suggestion.suggestedText}</span>`
+  //         );
+  //       } else {
+  //         // 2. Try normalized whitespace replacement
+  //         const normalizeWhitespace = (text: string) =>
+  //           text.replace(/\s+/g, " ").trim();
+  //         const normalizedOriginal = normalizeWhitespace(
+  //           suggestion.originalText
+  //         );
+
+  //         // Find the original text in the content with different spacing
+  //         const regex = new RegExp(
+  //           normalizedOriginal
+  //             .replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+  //             .replace(/\s+/g, "\\s+"),
+  //           "gi"
+  //         );
+
+  //         if (regex.test(baseContent)) {
+  //           highlighted = baseContent.replace(
+  //             regex,
+  //             `<span class="bg-yellow-200">${suggestion.suggestedText}</span>`
+  //           );
+  //         } else {
+  //           // 3. Last resort: try case-insensitive replacement
+  //           const caseInsensitiveRegex = new RegExp(
+  //             suggestion.originalText.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+  //             "gi"
+  //           );
+  //           highlighted = baseContent.replace(
+  //             caseInsensitiveRegex,
+  //             `<span class="bg-yellow-200">${suggestion.suggestedText}</span>`
+  //           );
+  //         }
+  //       }
+
+  //       setTranslatedMarkdown(highlighted);
+  //     } else {
+  //       // cannot preview if not exact match; revert focus state
+  //       setFocusedSuggestionId(null);
+  //     }
+  //   }
+  // };
 
   const handleGenerateMore = async () => {
     if (!jobId || hasGeneratedMore) return;
@@ -122,31 +211,61 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
             <div
               key={s.id}
               className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col min-w-[320px] max-w-[400px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200"
-              onMouseEnter={() => handleHoverSuggestion(s.id)}
-              onMouseLeave={() => handleHoverSuggestion(null)}
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="font-semibold text-foreground" title={s.title}>
                   {s.title}
                 </div>
-                <div className="flex gap-1">
-                  <button
+                <div className="flex gap-1 items-center">
+                  {/* Indicator: fire for exact (local), clock for non-exact (server) */}
+                  <span
+                    className="p-1.5 rounded-md"
+                    title={
+                      canExactMatch(s, translatedMarkdown)
+                        ? t("SuggestionsPanel.indicatorExact", {
+                            default: "Exact match: quick apply",
+                          })
+                        : t("SuggestionsPanel.indicatorNonExact", {
+                            default: "Non-exact: server apply",
+                          })
+                    }
+                  >
+                    {canExactMatch(s, translatedMarkdown) ? (
+                      <Flame className="w-4 h-4 text-orange-500" />
+                    ) : (
+                      <Clock className="w-4 h-4 text-amber-500" />
+                    )}
+                  </span>
+                  {/* <button
                     type="button"
-                    onClick={() => handleTogglePreview(s.id)}
-                    disabled={loadingSuggestionId === s.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleTogglePreview(s.id);
+                    }}
+                    disabled={
+                      loadingSuggestionId === s.id ||
+                      !canExactMatch(s, translatedMarkdown)
+                    }
                     className={`p-1.5 rounded-md transition-colors group disabled:opacity-50 disabled:cursor-not-allowed ${
-                      previewedSuggestionId === s.id
+                      focusedSuggestionId === s.id
                         ? "bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400"
                         : "hover:bg-blue-50 dark:hover:bg-blue-900/20"
                     }`}
-                    title={previewedSuggestionId === s.id ? t("SuggestionsPanel.hidePreview") : t("SuggestionsPanel.showPreview")}
+                    title={
+                      focusedSuggestionId === s.id
+                        ? t("SuggestionsPanel.hidePreview")
+                        : t("SuggestionsPanel.showPreview")
+                    }
                   >
-                    {previewedSuggestionId === s.id ? (
+                    {loadingSuggestionId === s.id ||
+                    !canExactMatch(s, translatedMarkdown) ? (
+                      <Eye className="w-4 cursor-not-allowed h-4 text-blue-600 dark:text-blue-500" />
+                    ) : focusedSuggestionId === s.id ? (
                       <EyeOff className="w-4 cursor-pointer h-4 text-blue-600 dark:text-blue-400 group-hover:text-blue-700 dark:group-hover:text-blue-300" />
                     ) : (
                       <Eye className="w-4 cursor-pointer h-4 text-blue-600 dark:text-blue-500 group-hover:text-blue-700 dark:group-hover:text-blue-400" />
                     )}
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     onClick={() => handleAcceptSuggestion(s.id)}
