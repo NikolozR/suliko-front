@@ -20,6 +20,7 @@ import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 import PhoneVerificationSection from "./PhoneVerificationSection";
 import PasswordSection from "./PasswordSection";
 import NameSection from "./NameSection";
+import TermsSection from "./TermsSection";
 import {
   loginFormSchema,
   registerFormSchema,
@@ -63,6 +64,9 @@ const SulikoForm: React.FC = () => {
       lastname: "",
       confirmPassword: "",
       verificationCode: "",
+      acceptTerms: false,
+      acceptPrivacyPolicy: false,
+      subscribeNewsletter: false,
     },
   });
 
@@ -161,6 +165,7 @@ const SulikoForm: React.FC = () => {
           firstname: registerValues.firstname || generateDefaultName(),
           lastname: registerValues.lastname || "",
           verificationCode: registerValues.verificationCode,
+          subscribeNewsletter: registerValues.subscribeNewsletter,
         } as RegisterParams);
         setToken(data.token);
         setRefreshToken(data.refreshToken);
@@ -268,6 +273,8 @@ const SulikoForm: React.FC = () => {
                 isPasswordVisible={isPasswordVisible}
                 setIsPasswordVisible={setIsPasswordVisible}
               />
+
+              {!isLoginMode && <TermsSection form={form} />}
 
               <Button
                 className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"

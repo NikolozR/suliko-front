@@ -45,6 +45,7 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
           type="file"
           className="hidden"
           id={id}
+          accept="*/*"
           onChange={onFileChange}
         />
         <Button

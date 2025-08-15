@@ -72,6 +72,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, id = "fil
             type="file"
             className="hidden"
             id={id}
+            accept="*/*"
             onChange={onFileChange}
           />
         </div>

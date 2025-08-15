@@ -20,6 +20,13 @@ export const registerFormSchema = z.object({
   lastname: z.string().optional(),
   confirmPassword: z.string().min(1, "Please confirm your password"),
   verificationCode: z.string().optional(),
+  acceptTerms: z.boolean().refine(val => val === true, {
+    message: "You must accept the terms and conditions",
+  }),
+  acceptPrivacyPolicy: z.boolean().refine(val => val === true, {
+    message: "You must accept the privacy policy",
+  }),
+  subscribeNewsletter: z.boolean().optional(),
 });
 
 export type LoginFormData = z.infer<typeof loginFormSchema>;

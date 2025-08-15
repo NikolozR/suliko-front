@@ -9,7 +9,7 @@ import SuggestionsPanel from './SuggestionsPanel';
 import Editor from "@/features/editor/Editor";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff, Clock } from "lucide-react";
 import React from "react";
 
 
@@ -39,6 +39,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
+  const [editorDeadline, setEditorDeadline] = useState<number | null>(null);
+  const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
 
   const isOriginalFileSrt = () => {
     const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
@@ -80,6 +82,35 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       markdownContainer.removeEventListener("scroll", handleMarkdownScroll);
     };
   }, [translatedMarkdown]);
+
+  // Start 10-minute editor timer on first mount of the result view
+  useEffect(() => {
+    if (editorDeadline === null) {
+      setEditorDeadline(Date.now() + 10 * 60 * 1000);
+    }
+    // no cleanup needed here
+  }, [editorDeadline]);
+
+  // Tick countdown each second
+  useEffect(() => {
+    if (editorDeadline === null) return;
+    const intervalId = setInterval(() => {
+      const secondsLeft = Math.max(0, Math.floor((editorDeadline - Date.now()) / 1000));
+      setRemainingSeconds(secondsLeft);
+      if (secondsLeft <= 0) {
+        clearInterval(intervalId);
+      }
+    }, 1000);
+    return () => clearInterval(intervalId);
+  }, [editorDeadline]);
+
+  const formatTime = (totalSeconds: number) => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    const mm = String(minutes).padStart(2, "0");
+    const ss = String(seconds).padStart(2, "0");
+    return `${mm}:${ss}`;
+  };
 
   useEffect(() => {
     if (!downloadedFormat) return;
@@ -182,6 +213,10 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
               <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                 თარგმნილი ტექსტი
               </div>
+              <span className="text-xs text-muted-foreground flex items-center gap-1">
+                <Clock className="h-3 w-3" />
+                {formatTime(remainingSeconds)}
+              </span>
               {hideOriginalDocument && (
                 <Button
                   type="button"

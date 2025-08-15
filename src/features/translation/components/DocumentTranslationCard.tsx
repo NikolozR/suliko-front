@@ -27,6 +27,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
 import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
+import PageCountDisplay from "./PageCountDisplay";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -56,115 +57,44 @@ const documentTranslationSchema = z.object({
 
 export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
-const estimatePageCount = (file: File): number => {
-  const fileSizeKB = file.size / 1024;
-  const fileExtension = file.name.split(".").pop()?.toLowerCase();
-
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(fileExtension || '')) {
-    return 1;
-  }
-
-  switch (fileExtension) {
-    case "pdf":
-      return Math.max(1, Math.ceil(fileSizeKB / 50));
-    case "docx":
-      return Math.max(1, Math.ceil(fileSizeKB / 20));
-    case "txt":
-      return Math.max(1, Math.ceil(fileSizeKB / 3));
-    case "rtf":
-      return Math.max(1, Math.ceil(fileSizeKB / 10));
-    case "srt":
-      return Math.max(1, Math.ceil(fileSizeKB / 2));
-    default:
-      return Math.max(1, Math.ceil(fileSizeKB / 30));
-  }
-};
 
 const createAnchorPoints = (totalDurationMs: number) => {
-  return [
-    {
-      progress: 10,
-      time: totalDurationMs * 0.05,
-      messageKey: "progress.preparing",
-    },
-    {
-      progress: 25,
-      time: totalDurationMs * 0.15,
-      messageKey: "progress.analyzing",
-    },
-    {
-      progress: 50,
-      time: totalDurationMs * 0.4,
-      messageKey: "progress.translating",
-    },
-    {
-      progress: 75,
-      time: totalDurationMs * 0.7,
-      messageKey: "progress.enhancing",
-    },
-    {
-      progress: 90,
-      time: totalDurationMs * 0.85,
-      messageKey: "progress.finalizing",
-    },
-    {
-      progress: 97,
-      time: totalDurationMs * 0.95,
-      messageKey: "progress.waiting",
-    },
+  // Use all available progress messages (excluding ones handled elsewhere)
+  const messageOrder = [
+    "starting",
+    "documentType",
+    "documentInfo",
+    "wordCount",
+    "estimatedTime",
+    "estimatedCost",
+    "preparing",
+    "analyzing",
+    "translating",
+    "firstPageDone",
+    "checkingMistakes",
+    "stillChecking",
+    "enhancing",
+    "finalizing",
+    "waiting",
+    "thankYou",
   ];
+
+  const minProgress = 5; // start above 0 so the bar is visible early
+  const maxProgress = 97; // leave a bit of headroom for server completion
+  const steps = messageOrder.length;
+
+  return messageOrder.map((key, index) => {
+    const ratio = (index + 1) / steps;
+    const progress = Math.round(minProgress + (maxProgress - minProgress) * ratio);
+    const time = totalDurationMs * ratio;
+    return {
+      progress,
+      time,
+      messageKey: `progress.${key}`,
+    };
+  });
 };
 
-const PageCountDisplay = ({ file }: { file: File | null }) => {
-  const { realPageCount, isCountingPages } = useDocumentTranslationStore();
-  const t = useTranslations("DocumentTranslationCard");
-  
-  if (!file) return null;
-  
-  const fileExtension = file.name.split(".").pop()?.toLowerCase();
-  
-  // Show loading state while counting pages for DOCX files
-  if (isCountingPages && fileExtension === 'docx') {
-    return (
-      <div className="text-sm text-muted-foreground mt-2">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-2 border-suliko-default-color border-t-transparent rounded-full animate-spin"></div>
-          Counting pages...
-        </div>
-      </div>
-    );
-  }
-  
-  // Use real page count when available (for PDFs and DOCX), otherwise fall back to estimation
-  const pageCount = (() => {
-    // For PDFs and DOCX, use the real page count if available
-    if ((fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null) {
-      return realPageCount;
-    }
-    
-    // For other file types or when real count isn't loaded yet, use estimation
-    return estimatePageCount(file);
-  })();
-  
-  const estimatedMinutes = pageCount * 2;
-  const hasRealCount = (fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null;
-  const estimatedCost = (pageCount * 0.1).toFixed(2);
-
-  return (
-    <div className="text-sm text-muted-foreground mt-2">
-      {hasRealCount ? 'Actual' : 'Estimated'}: {pageCount} page{pageCount !== 1 ? "s" : ""}
-      (~{estimatedMinutes} minute{estimatedMinutes !== 1 ? "s" : ""})
-      <div className="mt-1 text-suliko-default-color font-semibold">
-        Estimated cost: {estimatedCost} ლარი
-      </div>
-      {pageCount > 3 && (
-        <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800 text-xs">
-          {t("pageCountWarning")}
-        </div>
-      )}
-    </div>
-  );
-};
 
 // const modelOptions = [
 //   { value: 0, label: "კლაუდია" },
@@ -192,6 +122,10 @@ const DocumentTranslationCard = () => {
     currentSourceLanguageId,
     setCurrentSourceLanguageId,
     realPageCount,
+    estimatedPageCount,
+    estimatedMinutes,
+    estimatedCost,
+    estimatedWordCount,
   } = useDocumentTranslationStore();
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
 
@@ -268,7 +202,27 @@ const DocumentTranslationCard = () => {
       const currentAnchor =
         anchorPoints.find((point) => point.time >= elapsedTime) ||
         anchorPoints[anchorPoints.length - 1];
-      setLoadingMessage(t(currentAnchor.messageKey));
+
+      // Inject estimation data for messages that expect dynamic values
+      const msgKey = currentAnchor.messageKey;
+      if (msgKey === "progress.documentInfo") {
+        setLoadingMessage(t(msgKey, { data: estimatedPageCount || 0 }).replace("pages", estimatedPageCount > 1 ? "pages" : "page"));
+      } else if (msgKey === "progress.wordCount") {
+        const words = estimatedWordCount || (estimatedPageCount > 0 ? estimatedPageCount * 483 : 0);
+        setLoadingMessage(t(msgKey, { data: words }));
+      } else if (msgKey === "progress.estimatedTime") {
+        const minutes = estimatedMinutes || (estimatedPageCount > 0 ? estimatedPageCount * 2 : 0);
+        setLoadingMessage(t(msgKey, { data: minutes }));
+      } else if (msgKey === "progress.estimatedCost") {
+        const cost = estimatedCost && estimatedCost !== "0.00" ? estimatedCost : (estimatedPageCount > 0 ? (estimatedPageCount * 0.1).toFixed(2) : "0.00");
+        setLoadingMessage(t(msgKey, { data: cost }));
+      } else if (msgKey === "progress.documentType") {
+        const file = currentFile && currentFile.length > 0 ? currentFile[0] : null;
+        const ext = file?.name.split(".").pop()?.toLowerCase() || "unknown";
+        setLoadingMessage(t(msgKey, { data: ext }));
+      } else {
+        setLoadingMessage(t(msgKey));
+      }
 
       const targetProgress = getCurrentTarget(elapsedTime);
 
@@ -283,7 +237,7 @@ const DocumentTranslationCard = () => {
     }, interval);
 
     return () => clearInterval(timer);
-  }, [isLoading, t, currentFile, realPageCount]);
+  }, [isLoading, t, currentFile, realPageCount, estimatedPageCount, estimatedMinutes, estimatedCost, estimatedWordCount]);
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {

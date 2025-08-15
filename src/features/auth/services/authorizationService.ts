@@ -10,10 +10,13 @@ interface LoginParams {
 interface RegisterParams extends LoginParams {
   firstname: string;
   lastname: string;
+  subscribeNewsletter?: boolean;
 }
 
-export async function register({ phoneNumber, password, firstname, lastname }: RegisterParams) {
+export async function register({ phoneNumber, password, firstname, lastname, subscribeNewsletter }: RegisterParams) {
   const endpoint = "/Auth/register-with-phone";
+  // TODO: add subscribeNewsletter to the request
+  console.log(subscribeNewsletter);
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
     headers: {

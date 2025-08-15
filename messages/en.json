@@ -36,7 +36,16 @@
     "resendIn": "Resend in",
     "phoneNumberPlaceholder": "5XX XX XX XX",
     "passwordPlaceholder": "********",
-    "confirmPasswordPlaceholder": "Re-enter your password"
+    "confirmPasswordPlaceholder": "Re-enter your password",
+    "termsAndConditions": "Terms and Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "iAcceptThe": "I accept the",
+    "and": "and",
+    "subscribeNewsletter": "Subscribe to newsletter for updates and special offers",
+    "termsAndPrivacy": "Terms, Conditions and Privacy Policy",
+    "acceptTermsError": "You must accept the terms, conditions and privacy policy",
+    "termsText": "1. General Provisions\n\nThese terms and conditions govern the use of the translation service (\"Service\") offered by Suliko LLC (hereinafter - \"Company\", \"we\"). By accessing or using the Service, you as a user (\"User\") agree to the terms of this document.\n\n2. User Obligations\n\nWhen using the Service, you are obligated to use it only for legal purposes and not violate applicable laws.\n\nIt is prohibited to use the Service to create, distribute, or transmit any harmful or illegal content.\n\n3. Intellectual Property\n\nYou retain ownership of the text you upload to the Service. By using the Service, you grant the Company a limited, non-exclusive license to process and use this text solely for performing and improving the translation service.\n\nThe Service, all its components, software, design, and other materials constitute the intellectual property of the Company and are protected by copyright.\n\n4. Limitation of Liability\n\nThe Service is provided \"as is\" without any warranty. The Company makes no guarantee that the Service will be uninterrupted, error-free, or secure.\n\nThe Company is not liable for any direct, indirect, incidental, or other damages caused by the use of the Service.\n\n5. Service Termination\n\nThe Company has the right to restrict or terminate user access to the Service at any time and for any reason if the user violates these terms and conditions.\n\n6. Changes\n\nThe Company reserves the right to make changes to these terms and conditions at any time. Changes take effect immediately upon posting on the website or application.",
+    "privacyText": "1. Information Collection\n\nInformation You Provide: We collect the text that you upload for using the translation service.\n\nTechnical and Usage Data: We may collect information about your device, IP address, browser type, and service usage (e.g., translation frequency, languages used) for analytics and service improvement.\n\n2. Information Usage\n\nCollected information is used for the following purposes:\n\nTo perform the translation service.\n\nTo improve the service and adapt it to your needs.\n\nFor analytics on how users use the service.\n\nTo resolve technical issues and ensure security.\n\n3. Data Security\n\nWe employ reasonable administrative, technical, and physical measures to protect your data from unauthorized access, use, or disclosure. However, no method of data transmission over the Internet is 100% secure.\n\n4. Your Rights\n\nYou have the right to request access to, correction, or deletion of your data. To exercise these rights, please contact us.\n\n5. Data Retention\n\nWe will retain your personal data only for as long as necessary to fulfill the purposes outlined in this policy."
   },
   "AuthModal": {
     "title": "Please register",
@@ -96,16 +105,25 @@
     "pageCountWarning": "⚠️ Files with more than 3 pages may experience processing issues or longer wait times.",
     "hideOriginal": "Hide original document",
     "showOriginal": "Show original document",
-   
+
     "progress": {
       "longerThanUsual": "Takes longer than usual",
+      "starting": "Starting translation...",
+      "documentInfo": "Document has {data} pages",
+      "wordCount": "Document has {data} words",
+      "estimatedTime": "Document needs {data} minutes",
+      "estimatedCost": "You will be charged {data} GEL",
+      "documentType": "Document type is {data} extension",
       "preparing": "Preparing document...",
       "analyzing": "Analyzing content...",
       "translating": "Translating...",
+      "firstPageDone": "Suliko has already translated first page",
+      "checkingMistakes": "Suliko is checking for mistakes",
+      "stillChecking": "Still checking...",
       "enhancing": "Enhancing translation...",
       "finalizing": "Finalizing...",
       "waiting": "Waiting for completion...",
-      "starting": "Starting translation...",
+      "thankYou": "Thank you for your patience",
       "complete": "Translation complete!"
     }
   },
