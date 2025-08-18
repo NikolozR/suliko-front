@@ -117,6 +117,7 @@ const DocumentTranslationCard = () => {
     setCurrentFile,
     translatedMarkdown,
     setTranslatedMarkdown,
+    setTranslatedMarkdownWithoutZoomReset,
     currentTargetLanguageId,
     setCurrentTargetLanguageId,
     currentSourceLanguageId,
@@ -467,7 +468,7 @@ const DocumentTranslationCard = () => {
                     translatedMarkdown={translatedMarkdown}
                     onFileChange={handleFileChange}
                     onRemoveFile={handleRemoveFile}
-                    onEdit={setTranslatedMarkdown}
+                    onEdit={setTranslatedMarkdownWithoutZoomReset}
                     isSuggestionsLoading={suggestionsLoading}
                   />
                 </>

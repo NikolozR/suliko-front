@@ -37,6 +37,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
   const {
     translatedMarkdown,
     setTranslatedMarkdown,
+    setTranslatedMarkdownWithoutZoomReset,
     jobId,
     currentTargetLanguageId,
   } = useDocumentTranslationStore();
@@ -68,7 +69,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           s.suggestedText
         );
         console.log(newContent);
-        setTranslatedMarkdown(newContent);
+        setTranslatedMarkdownWithoutZoomReset(newContent);
         acceptSuggestion(id);
         setSuggestionAccepted(true);
         if (focusedSuggestionId === id) {
@@ -88,7 +89,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
         });
         if (data.success) {
           console.log(data.updatedContent);
-          setTranslatedMarkdown(data.updatedContent);
+          setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
           acceptSuggestion(id);
           setSuggestionAccepted(true);
           if (focusedSuggestionId === id) {

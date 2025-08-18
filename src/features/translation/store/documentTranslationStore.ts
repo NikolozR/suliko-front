@@ -24,6 +24,7 @@ interface DocumentTranslationState {
   setSourceLanguageId: (languageId: number) => void;
   setCurrentFile: (file: FileList | null) => void;
   setTranslatedMarkdown: (text: string) => void;
+  setTranslatedMarkdownWithoutZoomReset: (text: string) => void;
   setSuggestions: (suggestions: Suggestion[]) => void;
   setShouldResetZoom: (shouldReset: boolean) => void;
   setJobId: (jobId: string) => void;
@@ -66,6 +67,9 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   setTranslatedMarkdown: (text) => {
     console.log('setTranslatedMarkdown');
     set({ translatedMarkdown: text, shouldResetZoom: true });
+  },
+  setTranslatedMarkdownWithoutZoomReset: (text) => {
+    set({ translatedMarkdown: text });
   },
   setSuggestions: (suggestions) => set({ suggestions }),
   setShouldResetZoom: (shouldReset) => set({ shouldResetZoom: shouldReset }),
