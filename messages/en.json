@@ -183,6 +183,34 @@
     "indicatorExact": "Exact match: quick apply",
     "indicatorNonExact": "Non-exact: server apply"
   },
+  "Pricing": {
+    "paymentModal": {
+      "title": "Payment Coming Soon",
+      "description": "Payment system will be added soon. Please contact us at",
+      "additionalInfo": "For any questions or custom pricing, please reach out to us at the email above.",
+      "close": "Close"
+    },
+    "email": "Info@suliko.ge",
+    "title": "Pricing Packages",
+    "description": "Choose a package that suits you",
+    "starter": {
+      "title": "Starter",
+      "price": "57",
+      "period": "/month",
+      "documents": "75 documents per month"
+    },
+    "professional": {
+      "title": "Professional",
+      "price": "173",
+      "period": "/month",
+      "documents": "300 documents per month"
+    },
+    "custom": {
+      "title": "Custom",
+      "description": "For translation agencies and organizations"
+    },
+    "select": "Select"
+  },
   "WelcomeModal": {
     "title": "Hello!",
     "thankYou": "Thank you for using Suliko.",

@@ -225,12 +225,12 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 }`}>
                   <Wallet className="h-5 w-5 text-green-600 flex-shrink-0" />
                   {!effectiveIsCollapsed && (
-                    <div className="flex flex-col min-w-0">
+                    <Link href="/price" className="flex flex-col min-w-0 hover:opacity-80 transition-opacity">
                       <span className="text-xs text-muted-foreground">{t('balance')}</span>
                       <span className="font-semibold text-green-600">
                         ₾{userProfile.balance?.toFixed(2) || '0.00'}
                       </span>
-                    </div>
+                    </Link>
                   )}
                 </div>
               )}
