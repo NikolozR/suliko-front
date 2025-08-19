@@ -173,7 +173,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
               <div className="font-semibold text-suliko-default-color text-sm md:text-base">
-                ორიგინალი დოკუმენტი
+                {t('originalDocument')}
               </div>
               <Button
                 type="button"
@@ -211,12 +211,19 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           <div className="flex items-center justify-between mb-2 relative">
             <div className="flex items-center gap-2">
               <div className="font-semibold text-suliko-default-color text-sm md:text-base">
-                თარგმნილი ტექსტი
+                {t('translatedText')}
               </div>
-              <span className="text-xs text-muted-foreground flex items-center gap-1">
-                <Clock className="h-3 w-3" />
-                {formatTime(remainingSeconds)}
-              </span>
+              {remainingSeconds > 0 ? (
+                <span className="text-xs text-muted-foreground flex items-center gap-1">
+                  <Clock className="h-3 w-3" />
+                  {formatTime(remainingSeconds)}
+                </span>
+              ) : (
+                <span className="text-xs text-red-500 flex items-center gap-1 font-medium">
+                  <Clock className="h-3 w-3" />
+                  {t('editorTimeExpired')}
+                </span>
+              )}
               {hideOriginalDocument && (
                 <Button
                   type="button"
