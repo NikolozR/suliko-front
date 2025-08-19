@@ -36,7 +36,6 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
   } = useSuggestionsStore();
   const {
     translatedMarkdown,
-    setTranslatedMarkdown,
     setTranslatedMarkdownWithoutZoomReset,
     jobId,
     currentTargetLanguageId,
