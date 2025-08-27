@@ -65,7 +65,6 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   setSourceLanguageId: (languageId) => set({ sourceLanguageId: languageId }),
   setCurrentFile: (file) => set({ currentFile: file, realPageCount: null }),
   setTranslatedMarkdown: (text) => {
-    console.log('setTranslatedMarkdown');
     set({ translatedMarkdown: text, shouldResetZoom: true });
   },
   setTranslatedMarkdownWithoutZoomReset: (text) => {

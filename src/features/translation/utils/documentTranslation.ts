@@ -64,7 +64,7 @@ export async function documentTranslatingWithJobId(
     onProgress?.(70, "Retrieving results...");
     const resultBlob = (await getResult(currentJobId)) as Blob;
     const text = await resultBlob.text();
-    setTranslatedMarkdown(text);
+  setTranslatedMarkdown(text);
     setIsTranslating(false);
     
     if (setSuggestionsLoading) {

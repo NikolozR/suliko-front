@@ -249,7 +249,17 @@ const SulikoForm: React.FC = () => {
               </p>
             </div>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit(
+                  (data) => {
+                    onSubmit(data);
+                  },
+                  (errors) => {
+                    console.log('Form validation failed:', errors);
+                  }
+                )(e);
+              }}
               className="flex flex-col gap-8 w-[60%]"
             >
               <PhoneVerificationSection

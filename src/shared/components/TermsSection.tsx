@@ -38,7 +38,12 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
             <FormControl>
               <Checkbox
                 checked={field.value}
-                onCheckedChange={field.onChange}
+                onCheckedChange={(checked) => {
+                  const isChecked = checked === true;
+                  field.onChange(isChecked);
+                  // Also set privacy policy to the same value
+                  form.setValue("acceptPrivacyPolicy", isChecked, { shouldValidate: true });
+                }}
               />
             </FormControl>
             <div className="space-y-1 leading-none">

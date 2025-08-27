@@ -1,3 +1,5 @@
+import { Suggestion } from "@/features/translation";
+
 export type ChatStatus = 'Completed' | 'InProgress' | 'Failed';
 
 export interface Chat {
@@ -13,6 +15,33 @@ export interface Chat {
     hasError: boolean;
 }
 
+export interface ChatDetailed {
+    chatId: string;
+    title: string;
+    originalFileName: string;
+    fileType: string;
+    targetLanguageName: string;
+    status: ChatStatus;
+    createdAt: string;
+    lastActivityAt: string;
+    translationResult: ChatTrnalsationResult;
+}
+
+export interface ChatTrnalsationResult {
+    contentType: string;
+    cost: number;
+    errorMessage: string | null;
+    fileData: string; 
+    fileName: string; 
+    originalContent: null;
+    outputFormat: number;
+    success: boolean;
+    suggestions: Suggestion[];
+    translatedContent: string;
+    translationId: string; 
+    translationQualityScore: number;
+}
+
 export interface ChatHistoryResponse {
     success: boolean;
     data: {
@@ -22,6 +51,11 @@ export interface ChatHistoryResponse {
         pageNumber: number;
         hasNextPage: boolean;
     };
+}
+
+export interface SingleChatHistoryResponse {
+    success: boolean;
+    data: ChatDetailed;
 }
 
 export interface ChatHistoryPaginationParams {

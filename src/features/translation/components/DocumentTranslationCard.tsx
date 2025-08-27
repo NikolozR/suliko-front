@@ -28,6 +28,7 @@ import { ArrowRightLeft } from "lucide-react";
 import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import PageCountDisplay from "./PageCountDisplay";
+import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -58,44 +59,6 @@ const documentTranslationSchema = z.object({
 export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
 
-const createAnchorPoints = (totalDurationMs: number) => {
-  // Use all available progress messages (excluding ones handled elsewhere)
-  const messageOrder = [
-    "starting",
-    "documentType",
-    "documentInfo",
-    "wordCount",
-    "estimatedTime",
-    "estimatedCost",
-    "preparing",
-    "analyzing",
-    "translating",
-    "firstPageDone",
-    "checkingMistakes",
-    "stillChecking",
-    "enhancing",
-    "finalizing",
-    "waiting",
-    "thankYou",
-  ];
-
-  const minProgress = 5; // start above 0 so the bar is visible early
-  const maxProgress = 97; // leave a bit of headroom for server completion
-  const steps = messageOrder.length;
-
-  return messageOrder.map((key, index) => {
-    const ratio = (index + 1) / steps;
-    const progress = Math.round(minProgress + (maxProgress - minProgress) * ratio);
-    const time = totalDurationMs * ratio;
-    return {
-      progress,
-      time,
-      messageKey: `progress.${key}`,
-    };
-  });
-};
-
-
 // const modelOptions = [
 //   { value: 0, label: "კლაუდია" },
 //   { value: 1, label: "კლაუდია junior" },
@@ -108,8 +71,8 @@ const DocumentTranslationCard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadingProgress, setLoadingProgress] = useState<number>(0);
-  const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const [/*loadingProgressState*/, /*setLoadingProgressState*/] = useState<number>(0);
+  const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
   const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
   const {
@@ -122,13 +85,26 @@ const DocumentTranslationCard = () => {
     setCurrentTargetLanguageId,
     currentSourceLanguageId,
     setCurrentSourceLanguageId,
-    realPageCount,
     estimatedPageCount,
     estimatedMinutes,
     estimatedCost,
     estimatedWordCount,
   } = useDocumentTranslationStore();
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
+
+  const hasFile = currentFile && currentFile.length > 0;
+  const currentFileObj = hasFile ? currentFile[0] : null;
+
+  const { loadingProgress, loadingMessage, setOverrideMessage, setManualProgress, reset } =
+    useDocumentLoadingProgress({
+      isLoading,
+      t,
+      currentFile: currentFileObj,
+      estimatedPageCount,
+      estimatedMinutes,
+      estimatedCost,
+      estimatedWordCount,
+    });
 
   const {
     handleSubmit,
@@ -150,95 +126,15 @@ const DocumentTranslationCard = () => {
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
-  // Use real page count from PDF/DOCX parser when available, otherwise fall back to estimation
-  useEffect(() => {
-    if (!isLoading) {
-      setLoadingProgress(0);
-      return;
+  // Loading progress/messages now handled by useDocumentLoadingProgress hook
+
+  const handleFileClick = () => {
+    if (!token) {
+      setShowAuthModal(true);
+      return false;
     }
-
-    const estimatedDurationMs = 4 * 60 * 1000;
-    const anchorPoints = createAnchorPoints(estimatedDurationMs);
-
-    const finalProgress = Math.floor(Math.random() * 3) + 97;
-
-    const getCurrentTarget = (elapsedTime: number) => {
-      if (elapsedTime <= 0) return 0;
-
-      if (elapsedTime >= estimatedDurationMs) {
-        return finalProgress;
-      }
-
-      const currentAnchor =
-        anchorPoints.find((point) => point.time >= elapsedTime) ||
-        anchorPoints[anchorPoints.length - 1];
-      if (currentAnchor === anchorPoints[0]) {
-        const timeRatio = elapsedTime / currentAnchor.time;
-        return currentAnchor.progress * timeRatio;
-      }
-
-      const previousAnchor =
-        anchorPoints[Math.max(anchorPoints.indexOf(currentAnchor) - 1, 0)];
-
-      const timeRatio =
-        (elapsedTime - previousAnchor.time) /
-        (currentAnchor.time - previousAnchor.time);
-      const progressDiff = currentAnchor.progress - previousAnchor.progress;
-      return previousAnchor.progress + progressDiff * timeRatio;
-    };
-
-    const startTime = Date.now();
-    const interval = 50; 
-
-    const timer = setInterval(() => {
-      const elapsedTime = Date.now() - startTime;
-
-      // Check if we've exceeded the estimated duration
-      if (elapsedTime > estimatedDurationMs) {
-        setLoadingMessage(t("progress.longerThanUsual"));
-        setLoadingProgress(finalProgress);
-        return;
-      }
-
-      const currentAnchor =
-        anchorPoints.find((point) => point.time >= elapsedTime) ||
-        anchorPoints[anchorPoints.length - 1];
-
-      // Inject estimation data for messages that expect dynamic values
-      const msgKey = currentAnchor.messageKey;
-      if (msgKey === "progress.documentInfo") {
-        setLoadingMessage(t(msgKey, { data: estimatedPageCount || 0 }).replace("pages", estimatedPageCount > 1 ? "pages" : "page"));
-      } else if (msgKey === "progress.wordCount") {
-        const words = estimatedWordCount || (estimatedPageCount > 0 ? estimatedPageCount * 483 : 0);
-        setLoadingMessage(t(msgKey, { data: words }));
-      } else if (msgKey === "progress.estimatedTime") {
-        const minutes = estimatedMinutes || (estimatedPageCount > 0 ? estimatedPageCount * 2 : 0);
-        setLoadingMessage(t(msgKey, { data: minutes }));
-      } else if (msgKey === "progress.estimatedCost") {
-        const cost = estimatedCost && estimatedCost !== "0.00" ? estimatedCost : (estimatedPageCount > 0 ? (estimatedPageCount * 0.1).toFixed(2) : "0.00");
-        setLoadingMessage(t(msgKey, { data: cost }));
-      } else if (msgKey === "progress.documentType") {
-        const file = currentFile && currentFile.length > 0 ? currentFile[0] : null;
-        const ext = file?.name.split(".").pop()?.toLowerCase() || "unknown";
-        setLoadingMessage(t(msgKey, { data: ext }));
-      } else {
-        setLoadingMessage(t(msgKey));
-      }
-
-      const targetProgress = getCurrentTarget(elapsedTime);
-
-      // Stop at final progress and show "taking longer than usual"
-      if (targetProgress >= finalProgress) {
-        setLoadingProgress(finalProgress);
-        setLoadingMessage(t("progress.longerThanUsual"));
-        return;
-      }
-
-      setLoadingProgress(targetProgress);
-    }, interval);
-
-    return () => clearInterval(timer);
-  }, [isLoading, t, currentFile, realPageCount, estimatedPageCount, estimatedMinutes, estimatedCost, estimatedWordCount]);
+    return true;
+  };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {
@@ -321,8 +217,7 @@ const DocumentTranslationCard = () => {
     }
 
     setIsLoading(true);
-    setLoadingProgress(0);
-    setLoadingMessage(t("progress.starting"));
+    setManualProgress(0, t("progress.starting"));
 
     try {
       await documentTranslatingWithJobId(
@@ -333,14 +228,13 @@ const DocumentTranslationCard = () => {
             message.toLowerCase().includes("error") ||
             message.toLowerCase().includes("failed")
           ) {
-            setLoadingMessage(message);
+            setOverrideMessage(message);
           }
         },
         setSuggestionsLoading
       );
 
-      setLoadingProgress(100);
-      setLoadingMessage(t("progress.complete"));
+      setManualProgress(100, t("progress.complete"));
       await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (err) {
       let message = "An unexpected error occurred during translation.";
@@ -350,8 +244,7 @@ const DocumentTranslationCard = () => {
       setError(message);
     } finally {
       setIsLoading(false);
-      setLoadingProgress(0);
-      setLoadingMessage("");
+      reset();
     }
   };
 
@@ -380,8 +273,7 @@ const DocumentTranslationCard = () => {
     return null;
   };
 
-  const hasFile = currentFile && currentFile.length > 0;
-  const currentFileObj = hasFile ? currentFile[0] : null;
+  // hasFile and currentFileObj computed earlier for hook usage
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -478,6 +370,7 @@ const DocumentTranslationCard = () => {
                     <DocumentUploadView
                       currentFile={currentFileObj}
                       onFileChange={handleFileChange}
+                      onFileClick={handleFileClick}
                       onRemoveFile={handleRemoveFile}
                     />
                     {/* ADD THIS LINE TO SHOW PAGE COUNT ESTIMATION */}

@@ -7,12 +7,14 @@ import DocumentPreview from "./DocumentPreview";
 interface DocumentUploadViewProps {
   currentFile: File | null;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onFileClick?: () => boolean;
   onRemoveFile: () => void;
 }
 
 const DocumentUploadView: React.FC<DocumentUploadViewProps> = ({
   currentFile,
   onFileChange,
+  onFileClick,
   onRemoveFile,
 }) => {
   const hasFile = currentFile !== null;
@@ -26,7 +28,7 @@ const DocumentUploadView: React.FC<DocumentUploadViewProps> = ({
       }
     >
       {!hasFile ? (
-        <FileUploadArea onFileChange={onFileChange} />
+        <FileUploadArea onFileChange={onFileChange} onFileClick={onFileClick} />
       ) : (
         <div className="space-y-4 h-full flex flex-col">
           <div className="flex-1 min-h-0">
@@ -36,6 +38,7 @@ const DocumentUploadView: React.FC<DocumentUploadViewProps> = ({
             <FileInfoDisplay
               file={currentFile}
               onFileChange={onFileChange}
+              onFileClick={onFileClick}
               onRemoveFile={onRemoveFile}
             />
           )}
