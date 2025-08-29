@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/features/ui";
 import { ThemeToggle } from "@/features/ui";
 import BetaBanner from "@/shared/components/BetaBanner";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
+import { Analytics } from '@vercel/analytics/next';
 
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -56,6 +57,7 @@ export default async function LocaleLayout({
             </div>
             <BetaBanner />
             {children}
+            <Analytics />
           </ThemeProvider>
         </NextIntlClientProvider>
       </body>
