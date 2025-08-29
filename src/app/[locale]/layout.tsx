@@ -9,7 +9,6 @@ import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { getTranslations } from "next-intl/server";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,7 +35,6 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const t = await getTranslations();
   const { locale } = await params;
 
   if (!hasLocale(routing.locales, locale)) {
