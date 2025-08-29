@@ -77,7 +77,7 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
       <div className="text-sm text-muted-foreground mt-2">
         <div className="flex items-center gap-2">
           <div className="w-4 h-4 border-2 border-suliko-default-color border-t-transparent rounded-full animate-spin"></div>
-          Counting pages...
+          {t("pageCount.countingPages")}
         </div>
       </div>
     );
@@ -88,16 +88,11 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
 
   return (
     <div className="text-sm text-muted-foreground mt-2">
-      {hasRealCount ? 'Actual' : 'Estimated'}: {estimatedPageCount} page{estimatedPageCount !== 1 ? "s" : ""}
-      (~{estimatedMinutes} minute{estimatedMinutes !== 1 ? "s" : ""})
+      {hasRealCount ? t("pageCount.actual") : t("pageCount.estimated")}: {estimatedPageCount} {estimatedPageCount !== 1 ? t("pageCount.pages") : t("pageCount.page")}
+      (~{estimatedMinutes} {estimatedMinutes !== 1 ? t("pageCount.minutes") : t("pageCount.minute")})
       <div className="mt-1 text-suliko-default-color font-semibold">
-        Estimated cost: {estimatedCost} ლარი
+        {t("pageCount.estimatedCost", { cost: estimatedCost })}
       </div>
-      {estimatedPageCount > 3 && (
-        <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800 text-xs">
-          {t("pageCountWarning")}
-        </div>
-      )}
     </div>
   );
 };

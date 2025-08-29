@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState, useRef } from 'react';
 import { Document, Page, pdfjs } from 'react-pdf';
+import { useTranslations } from "next-intl";
 import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles } from 'lucide-react';
 import { Button } from '@/features/ui/components/ui/button';
 import { useDocumentTranslationStore } from '@/features/translation/store/documentTranslationStore';
@@ -54,6 +55,7 @@ const readFileAsText = (file: File): Promise<string> => {
 
 // Text Preview Component
 const TextPreview: React.FC<{ file: File }> = ({ file }) => {
+  const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -65,7 +67,7 @@ const TextPreview: React.FC<{ file: File }> = ({ file }) => {
         const text = await readFileAsText(file);
         setContent(text);
       } catch (err) {
-        setError('Failed to load file content');
+        setError(t('loadError'));
         console.error('Text file load error:', err);
       } finally {
         setLoading(false);
@@ -73,12 +75,12 @@ const TextPreview: React.FC<{ file: File }> = ({ file }) => {
     };
 
     loadContent();
-  }, [file]);
+  }, [file, t]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full text-muted-foreground">
-        <p>Loading text file...</p>
+        <p>{t('loadingText')}</p>
       </div>
     );
   }
@@ -102,6 +104,7 @@ const TextPreview: React.FC<{ file: File }> = ({ file }) => {
 
 // SRT Preview Component
 const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
+  const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -113,7 +116,7 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
         const text = await readFileAsText(file);
         setContent(text);
       } catch (err) {
-        setError('Failed to load subtitle file');
+        setError(t('loadErrorSubtitle'));
         console.error('SRT file load error:', err);
       } finally {
         setLoading(false);
@@ -121,12 +124,12 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
     };
 
     loadContent();
-  }, [file]);
+  }, [file, t]);
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full text-muted-foreground">
-        <p>Loading subtitle file...</p>
+        <p>{t('loadingSubtitle')}</p>
       </div>
     );
   }
@@ -145,10 +148,10 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
         <div className="mb-4 p-3 bg-muted/50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
             <Subtitles className="h-4 w-4" />
-            <span className="font-medium">Subtitle Preview</span>
+            <span className="font-medium">{t('subtitlePreview')}</span>
           </div>
           <p className="text-xs text-muted-foreground">
-            SubRip (.srt) subtitle file
+            {t('subtitleType')}
           </p>
         </div>
         <pre className="whitespace-pre-wrap font-mono leading-relaxed">
@@ -161,6 +164,7 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
 
 // Word Document Preview Component
 const WordPreview: React.FC<{ file: File }> = ({ file }) => {
+  const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -185,7 +189,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
         const result = await mammoth.convertToHtml({ arrayBuffer });
         setContent(result.value);
       } catch (err) {
-        setError('Failed to load Word document');
+        setError(t('loadErrorWord'));
         console.error('Word document load error:', err);
       } finally {
         setLoading(false);
@@ -193,7 +197,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
     };
 
     loadContent();
-  }, [file]);
+  }, [file, t]);
 
   // Reset zoom when translation is completed
   useEffect(() => {
@@ -206,7 +210,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
   if (loading) {
     return (
       <div className="flex justify-center items-center h-full text-muted-foreground">
-        <p>Loading Word document...</p>
+        <p>{t('loadingWord')}</p>
       </div>
     );
   }
@@ -242,7 +246,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
 
       <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Zoom:</span>
+          <span className="text-sm font-medium">{t('zoom')}</span>
           <Button
             variant="outline"
             size="sm"
@@ -284,6 +288,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
 
 // PDF Preview Component (existing functionality)
 const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
+  const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(600);
@@ -331,7 +336,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
       setFileUrl(null);
       setNumPages(null);
     }
-  }, [file]);
+  }, [file, t]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -375,7 +380,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
   if (!fileUrl) {
     return (
       <div className="mt-4 p-4 border rounded-md text-center text-muted-foreground">
-        No PDF file available for preview.
+        {t('noPdfPreview')}
       </div>
     );
   }
@@ -392,12 +397,12 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
           onLoadError={onDocumentLoadError}
           loading={
             <div className="flex justify-center items-center h-full text-muted-foreground">
-              <p>Loading PDF...</p>
+              <p>{t('loadingPdf')}</p>
             </div>
           }
           error={
             <div className="flex justify-center items-center h-full text-red-500">
-              <p>Failed to load PDF. Check console for details.</p>
+              <p>{t('loadErrorPdf')}</p>
             </div>
           }
         >
@@ -417,7 +422,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
 
       <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Zoom:</span>
+          <span className="text-sm font-medium">{t('zoom')}</span>
           <Button
             variant="outline"
             size="sm"
@@ -454,11 +459,11 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
         </div>
         <div className="flex items-center gap-3">
           {isRendering && (
-            <span className="text-sm text-muted-foreground">Rendering...</span>
+            <span className="text-sm text-muted-foreground">{t('rendering')}</span>
           )}
           {numPages && (
             <span className="text-sm text-muted-foreground">
-              {numPages} page{numPages !== 1 ? 's' : ''}
+              {t(numPages !== 1 ? 'pages' : 'page', { count: numPages })}
             </span>
           )}
         </div>
@@ -469,6 +474,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
 
 // Image Preview Component
 const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
+  const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [scale, setScale] = useState<number>(1.0);
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
@@ -504,7 +510,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
         setDimensions(null);
       };
     }
-  }, [file]);
+  }, [file, t]);
 
   // Reset zoom when translation is completed
   useEffect(() => {
@@ -517,7 +523,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
   if (!imageUrl || !dimensions) {
     return (
       <div className="flex justify-center items-center h-full text-muted-foreground">
-        <p>Loading image...</p>
+        <p>{t('loadingImage')}</p>
       </div>
     );
   }
@@ -559,7 +565,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
 
       <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">Zoom:</span>
+          <span className="text-sm font-medium">{t('zoom')}</span>
           <Button
             variant="outline"
             size="sm"
@@ -600,10 +606,11 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
 };
 
 const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
+  const t = useTranslations("DocumentTranslationCard.documentPreview");
   if (!file) {
     return (
       <div className="mt-4 p-4 border rounded-md text-center text-muted-foreground">
-        No document selected or preview not available.
+        {t('noPreview')}
       </div>
     );
   }
@@ -640,13 +647,13 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
         <div className="flex flex-col justify-center items-center h-full text-muted-foreground p-8 border rounded-md">
           <FileText className="h-16 w-16 mb-4" />
           <div className="text-center">
-            <h3 className="font-medium text-lg mb-2">Unsupported File Type</h3>
+            <h3 className="font-medium text-lg mb-2">{t('unsupportedTitle')}</h3>
             <p className="text-sm mb-4">
               {file.name}
             </p>
             <p className="text-xs">
-              Preview not available for this file type.<br />
-              The file will be processed for translation.
+              {t('unsupportedDesc')}<br />
+              {t('willProcess')}
             </p>
           </div>
         </div>

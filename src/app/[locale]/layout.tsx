@@ -3,6 +3,7 @@ import "../globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/features/ui";
 import { ThemeToggle } from "@/features/ui";
+import BetaBanner from "@/shared/components/BetaBanner";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 
 import { NextIntlClientProvider, hasLocale } from "next-intl";
@@ -55,12 +56,7 @@ export default async function LocaleLayout({
               <LanguageSwitcher />
               <ThemeToggle />
             </div>
-            {/* Beta Banner */}
-            <div className="w-full flex justify-center fixed top-0 left-0 z-40 pointer-events-none">
-              <div className="backdrop-blur bg-suliko-default-color/80 dark:bg-slate-800/80 text-white dark:text-slate-200 px-6 py-2 rounded-b-lg shadow-md text-sm font-medium pointer-events-auto border-b border-suliko-default-color/30 dark:border-slate-700/50">
-                {t("BetaBanner")}
-              </div>
-            </div>
+            <BetaBanner />
             {children}
           </ThemeProvider>
         </NextIntlClientProvider>

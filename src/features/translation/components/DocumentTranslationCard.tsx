@@ -11,6 +11,7 @@ import {
 import { Upload } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
+import { PageWarningModal } from "@/shared/components/PageWarningModal";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import TranslationResultView from "./TranslationResultView";
 import DocumentUploadView from "./DocumentUploadView";
@@ -68,14 +69,17 @@ export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 const DocumentTranslationCard = () => {
   const t = useTranslations("DocumentTranslationCard");
   const tButton = useTranslations("TranslationButton");
+  const tCommon = useTranslations("CommonLanguageSelect");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [showPageWarning, setShowPageWarning] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [/*loadingProgressState*/, /*setLoadingProgressState*/] = useState<number>(0);
   const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
   const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
   const {
+    realPageCount,
     currentFile,
     setCurrentFile,
     translatedMarkdown,
@@ -122,11 +126,15 @@ const DocumentTranslationCard = () => {
   });
 
   useEffect(() => {
+    if (realPageCount && realPageCount > 3) {
+      setShowPageWarning(true);
+    }
+  }, [realPageCount]);
+
+  useEffect(() => {
     setValue("currentTargetLanguageId", currentTargetLanguageId);
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
-
-  // Loading progress/messages now handled by useDocumentLoadingProgress hook
 
   const handleFileClick = () => {
     if (!token) {
@@ -169,7 +177,11 @@ const DocumentTranslationCard = () => {
         
         try {
           const pageCountResult = await countPages(file);
-          setRealPageCount(pageCountResult.pageCount || pageCountResult.pages || null);
+          const pageCount = pageCountResult.pageCount || pageCountResult.pages || null;
+          setRealPageCount(pageCount);
+          
+          // Show warning if page count is more than 3
+
         } catch (error) {
           console.error("Failed to count DOCX pages:", error);
           // Fallback to null so estimation is used
@@ -237,7 +249,7 @@ const DocumentTranslationCard = () => {
       setManualProgress(100, t("progress.complete"));
       await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (err) {
-      let message = "An unexpected error occurred during translation.";
+      let message = t("progress.unexpectedError");
       if (err instanceof Error) {
         message = err.message || message;
       }
@@ -273,7 +285,6 @@ const DocumentTranslationCard = () => {
     return null;
   };
 
-  // hasFile and currentFileObj computed earlier for hook usage
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -317,11 +328,11 @@ const DocumentTranslationCard = () => {
               <div className="flex flex-row gap-2 md:gap-4 mb-4 items-end">
                 {/* Source language */}
                 <div className="flex-1 flex flex-col">
-                  <span className="block text-xs text-muted-foreground mb-1">Source Language</span>
+                  <span className="block text-xs text-muted-foreground mb-1">{t("sourceLanguage")}</span>
                   <LanguageSelect
                     value={currentSourceLanguageId}
                     onChange={setCurrentSourceLanguageId}
-                    detectOption="Automatic detection"
+                    detectOption={tCommon("automaticDetection")}
                   />
                 </div>
                 {/* Swap button */}
@@ -346,7 +357,7 @@ const DocumentTranslationCard = () => {
                 </div>
                 {/* Target language */}
                 <div className="flex-1 flex flex-col">
-                  <span className="block text-xs text-muted-foreground mb-1">Target Language</span>
+                  <span className="block text-xs text-muted-foreground mb-1">{t("targetLanguage")}</span>
                   <LanguageSelect
                     value={currentTargetLanguageId}
                     onChange={setCurrentTargetLanguageId}
@@ -373,7 +384,6 @@ const DocumentTranslationCard = () => {
                       onFileClick={handleFileClick}
                       onRemoveFile={handleRemoveFile}
                     />
-                    {/* ADD THIS LINE TO SHOW PAGE COUNT ESTIMATION */}
                     {currentFileObj && (
                       <PageCountDisplay file={currentFileObj} />
                     )}
@@ -396,6 +406,11 @@ const DocumentTranslationCard = () => {
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
+      />
+      <PageWarningModal
+        isOpen={showPageWarning}
+        onClose={() => setShowPageWarning(false)}
+        pageCount={estimatedPageCount}
       />
     </>
   );

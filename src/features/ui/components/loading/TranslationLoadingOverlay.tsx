@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils';
 import LoadingDots from './LoadingDots';
 import { Languages, FileText, Zap } from 'lucide-react';
@@ -20,6 +21,7 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
   className,
   overlay = true
 }) => {
+  const t = useTranslations("TranslationLoadingOverlay");
   if (!isVisible) return null;
 
   const getIcon = () => {
@@ -36,11 +38,11 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
   const getDefaultMessage = () => {
     switch (type) {
       case 'document':
-        return 'Processing document...';
+        return t('processingDocument');
       case 'suggestion':
-        return 'Applying suggestion...';
+        return t('applySuggestion');
       default:
-        return 'Translating text...';
+        return t('translatingText');
     }
   };
 
@@ -74,7 +76,7 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
       {typeof progress === 'number' && (
         <div className="w-full max-w-xs">
           <div className="flex justify-between text-sm text-muted-foreground mb-1">
-            <span>Progress</span>
+            <span>{t('progress')}</span>
             <span>{Math.round(progress)}%</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2">

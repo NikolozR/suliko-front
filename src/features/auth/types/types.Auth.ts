@@ -1,36 +1,36 @@
 import { z } from "zod";
 
-export const loginFormSchema = z.object({
+export const createLoginFormSchema = (t: (key: string) => string) => z.object({
   mobile: z.string()
-    .min(1, "Phone number is required")
-    .regex(/^5\d{8}$/, "Phone number must be in Georgian format: 5XXXXXXXX"),
+    .min(1, t("phoneNumberRequiredError"))
+    .regex(/^5\d{8}$/, t("phoneNumberFormatError")),
   password: z.string()
-    .min(8, "Password must be at least 8 characters long")
-    .regex(/(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, "Password must contain at least one number and one symbol"),
+    .min(8, t("passwordMinLengthError"))
+    .regex(/(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, t("passwordRegexError")),
 });
 
-export const registerFormSchema = z.object({
+export const createRegisterFormSchema = (t: (key: string) => string) => z.object({
   mobile: z.string()
-    .min(1, "Phone number is required")
-    .regex(/^5\d{8}$/, "Phone number must be in Georgian format: 5XXXXXXXX"),
+    .min(1, t("phoneNumberRequiredError"))
+    .regex(/^5\d{8}$/, t("phoneNumberFormatError")),
   password: z.string()
-    .min(8, "Password must be at least 8 characters long")
-    .regex(/(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, "Password must contain at least one number and one symbol"),
+    .min(8, t("passwordMinLengthError"))
+    .regex(/(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, t("passwordRegexError")),
   firstname: z.string().optional(),
   lastname: z.string().optional(),
-  confirmPassword: z.string().min(1, "Please confirm your password"),
+  confirmPassword: z.string().min(1, t("confirmPasswordRequired")),
   verificationCode: z.string().optional(),
   acceptTerms: z.boolean().refine(val => val === true, {
-    message: "You must accept the terms and conditions",
+    message: t("acceptTermsAndConditionsError"),
   }),
   acceptPrivacyPolicy: z.boolean().refine(val => val === true, {
-    message: "You must accept the privacy policy",
+    message: t("acceptPrivacyPolicyError"),
   }),
   subscribeNewsletter: z.boolean().optional(),
 });
 
-export type LoginFormData = z.infer<typeof loginFormSchema>;
-export type RegisterFormData = z.infer<typeof registerFormSchema>;
+export type LoginFormData = z.infer<ReturnType<typeof createLoginFormSchema>>;
+export type RegisterFormData = z.infer<ReturnType<typeof createRegisterFormSchema>>;
 
 export interface SendVerificationCodeResponse {
   code: number;

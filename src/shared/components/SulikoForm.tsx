@@ -22,8 +22,8 @@ import PasswordSection from "./PasswordSection";
 import NameSection from "./NameSection";
 import TermsSection from "./TermsSection";
 import {
-  loginFormSchema,
-  registerFormSchema,
+  createLoginFormSchema,
+  createRegisterFormSchema,
   LoginFormData,
   RegisterFormData,
 } from "@/features/auth/types/types.Auth";
@@ -44,8 +44,8 @@ const SulikoForm: React.FC = () => {
   const formSchema = useMemo(
     () =>
       isLoginMode
-        ? loginFormSchema
-        : registerFormSchema.refine(
+        ? createLoginFormSchema(t)
+        : createRegisterFormSchema(t).refine(
             (data) => data.password === data.confirmPassword,
             {
               message: t("passwordsDoNotMatch"),
