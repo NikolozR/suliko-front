@@ -1,8 +1,8 @@
 import { reaccessToken, useAuthStore } from "@/features/auth";
 import { API_BASE_URL } from "@/shared/constants/api";
-import { ChatHistoryPaginationParams } from "../types/types.Chat";
+import { ChatHistoryPaginationParams, ChatHistoryResponse, SingleChatHistoryResponse } from "../types/types.Chat";
 
-export const getChatHistory = async (params?: ChatHistoryPaginationParams) => {
+export const getChatHistory = async (params?: ChatHistoryPaginationParams): Promise<ChatHistoryResponse> => {
     const endpoint = "/document-translation/chat/user";
   
     const { token, refreshToken } = useAuthStore.getState();
@@ -51,7 +51,7 @@ export const getChatHistory = async (params?: ChatHistoryPaginationParams) => {
     }
   }
 
-export const getChatById = async (chatId: string) => {
+export const getChatById = async (chatId: string): Promise<SingleChatHistoryResponse> => {
   const endpoint = `/document-translation/chat/${chatId}`;
 
   const { token, refreshToken } = useAuthStore.getState();

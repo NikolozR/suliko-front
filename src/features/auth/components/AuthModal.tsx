@@ -1,10 +1,10 @@
 import React from "react";
+
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogDescription,
   DialogFooter,
 } from "@/features/ui/components/ui/dialog";
 import { Button } from "@/features/ui/components/ui/button";
@@ -16,38 +16,36 @@ interface AuthModalProps {
   onClose: () => void;
 }
 
-export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose}) => {
+export const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const t = useTranslations("AuthModal");
   const router = useRouter();
-  
-  
-  
-  if (!isOpen) return null;
 
+  if (!isOpen) return null;
 
   const handleSignUpClick = () => {
     router.push("/sign-in");
-    onClose(); 
+    onClose();
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-fit rounded-lg py-[40px] px-[70px]">
+      <DialogContent className="w-fit rounded-lg pt-[40px] pb-[32px] px-[70px]">
         <DialogHeader>
           <DialogTitle className="text-center">{t("title")}</DialogTitle>
-          <DialogDescription className="text-center">
-            {t("description")}
-          </DialogDescription>
         </DialogHeader>
         <DialogFooter className="flex !justify-center items-center gap-2 mt-4">
-          <Button 
-            onClick={handleSignUpClick} 
-            className="cursor-pointer"
+          <Button
+            onClick={onClose}
+            variant="outline"
+            className="cursor-pointer text-red-600 dark:text-red-500"
           >
+            {t("close")}
+          </Button>
+          <Button onClick={handleSignUpClick} className="cursor-pointer">
             {t("login")}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-}; 
+};

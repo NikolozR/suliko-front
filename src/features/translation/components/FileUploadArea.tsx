@@ -6,10 +6,11 @@ import { useTranslations } from "next-intl";
 
 interface FileUploadAreaProps {
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onFileClick?: () => boolean;
   id?: string;
 }
 
-const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, id = "file-upload" }) => {
+const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileClick, id = "file-upload" }) => {
   const t = useTranslations('DocumentTranslationCard');
   const [isDragOver, setIsDragOver] = useState(false);
 
@@ -72,7 +73,14 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, id = "fil
             type="file"
             className="hidden"
             id={id}
+            accept="*/*"
             onChange={onFileChange}
+            onClick={(e) => {
+              if (onFileClick && !onFileClick()) {
+                e.preventDefault();
+                return false;
+              }
+            }}
           />
         </div>
       </div>

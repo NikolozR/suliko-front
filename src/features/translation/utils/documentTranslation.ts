@@ -9,9 +9,11 @@ export async function documentTranslatingWithJobId(
   data: DocumentFormData,
   setError: (error: string) => void,
   onProgress?: (progress: number, message: string) => void,
-  model?: number,
   setSuggestionsLoading?: (loading: boolean) => void
 ) {
+  // We set by default to Gemini model
+  const model = 2;
+  const outputLanguageId = typeof window !== "undefined" && window.location && window.location.pathname.startsWith("/en") ? 2 : 1;
   const { setJobId, setTranslatedMarkdown } =
     useDocumentTranslationStore.getState();
   const { currentFile } =
@@ -23,41 +25,18 @@ export async function documentTranslatingWithJobId(
   if (!currentFile || currentFile.length === 0) {
     throw new Error("No file selected");
   }
-
   onProgress?.(10, "Uploading document...");
-  let result;
+  const params: DocumentTranslateUserContentParams = {
+    File: data.currentFile[0],
+    TargetLanguageId: data.currentTargetLanguageId,
+    OutputLanguageId: outputLanguageId,
+    OutputFormat: 0,
+    model: model,
+  };
+  const result = await translateDocumentUserContent(params, data.isSrt);
 
-  if (model === -1) {
-    try {
-      const paramsClaude: DocumentTranslateUserContentParams = {
-        File: data.currentFile[0],
-        TargetLanguageId: data.currentTargetLanguageId,
-        SourceLanguageId: data.currentSourceLanguageId,
-        OutputFormat: 0,
-        model: 0,
-      };
-      const paramsGemini: DocumentTranslateUserContentParams = {
-        ...paramsClaude,
-        model: 2,
-      };
-
-      const promiseGemini = translateDocumentUserContent(paramsGemini, data.isSrt);
-      result = await promiseGemini;
-    } catch (error) {
-      console.error("Both translation models failed:", error);
-      throw new Error("Both translation models failed. Please try again.");
-    }
-  } else {
-    const params: DocumentTranslateUserContentParams = {
-      File: data.currentFile[0],
-      TargetLanguageId: data.currentTargetLanguageId,
-      SourceLanguageId: data.currentSourceLanguageId,
-      OutputFormat: 0,
-      model: model ?? 0,
-    };
-    result = await translateDocumentUserContent(params, data.isSrt);
-  }
-
+    
+  
   const currentJobId = result.jobId;
   setJobId(currentJobId);
   if (currentJobId) {
@@ -85,7 +64,7 @@ export async function documentTranslatingWithJobId(
     onProgress?.(70, "Retrieving results...");
     const resultBlob = (await getResult(currentJobId)) as Blob;
     const text = await resultBlob.text();
-    setTranslatedMarkdown(text);
+  setTranslatedMarkdown(text);
     setIsTranslating(false);
     
     if (setSuggestionsLoading) {

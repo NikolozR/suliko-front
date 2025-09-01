@@ -20,9 +20,10 @@ import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 import PhoneVerificationSection from "./PhoneVerificationSection";
 import PasswordSection from "./PasswordSection";
 import NameSection from "./NameSection";
+import TermsSection from "./TermsSection";
 import {
-  loginFormSchema,
-  registerFormSchema,
+  createLoginFormSchema,
+  createRegisterFormSchema,
   LoginFormData,
   RegisterFormData,
 } from "@/features/auth/types/types.Auth";
@@ -43,8 +44,8 @@ const SulikoForm: React.FC = () => {
   const formSchema = useMemo(
     () =>
       isLoginMode
-        ? loginFormSchema
-        : registerFormSchema.refine(
+        ? createLoginFormSchema(t)
+        : createRegisterFormSchema(t).refine(
             (data) => data.password === data.confirmPassword,
             {
               message: t("passwordsDoNotMatch"),
@@ -63,6 +64,9 @@ const SulikoForm: React.FC = () => {
       lastname: "",
       confirmPassword: "",
       verificationCode: "",
+      acceptTerms: false,
+      acceptPrivacyPolicy: false,
+      subscribeNewsletter: false,
     },
   });
 
@@ -161,6 +165,7 @@ const SulikoForm: React.FC = () => {
           firstname: registerValues.firstname || generateDefaultName(),
           lastname: registerValues.lastname || "",
           verificationCode: registerValues.verificationCode,
+          subscribeNewsletter: registerValues.subscribeNewsletter,
         } as RegisterParams);
         setToken(data.token);
         setRefreshToken(data.refreshToken);
@@ -244,7 +249,17 @@ const SulikoForm: React.FC = () => {
               </p>
             </div>
             <form
-              onSubmit={form.handleSubmit(onSubmit)}
+              onSubmit={(e) => {
+                e.preventDefault();
+                form.handleSubmit(
+                  (data) => {
+                    onSubmit(data);
+                  },
+                  (errors) => {
+                    console.log('Form validation failed:', errors);
+                  }
+                )(e);
+              }}
               className="flex flex-col gap-8 w-[60%]"
             >
               <PhoneVerificationSection
@@ -268,6 +283,8 @@ const SulikoForm: React.FC = () => {
                 isPasswordVisible={isPasswordVisible}
                 setIsPasswordVisible={setIsPasswordVisible}
               />
+
+              {!isLoginMode && <TermsSection form={form} />}
 
               <Button
                 className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"

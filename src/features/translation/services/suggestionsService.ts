@@ -97,7 +97,9 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
 
     if (response.status >= 200 && response.status < 300) {
       const data = await response.json();
+      console.log(data);
       return data;
+
     }
 
     throw new Error("Failed to apply suggestion");

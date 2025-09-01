@@ -33,6 +33,7 @@ const PasswordSection = ({
                 <Input
                   className="border-2 shadow-md dark:border-slate-600"
                   type={isPasswordVisible ? "text" : "password"}
+                  autoComplete={isLoginMode ? "current-password" : "new-password"}
                   placeholder={t('passwordPlaceholder')}
                   {...field}
                 />
@@ -67,6 +68,7 @@ const PasswordSection = ({
                   <Input
                     className="border-2 shadow-md dark:border-slate-600"
                     type={isPasswordVisible ? "text" : "password"}
+                    autoComplete="new-password"
                     placeholder={t('confirmPasswordPlaceholder')}
                     {...field}
                   />

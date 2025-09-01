@@ -8,6 +8,7 @@ import { Button } from "@/features/ui/components/ui/button";
 interface FileInfoDisplayProps {
   file: File;
   onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onFileClick?: () => boolean;
   onRemoveFile: () => void;
   id?: string;
 }
@@ -15,6 +16,7 @@ interface FileInfoDisplayProps {
 const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({ 
   file, 
   onFileChange, 
+  onFileClick,
   onRemoveFile, 
   id = "file-upload-change" 
 }) => {
@@ -45,7 +47,14 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
           type="file"
           className="hidden"
           id={id}
+          accept="*/*"
           onChange={onFileChange}
+          onClick={(e) => {
+            if (onFileClick && !onFileClick()) {
+              e.preventDefault();
+              return false;
+            }
+          }}
         />
         <Button
           type="button"

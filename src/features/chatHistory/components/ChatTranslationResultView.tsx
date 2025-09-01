@@ -1,28 +1,27 @@
 "use client";
 import { ChangeEvent, useRef, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
-import DocumentPreview from "./DocumentPreview";
-import FileInfoDisplay from "./FileInfoDisplay";
-import CopyButton from "./CopyButton";
-import DownloadButton from "./DownloadButton";
-import SuggestionsPanel from './SuggestionsPanel';
+import DocumentPreview from "@/features/translation/components/DocumentPreview";
+import FileInfoDisplay from "@/features/translation/components/FileInfoDisplay";
+import CopyButton from "@/features/translation/components/CopyButton";
+import DownloadButton from "@/features/translation/components/DownloadButton";
+import ChatSuggestionsPanel from './ChatSuggestionsPanel';
 import Editor from "@/features/editor/Editor";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, Eye, EyeOff, Clock } from "lucide-react";
 import React from "react";
 
-
-interface TranslationResultViewProps {
+interface ChatTranslationResultViewProps {
   currentFile: File;
   translatedMarkdown: string;
-  onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  onRemoveFile: () => void;
+  onFileChange?: (event: ChangeEvent<HTMLInputElement>) => void;
+  onRemoveFile?: () => void;
   onEdit: (content: string) => void;
   isSuggestionsLoading: boolean;
 }
 
-const TranslationResultView: React.FC<TranslationResultViewProps> = ({
+const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   currentFile,
   translatedMarkdown,
   onFileChange,
@@ -61,10 +60,12 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 
       isScrolling.current = true;
       requestAnimationFrame(() => {
+        const sourceEl = source as HTMLElement;
+        const targetEl = target as HTMLElement;
         const sourceScrollPercent =
-          source.scrollTop / (source.scrollHeight - source.clientHeight);
-        const targetScrollMax = target.scrollHeight - target.clientHeight;
-        target.scrollTop = sourceScrollPercent * targetScrollMax;
+          sourceEl.scrollTop / (sourceEl.scrollHeight - sourceEl.clientHeight);
+        const targetScrollMax = targetEl.scrollHeight - targetEl.clientHeight;
+        targetEl.scrollTop = sourceScrollPercent * targetScrollMax;
         isScrolling.current = false;
       });
     };
@@ -83,15 +84,12 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
     };
   }, [translatedMarkdown]);
 
-  // Start 10-minute editor timer on first mount of the result view
   useEffect(() => {
     if (editorDeadline === null) {
       setEditorDeadline(Date.now() + 10 * 60 * 1000);
     }
-    // no cleanup needed here
   }, [editorDeadline]);
 
-  // Tick countdown each second
   useEffect(() => {
     if (editorDeadline === null) return;
     const intervalId = setInterval(() => {
@@ -114,9 +112,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 
   useEffect(() => {
     if (!downloadedFormat) return;
-    // Call DownloadButton logic here
     const triggerDownload = async () => {
-      // mimic DownloadButton logic
       const fileType = downloadedFormat.value;
       const fileName = `translated_document.${fileType}`;
       if (["txt", "md", "srt"].includes(fileType)) {
@@ -131,7 +127,6 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
-        // Convert HTML to docx blob
         const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedMarkdown}</body></html>`;
         // @ts-expect-error Type errors, nothing special
         const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
@@ -168,9 +163,9 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 
   return (
     <>
-      <div className={hideOriginalDocument ? "" : "lg:flex gap-8"}>
+      <div className={hideOriginalDocument ? "" : "lg:flex gap-6 xl:gap-8"}>
         {!hideOriginalDocument && (
-          <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
+          <div className="w-full mb-10 lg:mb-0 md:flex-[0.95] min-w-0">
             <div className="flex items-center justify-between mb-2">
               <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                 {t('originalDocument')}
@@ -187,7 +182,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
               </Button>
             </div>
             <div
-              className="h-[800px] max-h-[800px] flex flex-col w-full"
+              className="h-[calc(100vh-240px)] max-h-[calc(100vh-240px)] flex flex-col w-full"
               ref={documentPreviewRef}
             >
               <div className="space-y-4 h-full flex flex-col">
@@ -197,8 +192,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                 {currentFile && (
                   <FileInfoDisplay
                     file={currentFile}
-                    onFileChange={onFileChange}
-                    onRemoveFile={onRemoveFile}
+                    onFileChange={onFileChange as (event: ChangeEvent<HTMLInputElement>) => void}
+                    onRemoveFile={onRemoveFile as () => void}
                     id="file-upload-change-split"
                   />
                 )}
@@ -207,7 +202,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           </div>
         )}
 
-        <div className={hideOriginalDocument ? "w-full" : "w-full md:flex-1 min-w-0"}>
+        <div className={hideOriginalDocument ? "w-full" : "w-full md:flex-[1.05] min-w-0"}>
           <div className="flex items-center justify-between mb-2 relative">
             <div className="flex items-center gap-2">
               <div className="font-semibold text-suliko-default-color text-sm md:text-base">
@@ -266,12 +261,12 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
               )}
             </div>
           </div>
-          <div className="h-full max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
+          <div className="h-[calc(100vh-240px)] max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
             <Editor translatedMarkdown={translatedMarkdown} onChange={onEdit} />
           </div>
         </div>
       </div>
-      <SuggestionsPanel isSuggestionsLoading={isSuggestionsLoading} />
+      <ChatSuggestionsPanel isSuggestionsLoading={isSuggestionsLoading} />
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
         <DialogContent className="max-w-xs">
           <DialogHeader>
@@ -309,4 +304,6 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   );
 };
 
-export default TranslationResultView;
+export default ChatTranslationResultView;
+
+

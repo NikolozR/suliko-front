@@ -47,6 +47,7 @@ const PhoneVerificationSection = ({
                 <Input 
                   placeholder={t('phoneNumberPlaceholder')} 
                   className="border-2 shadow-md dark:border-slate-600" 
+                  autoComplete={isLoginMode ? "username" : "username"}
                   {...field} 
                   onChange={(e) => {
                     field.onChange(e);

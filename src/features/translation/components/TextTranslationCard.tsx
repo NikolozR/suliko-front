@@ -202,7 +202,6 @@ const TextTranslationCard = () => {
       setSourceLanguageId(data.currentSourceLanguageId);
       const result: TextTranslateUserContentResponse =
         await translateUserContent(params);
-      console.log(result);
       setTranslatedText(result.text);
       await fetchUserProfile();
     } catch (err) {

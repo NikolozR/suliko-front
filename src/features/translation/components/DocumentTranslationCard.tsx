@@ -11,6 +11,7 @@ import {
 import { Upload } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
+import { PageWarningModal } from "@/shared/components/PageWarningModal";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import TranslationResultView from "./TranslationResultView";
 import DocumentUploadView from "./DocumentUploadView";
@@ -25,9 +26,10 @@ import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
 import LanguageSelect from "./LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
-import ModelSelect from "./ModelSelect";
 import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
+import PageCountDisplay from "./PageCountDisplay";
+import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -57,145 +59,56 @@ const documentTranslationSchema = z.object({
 
 export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
-const estimatePageCount = (file: File): number => {
-  const fileSizeKB = file.size / 1024;
-  const fileExtension = file.name.split(".").pop()?.toLowerCase();
 
-  if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(fileExtension || '')) {
-    return 1;
-  }
-
-  switch (fileExtension) {
-    case "pdf":
-      return Math.max(1, Math.ceil(fileSizeKB / 50));
-    case "docx":
-      return Math.max(1, Math.ceil(fileSizeKB / 20));
-    case "txt":
-      return Math.max(1, Math.ceil(fileSizeKB / 3));
-    case "rtf":
-      return Math.max(1, Math.ceil(fileSizeKB / 10));
-    case "srt":
-      return Math.max(1, Math.ceil(fileSizeKB / 2));
-    default:
-      return Math.max(1, Math.ceil(fileSizeKB / 30));
-  }
-};
-
-const createAnchorPoints = (totalDurationMs: number) => {
-  return [
-    {
-      progress: 10,
-      time: totalDurationMs * 0.05,
-      messageKey: "progress.preparing",
-    },
-    {
-      progress: 25,
-      time: totalDurationMs * 0.15,
-      messageKey: "progress.analyzing",
-    },
-    {
-      progress: 50,
-      time: totalDurationMs * 0.4,
-      messageKey: "progress.translating",
-    },
-    {
-      progress: 75,
-      time: totalDurationMs * 0.7,
-      messageKey: "progress.enhancing",
-    },
-    {
-      progress: 90,
-      time: totalDurationMs * 0.85,
-      messageKey: "progress.finalizing",
-    },
-    {
-      progress: 97,
-      time: totalDurationMs * 0.95,
-      messageKey: "progress.waiting",
-    },
-  ];
-};
-
-// ADD THIS OPTIONAL COMPONENT HERE (before the main component)
-const PageCountDisplay = ({ file }: { file: File | null }) => {
-  const { realPageCount, isCountingPages } = useDocumentTranslationStore();
-  const t = useTranslations("DocumentTranslationCard");
-  
-  if (!file) return null;
-  
-  const fileExtension = file.name.split(".").pop()?.toLowerCase();
-  
-  // Show loading state while counting pages for DOCX files
-  if (isCountingPages && fileExtension === 'docx') {
-    return (
-      <div className="text-sm text-muted-foreground mt-2">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 border-2 border-suliko-default-color border-t-transparent rounded-full animate-spin"></div>
-          Counting pages...
-        </div>
-      </div>
-    );
-  }
-  
-  // Use real page count when available (for PDFs and DOCX), otherwise fall back to estimation
-  const pageCount = (() => {
-    // For PDFs and DOCX, use the real page count if available
-    if ((fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null) {
-      return realPageCount;
-    }
-    
-    // For other file types or when real count isn't loaded yet, use estimation
-    return estimatePageCount(file);
-  })();
-  
-  const estimatedMinutes = pageCount * 2;
-  const hasRealCount = (fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null;
-  const estimatedCost = (pageCount * 0.1).toFixed(2);
-
-  return (
-    <div className="text-sm text-muted-foreground mt-2">
-      {hasRealCount ? 'Actual' : 'Estimated'}: {pageCount} page{pageCount !== 1 ? "s" : ""}
-      (~{estimatedMinutes} minute{estimatedMinutes !== 1 ? "s" : ""})
-      <div className="mt-1 text-suliko-default-color font-semibold">
-        Estimated cost: {estimatedCost} ლარი
-      </div>
-      {pageCount > 3 && (
-        <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-md text-yellow-800 text-xs">
-          {t("pageCountWarning")}
-        </div>
-      )}
-    </div>
-  );
-};
-
-const modelOptions = [
-  { value: 0, label: "კლაუდია" },
-  { value: 1, label: "კლაუდია junior" },
-  { value: 2, label: "გურამი" },
-];
+// const modelOptions = [
+//   { value: 0, label: "კლაუდია" },
+//   { value: 1, label: "კლაუდია junior" },
+//   { value: 2, label: "გურამი" },
+// ];
 
 const DocumentTranslationCard = () => {
   const t = useTranslations("DocumentTranslationCard");
   const tButton = useTranslations("TranslationButton");
+  const tCommon = useTranslations("CommonLanguageSelect");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [showPageWarning, setShowPageWarning] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-  const [loadingProgress, setLoadingProgress] = useState<number>(0);
-  const [loadingMessage, setLoadingMessage] = useState<string>("");
+  const [/*loadingProgressState*/, /*setLoadingProgressState*/] = useState<number>(0);
+  const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
   const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
   const {
+    realPageCount,
     currentFile,
     setCurrentFile,
     translatedMarkdown,
     setTranslatedMarkdown,
+    setTranslatedMarkdownWithoutZoomReset,
     currentTargetLanguageId,
     setCurrentTargetLanguageId,
     currentSourceLanguageId,
     setCurrentSourceLanguageId,
-    realPageCount,
+    estimatedPageCount,
+    estimatedMinutes,
+    estimatedCost,
+    estimatedWordCount,
   } = useDocumentTranslationStore();
-  const [selectedModel, setSelectedModel] = useState<number>(-1);
+  const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
+
+  const hasFile = currentFile && currentFile.length > 0;
+  const currentFileObj = hasFile ? currentFile[0] : null;
+
+  const { loadingProgress, loadingMessage, setOverrideMessage, setManualProgress, reset } =
+    useDocumentLoadingProgress({
+      isLoading,
+      t,
+      currentFile: currentFileObj,
+      estimatedPageCount,
+      estimatedMinutes,
+      estimatedCost,
+      estimatedWordCount,
+    });
 
   const {
     handleSubmit,
@@ -206,83 +119,30 @@ const DocumentTranslationCard = () => {
     resolver: zodResolver(documentTranslationSchema),
     defaultValues: {
       currentFile: null,
-      currentTargetLanguageId: 1,
+      currentTargetLanguageId: 1, 
       currentSourceLanguageId: 0,
       isSrt: false,
     },
   });
 
   useEffect(() => {
+    if (realPageCount && realPageCount > 3) {
+      setShowPageWarning(true);
+    }
+  }, [realPageCount]);
+
+  useEffect(() => {
     setValue("currentTargetLanguageId", currentTargetLanguageId);
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
-  useEffect(() => {
-    if (!isLoading) {
-      setLoadingProgress(0);
-      return;
+  const handleFileClick = () => {
+    if (!token) {
+      setShowAuthModal(true);
+      return false;
     }
-
-    const estimatedDurationMs = 4 * 60 * 1000;
-    const anchorPoints = createAnchorPoints(estimatedDurationMs);
-
-    const finalProgress = Math.floor(Math.random() * 3) + 97;
-
-    const getCurrentTarget = (elapsedTime: number) => {
-      if (elapsedTime <= 0) return 0;
-
-      if (elapsedTime >= estimatedDurationMs) {
-        return finalProgress;
-      }
-
-      const currentAnchor =
-        anchorPoints.find((point) => point.time >= elapsedTime) ||
-        anchorPoints[anchorPoints.length - 1];
-      if (currentAnchor === anchorPoints[0]) {
-        const timeRatio = elapsedTime / currentAnchor.time;
-        return currentAnchor.progress * timeRatio;
-      }
-
-      const previousAnchor =
-        anchorPoints[Math.max(anchorPoints.indexOf(currentAnchor) - 1, 0)];
-
-      const timeRatio =
-        (elapsedTime - previousAnchor.time) /
-        (currentAnchor.time - previousAnchor.time);
-      const progressDiff = currentAnchor.progress - previousAnchor.progress;
-      return previousAnchor.progress + progressDiff * timeRatio;
-    };
-
-    const startTime = Date.now();
-    const interval = 50; 
-
-    const timer = setInterval(() => {
-      const elapsedTime = Date.now() - startTime;
-
-      if (elapsedTime > estimatedDurationMs) {
-        setLoadingMessage(t("progress.longerThanUsual"));
-        setLoadingProgress(finalProgress);
-        return;
-      }
-
-      const currentAnchor =
-        anchorPoints.find((point) => point.time >= elapsedTime) ||
-        anchorPoints[anchorPoints.length - 1];
-      setLoadingMessage(t(currentAnchor.messageKey));
-
-      const targetProgress = getCurrentTarget(elapsedTime);
-
-      if (targetProgress >= finalProgress) {
-        setLoadingProgress(finalProgress);
-        setLoadingMessage(t("progress.longerThanUsual"));
-        return;
-      }
-
-      setLoadingProgress(targetProgress);
-    }, interval);
-
-    return () => clearInterval(timer);
-  }, [isLoading, t, currentFile, realPageCount]);
+    return true;
+  };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     if (!token) {
@@ -301,6 +161,12 @@ const DocumentTranslationCard = () => {
       setValue("isSrt", isSrtFile);
       clearErrors("currentFile");
 
+      // Highlight the translate button after file upload
+      setIsButtonHighlighted(true);
+      setTimeout(() => {
+        setIsButtonHighlighted(false);
+      }, 3000); // Remove highlight after 3 seconds
+
       // Get exact page count for DOCX files
       if (fileExtension === "docx") {
         const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
@@ -311,7 +177,11 @@ const DocumentTranslationCard = () => {
         
         try {
           const pageCountResult = await countPages(file);
-          setRealPageCount(pageCountResult.pageCount || pageCountResult.pages || null);
+          const pageCount = pageCountResult.pageCount || pageCountResult.pages || null;
+          setRealPageCount(pageCount);
+          
+          // Show warning if page count is more than 3
+
         } catch (error) {
           console.error("Failed to count DOCX pages:", error);
           // Fallback to null so estimation is used
@@ -359,8 +229,7 @@ const DocumentTranslationCard = () => {
     }
 
     setIsLoading(true);
-    setLoadingProgress(0);
-    setLoadingMessage(t("progress.starting"));
+    setManualProgress(0, t("progress.starting"));
 
     try {
       await documentTranslatingWithJobId(
@@ -371,26 +240,23 @@ const DocumentTranslationCard = () => {
             message.toLowerCase().includes("error") ||
             message.toLowerCase().includes("failed")
           ) {
-            setLoadingMessage(message);
+            setOverrideMessage(message);
           }
         },
-        selectedModel,
         setSuggestionsLoading
       );
 
-      setLoadingProgress(100);
-      setLoadingMessage(t("progress.complete"));
+      setManualProgress(100, t("progress.complete"));
       await new Promise((resolve) => setTimeout(resolve, 500));
     } catch (err) {
-      let message = "An unexpected error occurred during translation.";
+      let message = t("progress.unexpectedError");
       if (err instanceof Error) {
         message = err.message || message;
       }
       setError(message);
     } finally {
       setIsLoading(false);
-      setLoadingProgress(0);
-      setLoadingMessage("");
+      reset();
     }
   };
 
@@ -419,8 +285,6 @@ const DocumentTranslationCard = () => {
     return null;
   };
 
-  const hasFile = currentFile && currentFile.length > 0;
-  const currentFileObj = hasFile ? currentFile[0] : null;
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -464,11 +328,11 @@ const DocumentTranslationCard = () => {
               <div className="flex flex-row gap-2 md:gap-4 mb-4 items-end">
                 {/* Source language */}
                 <div className="flex-1 flex flex-col">
-                  <span className="block text-xs text-muted-foreground mb-1">Source Language</span>
+                  <span className="block text-xs text-muted-foreground mb-1">{t("sourceLanguage")}</span>
                   <LanguageSelect
                     value={currentSourceLanguageId}
                     onChange={setCurrentSourceLanguageId}
-                    detectOption="Automatic detection"
+                    detectOption={tCommon("automaticDetection")}
                   />
                 </div>
                 {/* Swap button */}
@@ -493,20 +357,10 @@ const DocumentTranslationCard = () => {
                 </div>
                 {/* Target language */}
                 <div className="flex-1 flex flex-col">
-                  <span className="block text-xs text-muted-foreground mb-1">Target Language</span>
+                  <span className="block text-xs text-muted-foreground mb-1">{t("targetLanguage")}</span>
                   <LanguageSelect
                     value={currentTargetLanguageId}
                     onChange={setCurrentTargetLanguageId}
-                  />
-                </div>
-                {/* Model select */}
-                <div className="flex-1 flex flex-col">
-                  <span className="block text-xs text-muted-foreground mb-1">Translation Model</span>
-                  <ModelSelect
-                    value={selectedModel}
-                    onChange={setSelectedModel}
-                    placeholder="აირჩიეთ მოდელი"
-                    options={modelOptions}
                   />
                 </div>
               </div>
@@ -517,7 +371,7 @@ const DocumentTranslationCard = () => {
                     translatedMarkdown={translatedMarkdown}
                     onFileChange={handleFileChange}
                     onRemoveFile={handleRemoveFile}
-                    onEdit={setTranslatedMarkdown}
+                    onEdit={setTranslatedMarkdownWithoutZoomReset}
                     isSuggestionsLoading={suggestionsLoading}
                   />
                 </>
@@ -527,9 +381,9 @@ const DocumentTranslationCard = () => {
                     <DocumentUploadView
                       currentFile={currentFileObj}
                       onFileChange={handleFileChange}
+                      onFileClick={handleFileClick}
                       onRemoveFile={handleRemoveFile}
                     />
-                    {/* ADD THIS LINE TO SHOW PAGE COUNT ESTIMATION */}
                     {currentFileObj && (
                       <PageCountDisplay file={currentFileObj} />
                     )}
@@ -543,6 +397,7 @@ const DocumentTranslationCard = () => {
                 disabled={isLoading || (!token ? false : !hasFile)}
                 showShiftEnter={true}
                 formError={token ? getFormError() : null}
+                isHighlighted={isButtonHighlighted}
               />
             </form>
           </CardContent>
@@ -551,6 +406,11 @@ const DocumentTranslationCard = () => {
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
+      />
+      <PageWarningModal
+        isOpen={showPageWarning}
+        onClose={() => setShowPageWarning(false)}
+        pageCount={estimatedPageCount}
       />
     </>
   );
