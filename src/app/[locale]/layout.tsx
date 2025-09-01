@@ -46,11 +46,8 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body
-        suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
-      >
-        {/* Hotjar Tracking Code for Suliko AI NEW */}
+      <head>
+        {/* Hotjar Tracking Code for Suliko AI NEW */}{/* Hotjar Tracking Code for Suliko AI NEW */}
         <Script
           id="hotjar"
           strategy="afterInteractive"
@@ -67,7 +64,11 @@ export default async function LocaleLayout({
             `,
           }}
         />
-        
+      </head>
+      <body
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
+      > 
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <div className="flex items-center gap-4 p-4 fixed top-0 right-0 z-50">
