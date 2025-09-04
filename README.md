@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Suliko Translation Platform
 
-## Getting Started
+Suliko is a modern web-based translation platform built with Next.js that provides powerful translation capabilities with support for both text and document translations. The platform offers a user-friendly interface available in English (en) and Georgian (ka) languages.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Text Translation**: Real-time translation of text content
+- **Document Translation**: Support for document uploads and translations
+- **Chat Interface**: Interactive chat-based translation experience
+- **History Tracking**: Keep track of your translation history
+- **Multiple File Formats**: Support for various document formats
+- **User Profiles**: Personalized user experience with profile management
+- **Responsive Design**: Works seamlessly across different devices
+- **Dark/Light Theme**: Customizable UI theme
+- **Rich Text Editor**: Built-in editor for text formatting and editing
+
+## Tech Stack
+
+- **Framework**: Next.js
+- **Language**: TypeScript
+- **State Management**: Custom stores
+- **UI Components**: Shadcn/ui
+- **Styling**: Tailwind CSS
+- **Internationalization**: Built-in i18n support
+
+## Project Structure
+
+```
+suliko-front/
+├── src/
+│   ├── app/           # Next.js app router pages
+│   ├── features/      # Feature-based modules
+│   ├── i18n/         # Internationalization setup
+│   ├── shared/       # Shared components and utilities
+│   └── hooks/        # Custom React hooks
+├── messages/         # Translation messages
+└── public/          # Static assets
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features Overview
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Translation Services
+- Text translation with real-time suggestions
+- Document translation with format preservation
+- Multiple language pair support
+- Translation history tracking
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### User Management
+- User authentication and authorization (currently supports Georgian phone numbers only)
+- Profile management
+- Subscription and pricing plans
 
-## Learn More
+### Document Handling
+- Multiple format support
+- Document preview
+- Download in various formats
+- Page count tracking
 
-To learn more about Next.js, take a look at the following resources:
+### Editor
+- Rich text formatting capabilities
+- Real-time preview
+- Support for various text styles and formatting options
+- Seamless integration with translation features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Security & Intellectual Property
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This is a proprietary software platform with several security measures in place:
+- Backend API endpoints are secured and require valid authentication
+- Translation services are tied to our proprietary backend implementation
+- Core business logic and translation algorithms are not part of the frontend codebase
+- User data and translations are stored securely in our protected infrastructure
+- The application requires valid API keys and service credentials to function
 
-## Deploy on Vercel
+## Legal Notice
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+This software is protected by copyright and intellectual property laws. The source code, design, and all associated assets are proprietary and confidential. Any unauthorized use, reproduction, or distribution is strictly prohibited and may result in legal action.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Support
+
+For support and inquiries, please contact the Suliko support team.
