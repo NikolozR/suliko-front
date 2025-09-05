@@ -275,5 +275,10 @@
     "emailCopied": "Email copied!",
     "thankYouEnd": "Thank you.",
     "close": "Close"
+  },
+  "Landing": {
+    "title": "Suliko AI Translator",
+    "description": "Translate text and documents instantly.",
+    "cta": "Start translating"
   }
 }
