@@ -1,5 +1,6 @@
 "use client";
 
+import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "@/features/ui";
 import { Star, Quote } from "lucide-react";
 
@@ -115,7 +116,7 @@ export default function TestimonialsSection() {
 
                 {/* Content */}
                 <p className="text-muted-foreground mb-6 leading-relaxed">
-                  "{testimonial.content}"
+                  &ldquo;{testimonial.content}&rdquo;
                 </p>
 
                 {/* Author */}
@@ -168,18 +169,18 @@ export default function TestimonialsSection() {
             <p className="text-muted-foreground mb-6">
               Start your free trial today and experience the difference professional AI translation can make.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a href="/document">
-                <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
-                  Start Free Trial
-                </button>
-              </a>
-              <a href="#contact">
-                <button className="border border-border text-foreground px-8 py-3 rounded-lg font-medium hover:bg-accent transition-colors">
-                  Contact Sales
-                </button>
-              </a>
-            </div>
+             <div className="flex flex-col sm:flex-row gap-4 justify-center">
+               <Link href="/document">
+                 <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
+                   Start Free Trial
+                 </button>
+               </Link>
+               <a href="#contact">
+                 <button className="border border-border text-foreground px-8 py-3 rounded-lg font-medium hover:bg-accent transition-colors">
+                   Contact Sales
+                 </button>
+               </a>
+             </div>
           </div>
         </div>
       </div>

@@ -45,7 +45,7 @@ export default function AboutSection() {
             Why Choose Suliko?
           </h2>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            We're revolutionizing document translation with cutting-edge AI technology, 
+            We&apos;re revolutionizing document translation with cutting-edge AI technology, 
             making professional-grade translations accessible to everyone, everywhere.
           </p>
         </div>

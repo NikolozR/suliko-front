@@ -63,7 +63,7 @@ export default function LandingFooter() {
                 </span>
               </Link>
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                The world's most advanced AI-powered translation platform. 
+                The world&apos;s most advanced AI-powered translation platform. 
                 Breaking down language barriers with precision, speed, and reliability.
               </p>
               
