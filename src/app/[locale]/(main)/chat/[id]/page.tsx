@@ -1,11 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getChatById } from "@/features/chatHistory";
+import {
+  getChatById,
+  getSingleChatHistoryOriginalFile,
+} from "@/features/chatHistory";
 import type { ChatDetailed } from "@/features/chatHistory";
+import { settingUpChatSuggestions } from "@/features/chatHistory/utils/settingUpSuggestions";
 import { useTranslations } from "next-intl";
 import { Card } from "@/features/ui/components/ui/card";
-import { FileIcon, Clock, Download, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
@@ -16,12 +20,14 @@ import { useChatSuggestionsStore } from "@/features/chatHistory/store/chatSugges
 import ChatTranslationResultView from "@/features/chatHistory/components/ChatTranslationResultView";
 
 export default function ChatPage() {
-  const { translatedMarkdown, setTranslatedMarkdownWithoutZoomReset } = useChatEditingStore();
+  const { translatedMarkdown, setTranslatedMarkdownWithoutZoomReset } =
+    useChatEditingStore();
   const [chat, setChat] = useState<ChatDetailed | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [reconstructedFile, setReconstructedFile] = useState<File | null>(null);
+  const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
   const t = useTranslations("Chat");
   const router = useRouter();
   const params = useParams();
@@ -47,52 +53,72 @@ export default function ChatPage() {
     }
   }, [chatId]);
 
-  // Hydrate chat editing + suggestions stores when chat data arrives
   useEffect(() => {
     if (!chat || !chat.translationResult) return;
 
-    // Reset stores to avoid cross-chat bleed
     useChatEditingStore.getState().reset();
     useChatSuggestionsStore.getState().reset();
 
-    // Set translated content and identifiers
-    useChatEditingStore.getState().setTranslatedMarkdownWithoutZoomReset(
-      chat.translationResult.translatedContent || ''
-    );
-    useChatEditingStore.getState().setJobId(
-      chat.translationResult.translationId || ''
-    );
-
-    // Set suggestions from history
-    if (Array.isArray(chat.translationResult.suggestions)) {
-      useChatSuggestionsStore.getState().setSuggestions(
-        chat.translationResult.suggestions
+    useChatEditingStore
+      .getState()
+      .setTranslatedMarkdownWithoutZoomReset(
+        chat.translationResult.translatedContent || ""
       );
-      // prevent generate more for now
-      useChatSuggestionsStore.getState().setHasGeneratedMore(true);
-    }
 
-    // Reconstruct original file for preview if we have data
-    try {
-      const { fileData, fileName, contentType } = chat.translationResult;
-      if (fileData && fileName && contentType) {
-        const byteString = atob(fileData);
-        const arrayBuffer = new ArrayBuffer(byteString.length);
-        const uint8Array = new Uint8Array(arrayBuffer);
-        for (let i = 0; i < byteString.length; i++) {
-          uint8Array[i] = byteString.charCodeAt(i);
-        }
-        const blob = new Blob([uint8Array], { type: contentType });
-        const file = new (window.File || File)([blob], fileName, { type: contentType });
+    useChatEditingStore.getState().setJobId(chat.jobId || "");
+
+    (async () => {
+      try {
+        setIsSuggestionsLoading(true);
+        await settingUpChatSuggestions(chat.jobId);
+        useChatSuggestionsStore.getState().setHasGeneratedMore(true);
+      } catch {
+        useChatSuggestionsStore.getState().setSuggestions([]);
+      } finally {
+        setIsSuggestionsLoading(false);
+      }
+    })();
+
+    (async () => {
+      try {
+        const blobOrFile = await getSingleChatHistoryOriginalFile(chat.chatId);
+        const isFile = typeof (blobOrFile as File).name === "string";
+        const file = isFile
+          ? (blobOrFile as File)
+          : new File(
+              [blobOrFile as Blob],
+              chat.originalFileName || "original",
+              { type: (blobOrFile as Blob).type || "application/octet-stream" }
+            );
         setReconstructedFile(file);
-      } else {
+        setHydrated(true);
+        return;
+      } catch {
+        // ignore and fallback
+      }
+
+      try {
+        const { fileData, fileName, contentType } = chat.translationResult;
+        if (fileData && fileName && contentType) {
+          const byteString = atob(fileData);
+          const arrayBuffer = new ArrayBuffer(byteString.length);
+          const uint8Array = new Uint8Array(arrayBuffer);
+          for (let i = 0; i < byteString.length; i++) {
+            uint8Array[i] = byteString.charCodeAt(i);
+          }
+          const blob = new Blob([uint8Array], { type: contentType });
+          const file = new (window.File || File)([blob], fileName, {
+            type: contentType,
+          });
+          setReconstructedFile(file);
+        } else {
+          setReconstructedFile(null);
+        }
+      } catch {
         setReconstructedFile(null);
       }
-    } catch {
-      setReconstructedFile(null);
-    }
-
-    setHydrated(true);
+      setHydrated(true);
+    })();
   }, [chat]);
 
   if (loading) {
@@ -134,7 +160,7 @@ export default function ChatPage() {
 
   if (chat && hydrated && reconstructedFile) {
     return (
-      <div className="container mx-auto p-6 max-w-[1600px] mt-[150px]">
+      <div className="container mx-auto p-6 max-w-[1600px] mt-[100px]">
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="ghost"
@@ -150,7 +176,7 @@ export default function ChatPage() {
           currentFile={reconstructedFile}
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
-          isSuggestionsLoading={false}
+          isSuggestionsLoading={isSuggestionsLoading}
         />
       </div>
     );
@@ -160,73 +186,17 @@ export default function ChatPage() {
   return (
     <div className="container mx-auto p-6 max-w-4xl mt-[150px]">
       <div className="flex items-center gap-4 mb-8">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => router.back()}
-          className="rounded-full"
-        >
-          <ArrowLeft className="h-6 w-6" />
-        </Button>
-        <h1 className="text-2xl font-semibold">{t("details")}</h1>
+        <Skeleton className="h-10 w-10" />
+        <Skeleton className="h-8 w-48" />
       </div>
-
       <Card className="p-6">
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-primary/10 rounded-lg">
-            <FileIcon className="h-6 w-6 text-primary" />
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-3/4" />
+          <div className="flex gap-4">
+            <Skeleton className="h-4 w-32" />
+            <Skeleton className="h-4 w-32" />
           </div>
-          <div className="flex-1">
-            <h2 className="text-xl font-medium mb-2">{chat.title}</h2>
-            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
-              <div className="flex items-center gap-1">
-                <Clock className="h-4 w-4" />
-                <span>{new Date(chat.lastActivityAt).toLocaleString()}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="uppercase text-xs bg-primary/10 text-primary px-2 py-1 rounded">
-                  {chat.fileType}
-                </span>
-                <span
-                  className={`px-2 py-1 rounded text-xs ${
-                    chat.status === "Completed"
-                      ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-                      : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400"
-                  }`}
-                >
-                  {chat.status}
-                </span>
-              </div>
-            </div>
-            <div className="space-y-3">
-              <div>
-                <span className="text-sm text-muted-foreground">
-                  {t("originalFile")}
-                </span>
-                <p>{chat.originalFileName}</p>
-              </div>
-              <div>
-                <span className="text-sm text-muted-foreground">
-                  {t("targetLanguage")}
-                </span>
-                <p>{chat.targetLanguageName}</p>
-              </div>
-              <div>
-                <span className="text-sm text-muted-foreground">
-                  {t("created")}
-                </span>
-                <p>{new Date(chat.createdAt).toLocaleString()}</p>
-              </div>
-            </div>
-            {chat && (
-              <div className="mt-6">
-                <Button className="flex items-center gap-2">
-                  <Download className="h-4 w-4" />
-                  <span>{t("downloadResult")}</span>
-                </Button>
-              </div>
-            )}
-          </div>
+          <Skeleton className="h-40 w-full" />
         </div>
       </Card>
     </div>

@@ -13,14 +13,18 @@ export async function documentTranslatingWithJobId(
 ) {
   // We set by default to Gemini model
   const model = 2;
-  const outputLanguageId = typeof window !== "undefined" && window.location && window.location.pathname.startsWith("/en") ? 2 : 1;
+  const outputLanguageId =
+    typeof window !== "undefined" &&
+    window.location &&
+    window.location.pathname.startsWith("/en")
+      ? 2
+      : 1;
   const { setJobId, setTranslatedMarkdown } =
     useDocumentTranslationStore.getState();
-  const { currentFile } =
-    useDocumentTranslationStore.getState();
+  const { currentFile } = useDocumentTranslationStore.getState();
   const { fetchUserProfile } = useUserStore.getState();
   const { setIsTranslating } = useDocumentTranslationStore.getState();
-  
+
   setIsTranslating(true);
   if (!currentFile || currentFile.length === 0) {
     throw new Error("No file selected");
@@ -35,8 +39,6 @@ export async function documentTranslatingWithJobId(
   };
   const result = await translateDocumentUserContent(params, data.isSrt);
 
-    
-  
   const currentJobId = result.jobId;
   setJobId(currentJobId);
   if (currentJobId) {
@@ -49,9 +51,12 @@ export async function documentTranslatingWithJobId(
         break;
       } else if (result.status === "Failed") {
         if (result.message && result.message.includes("არასაკმარისი")) {
-          setError("Insufficient balance. Please top up your account to continue translation.");
+          setError(
+            "Insufficient balance. Please top up your account to continue translation."
+          );
         } else {
-          const errorMessage = result.message || "Translation failed. Please try again.";
+          const errorMessage =
+            result.message || "Translation failed. Please try again.";
           setError(`Translation failed: ${errorMessage}`);
         }
         fetchUserProfile();
@@ -64,18 +69,18 @@ export async function documentTranslatingWithJobId(
     onProgress?.(70, "Retrieving results...");
     const resultBlob = (await getResult(currentJobId)) as Blob;
     const text = await resultBlob.text();
-  setTranslatedMarkdown(text);
+    setTranslatedMarkdown(text);
     setIsTranslating(false);
-    
+
     if (setSuggestionsLoading) {
       setSuggestionsLoading(true);
       const { settingUpSuggestions } = await import("./settingUpSuggestions");
       settingUpSuggestions(currentJobId)
         .then((result) => {
-          console.log('Suggestions setup result:', result);
+          console.log("Suggestions setup result:", result);
         })
         .catch((error) => {
-          console.error('Error setting up suggestions:', error);
+          console.error("Error setting up suggestions:", error);
         })
         .finally(() => {
           setSuggestionsLoading(false);

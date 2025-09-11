@@ -10,8 +10,8 @@ import { API_BASE_URL } from "@/shared/constants/api";
 export async function getSuggestions(
   jobId: string
 ): Promise<SuggestionsResponse | SuggestionsResponseProcessing> {
-  const timestamp = Date.now();
-  const endpoint = `/Document/translate/suggestions/${jobId}?t=${timestamp}`;
+  console.log(jobId, "JOB ID");
+  const endpoint = `/Document/translate/suggestions/${jobId}`;
 
   const { token, refreshToken } = useAuthStore.getState();
 
@@ -49,8 +49,10 @@ export async function getSuggestions(
 
   if (response.status >= 200 && response.status < 300) {
     const data = (await response.json()) as SuggestionsResponse;
+    console.log(data, "SUGGESTIONS");
     return data;
   } else if (response.status === 400) {
+    console.log(response, "RESPONSE");
     const data = (await response.json()) as SuggestionsResponseProcessing;
     return data;
   }

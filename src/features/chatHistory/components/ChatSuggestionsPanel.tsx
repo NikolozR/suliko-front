@@ -93,6 +93,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
     updateSuggestionText(id, newText);
   };
 
+
   if (!jobId) return null;
   return (
     <div className="mt-6">

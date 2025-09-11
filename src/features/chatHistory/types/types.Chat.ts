@@ -17,6 +17,7 @@ export interface Chat {
 
 export interface ChatDetailed {
     chatId: string;
+    jobId: string;
     title: string;
     originalFileName: string;
     fileType: string;
