@@ -38,9 +38,9 @@ export const getChatHistory = async (
     try {
       const newTokens = await reaccessToken(refreshToken);
       const { setToken, setRefreshToken } = useAuthStore.getState();
-      setToken(newTokens.accessToken);
+      setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
-      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(
         `${API_BASE_URL}${endpoint}?${queryParams.toString()}`,
         {
@@ -85,9 +85,9 @@ export const getChatById = async (
     try {
       const newTokens = await reaccessToken(refreshToken);
       const { setToken, setRefreshToken } = useAuthStore.getState();
-      setToken(newTokens.accessToken);
+      setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
-      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "GET",
         headers,
@@ -103,7 +103,6 @@ export const getChatById = async (
     throw new Error(errorData.message || "Failed to fetch chat");
   } else {
     const data = await response.json();
-    console.log(data, "CHAAAAAAAAAAAAAAAAAAAAT");
     return data;
   }
 };
@@ -130,9 +129,9 @@ export const getSingleChatHistoryOriginalFile = async (id: string): Promise<File
     try {
       const newTokens = await reaccessToken(refreshToken);
       const { setToken, setRefreshToken } = useAuthStore.getState();
-      setToken(newTokens.accessToken);
+      setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
-      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "GET",
         headers,

@@ -35,13 +35,12 @@ export async function settingUpChatSuggestions(jobId: string): Promise<string> {
           return "success";
         }
       } else if (suggestionsResponse.status === "processing") {
-        // keep polling
       } else {
         setSuggestions([]);
         return suggestionsResponse.status;
       }
-    } catch (error) {
-      console.error("Error fetching chat suggestions:", error);
+    } catch {
+      console.log("this is called");
       setSuggestions([]);
       return "empty";
     }

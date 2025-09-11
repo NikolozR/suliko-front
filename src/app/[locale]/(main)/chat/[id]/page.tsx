@@ -20,8 +20,14 @@ import { useChatSuggestionsStore } from "@/features/chatHistory/store/chatSugges
 import ChatTranslationResultView from "@/features/chatHistory/components/ChatTranslationResultView";
 
 export default function ChatPage() {
-  const { translatedMarkdown, setTranslatedMarkdownWithoutZoomReset } =
-    useChatEditingStore();
+  const {
+    translatedMarkdown,
+    setTranslatedMarkdownWithoutZoomReset,
+    setJobId,
+    reset: resetChatEditingStore,
+  } = useChatEditingStore();
+  const { reset: resetChatSuggestionsStore, setHasGeneratedMore, setSuggestions } =
+    useChatSuggestionsStore();
   const [chat, setChat] = useState<ChatDetailed | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -56,28 +62,16 @@ export default function ChatPage() {
   useEffect(() => {
     if (!chat || !chat.translationResult) return;
 
-    useChatEditingStore.getState().reset();
-    useChatSuggestionsStore.getState().reset();
+    resetChatEditingStore();
+    resetChatSuggestionsStore();
 
-    useChatEditingStore
-      .getState()
-      .setTranslatedMarkdownWithoutZoomReset(
-        chat.translationResult.translatedContent || ""
-      );
+    setTranslatedMarkdownWithoutZoomReset(
+      chat.translationResult.translatedContent || ""
+    );
 
-    useChatEditingStore.getState().setJobId(chat.jobId || "");
+    setJobId(chat.jobId || "");
 
-    (async () => {
-      try {
-        setIsSuggestionsLoading(true);
-        await settingUpChatSuggestions(chat.jobId);
-        useChatSuggestionsStore.getState().setHasGeneratedMore(true);
-      } catch {
-        useChatSuggestionsStore.getState().setSuggestions([]);
-      } finally {
-        setIsSuggestionsLoading(false);
-      }
-    })();
+    
 
     (async () => {
       try {
@@ -119,11 +113,23 @@ export default function ChatPage() {
       }
       setHydrated(true);
     })();
+
+    (async () => {
+      try {
+        setIsSuggestionsLoading(true);
+        await settingUpChatSuggestions(chat.jobId);
+        setHasGeneratedMore(true);
+      } catch {
+        setSuggestions([]);
+      } finally {
+        setIsSuggestionsLoading(false);
+      }
+    })();
   }, [chat]);
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl mt-[150px]">
+      <div className="container mx-auto p-6 max-w-4xl mt-[40px]">
         <div className="flex items-center gap-4 mb-8">
           <Skeleton className="h-10 w-10" />
           <Skeleton className="h-8 w-48" />
@@ -160,7 +166,7 @@ export default function ChatPage() {
 
   if (chat && hydrated && reconstructedFile) {
     return (
-      <div className="container mx-auto p-6 max-w-[1600px] mt-[100px]">
+      <div className="container mx-auto p-6 max-w-[1600px] mt-[40px]">
         <div className="flex items-center gap-4 mb-8">
           <Button
             variant="ghost"
@@ -170,7 +176,7 @@ export default function ChatPage() {
           >
             <ArrowLeft className="h-6 w-6" />
           </Button>
-          <h1 className="text-2xl font-semibold">{chat.title}</h1>
+          <h1 className="text-2xl font-semibold">{chat.originalFileName}</h1>
         </div>
         <ChatTranslationResultView
           currentFile={reconstructedFile}

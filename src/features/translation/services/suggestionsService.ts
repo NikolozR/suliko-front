@@ -10,7 +10,6 @@ import { API_BASE_URL } from "@/shared/constants/api";
 export async function getSuggestions(
   jobId: string
 ): Promise<SuggestionsResponse | SuggestionsResponseProcessing> {
-  console.log(jobId, "JOB ID");
   const endpoint = `/Document/translate/suggestions/${jobId}`;
 
   const { token, refreshToken } = useAuthStore.getState();
@@ -33,9 +32,9 @@ export async function getSuggestions(
     try {
       const newTokens = await reaccessToken(refreshToken);
       const { setToken, setRefreshToken } = useAuthStore.getState();
-      setToken(newTokens.accessToken);
+      setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
-      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers,
         cache: "no-store"
@@ -49,10 +48,8 @@ export async function getSuggestions(
 
   if (response.status >= 200 && response.status < 300) {
     const data = (await response.json()) as SuggestionsResponse;
-    console.log(data, "SUGGESTIONS");
     return data;
   } else if (response.status === 400) {
-    console.log(response, "RESPONSE");
     const data = (await response.json()) as SuggestionsResponseProcessing;
     return data;
   }
@@ -82,9 +79,9 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
         try {
             const newTokens = await reaccessToken(refreshToken);
             const { setToken, setRefreshToken } = useAuthStore.getState();
-            setToken(newTokens.accessToken);
+            setToken(newTokens.token);
             setRefreshToken(newTokens.refreshToken);
-            headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+            headers.set("Authorization", `Bearer ${newTokens.token}`);
             response = await fetch(`${API_BASE_URL}${endpoint}`, {
               headers,
               method: "POST",
@@ -99,7 +96,6 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
 
     if (response.status >= 200 && response.status < 300) {
       const data = await response.json();
-      console.log(data);
       return data;
 
     }

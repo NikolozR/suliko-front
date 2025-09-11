@@ -38,9 +38,9 @@ export const translateUserContent = async (
     try {
       const newTokens = await reaccessToken(refreshToken);
       const { setToken, setRefreshToken } = useAuthStore.getState();
-      setToken(newTokens.accessToken);
+      setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
-      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers,
@@ -107,9 +107,9 @@ export const translateDocumentUserContent = async (
     try {
       const newTokens = await reaccessToken(refreshToken);
       const { setToken, setRefreshToken } = useAuthStore.getState();
-      setToken(newTokens.accessToken);
+      setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
-      headers.set("Authorization", `Bearer ${newTokens.accessToken}`);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "POST",
         headers,

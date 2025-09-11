@@ -62,12 +62,10 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
       const s = suggestions.find((sg: Suggestion) => sg.id === id)!;
       if (canExactMatch(s, translatedMarkdown)) {
         let newContent = translatedMarkdown;
-        console.log("object");
         newContent = translatedMarkdown.replaceAll(
           s.originalText,
           s.suggestedText
         );
-        console.log(newContent);
         setTranslatedMarkdownWithoutZoomReset(newContent);
         acceptSuggestion(id);
         setSuggestionAccepted(true);
@@ -76,7 +74,6 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           // setPreviewBackup(null);
         }
       } else {
-        console.log("else");
         const { applySuggestion } = await import(
           "@/features/translation/services/suggestionsService"
         );
@@ -87,7 +84,6 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           targetLanguageId: currentTargetLanguageId,
         });
         if (data.success) {
-          console.log(data.updatedContent);
           setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
           acceptSuggestion(id);
           setSuggestionAccepted(true);

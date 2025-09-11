@@ -80,6 +80,5 @@ export async function generateMoreSuggestions(jobId: string): Promise<string> {
         }
     }
     
-    console.log('18 seconds elapsed, no more suggestions available');
     return 'empty';
 }
