@@ -3,9 +3,7 @@ import Script from "next/script";
 import "../globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/features/ui";
-import { ThemeToggle } from "@/features/ui";
 import BetaBanner from "@/shared/components/BetaBanner";
-import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { Analytics } from '@vercel/analytics/next';
 
 import { NextIntlClientProvider, hasLocale } from "next-intl";
