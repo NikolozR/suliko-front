@@ -1,6 +1,6 @@
 "use client";
 import Image from "next/image";
-import SulikoLogoWhite from "../../../public/suliko_logo_white.svg";
+import SulikoLogoWhite from "../../../public/Suliko_logo_white.svg";
 import SulikoLogoBlack from "../../../public/Suliko_logo_black.svg";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
