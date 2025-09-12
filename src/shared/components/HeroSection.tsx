@@ -5,9 +5,17 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
 import { ArrowRight, Sparkles, Globe, FileText } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
@@ -25,7 +33,7 @@ export default function HeroSection() {
           {/* Logo */}
           <div className="mb-8">
             <Image
-              src="/Suliko_logo_black.svg"
+              src={mounted && resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
               alt="Suliko"
               width={120}
               height={120}
@@ -47,15 +55,15 @@ export default function HeroSection() {
           <div className="flex flex-wrap justify-center gap-6 mb-12 text-sm text-muted-foreground">
             <div className="flex items-center gap-2">
               <Sparkles className="h-4 w-4 text-blue-500" />
-              <span>AI-Powered Translation</span>
+              <span>{t("aiPowered")}</span>
             </div>
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4 text-green-500" />
-              <span>100+ Languages</span>
+              <span>{t("languages")}</span>
             </div>
             <div className="flex items-center gap-2">
               <FileText className="h-4 w-4 text-purple-500" />
-              <span>Document Support</span>
+              <span>{t("documentSupport")}</span>
             </div>
           </div>
 
@@ -69,26 +77,9 @@ export default function HeroSection() {
             </Link>
             <Link href="#pricing">
               <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
-                View Pricing
+                {t("viewPricing")}
               </Button>
             </Link>
-          </div>
-
-          {/* Trust Indicators */}
-          <div className="mt-16 pt-8 border-t border-border/50">
-            <p className="text-sm text-muted-foreground mb-4">Trusted by professionals worldwide</p>
-            <div className="flex flex-wrap justify-center items-center gap-8 opacity-60">
-              <div className="text-2xl font-bold text-foreground/40">10K+</div>
-              <div className="text-2xl font-bold text-foreground/40">50+</div>
-              <div className="text-2xl font-bold text-foreground/40">99.9%</div>
-              <div className="text-2xl font-bold text-foreground/40">24/7</div>
-            </div>
-            <div className="flex flex-wrap justify-center items-center gap-8 text-xs text-muted-foreground mt-2">
-              <span>Documents Translated</span>
-              <span>Languages Supported</span>
-              <span>Accuracy Rate</span>
-              <span>Support Available</span>
-            </div>
           </div>
         </div>
       </div>

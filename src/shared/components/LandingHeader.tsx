@@ -4,11 +4,39 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
+import { useTheme } from "next-themes";
+
+// Custom ThemeToggle for header without fixed positioning
+function HeaderThemeToggle() {
+  const { setTheme, resolvedTheme } = useTheme();
+
+  return (
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+      className="cursor-pointer"
+    >
+      <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
+  );
+}
 
 export default function LandingHeader() {
+  const t = useTranslations("LandingHeader");
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,10 +48,10 @@ export default function LandingHeader() {
   }, []);
 
   const navigationItems = [
-    { href: "#about", label: "About" },
-    { href: "#pricing", label: "Pricing" },
-    { href: "#testimonials", label: "Testimonials" },
-    { href: "#contact", label: "Contact" },
+    { href: "#about", label: t("about") },
+    { href: "#pricing", label: t("pricing") },
+    { href: "#testimonials", label: t("testimonials") },
+    { href: "#contact", label: t("contact") },
   ];
 
   return (
@@ -39,19 +67,16 @@ export default function LandingHeader() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <Image
-              src="/Suliko_logo_black.svg"
+              src={mounted && resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
               alt="Suliko"
-              width={40}
-              height={40}
-              className="h-8 w-8 lg:h-10 lg:w-10"
+              width={120}
+              height={120}
+              className="h-24 w-24 lg:h-32 lg:w-32"
             />
-            <span className="text-xl lg:text-2xl font-bold text-foreground">
-              Suliko
-            </span>
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6">
             {navigationItems.map((item) => (
               <a
                 key={item.href}
@@ -61,9 +86,13 @@ export default function LandingHeader() {
                 {item.label}
               </a>
             ))}
+            <div className="flex items-center gap-3">
+              <LanguageSwitcher />
+              <HeaderThemeToggle />
+            </div>
             <Link href="/document">
-              <Button className="ml-4">
-                Get Started
+              <Button className="ml-2">
+                {t("getStarted")}
               </Button>
             </Link>
           </div>
@@ -96,10 +125,14 @@ export default function LandingHeader() {
                   {item.label}
                 </a>
               ))}
+              <div className="px-3 py-2 flex items-center gap-3">
+                <LanguageSwitcher />
+                <HeaderThemeToggle />
+              </div>
               <div className="px-3 py-2">
                 <Link href="/document" onClick={() => setIsMobileMenuOpen(false)}>
                   <Button className="w-full">
-                    Get Started
+                    {t("getStarted")}
                   </Button>
                 </Link>
               </div>

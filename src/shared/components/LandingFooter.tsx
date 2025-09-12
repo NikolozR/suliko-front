@@ -4,34 +4,42 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from "lucide-react";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
 
 export default function LandingFooter() {
-  const t = useTranslations("Pricing");
+  const t = useTranslations("LandingFooter");
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const footerLinks = {
     product: [
-      { label: "Features", href: "#about" },
-      { label: "Pricing", href: "#pricing" },
-      { label: "API Documentation", href: "#" },
-      { label: "Integrations", href: "#" },
+      { label: t("links.features"), href: "#about" },
+      { label: t("links.pricing"), href: "#pricing" },
+      { label: t("links.apiDocs"), href: "#" },
+      { label: t("links.integrations"), href: "#" },
     ],
     company: [
-      { label: "About Us", href: "#about" },
-      { label: "Careers", href: "#" },
-      { label: "Blog", href: "#" },
-      { label: "Press", href: "#" },
+      { label: t("links.aboutUs"), href: "#about" },
+      { label: t("links.careers"), href: "#" },
+      { label: t("links.blog"), href: "#" },
+      { label: t("links.press"), href: "#" },
     ],
     support: [
-      { label: "Help Center", href: "#" },
-      { label: "Contact Support", href: "#contact" },
-      { label: "Status", href: "#" },
-      { label: "Community", href: "#" },
+      { label: t("links.helpCenter"), href: "#" },
+      { label: t("links.contactSupport"), href: "#contact" },
+      { label: t("links.status"), href: "#" },
+      { label: t("links.community"), href: "#" },
     ],
     legal: [
-      { label: "Privacy Policy", href: "#" },
-      { label: "Terms of Service", href: "#" },
-      { label: "Cookie Policy", href: "#" },
-      { label: "GDPR", href: "#" },
+      { label: t("links.privacyPolicy"), href: "#" },
+      { label: t("links.termsOfService"), href: "#" },
+      { label: t("links.cookiePolicy"), href: "#" },
+      { label: t("links.gdpr"), href: "#" },
     ],
   };
 
@@ -52,19 +60,15 @@ export default function LandingFooter() {
             <div className="lg:col-span-1">
               <Link href="/" className="flex items-center space-x-2 mb-6">
                 <Image
-                  src="/Suliko_logo_black.svg"
+                  src={mounted && resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
                   alt="Suliko"
-                  width={40}
-                  height={40}
-                  className="h-10 w-10"
+                  width={100}
+                  height={100}
+                  className="h-25 w-25"
                 />
-                <span className="text-2xl font-bold text-foreground">
-                  Suliko
-                </span>
               </Link>
               <p className="text-muted-foreground mb-6 leading-relaxed">
-                The world&apos;s most advanced AI-powered translation platform. 
-                Breaking down language barriers with precision, speed, and reliability.
+                {t("description")}
               </p>
               
               {/* Contact Info */}
@@ -77,11 +81,11 @@ export default function LandingFooter() {
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <Phone className="h-4 w-4 mr-3" />
-                  <span>+1 (555) 123-4567</span>
+                  <span>{t("phone")}</span>
                 </div>
                 <div className="flex items-center text-muted-foreground">
                   <MapPin className="h-4 w-4 mr-3" />
-                  <span>Tbilisi, Georgia</span>
+                  <span>{t("location")}</span>
                 </div>
               </div>
 
@@ -104,7 +108,7 @@ export default function LandingFooter() {
             <div className="lg:col-span-3">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
                 <div>
-                  <h3 className="font-semibold text-foreground mb-4">Product</h3>
+                  <h3 className="font-semibold text-foreground mb-4">{t("links.product")}</h3>
                   <ul className="space-y-3">
                     {footerLinks.product.map((link, index) => (
                       <li key={index}>
@@ -120,7 +124,7 @@ export default function LandingFooter() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-foreground mb-4">Company</h3>
+                  <h3 className="font-semibold text-foreground mb-4">{t("links.company")}</h3>
                   <ul className="space-y-3">
                     {footerLinks.company.map((link, index) => (
                       <li key={index}>
@@ -136,7 +140,7 @@ export default function LandingFooter() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-foreground mb-4">Support</h3>
+                  <h3 className="font-semibold text-foreground mb-4">{t("links.support")}</h3>
                   <ul className="space-y-3">
                     {footerLinks.support.map((link, index) => (
                       <li key={index}>
@@ -152,7 +156,7 @@ export default function LandingFooter() {
                 </div>
 
                 <div>
-                  <h3 className="font-semibold text-foreground mb-4">Legal</h3>
+                  <h3 className="font-semibold text-foreground mb-4">{t("links.legal")}</h3>
                   <ul className="space-y-3">
                     {footerLinks.legal.map((link, index) => (
                       <li key={index}>
@@ -175,19 +179,19 @@ export default function LandingFooter() {
         <div className="py-8 border-t border-border">
           <div className="max-w-2xl mx-auto text-center">
             <h3 className="text-2xl font-bold text-foreground mb-4">
-              Stay Updated
+              {t("newsletter.title")}
             </h3>
             <p className="text-muted-foreground mb-6">
-              Get the latest updates on new features, tips, and industry insights.
+              {t("newsletter.subtitle")}
             </p>
             <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
-                placeholder="Enter your email"
+                placeholder={t("newsletter.placeholder")}
                 className="flex-1 px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
               />
               <button className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
-                Subscribe
+                {t("newsletter.subscribe")}
               </button>
             </div>
           </div>
@@ -197,13 +201,13 @@ export default function LandingFooter() {
         <div className="py-6 border-t border-border">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="text-muted-foreground text-sm mb-4 md:mb-0">
-              © 2024 Suliko. All rights reserved.
+              {t("bottom.copyright")}
             </div>
             <div className="flex items-center space-x-6 text-sm text-muted-foreground">
-              <span>Made with ❤️ in Georgia</span>
+              <span>{t("bottom.madeWith")}</span>
               <div className="flex items-center space-x-2">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>All systems operational</span>
+                <span>{t("bottom.status")}</span>
               </div>
             </div>
           </div>

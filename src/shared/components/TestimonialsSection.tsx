@@ -3,56 +3,58 @@
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "@/features/ui";
 import { Star, Quote } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 export default function TestimonialsSection() {
+  const t = useTranslations("TestimonialsSection");
   const testimonials = [
     {
-      name: "Sarah Johnson",
-      role: "Marketing Director",
-      company: "TechCorp Solutions",
+      name: t("testimonials.sarah.name"),
+      role: t("testimonials.sarah.role"),
+      company: t("testimonials.sarah.company"),
       avatar: "SJ",
       rating: 5,
-      content: "Suliko has revolutionized our international marketing campaigns. The translation quality is exceptional, and the speed is incredible. We've reduced our translation costs by 60% while improving accuracy."
+      content: t("testimonials.sarah.content")
     },
     {
-      name: "Michael Chen",
-      role: "Legal Counsel",
-      company: "Global Law Firm",
+      name: t("testimonials.michael.name"),
+      role: t("testimonials.michael.role"),
+      company: t("testimonials.michael.company"),
       avatar: "MC",
       rating: 5,
-      content: "As a law firm dealing with international clients, accuracy is paramount. Suliko's legal document translations are precise and contextually perfect. It's become an indispensable tool for our practice."
+      content: t("testimonials.michael.content")
     },
     {
-      name: "Elena Rodriguez",
-      role: "Content Manager",
-      company: "Digital Media Co.",
+      name: t("testimonials.elena.name"),
+      role: t("testimonials.elena.role"),
+      company: t("testimonials.elena.company"),
       avatar: "ER",
       rating: 5,
-      content: "The team collaboration features are fantastic. We can now manage multilingual content across our entire organization seamlessly. The API integration made our workflow so much more efficient."
+      content: t("testimonials.elena.content")
     },
     {
-      name: "David Kim",
-      role: "Product Manager",
-      company: "StartupXYZ",
+      name: t("testimonials.david.name"),
+      role: t("testimonials.david.role"),
+      company: t("testimonials.david.company"),
       avatar: "DK",
       rating: 5,
-      content: "From day one, Suliko has been a game-changer for our startup. The pricing is fair, the quality is outstanding, and the support team is incredibly responsive. Highly recommended!"
+      content: t("testimonials.david.content")
     },
     {
-      name: "Anna Petrov",
-      role: "Research Director",
-      company: "Academic Institute",
+      name: t("testimonials.anna.name"),
+      role: t("testimonials.anna.role"),
+      company: t("testimonials.anna.company"),
       avatar: "AP",
       rating: 5,
-      content: "We use Suliko for translating research papers and academic documents. The technical accuracy is impressive, and it handles complex scientific terminology beautifully. A must-have for researchers."
+      content: t("testimonials.anna.content")
     },
     {
-      name: "James Wilson",
-      role: "Operations Manager",
-      company: "Manufacturing Inc.",
+      name: t("testimonials.james.name"),
+      role: t("testimonials.james.role"),
+      company: t("testimonials.james.company"),
       avatar: "JW",
       rating: 5,
-      content: "The enterprise features are exactly what we needed. Custom glossaries, team management, and the ability to maintain consistency across all our technical documentation has been invaluable."
+      content: t("testimonials.james.content")
     }
   ];
 
@@ -74,10 +76,10 @@ export default function TestimonialsSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
-            What Our Customers Say
+            {t("title")}
           </h2>
           <p className="text-xl text-muted-foreground leading-relaxed">
-            Join thousands of satisfied customers who trust Suliko for their translation needs
+            {t("subtitle")}
           </p>
         </div>
 
@@ -85,15 +87,15 @@ export default function TestimonialsSection() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-16">
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">4.9/5</div>
-            <div className="text-sm text-muted-foreground">Average Rating</div>
+            <div className="text-sm text-muted-foreground">{t("stats.averageRating")}</div>
           </div>
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">50K+</div>
-            <div className="text-sm text-muted-foreground">Happy Customers</div>
+            <div className="text-sm text-muted-foreground">{t("stats.happyCustomers")}</div>
           </div>
           <div className="text-center">
             <div className="text-4xl font-bold text-primary mb-2">98%</div>
-            <div className="text-sm text-muted-foreground">Customer Satisfaction</div>
+            <div className="text-sm text-muted-foreground">{t("stats.customerSatisfaction")}</div>
           </div>
         </div>
 
@@ -145,10 +147,10 @@ export default function TestimonialsSection() {
         <div className="mt-16 pt-8 border-t border-border/50">
           <div className="text-center mb-8">
             <h3 className="text-2xl font-bold text-foreground mb-4">
-              Trusted by Industry Leaders
+              {t("trustedBy.title")}
             </h3>
             <p className="text-muted-foreground">
-              Join companies worldwide who rely on Suliko for their translation needs
+              {t("trustedBy.subtitle")}
             </p>
           </div>
           
@@ -164,20 +166,20 @@ export default function TestimonialsSection() {
         <div className="mt-16 text-center">
           <div className="max-w-2xl mx-auto">
             <h3 className="text-2xl font-bold text-foreground mb-4">
-              Ready to Join Them?
+              {t("cta.title")}
             </h3>
             <p className="text-muted-foreground mb-6">
-              Start your free trial today and experience the difference professional AI translation can make.
+              {t("cta.subtitle")}
             </p>
              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                <Link href="/document">
                  <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
-                   Start Free Trial
+                   {t("cta.startTrial")}
                  </button>
                </Link>
                <a href="#contact">
                  <button className="border border-border text-foreground px-8 py-3 rounded-lg font-medium hover:bg-accent transition-colors">
-                   Contact Sales
+                   {t("cta.contactSales")}
                  </button>
                </a>
              </div>

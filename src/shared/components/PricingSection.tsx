@@ -10,67 +10,67 @@ export default function PricingSection() {
 
   const plans = [
     {
-      name: "Starter",
-      price: "57",
-      period: "/month",
-      description: "Perfect for individuals and small projects",
+      name: t("starter.title"),
+      price: t("starter.price"),
+      period: t("starter.period"),
+      description: t("starter.description"),
       icon: Star,
       features: [
-        "75 documents per month",
-        "Basic language support (50+ languages)",
-        "Standard translation quality",
-        "Email support",
-        "Basic file formats (PDF, DOCX, TXT)",
-        "5GB storage",
-        "Basic API access"
+        t("starter.features.0"),
+        t("starter.features.1"),
+        t("starter.features.2"),
+        t("starter.features.3"),
+        t("starter.features.4"),
+        t("starter.features.5"),
+        t("starter.features.6")
       ],
-      cta: "Start Free Trial",
+      cta: t("starter.cta"),
       popular: false,
       color: "blue"
     },
     {
-      name: "Professional",
-      price: "173",
-      period: "/month",
-      description: "Ideal for growing businesses and teams",
+      name: t("professional.title"),
+      price: t("professional.price"),
+      period: t("professional.period"),
+      description: t("professional.description"),
       icon: Zap,
       features: [
-        "300 documents per month",
-        "Premium language support (100+ languages)",
-        "Advanced translation quality with context",
-        "Priority email & chat support",
-        "All file formats including images",
-        "50GB storage",
-        "Full API access with webhooks",
-        "Team collaboration tools",
-        "Custom glossaries",
-        "Translation memory"
+        t("professional.features.0"),
+        t("professional.features.1"),
+        t("professional.features.2"),
+        t("professional.features.3"),
+        t("professional.features.4"),
+        t("professional.features.5"),
+        t("professional.features.6"),
+        t("professional.features.7"),
+        t("professional.features.8"),
+        t("professional.features.9")
       ],
-      cta: "Start Free Trial",
+      cta: t("professional.cta"),
       popular: true,
       color: "purple"
     },
     {
-      name: "Enterprise",
-      price: "Custom",
-      period: "",
-      description: "For large organizations and agencies",
+      name: t("enterprise.title"),
+      price: t("enterprise.price"),
+      period: t("enterprise.period"),
+      description: t("enterprise.description"),
       icon: Crown,
       features: [
-        "Unlimited documents",
-        "All languages + custom models",
-        "Human-level translation quality",
-        "24/7 dedicated support",
-        "All file formats + custom integrations",
-        "Unlimited storage",
-        "Advanced API with SLA",
-        "Multi-user management",
-        "Custom training & fine-tuning",
-        "On-premise deployment options",
-        "Compliance & security certifications",
-        "Dedicated account manager"
+        t("enterprise.features.0"),
+        t("enterprise.features.1"),
+        t("enterprise.features.2"),
+        t("enterprise.features.3"),
+        t("enterprise.features.4"),
+        t("enterprise.features.5"),
+        t("enterprise.features.6"),
+        t("enterprise.features.7"),
+        t("enterprise.features.8"),
+        t("enterprise.features.9"),
+        t("enterprise.features.10"),
+        t("enterprise.features.11")
       ],
-      cta: "Contact Sales",
+      cta: t("enterprise.cta"),
       popular: false,
       color: "gold"
     }
@@ -126,7 +126,7 @@ export default function PricingSection() {
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
                   <div className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                    Most Popular
+                    {t("professional.popular")}
                   </div>
                 </div>
               )}
@@ -182,20 +182,20 @@ export default function PricingSection() {
         <div className="mt-16 text-center">
           <div className="max-w-3xl mx-auto">
             <h3 className="text-2xl font-bold text-foreground mb-4">
-              All plans include:
+              {t("allPlansInclude")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-muted-foreground">
               <div className="flex items-center justify-center">
                 <Check className="h-4 w-4 text-green-500 mr-2" />
-                <span>14-day free trial</span>
+                <span>{t("freeTrial")}</span>
               </div>
               <div className="flex items-center justify-center">
                 <Check className="h-4 w-4 text-green-500 mr-2" />
-                <span>No setup fees</span>
+                <span>{t("noSetupFees")}</span>
               </div>
               <div className="flex items-center justify-center">
                 <Check className="h-4 w-4 text-green-500 mr-2" />
-                <span>Cancel anytime</span>
+                <span>{t("cancelAnytime")}</span>
               </div>
             </div>
           </div>
@@ -204,7 +204,7 @@ export default function PricingSection() {
         {/* Contact Info */}
         <div className="mt-12 text-center">
           <p className="text-muted-foreground mb-2">
-            Need a custom solution? Contact us at
+            {t("needCustomSolution")}
           </p>
           <a
             href={`mailto:${t("email")}`}

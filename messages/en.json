@@ -250,19 +250,67 @@
       "title": "Starter",
       "price": "57",
       "period": "/month",
-      "documents": "75 documents per month"
+      "documents": "75 documents per month",
+      "description": "Perfect for individuals and small projects",
+      "features": {
+        "0": "75 documents per month",
+        "1": "Basic language support (50+ languages)",
+        "2": "Standard translation quality",
+        "3": "Email support",
+        "4": "Basic file formats (PDF, DOCX, TXT)",
+        "5": "5GB storage",
+        "6": "Basic API access"
+      },
+      "cta": "Start Free Trial"
     },
     "professional": {
       "title": "Professional",
       "price": "173",
       "period": "/month",
-      "documents": "300 documents per month"
+      "documents": "300 documents per month",
+      "description": "Ideal for growing businesses and teams",
+      "features": {
+        "0": "300 documents per month",
+        "1": "Premium language support (100+ languages)",
+        "2": "Advanced translation quality with context",
+        "3": "Priority email & chat support",
+        "4": "All file formats including images",
+        "5": "50GB storage",
+        "6": "Full API access with webhooks",
+        "7": "Team collaboration tools",
+        "8": "Custom glossaries",
+        "9": "Translation memory"
+      },
+      "cta": "Start Free Trial",
+      "popular": "Most Popular"
     },
-    "custom": {
-      "title": "Custom",
-      "description": "For translation agencies and organizations"
+    "enterprise": {
+      "title": "Enterprise",
+      "price": "Custom",
+      "period": "",
+      "description": "For large organizations and agencies",
+      "features": {
+        "0": "Unlimited documents",
+        "1": "All languages + custom models",
+        "2": "Human-level translation quality",
+        "3": "24/7 dedicated support",
+        "4": "All file formats + custom integrations",
+        "5": "Unlimited storage",
+        "6": "Advanced API with SLA",
+        "7": "Multi-user management",
+        "8": "Custom training & fine-tuning",
+        "9": "On-premise deployment options",
+        "10": "Compliance & security certifications",
+        "11": "Dedicated account manager"
+      },
+      "cta": "Contact Sales"
     },
-    "select": "Select"
+    "select": "Select",
+    "allPlansInclude": "All plans include:",
+    "freeTrial": "14-day free trial",
+    "noSetupFees": "No setup fees",
+    "cancelAnytime": "Cancel anytime",
+    "needCustomSolution": "Need a custom solution? Contact us at"
   },
   "WelcomeModal": {
     "title": "Hello!",
@@ -279,6 +327,171 @@
   "Landing": {
     "title": "Suliko AI Translator",
     "description": "Translate text and documents instantly.",
-    "cta": "Start translating"
+    "cta": "Start translating",
+    "viewPricing": "View Pricing",
+    "aiPowered": "AI-Powered Translation",
+    "languages": "100+ Languages",
+    "documentSupport": "Document Support",
+    "trustedBy": "Trusted by professionals worldwide",
+    "documentsTranslated": "Documents Translated",
+    "languagesSupported": "Languages Supported",
+    "accuracyRate": "Accuracy Rate",
+    "supportAvailable": "Support Available"
+  },
+  "LandingHeader": {
+    "about": "About",
+    "pricing": "Pricing",
+    "testimonials": "Testimonials",
+    "contact": "Contact",
+    "getStarted": "Get Started"
+  },
+  "AboutSection": {
+    "title": "Why Choose Suliko?",
+    "subtitle": "We're revolutionizing document translation with cutting-edge AI technology, making professional-grade translations accessible to everyone, everywhere.",
+    "mission": "Our Mission",
+    "missionText": "To break down language barriers and enable seamless communication across cultures, industries, and borders through intelligent, accurate, and accessible translation technology.",
+    "features": {
+      "aiPowered": {
+        "title": "AI-Powered Intelligence",
+        "description": "Advanced neural networks trained on millions of documents for contextually accurate translations."
+      },
+      "security": {
+        "title": "Enterprise Security",
+        "description": "Bank-level encryption and privacy protection for all your sensitive documents and data."
+      },
+      "speed": {
+        "title": "Lightning Fast",
+        "description": "Process documents in seconds, not hours. Our optimized infrastructure delivers results instantly."
+      },
+      "collaboration": {
+        "title": "Team Collaboration",
+        "description": "Share translations, collaborate on projects, and maintain consistency across your organization."
+      },
+      "expertise": {
+        "title": "Industry Expertise",
+        "description": "Specialized models for legal, medical, technical, and business documents with domain-specific accuracy."
+      },
+      "quality": {
+        "title": "Quality Assurance",
+        "description": "Multi-layer quality checks ensure every translation meets professional standards and accuracy requirements."
+      }
+    },
+    "stats": {
+      "documentsTranslated": "Documents Translated",
+      "languagesSupported": "Languages Supported",
+      "happyCustomers": "Happy Customers",
+      "uptimeGuarantee": "Uptime Guarantee"
+    },
+    "values": {
+      "title": "Our Core Values",
+      "precision": {
+        "title": "Precision",
+        "description": "Every translation is crafted with meticulous attention to detail and context."
+      },
+      "trust": {
+        "title": "Trust",
+        "description": "Your data security and privacy are our top priorities in everything we do."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "description": "Continuously advancing our technology to deliver better results faster."
+      }
+    }
+  },
+  "TestimonialsSection": {
+    "title": "What Our Customers Say",
+    "subtitle": "Join thousands of satisfied customers who trust Suliko for their translation needs",
+    "stats": {
+      "averageRating": "Average Rating",
+      "happyCustomers": "Happy Customers",
+      "customerSatisfaction": "Customer Satisfaction"
+    },
+    "trustedBy": {
+      "title": "Trusted by Industry Leaders",
+      "subtitle": "Join companies worldwide who rely on Suliko for their translation needs"
+    },
+    "cta": {
+      "title": "Ready to Join Them?",
+      "subtitle": "Start your free trial today and experience the difference professional AI translation can make.",
+      "startTrial": "Start Free Trial",
+      "contactSales": "Contact Sales"
+    },
+    "testimonials": {
+      "sarah": {
+        "name": "Sarah Johnson",
+        "role": "Marketing Director",
+        "company": "TechCorp Solutions",
+        "content": "Suliko has revolutionized our international marketing campaigns. The translation quality is exceptional, and the speed is incredible. We've reduced our translation costs by 60% while improving accuracy."
+      },
+      "michael": {
+        "name": "Michael Chen",
+        "role": "Legal Counsel",
+        "company": "Global Law Firm",
+        "content": "As a law firm dealing with international clients, accuracy is paramount. Suliko's legal document translations are precise and contextually perfect. It's become an indispensable tool for our practice."
+      },
+      "elena": {
+        "name": "Elena Rodriguez",
+        "role": "Content Manager",
+        "company": "Digital Media Co.",
+        "content": "The team collaboration features are fantastic. We can now manage multilingual content across our entire organization seamlessly. The API integration made our workflow so much more efficient."
+      },
+      "david": {
+        "name": "David Kim",
+        "role": "Product Manager",
+        "company": "StartupXYZ",
+        "content": "From day one, Suliko has been a game-changer for our startup. The pricing is fair, the quality is outstanding, and the support team is incredibly responsive. Highly recommended!"
+      },
+      "anna": {
+        "name": "Anna Petrov",
+        "role": "Research Director",
+        "company": "Academic Institute",
+        "content": "We use Suliko for translating research papers and academic documents. The technical accuracy is impressive, and it handles complex scientific terminology beautifully. A must-have for researchers."
+      },
+      "james": {
+        "name": "James Wilson",
+        "role": "Operations Manager",
+        "company": "Manufacturing Inc.",
+        "content": "The enterprise features are exactly what we needed. Custom glossaries, team management, and the ability to maintain consistency across all our technical documentation has been invaluable."
+      }
+    }
+  },
+  "LandingFooter": {
+    "description": "The world's most advanced AI-powered translation platform. Breaking down language barriers with precision, speed, and reliability.",
+    "email": "Info@suliko.ge",
+    "phone": "+995 591 729 911",
+    "location": "Tbilisi, Georgia",
+    "links": {
+      "product": "Product",
+      "company": "Company",
+      "support": "Support",
+      "legal": "Legal",
+      "features": "Features",
+      "pricing": "Pricing",
+      "apiDocs": "API Documentation",
+      "integrations": "Integrations",
+      "aboutUs": "About Us",
+      "careers": "Careers",
+      "blog": "Blog",
+      "press": "Press",
+      "helpCenter": "Help Center",
+      "contactSupport": "Contact Support",
+      "status": "Status",
+      "community": "Community",
+      "privacyPolicy": "Privacy Policy",
+      "termsOfService": "Terms of Service",
+      "cookiePolicy": "Cookie Policy",
+      "gdpr": "GDPR"
+    },
+    "newsletter": {
+      "title": "Stay Updated",
+      "subtitle": "Get the latest updates on new features, tips, and industry insights.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe"
+    },
+    "bottom": {
+      "copyright": "© 2024 Suliko. All rights reserved.",
+      "madeWith": "Made with ❤️ in Georgia",
+      "status": "All systems operational"
+    }
   }
 }
