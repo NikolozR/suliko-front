@@ -199,16 +199,9 @@ export default function LandingFooter() {
 
         {/* Bottom Bar */}
         <div className="py-6 border-t border-border">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="text-muted-foreground text-sm mb-4 md:mb-0">
+          <div className="flex justify-center items-center">
+            <div className="text-muted-foreground text-sm">
               {t("bottom.copyright")}
-            </div>
-            <div className="flex items-center space-x-6 text-sm text-muted-foreground">
-              <span>{t("bottom.madeWith")}</span>
-              <div className="flex items-center space-x-2">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span>{t("bottom.status")}</span>
-              </div>
             </div>
           </div>
         </div>

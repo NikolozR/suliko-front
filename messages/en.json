@@ -126,7 +126,7 @@
       "page": "page",
       "minutes": "minutes",
       "minute": "minute",
-      "estimatedCost": "Estimated cost: {cost} GEL"
+      "estimatedCost": "Estimated cost: {cost} USD"
     },
     "documentPreview": {
       "loadingText": "Loading text file...",
@@ -164,7 +164,7 @@
       "documentInfo": "Document has {data} pages",
       "wordCount": "Document has {data} words",
       "estimatedTime": "Document needs {data} minutes",
-      "estimatedCost": "You will be charged {data} GEL",
+      "estimatedCost": "You will be charged {data} USD",
       "documentType": "Document type is {data} extension",
       "preparing": "Preparing document...",
       "analyzing": "Analyzing content...",
@@ -489,9 +489,7 @@
       "subscribe": "Subscribe"
     },
     "bottom": {
-      "copyright": "© 2024 Suliko. All rights reserved.",
-      "madeWith": "Made with ❤️ in Georgia",
-      "status": "All systems operational"
+      "copyright": "© 2025 Suliko. All rights reserved."
     }
   }
 }

@@ -1,12 +1,13 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
 import { Check, Star, Zap, Crown } from "lucide-react";
 
 export default function PricingSection() {
   const t = useTranslations("Pricing");
+  const locale = useLocale();
 
   const plans = [
     {
@@ -142,7 +143,7 @@ export default function PricingSection() {
                 </CardTitle>
                 <div className="mt-4">
                   <span className="text-4xl font-bold text-foreground">
-                    {plan.price}
+                    {locale === 'ka' ? '₾' : '$'}{plan.price}
                   </span>
                   <span className="text-muted-foreground ml-1">
                     {plan.period}

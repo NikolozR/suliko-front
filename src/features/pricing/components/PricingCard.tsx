@@ -1,4 +1,4 @@
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 interface PricingCardProps {
   type: 'starter' | 'professional' | 'custom';
@@ -7,6 +7,7 @@ interface PricingCardProps {
 
 export function PricingCard({ type, onSelect }: PricingCardProps) {
   const t = useTranslations("Pricing");
+  const locale = useLocale();
 
   const renderCardContent = () => {
     if (type === 'custom') {
@@ -29,7 +30,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
         </h3>
         <div className="mb-6 text-center">
           <span className="text-4xl font-bold text-card-foreground">
-            ₾{t(`${type}.price`)}
+            {locale === 'ka' ? '₾' : '$'}{t(`${type}.price`)}
           </span>
           <span className="text-muted-foreground">
             {t(`${type}.period`)}

@@ -24,7 +24,7 @@ import { translateUserContent } from "@/features/translation/services/translatio
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X } from "lucide-react";
@@ -51,6 +51,7 @@ type DownloadFormatOption = { value: string; label: string; extension: string; i
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
   const tButton = useTranslations('TranslationButton');
+  const locale = useLocale();
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -298,7 +299,7 @@ const TextTranslationCard = () => {
                 {/* Cost display for input text */}
                 {currentTextValue && parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
                   <div className="mt-2 text-suliko-default-color font-semibold text-sm">
-                    Estimated cost: {((currentTextValue.length / 250) * 0.01).toFixed(2)} ლარი
+                    Estimated cost: {((currentTextValue.length / 250) * 0.01).toFixed(2)} {locale === 'ka' ? '₾' : '$'}
                   </div>
                 )}
               </div>
@@ -339,7 +340,7 @@ const TextTranslationCard = () => {
                   {/* Cost display for translated text */}
                   {parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
                     <div className="mt-2 text-suliko-default-color font-semibold text-sm">
-                      Estimated cost: {((currentTextValue.length / 250) * 0.01).toFixed(2)} ლარი
+                      Estimated cost: {((currentTextValue.length / 250) * 0.01).toFixed(2)} {locale === 'ka' ? '₾' : '$'}
                     </div>
                   )}
                 </div>

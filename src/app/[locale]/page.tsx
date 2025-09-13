@@ -8,6 +8,7 @@ import PricingSection from "@/shared/components/PricingSection";
 import TestimonialsSection from "@/shared/components/TestimonialsSection";
 import LandingFooter from "@/shared/components/LandingFooter";
 import ScrollToTop from "@/shared/components/ScrollToTop";
+import SulikoParticles from "@/shared/components/SulikoParticles";
 
 export default function LandingPage() {
   useEffect(() => {
@@ -41,16 +42,25 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen">
-      <LandingHeader />
-      <main>
-        <HeroSection />
-        <AboutSection />
-        <PricingSection />
-        <TestimonialsSection />
-      </main>
-      <LandingFooter />
-      <ScrollToTop />
+    <div className="min-h-screen relative">
+      <SulikoParticles
+        className="fixed inset-0 z-0"
+        fullScreen={true}
+        particleCount={60}
+        speed={0.5}
+        enableInteractions={true}
+      />
+      <div className="relative z-10">
+        <LandingHeader />
+        <main>
+          <HeroSection />
+          <AboutSection />
+          <PricingSection />
+          <TestimonialsSection />
+        </main>
+        <LandingFooter />
+        <ScrollToTop />
+      </div>
     </div>
   );
 }
