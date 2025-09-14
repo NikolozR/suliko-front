@@ -34,7 +34,7 @@ export function LanguageSwitcher() {
       <SelectContent>
         {routing.locales.map((loc) => (
           <SelectItem className="cursor-pointer" key={loc} value={loc}>
-            {t(loc === 'en' ? 'english' : 'georgian')}
+            {t(loc === 'en' ? 'english' : loc === 'ka' ? 'georgian' : 'polish')}
           </SelectItem>
         ))}
       </SelectContent>

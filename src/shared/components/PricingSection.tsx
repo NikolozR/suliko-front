@@ -1,15 +1,42 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
-import { Check, Star, Zap, Crown } from "lucide-react";
+import { Check, Star, Zap, Crown, Building2, Users, Sparkles, Clock, Mail, Phone, MessageCircle, X } from "lucide-react";
+
+interface Plan {
+  name: string;
+  price: string;
+  period: string;
+  description: string;
+  icon: any;
+  features: string[];
+  cta: string;
+  popular: boolean;
+  color: string;
+  discount?: boolean;
+}
 
 export default function PricingSection() {
   const t = useTranslations("Pricing");
   const locale = useLocale();
+  const router = useRouter();
+  const [activeTab, setActiveTab] = useState<'translators' | 'businesses'>('translators');
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
-  const plans = [
+  const handleButtonClick = (ctaText: string) => {
+    if (ctaText === "Contact Sales" || ctaText === "დაგვიკავშირდით" || ctaText === "Skontaktuj się ze sprzedażą") {
+      setIsContactModalOpen(true);
+    } else {
+      // Redirect to document translation page
+      router.push(`/${locale}/document`);
+    }
+  };
+
+  const translatorPlans: Plan[] = [
     {
       name: t("starter.title"),
       price: t("starter.price"),
@@ -49,7 +76,8 @@ export default function PricingSection() {
       ],
       cta: t("professional.cta"),
       popular: true,
-      color: "purple"
+      color: "purple",
+      discount: true
     },
     {
       name: t("enterprise.title"),
@@ -77,9 +105,58 @@ export default function PricingSection() {
     }
   ];
 
+  const businessPlans: Plan[] = [
+    {
+      name: t("business.title"),
+      price: t("business.price"),
+      period: t("business.period"),
+      description: t("business.description"),
+      icon: Building2,
+      features: [
+        t("business.features.0"),
+        t("business.features.1"),
+        t("business.features.2"),
+        t("business.features.3"),
+        t("business.features.4"),
+        t("business.features.5"),
+        t("business.features.6")
+      ],
+      cta: t("business.cta"),
+      popular: true,
+      color: "blue",
+      discount: true
+    },
+    {
+      name: t("enterpriseBusiness.title"),
+      price: t("enterpriseBusiness.price"),
+      period: t("enterpriseBusiness.period"),
+      description: t("enterpriseBusiness.description"),
+      icon: Users,
+      features: [
+        t("enterpriseBusiness.features.0"),
+        t("enterpriseBusiness.features.1"),
+        t("enterpriseBusiness.features.2"),
+        t("enterpriseBusiness.features.3"),
+        t("enterpriseBusiness.features.4"),
+        t("enterpriseBusiness.features.5"),
+        t("enterpriseBusiness.features.6"),
+        t("enterpriseBusiness.features.7"),
+        t("enterpriseBusiness.features.8"),
+        t("enterpriseBusiness.features.9"),
+        t("enterpriseBusiness.features.10"),
+        t("enterpriseBusiness.features.11")
+      ],
+      cta: t("enterpriseBusiness.cta"),
+      popular: false,
+      color: "gold"
+    }
+  ];
+
+  const currentPlans = activeTab === 'translators' ? translatorPlans : businessPlans;
+
   const getColorClasses = (color: string, popular: boolean) => {
-    const baseClasses = "relative";
-    const popularClasses = "ring-2 ring-primary shadow-xl scale-105";
+    const baseClasses = "relative transition-all duration-300 hover:shadow-lg";
+    const popularClasses = "ring-2 ring-primary shadow-xl scale-105 bg-gradient-to-br from-background to-muted/20 before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-r before:from-primary/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none";
     
     switch (color) {
       case "blue":
@@ -113,21 +190,59 @@ export default function PricingSection() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
             {t("title")}
           </h2>
-          <p className="text-xl text-muted-foreground leading-relaxed">
+          <p className="text-xl text-muted-foreground leading-relaxed mb-8">
             {t("description")}
           </p>
+          
+          {/* Tabs */}
+          <div className="flex justify-center mb-8">
+            <div className="bg-muted p-1 rounded-lg inline-flex">
+              <button
+                onClick={() => setActiveTab('translators')}
+                className={`px-6 py-3 rounded-md font-medium transition-all ${
+                  activeTab === 'translators'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t("forTranslators")}
+              </button>
+              <button
+                onClick={() => setActiveTab('businesses')}
+                className={`px-6 py-3 rounded-md font-medium transition-all ${
+                  activeTab === 'businesses'
+                    ? 'bg-background text-foreground shadow-sm'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {t("forBusinesses")}
+              </button>
+            </div>
+          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
-          {plans.map((plan, index) => (
-            <Card
-              key={index}
-              className={getColorClasses(plan.color, plan.popular)}
-            >
+        <div className={`grid gap-8 max-w-7xl mx-auto ${
+          activeTab === 'translators' ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1 lg:grid-cols-2'
+        }`}>
+          {currentPlans.map((plan, index) => (
+             <Card
+               key={index}
+               className={`${getColorClasses(plan.color, plan.popular)} flex flex-col h-full`}
+             >
               {plan.popular && (
-                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <div className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-medium">
-                    {t("professional.popular")}
+                <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
+                  <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg flex items-center gap-1">
+                    <Sparkles className="h-3 w-3" />
+                    {t("mostPopular")}
+                  </div>
+                </div>
+              )}
+              
+              {plan.discount && (
+                <div className="absolute -top-2 -right-2 z-20 animate-pulse">
+                  <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg transform rotate-12 flex items-center gap-1 border-2 border-white">
+                    <Clock className="h-2 w-2" />
+                    {t("discount")}
                   </div>
                 </div>
               )}
@@ -142,39 +257,59 @@ export default function PricingSection() {
                   {plan.name}
                 </CardTitle>
                 <div className="mt-4">
-                  <span className="text-4xl font-bold text-foreground">
-                    {locale === 'ka' ? '₾' : '$'}{plan.price}
-                  </span>
-                  <span className="text-muted-foreground ml-1">
-                    {plan.period}
-                  </span>
+                  {plan.discount ? (
+                    <div className="flex flex-col items-center">
+                      <div className="flex items-baseline gap-2">
+                         <span className="text-2xl text-muted-foreground line-through">
+                           {plan.price === "$67" ? "$85" : plan.price === "500 GEL" ? "625 GEL" : plan.price}
+                         </span>
+                        <span className="text-4xl font-bold text-foreground">
+                          {plan.price}
+                        </span>
+                      </div>
+                      <span className="text-muted-foreground text-sm">
+                        {t("limitedTime")}
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-baseline">
+                      <span className="text-4xl font-bold text-foreground">
+                        {plan.price}
+                      </span>
+                      <span className="text-muted-foreground ml-1">
+                        {plan.period}
+                      </span>
+                    </div>
+                  )}
                 </div>
                 <p className="text-muted-foreground mt-2">
                   {plan.description}
                 </p>
               </CardHeader>
 
-              <CardContent className="pt-0">
-                <ul className="space-y-3 mb-8">
-                  {plan.features.map((feature, featureIndex) => (
-                    <li key={featureIndex} className="flex items-start">
-                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                      <span className="text-muted-foreground">{feature}</span>
-                    </li>
-                  ))}
-                </ul>
+               <CardContent className="pt-0 flex flex-col flex-grow">
+                 <ul className="space-y-3 mb-8 flex-grow">
+                   {plan.features.map((feature, featureIndex) => (
+                     <li key={featureIndex} className="flex items-start">
+                       <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                       <span className="text-muted-foreground">{feature}</span>
+                     </li>
+                   ))}
+                 </ul>
 
-                <Button
-                  className={`w-full ${
-                    plan.popular
-                      ? "bg-primary hover:bg-primary/90"
-                      : "bg-secondary hover:bg-secondary/90"
-                  }`}
-                  size="lg"
-                >
-                  {plan.cta}
-                </Button>
-              </CardContent>
+                 <Button
+                   className="w-full mt-auto bg-primary hover:bg-primary/90"
+                   size="lg"
+                   onClick={(e) => {
+                     e.preventDefault();
+                     e.stopPropagation();
+                     handleButtonClick(plan.cta);
+                   }}
+                   type="button"
+                 >
+                   {plan.cta}
+                 </Button>
+               </CardContent>
             </Card>
           ))}
         </div>
@@ -213,8 +348,94 @@ export default function PricingSection() {
           >
             {t("email")}
           </a>
-        </div>
-      </div>
-    </section>
-  );
-}
+         </div>
+       </div>
+
+       {/* Contact Modal */}
+       {isContactModalOpen && (
+         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+           <div className="bg-background rounded-lg shadow-xl max-w-md w-full p-6 relative">
+             <button
+               onClick={(e) => {
+                 e.preventDefault();
+                 e.stopPropagation();
+                 setIsContactModalOpen(false);
+               }}
+               className="absolute top-4 right-4 text-muted-foreground hover:text-foreground transition-colors"
+               type="button"
+             >
+               <X className="h-5 w-5" />
+             </button>
+             
+             <div className="text-center mb-6">
+               <h3 className="text-2xl font-bold text-foreground mb-2">
+                 {t("contactModal.title")}
+               </h3>
+               <p className="text-muted-foreground">
+                 {t("contactModal.subtitle")}
+               </p>
+             </div>
+
+             <div className="space-y-4">
+               <a
+                 href="mailto:info@suliko.ge"
+                 className="flex items-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
+               >
+                 <div className="p-2 bg-primary/10 rounded-full mr-4 group-hover:bg-primary/20 transition-colors">
+                   <Mail className="h-5 w-5 text-primary" />
+                 </div>
+                 <div>
+                   <p className="font-medium text-foreground">{t("contactModal.email")}</p>
+                   <p className="text-sm text-muted-foreground">info@suliko.ge</p>
+                 </div>
+               </a>
+
+               <a
+                 href="tel:+995322123456"
+                 className="flex items-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
+               >
+                 <div className="p-2 bg-primary/10 rounded-full mr-4 group-hover:bg-primary/20 transition-colors">
+                   <Phone className="h-5 w-5 text-primary" />
+                 </div>
+                 <div>
+                   <p className="font-medium text-foreground">{t("contactModal.phone")}</p>
+                   <p className="text-sm text-muted-foreground">+995 322 123 456</p>
+                 </div>
+               </a>
+
+               <a
+                 href="https://wa.me/995322123456"
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 className="flex items-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
+               >
+                 <div className="p-2 bg-green-500/10 rounded-full mr-4 group-hover:bg-green-500/20 transition-colors">
+                   <MessageCircle className="h-5 w-5 text-green-500" />
+                 </div>
+                 <div>
+                   <p className="font-medium text-foreground">{t("contactModal.whatsapp")}</p>
+                   <p className="text-sm text-muted-foreground">+995 322 123 456</p>
+                 </div>
+               </a>
+             </div>
+
+             <div className="mt-6 pt-4 border-t border-border">
+               <Button
+                 onClick={(e) => {
+                   e.preventDefault();
+                   e.stopPropagation();
+                   setIsContactModalOpen(false);
+                 }}
+                 className="w-full"
+                 variant="outline"
+                 type="button"
+               >
+                 {t("contactModal.close")}
+               </Button>
+             </div>
+           </div>
+         </div>
+       )}
+     </section>
+   );
+ }

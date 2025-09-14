@@ -17,8 +17,13 @@ function HeaderThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+      }}
       className="cursor-pointer"
+      type="button"
     >
       <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -91,7 +96,14 @@ export default function LandingHeader() {
               <HeaderThemeToggle />
             </div>
             <Link href="/document">
-              <Button className="ml-2">
+              <Button 
+                className="ml-2"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+                type="button"
+              >
                 {t("getStarted")}
               </Button>
             </Link>
@@ -100,8 +112,13 @@ export default function LandingHeader() {
           {/* Mobile Menu Button */}
           <button
             className="md:hidden p-2 rounded-md text-foreground hover:bg-accent transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              setIsMobileMenuOpen(!isMobileMenuOpen);
+            }}
             aria-label="Toggle mobile menu"
+            type="button"
           >
             {isMobileMenuOpen ? (
               <X className="h-6 w-6" />
@@ -120,7 +137,11 @@ export default function LandingHeader() {
                   key={item.href}
                   href={item.href}
                   className="block px-3 py-2 text-foreground/80 hover:text-foreground hover:bg-accent rounded-md transition-colors"
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setIsMobileMenuOpen(false);
+                  }}
                 >
                   {item.label}
                 </a>
@@ -131,7 +152,14 @@ export default function LandingHeader() {
               </div>
               <div className="px-3 py-2">
                 <Link href="/document" onClick={() => setIsMobileMenuOpen(false)}>
-                  <Button className="w-full">
+                  <Button 
+                    className="w-full"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    type="button"
+                  >
                     {t("getStarted")}
                   </Button>
                 </Link>

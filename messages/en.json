@@ -205,6 +205,7 @@
   "LanguageSwitcher": {
     "english": "English",
     "georgian": "ქართული",
+    "polish": "Polski",
     "select": "Select Language"
   },
   "History": {
@@ -246,9 +247,28 @@
     "email": "Info@suliko.ge",
     "title": "Pricing Packages",
     "description": "Choose a package that suits you",
+    "forTranslators": "For Translators",
+    "forBusinesses": "For Businesses",
+    "discount": "Save 20%",
+    "limitedTime": "Limited Time",
+    "mostPopular": "Most Popular",
+    "contactModal": {
+      "title": "Get Started Today",
+      "subtitle": "Contact us to begin your translation journey",
+      "email": "Email us",
+      "phone": "Call us",
+      "whatsapp": "WhatsApp",
+      "close": "Close"
+    },
+    "trustedSection": {
+      "title": "Trusted by Industry Leaders",
+      "subtitle": "Join thousands of professionals who rely on Suliko for their translation needs",
+      "contactSales": "Contact Sales",
+      "description": "From startups to Fortune 500 companies, organizations worldwide trust Suliko for accurate, fast, and reliable translation services."
+    },
     "starter": {
       "title": "Starter",
-      "price": "57",
+      "price": "$20",
       "period": "/month",
       "documents": "75 documents per month",
       "description": "Perfect for individuals and small projects",
@@ -265,7 +285,7 @@
     },
     "professional": {
       "title": "Professional",
-      "price": "173",
+      "price": "$67",
       "period": "/month",
       "documents": "300 documents per month",
       "description": "Ideal for growing businesses and teams",
@@ -296,6 +316,43 @@
         "3": "24/7 dedicated support",
         "4": "All file formats + custom integrations",
         "5": "Unlimited storage",
+        "6": "Advanced API with SLA",
+        "7": "Multi-user management",
+        "8": "Custom training & fine-tuning",
+        "9": "On-premise deployment options",
+        "10": "Compliance & security certifications",
+        "11": "Dedicated account manager"
+      },
+      "cta": "Contact Sales"
+    },
+    "business": {
+      "title": "Suliko Business",
+      "price": "500 GEL",
+      "period": "/month",
+      "description": "Perfect for growing businesses",
+      "features": {
+        "0": "500 translations per month",
+        "1": "Up to 800 words per translation",
+        "2": "Up to 5,000 characters per translation",
+        "3": "2.50 GEL per translation after limit",
+        "4": "Priority email support",
+        "5": "All file formats (PDF, DOCX, TXT)",
+        "6": "Basic API access"
+      },
+      "cta": "Start Free Trial"
+    },
+    "enterpriseBusiness": {
+      "title": "Suliko Enterprise",
+      "price": "1,500 GEL",
+      "period": "/month",
+      "description": "For large organizations and agencies",
+      "features": {
+        "0": "Unlimited translations",
+        "1": "Up to 2,000 words per translation",
+        "2": "Up to 12,500 characters per translation",
+        "3": "No overage fees",
+        "4": "Priority Support",
+        "5": "All file formats + custom integrations",
         "6": "Advanced API with SLA",
         "7": "Multi-user management",
         "8": "Custom training & fine-tuning",
@@ -486,7 +543,10 @@
       "title": "Stay Updated",
       "subtitle": "Get the latest updates on new features, tips, and industry insights.",
       "placeholder": "Enter your email",
-      "subscribe": "Subscribe"
+      "subscribe": "Subscribe",
+      "subscribing": "Subscribing...",
+      "success": "✅ Successfully subscribed to newsletter!",
+      "error": "❌ Failed to subscribe. Please try again."
     },
     "bottom": {
       "copyright": "© 2025 Suliko. All rights reserved."

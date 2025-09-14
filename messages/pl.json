@@ -1,0 +1,552 @@
+{
+  "Authorization": {
+    "title": "Autoryzacja",
+    "description": "Wprowadź swój numer telefonu i hasło",
+    "phoneNumber": "Telefon",
+    "password": "Hasło",
+    "confirmPassword": "Potwierdź hasło",
+    "confirmPasswordRequired": "Proszę potwierdzić hasło",
+    "passwordsDoNotMatch": "Hasła nie pasują do siebie",
+    "firstname": "Imię",
+    "lastname": "Nazwisko",
+    "optional": "Opcjonalne",
+    "phoneNumberPlaceholder": "+48 XXX XXX XXX",
+    "passwordPlaceholder": "********",
+    "confirmPasswordPlaceholder": "********",
+    "firstnamePlaceholder": "Suliko",
+    "lastnamePlaceholder": "Tsereteli",
+    "login": "Zaloguj się",
+    "register": "Zarejestruj się",
+    "phoneNumberRequiredError": "Numer telefonu jest wymagany",
+    "phoneNumberFormatError": "Numer telefonu musi być w formacie polskim: +48XXXXXXXXX lub XXXXXXXXX",
+    "passwordMinLengthError": "Hasło musi mieć co najmniej 8 znaków",
+    "passwordRegexError": "Hasło musi zawierać co najmniej jedną cyfrę i jeden symbol",
+    "AuthenticationFailed": "Autoryzacja nie powiodła się, nieprawidłowe dane",
+    "sendCode": "Wyślij kod",
+    "codeSent": "Kod wysłany",
+    "sending": "Wysyłanie...",
+    "verificationCode": "Kod weryfikacyjny",
+    "enterVerificationCode": "Wprowadź kod weryfikacyjny",
+    "sendCodeError": "Nie udało się wysłać kodu weryfikacyjnego",
+    "pleaseSendCodeFirst": "Proszę najpierw wysłać kod weryfikacyjny",
+    "pleaseEnterVerificationCode": "Proszę wprowadzić kod weryfikacyjny",
+    "incorrectVerificationCode": "Nieprawidłowy kod weryfikacyjny. Proszę spróbować ponownie.",
+    "codeVerified": "Kod został pomyślnie zweryfikowany!",
+    "codeNotReceived": "Nie otrzymałeś kodu?",
+    "resendCode": "Wyślij kod ponownie",
+    "resendIn": "Wyślij ponownie za",
+    "termsAndConditions": "Warunki i zasady",
+    "privacyPolicy": "Polityka prywatności",
+    "iAcceptThe": "Akceptuję",
+    "and": "i",
+    "subscribeNewsletter": "Zapisz się do newslettera, aby otrzymywać aktualizacje i specjalne oferty",
+    "termsAndPrivacy": "Warunki, zasady i polityka prywatności",
+    "acceptTermsError": "Musisz zaakceptować warunki, zasady i politykę prywatności",
+    "acceptTermsAndConditionsError": "Musisz zaakceptować warunki i zasady",
+    "acceptPrivacyPolicyError": "Musisz zaakceptować politykę prywatności",
+    "termsText": "1. Postanowienia ogólne\n\nNiniejsze warunki i zasady regulują korzystanie z usługi tłumaczenia (\"Usługa\") oferowanej przez Suliko LLC (zwane dalej - \"Firma\", \"my\"). Uzyskując dostęp do Usługi lub z niej korzystając, jako użytkownik (\"Użytkownik\") zgadzasz się na warunki niniejszego dokumentu.\n\n2. Obowiązki użytkownika\n\nKorzystając z Usługi, jesteś zobowiązany używać jej wyłącznie do celów prawnych i nie naruszać obowiązującego prawa.\n\nZabronione jest używanie Usługi do tworzenia, rozpowszechniania lub przekazywania jakiejkolwiek szkodliwej lub nielegalnej treści.\n\n3. Własność intelektualna\n\nZachowujesz własność tekstu, który przesyłasz do Usługi. Korzystając z Usługi, udzielasz Firmie ograniczonej, niewyłącznej licencji na przetwarzanie i używanie tego tekstu wyłącznie w celu wykonywania i ulepszania usługi tłumaczenia.\n\nUsługa, wszystkie jej komponenty, oprogramowanie, projekt i inne materiały stanowią własność intelektualną Firmy i są chronione prawami autorskimi.\n\n4. Ograniczenie odpowiedzialności\n\nUsługa jest świadczona \"jak jest\" bez jakiejkolwiek gwarancji. Firma nie gwarantuje, że Usługa będzie nieprzerwana, bezbłędna lub bezpieczna.\n\nFirma nie ponosi odpowiedzialności za jakiekolwiek bezpośrednie, pośrednie, przypadkowe lub inne szkody spowodowane korzystaniem z Usługi.\n\n5. Zakończenie usługi\n\nFirma ma prawo ograniczyć lub zakończyć dostęp użytkownika do Usługi w dowolnym momencie i z jakiegokolwiek powodu, jeśli użytkownik narusza niniejsze warunki i zasady.\n\n6. Zmiany\n\nFirma zastrzega sobie prawo do wprowadzania zmian w niniejszych warunkach i zasadach w dowolnym momencie. Zmiany wchodzą w życie natychmiast po opublikowaniu na stronie internetowej lub w aplikacji.",
+    "privacyText": "1. Zbieranie informacji\n\nInformacje, które podajesz: Zbieramy tekst, który przesyłasz w celu korzystania z usługi tłumaczenia.\n\nDane techniczne i dotyczące użytkowania: Możemy zbierać informacje o Twoim urządzeniu, adresie IP, typie przeglądarki i korzystaniu z usługi (np. częstotliwość tłumaczeń, używane języki) w celach analitycznych i ulepszania usługi.\n\n2. Używanie informacji\n\nZebrane informacje są używane do następujących celów:\n\nWykonywania usługi tłumaczenia.\n\nUlepszania usługi i dostosowywania jej do Twoich potrzeb.\n\nAnalizy sposobu korzystania z usługi przez użytkowników.\n\nRozwiązywania problemów technicznych i zapewnienia bezpieczeństwa.\n\n3. Bezpieczeństwo danych\n\nStosujemy rozsądne środki administracyjne, techniczne i fizyczne, aby chronić Twoje dane przed nieautoryzowanym dostępem, użyciem lub ujawnieniem. Jednak żadna metoda transmisji danych przez Internet nie jest w 100% bezpieczna.\n\n4. Twoje prawa\n\nMasz prawo żądać dostępu do, korekty lub usunięcia swoich danych. Aby skorzystać z tych praw, skontaktuj się z nami.\n\n5. Przechowywanie danych\n\nBędziemy przechowywać Twoje dane osobowe tylko tak długo, jak to konieczne do realizacji celów opisanych w niniejszej polityce."
+  },
+  "AuthModal": {
+    "title": "Proszę zarejestrować się w systemie",
+    "description": "Proszę zarejestrować się, aby korzystać z usług tłumaczenia",
+    "login": "Zaloguj się",
+    "close": "Zamknij"
+  },
+  "Sidebar": {
+    "newProject": "Nowy projekt",
+    "history": "Historia",
+    "profile": "Profil",
+    "logout": "Wyloguj się",
+    "help": "Pomoc",
+    "feedback": "Opinie",
+    "login": "Zaloguj się",
+    "balance": "Saldo"
+  },
+  "MainContent": {
+    "title": "Twój tłumacz",
+    "description": "Wybierz metodę",
+    "textTab": "Tekst",
+    "documentTab": "Dokument"
+  },
+  "TextTranslationCard": {
+    "title": "Wpisz tekst",
+    "description": "Wpisz tekst do analizy",
+    "textIputPlaceholder": "Dawno, dawno temu...",
+    "result": "Przetłumaczony tekst",
+    "yourText": "Twój tekst",
+    "orPress": "lub naciśnij"
+  },
+  "CommonLanguageSelect": {
+    "targetLanguageQuestion": "Na jaki język chcesz przetłumaczyć",
+    "sourceLanguageQuestion": "W jakim języku jest tekst",
+    "selectLanguagePlaceholder": "Wybierz język",
+    "automaticDetection": "Automatyczne wykrywanie"
+  },
+  "TranslationLoadingOverlay": {
+    "progress": "Postęp",
+    "processingDocument": "Przetwarzanie dokumentu...",
+    "applySuggestion": "Stosowanie sugestii...",
+    "translatingText": "Tłumaczenie tekstu..."
+  },
+  "TranslationButton": {
+    "translate": "Tłumacz",
+    "loading": "Ładowanie...",
+    "download": "Pobierz",
+    "copy": "Kopiuj"
+  },
+  "DownloadFormats": {
+    "chooseFormat": "Wybierz format pobierania",
+    "textFile": "Plik tekstowy",
+    "markdown": "Markdown",
+    "pdfDocument": "Dokument PDF",
+    "wordDocument": "Dokument Word",
+    "downloaded": "Pobrano!"
+  },
+  "DocumentTranslationCard": {
+    "title": "Prześlij dokument",
+    "description": "Prześlij dokument do tłumaczenia",
+    "dragAndDrop": "Przeciągnij i upuść plik lub kliknij, aby wybrać",
+    "dropFiles": "Upuść pliki tutaj",
+    "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, itp.",
+    "pageCountWarning": "⚠️ Pliki z więcej niż 3 stronami mogą mieć problemy z przetwarzaniem lub dłuższy czas oczekiwania.",
+    "warningDialog": {
+      "title": "Ostrzeżenie o rozmiarze dokumentu",
+      "pageCountInfo": "Twój dokument ma",
+      "description": "Ze względu na rozmiar dokumentu mogą wystąpić nieścisłości w tłumaczeniu. Proszę dokładnie przejrzeć wynik.",
+      "understand": "Rozumiem"
+    },
+    "pageCount": {
+      "countingPages": "Liczenie stron...",
+      "actual": "Rzeczywista",
+      "estimated": "Szacowana",
+      "pages": "strony",
+      "page": "strona",
+      "minutes": "minuty",
+      "minute": "minuta",
+      "estimatedCost": "Szacowany koszt: {cost} zł"
+    },
+    "documentPreview": {
+      "loadingText": "Ładowanie pliku tekstowego...",
+      "loadingSubtitle": "Ładowanie pliku napisów...",
+      "loadingWord": "Ładowanie dokumentu Word...",
+      "loadingPdf": "Ładowanie PDF...",
+      "loadingImage": "Ładowanie obrazu...",
+      "loadError": "Nie udało się załadować zawartości pliku",
+      "loadErrorSubtitle": "Nie udało się załadować pliku napisów",
+      "loadErrorWord": "Nie udało się załadować dokumentu Word",
+      "loadErrorPdf": "Nie udało się załadować PDF. Sprawdź konsolę, aby uzyskać szczegóły.",
+      "noPreview": "Nie wybrano dokumentu lub podgląd nie jest dostępny.",
+      "noPdfPreview": "Brak pliku PDF dostępnego do podglądu.",
+      "subtitlePreview": "Podgląd napisów",
+      "subtitleType": "Plik napisów SubRip (.srt)",
+      "zoom": "Powiększenie:",
+      "rendering": "Renderowanie...",
+      "pages": "{count} stron",
+      "page": "{count} strona",
+      "unsupportedTitle": "Nieobsługiwany typ pliku",
+      "unsupportedDesc": "Podgląd nie jest dostępny dla tego typu pliku.",
+      "willProcess": "Plik zostanie przetworzony do tłumaczenia."
+    },
+    "hideOriginal": "Ukryj oryginalny dokument",
+    "showOriginal": "Pokaż oryginalny dokument",
+    "editorTimeExpired": "Czas edytora wygasł",
+    "originalDocument": "Oryginalny dokument",
+    "translatedText": "Przetłumaczony tekst",
+    "sourceLanguage": "Język źródłowy",
+    "targetLanguage": "Język docelowy",
+    "progress": {
+      "longerThanUsual": "Trwa dłużej niż zwykle",
+      "starting": "Rozpoczynanie tłumaczenia...",
+      "documentInfo": "Dokument ma {data} stron",
+      "wordCount": "Dokument ma {data} słów",
+      "estimatedTime": "Dokument potrzebuje {data} minut",
+      "estimatedCost": "Zostaniesz obciążony {data} zł",
+      "documentType": "Typ dokumentu to {data} rozszerzenie",
+      "preparing": "Przygotowywanie dokumentu...",
+      "analyzing": "Analizowanie zawartości...",
+      "translating": "Tłumaczenie...",
+      "firstPageDone": "Suliko już przetłumaczył pierwszą stronę",
+      "checkingMistakes": "Suliko sprawdza błędy",
+      "stillChecking": "Nadal sprawdza...",
+      "enhancing": "Ulepszanie tłumaczenia...",
+      "finalizing": "Finalizowanie...",
+      "waiting": "Oczekiwanie na zakończenie...",
+      "thankYou": "Dziękujemy za cierpliwość",
+      "complete": "Tłumaczenie zakończone!",
+      "unexpectedError": "Wystąpił nieoczekiwany błąd podczas tłumaczenia."
+    }
+  },
+  "Profile": {
+    "fullName": "Pełne imię i nazwisko",
+    "name": "Imię",
+    "surname": "Nazwisko",
+    "userName": "Nazwa użytkownika",
+    "personalInformation": "Informacje osobiste",
+    "contactInformation": "Informacje kontaktowe",
+    "email": "Adres e-mail",
+    "phoneNumber": "Numer telefonu",
+    "edit": "Edytuj",
+    "logout": "Wyloguj się",
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "saving": "Zapisywanie...",
+    "notSpecified": "Nie określono",
+    "userNamePlaceholder": "Wprowadź nazwę użytkownika",
+    "surnamePlaceholder": "Wprowadź nazwisko",
+    "namePlaceholder": "Wprowadź imię",
+    "emailPlaceholder": "Wprowadź adres e-mail",
+    "balance": "Saldo",
+    "currentBalance": "Aktualne saldo"
+  },
+  "LanguageSwitcher": {
+    "english": "English",
+    "georgian": "ქართული",
+    "polish": "Polski",
+    "select": "Wybierz język"
+  },
+  "History": {
+    "title": "Historia tłumaczeń",
+    "noHistory": "Nie znaleziono historii tłumaczeń",
+    "loading": "Ładowanie historii"
+  },
+  "Chat": {
+    "details": "Szczegóły czatu",
+    "notFound": "Nie znaleziono czatu",
+    "originalFile": "Oryginalny plik",
+    "targetLanguage": "Język docelowy",
+    "created": "Data utworzenia",
+    "downloadResult": "Pobierz wynik"
+  },
+  "BetaBanner": "Ta strona internetowa jest obecnie w fazie testów beta. Funkcje mogą się zmieniać i mogą wystąpić błędy",
+  "SuggestionsPanel": {
+    "title": "Sugestie",
+    "noSuggestions": "Brak dostępnych sugestii.",
+    "generateMore": "Generuj więcej sugestii",
+    "generating": "Generowanie więcej sugestii...",
+    "allLoaded": "Wszystkie sugestie załadowane",
+    "accept": "Zaakceptuj",
+    "reject": "Odrzuć",
+    "editPlaceholder": "Edytuj sugerowany tekst...",
+    "retrySuggestions": "Ponów sugestie",
+    "showPreview": "Pokaż podgląd",
+    "hidePreview": "Ukryj podgląd",
+    "indicatorExact": "Dokładne dopasowanie: szybkie zastosowanie",
+    "indicatorNonExact": "Niedokładne: zastosowanie na serwerze"
+  },
+  "Pricing": {
+    "paymentModal": {
+      "title": "Płatność wkrótce",
+      "description": "System płatności zostanie wkrótce dodany. Proszę skontaktować się z nami",
+      "additionalInfo": "W przypadku jakichkolwiek pytań lub niestandardowych cen, proszę skontaktować się z nami pod powyższym adresem e-mail.",
+      "close": "Zamknij"
+    },
+    "email": "Info@suliko.ge",
+    "title": "Pakiety cenowe",
+    "description": "Wybierz pakiet, który Ci odpowiada",
+    "forTranslators": "Dla tłumaczy",
+    "forBusinesses": "Dla firm",
+    "discount": "Oszczędź 20%",
+    "limitedTime": "Ograniczony czas",
+    "mostPopular": "Najpopularniejszy",
+    "contactModal": {
+      "title": "Zacznij już dziś",
+      "subtitle": "Skontaktuj się z nami, aby rozpocząć swoją podróż tłumaczeniową",
+      "email": "Napisz do nas",
+      "phone": "Zadzwoń do nas",
+      "whatsapp": "WhatsApp",
+      "close": "Zamknij"
+    },
+    "trustedSection": {
+      "title": "Zaufane przez liderów branży",
+      "subtitle": "Dołącz do tysięcy profesjonalistów, którzy polegają na Suliko w swoich potrzebach tłumaczeniowych",
+      "contactSales": "Skontaktuj się ze sprzedażą",
+      "description": "Od startupów po firmy z listy Fortune 500, organizacje na całym świecie ufają Suliko w zakresie dokładnych, szybkich i niezawodnych usług tłumaczeniowych."
+    },
+    "starter": {
+      "title": "Startowy",
+      "price": "72 zł",
+      "period": "/miesiąc",
+      "documents": "75 dokumentów miesięcznie",
+      "description": "Idealny dla osób indywidualnych i małych projektów",
+      "features": {
+        "0": "75 dokumentów miesięcznie",
+        "1": "Podstawowe wsparcie językowe (50+ języków)",
+        "2": "Standardowa jakość tłumaczenia",
+        "3": "Wsparcie e-mailowe",
+        "4": "Podstawowe formaty plików (PDF, DOCX, TXT)",
+        "5": "5GB przechowywania",
+        "6": "Podstawowy dostęp do API"
+      },
+      "cta": "Rozpocznij bezpłatny okres próbny"
+    },
+    "professional": {
+      "title": "Profesjonalny",
+      "price": "220 zł",
+      "period": "/miesiąc",
+      "documents": "300 dokumentów miesięcznie",
+      "description": "Idealny dla rozwijających się firm i zespołów",
+      "features": {
+        "0": "300 dokumentów miesięcznie",
+        "1": "Premium wsparcie językowe (100+ języków)",
+        "2": "Zaawansowana jakość tłumaczenia z kontekstem",
+        "3": "Priorytetowe wsparcie e-mailowe i czatowe",
+        "4": "Wszystkie formaty plików, w tym obrazy",
+        "5": "50GB przechowywania",
+        "6": "Pełny dostęp do API z webhooks",
+        "7": "Narzędzia współpracy zespołowej",
+        "8": "Niestandardowe słowniki",
+        "9": "Pamięć tłumaczeń"
+      },
+      "cta": "Rozpocznij bezpłatny okres próbny",
+      "popular": "Najpopularniejszy"
+    },
+    "enterprise": {
+      "title": "Korporacyjny",
+      "price": "Niestandardowa",
+      "period": "",
+      "description": "Dla dużych organizacji i agencji",
+      "features": {
+        "0": "Nieograniczone dokumenty",
+        "1": "Wszystkie języki + niestandardowe modele",
+        "2": "Jakość tłumaczenia na poziomie ludzkim",
+        "3": "24/7 dedykowane wsparcie",
+        "4": "Wszystkie formaty plików + niestandardowe integracje",
+        "5": "Nieograniczone przechowywanie",
+        "6": "Zaawansowane API z SLA",
+        "7": "Zarządzanie wieloma użytkownikami",
+        "8": "Niestandardowe szkolenie i dostrajanie",
+        "9": "Opcje wdrożenia on-premise",
+        "10": "Certyfikaty zgodności i bezpieczeństwa",
+        "11": "Dedykowany menedżer konta"
+      },
+      "cta": "Skontaktuj się ze sprzedażą"
+    },
+    "business": {
+      "title": "Suliko Business",
+      "price": "500 GEL",
+      "period": "/miesiąc",
+      "description": "Idealny dla rozwijających się firm",
+      "features": {
+        "0": "500 tłumaczeń miesięcznie",
+        "1": "Do 800 słów na tłumaczenie",
+        "2": "Do 5,000 znaków na tłumaczenie",
+        "3": "2.50 GEL za tłumaczenie po przekroczeniu limitu",
+        "4": "Priorytetowe wsparcie e-mailowe",
+        "5": "Wszystkie formaty plików (PDF, DOCX, TXT)",
+        "6": "Podstawowy dostęp do API"
+      },
+      "cta": "Rozpocznij bezpłatny okres próbny"
+    },
+    "enterpriseBusiness": {
+      "title": "Suliko Enterprise",
+      "price": "1,500 GEL",
+      "period": "/miesiąc",
+      "description": "Dla dużych organizacji i agencji",
+      "features": {
+        "0": "Nieograniczone tłumaczenia",
+        "1": "Do 2,000 słów na tłumaczenie",
+        "2": "Do 12,500 znaków na tłumaczenie",
+        "3": "Brak opłat za przekroczenie",
+        "4": "Priorytetowe wsparcie",
+        "5": "Wszystkie formaty plików + niestandardowe integracje",
+        "6": "Zaawansowane API z SLA",
+        "7": "Zarządzanie wieloma użytkownikami",
+        "8": "Niestandardowe szkolenie i dostrajanie",
+        "9": "Opcje wdrożenia on-premise",
+        "10": "Certyfikaty zgodności i bezpieczeństwa",
+        "11": "Dedykowany menedżer konta"
+      },
+      "cta": "Skontaktuj się ze sprzedażą"
+    },
+    "select": "Wybierz",
+    "allPlansInclude": "Wszystkie plany obejmują:",
+    "freeTrial": "14-dniowy bezpłatny okres próbny",
+    "noSetupFees": "Brak opłat za konfigurację",
+    "cancelAnytime": "Anuluj w dowolnym momencie",
+    "needCustomSolution": "Potrzebujesz niestandardowego rozwiązania? Skontaktuj się z nami"
+  },
+  "WelcomeModal": {
+    "title": "Cześć!",
+    "thankYou": "Dziękujemy za korzystanie z Suliko.",
+    "betaNotice": "Proszę pamiętać, że strona internetowa działa w trybie beta, więc mogą wystąpić pewne problemy.",
+    "workingOnIssues": "Codziennie pracujemy nad naprawianiem tych problemów, a Twoja opinia jest bardzo ważna!",
+    "reportIssues": "Proszę, jeśli odkryjesz jakikolwiek rodzaj problemu (czy to w tłumaczeniu, czy techniczny), napisz do nas tutaj:",
+    "email": "Info@suliko.ge",
+    "copyEmail": "Kopiuj e-mail",
+    "emailCopied": "E-mail skopiowany!",
+    "thankYouEnd": "Dziękujemy.",
+    "close": "Zamknij"
+  },
+  "Landing": {
+    "title": "Suliko AI Tłumacz",
+    "description": "Tłumacz teksty i dokumenty natychmiast.",
+    "cta": "Zacznij tłumaczyć",
+    "viewPricing": "Zobacz ceny",
+    "aiPowered": "Tłumaczenie oparte na AI",
+    "languages": "100+ języków",
+    "documentSupport": "Wsparcie dokumentów",
+    "trustedBy": "Zaufane przez profesjonalistów na całym świecie",
+    "documentsTranslated": "Przetłumaczone dokumenty",
+    "languagesSupported": "Obsługiwane języki",
+    "accuracyRate": "Wskaźnik dokładności",
+    "supportAvailable": "Dostępne wsparcie"
+  },
+  "LandingHeader": {
+    "about": "O nas",
+    "pricing": "Ceny",
+    "testimonials": "Opinie",
+    "contact": "Kontakt",
+    "getStarted": "Zacznij"
+  },
+  "AboutSection": {
+    "title": "Dlaczego Suliko?",
+    "subtitle": "Rewolucjonizujemy tłumaczenie dokumentów za pomocą najnowocześniejszej technologii AI, czyniąc profesjonalne tłumaczenia dostępnymi dla wszystkich, wszędzie.",
+    "mission": "Nasza misja",
+    "missionText": "Zburzenie barier językowych i umożliwienie płynnej komunikacji między kulturami, branżami i granicami poprzez inteligentną, dokładną i dostępną technologię tłumaczenia.",
+    "features": {
+      "aiPowered": {
+        "title": "Inteligencja oparta na AI",
+        "description": "Zaawansowane sieci neuronowe szkolone na milionach dokumentów dla kontekstowo dokładnych tłumaczeń."
+      },
+      "security": {
+        "title": "Bezpieczeństwo korporacyjne",
+        "description": "Szyfrowanie na poziomie bankowym i ochrona prywatności dla wszystkich Twoich wrażliwych dokumentów i danych."
+      },
+      "speed": {
+        "title": "Niesamowicie szybkie",
+        "description": "Przetwarzanie dokumentów w sekundach, nie godzinach. Nasza zoptymalizowana infrastruktura dostarcza wyniki natychmiast."
+      },
+      "collaboration": {
+        "title": "Współpraca zespołowa",
+        "description": "Udostępniaj tłumaczenia, współpracuj nad projektami i utrzymuj spójność w całej organizacji."
+      },
+      "expertise": {
+        "title": "Ekspertyza branżowa",
+        "description": "Wyspecjalizowane modele dla dokumentów prawnych, medycznych, technicznych i biznesowych z dokładnością specyficzną dla domeny."
+      },
+      "quality": {
+        "title": "Zapewnienie jakości",
+        "description": "Wielowarstwowe kontrole jakości zapewniają, że każde tłumaczenie spełnia profesjonalne standardy i wymagania dokładności."
+      }
+    },
+    "stats": {
+      "documentsTranslated": "Przetłumaczone dokumenty",
+      "languagesSupported": "Obsługiwane języki",
+      "happyCustomers": "Zadowoleni klienci",
+      "uptimeGuarantee": "Gwarancja działania"
+    },
+    "values": {
+      "title": "Nasze podstawowe wartości",
+      "precision": {
+        "title": "Dokładność",
+        "description": "Każde tłumaczenie jest tworzone z skrupulatną uwagą na szczegóły i kontekst."
+      },
+      "trust": {
+        "title": "Zaufanie",
+        "description": "Bezpieczeństwo i prywatność Twoich danych są naszym najwyższym priorytetem we wszystkim, co robimy."
+      },
+      "innovation": {
+        "title": "Innowacja",
+        "description": "Ciągłe doskonalenie naszej technologii, aby dostarczać lepsze wyniki szybciej."
+      }
+    }
+  },
+  "TestimonialsSection": {
+    "title": "Co mówią nasi klienci",
+    "subtitle": "Dołącz do tysięcy zadowolonych klientów, którzy ufają Suliko w swoich potrzebach tłumaczeniowych",
+    "stats": {
+      "averageRating": "Średnia ocena",
+      "happyCustomers": "Zadowoleni klienci",
+      "customerSatisfaction": "Satysfakcja klientów"
+    },
+    "trustedBy": {
+      "title": "Zaufane przez liderów branży",
+      "subtitle": "Dołącz do firm na całym świecie, które polegają na Suliko w swoich potrzebach tłumaczeniowych"
+    },
+    "cta": {
+      "title": "Gotowy, aby do nich dołączyć?",
+      "subtitle": "Rozpocznij bezpłatny okres próbny już dziś i doświadcz różnicy, jaką może przynieść profesjonalne tłumaczenie AI.",
+      "startTrial": "Rozpocznij bezpłatny okres próbny",
+      "contactSales": "Skontaktuj się ze sprzedażą"
+    },
+    "testimonials": {
+      "sarah": {
+        "name": "Sarah Johnson",
+        "role": "Dyrektor marketingu",
+        "company": "TechCorp Solutions",
+        "content": "Suliko zrewolucjonizowało nasze międzynarodowe kampanie marketingowe. Jakość tłumaczenia jest wyjątkowa, a szybkość niesamowita. Zmniejszyliśmy nasze koszty tłumaczenia o 60%, jednocześnie poprawiając dokładność."
+      },
+      "michael": {
+        "name": "Michael Chen",
+        "role": "Radca prawny",
+        "company": "Global Law Firm",
+        "content": "Jako kancelaria prawna zajmująca się międzynarodowymi klientami, dokładność jest najważniejsza. Tłumaczenia dokumentów prawnych Suliko są precyzyjne i kontekstowo doskonałe. Stało się to niezastąpionym narzędziem dla naszej praktyki."
+      },
+      "elena": {
+        "name": "Elena Rodriguez",
+        "role": "Menedżer treści",
+        "company": "Digital Media Co.",
+        "content": "Funkcje współpracy zespołowej są fantastyczne. Teraz możemy zarządzać wielojęzycznymi treściami w całej naszej organizacji bezproblemowo. Integracja API znacznie usprawniła nasz przepływ pracy."
+      },
+      "david": {
+        "name": "David Kim",
+        "role": "Menedżer produktu",
+        "company": "StartupXYZ",
+        "content": "Od pierwszego dnia Suliko było przełomem dla naszego startupu. Cena jest sprawiedliwa, jakość wybitna, a zespół wsparcia niezwykle responsywny. Gorąco polecam!"
+      },
+      "anna": {
+        "name": "Anna Petrov",
+        "role": "Dyrektor badań",
+        "company": "Academic Institute",
+        "content": "Używamy Suliko do tłumaczenia prac badawczych i dokumentów akademickich. Dokładność techniczna jest imponująca i pięknie radzi sobie ze złożoną terminologią naukową. Niezbędne dla badaczy."
+      },
+      "james": {
+        "name": "James Wilson",
+        "role": "Menedżer operacji",
+        "company": "Manufacturing Inc.",
+        "content": "Funkcje korporacyjne to dokładnie to, czego potrzebowaliśmy. Niestandardowe słowniki, zarządzanie zespołem i możliwość utrzymania spójności we wszystkich naszych dokumentach technicznych były bezcenne."
+      }
+    }
+  },
+  "LandingFooter": {
+    "description": "Najbardziej zaawansowana na świecie platforma tłumaczeniowa oparta na AI. Zburzenie barier językowych z precyzją, szybkością i niezawodnością.",
+    "email": "Info@suliko.ge",
+    "phone": "+995 591 729 911",
+    "location": "Tbilisi, Georgia",
+    "links": {
+      "product": "Produkt",
+      "company": "Firma",
+      "support": "Wsparcie",
+      "legal": "Prawne",
+      "features": "Funkcje",
+      "pricing": "Ceny",
+      "apiDocs": "Dokumentacja API",
+      "integrations": "Integracje",
+      "aboutUs": "O nas",
+      "careers": "Kariera",
+      "blog": "Blog",
+      "press": "Prasa",
+      "helpCenter": "Centrum pomocy",
+      "contactSupport": "Kontakt ze wsparciem",
+      "status": "Status",
+      "community": "Społeczność",
+      "privacyPolicy": "Polityka prywatności",
+      "termsOfService": "Warunki usługi",
+      "cookiePolicy": "Polityka plików cookie",
+      "gdpr": "RODO"
+    },
+    "newsletter": {
+      "title": "Bądź na bieżąco",
+      "subtitle": "Otrzymuj najnowsze aktualizacje o nowych funkcjach, wskazówkach i wglądach branżowych.",
+      "placeholder": "Wprowadź swój adres e-mail",
+      "subscribe": "Zapisz się",
+      "subscribing": "Zapisywanie...",
+      "success": "✅ Pomyślnie zasubskrybowano newsletter!",
+      "error": "❌ Nie udało się zasubskrybować. Spróbuj ponownie."
+    },
+    "bottom": {
+      "copyright": "© 2025 Suliko. Wszystkie prawa zastrzeżone."
+    }
+  }
+}

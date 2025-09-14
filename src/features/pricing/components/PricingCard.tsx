@@ -1,7 +1,7 @@
 import { useTranslations, useLocale } from "next-intl";
 
 interface PricingCardProps {
-  type: 'starter' | 'professional' | 'custom';
+  type: 'starter' | 'professional' | 'custom' | 'business' | 'enterpriseBusiness';
   onSelect: () => void;
 }
 
@@ -30,7 +30,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
         </h3>
         <div className="mb-6 text-center">
           <span className="text-4xl font-bold text-card-foreground">
-            {locale === 'ka' ? '₾' : '$'}{t(`${type}.price`)}
+            {t(`${type}.price`)}
           </span>
           <span className="text-muted-foreground">
             {t(`${type}.period`)}

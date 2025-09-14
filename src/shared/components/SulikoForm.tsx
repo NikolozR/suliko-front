@@ -14,7 +14,7 @@ import type { RegisterParams } from "@/features/auth/services/authorizationServi
 import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 import PhoneVerificationSection from "./PhoneVerificationSection";
@@ -30,6 +30,7 @@ import {
 
 const SulikoForm: React.FC = () => {
   const t = useTranslations("Authorization");
+  const locale = useLocale();
   const router = useRouter();
   const { setToken, setRefreshToken, triggerWelcomeModal } = useAuthStore();
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -44,15 +45,15 @@ const SulikoForm: React.FC = () => {
   const formSchema = useMemo(
     () =>
       isLoginMode
-        ? createLoginFormSchema(t)
-        : createRegisterFormSchema(t).refine(
+        ? createLoginFormSchema(t, locale)
+        : createRegisterFormSchema(t, locale).refine(
             (data) => data.password === data.confirmPassword,
             {
               message: t("passwordsDoNotMatch"),
               path: ["confirmPassword"],
             }
           ),
-    [t, isLoginMode]
+    [t, locale, isLoginMode]
   );
 
   const form = useForm<LoginFormData | RegisterFormData>({

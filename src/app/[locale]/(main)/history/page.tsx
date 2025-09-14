@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { getChatHistory } from "@/features/chatHistory";
 import type { Chat } from "@/features/chatHistory";
 import { Card } from "@/features/ui/components/ui/card";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import { FileIcon, Clock } from "lucide-react";
 import Link from "next/link";
 
@@ -13,6 +13,7 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations("History");
+  const locale = useLocale();
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -53,7 +54,7 @@ export default function HistoryPage() {
                   <div className="flex items-center gap-2 text-sm text-muted-foreground mt-1">
                     <span className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
-                      {new Date(chat.lastActivityAt).toLocaleDateString()}
+                      {new Date(chat.lastActivityAt).toLocaleDateString(locale)}
                     </span>
                     <span>•</span>
                     <span className="uppercase text-xs bg-primary/10 text-primary px-2 py-0.5 rounded">

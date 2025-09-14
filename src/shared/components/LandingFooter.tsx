@@ -11,10 +11,49 @@ export default function LandingFooter() {
   const t = useTranslations("LandingFooter");
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [email, setEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      const response = await fetch('https://formsubmit.co/info@suliko.ge', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email: email,
+          subject: 'Newsletter Subscription',
+          message: `New newsletter subscription from: ${email}`,
+          _captcha: 'false',
+          _next: window.location.href,
+        }),
+      });
+
+      if (response.ok) {
+        setSubmitStatus('success');
+        setEmail('');
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   const footerLinks = {
     product: [
@@ -184,16 +223,36 @@ export default function LandingFooter() {
             <p className="text-muted-foreground mb-6">
               {t("newsletter.subtitle")}
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
+            <form onSubmit={handleNewsletterSubmit} className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
               <input
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder={t("newsletter.placeholder")}
+                required
                 className="flex-1 px-4 py-3 border border-border rounded-lg bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary"
+                disabled={isSubmitting}
               />
-              <button className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
-                {t("newsletter.subscribe")}
+              <button 
+                type="submit"
+                disabled={isSubmitting || !email}
+                className="bg-primary text-primary-foreground px-6 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitting ? t("newsletter.subscribing") : t("newsletter.subscribe")}
               </button>
-            </div>
+            </form>
+            
+            {/* Status Messages */}
+            {submitStatus === 'success' && (
+              <p className="mt-4 text-green-600 text-sm">
+                {t("newsletter.success")}
+              </p>
+            )}
+            {submitStatus === 'error' && (
+              <p className="mt-4 text-red-600 text-sm">
+                {t("newsletter.error")}
+              </p>
+            )}
           </div>
         </div>
 

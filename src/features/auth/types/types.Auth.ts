@@ -1,18 +1,24 @@
 import { z } from "zod";
 
-export const createLoginFormSchema = (t: (key: string) => string) => z.object({
+export const createLoginFormSchema = (t: (key: string) => string, locale?: string) => z.object({
   mobile: z.string()
     .min(1, t("phoneNumberRequiredError"))
-    .regex(/^5\d{8}$/, t("phoneNumberFormatError")),
+    .regex(
+      locale === 'pl' ? /^(\+48)?[1-9]\d{8}$/ : /^5\d{8}$/, 
+      t("phoneNumberFormatError")
+    ),
   password: z.string()
     .min(8, t("passwordMinLengthError"))
     .regex(/(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, t("passwordRegexError")),
 });
 
-export const createRegisterFormSchema = (t: (key: string) => string) => z.object({
+export const createRegisterFormSchema = (t: (key: string) => string, locale?: string) => z.object({
   mobile: z.string()
     .min(1, t("phoneNumberRequiredError"))
-    .regex(/^5\d{8}$/, t("phoneNumberFormatError")),
+    .regex(
+      locale === 'pl' ? /^(\+48)?[1-9]\d{8}$/ : /^5\d{8}$/, 
+      t("phoneNumberFormatError")
+    ),
   password: z.string()
     .min(8, t("passwordMinLengthError"))
     .regex(/(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, t("passwordRegexError")),
