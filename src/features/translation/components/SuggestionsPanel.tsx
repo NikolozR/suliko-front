@@ -13,6 +13,14 @@ import {
   settingUpSuggestions,
 } from "../utils/settingUpSuggestions";
 import { useTranslations } from "next-intl";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/features/ui/components/ui/dialog";
+import { Button } from "@/features/ui/components/ui/button";
 
 interface SuggestionsPanelProps {
   isSuggestionsLoading: boolean;
@@ -47,6 +55,9 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
   const [isGeneratingMore, setIsGeneratingMore] = useState(false);
   // const [previewBackup, setPreviewBackup] = useState<string | null>(null);
   const t = useTranslations();
+  const [previewSuggestionId, setPreviewSuggestionId] = useState<string | null>(
+    null
+  );
 
   const handleRemoveSuggestion = (id: string) => {
     removeSuggestion(id);
@@ -77,12 +88,14 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
         const { applySuggestion } = await import(
           "@/features/translation/services/suggestionsService"
         );
+        console.log("We Are Here");
         const data: ApplySuggestionResponse = await applySuggestion({
           translatedContent: translatedMarkdown,
           suggestionId: id,
           suggestion: s,
           targetLanguageId: currentTargetLanguageId,
         });
+        console.log("We Are Here 2", data);
         if (data.success) {
           setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
           acceptSuggestion(id);
@@ -264,7 +277,13 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
                   </button> */}
                   <button
                     type="button"
-                    onClick={() => handleAcceptSuggestion(s.id)}
+                    onClick={() => {
+                      if (canExactMatch(s, translatedMarkdown)) {
+                        setPreviewSuggestionId(s.id);
+                      } else {
+                        handleAcceptSuggestion(s.id);
+                      }
+                    }}
                     disabled={loadingSuggestionId === s.id}
                     className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
                     title={t("SuggestionsPanel.accept")}
@@ -357,6 +376,58 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           )}
         </button>
       </div>
+
+      {/* Preview Modal for exact-match suggestions (flame icon) */}
+      <Dialog
+        open={!!previewSuggestionId}
+        onOpenChange={(open) => {
+          if (!open) setPreviewSuggestionId(null);
+        }}
+      >
+        <DialogContent className="w-full sm:max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="text-center">
+              {t("SuggestionsPanel.previewTitle", { default: "Suggestion Preview" })}
+            </DialogTitle>
+          </DialogHeader>
+
+          {/* Two-column preview with vertical divider */}
+          <div className="mt-2 md:flex md:gap-4">
+            <div className="md:w-1/2">
+              <div className="rounded-md border bg-background p-3 h-64 overflow-auto whitespace-pre-wrap text-sm font-mono">
+                {suggestions.find((sg) => sg.id === previewSuggestionId)?.originalText || ""}
+              </div>
+            </div>
+            <div className="hidden md:block w-px bg-border" />
+            <div className="md:w-1/2 mt-4 md:mt-0">
+              <div className="rounded-md border bg-background p-3 h-64 overflow-auto whitespace-pre-wrap text-sm font-mono">
+                {suggestions.find((sg) => sg.id === previewSuggestionId)?.suggestedText || ""}
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="mt-4 flex !justify-center gap-2">
+            <Button
+              onClick={() => {
+                if (previewSuggestionId) {
+                  handleAcceptSuggestion(previewSuggestionId);
+                }
+                setPreviewSuggestionId(null);
+              }}
+              className="cursor-pointer"
+            >
+              {t("SuggestionsPanel.accept")}
+            </Button>
+            <Button
+              onClick={() => setPreviewSuggestionId(null)}
+              variant="outline"
+              className="cursor-pointer"
+            >
+              {t("SuggestionsPanel.cancel", { default: "Cancel" })}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

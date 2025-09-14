@@ -40,7 +40,6 @@ export async function settingUpChatSuggestions(jobId: string): Promise<string> {
         return suggestionsResponse.status;
       }
     } catch {
-      console.log("this is called");
       setSuggestions([]);
       return "empty";
     }

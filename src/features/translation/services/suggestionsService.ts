@@ -10,7 +10,6 @@ import { API_BASE_URL } from "@/shared/constants/api";
 export async function getSuggestions(
   jobId: string
 ): Promise<SuggestionsResponse | SuggestionsResponseProcessing> {
-  console.log("getSuggestions", jobId);     
   const endpoint = `/Document/translate/suggestions/${jobId}`;
 
   const { token, refreshToken } = useAuthStore.getState();
