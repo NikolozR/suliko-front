@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 
@@ -43,7 +43,6 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
   } = useDocumentTranslationStore();
   const PRICE_PER_PAGE = 1;
   const t = useTranslations("DocumentTranslationCard");
-  const locale = useLocale();
   
   // Update estimations when file changes
   useEffect(() => {

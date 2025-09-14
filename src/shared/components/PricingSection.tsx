@@ -12,7 +12,7 @@ interface Plan {
   price: string;
   period: string;
   description: string;
-  icon: any;
+  icon: React.ElementType;
   features: string[];
   cta: string;
   popular: boolean;

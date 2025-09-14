@@ -1,4 +1,4 @@
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 interface PricingCardProps {
   type: 'starter' | 'professional' | 'custom' | 'business' | 'enterpriseBusiness';
@@ -7,7 +7,6 @@ interface PricingCardProps {
 
 export function PricingCard({ type, onSelect }: PricingCardProps) {
   const t = useTranslations("Pricing");
-  const locale = useLocale();
 
   const renderCardContent = () => {
     if (type === 'custom') {

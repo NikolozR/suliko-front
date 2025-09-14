@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import type { Container, Engine } from "tsparticles-engine";
+import type { Engine } from "tsparticles-engine";
 import Particles from "react-particles";
 import { loadSlim } from "tsparticles-slim";
 import { useTheme } from "next-themes";
@@ -31,8 +31,7 @@ const SulikoParticles: React.FC<SulikoParticlesProps> = ({
   }, []);
 
   const particlesLoaded = useCallback(
-    async (container: Container | undefined) => {
-      // Particles loaded callback
+    async () => {
     },
     []
   );
