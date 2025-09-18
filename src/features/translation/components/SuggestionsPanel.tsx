@@ -1,4 +1,4 @@
-import { Check, X, Flame, Clock } from "lucide-react";
+import { Check, X, Flame, Clock, Copy } from "lucide-react";
 import { useState } from "react";
 import {
   ApplySuggestionResponse,
@@ -61,6 +61,28 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
 
   const handleRemoveSuggestion = (id: string) => {
     removeSuggestion(id);
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      if (!text) return;
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(text);
+      } else {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+          document.execCommand('copy');
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      }
+    } catch {}
   };
 
   const canExactMatch = (suggestion: Suggestion, content: string) => {
@@ -384,25 +406,70 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           if (!open) setPreviewSuggestionId(null);
         }}
       >
-        <DialogContent className="w-full sm:max-w-3xl">
+        <DialogContent className="w-full sm:max-w-4xl">
           <DialogHeader>
             <DialogTitle className="text-center">
               {t("SuggestionsPanel.previewTitle", { default: "Suggestion Preview" })}
             </DialogTitle>
           </DialogHeader>
 
-          {/* Two-column preview with vertical divider */}
-          <div className="mt-2 md:flex md:gap-4">
-            <div className="md:w-1/2">
-              <div className="rounded-md border bg-background p-3 h-64 overflow-auto whitespace-pre-wrap text-sm font-mono">
+          {/* Two-column preview with headers and actions */}
+          <div className="mt-2 grid grid-cols-1 md:grid-cols-2 md:gap-4">
+            {/* Original */}
+            <div>
+              <div className="mb-2 flex items-center justify-between">
+                <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Original
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const text = suggestions.find((sg) => sg.id === previewSuggestionId)?.originalText || "";
+                    copyToClipboard(text);
+                  }}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  title={"Copy"}
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                  {"Copy"}
+                </button>
+              </div>
+              <div className="rounded-md border bg-background p-3 h-72 md:h-96 overflow-auto whitespace-pre-wrap text-sm font-mono">
                 {suggestions.find((sg) => sg.id === previewSuggestionId)?.originalText || ""}
               </div>
             </div>
-            <div className="hidden md:block w-px bg-border" />
-            <div className="md:w-1/2 mt-4 md:mt-0">
-              <div className="rounded-md border bg-background p-3 h-64 overflow-auto whitespace-pre-wrap text-sm font-mono">
-                {suggestions.find((sg) => sg.id === previewSuggestionId)?.suggestedText || ""}
+
+            {/* Suggested */}
+            <div className="mt-4 md:mt-0">
+              <div className="mb-2 flex items-center justify-between">
+                <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                  Suggestion
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const text = suggestions.find((sg) => sg.id === previewSuggestionId)?.suggestedText || "";
+                    copyToClipboard(text);
+                  }}
+                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+                  title={"Copy"}
+                >
+                  <Copy className="h-3.5 w-3.5" />
+                  {"Copy"}
+                </button>
               </div>
+              <Textarea
+                value={
+                  (suggestions.find((sg) => sg.id === previewSuggestionId)?.suggestedText) || ""
+                }
+                onChange={(e) => {
+                  if (previewSuggestionId) {
+                    handleSuggestionTextChange(previewSuggestionId, e.target.value);
+                  }
+                }}
+                className="text-sm font-mono h-72 md:h-96 resize-none"
+                placeholder="Edit suggestion..."
+              />
             </div>
           </div>
 
