@@ -143,7 +143,7 @@ const SulikoForm: React.FC = () => {
         setToken(data.token);
         setRefreshToken(data.refreshToken);
         triggerWelcomeModal();
-        router.push("/");
+        router.push(`/${locale}/document`);
       } else {
         const registerValues = values as RegisterFormData;
         if (!isCodeSent) {
@@ -171,7 +171,7 @@ const SulikoForm: React.FC = () => {
         setToken(data.token);
         setRefreshToken(data.refreshToken);
         triggerWelcomeModal();
-        router.push("/");
+        router.push(`/${locale}/document`);
       }
     } catch (error: unknown) {
       const errorMessage =

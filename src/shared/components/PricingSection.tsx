@@ -272,7 +272,7 @@ export default function PricingSection() {
                       </span>
                     </div>
                   ) : (
-                    <div className="flex items-baseline">
+                    <div className="flex items-baseline justify-center">
                       <span className="text-4xl font-bold text-foreground">
                         {plan.price}
                       </span>

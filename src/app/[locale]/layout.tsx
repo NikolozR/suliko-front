@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import "../globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ThemeProvider, ThemeToggle } from "@/features/ui";
+import { ThemeProvider } from "@/features/ui";
 import BetaBanner from "@/shared/components/BetaBanner";
 import { Analytics } from '@vercel/analytics/next';
 
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
+import TopRightControls from "@/shared/components/TopRightControls";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -70,10 +70,7 @@ export default async function LocaleLayout({
       > 
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-          <div className="flex items-center gap-4 p-4 fixed top-0 right-0 z-50">
-              <LanguageSwitcher />
-              <ThemeToggle />
-            </div>
+            <TopRightControls />
             <BetaBanner />
             {children}
             <Analytics />

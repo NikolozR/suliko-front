@@ -344,7 +344,7 @@
     },
     "enterpriseBusiness": {
       "title": "Suliko Enterprise",
-      "price": "1,500 GEL",
+      "price": "1,500 GEL", 
       "period": "/miesiąc",
       "description": "Dla dużych organizacji i agencji",
       "features": {

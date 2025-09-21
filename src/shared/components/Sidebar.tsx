@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
@@ -59,6 +60,7 @@ interface SidebarProps {
 
 export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const pathname = usePathname();
+  const locale = useLocale();
   const { token, reset } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();
@@ -143,7 +145,14 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
       >
         <div className={`flex items-center ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
           {!effectiveIsCollapsed && (
-            <SulikoLogo className="transition-all duration-300" />
+            <button
+              type="button"
+              onClick={() => router.push(`/${locale}`)}
+              className="transition-all duration-300 cursor-pointer"
+              aria-label="Go to landing page"
+            >
+              <SulikoLogo />
+            </button>
           )}
           <button
             onClick={handleCollapseToggle}

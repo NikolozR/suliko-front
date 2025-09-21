@@ -333,7 +333,7 @@
     },
     "business": {
       "title": "Suliko Business",
-      "price": "500 GEL",
+      "price": "$ 185",
       "period": "/month",
       "description": "Perfect for growing businesses",
       "features": {
@@ -349,7 +349,7 @@
     },
     "enterpriseBusiness": {
       "title": "Suliko Enterprise",
-      "price": "1,500 GEL",
+      "price": "$ 560",
       "period": "/month",
       "description": "For large organizations and agencies",
       "features": {
