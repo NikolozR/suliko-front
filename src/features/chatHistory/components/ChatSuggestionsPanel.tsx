@@ -71,6 +71,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
           suggestion: s,
           targetLanguageId: currentTargetLanguageId,
         });
+         console.log(data, "APPLY SUGGESTION RESPONSE");
         if (data.success) {
           setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
           acceptSuggestion(id);
