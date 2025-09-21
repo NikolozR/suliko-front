@@ -306,6 +306,10 @@
       "cta": "Start Free Trial",
       "popular": "Most Popular"
     },
+    "custom": {
+      "title": "Custom",
+      "description": "Contact us for a tailored plan"
+    },
     "enterprise": {
       "title": "Enterprise",
       "price": "Custom",
