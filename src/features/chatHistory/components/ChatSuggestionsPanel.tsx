@@ -66,10 +66,12 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
           "@/features/translation/services/suggestionsService"
         );
         const data: ApplySuggestionResponse = await applySuggestion({
-          translatedContent: translatedMarkdown,
-          suggestionId: id,
+          chatId: jobId,
           suggestion: s,
           targetLanguageId: currentTargetLanguageId,
+          outputLanguageId: currentTargetLanguageId,
+          editedOriginalText: s.originalText,
+          editedSuggestedText: s.suggestedText,
         });
          console.log(data, "APPLY SUGGESTION RESPONSE");
         if (data.success) {

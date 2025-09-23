@@ -10,6 +10,7 @@ interface DocumentTranslationState {
   originalTargetLanguageId: number;
   sourceLanguageId: number;
   jobId: string;
+  chatId: string;
   shouldResetZoom: boolean;
   realPageCount: number | null;
   isCountingPages: boolean;
@@ -28,6 +29,7 @@ interface DocumentTranslationState {
   setSuggestions: (suggestions: Suggestion[]) => void;
   setShouldResetZoom: (shouldReset: boolean) => void;
   setJobId: (jobId: string) => void;
+  setChatId: (chatId: string) => void;
   setRealPageCount: (pageCount: number | null) => void;
   setIsCountingPages: (isLoading: boolean) => void;
   setIsTranslating: (isTranslating: boolean) => void;
@@ -49,6 +51,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   sourceLanguageId: 0,
   shouldResetZoom: false,
   jobId: '',
+  chatId: '',
   realPageCount: null,
   isCountingPages: false,
   isTranslating: false,
@@ -57,6 +60,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   estimatedCost: '0.00',
   estimatedWordCount: 0,
   setJobId: (jobId: string) => set({ jobId: jobId }),
+  setChatId: (chatId: string) => set({ chatId: chatId }),
   setCurrentSourceLanguageId: (languageId) => set({ currentSourceLanguageId: languageId }),
   setCurrentTargetLanguageId: (languageId) => {
     set({ currentTargetLanguageId: languageId });
@@ -92,6 +96,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
     originalTargetLanguageId: 1,
     sourceLanguageId: 0,
     jobId: '',
+    chatId: '',
     realPageCount: null,
     isCountingPages: false,
     isTranslating: false,

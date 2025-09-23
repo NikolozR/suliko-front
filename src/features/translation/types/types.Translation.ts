@@ -35,10 +35,12 @@ export interface JobResultResponseOnError {
 
 export interface DocumentTranslationResponse {
   jobId: string;
+  chatId: string;
   message: string;
   estimatedTimeMinutes: number;
   fileType: string;
   fileSizeKB: number;
+  model: string;
 }
 
 
@@ -66,10 +68,12 @@ export interface SuggestionsResponseProcessing {
 }
 
 export interface ApplySuggestionParams {
-  translatedContent: string;
-  suggestionId: string;
+  chatId: string;
   suggestion: Suggestion;
   targetLanguageId: number;
+  outputLanguageId: number;
+  editedOriginalText: string;
+  editedSuggestedText: string;
 }
 
 

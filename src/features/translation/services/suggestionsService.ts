@@ -120,6 +120,7 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
 
     if (response.status >= 200 && response.status < 300) {
       const data = await response.json();
+      console.log(data,  "FROM THE RESPONSE OF APPLY SUGGESTION");
       return data;
 
     }

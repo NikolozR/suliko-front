@@ -19,7 +19,7 @@ export async function documentTranslatingWithJobId(
     window.location.pathname.startsWith("/en")
       ? 2
       : 1;
-  const { setJobId, setTranslatedMarkdown } =
+  const { setJobId, setTranslatedMarkdown, setChatId } =
     useDocumentTranslationStore.getState();
   const { currentFile } = useDocumentTranslationStore.getState();
   const { fetchUserProfile } = useUserStore.getState();
@@ -41,6 +41,7 @@ export async function documentTranslatingWithJobId(
 
   const currentJobId = result.jobId;
   setJobId(currentJobId);
+  setChatId(result.chatId);
   if (currentJobId) {
     onProgress?.(25, "Processing document...");
     while (true) {
