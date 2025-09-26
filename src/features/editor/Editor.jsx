@@ -8,7 +8,7 @@ import { CKEditor, useCKEditorCloud } from "@ckeditor/ckeditor5-react";
 
 import "./editor.css";
 
-const LICENSE_KEY = process.env.CKEDITOR_LICENSE_KEY;
+const LICENSE_KEY = process.env.NEXT_PUBLIC_CKEDITOR_LICENSE_KEY;
 
 
 
