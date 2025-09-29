@@ -83,10 +83,8 @@ export default function LandingFooter() {
   };
 
   const socialLinks = [
-    { icon: Facebook, href: "#", label: "Facebook" },
-    { icon: Twitter, href: "#", label: "Twitter" },
-    { icon: Linkedin, href: "#", label: "LinkedIn" },
-    { icon: Instagram, href: "#", label: "Instagram" },
+    { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61564358761003", label: "Facebook" },
+    { icon: Linkedin, href: "#", label: "https://www.linkedin.com/company/suliko-ai/?viewAsMember=true" },
   ];
 
   return (
@@ -134,6 +132,8 @@ export default function LandingFooter() {
                   <a
                     key={index}
                     href={social.href}
+                    target={social.href.startsWith('http') ? '_blank' : undefined}
+                    rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
                     className="p-2 rounded-full bg-background hover:bg-accent transition-colors"
                     aria-label={social.label}
                   >

@@ -391,7 +391,7 @@ export default function PricingSection() {
                </a>
 
                <a
-                 href="tel:+995322123456"
+                 href="tel:+995591729911"
                  className="flex items-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
                >
                  <div className="p-2 bg-primary/10 rounded-full mr-4 group-hover:bg-primary/20 transition-colors">
@@ -399,12 +399,12 @@ export default function PricingSection() {
                  </div>
                  <div>
                    <p className="font-medium text-foreground">{t("contactModal.phone")}</p>
-                   <p className="text-sm text-muted-foreground">+995 322 123 456</p>
+                   <p className="text-sm text-muted-foreground">+995 591 729 911</p>
                  </div>
                </a>
 
                <a
-                 href="https://wa.me/995322123456"
+                 href="https://wa.me/995591729911"
                  target="_blank"
                  rel="noopener noreferrer"
                  className="flex items-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
@@ -414,7 +414,7 @@ export default function PricingSection() {
                  </div>
                  <div>
                    <p className="font-medium text-foreground">{t("contactModal.whatsapp")}</p>
-                   <p className="text-sm text-muted-foreground">+995 322 123 456</p>
+                   <p className="text-sm text-muted-foreground">+995 591 729 911</p>
                  </div>
                </a>
              </div>
