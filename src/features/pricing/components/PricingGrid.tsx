@@ -20,9 +20,9 @@ export function PricingGrid() {
   return (
     <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <PricingCard type="starter" onSelect={() => handleSelectPackage(10, 'GEL', 'GE')} />
-        <PricingCard type="professional" onSelect={() => handleSelectPackage(20, 'GEL', 'GE')} />
-        <PricingCard type="custom" onSelect={handleSelectNotReadyPackage} />
+        <PricingCard type="starter" onSelect={() => handleSelectPackage(20, 'USD', 'US')} />
+        <PricingCard type="professional" onSelect={() => handleSelectPackage(67, 'USD', 'US')} />
+        <PricingCard type="enterprise" onSelect={handleSelectNotReadyPackage} />
       </div>
 
       <PaymentModal 
