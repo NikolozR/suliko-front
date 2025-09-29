@@ -2,7 +2,7 @@ import React from "react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { API_BASE_URL } from "@/shared/constants/api";
-import UsersTable from "./users-table";
+import UsersTable, { User as TableUser } from "./users-table";
 
 export default async function AdminDashboardPage() {
   const cookieStore = await cookies();
@@ -17,7 +17,19 @@ export default async function AdminDashboardPage() {
       </div>
     );
   }
-  let users: any[] = [];
+  type AdminUser = {
+    id: string;
+    userName: string;
+    email?: string;
+    phoneNUmber?: string;
+    phoneNumber?: string;
+    firstName?: string;
+    lastName?: string;
+    roleId?: string;
+    roleName?: string;
+    balance?: number;
+  };
+  let users: AdminUser[] = [];
   let total = 0;
   let loadError: string | null = null;
   try {
@@ -29,11 +41,11 @@ export default async function AdminDashboardPage() {
       loadError = `Failed to load users: ${res.status}`;
     } else {
       const data = await res.json();
-      users = Array.isArray(data) ? data : (data?.items ?? []);
+      users = (Array.isArray(data) ? data : (data?.items ?? [])) as AdminUser[];
       total = Array.isArray(data) ? data.length : (data?.total ?? users.length);
     }
-  } catch (e: any) {
-    loadError = e?.message || "Failed to load users";
+  } catch (e: unknown) {
+    loadError = e instanceof Error ? e.message : "Failed to load users";
   }
 
   return (
@@ -50,7 +62,7 @@ export default async function AdminDashboardPage() {
       {loadError ? (
         <div className="text-red-600 text-sm">{loadError}</div>
       ) : (
-        <UsersTable initialUsers={users.slice(0, 50)} />
+        <UsersTable initialUsers={users.slice(0, 50) as TableUser[]} />
       )}
     </div>
   );

@@ -38,8 +38,9 @@ export default function AdminLoginPage() {
         document.cookie = `adminAllowed=1; expires=${expires.toUTCString()}; path=/; SameSite=Strict; Secure`;
       }
       router.push(`/${locale}/admin`);
-    } catch (err: any) {
-      setError(err?.message || "Login failed");
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : "Login failed";
+      setError(message);
     } finally {
       setLoading(false);
     }

@@ -1,11 +1,11 @@
 "use client";
-import React, { useMemo, useState, useMemo as useMemoAlias } from "react";
+import React, { useMemo, useState } from "react";
 import { updateUserProfile } from "@/features/auth/services/userService";
 
-type User = {
+export type User = {
   id: string;
   userName: string;
-  email: string;
+  email?: string;
   phoneNUmber?: string;
   phoneNumber?: string;
   firstName?: string;
@@ -34,15 +34,16 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       await updateUserProfile({
         id: row.id,
         userName: row.userName,
-        email: row.email,
+        email: row.email || "",
         phoneNUmber: row.phoneNUmber || row.phoneNumber || "",
         firstName: row.firstName || "",
         lastName: row.lastName || "",
         roleId: row.roleId || "",
         balance: typeof row.balance === "number" ? row.balance : 0,
       });
-    } catch (e: any) {
-      setError(e?.message || "Failed to save user");
+    } catch (e: unknown) {
+      const message = e instanceof Error ? e.message : "Failed to save user";
+      setError(message);
     } finally {
       setSavingId(null);
     }
@@ -69,8 +70,8 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
     if (!q) return rows;
     return rows.filter((u) => {
       const name = `${u.firstName || ""} ${u.lastName || ""}`.trim().toLowerCase();
-      const phone = (u.phoneNUmber || (u as any).phoneNumber || "").toString().toLowerCase();
-      const userName = (u.userName || (u as any).username || "").toString().toLowerCase();
+      const phone = (u.phoneNUmber || u.phoneNumber || "").toString().toLowerCase();
+      const userName = (u.userName || "").toString().toLowerCase();
       return (
         name.includes(q) ||
         phone.includes(q) ||
@@ -131,16 +132,16 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
           </tr>
         </thead>
         <tbody>
-          {displayedRows.map((u) => (
+          {displayedRows.map((u: User) => (
             <tr key={u.id} className="border-t">
               <td className="p-2">{u.id}</td>
-              <td className="p-2">{u.userName || (u as any).username || "-"}</td>
+              <td className="p-2">{u.userName || "-"}</td>
               <td className="p-2">{u.email || "-"}</td>
-              <td className="p-2">{u.phoneNUmber || (u as any).phoneNumber || "-"}</td>
+              <td className="p-2">{u.phoneNUmber || u.phoneNumber || "-"}</td>
               <td className="p-2">{u.firstName || "-"}</td>
               <td className="p-2">{u.lastName || "-"}</td>
               <td className="p-2">{u.roleId || "-"}</td>
-              <td className="p-2">{u.roleName || (u as any).role || "-"}</td>
+              <td className="p-2">{u.roleName || "-"}</td>
               <td className="p-2 text-right">
                 <input
                   type="number"
