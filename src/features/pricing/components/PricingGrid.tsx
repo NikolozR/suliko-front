@@ -16,7 +16,7 @@ export function PricingGrid() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         <PricingCard type="starter" onSelect={handleSelectPackage} />
         <PricingCard type="professional" onSelect={handleSelectPackage} />
-        <PricingCard type="custom" onSelect={handleSelectPackage} />
+        <PricingCard type="payAsYouGo" onSelect={handleSelectPackage} />
       </div>
 
       <PaymentModal 

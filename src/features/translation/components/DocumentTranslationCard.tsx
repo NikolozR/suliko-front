@@ -10,6 +10,7 @@ import {
 } from "@/features/ui/components/ui/card";
 import { Upload } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
+import { useUserStore } from "@/features/auth/store/userStore";
 import { AuthModal } from "@/features/auth";
 import { PageWarningModal } from "@/shared/components/PageWarningModal";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
@@ -78,6 +79,7 @@ const DocumentTranslationCard = () => {
   const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
   const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
+  const { userProfile } = useUserStore();
   const {
     realPageCount,
     currentFile,
@@ -225,6 +227,15 @@ const DocumentTranslationCard = () => {
     }
 
     if (!data.currentFile || data.currentFile.length === 0) {
+      return;
+    }
+
+    // Check if user has sufficient page balance
+    const pagesNeeded = Math.ceil(estimatedPageCount || 0);
+    const userPages = Math.floor(userProfile?.balance || 0);
+    
+    if (pagesNeeded > userPages) {
+      setError(t('insufficientPages', { needed: pagesNeeded, available: userPages }));
       return;
     }
 

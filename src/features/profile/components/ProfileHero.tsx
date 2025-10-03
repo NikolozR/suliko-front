@@ -102,7 +102,7 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
                 {t("currentBalance")}
               </Badge>
               <p className="text-xl text-white/80">
-                ₾{userProfile.balance?.toFixed(2) || '0.00'}
+                {Math.floor(userProfile.balance || 0)} pages
               </p>
             </div>
           </div>

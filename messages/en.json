@@ -126,7 +126,9 @@
       "page": "page",
       "minutes": "minutes",
       "minute": "minute",
-      "estimatedCost": "Estimated cost: {cost} USD"
+      "estimatedCost": "Pages to be used: {cost}",
+      "insufficientPages": "Insufficient page balance. You need {needed} pages but only have {available} pages. Please purchase more pages to continue.",
+      "changeFile": "Change File"
     },
     "documentPreview": {
       "loadingText": "Loading text file...",
@@ -164,7 +166,7 @@
       "documentInfo": "Document has {data} pages",
       "wordCount": "Document has {data} words",
       "estimatedTime": "Document needs {data} minutes",
-      "estimatedCost": "You will be charged {data} USD",
+      "estimatedCost": "Pages to be used: {data}",
       "documentType": "Document type is {data} extension",
       "preparing": "Preparing document...",
       "analyzing": "Analyzing content...",
@@ -270,12 +272,12 @@
     },
     "starter": {
       "title": "Starter",
-      "price": "$20",
+      "price": "57 ₾",
       "period": "/month",
-      "documents": "75 documents per month",
+      "documents": "75 pages per month",
       "description": "Perfect for individuals and small projects",
       "features": {
-        "0": "75 documents per month",
+        "0": "75 pages per month",
         "1": "Basic language support (50+ languages)",
         "2": "Standard translation quality",
         "3": "Email support",
@@ -287,12 +289,12 @@
     },
     "professional": {
       "title": "Professional",
-      "price": "$67",
+      "price": "173 ₾",
       "period": "/month",
-      "documents": "300 documents per month",
+      "documents": "300 pages per month",
       "description": "Ideal for growing businesses and teams",
       "features": {
-        "0": "300 documents per month",
+        "0": "300 pages per month",
         "1": "Premium language support (100+ languages)",
         "2": "Advanced translation quality with context",
         "3": "Priority email & chat support",
@@ -312,7 +314,7 @@
       "period": "",
       "description": "For large organizations and agencies",
       "features": {
-        "0": "Unlimited documents",
+        "0": "Unlimited pages",
         "1": "All languages + custom models",
         "2": "Human-level translation quality",
         "3": "24/7 dedicated support",
@@ -329,27 +331,44 @@
     },
     "business": {
       "title": "Suliko Business",
-      "price": "$ 185",
+      "price": "500 ₾",
       "period": "/month",
       "description": "Perfect for growing businesses",
       "features": {
-        "0": "500 translations per month",
+        "0": "500 pages per month",
         "1": "Up to 800 words per translation",
         "2": "Up to 5,000 characters per translation",
-        "3": "2.50 GEL per translation after limit",
+        "3": "2.50 ₾ per translation after limit",
         "4": "Priority email support",
         "5": "All file formats (PDF, DOCX, TXT)",
         "6": "Basic API access"
       },
       "cta": "Start Free Trial"
     },
+    "payAsYouGo": {
+      "title": "Pay as you go",
+      "price": "10 ₾",
+      "period": "→ 12 pages",
+      "documents": "12 pages per purchase",
+      "description": "Perfect for occasional translations",
+      "features": {
+        "0": "12 pages per 10 ₾",
+        "1": "No monthly commitment",
+        "2": "Use when needed",
+        "3": "Minimum purchase: 10 ₾",
+        "4": "Pages never expire",
+        "5": "All file formats (PDF, DOCX, TXT)",
+        "6": "Basic API access"
+      },
+      "cta": "Purchase Pages"
+    },
     "enterpriseBusiness": {
       "title": "Suliko Enterprise",
-      "price": "$ 560",
+      "price": "1500 ₾",
       "period": "/month",
       "description": "For large organizations and agencies",
       "features": {
-        "0": "Unlimited translations",
+        "0": "Unlimited pages",
         "1": "Up to 2,000 words per translation",
         "2": "Up to 12,500 characters per translation",
         "3": "No overage fees",

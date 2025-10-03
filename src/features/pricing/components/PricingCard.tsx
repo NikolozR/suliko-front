@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 
 interface PricingCardProps {
-  type: 'starter' | 'professional' | 'custom' | 'business' | 'enterpriseBusiness';
+  type: 'starter' | 'professional' | 'payAsYouGo' | 'custom' | 'business' | 'enterpriseBusiness';
   onSelect: () => void;
 }
 

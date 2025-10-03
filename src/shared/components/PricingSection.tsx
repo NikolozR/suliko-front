@@ -261,7 +261,7 @@ export default function PricingSection() {
                     <div className="flex flex-col items-center">
                       <div className="flex items-baseline gap-2">
                          <span className="text-2xl text-muted-foreground line-through">
-                           {plan.price === "$67" ? "$85" : plan.price === "500 GEL" ? "625 GEL" : plan.price}
+                           {plan.price === "173 ₾" ? "216 ₾" : plan.price === "500 ₾" ? "625 ₾" : plan.price}
                          </span>
                         <span className="text-4xl font-bold text-foreground">
                           {plan.price}

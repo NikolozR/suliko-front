@@ -124,7 +124,9 @@
       "page": "strona",
       "minutes": "minuty",
       "minute": "minuta",
-      "estimatedCost": "Szacowany koszt: {cost} zł"
+      "estimatedCost": "Strony do użycia: {cost}",
+      "insufficientPages": "Niewystarczający balans stron. Potrzebujesz {needed} stron, ale masz tylko {available} stron. Proszę zakupić więcej stron, aby kontynuować.",
+      "changeFile": "Zmień plik"
     },
     "documentPreview": {
       "loadingText": "Ładowanie pliku tekstowego...",
@@ -161,7 +163,7 @@
       "documentInfo": "Dokument ma {data} stron",
       "wordCount": "Dokument ma {data} słów",
       "estimatedTime": "Dokument potrzebuje {data} minut",
-      "estimatedCost": "Zostaniesz obciążony {data} zł",
+      "estimatedCost": "Strony do użycia: {data}",
       "documentType": "Typ dokumentu to {data} rozszerzenie",
       "preparing": "Przygotowywanie dokumentu...",
       "analyzing": "Analizowanie zawartości...",
@@ -265,12 +267,12 @@
     },
     "starter": {
       "title": "Startowy",
-      "price": "72 zł",
+      "price": "57 ₾",
       "period": "/miesiąc",
-      "documents": "75 dokumentów miesięcznie",
+      "documents": "75 stron miesięcznie",
       "description": "Idealny dla osób indywidualnych i małych projektów",
       "features": {
-        "0": "75 dokumentów miesięcznie",
+        "0": "75 stron miesięcznie",
         "1": "Podstawowe wsparcie językowe (50+ języków)",
         "2": "Standardowa jakość tłumaczenia",
         "3": "Wsparcie e-mailowe",
@@ -282,12 +284,12 @@
     },
     "professional": {
       "title": "Profesjonalny",
-      "price": "220 zł",
+      "price": "173 ₾",
       "period": "/miesiąc",
-      "documents": "300 dokumentów miesięcznie",
+      "documents": "300 stron miesięcznie",
       "description": "Idealny dla rozwijających się firm i zespołów",
       "features": {
-        "0": "300 dokumentów miesięcznie",
+        "0": "300 stron miesięcznie",
         "1": "Premium wsparcie językowe (100+ języków)",
         "2": "Zaawansowana jakość tłumaczenia z kontekstem",
         "3": "Priorytetowe wsparcie e-mailowe i czatowe",
@@ -307,7 +309,7 @@
       "period": "",
       "description": "Dla dużych organizacji i agencji",
       "features": {
-        "0": "Nieograniczone dokumenty",
+        "0": "Nieograniczone strony",
         "1": "Wszystkie języki + niestandardowe modele",
         "2": "Jakość tłumaczenia na poziomie ludzkim",
         "3": "24/7 dedykowane wsparcie",
@@ -324,23 +326,40 @@
     },
     "business": {
       "title": "Suliko Business",
-      "price": "500 GEL",
+      "price": "500 ₾",
       "period": "/miesiąc",
       "description": "Idealny dla rozwijających się firm",
       "features": {
-        "0": "500 tłumaczeń miesięcznie",
+        "0": "500 stron miesięcznie",
         "1": "Do 800 słów na tłumaczenie",
         "2": "Do 5,000 znaków na tłumaczenie",
-        "3": "2.50 GEL za tłumaczenie po przekroczeniu limitu",
+        "3": "2.50 ₾ za tłumaczenie po przekroczeniu limitu",
         "4": "Priorytetowe wsparcie e-mailowe",
         "5": "Wszystkie formaty plików (PDF, DOCX, TXT)",
         "6": "Podstawowy dostęp do API"
       },
       "cta": "Rozpocznij bezpłatny okres próbny"
     },
+    "payAsYouGo": {
+      "title": "Płać za użycie",
+      "price": "10 ₾",
+      "period": "→ 12 stron",
+      "documents": "12 stron za zakup",
+      "description": "Idealny do sporadycznych tłumaczeń",
+      "features": {
+        "0": "12 stron za 10 ₾",
+        "1": "Brak miesięcznego zobowiązania",
+        "2": "Używaj gdy potrzebujesz",
+        "3": "Minimalny zakup: 10 ₾",
+        "4": "Strony nigdy nie wygasają",
+        "5": "Wszystkie formaty plików (PDF, DOCX, TXT)",
+        "6": "Podstawowy dostęp do API"
+      },
+      "cta": "Kup strony"
+    },
     "enterpriseBusiness": {
       "title": "Suliko Enterprise",
-      "price": "1,500 GEL", 
+      "price": "1,500 ₾", 
       "period": "/miesiąc",
       "description": "Dla dużych organizacji i agencji",
       "features": {

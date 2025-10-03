@@ -55,7 +55,7 @@ const TextTranslationCard = () => {
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchUserProfile } = useUserStore();
+  const { fetchUserProfile, userProfile } = useUserStore();
   
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
@@ -191,6 +191,15 @@ const TextTranslationCard = () => {
       return;
     }
 
+    // Check if user has sufficient page balance
+    const pagesNeeded = Math.ceil((data.currentTextValue.length / 250) * 0.01);
+    const userPages = Math.floor(userProfile?.balance || 0);
+    
+    if (pagesNeeded > userPages) {
+      setError(t('insufficientPages', { needed: pagesNeeded, available: userPages }));
+      return;
+    }
+
     setTextLoading(true);
     try {
       const params: TextTranslateUserContentParams = {
@@ -299,7 +308,7 @@ const TextTranslationCard = () => {
                 {/* Cost display for input text */}
                 {currentTextValue && parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
                   <div className="mt-2 text-suliko-default-color font-semibold text-sm">
-                    Estimated cost: {((currentTextValue.length / 250) * 0.01).toFixed(2)} {locale === 'ka' ? '₾' : locale === 'pl' ? 'zł' : '$'}
+                    Pages to be used: {Math.ceil((currentTextValue.length / 250) * 0.01)}
                   </div>
                 )}
               </div>
@@ -340,7 +349,7 @@ const TextTranslationCard = () => {
                   {/* Cost display for translated text */}
                   {parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
                     <div className="mt-2 text-suliko-default-color font-semibold text-sm">
-                      Estimated cost: {((currentTextValue.length / 250) * 0.01).toFixed(2)} {locale === 'ka' ? '₾' : locale === 'pl' ? 'zł' : '$'}
+                      Pages to be used: {Math.ceil((currentTextValue.length / 250) * 0.01)}
                     </div>
                   )}
                 </div>

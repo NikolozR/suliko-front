@@ -4,6 +4,7 @@ import { FileText, X } from "lucide-react";
 import { Label } from "@/features/ui/components/ui/label";
 import { Input } from "@/features/ui/components/ui/input";
 import { Button } from "@/features/ui/components/ui/button";
+import { useTranslations } from "next-intl";
 
 interface FileInfoDisplayProps {
   file: File;
@@ -20,6 +21,7 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
   onRemoveFile, 
   id = "file-upload-change" 
 }) => {
+  const t = useTranslations("DocumentTranslationCard");
   return (
     <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
       <div className="flex items-center gap-3">
@@ -40,7 +42,7 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
             className="cursor-pointer"
             asChild
           >
-            <span>ფაილის შეცვლა</span>
+            <span>{t("pageCount.changeFile")}</span>
           </Button>
         </Label>
         <Input
