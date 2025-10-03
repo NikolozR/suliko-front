@@ -5,7 +5,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { useRouter } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
-import { Check, Star, Zap, Crown, Building2, Users, Sparkles, Clock, Mail, Phone, MessageCircle, X } from "lucide-react";
+import { Check, Star, Zap, Building2, Users, Sparkles, Clock, Mail, Phone, MessageCircle, X, CreditCard } from "lucide-react";
+import { PayAsYouGoModal } from "@/features/pricing/components/PayAsYouGoModal";
 
 interface Plan {
   name: string;
@@ -26,10 +27,13 @@ export default function PricingSection() {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'translators' | 'businesses'>('translators');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isPayAsYouGoModalOpen, setIsPayAsYouGoModalOpen] = useState(false);
 
   const handleButtonClick = (ctaText: string) => {
     if (ctaText === "Contact Sales" || ctaText === "დაგვიკავშირდით" || ctaText === "Skontaktuj się ze sprzedażą") {
       setIsContactModalOpen(true);
+    } else if (ctaText === "Purchase Pages" || ctaText === "გვერდების შეძენა" || ctaText === "Kup strony") {
+      setIsPayAsYouGoModalOpen(true);
     } else {
       // Redirect to document translation page
       router.push(`/${locale}/document`);
@@ -80,28 +84,20 @@ export default function PricingSection() {
       discount: true
     },
     {
-      name: t("enterprise.title"),
-      price: t("enterprise.price"),
-      period: t("enterprise.period"),
-      description: t("enterprise.description"),
-      icon: Crown,
+      name: t("payAsYouGo.title"),
+      price: t("payAsYouGo.price"),
+      period: t("payAsYouGo.period"),
+      description: t("payAsYouGo.description"),
+      icon: CreditCard,
       features: [
-        t("enterprise.features.0"),
-        t("enterprise.features.1"),
-        t("enterprise.features.2"),
-        t("enterprise.features.3"),
-        t("enterprise.features.4"),
-        t("enterprise.features.5"),
-        t("enterprise.features.6"),
-        t("enterprise.features.7"),
-        t("enterprise.features.8"),
-        t("enterprise.features.9"),
-        t("enterprise.features.10"),
-        t("enterprise.features.11")
+        t("payAsYouGo.features.0"),
+        t("payAsYouGo.features.1"),
+        t("payAsYouGo.features.2"),
+        t("payAsYouGo.features.3")
       ],
-      cta: t("enterprise.cta"),
+      cta: t("payAsYouGo.cta"),
       popular: false,
-      color: "gold"
+      color: "green"
     }
   ];
 
@@ -165,6 +161,8 @@ export default function PricingSection() {
         return `${baseClasses} ${popular ? popularClasses : ""}`;
       case "gold":
         return `${baseClasses} ${popular ? popularClasses : ""}`;
+      case "green":
+        return `${baseClasses} ${popular ? popularClasses : ""}`;
       default:
         return baseClasses;
     }
@@ -178,6 +176,8 @@ export default function PricingSection() {
         return "text-purple-500";
       case "gold":
         return "text-yellow-500";
+      case "green":
+        return "text-green-500";
       default:
         return "text-primary";
     }
@@ -436,6 +436,12 @@ export default function PricingSection() {
            </div>
          </div>
        )}
+
+       {/* Pay As You Go Modal */}
+       <PayAsYouGoModal 
+         isOpen={isPayAsYouGoModalOpen} 
+         onClose={() => setIsPayAsYouGoModalOpen(false)} 
+       />
      </section>
    );
  }

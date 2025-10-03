@@ -50,7 +50,8 @@ const SulikoParticles: React.FC<SulikoParticlesProps> = ({
       style={{
         position: "absolute",
         inset: 0,
-        zIndex: 1,
+        zIndex: -10,
+        pointerEvents: "none",
       }}
       options={{
         fullScreen: { enable: fullScreen },

@@ -46,7 +46,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
             {t(`${type}.description`)}
           </p>
           <ul className="space-y-2">
-            {Array.from({ length: 7 }, (_, i) => (
+            {Array.from({ length: type === 'payAsYouGo' ? 4 : 7 }, (_, i) => (
               <li key={i} className="flex items-center text-sm">
                 <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
                 <span className="text-muted-foreground">

@@ -355,11 +355,8 @@
       "features": {
         "0": "12 stron za 10 ₾",
         "1": "Brak miesięcznego zobowiązania",
-        "2": "Używaj gdy potrzebujesz",
-        "3": "Minimalny zakup: 10 ₾",
-        "4": "Strony nigdy nie wygasają",
-        "5": "Wszystkie formaty plików (PDF, DOCX, TXT)",
-        "6": "Podstawowy dostęp do API"
+        "2": "Strony nigdy nie wygasają",
+        "3": "Wszystkie formaty plików (PDF, DOCX, TXT)"
       },
       "cta": "Kup strony"
     },
@@ -505,10 +502,6 @@
       "happyCustomers": "Zadowoleni klienci",
       "customerSatisfaction": "Satysfakcja klientów"
     },
-    "trustedBy": {
-      "title": "Zaufane przez liderów branży",
-      "subtitle": "Dołącz do firm na całym świecie, które polegają na Suliko w swoich potrzebach tłumaczeniowych"
-    },
     "cta": {
       "title": "Gotowy, aby do nich dołączyć?",
       "subtitle": "Rozpocznij bezpłatny okres próbny już dziś i doświadcz różnicy, jaką może przynieść profesjonalne tłumaczenie AI.",
@@ -516,41 +509,29 @@
       "contactSales": "Skontaktuj się ze sprzedażą"
     },
     "testimonials": {
-      "sarah": {
-        "name": "Sarah Johnson",
-        "role": "Dyrektor marketingu",
-        "company": "TechCorp Solutions",
-        "content": "Suliko zrewolucjonizowało nasze międzynarodowe kampanie marketingowe. Jakość tłumaczenia jest wyjątkowa, a szybkość niesamowita. Zmniejszyliśmy nasze koszty tłumaczenia o 60%, jednocześnie poprawiając dokładność."
+      "translationHouse": {
+        "name": "თარგმნის სახლი",
+        "role": "Agencja tłumaczeń",
+        "company": "Translation House",
+        "content": "Suliko przekształciło nasz proces tłumaczenia. Dokładność napędzana AI w połączeniu z profesjonalną jakością pomogła nam lepiej i szybciej obsługiwać naszych klientów. Stało się to niezbędnym narzędziem dla naszej agencji."
       },
-      "michael": {
-        "name": "Michael Chen",
-        "role": "Radca prawny",
-        "company": "Global Law Firm",
-        "content": "Jako kancelaria prawna zajmująca się międzynarodowymi klientami, dokładność jest najważniejsza. Tłumaczenia dokumentów prawnych Suliko są precyzyjne i kontekstowo doskonałe. Stało się to niezastąpionym narzędziem dla naszej praktyki."
+      "irakliVekua": {
+        "name": "ირაკლი ვეკუა",
+        "role": "Właściciel firmy",
+        "company": "Irakli Vekua",
+        "content": "Jako właściciel firmy pracujący z międzynarodowymi partnerami, Suliko było nieocenione. Jakość tłumaczenia dokumentów jest wyjątkowa, a szybkość pozwala nam szybko reagować na możliwości biznesowe."
       },
-      "elena": {
-        "name": "Elena Rodriguez",
-        "role": "Menedżer treści",
-        "company": "Digital Media Co.",
-        "content": "Funkcje współpracy zespołowej są fantastyczne. Teraz możemy zarządzać wielojęzycznymi treściami w całej naszej organizacji bezproblemowo. Integracja API znacznie usprawniła nasz przepływ pracy."
+      "iuristi": {
+        "name": "Zespół Iuristi.ge",
+        "role": "Usługi prawne",
+        "company": "Iuristi.ge",
+        "content": "Tłumaczenie dokumentów prawnych wymaga absolutnej precyzji. Dokładność Suliko w tłumaczeniu złożonej terminologii prawnej i zachowaniu kontekstu była wybitna. Zrewolucjonizowało to nasze przetwarzanie dokumentów prawnych."
       },
-      "david": {
-        "name": "David Kim",
-        "role": "Menedżer produktu",
-        "company": "StartupXYZ",
-        "content": "Od pierwszego dnia Suliko było przełomem dla naszego startupu. Cena jest sprawiedliwa, jakość wybitna, a zespół wsparcia niezwykle responsywny. Gorąco polecam!"
-      },
-      "anna": {
-        "name": "Anna Petrov",
-        "role": "Dyrektor badań",
-        "company": "Academic Institute",
-        "content": "Używamy Suliko do tłumaczenia prac badawczych i dokumentów akademickich. Dokładność techniczna jest imponująca i pięknie radzi sobie ze złożoną terminologią naukową. Niezbędne dla badaczy."
-      },
-      "james": {
-        "name": "James Wilson",
-        "role": "Menedżer operacji",
-        "company": "Manufacturing Inc.",
-        "content": "Funkcje korporacyjne to dokładnie to, czego potrzebowaliśmy. Niestandardowe słowniki, zarządzanie zespołem i możliwość utrzymania spójności we wszystkich naszych dokumentach technicznych były bezcenne."
+      "nebulaAI": {
+        "name": "Nebula AI Hub",
+        "role": "Firma technologiczna AI",
+        "company": "Nebula AI Hub",
+        "content": "Pracując w technologii AI, doceniamy wyrafinowanie silnika tłumaczeniowego Suliko. Jakość i niezawodność przekroczyły nasze oczekiwania, czyniąc to naszym głównym rozwiązaniem do tłumaczenia dokumentów technicznych."
       }
     }
   },

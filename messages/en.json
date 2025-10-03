@@ -360,11 +360,8 @@
       "features": {
         "0": "12 pages per 10 ₾",
         "1": "No monthly commitment",
-        "2": "Use when needed",
-        "3": "Minimum purchase: 10 ₾",
-        "4": "Pages never expire",
-        "5": "All file formats (PDF, DOCX, TXT)",
-        "6": "Basic API access"
+        "2": "Pages never expire",
+        "3": "All file formats (PDF, DOCX, TXT)"
       },
       "cta": "Purchase Pages"
     },
@@ -510,10 +507,6 @@
       "happyCustomers": "Happy Customers",
       "customerSatisfaction": "Customer Satisfaction"
     },
-    "trustedBy": {
-      "title": "Trusted by Industry Leaders",
-      "subtitle": "Join companies worldwide who rely on Suliko for their translation needs"
-    },
     "cta": {
       "title": "Ready to Join Them?",
       "subtitle": "Start your free trial today and experience the difference professional AI translation can make.",
@@ -521,41 +514,29 @@
       "contactSales": "Contact Sales"
     },
     "testimonials": {
-      "sarah": {
-        "name": "Sarah Johnson",
-        "role": "Marketing Director",
-        "company": "TechCorp Solutions",
-        "content": "Suliko has revolutionized our international marketing campaigns. The translation quality is exceptional, and the speed is incredible. We've reduced our translation costs by 60% while improving accuracy."
+      "translationHouse": {
+        "name": "თარგმნის სახლი",
+        "role": "Translation Agency",
+        "company": "Translation House",
+        "content": "Suliko has transformed our translation workflow. The AI-powered accuracy combined with professional quality has helped us serve our clients better and faster. It's become an essential tool for our agency."
       },
-      "michael": {
-        "name": "Michael Chen",
-        "role": "Legal Counsel",
-        "company": "Global Law Firm",
-        "content": "As a law firm dealing with international clients, accuracy is paramount. Suliko's legal document translations are precise and contextually perfect. It's become an indispensable tool for our practice."
+      "irakliVekua": {
+        "name": "ირაკლი ვეკუა",
+        "role": "Business Owner",
+        "company": "Irakli Vekua",
+        "content": "As a business owner dealing with international partners, Suliko has been invaluable. The document translation quality is exceptional, and the speed allows us to respond quickly to business opportunities."
       },
-      "elena": {
-        "name": "Elena Rodriguez",
-        "role": "Content Manager",
-        "company": "Digital Media Co.",
-        "content": "The team collaboration features are fantastic. We can now manage multilingual content across our entire organization seamlessly. The API integration made our workflow so much more efficient."
+      "iuristi": {
+        "name": "Iuristi.ge Team",
+        "role": "Legal Services",
+        "company": "Iuristi.ge",
+        "content": "Legal document translation requires absolute precision. Suliko's accuracy in translating complex legal terminology and maintaining context has been outstanding. It's revolutionized our legal document processing."
       },
-      "david": {
-        "name": "David Kim",
-        "role": "Product Manager",
-        "company": "StartupXYZ",
-        "content": "From day one, Suliko has been a game-changer for our startup. The pricing is fair, the quality is outstanding, and the support team is incredibly responsive. Highly recommended!"
-      },
-      "anna": {
-        "name": "Anna Petrov",
-        "role": "Research Director",
-        "company": "Academic Institute",
-        "content": "We use Suliko for translating research papers and academic documents. The technical accuracy is impressive, and it handles complex scientific terminology beautifully. A must-have for researchers."
-      },
-      "james": {
-        "name": "James Wilson",
-        "role": "Operations Manager",
-        "company": "Manufacturing Inc.",
-        "content": "The enterprise features are exactly what we needed. Custom glossaries, team management, and the ability to maintain consistency across all our technical documentation has been invaluable."
+      "nebulaAI": {
+        "name": "Nebula AI Hub",
+        "role": "AI Technology Company",
+        "company": "Nebula AI Hub",
+        "content": "Working in AI technology, we appreciate the sophistication of Suliko's translation engine. The quality and reliability have exceeded our expectations, making it our go-to solution for technical document translation."
       }
     }
   },

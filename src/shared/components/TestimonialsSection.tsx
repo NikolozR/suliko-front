@@ -9,52 +9,36 @@ export default function TestimonialsSection() {
   const t = useTranslations("TestimonialsSection");
   const testimonials = [
     {
-      name: t("testimonials.sarah.name"),
-      role: t("testimonials.sarah.role"),
-      company: t("testimonials.sarah.company"),
-      avatar: "SJ",
+      name: t("testimonials.translationHouse.name"),
+      role: t("testimonials.translationHouse.role"),
+      company: t("testimonials.translationHouse.company"),
+      avatar: "თს",
       rating: 5,
-      content: t("testimonials.sarah.content")
+      content: t("testimonials.translationHouse.content")
     },
     {
-      name: t("testimonials.michael.name"),
-      role: t("testimonials.michael.role"),
-      company: t("testimonials.michael.company"),
-      avatar: "MC",
+      name: t("testimonials.irakliVekua.name"),
+      role: t("testimonials.irakliVekua.role"),
+      company: t("testimonials.irakliVekua.company"),
+      avatar: "ივ",
       rating: 5,
-      content: t("testimonials.michael.content")
+      content: t("testimonials.irakliVekua.content")
     },
     {
-      name: t("testimonials.elena.name"),
-      role: t("testimonials.elena.role"),
-      company: t("testimonials.elena.company"),
-      avatar: "ER",
+      name: t("testimonials.iuristi.name"),
+      role: t("testimonials.iuristi.role"),
+      company: t("testimonials.iuristi.company"),
+      avatar: "IG",
       rating: 5,
-      content: t("testimonials.elena.content")
+      content: t("testimonials.iuristi.content")
     },
     {
-      name: t("testimonials.david.name"),
-      role: t("testimonials.david.role"),
-      company: t("testimonials.david.company"),
-      avatar: "DK",
+      name: t("testimonials.nebulaAI.name"),
+      role: t("testimonials.nebulaAI.role"),
+      company: t("testimonials.nebulaAI.company"),
+      avatar: "NA",
       rating: 5,
-      content: t("testimonials.david.content")
-    },
-    {
-      name: t("testimonials.anna.name"),
-      role: t("testimonials.anna.role"),
-      company: t("testimonials.anna.company"),
-      avatar: "AP",
-      rating: 5,
-      content: t("testimonials.anna.content")
-    },
-    {
-      name: t("testimonials.james.name"),
-      role: t("testimonials.james.role"),
-      company: t("testimonials.james.company"),
-      avatar: "JW",
-      rating: 5,
-      content: t("testimonials.james.content")
+      content: t("testimonials.nebulaAI.content")
     }
   ];
 
@@ -143,24 +127,6 @@ export default function TestimonialsSection() {
           ))}
         </div>
 
-        {/* Trust Badges */}
-        <div className="mt-16 pt-8 border-t border-border/50">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-foreground mb-4">
-              {t("trustedBy.title")}
-            </h3>
-            <p className="text-muted-foreground">
-              {t("trustedBy.subtitle")}
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center justify-items-center opacity-60">
-            <div className="text-2xl font-bold text-foreground/40">Fortune 500</div>
-            <div className="text-2xl font-bold text-foreground/40">Startups</div>
-            <div className="text-2xl font-bold text-foreground/40">Universities</div>
-            <div className="text-2xl font-bold text-foreground/40">Agencies</div>
-          </div>
-        </div>
 
         {/* CTA */}
         <div className="mt-16 text-center">
