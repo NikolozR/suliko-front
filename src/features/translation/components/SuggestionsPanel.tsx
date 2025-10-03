@@ -46,6 +46,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
     translatedMarkdown,
     setTranslatedMarkdownWithoutZoomReset,
     jobId,
+    chatId,
     currentTargetLanguageId,
   } = useDocumentTranslationStore();
   const { isTranslating } = useDocumentTranslationStore();
@@ -112,8 +113,10 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
         );
         console.log("We Are Here");
         const data: ApplySuggestionResponse = await applySuggestion({
-          translatedContent: translatedMarkdown,
-          suggestionId: id,
+          chatId: chatId,
+          outputLanguageId: currentTargetLanguageId,
+          editedOriginalText: s.originalText,
+          editedSuggestedText: s.suggestedText,
           suggestion: s,
           targetLanguageId: currentTargetLanguageId,
         });

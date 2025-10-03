@@ -24,6 +24,7 @@ export default function ChatPage() {
     translatedMarkdown,
     setTranslatedMarkdownWithoutZoomReset,
     setJobId,
+    setChatId,
     reset: resetChatEditingStore,
   } = useChatEditingStore();
   const { reset: resetChatSuggestionsStore, setHasGeneratedMore, setSuggestions } =
@@ -70,7 +71,7 @@ export default function ChatPage() {
     );
 
     setJobId(chat.jobId || "");
-
+    setChatId(chat.chatId || "");
     
 
     (async () => {

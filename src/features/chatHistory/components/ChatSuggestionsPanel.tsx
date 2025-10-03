@@ -29,6 +29,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
     setTranslatedMarkdownWithoutZoomReset,
     jobId,
     currentTargetLanguageId,
+    chatId,
   } = useChatEditingStore();
   const { isTranslating } = useChatEditingStore();
 
@@ -66,11 +67,14 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
           "@/features/translation/services/suggestionsService"
         );
         const data: ApplySuggestionResponse = await applySuggestion({
-          translatedContent: translatedMarkdown,
-          suggestionId: id,
+          chatId: chatId,
           suggestion: s,
           targetLanguageId: currentTargetLanguageId,
+          outputLanguageId: currentTargetLanguageId,
+          editedOriginalText: s.originalText,
+          editedSuggestedText: s.suggestedText,
         });
+         console.log(data, "APPLY SUGGESTION RESPONSE");
         if (data.success) {
           setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
           acceptSuggestion(id);

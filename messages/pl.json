@@ -303,6 +303,10 @@
       "cta": "Rozpocznij bezpłatny okres próbny",
       "popular": "Najpopularniejszy"
     },
+    "custom": {
+      "title": "Niestandardowy",
+      "description": "Skontaktuj się z nami w sprawie dopasowanego planu"
+    },
     "enterprise": {
       "title": "Korporacyjny",
       "price": "Niestandardowa",
