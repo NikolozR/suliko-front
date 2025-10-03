@@ -3,13 +3,16 @@
 import { useState } from "react";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
+import { PayAsYouGoModal } from "./PayAsYouGoModal";
 import { createPayment } from "../services/paymentService";
 
 export function PricingGrid() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showPayAsYouGoModal, setShowPayAsYouGoModal] = useState(false);
 
-  const handleSelectNotReadyPackage = () => {
-    setShowPaymentModal(true);
+
+  const handleSelectPayAsYouGo = () => {
+    setShowPayAsYouGoModal(true);
   };
 
   const handleSelectPackage = async (amount: number, currency: string, country: string) => {
@@ -22,12 +25,17 @@ export function PricingGrid() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
         <PricingCard type="starter" onSelect={() => handleSelectPackage(57, 'GEL', 'GE')} />
         <PricingCard type="professional" onSelect={() => handleSelectPackage(173, 'GEL', 'GE')} />
-        <PricingCard type="payAsYouGo" onSelect={handleSelectNotReadyPackage} />
+        <PricingCard type="payAsYouGo" onSelect={handleSelectPayAsYouGo} />
       </div>
 
       <PaymentModal 
         isOpen={showPaymentModal} 
         onClose={() => setShowPaymentModal(false)} 
+      />
+      
+      <PayAsYouGoModal 
+        isOpen={showPayAsYouGoModal} 
+        onClose={() => setShowPayAsYouGoModal(false)} 
       />
     </>
   );

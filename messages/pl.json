@@ -61,7 +61,8 @@
     "help": "Pomoc",
     "feedback": "Opinie",
     "login": "Zaloguj się",
-    "balance": "Saldo"
+    "balance": "Saldo",
+    "pages": "stron"
   },
   "MainContent": {
     "title": "Twój tłumacz",
@@ -199,7 +200,8 @@
     "namePlaceholder": "Wprowadź imię",
     "emailPlaceholder": "Wprowadź adres e-mail",
     "balance": "Saldo",
-    "currentBalance": "Aktualne saldo"
+    "currentBalance": "Aktualne saldo",
+    "pages": "stron"
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -360,6 +362,26 @@
         "6": "Podstawowy dostęp do API"
       },
       "cta": "Kup strony"
+    },
+    "payAsYouGoModal": {
+      "title": "Niestandardowy zakup",
+      "amountLabel": "Wprowadź kwotę do zakupu",
+      "suggestedAmounts": "Szybkie kwoty",
+      "pagesCalculation": "Otrzymasz",
+      "pages": "stron",
+      "pricePerPage": "Cena za stronę",
+      "totalAmount": "Całkowita kwota",
+      "cancel": "Anuluj",
+      "purchase": "Kup",
+      "processing": "Przetwarzanie...",
+      "pagesNeverExpire": "Strony nigdy nie wygasają i mogą być używane w dowolnym momencie",
+      "minimumPurchase": "Minimalny zakup: {min} ₾",
+      "errors": {
+        "invalidAmount": "Proszę wprowadzić prawidłową kwotę",
+        "minimumAmount": "Minimalna kwota zakupu to {min} ₾",
+        "maximumAmount": "Maksymalna kwota zakupu to {max} ₾",
+        "purchaseFailed": "Zakup nie powiódł się. Proszę spróbować ponownie."
+      }
     },
     "enterpriseBusiness": {
       "title": "Suliko Enterprise",

@@ -239,7 +239,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                     <Link href="/price" className="flex flex-col min-w-0 hover:opacity-80 transition-opacity">
                       <span className="text-xs text-muted-foreground">{t('balance')}</span>
                       <span className="font-semibold text-green-600">
-                        {Math.floor(userProfile.balance || 0)} pages
+                        {Math.floor(userProfile.balance || 0)} {t('pages')}
                       </span>
                     </Link>
                   )}

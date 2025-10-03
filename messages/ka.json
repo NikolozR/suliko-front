@@ -61,7 +61,8 @@
     "help": "დახმარება",
     "feedback": "გამოხმაურება",
     "login": "შესვლა",
-    "balance": "ბალანსი"
+    "balance": "ბალანსი",
+    "pages": "გვერდი"
   },
   "MainContent": {
     "title": "შენი თარჯიმანი",
@@ -199,7 +200,8 @@
     "namePlaceholder": "შეიყვანეთ სახელი",
     "emailPlaceholder": "შეიყვანეთ ელ. ფოსტა",
     "balance": "ბალანსი",
-    "currentBalance": "მიმდინარე ბალანსი"
+    "currentBalance": "მიმდინარე ბალანსი",
+    "pages": "გვერდი"
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -362,6 +364,26 @@
         "6": "ძირითადი API წვდომა"
       },
       "cta": "გვერდების შეძენა"
+    },
+    "payAsYouGoModal": {
+      "title": "პერსონალური შეძენა",
+      "amountLabel": "შეიყვანეთ შესაძენი თანხა",
+      "suggestedAmounts": "სწრაფი თანხები",
+      "pagesCalculation": "მიიღებთ",
+      "pages": "გვერდს",
+      "pricePerPage": "ფასი გვერდზე",
+      "totalAmount": "მთლიანი თანხა",
+      "cancel": "გაუქმება",
+      "purchase": "შეძენა",
+      "processing": "მუშავდება...",
+      "pagesNeverExpire": "გვერდები არასდროს არ ვადდება და ნებისმიერ დროს შეიძლება გამოყენება",
+      "minimumPurchase": "მინიმალური შეძენა: {min} ₾",
+      "errors": {
+        "invalidAmount": "გთხოვთ შეიყვანოთ სწორი თანხა",
+        "minimumAmount": "მინიმალური შეძენის თანხა არის {min} ₾",
+        "maximumAmount": "მაქსიმალური შეძენის თანხა არის {max} ₾",
+        "purchaseFailed": "შეძენა ვერ მოხერხდა. გთხოვთ კვლავ სცადოთ."
+      }
     },
     "enterpriseBusiness": {
       "title": "სულიკო კორპორატიული",

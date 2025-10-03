@@ -63,7 +63,8 @@
     "help": "Help",
     "feedback": "Feedback",
     "login": "Login",
-    "balance": "Balance"
+    "balance": "Balance",
+    "pages": "Pages"
   },
   "MainContent": {
     "title": "Your Translator",
@@ -202,7 +203,8 @@
     "namePlaceholder": "Enter name",
     "emailPlaceholder": "Enter email",
     "balance": "Balance",
-    "currentBalance": "Current Balance"
+    "currentBalance": "Current Balance",
+    "pages": "pages"
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -365,6 +367,26 @@
         "6": "Basic API access"
       },
       "cta": "Purchase Pages"
+    },
+    "payAsYouGoModal": {
+      "title": "Custom Purchase",
+      "amountLabel": "Enter amount to purchase",
+      "suggestedAmounts": "Quick amounts",
+      "pagesCalculation": "You will get",
+      "pages": "pages",
+      "pricePerPage": "Price per page",
+      "totalAmount": "Total amount",
+      "cancel": "Cancel",
+      "purchase": "Purchase",
+      "processing": "Processing...",
+      "pagesNeverExpire": "Pages never expire and can be used anytime",
+      "minimumPurchase": "Minimum purchase: {min} ₾",
+      "errors": {
+        "invalidAmount": "Please enter a valid amount",
+        "minimumAmount": "Minimum purchase amount is {min} ₾",
+        "maximumAmount": "Maximum purchase amount is {max} ₾",
+        "purchaseFailed": "Purchase failed. Please try again."
+      }
     },
     "enterpriseBusiness": {
       "title": "Suliko Enterprise",
