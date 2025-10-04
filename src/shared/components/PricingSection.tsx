@@ -50,11 +50,7 @@ export default function PricingSection() {
       features: [
         t("starter.features.0"),
         t("starter.features.1"),
-        t("starter.features.2"),
-        t("starter.features.3"),
-        t("starter.features.4"),
-        t("starter.features.5"),
-        t("starter.features.6")
+        t("starter.features.2")
       ],
       cta: t("starter.cta"),
       popular: false,
@@ -71,12 +67,7 @@ export default function PricingSection() {
         t("professional.features.1"),
         t("professional.features.2"),
         t("professional.features.3"),
-        t("professional.features.4"),
-        t("professional.features.5"),
-        t("professional.features.6"),
-        t("professional.features.7"),
-        t("professional.features.8"),
-        t("professional.features.9")
+        t("professional.features.4")
       ],
       cta: t("professional.cta"),
       popular: true,
@@ -93,7 +84,8 @@ export default function PricingSection() {
         t("payAsYouGo.features.0"),
         t("payAsYouGo.features.1"),
         t("payAsYouGo.features.2"),
-        t("payAsYouGo.features.3")
+        t("payAsYouGo.features.3"),
+        t("payAsYouGo.features.4")
       ],
       cta: t("payAsYouGo.cta"),
       popular: false,

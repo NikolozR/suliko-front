@@ -280,14 +280,10 @@
       "description": "Perfect for individuals and small projects",
       "features": {
         "0": "75 pages per month",
-        "1": "Basic language support (50+ languages)",
-        "2": "Standard translation quality",
-        "3": "Email support",
-        "4": "Basic file formats (PDF, DOCX, TXT)",
-        "5": "5GB storage",
-        "6": "Basic API access"
+        "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
-      "cta": "Start Free Trial"
+      "cta": "Try Suliko"
     },
     "professional": {
       "title": "Professional",
@@ -297,17 +293,12 @@
       "description": "Ideal for growing businesses and teams",
       "features": {
         "0": "300 pages per month",
-        "1": "Premium language support (100+ languages)",
-        "2": "Advanced translation quality with context",
-        "3": "Priority email & chat support",
-        "4": "All file formats including images",
-        "5": "50GB storage",
-        "6": "Full API access with webhooks",
-        "7": "Team collaboration tools",
-        "8": "Custom glossaries",
-        "9": "Translation memory"
+        "1": "Priority email & chat support",
+        "2": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "3": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages",
+        "4": "Team collaboration tools"
       },
-      "cta": "Start Free Trial",
+      "cta": "Try Suliko",
       "popular": "Most Popular"
     },
     "custom": {
@@ -349,7 +340,7 @@
         "5": "All file formats (PDF, DOCX, TXT)",
         "6": "Basic API access"
       },
-      "cta": "Start Free Trial"
+      "cta": "Try Suliko"
     },
     "payAsYouGo": {
       "title": "Pay as you go",
@@ -361,9 +352,10 @@
         "0": "12 pages per 10 ₾",
         "1": "No monthly commitment",
         "2": "Pages never expire",
-        "3": "All file formats (PDF, DOCX, TXT)"
+        "3": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "4": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
-      "cta": "Purchase Pages"
+      "cta": "Try Suliko"
     },
     "payAsYouGoModal": {
       "title": "Custom Purchase",
@@ -416,6 +408,7 @@
   "WelcomeModal": {
     "title": "Hello!",
     "thankYou": "Thank you for using Suliko.",
+    "freePages": "🎉 Welcome! You get 25 pages to translate for free as a new user.",
     "betaNotice": "Please note that the website is running in beta mode, so you may encounter certain issues.",
     "workingOnIssues": "We work daily on fixing these issues, and your feedback is very important!",
     "reportIssues": "Please, if you discover any type of issue (whether in translation or technical), write to us here:",
@@ -426,12 +419,12 @@
     "close": "Close"
   },
   "Landing": {
-    "title": "Suliko AI Translator",
+    "title": "Suliko Translation",
     "description": "Translate text and documents instantly.",
     "cta": "Start translating",
     "viewPricing": "View Pricing",
-    "aiPowered": "AI-Powered Translation",
-    "languages": "100+ Languages",
+    "aiPowered": "Professional Translation",
+    "languages": "50+ Languages",
     "documentSupport": "Document Support",
     "trustedBy": "Trusted by professionals worldwide",
     "documentsTranslated": "Documents Translated",
@@ -448,12 +441,12 @@
   },
   "AboutSection": {
     "title": "Why Choose Suliko?",
-    "subtitle": "We're revolutionizing document translation with cutting-edge AI technology, making professional-grade translations accessible to everyone, everywhere.",
+    "subtitle": "We're revolutionizing document translation with cutting-edge technology, making professional-grade translations accessible to everyone, everywhere. Think of Suliko as Cursor for translators - an AI-powered tool that enhances your translation workflow.",
     "mission": "Our Mission",
     "missionText": "To break down language barriers and enable seamless communication across cultures, industries, and borders through intelligent, accurate, and accessible translation technology.",
     "features": {
       "aiPowered": {
-        "title": "AI-Powered Intelligence",
+        "title": "Advanced Intelligence",
         "description": "Advanced neural networks trained on millions of documents for contextually accurate translations."
       },
       "security": {
@@ -509,8 +502,8 @@
     },
     "cta": {
       "title": "Ready to Join Them?",
-      "subtitle": "Start your free trial today and experience the difference professional AI translation can make.",
-      "startTrial": "Start Free Trial",
+      "subtitle": "Start your free trial today and experience the difference professional translation can make.",
+      "startTrial": "Try Suliko",
       "contactSales": "Contact Sales"
     },
     "testimonials": {
@@ -518,7 +511,7 @@
         "name": "თარგმნის სახლი",
         "role": "Translation Agency",
         "company": "Translation House",
-        "content": "Suliko has transformed our translation workflow. The AI-powered accuracy combined with professional quality has helped us serve our clients better and faster. It's become an essential tool for our agency."
+        "content": "Suliko has transformed our translation workflow. The advanced accuracy combined with professional quality has helped us serve our clients better and faster. It's become an essential tool for our agency."
       },
       "irakliVekua": {
         "name": "ირაკლი ვეკუა",
@@ -536,12 +529,12 @@
         "name": "Nebula AI Hub",
         "role": "AI Technology Company",
         "company": "Nebula AI Hub",
-        "content": "Working in AI technology, we appreciate the sophistication of Suliko's translation engine. The quality and reliability have exceeded our expectations, making it our go-to solution for technical document translation."
+        "content": "Working in technology, we appreciate the sophistication of Suliko's translation engine. The quality and reliability have exceeded our expectations, making it our go-to solution for technical document translation."
       }
     }
   },
   "LandingFooter": {
-    "description": "The world's most advanced AI-powered translation platform. Breaking down language barriers with precision, speed, and reliability.",
+    "description": "The world's most advanced translation platform. Breaking down language barriers with precision, speed, and reliability.",
     "email": "Info@suliko.ge",
     "phone": "+995 591 729 911",
     "location": "Tbilisi, Georgia",

@@ -36,6 +36,8 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) => {
         <div className="space-y-4 text-foreground leading-relaxed">
           <p>{t('thankYou')}</p>
           
+          <p className="font-semibold text-green-600 dark:text-green-400">{t('freePages')}</p>
+          
           <p>{t('betaNotice')}</p>
           
           <p>{t('workingOnIssues')}</p>

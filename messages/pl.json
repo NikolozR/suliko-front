@@ -275,12 +275,8 @@
       "description": "Idealny dla osób indywidualnych i małych projektów",
       "features": {
         "0": "75 stron miesięcznie",
-        "1": "Podstawowe wsparcie językowe (50+ języków)",
-        "2": "Standardowa jakość tłumaczenia",
-        "3": "Wsparcie e-mailowe",
-        "4": "Podstawowe formaty plików (PDF, DOCX, TXT)",
-        "5": "5GB przechowywania",
-        "6": "Podstawowy dostęp do API"
+        "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
       "cta": "Rozpocznij bezpłatny okres próbny"
     },
@@ -292,15 +288,10 @@
       "description": "Idealny dla rozwijających się firm i zespołów",
       "features": {
         "0": "300 stron miesięcznie",
-        "1": "Premium wsparcie językowe (100+ języków)",
-        "2": "Zaawansowana jakość tłumaczenia z kontekstem",
-        "3": "Priorytetowe wsparcie e-mailowe i czatowe",
-        "4": "Wszystkie formaty plików, w tym obrazy",
-        "5": "50GB przechowywania",
-        "6": "Pełny dostęp do API z webhooks",
-        "7": "Narzędzia współpracy zespołowej",
-        "8": "Niestandardowe słowniki",
-        "9": "Pamięć tłumaczeń"
+        "1": "Priorytetowe wsparcie e-mailowe i czatowe",
+        "2": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "3": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
+        "4": "Narzędzia współpracy zespołowej"
       },
       "cta": "Rozpocznij bezpłatny okres próbny",
       "popular": "Najpopularniejszy"
@@ -356,9 +347,10 @@
         "0": "12 stron za 10 ₾",
         "1": "Brak miesięcznego zobowiązania",
         "2": "Strony nigdy nie wygasają",
-        "3": "Wszystkie formaty plików (PDF, DOCX, TXT)"
+        "3": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "4": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
-      "cta": "Kup strony"
+      "cta": "Wypróbuj Suliko"
     },
     "payAsYouGoModal": {
       "title": "Niestandardowy zakup",
@@ -411,6 +403,7 @@
   "WelcomeModal": {
     "title": "Cześć!",
     "thankYou": "Dziękujemy za korzystanie z Suliko.",
+    "freePages": "🎉 Witamy! Otrzymujesz 25 stron do bezpłatnego tłumaczenia jako nowy użytkownik.",
     "betaNotice": "Proszę pamiętać, że strona internetowa działa w trybie beta, więc mogą wystąpić pewne problemy.",
     "workingOnIssues": "Codziennie pracujemy nad naprawianiem tych problemów, a Twoja opinia jest bardzo ważna!",
     "reportIssues": "Proszę, jeśli odkryjesz jakikolwiek rodzaj problemu (czy to w tłumaczeniu, czy techniczny), napisz do nas tutaj:",
@@ -426,7 +419,7 @@
     "cta": "Zacznij tłumaczyć",
     "viewPricing": "Zobacz ceny",
     "aiPowered": "Tłumaczenie oparte na AI",
-    "languages": "100+ języków",
+    "languages": "50+ języków",
     "documentSupport": "Wsparcie dokumentów",
     "trustedBy": "Zaufane przez profesjonalistów na całym świecie",
     "documentsTranslated": "Przetłumaczone dokumenty",
@@ -443,7 +436,7 @@
   },
   "AboutSection": {
     "title": "Dlaczego Suliko?",
-    "subtitle": "Rewolucjonizujemy tłumaczenie dokumentów za pomocą najnowocześniejszej technologii AI, czyniąc profesjonalne tłumaczenia dostępnymi dla wszystkich, wszędzie.",
+    "subtitle": "Rewolucjonizujemy tłumaczenie dokumentów za pomocą najnowocześniejszej technologii, czyniąc profesjonalne tłumaczenia dostępnymi dla wszystkich, wszędzie. Pomyśl o Suliko jak o Cursor dla tłumaczy - narzędziu opartym na AI, które ulepsza Twój proces tłumaczenia.",
     "mission": "Nasza misja",
     "missionText": "Zburzenie barier językowych i umożliwienie płynnej komunikacji między kulturami, branżami i granicami poprzez inteligentną, dokładną i dostępną technologię tłumaczenia.",
     "features": {

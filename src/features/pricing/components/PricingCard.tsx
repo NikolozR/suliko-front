@@ -46,7 +46,11 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
             {t(`${type}.description`)}
           </p>
           <ul className="space-y-2">
-            {Array.from({ length: type === 'payAsYouGo' ? 4 : 7 }, (_, i) => (
+            {Array.from({ 
+              length: type === 'starter' ? 3 : 
+                     type === 'professional' ? 5 : 
+                     type === 'payAsYouGo' ? 5 : 7 
+            }, (_, i) => (
               <li key={i} className="flex items-center text-sm">
                 <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
                 <span className="text-muted-foreground">
@@ -68,7 +72,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
           onClick={onSelect}
           className="w-full cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg transition duration-200"
         >
-          {type === 'custom' ? t(`${type}.cta`) : t("select")}
+          {t(`${type}.cta`)}
         </button>
       </div>
     </div>
