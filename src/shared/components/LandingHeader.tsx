@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { Menu, X, Moon, Sun } from "lucide-react";
+import { X, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTheme } from "next-themes";
@@ -52,7 +52,7 @@ function ThemeToggle() {
 }
 
 // Navigation item component
-function NavItem({ href, children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
+function NavItem({ children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
   return (
     <button
       onClick={onClick}
@@ -65,7 +65,7 @@ function NavItem({ href, children, onClick }: { href: string; children: React.Re
 }
 
 // Mobile nav item component
-function MobileNavItem({ href, children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
+function MobileNavItem({ children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
   return (
     <button
       onClick={onClick}

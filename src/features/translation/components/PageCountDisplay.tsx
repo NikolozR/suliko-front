@@ -41,8 +41,8 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
     estimatedCost, 
     updateEstimations,
   } = useDocumentTranslationStore();
-  const PRICE_PER_PAGE = 10/12; // 10 Gel for 12 pages
   const t = useTranslations("DocumentTranslationCard");
+  const PRICE_PER_PAGE = 10/12; // 10 Gel for 12 pages
   
   // Update estimations when file changes
   useEffect(() => {
@@ -61,8 +61,7 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
       })();
       
       const minutes = pageCount * 2;
-      const cost = Math.ceil(pageCount); // Pages to be used
-      
+      const cost = (Math.ceil(pageCount) * PRICE_PER_PAGE).toString(); // Pages to be used
       updateEstimations(pageCount, minutes, cost, pageCount * 483);
     }
   }, [file, realPageCount, updateEstimations]);
