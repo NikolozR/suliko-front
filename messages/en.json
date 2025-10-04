@@ -441,33 +441,25 @@
   },
   "AboutSection": {
     "title": "Why Choose Suliko?",
-    "subtitle": "We're revolutionizing document translation with cutting-edge technology, making professional-grade translations accessible to everyone, everywhere. Think of Suliko as Cursor for translators - an AI-powered tool that enhances your translation workflow.",
+    "subtitle": "",
     "mission": "Our Mission",
-    "missionText": "To break down language barriers and enable seamless communication across cultures, industries, and borders through intelligent, accurate, and accessible translation technology.",
+    "missionText": "Suliko empowers translators to earn 3-10x more by accelerating their workflow. We're not replacing translators—we're their intelligent assistant that handles the heavy lifting while you focus on quality and expertise. Work with confidence using our split-screen proofreading interface, get intelligent suggestions to improve translation quality, and export your work in Word, PDF, or plain text formats. Every translation benefits from AI-assisted refinement while maintaining your professional touch.",
+    "video": {
+      "title": "See Suliko in Action",
+      "description": "Discover how Suliko works and why professionals worldwide choose it for their translation needs."
+    },
     "features": {
       "aiPowered": {
-        "title": "Advanced Intelligence",
-        "description": "Advanced neural networks trained on millions of documents for contextually accurate translations."
+        "title": "Translator's Copilot",
+        "description": "Suliko empowers translators to earn 3-10x more by accelerating their workflow. We're not replacing translators—we're their intelligent assistant."
       },
       "security": {
-        "title": "Enterprise Security",
-        "description": "Bank-level encryption and privacy protection for all your sensitive documents and data."
+        "title": "Split-Screen Editing",
+        "description": "Work with confidence using our split-screen proofreading interface. Compare original and translated content side-by-side for perfect translations."
       },
       "speed": {
-        "title": "Lightning Fast",
-        "description": "Process documents in seconds, not hours. Our optimized infrastructure delivers results instantly."
-      },
-      "collaboration": {
-        "title": "Team Collaboration",
-        "description": "Share translations, collaborate on projects, and maintain consistency across your organization."
-      },
-      "expertise": {
-        "title": "Industry Expertise",
-        "description": "Specialized models for legal, medical, technical, and business documents with domain-specific accuracy."
-      },
-      "quality": {
-        "title": "Quality Assurance",
-        "description": "Multi-layer quality checks ensure every translation meets professional standards and accuracy requirements."
+        "title": "Smart Suggestions & Export",
+        "description": "Get intelligent suggestions to improve translation quality, then export your work in Word, PDF, or plain text formats with professional-grade results."
       }
     },
     "stats": {
@@ -475,21 +467,6 @@
       "languagesSupported": "Languages Supported",
       "happyCustomers": "Happy Customers",
       "uptimeGuarantee": "Uptime Guarantee"
-    },
-    "values": {
-      "title": "Our Core Values",
-      "precision": {
-        "title": "Precision",
-        "description": "Every translation is crafted with meticulous attention to detail and context."
-      },
-      "trust": {
-        "title": "Trust",
-        "description": "Your data security and privacy are our top priorities in everything we do."
-      },
-      "innovation": {
-        "title": "Innovation",
-        "description": "Continuously advancing our technology to deliver better results faster."
-      }
     }
   },
   "TestimonialsSection": {

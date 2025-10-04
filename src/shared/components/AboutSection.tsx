@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/features/ui";
-import { Brain, Shield, Zap, Users, Target, Award } from "lucide-react";
+import { Brain, Shield, Zap, Target } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function AboutSection() {
@@ -22,21 +22,6 @@ export default function AboutSection() {
       icon: Zap,
       title: t("features.speed.title"),
       description: t("features.speed.description")
-    },
-    {
-      icon: Users,
-      title: t("features.collaboration.title"),
-      description: t("features.collaboration.description")
-    },
-    {
-      icon: Target,
-      title: t("features.expertise.title"),
-      description: t("features.expertise.description")
-    },
-    {
-      icon: Award,
-      title: t("features.quality.title"),
-      description: t("features.quality.description")
     }
   ];
 
@@ -47,9 +32,11 @@ export default function AboutSection() {
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
             {t("title")}
           </h2>
-          <p className="text-xl text-muted-foreground leading-relaxed">
-            {t("subtitle")}
-          </p>
+          {t("subtitle") && (
+            <p className="text-xl text-muted-foreground leading-relaxed">
+              {t("subtitle")}
+            </p>
+          )}
         </div>
 
         {/* Mission Statement */}
@@ -62,6 +49,26 @@ export default function AboutSection() {
               </p>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Video Section */}
+        <div className="max-w-4xl mx-auto mb-16">
+          <div className="text-center mb-8">
+            <h3 className="text-2xl font-bold text-foreground mb-4">{t("video.title")}</h3>
+            <p className="text-lg text-muted-foreground leading-relaxed">
+              {t("video.description")}
+            </p>
+          </div>
+          <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+            <iframe
+              className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
+              src="https://www.youtube.com/embed/u31qwQUeGuM"
+              title={t("video.title")}
+              frameBorder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+              allowFullScreen
+            />
+          </div>
         </div>
 
         {/* Features Grid */}
@@ -103,39 +110,6 @@ export default function AboutSection() {
           </div>
         </div>
 
-        {/* Values Section */}
-        <div className="mt-20 max-w-4xl mx-auto">
-          <h3 className="text-3xl font-bold text-foreground text-center mb-12">{t("values.title")}</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 dark:bg-blue-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Target className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-              </div>
-              <h4 className="text-xl font-semibold text-foreground mb-3">{t("values.precision.title")}</h4>
-              <p className="text-muted-foreground">
-                {t("values.precision.description")}
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Shield className="h-8 w-8 text-green-600 dark:text-green-400" />
-              </div>
-              <h4 className="text-xl font-semibold text-foreground mb-3">{t("values.trust.title")}</h4>
-              <p className="text-muted-foreground">
-                {t("values.trust.description")}
-              </p>
-            </div>
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-4">
-                <Zap className="h-8 w-8 text-purple-600 dark:text-purple-400" />
-              </div>
-              <h4 className="text-xl font-semibold text-foreground mb-3">{t("values.innovation.title")}</h4>
-              <p className="text-muted-foreground">
-                {t("values.innovation.description")}
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

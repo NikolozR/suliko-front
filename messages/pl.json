@@ -436,33 +436,25 @@
   },
   "AboutSection": {
     "title": "Dlaczego Suliko?",
-    "subtitle": "Rewolucjonizujemy tłumaczenie dokumentów za pomocą najnowocześniejszej technologii, czyniąc profesjonalne tłumaczenia dostępnymi dla wszystkich, wszędzie. Pomyśl o Suliko jak o Cursor dla tłumaczy - narzędziu opartym na AI, które ulepsza Twój proces tłumaczenia.",
+    "subtitle": "",
     "mission": "Nasza misja",
-    "missionText": "Zburzenie barier językowych i umożliwienie płynnej komunikacji między kulturami, branżami i granicami poprzez inteligentną, dokładną i dostępną technologię tłumaczenia.",
+    "missionText": "Suliko umożliwia tłumaczom zarabianie 3-10x więcej poprzez przyspieszenie ich przepływu pracy. Nie zastępujemy tłumaczy—jesteśmy ich inteligentnym asystentem, który zajmuje się ciężką pracą, podczas gdy Ty skupiasz się na jakości i ekspertyzie. Pracuj z pewnością siebie używając naszego interfejsu korekty z podziałem ekranu, otrzymuj inteligentne sugestie do poprawy jakości tłumaczenia i eksportuj swoją pracę w formatach Word, PDF lub tekstowych. Każde tłumaczenie korzysta z ulepszeń wspomaganych przez AI, zachowując jednocześnie Twój profesjonalny styl.",
+    "video": {
+      "title": "Zobacz Suliko w akcji",
+      "description": "Odkryj, jak działa Suliko i dlaczego profesjonaliści na całym świecie wybierają go do swoich potrzeb tłumaczeniowych."
+    },
     "features": {
       "aiPowered": {
-        "title": "Inteligencja oparta na AI",
-        "description": "Zaawansowane sieci neuronowe szkolone na milionach dokumentów dla kontekstowo dokładnych tłumaczeń."
+        "title": "Kopilot tłumacza",
+        "description": "Suliko umożliwia tłumaczom zarabianie 3-10x więcej poprzez przyspieszenie ich przepływu pracy. Nie zastępujemy tłumaczy—jesteśmy ich inteligentnym asystentem."
       },
       "security": {
-        "title": "Bezpieczeństwo korporacyjne",
-        "description": "Szyfrowanie na poziomie bankowym i ochrona prywatności dla wszystkich Twoich wrażliwych dokumentów i danych."
+        "title": "Edycja z podziałem ekranu",
+        "description": "Pracuj z pewnością siebie używając naszego interfejsu korekty z podziałem ekranu. Porównuj treść oryginalną i przetłumaczoną obok siebie dla doskonałych tłumaczeń."
       },
       "speed": {
-        "title": "Niesamowicie szybkie",
-        "description": "Przetwarzanie dokumentów w sekundach, nie godzinach. Nasza zoptymalizowana infrastruktura dostarcza wyniki natychmiast."
-      },
-      "collaboration": {
-        "title": "Współpraca zespołowa",
-        "description": "Udostępniaj tłumaczenia, współpracuj nad projektami i utrzymuj spójność w całej organizacji."
-      },
-      "expertise": {
-        "title": "Ekspertyza branżowa",
-        "description": "Wyspecjalizowane modele dla dokumentów prawnych, medycznych, technicznych i biznesowych z dokładnością specyficzną dla domeny."
-      },
-      "quality": {
-        "title": "Zapewnienie jakości",
-        "description": "Wielowarstwowe kontrole jakości zapewniają, że każde tłumaczenie spełnia profesjonalne standardy i wymagania dokładności."
+        "title": "Inteligentne sugestie i eksport",
+        "description": "Otrzymuj inteligentne sugestie do poprawy jakości tłumaczenia, następnie eksportuj swoją pracę w formatach Word, PDF lub tekstowych z profesjonalnymi wynikami."
       }
     },
     "stats": {
@@ -470,21 +462,6 @@
       "languagesSupported": "Obsługiwane języki",
       "happyCustomers": "Zadowoleni klienci",
       "uptimeGuarantee": "Gwarancja działania"
-    },
-    "values": {
-      "title": "Nasze podstawowe wartości",
-      "precision": {
-        "title": "Dokładność",
-        "description": "Każde tłumaczenie jest tworzone z skrupulatną uwagą na szczegóły i kontekst."
-      },
-      "trust": {
-        "title": "Zaufanie",
-        "description": "Bezpieczeństwo i prywatność Twoich danych są naszym najwyższym priorytetem we wszystkim, co robimy."
-      },
-      "innovation": {
-        "title": "Innowacja",
-        "description": "Ciągłe doskonalenie naszej technologii, aby dostarczać lepsze wyniki szybciej."
-      }
     }
   },
   "TestimonialsSection": {
