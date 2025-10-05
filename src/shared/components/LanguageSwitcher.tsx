@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import {
   Select,
   SelectContent,
@@ -8,7 +9,7 @@ import {
   SelectValue,
 } from "@/features/ui";
 import { useLocale, useTranslations } from 'next-intl';
-import { useRouter, usePathname } from 'next/navigation';
+import { useRouter, usePathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { Languages } from 'lucide-react';
 
@@ -17,14 +18,17 @@ export function LanguageSwitcher() {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
 
   const onSelectChange = (value: string) => {
-    const pathWithoutLocale = pathname.replace(`/${locale}`, '');
-    router.push(`/${value}${pathWithoutLocale}`);
+    // Close the select to ensure its portal overlay unmounts before navigation
+    setOpen(false);
+    // Use i18n-aware router to switch locale
+    router.replace(pathname, { locale: value });
   };
 
   return (
-    <Select value={locale} onValueChange={onSelectChange}>
+    <Select value={locale} onValueChange={onSelectChange} open={open} onOpenChange={setOpen}>
       <SelectTrigger className="cursor-pointer w-auto min-w-[120px] bg-background/80 backdrop-blur-sm border-border">
         <div className="flex items-center gap-2">
           <Languages className="h-4 w-4" />
@@ -40,4 +44,4 @@ export function LanguageSwitcher() {
       </SelectContent>
     </Select>
   );
-} 
+}

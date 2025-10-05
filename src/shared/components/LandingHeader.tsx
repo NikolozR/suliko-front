@@ -178,7 +178,7 @@ export default function LandingHeader() {
           : "bg-transparent"
       }`}
     >
-      <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+      <nav className="container z-50 relative mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 lg:h-20">
           
           {/* Logo */}
@@ -204,7 +204,7 @@ export default function LandingHeader() {
                   item.isExternal
                 )}
               >
-                {item.label}
+                <span className="cursor-pointer">{item.label}</span>
               </NavItem>
             ))}
             

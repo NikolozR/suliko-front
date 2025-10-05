@@ -3,7 +3,7 @@ import Script from "next/script";
 import "../globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/features/ui";
-import BetaBanner from "@/shared/components/BetaBanner";
+// import BetaBanner from "@/shared/components/BetaBanner";
 import { Analytics } from '@vercel/analytics/next';
 
 import { NextIntlClientProvider, hasLocale } from "next-intl";
@@ -90,7 +90,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <TopRightControls />
-            <BetaBanner />
+            {/* <BetaBanner /> */}
             {children}
             <Analytics />
           </ThemeProvider>
