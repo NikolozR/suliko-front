@@ -104,10 +104,7 @@ export default function PricingSection() {
         t("business.features.0"),
         t("business.features.1"),
         t("business.features.2"),
-        t("business.features.3"),
-        t("business.features.4"),
-        t("business.features.5"),
-        t("business.features.6")
+        t("business.features.3")
       ],
       cta: t("business.cta"),
       popular: true,
@@ -128,11 +125,7 @@ export default function PricingSection() {
         t("enterpriseBusiness.features.4"),
         t("enterpriseBusiness.features.5"),
         t("enterpriseBusiness.features.6"),
-        t("enterpriseBusiness.features.7"),
-        t("enterpriseBusiness.features.8"),
-        t("enterpriseBusiness.features.9"),
-        t("enterpriseBusiness.features.10"),
-        t("enterpriseBusiness.features.11")
+        t("enterpriseBusiness.features.7")
       ],
       cta: t("enterpriseBusiness.cta"),
       popular: false,
@@ -306,28 +299,6 @@ export default function PricingSection() {
           ))}
         </div>
 
-        {/* Additional Info */}
-        <div className="mt-16 text-center">
-          <div className="max-w-3xl mx-auto">
-            <h3 className="text-2xl font-bold text-foreground mb-4">
-              {t("allPlansInclude")}
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-muted-foreground">
-              <div className="flex items-center justify-center">
-                <Check className="h-4 w-4 text-green-500 mr-2" />
-                <span>{t("freeTrial")}</span>
-              </div>
-              <div className="flex items-center justify-center">
-                <Check className="h-4 w-4 text-green-500 mr-2" />
-                <span>{t("noSetupFees")}</span>
-              </div>
-              <div className="flex items-center justify-center">
-                <Check className="h-4 w-4 text-green-500 mr-2" />
-                <span>{t("cancelAnytime")}</span>
-              </div>
-            </div>
-          </div>
-        </div>
 
         {/* Contact Info */}
         <div className="mt-12 text-center">

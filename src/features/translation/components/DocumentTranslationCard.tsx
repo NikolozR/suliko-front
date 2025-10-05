@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState, useEffect } from "react";
 
 import {
   Card,
@@ -31,6 +31,7 @@ import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import PageCountDisplay from "./PageCountDisplay";
 import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
+import { useCountdown } from "@/hooks";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -60,12 +61,6 @@ const documentTranslationSchema = z.object({
 
 export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
 
-
-// const modelOptions = [
-//   { value: 0, label: "კლაუდია" },
-//   { value: 1, label: "კლაუდია junior" },
-//   { value: 2, label: "გურამი" },
-// ];
 
 const DocumentTranslationCard = () => {
   const t = useTranslations("DocumentTranslationCard");
@@ -111,6 +106,26 @@ const DocumentTranslationCard = () => {
       estimatedCost,
       estimatedWordCount,
     });
+
+  // Calculate countdown duration: 4 minutes base + 25 seconds per additional page
+  const countdownMinutes = estimatedPageCount > 0 ? 4 + Math.ceil((estimatedPageCount - 1) * 25 / 60) : 4;
+  
+  const { formatTime, isComplete, start, stop } = useCountdown({
+    initialMinutes: countdownMinutes,
+    autoStart: false, // We'll start it manually
+    onComplete: () => {
+      // When countdown completes, show "taking longer" message
+    }
+  });
+
+  // Start countdown when loading starts
+  useEffect(() => {
+    if (isLoading) {
+      start();
+    } else {
+      stop();
+    }
+  }, [isLoading, start, stop]);
 
   const {
     handleSubmit,
@@ -323,6 +338,8 @@ const DocumentTranslationCard = () => {
             type="document"
             message={loadingMessage || tButton("loading")}
             progress={loadingProgress}
+            countdownTime={isLoading ? formatTime() : null}
+            showTakingLonger={isComplete}
           />
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">

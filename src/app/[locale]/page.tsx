@@ -18,7 +18,7 @@ export default function LandingPage() {
         fullScreen={true}
         particleCount={60}
         speed={0.5}
-        enableInteractions={false}
+        enableInteractions={true}
       />
       
       {/* Main content */}

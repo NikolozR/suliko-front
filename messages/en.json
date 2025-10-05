@@ -90,7 +90,10 @@
     "progress": "Progress",
     "processingDocument": "Processing document...",
     "applySuggestion": "Applying suggestion...",
-    "translatingText": "Translating text..."
+    "translatingText": "Translating text...",
+    "estimatedTime": "Estimated time remaining",
+    "takingLonger": "Document is taking longer than expected",
+    "thankYouForPatience": "Thank you for your patience"
   },
   "TranslationButton": {
     "translate": "Translate",
@@ -332,13 +335,10 @@
       "period": "/month",
       "description": "Perfect for growing businesses",
       "features": {
-        "0": "500 pages per month",
-        "1": "Up to 800 words per translation",
-        "2": "Up to 5,000 characters per translation",
-        "3": "2.50 ₾ per translation after limit",
-        "4": "Priority email support",
-        "5": "All file formats (PDF, DOCX, TXT)",
-        "6": "Basic API access"
+        "0": "900 pages per month",
+        "1": "Priority email support",
+        "2": "All file formats (PDF, DOCX, TXT, PNG, JPEG, JPG)",
+        "3": "Basic API access"
       },
       "cta": "Try Suliko"
     },
@@ -384,25 +384,17 @@
       "description": "For large organizations and agencies",
       "features": {
         "0": "Unlimited pages",
-        "1": "Up to 2,000 words per translation",
-        "2": "Up to 12,500 characters per translation",
-        "3": "No overage fees",
-        "4": "Priority Support",
-        "5": "All file formats + custom integrations",
-        "6": "Advanced API with SLA",
-        "7": "Multi-user management",
-        "8": "Custom training & fine-tuning",
-        "9": "On-premise deployment options",
-        "10": "Compliance & security certifications",
-        "11": "Dedicated account manager"
+        "1": "No overage fees",
+        "2": "Priority Support",
+        "3": "All file formats + custom integrations",
+        "4": "Advanced API with SLA",
+        "5": "Multi-user management",
+        "6": "Custom training & fine-tuning",
+        "7": "Dedicated account manager"
       },
       "cta": "Contact Sales"
     },
     "select": "Select",
-    "allPlansInclude": "All plans include:",
-    "freeTrial": "14-day free trial",
-    "noSetupFees": "No setup fees",
-    "cancelAnytime": "Cancel anytime",
     "needCustomSolution": "Need a custom solution? Contact us at"
   },
   "WelcomeModal": {

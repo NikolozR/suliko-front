@@ -88,7 +88,10 @@
     "progress": "Postęp",
     "processingDocument": "Przetwarzanie dokumentu...",
     "applySuggestion": "Stosowanie sugestii...",
-    "translatingText": "Tłumaczenie tekstu..."
+    "translatingText": "Tłumaczenie tekstu...",
+    "estimatedTime": "Szacowany pozostały czas",
+    "takingLonger": "Dokument zajmuje więcej czasu niż oczekiwano",
+    "thankYouForPatience": "Dziękujemy za cierpliwość"
   },
   "TranslationButton": {
     "translate": "Tłumacz",
@@ -327,13 +330,10 @@
       "period": "/miesiąc",
       "description": "Idealny dla rozwijających się firm",
       "features": {
-        "0": "500 stron miesięcznie",
-        "1": "Do 800 słów na tłumaczenie",
-        "2": "Do 5,000 znaków na tłumaczenie",
-        "3": "2.50 ₾ za tłumaczenie po przekroczeniu limitu",
-        "4": "Priorytetowe wsparcie e-mailowe",
-        "5": "Wszystkie formaty plików (PDF, DOCX, TXT)",
-        "6": "Podstawowy dostęp do API"
+        "0": "900 stron miesięcznie",
+        "1": "Priorytetowe wsparcie e-mailowe",
+        "2": "Wszystkie formaty plików (PDF, DOCX, TXT, PNG, JPEG, JPG)",
+        "3": "Podstawowy dostęp do API"
       },
       "cta": "Rozpocznij bezpłatny okres próbny"
     },
@@ -379,25 +379,17 @@
       "description": "Dla dużych organizacji i agencji",
       "features": {
         "0": "Nieograniczone tłumaczenia",
-        "1": "Do 2,000 słów na tłumaczenie",
-        "2": "Do 12,500 znaków na tłumaczenie",
-        "3": "Brak opłat za przekroczenie",
-        "4": "Priorytetowe wsparcie",
-        "5": "Wszystkie formaty plików + niestandardowe integracje",
-        "6": "Zaawansowane API z SLA",
-        "7": "Zarządzanie wieloma użytkownikami",
-        "8": "Niestandardowe szkolenie i dostrajanie",
-        "9": "Opcje wdrożenia on-premise",
-        "10": "Certyfikaty zgodności i bezpieczeństwa",
-        "11": "Dedykowany menedżer konta"
+        "1": "Brak opłat za przekroczenie",
+        "2": "Priorytetowe wsparcie",
+        "3": "Wszystkie formaty plików + niestandardowe integracje",
+        "4": "Zaawansowane API z SLA",
+        "5": "Zarządzanie wieloma użytkownikami",
+        "6": "Niestandardowe szkolenie i dostrajanie",
+        "7": "Dedykowany menedżer konta"
       },
       "cta": "Skontaktuj się ze sprzedażą"
     },
     "select": "Wybierz",
-    "allPlansInclude": "Wszystkie plany obejmują:",
-    "freeTrial": "14-dniowy bezpłatny okres próbny",
-    "noSetupFees": "Brak opłat za konfigurację",
-    "cancelAnytime": "Anuluj w dowolnym momencie",
     "needCustomSolution": "Potrzebujesz niestandardowego rozwiązania? Skontaktuj się z nami"
   },
   "WelcomeModal": {
