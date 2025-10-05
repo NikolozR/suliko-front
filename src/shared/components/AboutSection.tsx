@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/features/ui";
-import { Brain, Shield, Zap, Target } from "lucide-react";
+import { Brain, Shield, Zap } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function AboutSection() {

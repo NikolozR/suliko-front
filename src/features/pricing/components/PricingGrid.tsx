@@ -6,7 +6,7 @@ import { useLocale } from "next-intl";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
-import { createPayment } from "../services/paymentService";
+// import { createPayment } from "../services/paymentService";
 
 export function PricingGrid() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -19,10 +19,10 @@ export function PricingGrid() {
     router.push(`/${locale}/document`);
   };
 
-  const handleSelectPackage = async (amount: number, currency: string, country: string) => {
-    const response = await createPayment(amount, currency, country);
-    window.open(response.redirectUrl, "_blank");
-  }
+  // const handleSelectPackage = async (amount: number, currency: string, country: string) => {
+  //   const response = await createPayment(amount, currency, country);
+  //   window.open(response.redirectUrl, "_blank");
+  // }
 
   const handleTrySuliko = () => {
     router.push(`/${locale}/document`);

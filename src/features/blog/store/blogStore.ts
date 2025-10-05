@@ -62,7 +62,7 @@ export const useBlogStore = create<BlogState>((set, get) => ({
     
     // Apply tag filter
     if (filters.tag) {
-      filtered = filtered.filter(post => post.tags.includes(filters.tag));
+      filtered = filtered.filter(post => post.tags.includes(filters.tag ?? ""));
     }
     
     // Apply search filter
