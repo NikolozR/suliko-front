@@ -57,6 +57,7 @@
   },
   "Sidebar": {
     "newProject": "New Project",
+    "blog": "Blog",
     "history": "History",
     "profile": "Profile",
     "logout": "Logout",
@@ -429,6 +430,7 @@
     "pricing": "Pricing",
     "testimonials": "Testimonials",
     "contact": "Contact",
+    "blog": "Blog",
     "getStarted": "Get Started"
   },
   "AboutSection": {
@@ -541,5 +543,35 @@
     "bottom": {
       "copyright": "© 2025 Suliko. All rights reserved."
     }
+  },
+  "Blog": {
+    "title": "Blog",
+    "description": "Latest insights and updates from Suliko",
+    "readMore": "Read More",
+    "readTime": "{minutes} min read",
+    "publishedOn": "Published on {date}",
+    "byAuthor": "By {author}",
+    "categories": "Categories",
+    "tags": "Tags",
+    "search": "Search posts...",
+    "noPosts": "No blog posts found",
+    "featured": "Featured",
+    "recent": "Recent Posts",
+    "allPosts": "All Posts",
+    "backToBlog": "Back to Blog",
+    "featuredPost": "Featured Post",
+    "lastUpdated": "Last updated: {date}",
+    "clearFilters": "Clear Filters",
+    "noResults": "No posts found",
+    "adjustFilters": "Try adjusting your search or filter criteria.",
+    "viewAllPosts": "View All Posts",
+    "readFullPost": "Read Full Post",
+    "searchPlaceholder": "Search blog posts...",
+    "loading": "Loading blog posts...",
+    "error": "Error loading blog posts",
+    "errorLoading": "Error Loading Blog",
+    "featuredPosts": "Featured Posts",
+    "noPostsFound": "No posts found",
+    "tryAdjustingFilters": "Try adjusting your search or filter criteria."
   }
 }

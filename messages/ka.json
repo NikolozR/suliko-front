@@ -55,6 +55,7 @@
   },
   "Sidebar": {
     "newProject": "ახალი პროექტი",
+    "blog": "ბლოგი",
     "history": "ისტორია",
     "profile": "პროფილი",
     "logout": "გასვლა",
@@ -426,6 +427,7 @@
     "pricing": "ფასები",
     "testimonials": "მიმოხილვები",
     "contact": "კონტაქტი",
+    "blog": "ბლოგი",
     "getStarted": "დაწყება"
   },
   "AboutSection": {
@@ -538,5 +540,35 @@
     "bottom": {
       "copyright": "© 2025 სულიკო. ყველა უფლება დაცულია."
     }
+  },
+  "Blog": {
+    "title": "ბლოგი",
+    "description": "უახლესი ინფორმაცია და განახლებები Suliko-დან",
+    "readMore": "წაიკითხე მეტი",
+    "readTime": "{minutes} წუთი",
+    "publishedOn": "გამოქვეყნდა {date}",
+    "byAuthor": "{author}-ის მიერ",
+    "categories": "კატეგორიები",
+    "tags": "ტაგები",
+    "search": "ძებნა პოსტების...",
+    "noPosts": "ბლოგის პოსტები არ მოიძებნა",
+    "featured": "რეკომენდებული",
+    "recent": "ბოლო პოსტები",
+    "allPosts": "ყველა პოსტი",
+    "backToBlog": "ბლოგზე დაბრუნება",
+    "featuredPost": "რეკომენდებული პოსტი",
+    "lastUpdated": "ბოლო განახლება: {date}",
+    "clearFilters": "ფილტრების გასუფთავება",
+    "noResults": "პოსტები არ მოიძებნა",
+    "adjustFilters": "სცადეთ ძებნის ან ფილტრის კრიტერიუმების შეცვლა.",
+    "viewAllPosts": "ყველა პოსტის ნახვა",
+    "readFullPost": "სრული პოსტის წაკითხვა",
+    "searchPlaceholder": "ბლოგის პოსტების ძებნა...",
+    "loading": "ბლოგის პოსტების ჩატვირთვა...",
+    "error": "ბლოგის პოსტების ჩატვირთვის შეცდომა",
+    "errorLoading": "ბლოგის ჩატვირთვის შეცდომა",
+    "featuredPosts": "რეკომენდებული პოსტები",
+    "noPostsFound": "პოსტები არ მოიძებნა",
+    "tryAdjustingFilters": "სცადეთ ძებნის ან ფილტრის კრიტერიუმების შეცვლა."
   }
 }

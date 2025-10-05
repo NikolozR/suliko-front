@@ -55,6 +55,7 @@
   },
   "Sidebar": {
     "newProject": "Nowy projekt",
+    "blog": "Blog",
     "history": "Historia",
     "profile": "Profil",
     "logout": "Wyloguj się",
@@ -424,6 +425,7 @@
     "pricing": "Ceny",
     "testimonials": "Opinie",
     "contact": "Kontakt",
+    "blog": "Blog",
     "getStarted": "Zacznij"
   },
   "AboutSection": {
@@ -536,5 +538,35 @@
     "bottom": {
       "copyright": "© 2025 Suliko. Wszystkie prawa zastrzeżone."
     }
+  },
+  "Blog": {
+    "title": "Blog",
+    "description": "Najnowsze informacje i aktualizacje z Suliko",
+    "readMore": "Czytaj więcej",
+    "readTime": "{minutes} min czytania",
+    "publishedOn": "Opublikowano {date}",
+    "byAuthor": "Autor: {author}",
+    "categories": "Kategorie",
+    "tags": "Tagi",
+    "search": "Szukaj postów...",
+    "noPosts": "Nie znaleziono postów na blogu",
+    "featured": "Polecane",
+    "recent": "Najnowsze posty",
+    "allPosts": "Wszystkie posty",
+    "backToBlog": "Powrót do bloga",
+    "featuredPost": "Polecany post",
+    "lastUpdated": "Ostatnia aktualizacja: {date}",
+    "clearFilters": "Wyczyść filtry",
+    "noResults": "Nie znaleziono postów",
+    "adjustFilters": "Spróbuj dostosować kryteria wyszukiwania lub filtry.",
+    "viewAllPosts": "Zobacz wszystkie posty",
+    "readFullPost": "Przeczytaj pełny post",
+    "searchPlaceholder": "Szukaj postów na blogu...",
+    "loading": "Ładowanie postów na blogu...",
+    "error": "Błąd ładowania postów na blogu",
+    "errorLoading": "Błąd ładowania bloga",
+    "featuredPosts": "Polecane posty",
+    "noPostsFound": "Nie znaleziono postów",
+    "tryAdjustingFilters": "Spróbuj dostosować kryteria wyszukiwania lub filtry."
   }
 }
