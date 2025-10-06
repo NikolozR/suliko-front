@@ -282,7 +282,7 @@
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
-      "cta": "Rozpocznij bezpłatny okres próbny"
+      "cta": "Kup kredyty"
     },
     "professional": {
       "title": "Profesjonalny",
@@ -297,7 +297,7 @@
         "3": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
         "4": "Narzędzia współpracy zespołowej"
       },
-      "cta": "Rozpocznij bezpłatny okres próbny",
+      "cta": "Kup kredyty",
       "popular": "Najpopularniejszy"
     },
     "custom": {
@@ -340,18 +340,18 @@
     },
     "payAsYouGo": {
       "title": "Płać za użycie",
-      "price": "10 ₾",
-      "period": "→ 12 stron",
-      "documents": "12 stron za zakup",
+      "price": "1 ₾",
+      "period": "→ 1 strona",
+      "documents": "1 strona za GEL",
       "description": "Idealny do sporadycznych tłumaczeń",
       "features": {
-        "0": "12 stron za 10 ₾",
+        "0": "1 strona = 1 GEL",
         "1": "Brak miesięcznego zobowiązania",
         "2": "Strony nigdy nie wygasają",
         "3": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "4": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
-      "cta": "Wypróbuj Suliko"
+      "cta": "Kup kredyty"
     },
     "payAsYouGoModal": {
       "title": "Niestandardowy zakup",
@@ -361,6 +361,7 @@
       "pages": "stron",
       "pricePerPage": "Cena za stronę",
       "totalAmount": "Całkowita kwota",
+      "simpleRate": "1 GEL = 1 strona",
       "cancel": "Anuluj",
       "purchase": "Kup",
       "processing": "Przetwarzanie...",

@@ -5,6 +5,7 @@ import { Edit, LogOut } from "lucide-react";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { useUser } from "@/features/auth/hooks/useUser";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 interface ProfileHeroProps {
   userProfile: UserProfile;
@@ -101,9 +102,11 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
               <Badge variant="secondary" className="bg-white/20 text-white mb-1 pointer-events-none select-none">
                 {t("currentBalance")}
               </Badge>
-              <p className="text-xl text-white/80">
-                {Math.floor(userProfile.balance || 0)} {t("pages")}
-              </p>
+              <Link href="/price" className="block hover:opacity-80 transition-opacity cursor-pointer">
+                <p className="text-xl text-white/80">
+                  {Math.floor(userProfile.balance || 0)} {t("pages")}
+                </p>
+              </Link>
             </div>
           </div>
         </div>

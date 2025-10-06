@@ -287,7 +287,7 @@
         "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
-      "cta": "Try Suliko"
+      "cta": "Buy Credits"
     },
     "professional": {
       "title": "Professional",
@@ -302,7 +302,7 @@
         "3": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages",
         "4": "Team collaboration tools"
       },
-      "cta": "Try Suliko",
+      "cta": "Buy Credits",
       "popular": "Most Popular"
     },
     "custom": {
@@ -341,22 +341,22 @@
         "2": "All file formats (PDF, DOCX, TXT, PNG, JPEG, JPG)",
         "3": "Basic API access"
       },
-      "cta": "Try Suliko"
+      "cta": "Buy Credits"
     },
     "payAsYouGo": {
       "title": "Pay as you go",
-      "price": "10 ₾",
-      "period": "→ 12 pages",
-      "documents": "12 pages per purchase",
+      "price": "1 ₾",
+      "period": "→ 1 page",
+      "documents": "1 page per GEL",
       "description": "Perfect for occasional translations",
       "features": {
-        "0": "12 pages per 10 ₾",
+        "0": "1 page = 1 GEL",
         "1": "No monthly commitment",
         "2": "Pages never expire",
         "3": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "4": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
-      "cta": "Try Suliko"
+      "cta": "Buy Credits"
     },
     "payAsYouGoModal": {
       "title": "Custom Purchase",
@@ -366,6 +366,7 @@
       "pages": "pages",
       "pricePerPage": "Price per page",
       "totalAmount": "Total amount",
+      "simpleRate": "1 GEL = 1 page",
       "cancel": "Cancel",
       "purchase": "Purchase",
       "processing": "Processing...",

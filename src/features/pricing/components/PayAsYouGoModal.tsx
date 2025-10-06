@@ -14,8 +14,8 @@ interface PayAsYouGoModalProps {
   onClose: () => void;
 }
 
-const PRICE_PER_PAGE = 0.83; // 10 GEL / 12 pages = 0.83 GEL per page
-const MINIMUM_AMOUNT = 5; // Minimum purchase amount
+const PRICE_PER_PAGE = 1; // 1 GEL = 1 page
+const MINIMUM_AMOUNT = 1; // Minimum purchase amount
 const MAXIMUM_AMOUNT = 1000; // Maximum purchase amount
 
 export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
@@ -29,7 +29,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
   useEffect(() => {
     const numericAmount = parseFloat(amount);
     if (!isNaN(numericAmount) && numericAmount > 0) {
-      const calculatedPages = Math.floor(numericAmount / PRICE_PER_PAGE);
+      const calculatedPages = Math.floor(numericAmount); // 1 GEL = 1 page
       setPages(calculatedPages);
     } else {
       setPages(0);
@@ -83,7 +83,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
     }
   };
 
-  const suggestedAmounts = [10, 25, 50, 100];
+  const suggestedAmounts = [5, 10, 20, 50];
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -140,46 +140,22 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
             </div>
           </div>
 
-          {/* Calculation Display */}
-          <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 border">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <Calculator className="h-5 w-5 text-primary" />
-                <span className="text-sm font-medium text-foreground">
-                  {t('payAsYouGoModal.pagesCalculation')}
-                </span>
-              </div>
-              <div className="text-right">
-                <div className="text-2xl font-bold text-primary">
+          {/* Simple Calculation Display */}
+          {pages > 0 && (
+            <div className="bg-slate-50 dark:bg-slate-800 rounded-lg p-4 border">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-primary mb-2">
                   {pages}
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {t('payAsYouGoModal.pages')}
+                <div className="text-sm text-muted-foreground">
+                  {t('payAsYouGoModal.pages')} • {amount} ₾
+                </div>
+                <div className="text-xs text-muted-foreground mt-1">
+                  {t('payAsYouGoModal.simpleRate')}
                 </div>
               </div>
             </div>
-            
-            {pages > 0 && (
-              <div className="mt-3 pt-3 border-t border-border">
-                <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {t('payAsYouGoModal.pricePerPage')}
-                  </span>
-                  <span className="text-foreground">
-                    {PRICE_PER_PAGE.toFixed(2)} ₾
-                  </span>
-                </div>
-                <div className="flex justify-between text-sm mt-1">
-                  <span className="text-muted-foreground">
-                    {t('payAsYouGoModal.totalAmount')}
-                  </span>
-                  <span className="font-semibold text-foreground">
-                    {parseFloat(amount || '0').toFixed(2)} ₾
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
+          )}
 
           {/* Error Display */}
           {error && (
