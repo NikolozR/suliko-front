@@ -126,7 +126,7 @@ export default function ChatPage() {
         setIsSuggestionsLoading(false);
       }
     })();
-  }, [chat]);
+  }, [chat, resetChatEditingStore, resetChatSuggestionsStore, setChatId, setHasGeneratedMore, setJobId, setSuggestions, setTranslatedMarkdownWithoutZoomReset]);
 
   if (loading) {
     return (

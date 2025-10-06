@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface UseCountdownOptions {
   initialMinutes: number;
@@ -33,7 +33,7 @@ export function useCountdown({
     return `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
   };
 
-  const start = () => {
+  const start = useCallback(() => {
     if (intervalRef.current) return;
     
     setIsComplete(false);
@@ -47,14 +47,14 @@ export function useCountdown({
         return prev - 1;
       });
     }, 1000);
-  };
+  }, [onComplete]);
 
-  const stop = () => {
+  const stop = useCallback(() => {
     if (intervalRef.current) {
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
-  };
+  }, []);
 
   const reset = (newMinutes?: number) => {
     stop();
