@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from "react";
-import { useRouter } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
@@ -11,8 +9,6 @@ import { createPayment } from "../services/paymentService";
 export function PricingGrid() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showPayAsYouGoModal, setShowPayAsYouGoModal] = useState(false);
-  const router = useRouter();
-  const locale = useLocale();
 
   const handleSelectPayAsYouGo = () => {
     setShowPayAsYouGoModal(true);
