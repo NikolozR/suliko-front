@@ -11,7 +11,6 @@ import { createPayment } from "../services/paymentService";
 export function PricingGrid() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showPayAsYouGoModal, setShowPayAsYouGoModal] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
   const locale = useLocale();
 
@@ -20,15 +19,12 @@ export function PricingGrid() {
   };
 
   const handleSelectPackage = async (amount: number, currency: string = 'GEL', country: string = 'GE') => {
-    setIsLoading(true);
     try {
       const response = await createPayment(amount, currency, country);
       window.open(response.redirectUrl, "_blank");
     } catch (error) {
       console.error('Payment failed:', error);
       // Could show an error modal here
-    } finally {
-      setIsLoading(false);
     }
   }
 
@@ -40,9 +36,7 @@ export function PricingGrid() {
     handleSelectPackage(173); // 173 GEL for Professional package
   };
 
-  const handleTrySuliko = () => {
-    router.push(`/${locale}/document`);
-  }
+  // Removed handleTrySuliko as it's no longer used
 
   return (
     <>

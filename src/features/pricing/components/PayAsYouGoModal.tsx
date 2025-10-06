@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/
 import { Button } from '@/features/ui/components/ui/button';
 import { Input } from '@/features/ui/components/ui/input';
 import { Label } from '@/features/ui/components/ui/label';
-import { Calculator, CreditCard, AlertCircle } from "lucide-react";
+import { CreditCard, AlertCircle } from "lucide-react";
 import { createPayment } from "../services/paymentService";
 
 interface PayAsYouGoModalProps {
@@ -14,7 +14,7 @@ interface PayAsYouGoModalProps {
   onClose: () => void;
 }
 
-const PRICE_PER_PAGE = 1; // 1 GEL = 1 page
+// const PRICE_PER_PAGE = 1; // 1 GEL = 1 page (not used in simplified version)
 const MINIMUM_AMOUNT = 1; // Minimum purchase amount
 const MAXIMUM_AMOUNT = 1000; // Maximum purchase amount
 
