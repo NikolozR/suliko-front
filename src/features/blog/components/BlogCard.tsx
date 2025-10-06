@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useLocale, useTranslations } from 'next-intl';
 import { BlogPost } from '../types/types.Blog';
 import { Card, CardContent, CardFooter, CardHeader } from '@/features/ui/components/ui/card';
@@ -19,11 +20,13 @@ export default function BlogCard({ post }: BlogCardProps) {
     <Card className="h-full hover:shadow-2xl transition-all duration-300 border-primary/10 hover:border-primary/30 bg-gradient-to-br from-card/50 to-card/80 backdrop-blur-sm group">
       <CardHeader className="p-6">
         {post.featuredImage && (
-          <div className="aspect-video bg-muted rounded-xl mb-6 overflow-hidden">
-            <img 
+          <div className="aspect-video bg-muted rounded-xl mb-6 overflow-hidden relative">
+            <Image 
               src={post.featuredImage} 
               alt={post.title[locale] || post.title.en}
-              className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              fill
+              className="object-cover group-hover:scale-110 transition-transform duration-500"
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}

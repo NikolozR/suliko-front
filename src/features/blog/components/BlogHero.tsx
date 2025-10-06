@@ -4,6 +4,7 @@ import { BlogPost } from '../types/types.Blog';
 import { Skeleton } from '@/features/ui/components/ui/skeleton';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/features/ui/components/ui/button';
 import { Calendar, Clock, User } from 'lucide-react';
 
@@ -54,10 +55,12 @@ export default function BlogHero({ featuredPosts, isLoading }: BlogHeroProps) {
     <div className="relative bg-gradient-to-br from-primary/20 via-secondary/10 to-primary/10 rounded-2xl overflow-hidden mb-12 border border-primary/20 shadow-2xl">
       {featuredPost.featuredImage && (
         <div className="absolute inset-0 opacity-30">
-          <img 
+          <Image 
             src={featuredPost.featuredImage} 
             alt={featuredPost.title[locale] || featuredPost.title.en}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
         </div>
       )}

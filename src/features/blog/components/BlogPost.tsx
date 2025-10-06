@@ -5,6 +5,7 @@ import type { BlogPost } from '../types/types.Blog';
 import { Badge } from '@/features/ui/components/ui/badge';
 import { Calendar, Clock, User, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Button } from '@/features/ui/components/ui/button';
 import { Separator } from '@/features/ui/components/ui/separator';
 
@@ -48,11 +49,13 @@ export default function BlogPost({ post }: BlogPostProps) {
 
       {/* Featured Image */}
       {post.featuredImage && (
-        <div className="aspect-video bg-muted rounded-2xl mb-12 overflow-hidden shadow-2xl">
-          <img 
+        <div className="aspect-video bg-muted rounded-2xl mb-12 overflow-hidden shadow-2xl relative">
+          <Image 
             src={post.featuredImage} 
             alt={post.title[locale] || post.title.en}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 70vw"
           />
         </div>
       )}

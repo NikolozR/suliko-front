@@ -70,7 +70,7 @@ export function useCountdown({
     return () => {
       stop();
     };
-  }, [autoStart]);
+  }, [autoStart, start]);
 
   useEffect(() => {
     return () => {
