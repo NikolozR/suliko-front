@@ -106,7 +106,7 @@ export default async function LocaleLayout({
       > 
         {/* Meta Pixel (noscript) */}
         <noscript>
-          <img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=763067889892928&ev=PageView&noscript=1" />
+          <img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=763067889892928&ev=PageView&noscript=1" alt="" />
         </noscript>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>

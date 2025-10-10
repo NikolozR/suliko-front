@@ -1,16 +1,13 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
 import { ArrowRight, Sparkles, Globe, FileText } from "lucide-react";
-import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
-  const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);

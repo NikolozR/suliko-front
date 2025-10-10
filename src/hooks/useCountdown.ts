@@ -70,13 +70,13 @@ export function useCountdown({
     return () => {
       stop();
     };
-  }, [autoStart, start]);
+  }, [autoStart, start, stop]);
 
   useEffect(() => {
     return () => {
       stop();
     };
-  }, []);
+  }, [stop]);
 
   return {
     timeLeft,
