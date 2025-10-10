@@ -22,7 +22,6 @@ import {
   Wallet,
   ChevronDown,
   ChevronUp,
-  BookOpen,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
@@ -33,11 +32,6 @@ const NAV_ITEMS = [
     label: "newProject",
     href: "/text",
     icon: Plus,
-  },
-  {
-    label: "blog",
-    href: "/blog",
-    icon: BookOpen,
   },
   {
     label: "profile",

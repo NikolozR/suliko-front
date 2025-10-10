@@ -4,6 +4,7 @@ import LandingHeader from "@/shared/components/LandingHeader";
 import HeroSection from "@/shared/components/HeroSection";
 import AboutSection from "@/shared/components/AboutSection";
 import PricingSection from "@/shared/components/PricingSection";
+import VideoSection from "@/shared/components/VideoSection";
 import TestimonialsSection from "@/shared/components/TestimonialsSection";
 import LandingFooter from "@/shared/components/LandingFooter";
 import ScrollToTop from "@/shared/components/ScrollToTop";
@@ -28,6 +29,7 @@ export default function LandingPage() {
           <HeroSection />
           <AboutSection />
           <PricingSection />
+          <VideoSection />
           <TestimonialsSection />
         </main>
         <LandingFooter />

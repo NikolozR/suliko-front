@@ -39,6 +39,14 @@ export default function TestimonialsSection() {
       avatar: "NA",
       rating: 5,
       content: t("testimonials.nebulaAI.content")
+    },
+    {
+      name: t("testimonials.api24.name"),
+      role: t("testimonials.api24.role"),
+      company: t("testimonials.api24.company"),
+      avatar: "A24",
+      rating: 5,
+      content: t("testimonials.api24.content")
     }
   ];
 

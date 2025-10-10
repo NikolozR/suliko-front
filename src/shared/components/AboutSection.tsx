@@ -51,25 +51,7 @@ export default function AboutSection() {
           </Card>
         </div>
 
-        {/* Video Section */}
-        <div className="max-w-4xl mx-auto mb-16">
-          <div className="text-center mb-8">
-            <h3 className="text-2xl font-bold text-foreground mb-4">{t("video.title")}</h3>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              {t("video.description")}
-            </p>
-          </div>
-          <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-            <iframe
-              className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
-              src="https://www.youtube.com/embed/HcP7GnI04Aw"
-              title={t("video.title")}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            />
-          </div>
-        </div>
+        {/* Video Section removed as requested */}
 
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

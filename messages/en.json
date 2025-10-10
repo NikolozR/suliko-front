@@ -426,6 +426,10 @@
     "accuracyRate": "Accuracy Rate",
     "supportAvailable": "Support Available"
   },
+  "VideoSection": {
+    "title": "See Suliko in Action",
+    "description": "Watch how our AI-powered translation platform works and discover why professionals worldwide trust Suliko for their translation needs."
+  },
   "LandingHeader": {
     "about": "About",
     "pricing": "Pricing",
@@ -502,6 +506,13 @@
         "role": "AI Technology Company",
         "company": "Nebula AI Hub",
         "content": "Working in technology, we appreciate the sophistication of Suliko's translation engine. The quality and reliability have exceeded our expectations, making it our go-to solution for technical document translation."
+      },
+      "api24": {
+        "name": "API24",
+        "role": "Product Manager",
+        "company": "API24",
+        "email": "info@api24.ge",
+        "content": "API24 is a product and stock management tool for e-commerce marketplaces. We provide all needed data using API. Suliko has been instrumental in helping us localize our platform documentation and user interfaces for international markets, ensuring our API documentation is accessible to developers worldwide."
       }
     }
   },
