@@ -12,12 +12,9 @@ export function useCounter(
 ): number {
   const { duration = 2000, startDelay = 0, easing = (t) => t } = options;
   const [count, setCount] = useState(0);
-  const [isAnimating, setIsAnimating] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setIsAnimating(true);
-      
       const startTime = Date.now();
       const startValue = 0;
 
