@@ -11,7 +11,6 @@ interface TranslationLoadingOverlayProps {
   progress?: number;
   className?: string;
   overlay?: boolean;
-  countdownTime?: string | null;
   showTakingLonger?: boolean;
 }
 
@@ -22,7 +21,6 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
   progress,
   className,
   overlay = true,
-  countdownTime,
   showTakingLonger = false
 }) => {
   const t = useTranslations("TranslationLoadingOverlay");
@@ -92,14 +90,6 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
         </div>
       )}
 
-      {/* Countdown Timer - Only for document translations */}
-      {type === 'document' && countdownTime && (
-        <div className="text-center">
-          <p className="text-sm text-muted-foreground">
-            {t('estimatedTime')}: <span className="font-mono font-medium text-foreground">{countdownTime}</span>
-          </p>
-        </div>
-      )}
 
       {/* Taking longer message - Only for document translations */}
       {type === 'document' && showTakingLonger && (

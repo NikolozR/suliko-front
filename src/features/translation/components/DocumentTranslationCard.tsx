@@ -110,7 +110,7 @@ const DocumentTranslationCard = () => {
   // Calculate countdown duration: 4 minutes base + 25 seconds per additional page
   const countdownMinutes = estimatedPageCount > 0 ? 4 + Math.ceil((estimatedPageCount - 1) * 25 / 60) : 4;
   
-  const { formatTime, isComplete, start, stop } = useCountdown({
+  const { isComplete, start, stop } = useCountdown({
     initialMinutes: countdownMinutes,
     autoStart: false, // We'll start it manually
     onComplete: () => {
@@ -338,7 +338,6 @@ const DocumentTranslationCard = () => {
             type="document"
             message={loadingMessage || tButton("loading")}
             progress={loadingProgress}
-            countdownTime={isLoading ? formatTime() : null}
             showTakingLonger={isComplete}
           />
           <CardHeader>

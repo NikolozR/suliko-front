@@ -194,26 +194,29 @@ export default function LandingHeader() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <NavItem
-                key={item.id}
-                href={item.isExternal ? `/${item.id}` : `#${item.id}`}
-                onClick={() => handleNavClick(
-                  item.isExternal ? `/${item.id}` : `#${item.id}`, 
-                  item.isExternal
-                )}
-              >
-                <span className="cursor-pointer">{item.label}</span>
-              </NavItem>
-            ))}
-            
-            <div className="flex items-center gap-2 ml-6">
-              <LanguageSwitcher />
-              <ThemeToggle />
+          <div className="hidden md:flex items-center justify-center flex-1">
+            {/* Navigation Items */}
+            <div className="flex items-center space-x-8">
+              {navItems.map((item) => (
+                <NavItem
+                  key={item.id}
+                  href={item.isExternal ? `/${item.id}` : `#${item.id}`}
+                  onClick={() => handleNavClick(
+                    item.isExternal ? `/${item.id}` : `#${item.id}`, 
+                    item.isExternal
+                  )}
+                >
+                  <span className="cursor-pointer">{item.label}</span>
+                </NavItem>
+              ))}
             </div>
-            
-            <Link href="/document" className="ml-4">
+          </div>
+
+          {/* Right Controls Group */}
+          <div className="hidden md:flex items-center space-x-4">
+            <LanguageSwitcher />
+            <ThemeToggle />
+            <Link href="/document">
               <Button size="sm" className="text-sm">
                 {t("getStarted")}
               </Button>

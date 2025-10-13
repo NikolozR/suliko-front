@@ -3,7 +3,7 @@ import { Upload, Type } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
-import TextTranslationCard from "./TextTranslationCard";
+// import TextTranslationCard from "./TextTranslationCard"; // Removed
 
 const TextTranslationPage = () => {
   const t = useTranslations('MainContent');
@@ -47,7 +47,7 @@ const TextTranslationPage = () => {
           </div>
         </div>
 
-        <TextTranslationCard />
+        {/* Translation widget removed */}
       </div>
     </div>
   );

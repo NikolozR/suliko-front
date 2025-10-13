@@ -72,25 +72,6 @@ export default function AboutSection() {
           ))}
         </div>
 
-        {/* Stats Section */}
-        <div className="mt-20 grid grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">10M+</div>
-            <div className="text-sm text-muted-foreground">{t("stats.documentsTranslated")}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">150+</div>
-            <div className="text-sm text-muted-foreground">{t("stats.languagesSupported")}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">50K+</div>
-            <div className="text-sm text-muted-foreground">{t("stats.happyCustomers")}</div>
-          </div>
-          <div className="text-center">
-            <div className="text-4xl font-bold text-primary mb-2">99.9%</div>
-            <div className="text-sm text-muted-foreground">{t("stats.uptimeGuarantee")}</div>
-          </div>
-        </div>
 
       </div>
     </section>

@@ -4,13 +4,17 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
 import { ArrowRight, Sparkles, Globe, FileText } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useMemo } from "react";
+import { useTheme } from "next-themes";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
+  const tStats = useTranslations("AboutSection.stats");
   const [mounted, setMounted] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const { resolvedTheme } = useTheme();
+
 
   useEffect(() => {
     setMounted(true);
@@ -36,15 +40,112 @@ export default function HeroSection() {
     };
   }, [mounted]);
 
+  // Theme-aware star colors
+  const isDark = mounted && resolvedTheme === "dark";
+  const starColor = isDark ? "white" : "#1e40af"; // Blue for light theme, white for dark
+  const shootingStarColor = isDark ? "from-white via-blue-200" : "from-blue-600 via-blue-400";
+
+  // Generate stable star positions using useMemo to avoid hydration mismatches
+  const starData = useMemo(() => {
+    if (!mounted) return { stars: [], mediumStars: [], smallStars: [], shootingStars: [] };
+    
+    const generateStars = (count: number, size: number) => {
+      return Array.from({ length: count }, (_, i) => ({
+        id: i,
+        left: Math.random() * 100,
+        top: Math.random() * 100,
+        animationDelay: Math.random() * 4,
+        animationDuration: 2 + Math.random() * 3,
+        opacity: size === 1 ? 0.3 + Math.random() * 0.4 : undefined,
+      }));
+    };
+
+    return {
+      stars: generateStars(40, 1), // Large stars
+      mediumStars: generateStars(60, 0.5), // Medium stars
+      smallStars: generateStars(100, 0), // Small stars
+      shootingStars: Array.from({ length: 2 }, (_, i) => ({
+        id: i,
+        left: Math.random() * 20,
+        top: Math.random() * 20,
+        animationDelay: Math.random() * 10,
+        animationDuration: 2 + Math.random() * 2,
+      })),
+    };
+  }, [mounted]);
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+    <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900" />
       
-      {/* Animated Background Elements */}
+      {/* Star Field Background */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-200/20 rounded-full blur-3xl animate-pulse" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-purple-200/20 rounded-full blur-3xl animate-pulse delay-1000" />
+        {/* Stars Layer 1 - Large twinkling stars */}
+        <div className="absolute inset-0">
+          {starData.stars.map((star) => (
+            <div
+              key={`star-1-${star.id}`}
+              className="absolute w-1 h-1 rounded-full animate-twinkle"
+              style={{
+                backgroundColor: starColor,
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                animationDelay: `${star.animationDelay}s`,
+                animationDuration: `${star.animationDuration}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Stars Layer 2 - Medium stars */}
+        <div className="absolute inset-0">
+          {starData.mediumStars.map((star) => (
+            <div
+              key={`star-2-${star.id}`}
+              className="absolute w-0.5 h-0.5 rounded-full animate-slow-twinkle"
+              style={{
+                backgroundColor: starColor,
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                animationDelay: `${star.animationDelay + 1}s`,
+                animationDuration: `${star.animationDuration + 1}s`,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Stars Layer 3 - Small static stars */}
+        <div className="absolute inset-0">
+          {starData.smallStars.map((star) => (
+            <div
+              key={`star-3-${star.id}`}
+              className="absolute w-px h-px rounded-full"
+              style={{
+                backgroundColor: starColor,
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                opacity: star.opacity,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Shooting stars */}
+        <div className="absolute inset-0">
+          {starData.shootingStars.map((star) => (
+            <div
+              key={`shooting-${star.id}`}
+              className={`absolute w-24 h-px bg-gradient-to-r ${shootingStarColor} to-transparent animate-shooting-star`}
+              style={{
+                left: `${star.left}%`,
+                top: `${star.top}%`,
+                animationDelay: `${star.animationDelay}s`,
+                animationDuration: `${star.animationDuration}s`,
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
@@ -52,17 +153,17 @@ export default function HeroSection() {
           {/* Left column: text */}
           <div className="lg:col-span-2">
             {/* Main Headline */}
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold text-foreground mb-6 leading-tight text-center lg:text-left">
+            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground mb-4 leading-tight text-center lg:text-left">
               {t("title")}
             </h1>
 
             {/* Subheadline */}
-            <p className="text-xl sm:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto lg:mx-0 leading-relaxed text-center lg:text-left">
+            <p className="text-lg sm:text-xl text-muted-foreground mb-6 max-w-3xl mx-auto lg:mx-0 leading-relaxed text-center lg:text-left">
               {t("description")}
             </p>
 
             {/* Feature Highlights */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-6 mb-12 text-sm text-muted-foreground">
+            <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8 text-sm text-muted-foreground">
               <div className="flex items-center gap-2">
                 <Sparkles className="h-4 w-4 text-blue-500" />
                 <span>{t("aiPowered")}</span>
@@ -78,15 +179,15 @@ export default function HeroSection() {
             </div>
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
               <Link href="/document">
-                <Button size="lg" className="px-8 py-4 text-lg group">
+                <Button size="lg" className="px-6 py-3 text-base group">
                   {t("cta")}
-                  <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Button>
               </Link>
               <Link href="#pricing">
-                <Button variant="outline" size="lg" className="px-8 py-4 text-lg">
+                <Button variant="outline" size="lg" className="px-6 py-3 text-base">
                   {t("viewPricing")}
                 </Button>
               </Link>
@@ -121,8 +222,70 @@ export default function HeroSection() {
         </div>
       </div>
 
+      {/* Statistics Section */}
+      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
+          <div 
+            className="text-center group opacity-0 translate-y-8 scale-95 animate-slideUpScale"
+            style={{ 
+              animationDelay: '0.2s',
+              animationFillMode: 'forwards'
+            }}
+          >
+            <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 group-hover:scale-110 transition-all duration-300 ease-out">
+              10M+
+            </div>
+            <div className="text-xs lg:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
+              {tStats("documentsTranslated")}
+            </div>
+          </div>
+          <div 
+            className="text-center group opacity-0 translate-y-8 scale-95 animate-slideUpScale"
+            style={{ 
+              animationDelay: '0.4s',
+              animationFillMode: 'forwards'
+            }}
+          >
+            <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 group-hover:scale-110 transition-all duration-300 ease-out">
+              150+
+            </div>
+            <div className="text-xs lg:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
+              {tStats("languagesSupported")}
+            </div>
+          </div>
+          <div 
+            className="text-center group opacity-0 translate-y-8 scale-95 animate-slideUpScale"
+            style={{ 
+              animationDelay: '0.6s',
+              animationFillMode: 'forwards'
+            }}
+          >
+            <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 group-hover:scale-110 transition-all duration-300 ease-out">
+              50K+
+            </div>
+            <div className="text-xs lg:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
+              {tStats("happyCustomers")}
+            </div>
+          </div>
+          <div 
+            className="text-center group opacity-0 translate-y-8 scale-95 animate-slideUpScale"
+            style={{ 
+              animationDelay: '0.8s',
+              animationFillMode: 'forwards'
+            }}
+          >
+            <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 group-hover:scale-110 transition-all duration-300 ease-out">
+              99.9%
+            </div>
+            <div className="text-xs lg:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
+              {tStats("uptimeGuarantee")}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
         <div className="w-6 h-10 border-2 border-foreground/30 rounded-full flex justify-center">
           <div className="w-1 h-3 bg-foreground/50 rounded-full mt-2 animate-pulse" />
         </div>
