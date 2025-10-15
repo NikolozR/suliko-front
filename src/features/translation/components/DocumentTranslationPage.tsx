@@ -1,9 +1,8 @@
 "use client";
 import { Upload, Type } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
-// import DocumentTranslationCard from "./DocumentTranslationCard"; // Removed
+import { usePathname, Link } from "@/i18n/navigation";
+import DocumentTranslationCard from "./DocumentTranslationCard";
 
 const DocumentTranslationPage = () => {
   const t = useTranslations('MainContent');
@@ -46,7 +45,7 @@ const DocumentTranslationPage = () => {
           </div>
         </div>
 
-        {/* Translation widget removed */}
+        <DocumentTranslationCard />
       </div>
     </div>
   );
