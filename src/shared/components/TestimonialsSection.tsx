@@ -1,6 +1,5 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
 import { Card, CardContent } from "@/features/ui";
 import { Star, Quote } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -136,27 +135,36 @@ export default function TestimonialsSection() {
         </div>
 
 
-        {/* CTA */}
-        <div className="mt-16 text-center">
-          <div className="max-w-2xl mx-auto">
-            <h3 className="text-2xl font-bold text-foreground mb-4">
-              {t("cta.title")}
-            </h3>
-            <p className="text-muted-foreground mb-6">
-              {t("cta.subtitle")}
-            </p>
-             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-               <Link href="/document">
-                 <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors">
-                   {t("cta.startTrial")}
-                 </button>
-               </Link>
-               <a href="#contact">
-                 <button className="border border-border text-foreground px-8 py-3 rounded-lg font-medium hover:bg-accent transition-colors">
-                   {t("cta.contactSales")}
-                 </button>
-               </a>
-             </div>
+        {/* Newsletter Subscription */}
+        <div className="mt-16 relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-3xl blur-xl"></div>
+          <div className="relative bg-white/10 dark:bg-black/10 backdrop-blur-md border border-white/20 dark:border-white/10 rounded-3xl py-16 px-8 text-center">
+            <div className="max-w-2xl mx-auto">
+              <h3 className="text-3xl font-bold text-foreground mb-4">
+                {t("newsletter.title")}
+              </h3>
+              <p className="text-muted-foreground mb-8 text-lg">
+                {t("newsletter.subtitle")}
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+                <input
+                  type="email"
+                  placeholder={t("newsletter.emailPlaceholder")}
+                  className="flex-1 px-4 py-3 rounded-lg bg-white/20 dark:bg-black/20 backdrop-blur-sm border border-white/30 dark:border-white/20 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                />
+                <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors whitespace-nowrap shadow-lg hover:shadow-xl">
+                  {t("newsletter.subscribeButton")}
+                </button>
+              </div>
+              <div className="flex items-center justify-center gap-4 mt-6">
+                <div className="flex items-center gap-2">
+                  <input type="checkbox" id="newsletter-consent" className="rounded bg-white/20 dark:bg-black/20 border-white/30 dark:border-white/20" />
+                  <label htmlFor="newsletter-consent" className="text-muted-foreground text-sm">
+                    {t("newsletter.notRobot")}
+                  </label>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

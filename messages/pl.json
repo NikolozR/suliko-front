@@ -409,12 +409,9 @@
   },
   "Landing": {
     "title": "Suliko AI Tłumacz",
-    "description": "Tłumacz teksty i dokumenty natychmiast.",
+    "description": "Asystent tłumaczenia dla profesjonalnych tłumaczy — Prześlij dowolny dokument i skróć czas tłumaczenia nawet o 70%. Skoncentruj się na treści, nie na pracy technicznej.",
     "cta": "Zacznij tłumaczyć",
     "viewPricing": "Zobacz ceny",
-    "aiPowered": "Tłumaczenie oparte na AI",
-    "languages": "50+ języków",
-    "documentSupport": "Wsparcie dokumentów",
     "trustedBy": "Zaufane przez profesjonalistów na całym świecie",
     "documentsTranslated": "Przetłumaczone dokumenty",
     "languagesSupported": "Obsługiwane języki",
@@ -473,7 +470,7 @@
     },
     "cta": {
       "title": "Gotowy, aby do nich dołączyć?",
-      "subtitle": "Rozpocznij bezpłatny okres próbny już dziś i doświadcz różnicy, jaką może przynieść profesjonalne tłumaczenie AI.",
+      "subtitle": "Zarejestruj się i przetłumacz za darmo 25 dokumentów.",
       "startTrial": "Rozpocznij bezpłatny okres próbny",
       "contactSales": "Skontaktuj się ze sprzedażą"
     },
@@ -580,5 +577,22 @@
     "featuredPosts": "Polecane posty",
     "noPostsFound": "Nie znaleziono postów",
     "tryAdjustingFilters": "Spróbuj dostosować kryteria wyszukiwania lub filtry."
+  },
+  "ReferralPage": {
+    "title": "Program Polecający",
+    "subtitle": "Zostaw nam swój numer kontaktowy i otrzymaj 25 dodatkowych dokumentów za darmo",
+    "phoneLabel": "Numer Telefonu",
+    "phonePlaceholder": "579 737 737",
+    "nameLabel": "Imię",
+    "namePlaceholder": "Twoje imię?",
+    "nameOptional": "Opcjonalne",
+    "phoneFormat": "Format: 5XX XXX XXX",
+    "submitButton": "Wyślij",
+    "submitting": "Wysyłanie...",
+    "successTitle": "Sukces!",
+    "successMessage": "Twoje dane zostały pomyślnie wysłane! 25 dodatkowych dokumentów zostanie dodanych do Twojego konta.",
+    "errorTitle": "Błąd",
+    "errorMessage": "Nie udało się wysłać Twoich danych. Spróbuj ponownie.",
+    "tryAgain": "Spróbuj ponownie"
   }
 }

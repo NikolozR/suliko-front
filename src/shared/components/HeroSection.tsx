@@ -3,13 +3,12 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { ArrowRight, Sparkles, Globe, FileText } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useTheme } from "next-themes";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
-  const tStats = useTranslations("AboutSection.stats");
   const [mounted, setMounted] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -75,7 +74,7 @@ export default function HeroSection() {
   }, [mounted]);
 
   return (
-    <section className="relative h-[85vh] flex items-center justify-center overflow-hidden">
+    <section className="relative h-[93.5vh] flex items-center justify-center overflow-hidden">
       {/* Background Gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900" />
       
@@ -148,7 +147,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="relative z-10 container mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="relative z-10 container mx-auto px-12 sm:px-16 lg:px-24">
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
           {/* Left column: text */}
           <div className="lg:col-span-2">
@@ -162,21 +161,6 @@ export default function HeroSection() {
               {t("description")}
             </p>
 
-            {/* Feature Highlights */}
-            <div className="flex flex-wrap justify-center lg:justify-start gap-4 mb-8 text-sm text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Sparkles className="h-4 w-4 text-blue-500" />
-                <span>{t("aiPowered")}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Globe className="h-4 w-4 text-green-500" />
-                <span>{t("languages")}</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-purple-500" />
-                <span>{t("documentSupport")}</span>
-              </div>
-            </div>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
@@ -195,8 +179,8 @@ export default function HeroSection() {
           </div>
 
           {/* Right column: video mockup */}
-          <div className="block lg:col-span-3">
-            <div className="relative w-full mx-auto lg:mx-0" style={{ maxWidth: '1000px' }}>
+          <div className="lg:col-span-3 flex justify-center lg:justify-end">
+            <div className="relative w-full" style={{ maxWidth: '600px' }}>
               {videoError ? (
                 <div className="w-full h-64 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-2xl ring-1 ring-black/10 dark:ring-white/10 flex items-center justify-center">
                   <p className="text-gray-500">Video failed to load</p>
@@ -222,67 +206,6 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Statistics Section */}
-      <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 w-full max-w-4xl px-4">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          <div 
-            className="text-center group opacity-0 translate-y-8 scale-95 animate-slideUpScale"
-            style={{ 
-              animationDelay: '0.2s',
-              animationFillMode: 'forwards'
-            }}
-          >
-            <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 group-hover:scale-110 transition-all duration-300 ease-out">
-              10M+
-            </div>
-            <div className="text-xs lg:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
-              {tStats("documentsTranslated")}
-            </div>
-          </div>
-          <div 
-            className="text-center group opacity-0 translate-y-8 scale-95 animate-slideUpScale"
-            style={{ 
-              animationDelay: '0.4s',
-              animationFillMode: 'forwards'
-            }}
-          >
-            <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 group-hover:scale-110 transition-all duration-300 ease-out">
-              150+
-            </div>
-            <div className="text-xs lg:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
-              {tStats("languagesSupported")}
-            </div>
-          </div>
-          <div 
-            className="text-center group opacity-0 translate-y-8 scale-95 animate-slideUpScale"
-            style={{ 
-              animationDelay: '0.6s',
-              animationFillMode: 'forwards'
-            }}
-          >
-            <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 group-hover:scale-110 transition-all duration-300 ease-out">
-              50K+
-            </div>
-            <div className="text-xs lg:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
-              {tStats("happyCustomers")}
-            </div>
-          </div>
-          <div 
-            className="text-center group opacity-0 translate-y-8 scale-95 animate-slideUpScale"
-            style={{ 
-              animationDelay: '0.8s',
-              animationFillMode: 'forwards'
-            }}
-          >
-            <div className="text-2xl lg:text-3xl font-bold text-primary mb-1 group-hover:scale-110 transition-all duration-300 ease-out">
-              99.9%
-            </div>
-            <div className="text-xs lg:text-sm text-muted-foreground group-hover:text-primary/80 transition-colors duration-300">
-              {tStats("uptimeGuarantee")}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Scroll Indicator */}
       <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">

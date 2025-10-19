@@ -414,12 +414,9 @@
   },
   "Landing": {
     "title": "Suliko Translation",
-    "description": "Translate text and documents instantly.",
+    "description": "Translation Assistant for Professional Translators — Upload any document and reduce translation time by up to 70%. Focus on content, not technical work.",
     "cta": "Start translating",
     "viewPricing": "View Pricing",
-    "aiPowered": "Professional Translation",
-    "languages": "50+ Languages",
-    "documentSupport": "Document Support",
     "trustedBy": "Trusted by professionals worldwide",
     "documentsTranslated": "Documents Translated",
     "languagesSupported": "Languages Supported",
@@ -478,9 +475,16 @@
     },
     "cta": {
       "title": "Ready to Join Them?",
-      "subtitle": "Start your free trial today and experience the difference professional translation can make.",
+      "subtitle": "Sign up and translate 25 documents for free.",
       "startTrial": "Try Suliko",
       "contactSales": "Contact Sales"
+    },
+    "newsletter": {
+      "title": "Keep Yourself Up to Date",
+      "subtitle": "Join our updates and be the first one to know about new trends in translation",
+      "emailPlaceholder": "EMAIL",
+      "subscribeButton": "SUBSCRIBE",
+      "notRobot": "I'm not a robot"
     },
     "testimonials": {
       "translationHouse": {
@@ -585,5 +589,22 @@
     "featuredPosts": "Featured Posts",
     "noPostsFound": "No posts found",
     "tryAdjustingFilters": "Try adjusting your search or filter criteria."
+  },
+  "ReferralPage": {
+    "title": "Referral Program",
+    "subtitle": "Leave us your contact number and get 25 additional documents for free",
+    "phoneLabel": "Phone Number",
+    "phonePlaceholder": "579 737 737",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name?",
+    "nameOptional": "Optional",
+    "phoneFormat": "Format: 5XX XXX XXX",
+    "submitButton": "Submit",
+    "submitting": "Submitting...",
+    "successTitle": "Success!",
+    "successMessage": "Your information has been submitted successfully! 25 additional documents will be added to your account.",
+    "errorTitle": "Error",
+    "errorMessage": "Failed to submit your information. Please try again.",
+    "tryAgain": "Try Again"
   }
 }
