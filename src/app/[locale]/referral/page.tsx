@@ -47,7 +47,7 @@ export default function ReferralPage() {
       formData.append('_next', window.location.href); // Stay on same page
 
       // Submit to FormSubmit with more lenient error handling
-      const response = await fetch('https://formsubmit.co/info@th.com.ge', {
+      await fetch('https://formsubmit.co/info@th.com.ge', {
         method: 'POST',
         body: formData,
         mode: 'no-cors', // This helps with CORS issues
