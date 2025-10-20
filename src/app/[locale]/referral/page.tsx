@@ -22,6 +22,55 @@ export default function ReferralPage() {
     setMounted(true);
   }, []);
 
+  // Yandex Metrica tracking
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    
+    try {
+      // Load Yandex Metrica script
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.innerHTML = `
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=104728476', 'ym');
+
+        ym(104728476, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+      `;
+      
+      if (document.head) {
+        document.head.appendChild(script);
+      }
+
+      // Add noscript fallback
+      const noscript = document.createElement('noscript');
+      noscript.innerHTML = '<div><img src="https://mc.yandex.ru/watch/104728476" style="position:absolute; left:-9999px;" alt="" /></div>';
+      
+      if (document.body) {
+        document.body.appendChild(noscript);
+      }
+
+      // Cleanup function
+      return () => {
+        try {
+          if (script && script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+          if (noscript && noscript.parentNode) {
+            noscript.parentNode.removeChild(noscript);
+          }
+        } catch (error) {
+          console.warn('Error during cleanup:', error);
+        }
+      };
+    } catch (error) {
+      console.warn('Error loading Yandex Metrica:', error);
+    }
+  }, []);
+
 
   // Theme-aware star colors
   const isDark = mounted && resolvedTheme === "dark";
