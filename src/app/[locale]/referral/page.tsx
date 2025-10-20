@@ -24,35 +24,51 @@ export default function ReferralPage() {
 
   // Yandex Metrica tracking
   useEffect(() => {
-    // Load Yandex Metrica script
-    const script = document.createElement('script');
-    script.type = 'text/javascript';
-    script.innerHTML = `
-      (function(m,e,t,r,i,k,a){
-          m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-          m[i].l=1*new Date();
-          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-      })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=104728476', 'ym');
+    if (typeof window === 'undefined') return;
+    
+    try {
+      // Load Yandex Metrica script
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.innerHTML = `
+        (function(m,e,t,r,i,k,a){
+            m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+            m[i].l=1*new Date();
+            for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+            k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+        })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=104728476', 'ym');
 
-      ym(104728476, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
-    `;
-    document.head.appendChild(script);
-
-    // Add noscript fallback
-    const noscript = document.createElement('noscript');
-    noscript.innerHTML = '<div><img src="https://mc.yandex.ru/watch/104728476" style="position:absolute; left:-9999px;" alt="" /></div>';
-    document.body.appendChild(noscript);
-
-    // Cleanup function
-    return () => {
-      if (script.parentNode) {
-        script.parentNode.removeChild(script);
+        ym(104728476, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+      `;
+      
+      if (document.head) {
+        document.head.appendChild(script);
       }
-      if (noscript.parentNode) {
-        noscript.parentNode.removeChild(noscript);
+
+      // Add noscript fallback
+      const noscript = document.createElement('noscript');
+      noscript.innerHTML = '<div><img src="https://mc.yandex.ru/watch/104728476" style="position:absolute; left:-9999px;" alt="" /></div>';
+      
+      if (document.body) {
+        document.body.appendChild(noscript);
       }
-    };
+
+      // Cleanup function
+      return () => {
+        try {
+          if (script && script.parentNode) {
+            script.parentNode.removeChild(script);
+          }
+          if (noscript && noscript.parentNode) {
+            noscript.parentNode.removeChild(noscript);
+          }
+        } catch (error) {
+          console.warn('Error during cleanup:', error);
+        }
+      };
+    } catch (error) {
+      console.warn('Error loading Yandex Metrica:', error);
+    }
   }, []);
 
   // Theme-aware star colors
@@ -62,31 +78,38 @@ export default function ReferralPage() {
 
   // Generate stable star positions using useMemo to avoid hydration mismatches
   const starData = useMemo(() => {
-    if (!mounted) return { stars: [], mediumStars: [], smallStars: [], shootingStars: [] };
+    if (!mounted || typeof window === 'undefined') {
+      return { stars: [], mediumStars: [], smallStars: [], shootingStars: [] };
+    }
     
-    const generateStars = (count: number, size: number) => {
-      return Array.from({ length: count }, (_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        animationDelay: Math.random() * 4,
-        animationDuration: 2 + Math.random() * 3,
-        opacity: size === 1 ? 0.3 + Math.random() * 0.4 : undefined,
-      }));
-    };
+    try {
+      const generateStars = (count: number, size: number) => {
+        return Array.from({ length: count }, (_, i) => ({
+          id: i,
+          left: Math.random() * 100,
+          top: Math.random() * 100,
+          animationDelay: Math.random() * 4,
+          animationDuration: 2 + Math.random() * 3,
+          opacity: size === 1 ? 0.3 + Math.random() * 0.4 : undefined,
+        }));
+      };
 
-    return {
-      stars: generateStars(40, 1), // Large stars
-      mediumStars: generateStars(60, 0.5), // Medium stars
-      smallStars: generateStars(100, 0), // Small stars
-      shootingStars: Array.from({ length: 2 }, (_, i) => ({
-        id: i,
-        left: Math.random() * 20,
-        top: Math.random() * 20,
-        animationDelay: Math.random() * 10,
-        animationDuration: 2 + Math.random() * 2,
-      })),
-    };
+      return {
+        stars: generateStars(40, 1), // Large stars
+        mediumStars: generateStars(60, 0.5), // Medium stars
+        smallStars: generateStars(100, 0), // Small stars
+        shootingStars: Array.from({ length: 2 }, (_, i) => ({
+          id: i,
+          left: Math.random() * 20,
+          top: Math.random() * 20,
+          animationDelay: Math.random() * 10,
+          animationDuration: 2 + Math.random() * 2,
+        })),
+      };
+    } catch (error) {
+      console.warn('Error generating stars:', error);
+      return { stars: [], mediumStars: [], smallStars: [], shootingStars: [] };
+    }
   }, [mounted]);
 
   const formatPhoneNumber = (value: string) => {
