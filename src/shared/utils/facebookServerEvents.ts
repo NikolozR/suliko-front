@@ -20,6 +20,7 @@ interface ServerEventPayload {
   eventName: string;
   userData: UserData;
   customData?: CustomData;
+  testEventCode?: string;
 }
 
 /**
@@ -58,7 +59,7 @@ export async function sendFacebookServerEvent(payload: ServerEventPayload): Prom
  * @param userData - User registration data
  * @returns Promise<boolean> - True if successful, false otherwise
  */
-export async function trackRegistrationServerEvent(userData: UserData): Promise<boolean> {
+export async function trackRegistrationServerEvent(userData: UserData, testEventCode?: string): Promise<boolean> {
   return sendFacebookServerEvent({
     eventName: 'Purchase', // Using Purchase event for completed registrations
     userData,
@@ -67,7 +68,8 @@ export async function trackRegistrationServerEvent(userData: UserData): Promise<
       value: '0.00', // Free registration
       contentName: 'User Registration Completed',
       contentCategory: 'User Signup'
-    }
+    },
+    testEventCode
   });
 }
 
@@ -76,7 +78,7 @@ export async function trackRegistrationServerEvent(userData: UserData): Promise<
  * @param userData - User data (minimal for start event)
  * @returns Promise<boolean> - True if successful, false otherwise
  */
-export async function trackRegistrationStartServerEvent(userData?: UserData): Promise<boolean> {
+export async function trackRegistrationStartServerEvent(userData?: UserData, testEventCode?: string): Promise<boolean> {
   return sendFacebookServerEvent({
     eventName: 'InitiateCheckout', // Using InitiateCheckout for registration start
     userData: userData || {},
@@ -85,6 +87,7 @@ export async function trackRegistrationStartServerEvent(userData?: UserData): Pr
       value: '0.00',
       contentName: 'Registration Form Started',
       contentCategory: 'User Signup'
-    }
+    },
+    testEventCode
   });
 }

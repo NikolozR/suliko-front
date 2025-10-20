@@ -19,6 +19,7 @@ import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 import { trackRegistrationStart, trackRegistrationComplete } from "./MetaPixel";
 import { trackRegistrationServerEvent, trackRegistrationStartServerEvent } from "../utils/facebookServerEvents";
+import "../utils/testFacebookEvents"; // Import test utilities
 import PhoneVerificationSection from "./PhoneVerificationSection";
 import PasswordSection from "./PasswordSection";
 import NameSection from "./NameSection";

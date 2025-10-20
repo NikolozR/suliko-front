@@ -30,6 +30,7 @@ interface FacebookEventData {
 
 interface FacebookEventsPayload {
   data: FacebookEventData[];
+  test_event_code?: string;
 }
 
 export async function POST(request: NextRequest) {
@@ -38,7 +39,8 @@ export async function POST(request: NextRequest) {
     const { 
       eventName, 
       userData, 
-      customData 
+      customData,
+      testEventCode 
     } = body;
 
     // Validate required fields
@@ -88,7 +90,8 @@ export async function POST(request: NextRequest) {
     };
 
     const payload: FacebookEventsPayload = {
-      data: [facebookEvent]
+      data: [facebookEvent],
+      test_event_code: testEventCode || 'TEST6827' // Use provided test code or default
     };
 
     // Send to Facebook Conversions API
