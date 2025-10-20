@@ -28,6 +28,7 @@ export default async function AdminDashboardPage() {
     roleId?: string;
     roleName?: string;
     balance?: number;
+    createdAt?: string;
   };
   let users: AdminUser[] = [];
   let total = 0;
@@ -62,7 +63,7 @@ export default async function AdminDashboardPage() {
       {loadError ? (
         <div className="text-red-600 text-sm">{loadError}</div>
       ) : (
-        <UsersTable initialUsers={users.slice(0, 50) as TableUser[]} />
+        <UsersTable initialUsers={users as TableUser[]} />
       )}
     </div>
   );
