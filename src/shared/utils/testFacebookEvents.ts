@@ -69,7 +69,7 @@ export async function runAllFacebookEventTests(): Promise<boolean> {
 
 // Make functions available globally for testing in browser console
 if (typeof window !== 'undefined') {
-  (window as any).testFacebookEvents = {
+  (window as unknown as { testFacebookEvents: unknown }).testFacebookEvents = {
     testRegistrationStartEvent,
     testRegistrationCompleteEvent,
     runAllFacebookEventTests
