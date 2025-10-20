@@ -86,7 +86,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   }, [rows, query]);
 
   const sortedRows = useMemo(() => {
-    let copy = [...filteredRows];
+    const copy = [...filteredRows];
     
     // Apply balance sorting
     if (balanceSort !== "none") {
@@ -160,7 +160,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
     ]);
 
     // Escape CSV values
-    const escapeCsvValue = (value: any) => {
+    const escapeCsvValue = (value: string | number | undefined) => {
       const stringValue = String(value || '');
       if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n')) {
         return `"${stringValue.replace(/"/g, '""')}"`;
