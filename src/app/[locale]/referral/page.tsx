@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
+import { Card, CardContent } from "@/features/ui";
 import { Button } from "@/features/ui";
 import { useState, useEffect, useMemo } from "react";
 import LandingHeader from "@/shared/components/LandingHeader";
