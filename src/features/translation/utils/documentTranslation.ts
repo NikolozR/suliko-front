@@ -22,7 +22,7 @@ export async function documentTranslatingWithJobId(
   const { setJobId, setTranslatedMarkdown, setChatId } =
     useDocumentTranslationStore.getState();
   const { currentFile } = useDocumentTranslationStore.getState();
-  const { fetchUserProfile } = useUserStore.getState();
+  const { fetchUserProfileWithRetry } = useUserStore.getState();
   const { setIsTranslating } = useDocumentTranslationStore.getState();
 
   setIsTranslating(true);
@@ -47,7 +47,8 @@ export async function documentTranslatingWithJobId(
     while (true) {
       const result = await getStatus(currentJobId);
       if (result.status === "Completed") {
-        fetchUserProfile();
+        // Use retry mechanism to ensure balance is properly updated
+        await fetchUserProfileWithRetry(3, 1000);
         onProgress?.(60, "Translation completed!");
         break;
       } else if (result.status === "Failed") {
@@ -60,7 +61,7 @@ export async function documentTranslatingWithJobId(
             result.message || "Translation failed. Please try again.";
           setError(`Translation failed: ${errorMessage}`);
         }
-        fetchUserProfile();
+        fetchUserProfileWithRetry();
         setIsTranslating(false);
         return;
       }

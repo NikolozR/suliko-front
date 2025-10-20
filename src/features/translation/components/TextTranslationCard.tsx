@@ -54,7 +54,7 @@ const TextTranslationCard = () => {
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchUserProfile, userProfile } = useUserStore();
+  const { fetchUserProfileWithRetry, userProfile } = useUserStore();
   
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
@@ -212,7 +212,8 @@ const TextTranslationCard = () => {
       const result: TextTranslateUserContentResponse =
         await translateUserContent(params);
       setTranslatedText(result.text);
-      await fetchUserProfile();
+      // Use retry mechanism to ensure balance is properly updated
+      await fetchUserProfileWithRetry(3, 1000);
     } catch (err) {
       let message = "An unexpected error occurred during translation.";
       if (err instanceof Error) {

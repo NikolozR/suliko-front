@@ -17,6 +17,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
+import { trackRegistration, trackRegistrationStart, trackRegistrationComplete } from "./MetaPixel";
 import PhoneVerificationSection from "./PhoneVerificationSection";
 import PasswordSection from "./PasswordSection";
 import NameSection from "./NameSection";
@@ -87,13 +88,19 @@ const SulikoForm: React.FC = () => {
   }, [verificationCode, sentVerificationCode, isLoginMode]);
 
   function toggleAuthMode() {
-    setIsLoginMode((prev) => !prev);
+    const newIsLoginMode = !isLoginMode;
+    setIsLoginMode(newIsLoginMode);
     setAuthError(null);
     setIsCodeSent(false);
     setIsSendingCode(false);
     setResendTimer(0);
     setSentVerificationCode("");
     setIsCodeVerified(false);
+    
+    // Track when user starts registration process
+    if (!newIsLoginMode) {
+      trackRegistrationStart();
+    }
   }
 
   async function handleSendCode() {
@@ -168,6 +175,14 @@ const SulikoForm: React.FC = () => {
           verificationCode: registerValues.verificationCode,
           subscribeNewsletter: registerValues.subscribeNewsletter,
         } as RegisterParams);
+        
+        // Track successful registration
+        trackRegistrationComplete({
+          phoneNumber: registerValues.mobile,
+          firstName: registerValues.firstname || generateDefaultName(),
+          lastName: registerValues.lastname || ""
+        });
+        
         setToken(data.token);
         setRefreshToken(data.refreshToken);
         triggerWelcomeModal();
