@@ -179,7 +179,7 @@ export default function LandingHeader() {
       }`}
     >
       <nav className="container z-50 relative mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
           
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2 relative z-50">
@@ -188,7 +188,7 @@ export default function LandingHeader() {
               alt="Suliko"
               width={120}
               height={120}
-              className="h-24 w-24 lg:h-32 lg:w-32"
+              className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32"
               priority
             />
           </Link>
@@ -292,11 +292,6 @@ export default function LandingHeader() {
                 
                 {/* Menu Footer */}
                 <div className="p-4 border-t border-border space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-foreground/60">Language</span>
-                    <LanguageSwitcher />
-                  </div>
-                  
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-foreground/60">Theme</span>
                     <ThemeToggle />

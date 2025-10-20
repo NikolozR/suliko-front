@@ -15,8 +15,6 @@ export default function TopRightControls() {
 
   return (
     <div className="flex items-center gap-4 p-4 fixed top-0 right-0 z-50">
-      {!isAdmin && <LanguageSwitcher />}
-      <ThemeToggle />
     </div>
   );
 }

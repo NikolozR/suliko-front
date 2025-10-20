@@ -52,7 +52,7 @@ export default function LandingFooter() {
               {/* Book A Demo Button */}
               <div>
                 <Button size="lg" className="px-8 py-4 text-base">
-                  Book A Demo
+                  {t("bookDemo")}
                 </Button>
               </div>
             </div>
@@ -62,16 +62,16 @@ export default function LandingFooter() {
               
               {/* Resources */}
               <div>
-                <h3 className="font-semibold text-foreground mb-6 text-lg">Resources</h3>
+                <h3 className="font-semibold text-foreground mb-6 text-lg">{t("resources")}</h3>
                 <ul className="space-y-4">
                   <li>
                     <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                      Blog
+                      {t("links.blog")}
                     </Link>
                   </li>
                   <li>
                     <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors">
-                      Log In
+                      {t("logIn")}
                     </Link>
                   </li>
                 </ul>
@@ -79,21 +79,21 @@ export default function LandingFooter() {
 
               {/* About */}
               <div>
-                <h3 className="font-semibold text-foreground mb-6 text-lg">About</h3>
+                <h3 className="font-semibold text-foreground mb-6 text-lg">{t("about")}</h3>
                 <ul className="space-y-4">
                   <li>
                     <Link href="#about" className="text-muted-foreground hover:text-foreground transition-colors">
-                      About Us
+                      {t("links.aboutUs")}
                     </Link>
                   </li>
                   <li>
                     <Link href="/team" className="text-muted-foreground hover:text-foreground transition-colors">
-                      Team
+                      {t("team")}
                     </Link>
                   </li>
                   <li>
                     <Link href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">
-                      Testimonials
+                      {t("testimonials")}
                     </Link>
                   </li>
                 </ul>
@@ -101,7 +101,7 @@ export default function LandingFooter() {
 
               {/* Contact Us */}
               <div>
-                <h3 className="font-semibold text-foreground mb-6 text-lg">Contact Us</h3>
+                <h3 className="font-semibold text-foreground mb-6 text-lg">{t("contactUs")}</h3>
                 
                 {/* Social Media Links */}
                 <div className="flex space-x-4 mb-6">

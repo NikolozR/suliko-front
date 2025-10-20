@@ -513,6 +513,13 @@
     "email": "Info@suliko.ge",
     "phone": "+995 591 729 911",
     "location": "Tbilisi, Georgia",
+    "bookDemo": "Zamów demo",
+    "resources": "Zasoby",
+    "about": "O nas",
+    "contactUs": "Kontakt",
+    "logIn": "Zaloguj się",
+    "team": "Zespół",
+    "testimonials": "Opinie",
     "links": {
       "product": "Produkt",
       "company": "Firma",
@@ -593,6 +600,8 @@
     "successMessage": "Twoje dane zostały pomyślnie wysłane! 25 dodatkowych dokumentów zostanie dodanych do Twojego konta.",
     "errorTitle": "Błąd",
     "errorMessage": "Nie udało się wysłać Twoich danych. Spróbuj ponownie.",
-    "tryAgain": "Spróbuj ponownie"
+    "tryAgain": "Spróbuj ponownie",
+    "startTranslating": "Zacznij tłumaczyć",
+    "viewPricing": "Zobacz ceny"
   }
 }
