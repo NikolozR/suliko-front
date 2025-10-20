@@ -17,7 +17,7 @@ import { useRouter } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
-import { trackRegistration, trackRegistrationStart, trackRegistrationComplete } from "./MetaPixel";
+import { trackRegistrationStart, trackRegistrationComplete } from "./MetaPixel";
 import PhoneVerificationSection from "./PhoneVerificationSection";
 import PasswordSection from "./PasswordSection";
 import NameSection from "./NameSection";
