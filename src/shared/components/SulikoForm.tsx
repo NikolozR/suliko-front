@@ -18,6 +18,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 import { trackRegistrationStart, trackRegistrationComplete } from "./MetaPixel";
+import { trackRegistrationServerEvent, trackRegistrationStartServerEvent } from "../utils/facebookServerEvents";
 import PhoneVerificationSection from "./PhoneVerificationSection";
 import PasswordSection from "./PasswordSection";
 import NameSection from "./NameSection";
@@ -100,6 +101,8 @@ const SulikoForm: React.FC = () => {
     // Track when user starts registration process
     if (!newIsLoginMode) {
       trackRegistrationStart();
+      // Also send server-side event
+      trackRegistrationStartServerEvent();
     }
   }
 
@@ -179,6 +182,13 @@ const SulikoForm: React.FC = () => {
         // Track successful registration
         trackRegistrationComplete({
           phoneNumber: registerValues.mobile,
+          firstName: registerValues.firstname || generateDefaultName(),
+          lastName: registerValues.lastname || ""
+        });
+        
+        // Also send server-side event for more reliable tracking
+        await trackRegistrationServerEvent({
+          phone: registerValues.mobile,
           firstName: registerValues.firstname || generateDefaultName(),
           lastName: registerValues.lastname || ""
         });
