@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { useRouter } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
 import { useAuthStore } from "@/features/auth/store/authStore";
 
 export default function AdminAuthControls() {

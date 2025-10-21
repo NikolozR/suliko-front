@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
 import { login } from "@/features/auth/services/authorizationService";
 import { useAuthStore } from "@/features/auth/store/authStore";
 

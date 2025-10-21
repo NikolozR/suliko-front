@@ -7,7 +7,6 @@ import { saveAs } from "file-saver";
 // @ts-expect-error Type errors, nothing special
 import htmlDocx from "html-docx-js/dist/html-docx";
 import { wordToPdf } from "@/features/translation/services/conversionsService";
-import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 
 

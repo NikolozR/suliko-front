@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { API_BASE_URL } from "@/shared/constants/api";
 import { useAuthStore } from "@/features/auth/store/authStore";
@@ -19,7 +19,7 @@ export default function LanguageList() {
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [deleteMessage, setDeleteMessage] = useState<string | null>(null);
 
-  const fetchLanguages = async () => {
+  const fetchLanguages = useCallback(async () => {
     if (!token) {
       setError("Missing auth token. Please re-login as admin.");
       return;
@@ -66,7 +66,7 @@ export default function LanguageList() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [token]);
 
   const deleteLanguage = async (id: number) => {
     if (!token) {

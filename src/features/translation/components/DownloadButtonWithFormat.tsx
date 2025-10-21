@@ -3,7 +3,6 @@ import { useState } from "react";
 import { Download, Check, FileText, File } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import FormatSelector, { DownloadFormat } from "./FormatSelector";
-import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 
 interface DownloadButtonWithFormatProps {
