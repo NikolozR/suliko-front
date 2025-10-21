@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
       eventSent: {
         eventName,
         timestamp: facebookEvent.event_time,
-        userDataHashed: !!hashedUserData.em?.length || !!hashedUserData.ph?.length
+        userDataHashed: !!enhancedUserData.em?.length || !!enhancedUserData.ph?.length
       }
     });
 

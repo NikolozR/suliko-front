@@ -143,6 +143,7 @@ export default async function LocaleLayout({
         {/* Yandex.Metrika (noscript) */}
         <noscript>
           <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://mc.yandex.ru/watch/104728476" style={{ position: 'absolute', left: '-9999px' }} alt="" />
           </div>
         </noscript>
