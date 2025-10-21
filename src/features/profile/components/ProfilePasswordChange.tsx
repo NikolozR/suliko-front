@@ -9,7 +9,6 @@ import { Lock, Eye, EyeOff, Check, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { changePassword, ChangePasswordRequest } from "@/features/auth/services/userService";
 import { useUserStore } from "@/features/auth/store/userStore";
-import { getUserID } from "@/shared/lib/utils";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 
