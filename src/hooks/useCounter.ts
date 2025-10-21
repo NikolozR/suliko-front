@@ -13,6 +13,7 @@ export function useCounter(
   const { duration = 2000, startDelay = 0, easing = (t) => t } = options;
   const [count, setCount] = useState(0);
 
+  
   useEffect(() => {
     const timer = setTimeout(() => {
       const startTime = Date.now();
