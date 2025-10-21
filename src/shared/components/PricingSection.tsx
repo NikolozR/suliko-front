@@ -23,7 +23,6 @@ interface Plan {
 
 export default function PricingSection() {
   const t = useTranslations("Pricing");
-  const locale = useLocale();
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'translators' | 'businesses'>('translators');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);

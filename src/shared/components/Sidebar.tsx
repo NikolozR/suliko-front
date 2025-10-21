@@ -59,7 +59,6 @@ interface SidebarProps {
 
 export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const pathname = usePathname();
-  const locale = useLocale();
   const { token, reset } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();

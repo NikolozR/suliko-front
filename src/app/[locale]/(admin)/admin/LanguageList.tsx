@@ -111,7 +111,7 @@ export default function LanguageList() {
 
   useEffect(() => {
     fetchLanguages();
-  }, [token]);
+  }, [token, fetchLanguages]);
 
   if (loading) {
     return (

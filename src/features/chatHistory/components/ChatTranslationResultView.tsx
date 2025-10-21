@@ -32,7 +32,6 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
 }) => {
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
-  const tDownload = useTranslations('Download');
   const translatedSuffix = useTranslatedSuffix();
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
@@ -163,7 +162,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
       setDownloadedFormat(null);
     };
     triggerDownload();
-  }, [downloadedFormat, translatedMarkdown]);
+  }, [downloadedFormat, translatedMarkdown, currentFile?.name, translatedSuffix]);
 
   return (
     <>

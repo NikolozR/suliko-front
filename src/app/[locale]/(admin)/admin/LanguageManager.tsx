@@ -51,12 +51,12 @@ export default function LanguageManager() {
       // Find the highest ID
       let maxId = 0;
       if (Array.isArray(existingLanguages)) {
-        maxId = Math.max(...existingLanguages.map((lang: any) => lang.id || 0));
+        maxId = Math.max(...existingLanguages.map((lang: { id?: number }) => lang.id || 0));
       } else if (existingLanguages && typeof existingLanguages === 'object') {
         // Handle case where response might be wrapped in an object
         const items = existingLanguages.items || existingLanguages.data || [];
         if (Array.isArray(items)) {
-          maxId = Math.max(...items.map((lang: any) => lang.id || 0));
+          maxId = Math.max(...items.map((lang: { id?: number }) => lang.id || 0));
         }
       }
       

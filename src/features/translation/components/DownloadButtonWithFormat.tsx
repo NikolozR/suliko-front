@@ -56,7 +56,6 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
 }) => {
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>(availableFormats[0]);
   const [downloaded, setDownloaded] = useState(false);
-  const t = useTranslations("Download");
   const translatedSuffix = useTranslatedSuffix();
 
   const getMimeType = (format: DownloadFormat) => {

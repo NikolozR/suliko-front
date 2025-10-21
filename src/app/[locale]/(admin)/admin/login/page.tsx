@@ -7,7 +7,6 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const locale = useLocale();
   const setToken = useAuthStore((s) => s.setToken);
   const setRefreshToken = useAuthStore((s) => s.setRefreshToken);
 

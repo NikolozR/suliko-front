@@ -6,7 +6,6 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 
 export default function AdminAuthControls() {
   const router = useRouter();
-  const locale = useLocale();
   const resetAuth = useAuthStore((s) => s.reset);
 
   const handleLogout = () => {

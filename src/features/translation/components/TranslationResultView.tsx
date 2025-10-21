@@ -33,7 +33,6 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 }) => {
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
-  const tDownload = useTranslations('Download');
   const translatedSuffix = useTranslatedSuffix();
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
@@ -168,7 +167,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       setDownloadedFormat(null);
     };
     triggerDownload();
-  }, [downloadedFormat, translatedMarkdown]);
+  }, [downloadedFormat, translatedMarkdown, currentFile?.name, translatedSuffix]);
 
   return (
     <>

@@ -39,7 +39,6 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
 }) => {
   const [downloaded, setDownloaded] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
-  const t = useTranslations("Download");
   const translatedSuffix = useTranslatedSuffix();
 
   const getMimeType = (type: string) => {

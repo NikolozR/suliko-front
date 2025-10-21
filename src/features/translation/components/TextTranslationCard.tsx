@@ -52,7 +52,6 @@ type DownloadFormatOption = { value: string; label: string; extension: string; i
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
   const tButton = useTranslations('TranslationButton');
-  const tDownload = useTranslations('Download');
   const translatedSuffix = useTranslatedSuffix();
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
@@ -185,7 +184,7 @@ const TextTranslationCard = () => {
       setDownloadedFormat(null);
     };
     triggerDownload();
-  }, [downloadedFormat, translatedText]);
+  }, [downloadedFormat, translatedText, translatedSuffix]);
 
   const onSubmit = async (data: FormData) => {
     if (!token) {
