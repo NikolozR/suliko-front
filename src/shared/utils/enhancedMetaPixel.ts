@@ -235,7 +235,7 @@ export function prepareServerTrackingParams(userData: EnhancedUserData, request?
 export function trackEnhancedMetaPixelEvent(
   eventName: string,
   userData: EnhancedUserData,
-  customData?: Record<string, any>
+  customData?: Record<string, unknown>
 ): void {
   if (typeof window === 'undefined' || !window.fbq) return;
   

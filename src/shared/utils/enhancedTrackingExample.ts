@@ -4,10 +4,8 @@
  */
 
 import { 
-  trackEnhancedMetaPixelEvent, 
   trackEnhancedRegistration,
-  EnhancedUserData,
-  prepareClientTrackingParams 
+  EnhancedUserData
 } from './enhancedMetaPixel';
 import { trackEnhancedRegistrationServerEvent } from './facebookServerEvents';
 
@@ -122,9 +120,9 @@ function getFacebookBrowserIdFromClient(): string | undefined {
   return undefined;
 }
 
-function generateExternalId(userData: any): string {
+function generateExternalId(userData: Record<string, unknown>): string {
   const identifier = userData.email || userData.phone || userData.firstName;
-  if (identifier) {
+  if (identifier && typeof identifier === 'string') {
     return `ext_${btoa(identifier).replace(/[^a-zA-Z0-9]/g, '')}`;
   }
   return `ext_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
