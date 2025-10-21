@@ -615,5 +615,8 @@
     "tryAgain": "Try Again",
     "startTranslating": "Start Translating",
     "viewPricing": "View Pricing"
+  },
+  "Download": {
+    "translatedSuffix": "translated"
   }
 }

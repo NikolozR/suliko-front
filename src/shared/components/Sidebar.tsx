@@ -144,14 +144,13 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
       >
         <div className={`flex items-center ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
           {!effectiveIsCollapsed && (
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}`)}
+            <Link
+              href="/"
               className="transition-all duration-300 cursor-pointer"
               aria-label="Go to landing page"
             >
               <SulikoLogo />
-            </button>
+            </Link>
           )}
           <button
             onClick={handleCollapseToggle}

@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import { useAuthStore } from "@/features/auth/store/authStore";
 
@@ -14,7 +14,7 @@ export default function AdminAuthControls() {
     if (typeof document !== "undefined") {
       document.cookie = `adminAllowed=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Strict; Secure`;
     }
-    router.push(`/${locale}/admin/login`);
+    router.push("/admin/login");
   };
 
   return (

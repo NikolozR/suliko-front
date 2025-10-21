@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
 import { Check, Star, Zap, Building2, Users, Sparkles, Clock, Mail, Phone, MessageCircle, X, CreditCard } from "lucide-react";
@@ -36,7 +36,7 @@ export default function PricingSection() {
       setIsPayAsYouGoModalOpen(true);
     } else {
       // Redirect to document translation page
-      router.push(`/${locale}/document`);
+      router.push("/document");
     }
   };
 

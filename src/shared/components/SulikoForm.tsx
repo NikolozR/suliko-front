@@ -13,7 +13,7 @@ import {
 import type { RegisterParams } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/features/auth/store/authStore";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
@@ -154,7 +154,7 @@ const SulikoForm: React.FC = () => {
         setToken(data.token);
         setRefreshToken(data.refreshToken);
         triggerWelcomeModal();
-        router.push(`/${locale}/document`);
+        router.push("/document");
       } else {
         const registerValues = values as RegisterFormData;
         if (!isCodeSent) {
@@ -197,7 +197,7 @@ const SulikoForm: React.FC = () => {
         setToken(data.token);
         setRefreshToken(data.refreshToken);
         triggerWelcomeModal();
-        router.push(`/${locale}/document`);
+        router.push("/document");
       }
     } catch (error: unknown) {
       const errorMessage =

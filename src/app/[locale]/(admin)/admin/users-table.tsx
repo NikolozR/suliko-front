@@ -25,6 +25,10 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   const [dateSort, setDateSort] = useState<"none" | "asc" | "desc">("none");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
+  const [dateFilter, setDateFilter] = useState<{
+    from?: string;
+    to?: string;
+  }>({});
 
   const handleBalanceChange = (id: string, value: string) => {
     const numeric = value === "" ? undefined : Number(value);
@@ -71,19 +75,46 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   );
 
   const filteredRows = useMemo(() => {
+    let filtered = rows;
+    
+    // Text search filter
     const q = query.trim().toLowerCase();
-    if (!q) return rows;
-    return rows.filter((u) => {
-      const name = `${u.firstName || ""} ${u.lastName || ""}`.trim().toLowerCase();
-      const phone = (u.phoneNUmber || u.phoneNumber || "").toString().toLowerCase();
-      const userName = (u.userName || "").toString().toLowerCase();
-      return (
-        name.includes(q) ||
-        phone.includes(q) ||
-        userName.includes(q)
-      );
-    });
-  }, [rows, query]);
+    if (q) {
+      filtered = filtered.filter((u) => {
+        const name = `${u.firstName || ""} ${u.lastName || ""}`.trim().toLowerCase();
+        const phone = (u.phoneNUmber || u.phoneNumber || "").toString().toLowerCase();
+        const userName = (u.userName || "").toString().toLowerCase();
+        return (
+          name.includes(q) ||
+          phone.includes(q) ||
+          userName.includes(q)
+        );
+      });
+    }
+    
+    // Date range filter
+    if (dateFilter.from || dateFilter.to) {
+      filtered = filtered.filter((u) => {
+        if (!u.createdAt) return false;
+        
+        const userDate = new Date(u.createdAt);
+        const fromDate = dateFilter.from ? new Date(dateFilter.from) : null;
+        const toDate = dateFilter.to ? new Date(dateFilter.to) : null;
+        
+        // Set time to start/end of day for proper comparison
+        if (fromDate) fromDate.setHours(0, 0, 0, 0);
+        if (toDate) toDate.setHours(23, 59, 59, 999);
+        
+        const userTime = userDate.getTime();
+        const fromTime = fromDate ? fromDate.getTime() : -Infinity;
+        const toTime = toDate ? toDate.getTime() : Infinity;
+        
+        return userTime >= fromTime && userTime <= toTime;
+      });
+    }
+    
+    return filtered;
+  }, [rows, query, dateFilter]);
 
   const sortedRows = useMemo(() => {
     const copy = [...filteredRows];
@@ -188,13 +219,39 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   return (
     <div className="rounded-lg border overflow-x-auto">
       <div className="p-3 flex items-center justify-between border-b">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <input
             className="border rounded px-3 py-2 w-80"
             placeholder="Search by name or phone"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">From:</label>
+            <input
+              type="date"
+              className="border rounded px-3 py-2"
+              value={dateFilter.from || ""}
+              onChange={(e) => setDateFilter(prev => ({ ...prev, from: e.target.value }))}
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            <label className="text-sm font-medium text-gray-700">To:</label>
+            <input
+              type="date"
+              className="border rounded px-3 py-2"
+              value={dateFilter.to || ""}
+              onChange={(e) => setDateFilter(prev => ({ ...prev, to: e.target.value }))}
+            />
+          </div>
+          {(dateFilter.from || dateFilter.to) && (
+            <button
+              onClick={() => setDateFilter({})}
+              className="px-3 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors text-sm"
+            >
+              Clear Date Filter
+            </button>
+          )}
           <button
             onClick={exportToCSV}
             className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors flex items-center gap-2"
@@ -378,5 +435,4 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
     </div>
   );
 }
-
 

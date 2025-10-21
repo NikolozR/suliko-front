@@ -25,6 +25,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X } from "lucide-react";
@@ -51,6 +52,8 @@ type DownloadFormatOption = { value: string; label: string; extension: string; i
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
   const tButton = useTranslations('TranslationButton');
+  const tDownload = useTranslations('Download');
+  const translatedSuffix = useTranslatedSuffix();
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -137,7 +140,7 @@ const TextTranslationCard = () => {
     if (!downloadedFormat) return;
     const triggerDownload = async () => {
       const fileType = downloadedFormat.value;
-      const fileName = `translated_text.${fileType}`;
+      const fileName = generateLocalizedFilename("text", fileType, translatedSuffix);
       if (["txt", "md", "srt"].includes(fileType)) {
         const text = translatedText.replace(/<[^>]+>/g, "");
         const blob = new Blob([text], { type: fileType === "md" ? "text/markdown" : fileType === "srt" ? "text/srt" : "text/plain" });

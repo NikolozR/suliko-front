@@ -6,6 +6,7 @@ import { UserProfile } from "@/features/auth/types/types.User";
 import { useUser } from "@/features/auth/hooks/useUser";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 
 interface ProfileHeroProps {
   userProfile: UserProfile;
@@ -27,6 +28,11 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
       <div className="absolute inset-0 bg-black/10"></div>
 
       <div className="absolute top-4 right-4 flex gap-2 z-20">
+        {/* Language Selector */}
+        <div className="bg-white/20 backdrop-blur-sm rounded-lg border border-white/30">
+          <LanguageSwitcher />
+        </div>
+        
         {isEditing ? (
           <>
             <Button variant="outline" size="sm" onClick={onCancel} disabled={isUpdating}>

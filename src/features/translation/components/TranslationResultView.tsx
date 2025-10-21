@@ -1,6 +1,7 @@
 "use client";
 import { ChangeEvent, useRef, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 import DocumentPreview from "./DocumentPreview";
 import FileInfoDisplay from "./FileInfoDisplay";
 import CopyButton from "./CopyButton";
@@ -32,6 +33,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 }) => {
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
+  const tDownload = useTranslations('Download');
+  const translatedSuffix = useTranslatedSuffix();
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
@@ -118,7 +121,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
     const triggerDownload = async () => {
       // mimic DownloadButton logic
       const fileType = downloadedFormat.value;
-      const fileName = `translated_document.${fileType}`;
+      const originalFileName = currentFile?.name || "document";
+      const fileName = generateLocalizedFilename(originalFileName, fileType, translatedSuffix);
       if (["txt", "md", "srt"].includes(fileType)) {
         const text = translatedMarkdown.replace(/<[^>]+>/g, "");
         const blob = new Blob([text], { type: fileType === "md" ? "text/markdown" : fileType === "srt" ? "text/srt" : "text/plain" });
