@@ -12,6 +12,12 @@ interface FacebookEventData {
   user_data: {
     em?: string[];
     ph?: string[];
+    fbc?: string;
+    fbp?: string;
+    external_id?: string;
+    client_ip_address?: string;
+    client_user_agent?: string;
+    fb_login_id?: string;
   };
   attribution_data?: {
     attribution_share: string;
@@ -51,29 +57,71 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Prepare user data hashes
-    const hashedUserData: { em?: string[]; ph?: string[] } = {};
+    // Prepare enhanced user data with all tracking parameters
+    const enhancedUserData: {
+      em?: string[];
+      ph?: string[];
+      fbc?: string;
+      fbp?: string;
+      external_id?: string;
+      client_ip_address?: string;
+      client_user_agent?: string;
+      fb_login_id?: string;
+    } = {};
 
+    // Hash email
     if (userData.email) {
       const hashedEmail = hashEmail(userData.email);
       if (hashedEmail) {
-        hashedUserData.em = [hashedEmail];
+        enhancedUserData.em = [hashedEmail];
       }
     }
 
+    // Hash phone
     if (userData.phone) {
       const hashedPhone = hashPhone(userData.phone);
       if (hashedPhone) {
-        hashedUserData.ph = [hashedPhone];
+        enhancedUserData.ph = [hashedPhone];
       }
     }
 
-    // Create Facebook event payload
+    // Enhanced tracking parameters
+    if (userData.clickId) {
+      enhancedUserData.fbc = userData.clickId;
+    }
+
+    if (userData.browserId) {
+      enhancedUserData.fbp = userData.browserId;
+    }
+
+    if (userData.externalId) {
+      enhancedUserData.external_id = userData.externalId;
+    }
+
+    if (userData.facebookLoginId) {
+      enhancedUserData.fb_login_id = userData.facebookLoginId;
+    }
+
+    // Get IP address from request headers
+    const forwarded = request.headers.get('x-forwarded-for');
+    const realIp = request.headers.get('x-real-ip');
+    const clientIp = forwarded?.split(',')[0] || realIp || request.headers.get('x-client-ip');
+    if (clientIp) {
+      enhancedUserData.client_ip_address = clientIp;
+    }
+
+    // Get user agent from request headers
+    const userAgent = request.headers.get('user-agent');
+    if (userAgent) {
+      enhancedUserData.client_user_agent = userAgent;
+    }
+
+    // Create Facebook event payload with enhanced data
     const facebookEvent: FacebookEventData = {
       event_name: eventName,
       event_time: getCurrentTimestamp(),
       action_source: 'website',
-      user_data: hashedUserData,
+      user_data: enhancedUserData,
       attribution_data: {
         attribution_share: '0.3'
       },

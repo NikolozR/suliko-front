@@ -2,7 +2,7 @@
  * Test utilities for Facebook Conversions API server events
  */
 
-import { trackRegistrationServerEvent, trackRegistrationStartServerEvent } from './facebookServerEvents';
+import { trackRegistrationServerEvent, trackRegistrationStartServerEvent, trackEnhancedRegistrationServerEvent } from './facebookServerEvents';
 
 const TEST_EVENT_CODE = 'TEST6827';
 
@@ -39,6 +39,28 @@ export async function testRegistrationCompleteEvent(): Promise<boolean> {
 }
 
 /**
+ * Test enhanced registration complete event with all tracking parameters
+ * @returns Promise<boolean> - True if successful, false otherwise
+ */
+export async function testEnhancedRegistrationCompleteEvent(): Promise<boolean> {
+  console.log('🧪 Testing Enhanced Facebook server event: Registration Complete');
+  
+  return await trackEnhancedRegistrationServerEvent(
+    {
+      email: 'test@example.com',
+      phone: '555123456',
+      firstName: 'Test',
+      lastName: 'User',
+      clickId: 'fb.1.1234567890.1234567890',
+      browserId: 'fb.1.1234567890.1234567890',
+      externalId: 'ext_test_user_123',
+      facebookLoginId: 'fb_login_123456'
+    },
+    TEST_EVENT_CODE
+  );
+}
+
+/**
  * Run all Facebook server event tests
  * @returns Promise<boolean> - True if all tests successful, false otherwise
  */
@@ -57,7 +79,14 @@ export async function runAllFacebookEventTests(): Promise<boolean> {
     const completeResult = await testRegistrationCompleteEvent();
     console.log('Registration Complete Test:', completeResult ? '✅ PASSED' : '❌ FAILED');
     
-    const allPassed = startResult && completeResult;
+    // Wait a bit between tests
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Test enhanced registration complete
+    const enhancedResult = await testEnhancedRegistrationCompleteEvent();
+    console.log('Enhanced Registration Complete Test:', enhancedResult ? '✅ PASSED' : '❌ FAILED');
+    
+    const allPassed = startResult && completeResult && enhancedResult;
     console.log('🎯 All Tests:', allPassed ? '✅ PASSED' : '❌ FAILED');
     
     return allPassed;
@@ -72,6 +101,7 @@ if (typeof window !== 'undefined') {
   (window as unknown as { testFacebookEvents: unknown }).testFacebookEvents = {
     testRegistrationStartEvent,
     testRegistrationCompleteEvent,
+    testEnhancedRegistrationCompleteEvent,
     runAllFacebookEventTests
   };
 }

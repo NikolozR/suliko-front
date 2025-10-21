@@ -7,6 +7,11 @@ interface UserData {
   phone?: string;
   firstName?: string;
   lastName?: string;
+  // Enhanced tracking parameters
+  clickId?: string; // fbc - Facebook Click ID
+  browserId?: string; // fbp - Facebook Browser ID
+  externalId?: string; // External ID
+  facebookLoginId?: string; // Facebook Login ID
 }
 
 interface CustomData {
@@ -67,6 +72,29 @@ export async function trackRegistrationServerEvent(userData: UserData, testEvent
       currency: 'GEL',
       value: '0.00', // Free registration
       contentName: 'User Registration Completed',
+      contentCategory: 'User Signup'
+    },
+    testEventCode
+  });
+}
+
+/**
+ * Enhanced registration tracking with all available parameters
+ * @param userData - Enhanced user data with tracking parameters
+ * @param testEventCode - Optional test event code
+ * @returns Promise<boolean> - True if successful, false otherwise
+ */
+export async function trackEnhancedRegistrationServerEvent(
+  userData: UserData, 
+  testEventCode?: string
+): Promise<boolean> {
+  return sendFacebookServerEvent({
+    eventName: 'Purchase',
+    userData,
+    customData: {
+      currency: 'GEL',
+      value: '0.00',
+      contentName: 'Enhanced User Registration Completed',
       contentCategory: 'User Signup'
     },
     testEventCode

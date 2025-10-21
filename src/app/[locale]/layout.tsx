@@ -46,7 +46,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* Meta Pixel Code */}
+        {/* Enhanced Meta Pixel Code */}
         <Script
           id="meta-pixel"
           strategy="afterInteractive"
@@ -59,8 +59,20 @@ export default async function LocaleLayout({
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '763067889892928');
-  fbq('track', 'PageView');`,
+  
+  // Enhanced initialization with additional parameters
+  fbq('init', '763067889892928', {
+    em: 'hashed_email_placeholder', // Will be replaced with actual hashed email
+    ph: 'hashed_phone_placeholder', // Will be replaced with actual hashed phone
+    fbc: 'fb_click_id_placeholder', // Will be replaced with actual click ID
+    fbp: 'fb_browser_id_placeholder' // Will be replaced with actual browser ID
+  });
+  
+  // Track PageView with enhanced parameters
+  fbq('track', 'PageView', {
+    content_name: 'Suliko Landing Page',
+    content_category: 'AI Translation Service'
+  });`,
           }}
         />
         {/* Hotjar Tracking Code for Suliko AI NEW */}{/* Hotjar Tracking Code for Suliko AI NEW */}
