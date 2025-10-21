@@ -99,6 +99,24 @@ export default async function LocaleLayout({
             `,
           }}
         />
+        
+        {/* Yandex.Metrika counter */}
+        <Script
+          id="yandex-metrika"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(m,e,t,r,i,k,a){
+                m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+                m[i].l=1*new Date();
+                for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+              })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=104728476', 'ym');
+
+              ym(104728476, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+            `,
+          }}
+        />
       </head>
       <body
         suppressHydrationWarning
@@ -108,6 +126,14 @@ export default async function LocaleLayout({
         <noscript>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=763067889892928&ev=PageView&noscript=1" alt="" />
+        </noscript>
+        
+        {/* Yandex.Metrika (noscript) */}
+        <noscript>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div>
+            <img src="https://mc.yandex.ru/watch/104728476" style={{ position: 'absolute', left: '-9999px' }} alt="" />
+          </div>
         </noscript>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
