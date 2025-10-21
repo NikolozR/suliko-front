@@ -8,6 +8,7 @@ import {
   ProfileHero,
   ProfilePersonalInfo,
   ProfileContactInfo,
+  ProfilePasswordChange,
   ProfileSkeleton,
   ProfileError,
   ProfileNotFound,
@@ -193,6 +194,7 @@ export default function ProfileClient() {
           onChange={handleChange}
           errors={validationErrors}
         />
+        <ProfilePasswordChange />
       </div>
     </div>
   );

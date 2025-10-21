@@ -205,6 +205,15 @@
     "emailPlaceholder": "Wprowadź adres e-mail",
     "balance": "Saldo",
     "currentBalance": "Aktualne saldo",
+    "changePassword": "Zmień hasło",
+    "currentPassword": "Aktualne hasło",
+    "newPassword": "Nowe hasło",
+    "confirmNewPassword": "Potwierdź nowe hasło",
+    "enterCurrentPassword": "Wprowadź aktualne hasło",
+    "enterNewPassword": "Wprowadź nowe hasło",
+    "confirmNewPassword": "Potwierdź nowe hasło",
+    "changing": "Zmienianie...",
+    "passwordChangedSuccessfully": "Hasło zostało pomyślnie zmienione!",
     "pages": "stron"
   },
   "LanguageSwitcher": {

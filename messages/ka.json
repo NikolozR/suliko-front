@@ -205,6 +205,15 @@
     "emailPlaceholder": "შეიყვანეთ ელ. ფოსტა",
     "balance": "ბალანსი",
     "currentBalance": "მიმდინარე ბალანსი",
+    "changePassword": "პაროლის შეცვლა",
+    "currentPassword": "მიმდინარე პაროლი",
+    "newPassword": "ახალი პაროლი",
+    "confirmNewPassword": "ახალი პაროლის დადასტურება",
+    "enterCurrentPassword": "შეიყვანეთ მიმდინარე პაროლი",
+    "enterNewPassword": "შეიყვანეთ ახალი პაროლი",
+    "confirmNewPassword": "დაადასტურეთ ახალი პაროლი",
+    "changing": "შეცვლა...",
+    "passwordChangedSuccessfully": "პაროლი წარმატებით შეიცვალა!",
     "pages": "გვერდი"
   },
   "LanguageSwitcher": {
