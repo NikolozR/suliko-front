@@ -55,7 +55,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [resetToken, setResetToken] = useState("");
+  const [, setResetToken] = useState("");
 
   const step1Schema = createStep1Schema(t, locale);
   const step2Schema = createStep2Schema(t);
@@ -98,7 +98,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     
     try {
       // First validate the code
-      const validationResponse = await validateRecoveryCode(phoneNumber, data.code) as any;
+      const validationResponse = await validateRecoveryCode(phoneNumber, data.code) as { token?: string };
       
       if (validationResponse?.token) {
         setResetToken(validationResponse.token);

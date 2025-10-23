@@ -1,4 +1,3 @@
-import { API_BASE_URL } from "@/shared/constants/api";
 import { LoginResponse } from "@/features/auth/types/types.Auth";
 import { apiClient, ApiClient } from "@/shared/lib/apiClient";
 

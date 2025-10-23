@@ -3,11 +3,11 @@ import { API_BASE_URL } from "@/shared/constants/api";
 export interface ApiRequestOptions {
   method?: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
-  body?: any;
+  body?: unknown;
   credentials?: RequestCredentials;
 }
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
   data: T;
   status: number;
   statusText: string;
@@ -41,7 +41,7 @@ export class ApiClient {
     };
   }
 
-  private async makeRequest<T>(
+  async makeRequest<T>(
     endpoint: string,
     options: ApiRequestOptions = {}
   ): Promise<ApiResponse<T>> {
@@ -87,7 +87,7 @@ export class ApiClient {
       let data: T;
       try {
         data = await response.json();
-      } catch (parseError) {
+      } catch {
         // If JSON parsing fails, it might be a CORS issue
         if (!response.ok) {
           throw new ApiError(
@@ -138,7 +138,7 @@ export class ApiClient {
 
   async post<T>(
     endpoint: string,
-    body?: any,
+    body?: unknown,
     headers?: Record<string, string>
   ): Promise<ApiResponse<T>> {
     return this.makeRequest<T>(endpoint, { method: 'POST', body, headers });
@@ -146,7 +146,7 @@ export class ApiClient {
 
   async put<T>(
     endpoint: string,
-    body?: any,
+    body?: unknown,
     headers?: Record<string, string>
   ): Promise<ApiResponse<T>> {
     return this.makeRequest<T>(endpoint, { method: 'PUT', body, headers });
