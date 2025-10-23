@@ -45,4 +45,35 @@ export interface SendVerificationCodeResponse {
 export interface LoginResponse {
   token: string;
   refreshToken: string;
+}
+
+export interface PasswordRecoveryRequest {
+  phoneNumber: string;
+}
+
+export interface PasswordRecoveryResponse {
+  success: boolean;
+  message: string;
+}
+
+export interface ValidateRecoveryCodeRequest {
+  phoneNumber: string;
+  code: string;
+}
+
+export interface ValidateRecoveryCodeResponse {
+  success: boolean;
+  message: string;
+  token?: string; // Token for password reset
+}
+
+export interface ResetPasswordRequest {
+  phoneNumber: string;
+  newPassword: string;
+  token: string;
+}
+
+export interface ResetPasswordResponse {
+  success: boolean;
+  message: string;
 } 

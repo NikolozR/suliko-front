@@ -36,7 +36,7 @@ export const getChatHistory = async (
 
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
@@ -83,7 +83,7 @@ export const getChatById = async (
   });
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
@@ -127,7 +127,7 @@ export const getSingleChatHistoryOriginalFile = async (id: string): Promise<File
 
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);

@@ -21,6 +21,16 @@ export default function MetaPixel({ pixelId }: MetaPixelProps) {
       const script = document.createElement('script');
       script.src = 'https://connect.facebook.net/en_US/fbevents.js';
       script.async = true;
+      
+      // Add error handling for blocked scripts
+      script.onerror = () => {
+        console.warn('Facebook Pixel script blocked by ad blocker or privacy extension');
+        // Initialize a fallback function
+        window.fbq = function(...args: unknown[]) {
+          console.log('Facebook Pixel (fallback):', args);
+        };
+      };
+      
       document.head.appendChild(script);
 
       // Initialize fbq function

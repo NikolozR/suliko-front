@@ -118,7 +118,7 @@ const SulikoForm: React.FC = () => {
     setAuthError(null);
 
     try {
-      const response: SendVerificationCodeResponse = await sendCode(mobile);
+      const response = await sendCode(mobile) as SendVerificationCodeResponse;
       setSentVerificationCode(response.code.toString());
       setIsCodeSent(true);
 
@@ -313,6 +313,18 @@ const SulikoForm: React.FC = () => {
                 setIsPasswordVisible={setIsPasswordVisible}
               />
 
+              {isLoginMode && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordRecovery(true)}
+                    className="text-sm text-suliko-default-color hover:text-suliko-default-hover-color underline"
+                  >
+                    {t("forgotPassword")}
+                  </button>
+                </div>
+              )}
+
               {!isLoginMode && <TermsSection form={form} />}
 
               <Button
@@ -337,14 +349,10 @@ const SulikoForm: React.FC = () => {
           </div>
         </Form>
       </div>
-
+      
       <PasswordRecoveryModal
         isOpen={showPasswordRecovery}
         onClose={() => setShowPasswordRecovery(false)}
-        onSuccess={() => {
-          setAuthError(null);
-          setShowPasswordRecovery(false);
-        }}
       />
     </>
   );

@@ -24,7 +24,7 @@ export const getUserProfile = async (): Promise<UserProfile> => {
 
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
@@ -74,7 +74,7 @@ export const updateUserProfile = async (userProfile: UpdateUserProfile) => {
   });
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
@@ -128,7 +128,7 @@ export const changePassword = async (passwordData: ChangePasswordRequest) => {
 
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);

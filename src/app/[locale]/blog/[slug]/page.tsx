@@ -1,91 +1,139 @@
-import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import BlogPost from '@/features/blog/components/BlogPost';
-import { BlogService } from '@/features/blog/services/blogService';
+import { notFound } from 'next/navigation';
+import { getAllPostSlugs, getPostBySlug } from '@/lib/blog';
+import { BlogPost } from '@/components/blog';
 import LandingHeader from '@/shared/components/LandingHeader';
 import LandingFooter from '@/shared/components/LandingFooter';
-import SulikoParticles from '@/shared/components/SulikoParticles';
-import ScrollToTop from '@/shared/components/ScrollToTop';
 
 interface BlogPostPageProps {
-  params: Promise<{ slug: string; locale: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const blogService = BlogService.getInstance();
-  const posts = await blogService.getPosts();
-  
-  return posts.map((post) => ({
-    slug: post.id,
-  }));
+  try {
+    console.log('=== STARTING generateStaticParams ===');
+    console.log('CWD:', process.cwd());
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    
+    const slugs = getAllPostSlugs();
+    console.log('Found slugs:', slugs);
+    
+    const result = slugs.map((slug) => ({
+      slug,
+    }));
+    
+    console.log('=== SUCCESS generateStaticParams ===');
+    return result;
+  } catch (error) {
+    console.error('=== ERROR in generateStaticParams ===');
+    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    throw error;
+  }
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const blogService = BlogService.getInstance();
-  const post = await blogService.getPostById(slug);
+  try {
+    console.log('=== STARTING generateMetadata ===');
+    const { slug } = await params;
+    console.log('Slug:', slug);
+    
+    const post = getPostBySlug(slug);
+    console.log('Post found:', !!post);
 
-  if (!post) {
+    if (!post) {
+      console.log('=== Post not found, returning default metadata ===');
+      return {
+        title: 'Post Not Found',
+      };
+    }
+
+    console.log('=== SUCCESS generateMetadata ===');
     return {
-      title: 'Post Not Found - Suliko Blog',
+      title: `${post.title} | Suliko Blog`,
+      description: post.excerpt,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt,
+        type: 'article',
+        publishedTime: post.date,
+        authors: [post.author],
+        ...(post.coverImage && {
+          images: [
+            {
+              url: post.coverImage,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ],
+        }),
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title,
+        description: post.excerpt,
+        ...(post.coverImage && {
+          images: [post.coverImage],
+        }),
+      },
     };
+  } catch (error) {
+    console.error('=== ERROR in generateMetadata ===');
+    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    throw error;
   }
-
-  const locale = (await params).locale;
-  const title = post.title[locale] || post.title.en;
-  const description = post.excerpt[locale] || post.excerpt.en;
-
-  return {
-    title: `${title} - Suliko Blog`,
-    description,
-    openGraph: {
-      title: `${title} - Suliko Blog`,
-      description,
-      type: 'article',
-      publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt,
-      authors: [post.author.name],
-      tags: post.tags,
-      images: post.featuredImage ? [post.featuredImage] : undefined,
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${title} - Suliko Blog`,
-      description,
-      images: post.featuredImage ? [post.featuredImage] : undefined,
-    },
-  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params;
-  const blogService = BlogService.getInstance();
-  const post = await blogService.getPostById(slug);
+  try {
+    console.log('=== STARTING BlogPostPage ===');
+    const { slug } = await params;
+    console.log('Slug:', slug);
+    
+    const post = getPostBySlug(slug);
+    console.log('Post found:', !!post);
 
-  if (!post) {
-    notFound();
-  }
+    if (!post) {
+      console.log('=== Post not found, calling notFound() ===');
+      notFound();
+    }
+
+    console.log('=== SUCCESS BlogPostPage ===');
 
   return (
-    <div className="min-h-screen relative">
-      {/* Background particles */}
-      <SulikoParticles
-        className="fixed inset-0 z-0"
-        fullScreen={true}
-        particleCount={60}
-        speed={0.5}
-        enableInteractions={true}
-      />
+    <>
+      {/* Header */}
+      <LandingHeader />
       
-      {/* Main content */}
-      <div className="relative z-10">
-        <LandingHeader />
-        <main className="pt-20">
-          <BlogPost post={post} />
-        </main>
-        <LandingFooter />
-        <ScrollToTop />
-      </div>
-    </div>
+      {/* Main Blog Post Page with Stars Background */}
+      <main className="min-h-screen blog-stars-background">
+        {/* Stars Background Layer */}
+        <div className="fixed inset-0 -z-10">
+          <div className="absolute inset-0 stars-layer-1" />
+          <div className="absolute inset-0 stars-layer-2" />
+        </div>
+
+        {/* Content Layer */}
+        <div className="relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 mt-16">
+            <BlogPost post={post} />
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <LandingFooter />
+    </>
   );
+  } catch (error) {
+    console.error('=== ERROR in BlogPostPage ===');
+    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    throw error;
+  }
 }

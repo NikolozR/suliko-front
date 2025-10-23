@@ -65,11 +65,6 @@ export default function LandingFooter() {
                 <h3 className="font-semibold text-foreground mb-6 text-lg">{t("resources")}</h3>
                 <ul className="space-y-4">
                   <li>
-                    <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                      {t("links.blog")}
-                    </Link>
-                  </li>
-                  <li>
                     <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors">
                       {t("logIn")}
                     </Link>

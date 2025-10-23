@@ -36,7 +36,7 @@ export async function getSuggestions(
 
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
@@ -94,7 +94,7 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
 
     if (response.status === 401 && token && refreshToken) {
         try {
-            const newTokens = await reaccessToken(refreshToken);
+            const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
             const { setToken, setRefreshToken } = useAuthStore.getState();
             setToken(newTokens.token);
             setRefreshToken(newTokens.refreshToken);
