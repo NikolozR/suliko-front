@@ -9,23 +9,6 @@ import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTheme } from "next-themes";
 
-// Navigation hook for smooth scrolling
-function useSmoothScroll() {
-  const scrollToSection = useCallback((sectionId: string) => {
-    const element = document.getElementById(sectionId.replace('#', ''));
-    if (element) {
-      const headerHeight = 80; // Account for fixed header
-      const elementPosition = element.offsetTop - headerHeight;
-      
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
-    }
-  }, []);
-
-  return { scrollToSection };
-}
 
 // Theme toggle component
 function ThemeToggle() {
@@ -95,7 +78,6 @@ export default function LandingHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBlogPage, setIsBlogPage] = useState(false);
   
-  // const { scrollToSection } = useSmoothScroll(); // Removed unused import
 
   // Handle mounting
   useEffect(() => {
