@@ -118,7 +118,7 @@ const SulikoForm: React.FC = () => {
     setAuthError(null);
 
     try {
-      const response: SendVerificationCodeResponse = await sendCode(mobile);
+      const response = await sendCode(mobile) as SendVerificationCodeResponse;
       setSentVerificationCode(response.code.toString());
       setIsCodeSent(true);
 
