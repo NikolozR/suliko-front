@@ -71,7 +71,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
       } else if (message.includes('405') || message.includes('Method Not Allowed')) {
         message = "Server configuration error. Please try again or contact support.";
       } else if (message.includes('404') || message.includes('Not Found')) {
-        message = "Password recovery service is currently unavailable. Please try again later.";
+        message = "Password recovery endpoint not found. Please contact support or try again later.";
       }
       
       setError(message);

@@ -121,7 +121,7 @@ export const sendCode = sendVerificationCode;
 
 export async function recoverPassword(phoneNumber: string, newPassword: string) {
   try {
-    const response = await apiClient.post("/Users/recover-password", {
+    const response = await apiClient.post("/api/Users/recover-password", {
       phoneNumber,
       newPassword,
     });
