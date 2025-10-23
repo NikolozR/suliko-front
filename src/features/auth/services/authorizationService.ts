@@ -121,14 +121,21 @@ export const sendCode = sendVerificationCode;
 
 export async function recoverPassword(phoneNumber: string) {
   try {
-    const response = await apiClient.post("/User/recover-password", {
-      phoneNumber,
-    });
+    // Try GET method first as some APIs use GET for password recovery
+    const response = await apiClient.get(`/User/recover-password?phoneNumber=${encodeURIComponent(phoneNumber)}`);
     return response.data;
   } catch (error) {
-    // Handle CORS and other errors
-    const errorMessage = ApiClient.handleApiError(error);
-    throw new Error(errorMessage);
+    // If GET fails, try POST method
+    try {
+      const response = await apiClient.post("/User/recover-password", {
+        phoneNumber,
+      });
+      return response.data;
+    } catch (postError) {
+      // Handle CORS and other errors
+      const errorMessage = ApiClient.handleApiError(postError);
+      throw new Error(errorMessage);
+    }
   }
 }
 

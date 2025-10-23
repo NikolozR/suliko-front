@@ -81,9 +81,13 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     } catch (err) {
       let message = err instanceof Error ? err.message : "Password recovery failed";
       
-      // Check for CORS errors and provide user-friendly messages
+      // Check for specific error types and provide user-friendly messages
       if (message.includes('CORS') || message.includes('cross-origin') || message.includes('Network Error')) {
         message = t("corsErrorMessage");
+      } else if (message.includes('405') || message.includes('Method Not Allowed')) {
+        message = "Server configuration error. Please try again or contact support.";
+      } else if (message.includes('404') || message.includes('Not Found')) {
+        message = "Password recovery service is currently unavailable. Please try again later.";
       }
       
       setError(message);
@@ -112,9 +116,13 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     } catch (err) {
       let message = err instanceof Error ? err.message : "Password reset failed";
       
-      // Check for CORS errors and provide user-friendly messages
+      // Check for specific error types and provide user-friendly messages
       if (message.includes('CORS') || message.includes('cross-origin') || message.includes('Network Error')) {
         message = t("corsErrorMessage");
+      } else if (message.includes('405') || message.includes('Method Not Allowed')) {
+        message = "Server configuration error. Please try again or contact support.";
+      } else if (message.includes('404') || message.includes('Not Found')) {
+        message = "Password recovery service is currently unavailable. Please try again later.";
       }
       
       setError(message);
