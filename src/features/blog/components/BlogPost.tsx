@@ -39,7 +39,7 @@ export default function BlogPost({ post }: BlogPostProps) {
       <div className="absolute inset-0 bg-white/10 backdrop-blur-md border border-white/20 shadow-2xl -z-10 rounded-2xl" />
       {/* Back Button */}
       <div className="mb-8">
-        <Link href="/blog">
+        <Link href={`/${locale}/blog`}>
           <Button variant="ghost" className="gap-2 hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors">
             <ArrowLeft className="h-4 w-4" />
 {t('backToBlog')}
@@ -113,7 +113,7 @@ export default function BlogPost({ post }: BlogPostProps) {
           <div className="text-sm text-muted-foreground">
             Last updated: {new Date(post.updatedAt).toLocaleDateString(locale)}
           </div>
-          <Link href="/blog">
+          <Link href={`/${locale}/blog`}>
             <Button variant="outline">
               <ArrowLeft className="h-4 w-4 mr-2" />
   {t('backToBlog')}

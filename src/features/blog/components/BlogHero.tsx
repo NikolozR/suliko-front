@@ -44,7 +44,7 @@ export default function BlogHero({ featuredPosts, isLoading }: BlogHeroProps) {
         <p className="text-xl text-muted-foreground mb-6">
           Discover insights, updates, and innovations in AI-powered translation.
         </p>
-        <Link href="/blog">
+        <Link href={`/${locale}/blog`}>
           <Button size="lg">Explore All Posts</Button>
         </Link>
       </div>
@@ -108,12 +108,12 @@ export default function BlogHero({ featuredPosts, isLoading }: BlogHeroProps) {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4">
-            <Link href={`/blog/${featuredPost.id}`}>
+            <Link href={`/${locale}/blog/${featuredPost.id}`}>
               <Button size="lg" className="text-lg px-8 py-6 h-auto">
                 {t('readFullPost')} →
               </Button>
             </Link>
-            <Link href="/blog">
+            <Link href={`/${locale}/blog`}>
               <Button variant="outline" size="lg" className="text-lg px-8 py-6 h-auto border-primary/30 hover:bg-primary/10">
                 {t('viewAllPosts')}
               </Button>

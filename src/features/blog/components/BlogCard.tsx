@@ -70,7 +70,7 @@ export default function BlogCard({ post }: BlogCardProps) {
           </div>
         </div>
         <Link 
-          href={`/blog/${post.id}`}
+          href={`/${locale}/blog/${post.id}`}
           className="text-primary hover:text-primary/80 font-semibold transition-colors group-hover:translate-x-1 transform duration-200"
         >
           {t('readMore')} →
