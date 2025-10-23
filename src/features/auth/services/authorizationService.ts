@@ -13,7 +13,7 @@ interface RegisterParams extends LoginParams {
   subscribeNewsletter?: boolean;
 }
 
-export async function register({ phoneNumber, password, firstname, lastname, subscribeNewsletter }: RegisterParams) {
+export async function register({ phoneNumber, password, firstname, lastname, subscribeNewsletter: _ }: RegisterParams) {
   try {
     // TODO: add subscribeNewsletter to the request
     const response = await apiClient.post("/Auth/register-with-phone", {
