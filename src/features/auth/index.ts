@@ -1,5 +1,6 @@
 // Components
 export { AuthModal } from './components/AuthModal';
+export { default as PasswordRecoveryModal } from './components/PasswordRecoveryModal';
 
 // Hooks
 export { useUser } from './hooks/useUser';

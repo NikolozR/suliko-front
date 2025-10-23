@@ -10,6 +10,7 @@ import {
   login,
   sendCode,
 } from "@/features/auth/services/authorizationService";
+import PasswordRecoveryModal from "@/features/auth/components/PasswordRecoveryModal";
 import type { RegisterParams } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/features/auth/store/authStore";
@@ -44,6 +45,7 @@ const SulikoForm: React.FC = () => {
   const [resendTimer, setResendTimer] = useState(0);
   const [sentVerificationCode, setSentVerificationCode] = useState<string>("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
 
   const formSchema = useMemo(
     () =>
@@ -311,6 +313,18 @@ const SulikoForm: React.FC = () => {
                 setIsPasswordVisible={setIsPasswordVisible}
               />
 
+              {isLoginMode && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => setShowPasswordRecovery(true)}
+                    className="text-sm text-suliko-default-color hover:text-suliko-default-hover-color underline"
+                  >
+                    {t("forgotPassword")}
+                  </button>
+                </div>
+              )}
+
               {!isLoginMode && <TermsSection form={form} />}
 
               <Button
@@ -323,6 +337,11 @@ const SulikoForm: React.FC = () => {
           </div>
         </Form>
       </div>
+      
+      <PasswordRecoveryModal
+        isOpen={showPasswordRecovery}
+        onClose={() => setShowPasswordRecovery(false)}
+      />
     </>
   );
 };
