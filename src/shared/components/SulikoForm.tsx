@@ -313,18 +313,6 @@ const SulikoForm: React.FC = () => {
                 setIsPasswordVisible={setIsPasswordVisible}
               />
 
-              {isLoginMode && (
-                <div className="flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setShowPasswordRecovery(true)}
-                    className="text-sm text-suliko-default-color hover:text-suliko-default-hover-color underline"
-                  >
-                    {t("forgotPassword")}
-                  </button>
-                </div>
-              )}
-
               {!isLoginMode && <TermsSection form={form} />}
 
               <Button
