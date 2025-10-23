@@ -2,6 +2,8 @@ import Image from 'next/image';
 import { MDXRemote } from 'next-mdx-remote/rsc';
 import type { BlogPost } from '@/lib/blog';
 import { formatDate } from '@/lib/blog';
+import MDXComponents from './MDXComponents';
+import BlogErrorBoundary from './BlogErrorBoundary';
 
 interface BlogPostProps {
   post: BlogPost;
@@ -54,7 +56,15 @@ export default function BlogPost({ post }: BlogPostProps) {
 
       {/* Content */}
       <div className="prose prose-lg max-w-none dark:prose-invert">
-        <MDXRemote source={post.content} />
+        <BlogErrorBoundary
+          fallback={
+            <div className="text-center py-8">
+              <p className="text-muted-foreground">Error loading blog content. Please try again.</p>
+            </div>
+          }
+        >
+          <MDXRemote source={post.content} components={MDXComponents} />
+        </BlogErrorBoundary>
       </div>
     </article>
   );
