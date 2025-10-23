@@ -82,6 +82,8 @@ export default function LandingHeader() {
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
   const { scrollToSection } = useSmoothScroll();
@@ -94,12 +96,24 @@ export default function LandingHeader() {
   // Handle scroll detection
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 20);
+      
+      // Hide/show header on scroll
+      if (scrollTop > lastScrollY && scrollTop > 100) {
+        // Scrolling down
+        setIsHeaderVisible(false);
+      } else {
+        // Scrolling up
+        setIsHeaderVisible(true);
+      }
+      
+      setLastScrollY(scrollTop);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   // Close mobile menu on escape key
   useEffect(() => {
@@ -121,10 +135,16 @@ export default function LandingHeader() {
     { id: 'contact', label: t("contact") },
   ];
 
+  // Blog navigation item (separate from scroll items)
+  const blogNavItem = { id: 'blog', label: t("blog"), href: '/blog' };
+
   // Handle navigation click
   const handleNavClick = (sectionId: string) => {
-    // For section links, scroll to section
-    scrollToSection(sectionId);
+    // Remove hash if present
+    const cleanSectionId = sectionId.replace('#', '');
+    
+    // Always redirect to landing page with section anchor
+    window.location.href = `/#${cleanSectionId}`;
     setIsMobileMenuOpen(false);
   };
 
@@ -157,8 +177,10 @@ export default function LandingHeader() {
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isScrolled
-          ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
-          : "bg-transparent"
+          ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
+          : "bg-background/95 backdrop-blur-md"
+      } ${
+        isHeaderVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       <nav className="container z-50 relative mx-auto px-4 sm:px-6 lg:px-8">
@@ -183,12 +205,17 @@ export default function LandingHeader() {
               {navItems.map((item) => (
                 <NavItem
                   key={item.id}
-                  href={`#${item.id}`}
+                  href=""
                   onClick={() => handleNavClick(`#${item.id}`)}
                 >
                   <span className="cursor-pointer">{item.label}</span>
                 </NavItem>
               ))}
+              <Link href={blogNavItem.href}>
+                <button className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1">
+                  {blogNavItem.label}
+                </button>
+              </Link>
             </div>
           </div>
 
@@ -240,7 +267,7 @@ export default function LandingHeader() {
             />
             
             {/* Menu Panel */}
-            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-background/95 backdrop-blur-md border-l border-border shadow-xl transform transition-transform duration-300 ease-in-out">
+            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-background/98 backdrop-blur-lg border-l border-border shadow-xl transform transition-transform duration-300 ease-in-out">
               <div className="flex flex-col h-full">
                 {/* Menu Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border">
@@ -259,12 +286,17 @@ export default function LandingHeader() {
                   {navItems.map((item) => (
                     <MobileNavItem
                       key={item.id}
-                      href={`#${item.id}`}
+                      href=""
                       onClick={() => handleNavClick(`#${item.id}`)}
                     >
                       {item.label}
                     </MobileNavItem>
                   ))}
+                  <Link href={blogNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className="block w-full text-left px-4 py-4 text-foreground/80 hover:text-foreground hover:bg-accent rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50">
+                      {blogNavItem.label}
+                    </button>
+                  </Link>
                 </nav>
                 
                 {/* Menu Footer */}
