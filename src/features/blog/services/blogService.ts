@@ -17,20 +17,56 @@ export class BlogService {
   }
 
   public async getPosts(): Promise<BlogPost[]> {
-    return this.blogData.posts.filter(post => post.published);
+    try {
+      if (!this.blogData?.posts) {
+        console.error('Blog data is not available');
+        return [];
+      }
+      return this.blogData.posts.filter(post => post.published);
+    } catch (error) {
+      console.error('Error getting blog posts:', error);
+      return [];
+    }
   }
 
   public async getPostById(id: string): Promise<BlogPost | null> {
-    const post = this.blogData.posts.find(post => post.id === id);
-    return post && post.published ? post : null;
+    try {
+      if (!this.blogData?.posts || !id) {
+        console.error('Blog data or post ID is not available');
+        return null;
+      }
+      const post = this.blogData.posts.find(post => post.id === id);
+      return post && post.published ? post : null;
+    } catch (error) {
+      console.error('Error getting blog post by ID:', error);
+      return null;
+    }
   }
 
   public async getCategories(): Promise<BlogCategory[]> {
-    return this.blogData.categories;
+    try {
+      if (!this.blogData?.categories) {
+        console.error('Blog categories are not available');
+        return [];
+      }
+      return this.blogData.categories;
+    } catch (error) {
+      console.error('Error getting blog categories:', error);
+      return [];
+    }
   }
 
   public async getFeaturedPosts(): Promise<BlogPost[]> {
-    return this.blogData.posts.filter(post => post.published && post.featured);
+    try {
+      if (!this.blogData?.posts) {
+        console.error('Blog data is not available');
+        return [];
+      }
+      return this.blogData.posts.filter(post => post.published && post.featured);
+    } catch (error) {
+      console.error('Error getting featured posts:', error);
+      return [];
+    }
   }
 
   public async getPostsByCategory(categoryId: string): Promise<BlogPost[]> {

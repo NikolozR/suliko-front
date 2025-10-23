@@ -18,19 +18,28 @@ export default function BlogPost({ post }: BlogPostProps) {
   const t = useTranslations('Blog');
 
   const renderMarkdownContent = (content: string) => {
-    // Simple markdown to HTML conversion for basic formatting
-    return content
-      .replace(/^# (.*$)/gim, '<h1 class="text-4xl font-bold mb-6">$1</h1>')
-      .replace(/^## (.*$)/gim, '<h2 class="text-3xl font-semibold mb-4 mt-8">$1</h2>')
-      .replace(/^### (.*$)/gim, '<h3 class="text-2xl font-semibold mb-3 mt-6">$1</h3>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
-      .replace(/^\- (.*$)/gim, '<li class="ml-4">$1</li>')
-      .replace(/\n\n/g, '</p><p class="mb-4">')
-      .replace(/^(?!<[h|l])(.*$)/gim, '<p class="mb-4">$1</p>');
+    if (!content || typeof content !== 'string') {
+      return '<p class="mb-4">Content not available.</p>';
+    }
+    
+    try {
+      // Simple markdown to HTML conversion for basic formatting
+      return content
+        .replace(/^# (.*$)/gim, '<h1 class="text-4xl font-bold mb-6">$1</h1>')
+        .replace(/^## (.*$)/gim, '<h2 class="text-3xl font-semibold mb-4 mt-8">$1</h2>')
+        .replace(/^### (.*$)/gim, '<h3 class="text-2xl font-semibold mb-3 mt-6">$1</h3>')
+        .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+        .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+        .replace(/^\- (.*$)/gim, '<li class="ml-4">$1</li>')
+        .replace(/\n\n/g, '</p><p class="mb-4">')
+        .replace(/^(?!<[h|l])(.*$)/gim, '<p class="mb-4">$1</p>');
+    } catch (error) {
+      console.error('Error rendering markdown content:', error);
+      return '<p class="mb-4">Error rendering content.</p>';
+    }
   };
 
-  const content = post.content[locale] || post.content.en;
+  const content = post.content?.[locale] || post.content?.en || '';
   const renderedContent = renderMarkdownContent(content);
 
   return (
@@ -63,7 +72,7 @@ export default function BlogPost({ post }: BlogPostProps) {
       {/* Header */}
       <header className="mb-8">
         <div className="flex flex-wrap gap-2 mb-4">
-          {post.tags.map((tag) => (
+          {(post.tags || []).map((tag) => (
             <Badge key={tag} variant="secondary">
               {tag}
             </Badge>
@@ -71,30 +80,30 @@ export default function BlogPost({ post }: BlogPostProps) {
         </div>
         
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
-          {post.title[locale] || post.title.en}
+          {post.title?.[locale] || post.title?.en || 'Untitled'}
         </h1>
         
         <p className="text-xl text-muted-foreground mb-6">
-          {post.excerpt[locale] || post.excerpt.en}
+          {post.excerpt?.[locale] || post.excerpt?.en || ''}
         </p>
 
         {/* Author and Meta Info */}
         <div className="flex flex-wrap items-center gap-6 text-sm text-muted-foreground mb-6">
           <div className="flex items-center gap-2">
             <User className="h-4 w-4" />
-            <span>{post.author.name}</span>
+            <span>{post.author?.name || 'Unknown Author'}</span>
           </div>
           <div className="flex items-center gap-2">
             <Calendar className="h-4 w-4" />
-            <span>{new Date(post.publishedAt).toLocaleDateString(locale, {
+            <span>{post.publishedAt ? new Date(post.publishedAt).toLocaleDateString(locale, {
               year: 'numeric',
               month: 'long',
               day: 'numeric'
-            })}</span>
+            }) : 'Unknown Date'}</span>
           </div>
           <div className="flex items-center gap-2">
             <Clock className="h-4 w-4" />
-            <span>{post.readTime} min read</span>
+            <span>{post.readTime || 0} min read</span>
           </div>
         </div>
 
@@ -111,7 +120,7 @@ export default function BlogPost({ post }: BlogPostProps) {
       <footer className="mt-12 pt-8 border-t">
         <div className="flex items-center justify-between">
           <div className="text-sm text-muted-foreground">
-            Last updated: {new Date(post.updatedAt).toLocaleDateString(locale)}
+            Last updated: {post.updatedAt ? new Date(post.updatedAt).toLocaleDateString(locale) : 'Unknown'}
           </div>
           <Link href={`/${locale}/blog`}>
             <Button variant="outline">
