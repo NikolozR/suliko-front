@@ -10,60 +10,99 @@ interface BlogPostPageProps {
 }
 
 export async function generateStaticParams() {
-  const slugs = getAllPostSlugs();
-  return slugs.map((slug) => ({
-    slug,
-  }));
+  try {
+    console.log('=== STARTING generateStaticParams ===');
+    console.log('CWD:', process.cwd());
+    console.log('NODE_ENV:', process.env.NODE_ENV);
+    
+    const slugs = getAllPostSlugs();
+    console.log('Found slugs:', slugs);
+    
+    const result = slugs.map((slug) => ({
+      slug,
+    }));
+    
+    console.log('=== SUCCESS generateStaticParams ===');
+    return result;
+  } catch (error) {
+    console.error('=== ERROR in generateStaticParams ===');
+    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    throw error;
+  }
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+  try {
+    console.log('=== STARTING generateMetadata ===');
+    const { slug } = await params;
+    console.log('Slug:', slug);
+    
+    const post = getPostBySlug(slug);
+    console.log('Post found:', !!post);
 
-  if (!post) {
+    if (!post) {
+      console.log('=== Post not found, returning default metadata ===');
+      return {
+        title: 'Post Not Found',
+      };
+    }
+
+    console.log('=== SUCCESS generateMetadata ===');
     return {
-      title: 'Post Not Found',
+      title: `${post.title} | Suliko Blog`,
+      description: post.excerpt,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt,
+        type: 'article',
+        publishedTime: post.date,
+        authors: [post.author],
+        ...(post.coverImage && {
+          images: [
+            {
+              url: post.coverImage,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ],
+        }),
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title,
+        description: post.excerpt,
+        ...(post.coverImage && {
+          images: [post.coverImage],
+        }),
+      },
     };
+  } catch (error) {
+    console.error('=== ERROR in generateMetadata ===');
+    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    throw error;
   }
-
-  return {
-    title: `${post.title} | Suliko Blog`,
-    description: post.excerpt,
-    openGraph: {
-      title: post.title,
-      description: post.excerpt,
-      type: 'article',
-      publishedTime: post.date,
-      authors: [post.author],
-      ...(post.coverImage && {
-        images: [
-          {
-            url: post.coverImage,
-            width: 1200,
-            height: 630,
-            alt: post.title,
-          },
-        ],
-      }),
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: post.title,
-      description: post.excerpt,
-      ...(post.coverImage && {
-        images: [post.coverImage],
-      }),
-    },
-  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params;
-  const post = getPostBySlug(slug);
+  try {
+    console.log('=== STARTING BlogPostPage ===');
+    const { slug } = await params;
+    console.log('Slug:', slug);
+    
+    const post = getPostBySlug(slug);
+    console.log('Post found:', !!post);
 
-  if (!post) {
-    notFound();
-  }
+    if (!post) {
+      console.log('=== Post not found, calling notFound() ===');
+      notFound();
+    }
+
+    console.log('=== SUCCESS BlogPostPage ===');
 
   return (
     <>
@@ -90,4 +129,11 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <LandingFooter />
     </>
   );
+  } catch (error) {
+    console.error('=== ERROR in BlogPostPage ===');
+    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
+    console.error('Error message:', error instanceof Error ? error.message : String(error));
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
+    throw error;
+  }
 }

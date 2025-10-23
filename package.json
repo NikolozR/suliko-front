@@ -74,5 +74,8 @@
     "tailwindcss": "^4.1.5",
     "tw-animate-css": "^1.2.9",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
