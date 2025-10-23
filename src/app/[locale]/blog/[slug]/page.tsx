@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { BlogService } from '@/features/blog/services/blogService';
 import LandingHeader from '@/shared/components/LandingHeader';
 import LandingFooter from '@/shared/components/LandingFooter';
@@ -126,14 +127,14 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <div className="container mx-auto px-4 py-16 text-center">
               <h1 className="text-4xl font-bold mb-4">Blog Post Not Available</h1>
               <p className="text-xl text-muted-foreground mb-8">
-                We're sorry, but this blog post is currently unavailable.
+                We&apos;re sorry, but this blog post is currently unavailable.
               </p>
-              <a 
+              <Link 
                 href="/blog" 
                 className="inline-block px-6 py-3 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors"
               >
                 Back to Blog
-              </a>
+              </Link>
             </div>
           </main>
           <LandingFooter />
