@@ -1,4 +1,4 @@
-import { BookOpen, TrendingUp, Users, Clock, Star, Zap, Globe, Heart } from 'lucide-react';
+import { BookOpen, TrendingUp, Users, Clock, Zap, Globe } from 'lucide-react';
 
 interface BlogBannerProps {
   postCount: number;

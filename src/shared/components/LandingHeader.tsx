@@ -95,7 +95,7 @@ export default function LandingHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBlogPage, setIsBlogPage] = useState(false);
   
-  const { scrollToSection } = useSmoothScroll();
+  // const { scrollToSection } = useSmoothScroll(); // Removed unused import
 
   // Handle mounting
   useEffect(() => {
