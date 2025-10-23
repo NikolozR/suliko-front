@@ -20,15 +20,23 @@ interface BlogPostPageProps {
 
 export async function generateStaticParams() {
   try {
+    console.log('generateStaticParams: Starting...');
     const blogService = BlogService.getInstance();
     const posts = await blogService.getPosts();
     
-    return posts.map((post) => ({
+    console.log('generateStaticParams: Found', posts.length, 'posts');
+    const params = posts.map((post) => ({
       slug: post.id,
     }));
+    
+    console.log('generateStaticParams: Generated params:', params);
+    return params;
   } catch (error) {
     console.error('Error generating static params for blog posts:', error);
-    return [];
+    // Return a fallback to ensure at least one route is generated
+    return [
+      { slug: 'welcome-to-suliko-blog' }
+    ];
   }
 }
 
@@ -81,18 +89,23 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   try {
     const { slug } = await params;
     
+    console.log('BlogPostPage: Loading post with slug:', slug);
+    
     if (!slug) {
       console.error('No slug provided');
       notFound();
     }
 
     const blogService = BlogService.getInstance();
+    console.log('BlogPostPage: Getting post by ID...');
     const post = await blogService.getPostById(slug);
 
     if (!post) {
       console.error(`Blog post not found for slug: ${slug}`);
       notFound();
     }
+
+    console.log('BlogPostPage: Successfully loaded post:', post.title);
 
     return (
       <div className="min-h-screen relative">
