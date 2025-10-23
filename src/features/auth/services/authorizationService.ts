@@ -119,11 +119,12 @@ export async function sendVerificationCode(phoneNumber: string) {
 // Export alias for convenience
 export const sendCode = sendVerificationCode;
 
-export async function recoverPassword(phoneNumber: string, newPassword: string) {
+export async function recoverPassword(phoneNumber: string, newPassword: string, verificationCode: string) {
   try {
-    const response = await apiClient.post("/api/Users/recover-password", {
+    const response = await apiClient.patch("/api/User/recover-password", {
       phoneNumber,
       newPassword,
+      verificationCode,
     });
     return response.data;
   } catch (error) {

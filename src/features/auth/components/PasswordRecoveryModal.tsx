@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/features/ui/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/components/ui/form";
-import { recoverPassword } from "@/features/auth/services/authorizationService";
+import { sendVerificationCode, validateRecoveryCode, recoverPassword } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 
 interface PasswordRecoveryModalProps {
@@ -22,13 +22,23 @@ interface PasswordRecoveryModalProps {
   onClose: () => void;
 }
 
-const createPasswordRecoverySchema = (t: (key: string) => string, locale?: string) => z.object({
+type RecoveryStep = 'phone' | 'verification' | 'password' | 'success';
+
+const createPhoneSchema = (t: (key: string) => string, locale?: string) => z.object({
   phoneNumber: z.string()
     .min(1, t("phoneNumberRequiredError"))
     .regex(
       locale === 'pl' ? /^(\+48)?[1-9]\d{8}$/ : /^5\d{8}$/,
       t("phoneNumberFormatError")
     ),
+});
+
+const createVerificationSchema = (t: (key: string) => string) => z.object({
+  verificationCode: z.string()
+    .min(1, t("pleaseEnterVerificationCode")),
+});
+
+const createPasswordSchema = (t: (key: string) => string) => z.object({
   newPassword: z.string()
     .min(8, t("passwordMinLengthError"))
     .regex(/(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, t("passwordRegexError")),
@@ -39,39 +49,94 @@ const createPasswordRecoverySchema = (t: (key: string) => string, locale?: strin
   path: ["confirmPassword"],
 });
 
-type PasswordRecoveryFormData = z.infer<ReturnType<typeof createPasswordRecoverySchema>>;
+type PhoneFormData = z.infer<ReturnType<typeof createPhoneSchema>>;
+type VerificationFormData = z.infer<ReturnType<typeof createVerificationSchema>>;
+type PasswordFormData = z.infer<ReturnType<typeof createPasswordSchema>>;
 
 const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, onClose }) => {
   const t = useTranslations("Authorization");
   const locale = useLocale();
+  const [currentStep, setCurrentStep] = useState<RecoveryStep>('phone');
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [verificationCode, setVerificationCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
 
-  const passwordRecoverySchema = createPasswordRecoverySchema(t, locale);
-
-  const form = useForm<PasswordRecoveryFormData>({
-    resolver: zodResolver(passwordRecoverySchema),
-    defaultValues: { phoneNumber: "", newPassword: "", confirmPassword: "" },
+  // Phone form
+  const phoneSchema = createPhoneSchema(t, locale);
+  const phoneForm = useForm<PhoneFormData>({
+    resolver: zodResolver(phoneSchema),
+    defaultValues: { phoneNumber: "" },
   });
 
-  const handleSubmit = async (data: PasswordRecoveryFormData) => {
+  // Verification form
+  const verificationSchema = createVerificationSchema(t);
+  const verificationForm = useForm<VerificationFormData>({
+    resolver: zodResolver(verificationSchema),
+    defaultValues: { verificationCode: "" },
+  });
+
+  // Password form
+  const passwordSchema = createPasswordSchema(t);
+  const passwordForm = useForm<PasswordFormData>({
+    resolver: zodResolver(passwordSchema),
+    defaultValues: { newPassword: "", confirmPassword: "" },
+  });
+
+  const handlePhoneSubmit = async (data: PhoneFormData) => {
     setError(null);
     setIsLoading(true);
     
     try {
-      await recoverPassword(data.phoneNumber, data.newPassword);
-      setSuccess(true);
+      await sendVerificationCode(data.phoneNumber);
+      setPhoneNumber(data.phoneNumber);
+      setCurrentStep('verification');
     } catch (err) {
-      let message = err instanceof Error ? err.message : "Password recovery failed";
+      let message = err instanceof Error ? err.message : t("sendCodeError");
       
-      // Check for specific error types and provide user-friendly messages
       if (message.includes('CORS') || message.includes('cross-origin') || message.includes('Network Error')) {
         message = t("corsErrorMessage");
-      } else if (message.includes('405') || message.includes('Method Not Allowed')) {
-        message = "Server configuration error. Please try again or contact support.";
-      } else if (message.includes('404') || message.includes('Not Found')) {
-        message = "Password recovery endpoint not found. Please contact support or try again later.";
+      }
+      
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerificationSubmit = async (data: VerificationFormData) => {
+    setError(null);
+    setIsLoading(true);
+    
+    try {
+      await validateRecoveryCode(phoneNumber, data.verificationCode);
+      setVerificationCode(data.verificationCode);
+      setCurrentStep('password');
+    } catch (err) {
+      let message = err instanceof Error ? err.message : t("incorrectVerificationCode");
+      
+      if (message.includes('CORS') || message.includes('cross-origin') || message.includes('Network Error')) {
+        message = t("corsErrorMessage");
+      }
+      
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handlePasswordSubmit = async (data: PasswordFormData) => {
+    setError(null);
+    setIsLoading(true);
+    
+    try {
+      await recoverPassword(phoneNumber, data.newPassword, verificationCode);
+      setCurrentStep('success');
+    } catch (err) {
+      let message = err instanceof Error ? err.message : t("passwordRecoveryError");
+      
+      if (message.includes('CORS') || message.includes('cross-origin') || message.includes('Network Error')) {
+        message = t("corsErrorMessage");
       }
       
       setError(message);
@@ -81,13 +146,25 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
   };
 
   const handleClose = () => {
-    form.reset();
+    setCurrentStep('phone');
+    setPhoneNumber("");
+    setVerificationCode("");
     setError(null);
-    setSuccess(false);
+    phoneForm.reset();
+    verificationForm.reset();
+    passwordForm.reset();
     onClose();
   };
 
-  if (success) {
+  const goBack = () => {
+    if (currentStep === 'verification') {
+      setCurrentStep('phone');
+    } else if (currentStep === 'password') {
+      setCurrentStep('verification');
+    }
+  };
+
+  if (currentStep === 'success') {
     return (
       <Dialog open={isOpen} onOpenChange={handleClose}>
         <DialogContent className="sm:max-w-md">
@@ -107,91 +184,171 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     );
   }
 
+  const getStepTitle = () => {
+    switch (currentStep) {
+      case 'phone':
+        return t("step1");
+      case 'verification':
+        return t("step2");
+      case 'password':
+        return t("step3");
+      default:
+        return t("passwordRecovery");
+    }
+  };
+
+  const getStepDescription = () => {
+    switch (currentStep) {
+      case 'phone':
+        return t("enterPhoneForRecovery");
+      case 'verification':
+        return t("verificationCodeSent");
+      case 'password':
+        return t("setNewPassword");
+      default:
+        return t("passwordRecoveryDescription");
+    }
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>
-            {t("passwordRecovery")}
-          </DialogTitle>
-          <DialogDescription>
-            {t("passwordRecoveryDescription")}
-          </DialogDescription>
+          <DialogTitle>{getStepTitle()}</DialogTitle>
+          <DialogDescription>{getStepDescription()}</DialogDescription>
         </DialogHeader>
         
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
-            <FormField
-              control={form.control}
-              name="phoneNumber"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("phoneNumber")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      placeholder={t("enterPhoneNumber")}
-                      {...field}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="newPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("newPassword")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder={t("newPassword")}
-                      {...field}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="confirmPassword"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t("confirmNewPassword")}</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder={t("confirmNewPassword")}
-                      {...field}
-                      disabled={isLoading}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+        {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
 
-            {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
+        {currentStep === 'phone' && (
+          <Form {...phoneForm}>
+            <form onSubmit={phoneForm.handleSubmit(handlePhoneSubmit)} className="space-y-4">
+              <FormField
+                control={phoneForm.control}
+                name="phoneNumber"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("phoneNumber")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("enterPhoneNumber")}
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-end space-x-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleClose}
+                  disabled={isLoading}
+                >
+                  {t("cancel")}
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? t("sending") : t("sendCode")}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        )}
 
-            <div className="flex justify-end space-x-2">
-              <Button
-                type="button"
-                variant="outline"
-                onClick={handleClose}
-                disabled={isLoading}
-              >
-                {t("cancel")}
-              </Button>
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? t("sending") : t("resetPassword")}
-              </Button>
-            </div>
-          </form>
-        </Form>
+        {currentStep === 'verification' && (
+          <Form {...verificationForm}>
+            <form onSubmit={verificationForm.handleSubmit(handleVerificationSubmit)} className="space-y-4">
+              <FormField
+                control={verificationForm.control}
+                name="verificationCode"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("verificationCode")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        placeholder={t("enterVerificationCode")}
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={goBack}
+                  disabled={isLoading}
+                >
+                  {t("backToLogin")}
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? t("verify") : t("verify")}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        )}
+
+        {currentStep === 'password' && (
+          <Form {...passwordForm}>
+            <form onSubmit={passwordForm.handleSubmit(handlePasswordSubmit)} className="space-y-4">
+              <FormField
+                control={passwordForm.control}
+                name="newPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("newPassword")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder={t("newPassword")}
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={passwordForm.control}
+                name="confirmPassword"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t("confirmNewPassword")}</FormLabel>
+                    <FormControl>
+                      <Input
+                        type="password"
+                        placeholder={t("confirmNewPassword")}
+                        {...field}
+                        disabled={isLoading}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <div className="flex justify-between">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={goBack}
+                  disabled={isLoading}
+                >
+                  {t("backToLogin")}
+                </Button>
+                <Button type="submit" disabled={isLoading}>
+                  {isLoading ? t("sending") : t("setNewPassword")}
+                </Button>
+              </div>
+            </form>
+          </Form>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -156,6 +156,14 @@ export class ApiClient {
     return this.makeRequest<T>(endpoint, { method: 'DELETE', headers });
   }
 
+  async patch<T>(
+    endpoint: string,
+    body?: unknown,
+    headers?: Record<string, string>
+  ): Promise<ApiResponse<T>> {
+    return this.makeRequest<T>(endpoint, { method: 'PATCH', body, headers });
+  }
+
   // Helper method to handle common error scenarios
   static handleApiError(error: unknown): string {
     if (error instanceof ApiError) {
