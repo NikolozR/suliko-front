@@ -61,10 +61,10 @@ export function getAllPosts(): BlogPost[] {
           return null;
         }
       })
-      .filter((post): post is BlogPost => post !== null)
+      .filter((post): post is NonNullable<typeof post> => post !== null)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
-    return allPostsData;
+    return allPostsData as BlogPost[];
   } catch (error) {
     console.error('Error reading blog posts:', error);
     return [];
