@@ -131,6 +131,47 @@ export async function sendVerificationCode(phoneNumber: string) {
 // Export alias for convenience
 export const sendCode = sendVerificationCode;
 
+export async function recoverPassword(phoneNumber: string, newPassword: string) {
+  const endpoint = "/User/recover-password";
+  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      phoneNumber,
+      newPassword,
+    }),
+  });
+  
+  if (response.status === 200) {
+    // Check if response has content before trying to parse JSON
+    const responseText = await response.text();
+    if (responseText.trim() === '') {
+      // Empty response is considered success for password recovery
+      return { success: true };
+    }
+    try {
+      const data = JSON.parse(responseText);
+      return data;
+    } catch (error) {
+      // If JSON parsing fails but status is 200, consider it success
+      console.warn('Response is not valid JSON, but status is 200:', responseText);
+      return { success: true };
+    }
+  } else if (response.status === 400) {
+    throw new Error("არასწორი მონაცემები");
+  } else if (response.status === 404) {
+    throw new Error("მომხმარებელი ვერ მოიძებნა");
+  } else if (response.status === 422) {
+    throw new Error("არასწორი მონაცემების ფორმატი");
+  } else if (response.status === 500) {
+    throw new Error("სერვერის შეცდომა. გთხოვთ სცადოთ მოგვიანებით");
+  } else {
+    throw new Error("პაროლის აღდგენა ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით");
+  }
+}
+
 export type { LoginParams, RegisterParams };
 
 
