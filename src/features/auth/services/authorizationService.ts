@@ -119,23 +119,17 @@ export async function sendVerificationCode(phoneNumber: string) {
 // Export alias for convenience
 export const sendCode = sendVerificationCode;
 
-export async function recoverPassword(phoneNumber: string) {
+export async function recoverPassword(phoneNumber: string, newPassword: string) {
   try {
-    // Try GET method first as some APIs use GET for password recovery
-    const response = await apiClient.get(`/User/recover-password?phoneNumber=${encodeURIComponent(phoneNumber)}`);
+    const response = await apiClient.post("/Users/recover-password", {
+      phoneNumber,
+      newPassword,
+    });
     return response.data;
-  } catch {
-    // If GET fails, try POST method
-    try {
-      const response = await apiClient.post("/User/recover-password", {
-        phoneNumber,
-      });
-      return response.data;
-    } catch (postError) {
-      // Handle CORS and other errors
-      const errorMessage = ApiClient.handleApiError(postError);
-      throw new Error(errorMessage);
-    }
+  } catch (error) {
+    // Handle CORS and other errors
+    const errorMessage = ApiClient.handleApiError(error);
+    throw new Error(errorMessage);
   }
 }
 
