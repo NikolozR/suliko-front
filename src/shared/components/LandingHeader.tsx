@@ -52,11 +52,15 @@ function ThemeToggle() {
 }
 
 // Navigation item component
-function NavItem({ children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
+function NavItem({ children, onClick, isBlogPage }: { href: string; children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
   return (
     <button
       onClick={onClick}
-      className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1"
+      className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+        isBlogPage
+          ? "text-white/90 hover:text-white"
+          : "text-foreground/80 hover:text-foreground"
+      }`}
       type="button"
     >
       {children}
@@ -65,11 +69,15 @@ function NavItem({ children, onClick }: { href: string; children: React.ReactNod
 }
 
 // Mobile nav item component
-function MobileNavItem({ children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
+function MobileNavItem({ children, onClick, isBlogPage }: { href: string; children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
   return (
     <button
       onClick={onClick}
-      className="block w-full text-left px-4 py-4 text-foreground/80 hover:text-foreground hover:bg-accent rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50"
+      className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
+        isBlogPage
+          ? "text-white/90 hover:text-white hover:bg-white/10"
+          : "text-foreground/80 hover:text-foreground hover:bg-accent"
+      }`}
       type="button"
     >
       {children}
@@ -85,12 +93,24 @@ export default function LandingHeader() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isBlogPage, setIsBlogPage] = useState(false);
   
   const { scrollToSection } = useSmoothScroll();
 
   // Handle mounting
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  // Check if we're on a blog page
+  useEffect(() => {
+    const checkBlogPage = () => {
+      setIsBlogPage(window.location.pathname.includes('/blog'));
+    };
+    
+    checkBlogPage();
+    window.addEventListener('popstate', checkBlogPage);
+    return () => window.removeEventListener('popstate', checkBlogPage);
   }, []);
 
   // Handle scroll detection
@@ -176,9 +196,13 @@ export default function LandingHeader() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
-          : "bg-background/95 backdrop-blur-md"
+        isBlogPage
+          ? isScrolled
+            ? "bg-slate-900/95 backdrop-blur-lg border-b border-slate-700 shadow-xl"
+            : "bg-slate-900/80 backdrop-blur-md"
+          : isScrolled
+            ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
+            : "bg-transparent"
       } ${
         isHeaderVisible ? "translate-y-0" : "-translate-y-full"
       }`}
@@ -207,12 +231,17 @@ export default function LandingHeader() {
                   key={item.id}
                   href=""
                   onClick={() => handleNavClick(`#${item.id}`)}
+                  isBlogPage={isBlogPage}
                 >
                   <span className="cursor-pointer">{item.label}</span>
                 </NavItem>
               ))}
               <Link href={blogNavItem.href}>
-                <button className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1">
+                <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+                  isBlogPage
+                    ? "text-white/90 hover:text-white"
+                    : "text-foreground/80 hover:text-foreground"
+                }`}>
                   {blogNavItem.label}
                 </button>
               </Link>
@@ -288,12 +317,17 @@ export default function LandingHeader() {
                       key={item.id}
                       href=""
                       onClick={() => handleNavClick(`#${item.id}`)}
+                      isBlogPage={isBlogPage}
                     >
                       {item.label}
                     </MobileNavItem>
                   ))}
                   <Link href={blogNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
-                    <button className="block w-full text-left px-4 py-4 text-foreground/80 hover:text-foreground hover:bg-accent rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50">
+                    <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
+                      isBlogPage
+                        ? "text-white/90 hover:text-white hover:bg-white/10"
+                        : "text-foreground/80 hover:text-foreground hover:bg-accent"
+                    }`}>
                       {blogNavItem.label}
                     </button>
                   </Link>
