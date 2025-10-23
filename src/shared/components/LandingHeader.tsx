@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { Link, useRouter, usePathname } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
 import { X, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -83,8 +83,6 @@ export default function LandingHeader() {
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
   
   const { scrollToSection } = useSmoothScroll();
 
@@ -121,27 +119,12 @@ export default function LandingHeader() {
     { id: 'pricing', label: t("pricing") },
     { id: 'testimonials', label: t("testimonials") },
     { id: 'contact', label: t("contact") },
-    { id: 'blog', label: t("blog"), isExternal: true },
   ];
 
-  // Check if we're on a blog page
-  const isOnBlogPage = pathname?.includes('/blog');
-
   // Handle navigation click
-  const handleNavClick = (sectionId: string, isExternal = false) => {
-    if (isExternal) {
-      // For external links (like blog), navigate to the page using router
-      router.push(sectionId);
-    } else {
-      // For section links
-      if (isOnBlogPage) {
-        // If we're on blog page, navigate to landing page with section hash
-        router.push(`/#${sectionId.replace('#', '')}`);
-      } else {
-        // If we're on landing page, scroll to section
-        scrollToSection(sectionId);
-      }
-    }
+  const handleNavClick = (sectionId: string) => {
+    // For section links, scroll to section
+    scrollToSection(sectionId);
     setIsMobileMenuOpen(false);
   };
 
@@ -200,11 +183,8 @@ export default function LandingHeader() {
               {navItems.map((item) => (
                 <NavItem
                   key={item.id}
-                  href={item.isExternal ? `/${item.id}` : `#${item.id}`}
-                  onClick={() => handleNavClick(
-                    item.isExternal ? `/${item.id}` : `#${item.id}`, 
-                    item.isExternal
-                  )}
+                  href={`#${item.id}`}
+                  onClick={() => handleNavClick(`#${item.id}`)}
                 >
                   <span className="cursor-pointer">{item.label}</span>
                 </NavItem>
@@ -279,11 +259,8 @@ export default function LandingHeader() {
                   {navItems.map((item) => (
                     <MobileNavItem
                       key={item.id}
-                      href={item.isExternal ? `/${item.id}` : `#${item.id}`}
-                      onClick={() => handleNavClick(
-                        item.isExternal ? `/${item.id}` : `#${item.id}`, 
-                        item.isExternal
-                      )}
+                      href={`#${item.id}`}
+                      onClick={() => handleNavClick(`#${item.id}`)}
                     >
                       {item.label}
                     </MobileNavItem>
