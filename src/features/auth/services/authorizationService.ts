@@ -124,7 +124,7 @@ export async function recoverPassword(phoneNumber: string) {
     // Try GET method first as some APIs use GET for password recovery
     const response = await apiClient.get(`/User/recover-password?phoneNumber=${encodeURIComponent(phoneNumber)}`);
     return response.data;
-  } catch (error) {
+  } catch {
     // If GET fails, try POST method
     try {
       const response = await apiClient.post("/User/recover-password", {
