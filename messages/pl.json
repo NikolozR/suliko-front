@@ -55,6 +55,8 @@
     "step1": "Krok 1: Wprowadź numer telefonu",
     "step2": "Krok 2: Wprowadź kod weryfikacyjny",
     "step3": "Krok 3: Ustaw nowe hasło",
+    "enterNewPassword": "Wprowadź nowe hasło",
+    "repeatNewPassword": "Powtórz nowe hasło",
     "backToLogin": "Powrót do logowania",
     "verify": "Zweryfikuj",
     "passwordRecoveryDescription": "Wprowadź swój numer telefonu, a wyślemy Ci link do odzyskania hasła.",

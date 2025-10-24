@@ -57,6 +57,8 @@
     "step1": "Step 1: Enter Phone Number",
     "step2": "Step 2: Enter Verification Code",
     "step3": "Step 3: Set New Password",
+    "enterNewPassword": "Enter new password",
+    "repeatNewPassword": "Repeat new password",
     "backToLogin": "Back to Login",
     "verify": "Verify",
     "passwordRecoveryDescription": "Enter your phone number and we'll send you a password recovery link.",

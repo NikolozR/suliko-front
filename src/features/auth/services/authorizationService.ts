@@ -119,12 +119,11 @@ export async function sendVerificationCode(phoneNumber: string) {
 // Export alias for convenience
 export const sendCode = sendVerificationCode;
 
-export async function recoverPassword(phoneNumber: string, newPassword: string, verificationCode: string) {
+export async function recoverPassword(phoneNumber: string, newPassword: string) {
   try {
-    const response = await apiClient.patch("/api/User/recover-password", {
+    const response = await apiClient.patch("/User/recover-password", {
       phoneNumber,
       newPassword,
-      verificationCode,
     });
     return response.data;
   } catch (error) {
@@ -134,19 +133,6 @@ export async function recoverPassword(phoneNumber: string, newPassword: string, 
   }
 }
 
-export async function validateRecoveryCode(phoneNumber: string, code: string) {
-  try {
-    const response = await apiClient.post("/User/validate-recovery-code", {
-      phoneNumber,
-      code,
-    });
-    return response.data;
-  } catch (error) {
-    // Handle CORS and other errors
-    const errorMessage = ApiClient.handleApiError(error);
-    throw new Error(errorMessage);
-  }
-}
 
 export async function resetPassword(phoneNumber: string, newPassword: string, token: string) {
   try {
