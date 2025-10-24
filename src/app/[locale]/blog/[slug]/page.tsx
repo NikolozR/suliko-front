@@ -5,51 +5,36 @@ import { BlogPost } from '@/components/blog';
 import LandingHeader from '@/shared/components/LandingHeader';
 import LandingFooter from '@/shared/components/LandingFooter';
 
+// Force static generation
+export const dynamic = 'force-static';
+export const dynamicParams = false;
+
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
   try {
-    console.log('=== STARTING generateStaticParams ===');
-    console.log('CWD:', process.cwd());
-    console.log('NODE_ENV:', process.env.NODE_ENV);
-    
     const slugs = getAllPostSlugs();
-    console.log('Found slugs:', slugs);
-    
-    const result = slugs.map((slug) => ({
+    return slugs.map((slug) => ({
       slug,
     }));
-    
-    console.log('=== SUCCESS generateStaticParams ===');
-    return result;
   } catch (error) {
-    console.error('=== ERROR in generateStaticParams ===');
-    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
-    console.error('Error message:', error instanceof Error ? error.message : String(error));
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-    throw error;
+    console.error('Error in generateStaticParams:', error);
+    return [];
   }
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   try {
-    console.log('=== STARTING generateMetadata ===');
     const { slug } = await params;
-    console.log('Slug:', slug);
-    
     const post = getPostBySlug(slug);
-    console.log('Post found:', !!post);
 
     if (!post) {
-      console.log('=== Post not found, returning default metadata ===');
       return {
         title: 'Post Not Found',
       };
     }
-
-    console.log('=== SUCCESS generateMetadata ===');
     return {
       title: `${post.title} | Suliko Blog`,
       description: post.excerpt,
@@ -80,29 +65,21 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       },
     };
   } catch (error) {
-    console.error('=== ERROR in generateMetadata ===');
-    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
-    console.error('Error message:', error instanceof Error ? error.message : String(error));
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-    throw error;
+    console.error('Error in generateMetadata:', error);
+    return {
+      title: 'Error',
+    };
   }
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   try {
-    console.log('=== STARTING BlogPostPage ===');
     const { slug } = await params;
-    console.log('Slug:', slug);
-    
     const post = getPostBySlug(slug);
-    console.log('Post found:', !!post);
 
     if (!post) {
-      console.log('=== Post not found, calling notFound() ===');
       notFound();
     }
-
-    console.log('=== SUCCESS BlogPostPage ===');
 
   return (
     <>
@@ -130,10 +107,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     </>
   );
   } catch (error) {
-    console.error('=== ERROR in BlogPostPage ===');
-    console.error('Error name:', error instanceof Error ? error.name : 'Unknown');
-    console.error('Error message:', error instanceof Error ? error.message : String(error));
-    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace');
-    throw error;
+    console.error('Error in BlogPostPage:', error);
+    notFound();
   }
 }
