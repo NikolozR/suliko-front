@@ -17,8 +17,6 @@ export interface BlogPost {
 }
 
 const contentDirectory = path.join(process.cwd(), 'content/blog');
-console.log('Content directory path:', contentDirectory);
-console.log('Process CWD:', process.cwd());
 
 export function getAllPosts(): BlogPost[] {
   try {

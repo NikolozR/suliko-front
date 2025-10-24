@@ -5,6 +5,9 @@ import BlogBanner from '@/components/blog/BlogBanner';
 import LandingHeader from '@/shared/components/LandingHeader';
 import LandingFooter from '@/shared/components/LandingFooter';
 
+// Force static generation
+export const dynamic = 'force-static';
+
 export const metadata: Metadata = {
   title: 'Blog | Suliko',
   description: 'Read the latest insights, tips, and updates from the Suliko team.',

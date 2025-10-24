@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -182,7 +182,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
         setError(t("incorrectVerificationCode"));
       }
     } catch (err) {
-      let message = err instanceof Error ? err.message : t("incorrectVerificationCode");
+      const message = err instanceof Error ? err.message : t("incorrectVerificationCode");
       setError(message);
     } finally {
       setIsLoading(false);
