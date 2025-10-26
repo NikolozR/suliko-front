@@ -520,11 +520,13 @@
       "contactSales": "Contact Sales"
     },
     "newsletter": {
-      "title": "Keep Yourself Up to Date",
-      "subtitle": "Join our updates and be the first one to know about new trends in translation",
+      "title": "Stay Informed",
+      "subtitle": "Subscribe to our newsletter and be the first to know about new translation trends",
       "emailPlaceholder": "EMAIL",
       "subscribeButton": "SUBSCRIBE",
-      "notRobot": "I'm not a robot"
+      "subscribing": "SUBSCRIBING...",
+      "success": "✅ Successfully subscribed to newsletter!",
+      "error": "❌ Failed to subscribe. Please try again."
     },
     "testimonials": {
       "translationHouse": {
@@ -624,6 +626,14 @@
     "tryAgain": "Try Again",
     "startTranslating": "Start Translating",
     "viewPricing": "View Pricing"
+  },
+  "ThankYouPage": {
+    "title": "Thank You!",
+    "message": "Your referral information has been submitted successfully! We'll contact you soon with details about your 25 additional free documents.",
+    "startTranslating": "Start Translating",
+    "viewPricing": "View Pricing",
+    "infoTitle": "What's Next?",
+    "infoMessage": "Our team will review your submission and add 25 additional documents to your account. You'll receive a confirmation email within 24 hours."
   },
   "Download": {
     "translatedSuffix": "translated"

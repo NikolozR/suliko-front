@@ -574,12 +574,12 @@
       "community": "Społeczność",
       "privacyPolicy": "Polityka prywatności",
       "termsOfService": "Warunki usługi",
-      "cookiePolicy": "Polityka plików cookie",
+      "cookiePolicy": "Polityka plików cookie", 
       "gdpr": "RODO"
     },
     "newsletter": {
       "title": "Bądź na bieżąco",
-      "subtitle": "Otrzymuj najnowsze aktualizacje o nowych funkcjach, wskazówkach i wglądach branżowych.",
+      "subtitle": "Zapisz się do naszego newslettera i bądź pierwszym, który dowie się o nowych trendach w tłumaczeniu",
       "placeholder": "Wprowadź swój adres e-mail",
       "subscribe": "Zapisz się",
       "subscribing": "Zapisywanie...",
@@ -608,5 +608,13 @@
     "tryAgain": "Spróbuj ponownie",
     "startTranslating": "Zacznij tłumaczyć",
     "viewPricing": "Zobacz ceny"
+  },
+  "ThankYouPage": {
+    "title": "Dziękujemy!",
+    "message": "Twoje dane polecające zostały pomyślnie wysłane! Wkrótce skontaktujemy się z Tobą w sprawie szczegółów dotyczących 25 dodatkowych bezpłatnych dokumentów.",
+    "startTranslating": "Zacznij tłumaczyć",
+    "viewPricing": "Zobacz ceny",
+    "infoTitle": "Co dalej?",
+    "infoMessage": "Nasz zespół przeanalizuje Twoje zgłoszenie i doda 25 dodatkowych dokumentów do Twojego konta. Otrzymasz e-mail potwierdzający w ciągu 24 godzin."
   }
 }

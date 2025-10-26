@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent } from "@/features/ui";
 import { Button } from "@/features/ui";
 import { useState, useEffect, useMemo } from "react";
+import { useRouter } from "next/navigation";
 import LandingHeader from "@/shared/components/LandingHeader";
 import LandingFooter from "@/shared/components/LandingFooter";
 import SulikoLogo from "@/shared/components/SulikoLogo";
@@ -11,10 +12,10 @@ import { useTheme } from "next-themes";
 
 export default function ReferralPage() {
   const t = useTranslations("ReferralPage");
+  const router = useRouter();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [name, setName] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [mounted, setMounted] = useState(false);
   const { resolvedTheme } = useTheme();
 
@@ -135,7 +136,6 @@ export default function ReferralPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setSubmitStatus('idle');
 
     try {
       // Create form data for FormSubmit
@@ -156,18 +156,14 @@ export default function ReferralPage() {
 
       // Since we're using no-cors mode, we can't check response status
       // But if we get here without an exception, FormSubmit likely received it
-      // We'll show success and let the user know to check their email
-      setSubmitStatus('success');
-      setPhoneNumber('');
-      setName('');
+      // Redirect to thank-you page
+      router.push('/thank-you');
       
     } catch (error) {
       console.error('Error submitting form:', error);
       // Even if there's an error, FormSubmit might still work
-      // Let's be optimistic and show success, but with a note
-      setSubmitStatus('success');
-      setPhoneNumber('');
-      setName('');
+      // Let's be optimistic and redirect to thank-you page
+      router.push('/thank-you');
     } finally {
       setIsSubmitting(false);
     }
@@ -332,48 +328,6 @@ export default function ReferralPage() {
                     {t("viewPricing")}
                   </Button>
                 </div>
-                
-                {/* Success Message */}
-                {submitStatus === 'success' && (
-                  <div className="mt-6 p-6 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg text-center">
-                    <div className="w-12 h-12 bg-green-100 dark:bg-green-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-6 h-6 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-semibold text-green-800 dark:text-green-200 mb-2">
-                      {t("successTitle")}
-                    </h3>
-                    <p className="text-green-700 dark:text-green-300">
-                      {t("successMessage")}
-                    </p>
-                  </div>
-                )}
-                
-                {/* Error Message */}
-                {submitStatus === 'error' && (
-                  <div className="mt-6 p-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-center">
-                    <div className="w-12 h-12 bg-red-100 dark:bg-red-800 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <svg className="w-6 h-6 text-red-600 dark:text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                      </svg>
-                    </div>
-                    <h3 className="text-lg font-semibold text-red-800 dark:text-red-200 mb-2">
-                      {t("errorTitle")}
-                    </h3>
-                    <p className="text-red-700 dark:text-red-300 mb-4">
-                      {t("errorMessage")}
-                    </p>
-                    <Button 
-                      onClick={() => setSubmitStatus('idle')}
-                      variant="outline"
-                      size="sm"
-                      className="border-red-300 text-red-700 hover:bg-red-50 dark:border-red-700 dark:text-red-300 dark:hover:bg-red-900/20"
-                    >
-                      {t("tryAgain")}
-                    </Button>
-                  </div>
-                )}
               </form>
             </CardContent>
           </Card>
