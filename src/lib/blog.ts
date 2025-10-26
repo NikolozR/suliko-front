@@ -16,13 +16,24 @@ export interface BlogPost {
   readingTime: string;
 }
 
-const contentDirectory = path.join(process.cwd(), 'content/blog');
+// Use absolute path for better Vercel compatibility
+const contentDirectory = path.join(process.cwd(), 'content', 'blog');
+
+// Ensure content directory exists and is accessible
+function ensureContentDirectory() {
+  if (!fs.existsSync(contentDirectory)) {
+    console.error('Content directory does not exist:', contentDirectory);
+    console.error('Current working directory:', process.cwd());
+    console.error('Available directories:', fs.readdirSync(process.cwd()));
+    return false;
+  }
+  return true;
+}
 
 export function getAllPosts(): BlogPost[] {
   try {
     // Check if content directory exists
-    if (!fs.existsSync(contentDirectory)) {
-      console.error('Content directory does not exist:', contentDirectory);
+    if (!ensureContentDirectory()) {
       return [];
     }
 
@@ -106,8 +117,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
 export function getAllPostSlugs(): string[] {
   try {
     // Check if content directory exists
-    if (!fs.existsSync(contentDirectory)) {
-      console.error('Content directory does not exist:', contentDirectory);
+    if (!ensureContentDirectory()) {
       return [];
     }
     

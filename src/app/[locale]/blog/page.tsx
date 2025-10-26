@@ -5,8 +5,8 @@ import BlogBanner from '@/components/blog/BlogBanner';
 import LandingHeader from '@/shared/components/LandingHeader';
 import LandingFooter from '@/shared/components/LandingFooter';
 
-// Force static generation
-export const dynamic = 'force-static';
+// Allow dynamic generation for better Vercel compatibility
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Blog | Suliko',
