@@ -30,7 +30,8 @@ export default function PricingSection() {
 
   const handleButtonClick = (ctaText: string) => {
     if (ctaText === "Contact Sales" || ctaText === "დაგვიკავშირდით" || ctaText === "Skontaktuj się ze sprzedażą") {
-      setIsContactModalOpen(true);
+      // Redirect to Calendly for booking a demo
+      window.open('https://calendly.com/mishkaten/suliko-meeting', '_blank');
     } else if (ctaText === "Purchase Pages" || ctaText === "გვერდების შეძენა" || ctaText === "Kup strony") {
       setIsPayAsYouGoModalOpen(true);
     } else {

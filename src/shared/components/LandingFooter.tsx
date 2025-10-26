@@ -51,7 +51,11 @@ export default function LandingFooter() {
               
               {/* Book A Demo Button */}
               <div>
-                <Button size="lg" className="px-8 py-4 text-base">
+                <Button 
+                  size="lg" 
+                  className="px-8 py-4 text-base"
+                  onClick={() => window.open('https://calendly.com/mishkaten/suliko-meeting', '_blank')}
+                >
                   {t("bookDemo")}
                 </Button>
               </div>
