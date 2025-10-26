@@ -1,40 +1,51 @@
 'use client';
 
-import { useEffect } from 'react';
+import React from 'react';
 
 interface BlogErrorBoundaryProps {
   children: React.ReactNode;
   fallback?: React.ReactNode;
 }
 
-export default function BlogErrorBoundary({ children, fallback }: BlogErrorBoundaryProps) {
-  useEffect(() => {
-    const handleError = (error: ErrorEvent) => {
-      console.error('=== CLIENT-SIDE BLOG ERROR ===');
-      console.error('Error:', error.error);
-      console.error('Message:', error.message);
-      console.error('Filename:', error.filename);
-      console.error('Lineno:', error.lineno);
-      console.error('Colno:', error.colno);
-    };
+interface BlogErrorBoundaryState {
+  hasError: boolean;
+  error?: Error;
+}
 
-    const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
-      console.error('=== UNHANDLED PROMISE REJECTION ===');
-      console.error('Reason:', event.reason);
-    };
-
-    window.addEventListener('error', handleError);
-    window.addEventListener('unhandledrejection', handleUnhandledRejection);
-    
-    return () => {
-      window.removeEventListener('error', handleError);
-      window.removeEventListener('unhandledrejection', handleUnhandledRejection);
-    };
-  }, []);
-
-  if (fallback) {
-    return <>{fallback}</>;
+export default class BlogErrorBoundary extends React.Component<BlogErrorBoundaryProps, BlogErrorBoundaryState> {
+  constructor(props: BlogErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false };
   }
 
-  return <>{children}</>;
+  static getDerivedStateFromError(error: Error): BlogErrorBoundaryState {
+    console.error('=== BLOG ERROR BOUNDARY CAUGHT ERROR ===');
+    console.error('Error:', error);
+    console.error('Stack:', error.stack);
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('=== BLOG ERROR BOUNDARY DETAILS ===');
+    console.error('Error:', error);
+    console.error('Error Info:', errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return this.props.fallback || (
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Error loading blog content. Please try again.</p>
+          <details className="mt-4 text-sm text-muted-foreground">
+            <summary className="cursor-pointer">Error Details</summary>
+            <pre className="mt-2 text-left bg-muted p-2 rounded text-xs overflow-auto">
+              {this.state.error?.message}
+            </pre>
+          </details>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
 }

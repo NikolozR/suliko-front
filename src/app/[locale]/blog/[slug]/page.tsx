@@ -16,7 +16,6 @@ interface BlogPostPageProps {
 export async function generateStaticParams() {
   try {
     const slugs = getAllPostSlugs();
-    console.log('Generating static params for slugs:', slugs);
     return slugs.map((slug) => ({
       slug,
     }));
@@ -76,13 +75,9 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   try {
     const { slug } = await params;
-    console.log('Loading blog post with slug:', slug);
-    
     const post = getPostBySlug(slug);
-    console.log('Post found:', !!post);
 
     if (!post) {
-      console.error('Post not found for slug:', slug);
       notFound();
     }
 
