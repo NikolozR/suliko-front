@@ -4,11 +4,25 @@ export async function POST(request: NextRequest) {
   try {
     const { email, captchaToken } = await request.json();
 
+    console.log('Newsletter subscription attempt:', { email, hasCaptchaToken: !!captchaToken });
+
     // Validate required fields
     if (!email || !captchaToken) {
+      console.log('Missing required fields:', { email: !!email, captchaToken: !!captchaToken });
       return NextResponse.json(
         { error: 'Email and CAPTCHA token are required' },
         { status: 400 }
+      );
+    }
+
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+    console.log('Secret key available:', !!secretKey);
+
+    if (!secretKey) {
+      console.error('RECAPTCHA_SECRET_KEY is not set');
+      return NextResponse.json(
+        { error: 'CAPTCHA configuration error' },
+        { status: 500 }
       );
     }
 
@@ -19,15 +33,17 @@ export async function POST(request: NextRequest) {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       body: new URLSearchParams({
-        secret: process.env.RECAPTCHA_SECRET_KEY || '',
+        secret: secretKey,
         response: captchaToken,
         remoteip: request.headers.get('x-forwarded-for') || request.headers.get('x-real-ip') || '',
       }),
     });
 
     const captchaResult = await captchaResponse.json();
+    console.log('CAPTCHA verification result:', captchaResult);
 
     if (!captchaResult.success) {
+      console.log('CAPTCHA verification failed:', captchaResult['error-codes']);
       return NextResponse.json(
         { error: 'CAPTCHA verification failed' },
         { status: 400 }
@@ -39,7 +55,7 @@ export async function POST(request: NextRequest) {
     // 2. Send a confirmation email
     // 3. Add to your newsletter service (Mailchimp, ConvertKit, etc.)
 
-    // For now, we'll just return success
+    console.log('Newsletter subscription successful for:', email);
     return NextResponse.json(
       { message: 'Successfully subscribed to newsletter' },
       { status: 200 }

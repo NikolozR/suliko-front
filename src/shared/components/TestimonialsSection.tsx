@@ -91,6 +91,8 @@ export default function TestimonialsSection() {
     setSubmitStatus('idle');
 
     try {
+      console.log('Submitting newsletter form:', { email, hasCaptchaToken: !!captchaToken });
+      
       const response = await fetch('/api/newsletter', {
         method: 'POST',
         headers: {
@@ -102,11 +104,15 @@ export default function TestimonialsSection() {
         }),
       });
 
+      const result = await response.json();
+      console.log('Newsletter API response:', { status: response.status, result });
+
       if (response.ok) {
         setSubmitStatus('success');
         setEmail('');
         setCaptchaToken(null);
       } else {
+        console.error('Newsletter subscription failed:', result);
         setSubmitStatus('error');
       }
     } catch (error) {
