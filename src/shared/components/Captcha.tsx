@@ -1,11 +1,11 @@
 "use client";
 
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 import ReCAPTCHA from 'react-google-recaptcha';
 
 interface CaptchaProps {
   onVerify: (token: string | null) => void;
-  onError?: (error?: any) => void;
+  onError?: (error?: unknown) => void;
   theme?: 'light' | 'dark';
   size?: 'compact' | 'normal' | 'invisible';
   className?: string;
@@ -19,7 +19,6 @@ export default function Captcha({
   className = '' 
 }: CaptchaProps) {
   const recaptchaRef = useRef<ReCAPTCHA>(null);
-  const [isVerified, setIsVerified] = useState(false);
 
   const siteKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY || '6LfipPcrAAAAAObN-vCn-mlQA9S4DDWRmBnmenDJ';
   
@@ -39,18 +38,15 @@ export default function Captcha({
   }
 
   const handleChange = (token: string | null) => {
-    setIsVerified(!!token);
     onVerify(token);
   };
 
-  const handleError = (error?: any) => {
-    setIsVerified(false);
+  const handleError = (error?: unknown) => {
     onError?.(error);
   };
 
   const resetCaptcha = () => {
     recaptchaRef.current?.reset();
-    setIsVerified(false);
   };
 
   return (

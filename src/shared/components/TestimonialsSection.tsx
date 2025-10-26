@@ -74,7 +74,7 @@ export default function TestimonialsSection() {
     setCaptchaToken(token);
   };
 
-  const handleCaptchaError = (error: any) => {
+  const handleCaptchaError = (error?: unknown) => {
     console.error('CAPTCHA error:', error);
     setCaptchaToken(null);
   };
