@@ -147,12 +147,18 @@ export default function ReferralPage() {
       formData.append('_template', 'table');
       formData.append('_next', window.location.href); // Stay on same page
 
-      // Submit to FormSubmit with more lenient error handling
+      // Submit to FormSubmit with timeout handling
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       await fetch('https://formsubmit.co/info@th.com.ge', {
         method: 'POST',
         body: formData,
         mode: 'no-cors', // This helps with CORS issues
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       // Since we're using no-cors mode, we can't check response status
       // But if we get here without an exception, FormSubmit likely received it
