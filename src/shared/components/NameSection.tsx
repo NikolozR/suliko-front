@@ -12,33 +12,53 @@ const NameSection = ({ form }: NameSectionProps) => {
   const t = useTranslations('Authorization');
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-4">
+        <FormField
+          control={form.control}
+          name="firstname"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel className="font-bold dark:text-white">{t('firstname')} ({t('optional')})</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={t('firstnamePlaceholder')}
+                  className="border-2 shadow-md dark:border-slate-600"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastname"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel className="font-bold dark:text-white">{t('lastname')} ({t('optional')})</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={t('lastnamePlaceholder')}
+                  className="border-2 shadow-md dark:border-slate-600"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
       <FormField
         control={form.control}
-        name="firstname"
+        name="email"
         render={({ field }) => (
-          <FormItem className="flex-1">
-            <FormLabel className="font-bold dark:text-white">{t('firstname')} ({t('optional')})</FormLabel>
+          <FormItem>
+            <FormLabel className="font-bold dark:text-white">{t('email')}</FormLabel>
             <FormControl>
               <Input
-                placeholder={t('firstnamePlaceholder')}
-                className="border-2 shadow-md dark:border-slate-600"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="lastname"
-        render={({ field }) => (
-          <FormItem className="flex-1">
-            <FormLabel className="font-bold dark:text-white">{t('lastname')} ({t('optional')})</FormLabel>
-            <FormControl>
-              <Input
-                placeholder={t('lastnamePlaceholder')}
+                type="email"
+                placeholder={t('emailPlaceholder') || "example@email.com"}
                 className="border-2 shadow-md dark:border-slate-600"
                 {...field}
               />

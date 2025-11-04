@@ -20,6 +20,8 @@
     "phoneNumberFormatError": "Phone number must be in Georgian format: 5XXXXXXXX",
     "passwordMinLengthError": "Password must be at least 8 characters long",
     "passwordRegexError": "Password must contain at least one number and one symbol",
+    "emailRequiredError": "Email is required",
+    "emailFormatError": "Please enter a valid email address",
     "AuthenticationFailed": "Authentication failed, Invalid credentials",
     "sendCode": "Send Code",
     "codeSent": "Code Sent",
@@ -505,7 +507,8 @@
       "languagesSupported": "Languages Supported",
       "happyCustomers": "Happy Customers",
       "uptimeGuarantee": "Uptime Guarantee"
-    }
+    },
+    "desktopDisclaimer": "For the best user experience, we recommend using Suliko on desktop devices."
   },
   "TestimonialsSection": {
     "title": "What Our Customers Say",

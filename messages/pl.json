@@ -21,6 +21,8 @@
     "phoneNumberFormatError": "Numer telefonu musi być w formacie polskim: +48XXXXXXXXX lub XXXXXXXXX",
     "passwordMinLengthError": "Hasło musi mieć co najmniej 8 znaków",
     "passwordRegexError": "Hasło musi zawierać co najmniej jedną cyfrę i jeden symbol",
+    "emailRequiredError": "Adres e-mail jest wymagany",
+    "emailFormatError": "Proszę wprowadzić prawidłowy adres e-mail",
     "AuthenticationFailed": "Autoryzacja nie powiodła się, nieprawidłowe dane",
     "sendCode": "Wyślij kod",
     "codeSent": "Kod wysłany",
@@ -496,7 +498,8 @@
       "languagesSupported": "Obsługiwane języki",
       "happyCustomers": "Zadowoleni klienci",
       "uptimeGuarantee": "Gwarancja działania"
-    }
+    },
+    "desktopDisclaimer": "Aby uzyskać najlepsze wrażenia użytkownika, zalecamy korzystanie z Suliko na urządzeniach stacjonarnych."
   },
   "TestimonialsSection": {
     "title": "Co mówią nasi klienci",

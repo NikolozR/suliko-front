@@ -24,6 +24,9 @@ export const createRegisterFormSchema = (t: (key: string) => string, locale?: st
     .regex(/(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/, t("passwordRegexError")),
   firstname: z.string().optional(),
   lastname: z.string().optional(),
+  email: z.string()
+    .min(1, t("emailRequiredError"))
+    .email(t("emailFormatError")),
   confirmPassword: z.string().min(1, t("confirmPasswordRequired")),
   verificationCode: z.string().optional(),
   acceptTerms: z.boolean().refine(val => val === true, {

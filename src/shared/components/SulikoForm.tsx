@@ -68,6 +68,7 @@ const SulikoForm: React.FC = () => {
       password: "",
       firstname: "",
       lastname: "",
+      email: "",
       confirmPassword: "",
       verificationCode: "",
       acceptTerms: false,
@@ -178,6 +179,7 @@ const SulikoForm: React.FC = () => {
           password: registerValues.password,
           firstname: registerValues.firstname || generateDefaultName(),
           lastname: registerValues.lastname || "",
+          email: registerValues.email,
           verificationCode: registerValues.verificationCode,
           subscribeNewsletter: registerValues.subscribeNewsletter,
         } as RegisterParams);

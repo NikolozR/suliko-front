@@ -1,7 +1,7 @@
 "use client";
 
 import { Card, CardContent } from "@/features/ui";
-import { Brain, Shield, Zap } from "lucide-react";
+import { Brain, Shield, Zap, Monitor } from "lucide-react";
 import { useTranslations } from "next-intl";
 
 export default function AboutSection() {
@@ -72,6 +72,25 @@ export default function AboutSection() {
           ))}
         </div>
 
+        {/* Desktop Experience Disclaimer */}
+        <div className="max-w-3xl mx-auto mt-16">
+          <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="flex-shrink-0">
+                  <div className="inline-flex items-center justify-center w-12 h-12 bg-primary/10 rounded-full">
+                    <Monitor className="h-6 w-6 text-primary" />
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <p className="text-muted-foreground leading-relaxed">
+                    {t("desktopDisclaimer")}
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
 
       </div>
     </section>
