@@ -129,7 +129,8 @@
     "translate": "Tłumacz",
     "loading": "Ładowanie...",
     "download": "Pobierz",
-    "copy": "Kopiuj"
+    "copy": "Kopiuj",
+    "retry": "Spróbuj ponownie"
   },
   "DownloadFormats": {
     "chooseFormat": "Wybierz format pobierania",
@@ -617,5 +618,13 @@
     "viewPricing": "Zobacz ceny",
     "infoTitle": "Co dalej?",
     "infoMessage": "Nasz zespół przeanalizuje Twoje zgłoszenie i doda 25 dodatkowych dokumentów do Twojego konta. Otrzymasz e-mail potwierdzający w ciągu 24 godzin."
+  },
+  "Download": {
+    "translatedSuffix": "przetłumaczony"
+  },
+  "ErrorAlert": {
+    "ups": "Ups",
+    "retry": "Spróbuj ponownie",
+    "networkProblem": "Problem z siecią"
   }
 }

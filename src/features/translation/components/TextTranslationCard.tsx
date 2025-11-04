@@ -56,6 +56,7 @@ const TextTranslationCard = () => {
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [lastFormData, setLastFormData] = useState<FormData | null>(null);
   const { fetchUserProfileWithRetry, userProfile } = useUserStore();
   
   const [showDownloadModal, setShowDownloadModal] = useState(false);
@@ -192,6 +193,9 @@ const TextTranslationCard = () => {
       return;
     }
 
+    // Store form data for retry
+    setLastFormData(data);
+
     // Check if user is logged in (has user profile)
     // If not, refresh session and retry
     let currentUserProfile = userProfile;
@@ -266,6 +270,23 @@ const TextTranslationCard = () => {
         <ErrorAlert
           message={error}
           onClose={() => setError(null)}
+          onRetry={lastFormData ? () => {
+            setError(null);
+            // Retry with refresh session first
+            const retry = async () => {
+              try {
+                // Refresh session first
+                await fetchUserProfileWithRetry(3, 1000);
+                // Retry submission with last form data
+                await onSubmit(lastFormData);
+              } catch (error) {
+                console.error("Retry failed:", error);
+                setError("Failed to retry. Please try again.");
+              }
+            };
+            retry();
+          } : undefined}
+          retryLabel={tButton('retry') || "Retry"}
         />
       )}
       <div className={translatedText ? "flex gap-8" : undefined}>
