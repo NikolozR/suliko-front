@@ -132,7 +132,8 @@
     "translate": "Translate",
     "loading": "Loading...",
     "download": "Download",
-    "copy": "Copy"
+    "copy": "Copy",
+    "retry": "Retry"
   },
   "DownloadFormats": {
     "chooseFormat": "Choose download format",
@@ -638,5 +639,8 @@
   },
   "Download": {
     "translatedSuffix": "translated"
+  },
+  "ErrorAlert": {
+    "ups": "Ups"
   }
 }
