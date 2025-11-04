@@ -110,7 +110,8 @@
     "textIputPlaceholder": "Once upon a time...",
     "result": "Translated text",
     "yourText": "Your text",
-    "orPress": "or press"
+    "orPress": "or press",
+    "insufficientPages": "Insufficient page balance. You need {needed} pages but only have {available} pages. Please purchase more pages to continue."
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "What language do you want to translate to",

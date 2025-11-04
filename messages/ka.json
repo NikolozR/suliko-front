@@ -108,7 +108,8 @@
     "textIputPlaceholder": "იყო და არა იყო რა...",
     "result": "თარგმნილი ტექსტი",
     "yourText": "შენი ტექსტი",
-    "orPress": "ან დააჭირეთ"
+    "orPress": "ან დააჭირეთ",
+    "insufficientPages": "არასაკმარისი გვერდების ბალანსი. თქვენ გჭირდებათ {needed} გვერდი, მაგრამ გაქვთ მხოლოდ {available} გვერდი. გთხოვთ შეიძინოთ მეტი გვერდი გასაგრძელებლად."
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "რა ენაზე გსურთ თარგმნა",

@@ -107,7 +107,8 @@
     "textIputPlaceholder": "Dawno, dawno temu...",
     "result": "Przetłumaczony tekst",
     "yourText": "Twój tekst",
-    "orPress": "lub naciśnij"
+    "orPress": "lub naciśnij",
+    "insufficientPages": "Niewystarczający balans stron. Potrzebujesz {needed} stron, ale masz tylko {available} stron. Proszę zakupić więcej stron, aby kontynuować."
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "Na jaki język chcesz przetłumaczyć",

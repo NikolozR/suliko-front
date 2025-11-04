@@ -192,9 +192,28 @@ const TextTranslationCard = () => {
       return;
     }
 
+    // Check if user is logged in (has user profile)
+    // If not, refresh session and retry
+    let currentUserProfile = userProfile;
+    if (!currentUserProfile) {
+      try {
+        await fetchUserProfileWithRetry(3, 1000);
+        // Get updated profile after refresh
+        currentUserProfile = useUserStore.getState().userProfile;
+        if (!currentUserProfile) {
+          setError("Failed to load user profile. Please try again.");
+          return;
+        }
+      } catch (error) {
+        console.error("Failed to refresh session:", error);
+        setError("Failed to load user profile. Please try again.");
+        return;
+      }
+    }
+
     // Check if user has sufficient page balance
     const pagesNeeded = Math.ceil((data.currentTextValue.length / 250) * 0.01);
-    const userPages = Math.floor(userProfile?.balance || 0);
+    const userPages = Math.floor(currentUserProfile?.balance || 0);
     
     if (pagesNeeded > userPages) {
       setError(t('insufficientPages', { needed: pagesNeeded, available: userPages }));

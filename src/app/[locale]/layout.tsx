@@ -10,6 +10,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
+import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -149,6 +150,7 @@ export default async function LocaleLayout({
         </noscript>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <SessionRefreshProvider />
             <TopRightControls />
             {/* <BetaBanner /> */}
             {children}

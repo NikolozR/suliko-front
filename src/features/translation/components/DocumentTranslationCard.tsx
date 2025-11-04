@@ -74,7 +74,7 @@ const DocumentTranslationCard = () => {
   const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
   const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
-  const { userProfile } = useUserStore();
+  const { userProfile, fetchUserProfile } = useUserStore();
   const {
     realPageCount,
     currentFile,
@@ -245,12 +245,31 @@ const DocumentTranslationCard = () => {
       return;
     }
 
+    // Check if user is logged in (has user profile)
+    // If not, refresh session and retry
+    let currentUserProfile = userProfile;
+    if (!currentUserProfile) {
+      try {
+        await fetchUserProfile();
+        // Get updated profile after refresh
+        currentUserProfile = useUserStore.getState().userProfile;
+        if (!currentUserProfile) {
+          setError("Failed to load user profile. Please try again.");
+          return;
+        }
+      } catch (error) {
+        console.error("Failed to refresh session:", error);
+        setError("Failed to load user profile. Please try again.");
+        return;
+      }
+    }
+
     // Check if user has sufficient page balance
     const pagesNeeded = Math.ceil(estimatedPageCount || 0);
-    const userPages = Math.floor(userProfile?.balance || 0);
+    const userPages = Math.floor(currentUserProfile?.balance || 0);
     
     if (pagesNeeded > userPages) {
-      setError(t('insufficientPages', { needed: pagesNeeded, available: userPages }));
+      setError(t('pageCount.insufficientPages', { needed: pagesNeeded, available: userPages }));
       return;
     }
 
