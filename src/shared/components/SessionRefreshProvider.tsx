@@ -14,7 +14,6 @@ import { useUserStore } from "@/features/auth/store/userStore";
  * The getUserProfile service already handles token refresh automatically if needed (401 response).
  */
 export default function SessionRefreshProvider() {
-  const { token } = useAuthStore();
   const { fetchUserProfile } = useUserStore();
   const hasRefreshed = useRef(false);
 
