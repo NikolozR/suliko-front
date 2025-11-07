@@ -4,6 +4,7 @@
     "description": "შეიყვანეთ თქვენი ტელეფონის ნომერი და პაროლი",
     "phoneNumber": "ტელეფონი",
     "password": "პაროლი",
+    "email": "ელ-ფოსტა",
     "confirmPassword": "გაიმეორეთ პაროლი",
     "confirmPasswordRequired": "გთხოვთ დაადასტუროთ პაროლი",
     "passwordsDoNotMatch": "პაროლები არ ემთხვევა",
@@ -15,6 +16,7 @@
     "confirmPasswordPlaceholder": "********",
     "firstnamePlaceholder": "სულიკო",
     "lastnamePlaceholder": "წერეთელი",
+    "emailPlaceholder": "a.tsereteli@suliko.ge",
     "login": "შესვლა",
     "register": "რეგისტრაცია",
     "phoneNumberRequiredError": "ტელეფონის ნომერი სავალდებულოა",
@@ -96,7 +98,8 @@
     "feedback": "გამოხმაურება",
     "login": "შესვლა",
     "balance": "ბალანსი",
-    "pages": "გვერდი"
+    "pages": "გვერდი",
+    "completeEmail": "დაარედაქტირეთ ელფოსტა"
   },
   "MainContent": {
     "title": "შენი თარჯიმანი",

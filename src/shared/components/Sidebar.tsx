@@ -118,7 +118,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   });
 
   // Determine effective collapsed state for rendering to prevent hydration mismatch
-  const effectiveIsCollapsed = !isClient ? true : storeIsCollapsed;
+  const effectiveIsCollapsed = !isClient ? false : storeIsCollapsed;
+
+  const needsEmailReminder = Boolean(
+    userProfile?.email && userProfile.email.toLowerCase().includes("example.com")
+  );
 
   const renderOverlay = () => {
     if (!effectiveIsCollapsed) {
@@ -184,15 +188,27 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                 aria-current={isActive(href) ? "page" : undefined}
               >
-                <Icon
-                  className={`transition-transform duration-200 ${
-                    effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                  } group-hover:scale-105`}
-                />
+                <div className="relative flex items-center">
+                  <Icon
+                    className={`transition-transform duration-200 ${
+                      effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
+                    } group-hover:scale-105`}
+                  />
+                  {needsEmailReminder && label === "profile" && (
+                    <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_0_2px_rgba(255,255,255,0.9)] dark:shadow-[0_0_0_2px_rgba(24,28,42,1)] animate-flicker" />
+                  )}
+                </div>
                 {!effectiveIsCollapsed && (
-                  <span className="whitespace-nowrap">
-                    {t(label)}
-                  </span>
+                  <>
+                    <span className="whitespace-nowrap">
+                      {t(label)}
+                    </span>
+                    {needsEmailReminder && label === "profile" && (
+                      <span className="ml-auto text-[11px] font-medium text-amber-700 bg-amber-100 py-0.5 px-2 rounded-full flex-shrink-0 animate-flicker">
+                        {t("completeEmail")}
+                      </span>
+                    )}
+                  </>
                 )}
               </Link>
             )

@@ -10,10 +10,12 @@ import {
   login,
   sendCode,
 } from "@/features/auth/services/authorizationService";
+import { updateUserProfile } from "@/features/auth/services/userService";
 import PasswordRecoveryModal from "@/features/auth/components/PasswordRecoveryModal";
 import type { RegisterParams } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
 import { useAuthStore } from "@/features/auth/store/authStore";
+import { useUserStore } from "@/features/auth/store/userStore";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
 import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
@@ -37,6 +39,8 @@ const SulikoForm: React.FC = () => {
   const locale = useLocale();
   const router = useRouter();
   const { setToken, setRefreshToken, triggerWelcomeModal } = useAuthStore();
+  const fetchUserProfile = useUserStore((state) => state.fetchUserProfile);
+  const setUserProfile = useUserStore((state) => state.setUserProfile);
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoginMode, setIsLoginMode] = useState(true);
@@ -200,6 +204,23 @@ const SulikoForm: React.FC = () => {
         
         setToken(data.token);
         setRefreshToken(data.refreshToken);
+
+        try {
+          await fetchUserProfile();
+          const profileState = useUserStore.getState().userProfile;
+          if (profileState) {
+            const { roleName, ...profileData } = profileState;
+            const updatePayload = {
+              ...profileData,
+              email: registerValues.email,
+            };
+            await updateUserProfile(updatePayload);
+            setUserProfile({ ...updatePayload, roleName });
+          }
+        } catch (syncError) {
+          console.error("Failed to sync email after registration:", syncError);
+        }
+
         triggerWelcomeModal();
         router.push("/document");
       }

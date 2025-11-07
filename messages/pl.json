@@ -4,6 +4,7 @@
     "description": "Wprowadź swój numer telefonu i hasło",
     "phoneNumber": "Telefon",
     "password": "Hasło",
+    "email": "Adres e-mail",
     "confirmPassword": "Potwierdź hasło",
     "confirmPasswordRequired": "Proszę potwierdzić hasło",
     "passwordsDoNotMatch": "Hasła nie pasują do siebie",
@@ -15,6 +16,7 @@
     "confirmPasswordPlaceholder": "********",
     "firstnamePlaceholder": "Suliko",
     "lastnamePlaceholder": "Tsereteli",
+    "emailPlaceholder": "a.tsereteli@suliko.ge",
     "login": "Zaloguj się",
     "register": "Zarejestruj się",
     "phoneNumberRequiredError": "Numer telefonu jest wymagany",
@@ -95,7 +97,8 @@
     "feedback": "Opinie",
     "login": "Zaloguj się",
     "balance": "Saldo",
-    "pages": "stron"
+    "pages": "stron",
+    "completeEmail": "Uzupełnij e-mail"
   },
   "MainContent": {
     "title": "Twój tłumacz",

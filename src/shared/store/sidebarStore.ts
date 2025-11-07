@@ -9,9 +9,8 @@ interface SidebarState {
 export const useSidebarStore = create<SidebarState>()(
   persist(
     (set) => ({
-      // Always default to true for SSR and initial client state before rehydration from storage.
-      // The persisted value from localStorage will overwrite this on the client if it exists.
-      isCollapsed: true, 
+      // Sidebar is expanded by default. Persisted value from localStorage overwrites on client.
+      isCollapsed: false, 
       setIsCollapsed: (isCollapsed) => set({ isCollapsed }),
     }),
     {

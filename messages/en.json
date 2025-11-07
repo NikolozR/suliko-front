@@ -4,6 +4,7 @@
     "description": "Enter your phone number and password",
     "phoneNumber": "Phone",
     "password": "Password",
+    "email": "Email",
     "firstname": "First Name",
     "lastname": "Last Name",
     "confirmPassword": "Confirm Password",
@@ -39,6 +40,7 @@
     "phoneNumberPlaceholder": "5XX XX XX XX",
     "passwordPlaceholder": "********",
     "confirmPasswordPlaceholder": "Re-enter your password",
+    "emailPlaceholder": "a.tsereteli@suliko.ge",
     "termsAndConditions": "Terms and Conditions",
     "privacyPolicy": "Privacy Policy",
     "iAcceptThe": "I accept the",
@@ -98,7 +100,8 @@
     "feedback": "Feedback",
     "login": "Login",
     "balance": "Balance",
-    "pages": "Pages"
+    "pages": "Pages",
+    "completeEmail": "Add your email"
   },
   "MainContent": {
     "title": "Your Translator",

@@ -1,7 +1,7 @@
 import { Button } from "@/features/ui/components/ui/button";
 import { Badge } from "@/features/ui/components/ui/badge";
 import { Avatar, AvatarFallback } from "@/features/ui/components/ui/avatar";
-import { Edit, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { useUser } from "@/features/auth/hooks/useUser";
 import { useTranslations } from "next-intl";
@@ -12,16 +12,11 @@ interface ProfileHeroProps {
   userProfile: UserProfile;
   onLogout: () => void;
   isEditing?: boolean;
-  onEdit?: () => void;
-  onSave?: () => void;
-  onCancel?: () => void;
-  isUpdating?: boolean;
 }
 
-export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, onCancel, isUpdating }: ProfileHeroProps) => {
+export const ProfileHero = ({ userProfile, onLogout, isEditing }: ProfileHeroProps) => {
   const { displayName, initials } = useUser();
   const t = useTranslations("Profile");
-
 
   return (
     <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 p-8 mb-8 shadow-2xl">
@@ -33,44 +28,15 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
           <LanguageSwitcher />
         </div>
         
-        {isEditing ? (
-          <>
-            <Button variant="outline" size="sm" onClick={onCancel} disabled={isUpdating}>
-              {t("cancel")}
-            </Button>
-            <Button
-              size="sm"
-              onClick={onSave}
-              className="bg-gradient-to-r from-blue-600 to-purple-600 text-white"
-              disabled={isUpdating}
-            >
-              {isUpdating ? t("saving") : t("save")}
-            </Button>
-          </>
-        ) : (
-          <>
-            {onEdit && (
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={onEdit}
-                className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
-              >
-                <Edit className="h-4 w-4 mr-2" />
-                {t("edit")}
-              </Button>
-            )}
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={onLogout}
-              className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
-            >
-              <LogOut className="h-4 w-4 mr-2" />
-              {t("logout")}
-            </Button>
-          </>
-        )}
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={onLogout}
+          className="bg-white/20 hover:bg-white/30 text-white border-white/30 backdrop-blur-sm"
+        >
+          <LogOut className="h-4 w-4 mr-2" />
+          {t("logout")}
+        </Button>
       </div>
 
       <div className="relative z-10">
@@ -89,11 +55,7 @@ export const ProfileHero = ({ userProfile, onLogout, isEditing, onEdit, onSave, 
                 {t("fullName")}
               </Badge>
               <h1 className="text-4xl font-bold mb-2">
-                {isEditing
-                  ? (userProfile.firstName || userProfile.lastName
-                      ? `${userProfile.firstName || ""} ${userProfile.lastName || ""}`.trim()
-                      : userProfile.userName)
-                  : displayName}
+                {displayName}
               </h1>
             </div>
             <div>
