@@ -11,10 +11,9 @@ import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 interface ProfileHeroProps {
   userProfile: UserProfile;
   onLogout: () => void;
-  isEditing?: boolean;
 }
 
-export const ProfileHero = ({ userProfile, onLogout, isEditing }: ProfileHeroProps) => {
+export const ProfileHero = ({ userProfile, onLogout }: ProfileHeroProps) => {
   const { displayName, initials } = useUser();
   const t = useTranslations("Profile");
 

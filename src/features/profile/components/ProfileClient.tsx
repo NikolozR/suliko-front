@@ -175,7 +175,6 @@ export default function ProfileClient() {
       <ProfileHero
         userProfile={currentUserProfile}
         onLogout={handleLogout}
-        isEditing={isEditing}
       />
       <div className="space-y-6">
         <ProfilePersonalInfo
