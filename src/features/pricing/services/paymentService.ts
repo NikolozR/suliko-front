@@ -19,6 +19,12 @@ export async function createPayment(amount: number, currency: string, country: s
     } else {
       throw new Error("No token found");
     }
+
+    // Get base URL for callback URLs
+    const baseUrl = typeof window !== 'undefined' ? window.location.origin : '';
+    const acceptUrl = `${baseUrl}/payment/success`;
+    const cancelUrl = `${baseUrl}/payment/cancel`;
+    const callbackUrl = `${baseUrl}/api/payment/callback`;
   
     let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
@@ -27,6 +33,9 @@ export async function createPayment(amount: number, currency: string, country: s
         amount,
         currency,
         country,
+        AcceptUrl: acceptUrl,
+        CancelUrl: cancelUrl,
+        CallbackUrl: callbackUrl,
       }),
     });
   
@@ -44,6 +53,9 @@ export async function createPayment(amount: number, currency: string, country: s
             amount,
             currency,
             country,
+            AcceptUrl: acceptUrl,
+            CancelUrl: cancelUrl,
+            CallbackUrl: callbackUrl,
           }),
         });
       } catch (error) {
