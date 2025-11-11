@@ -151,11 +151,11 @@
     "dragAndDrop": "Przeciągnij i upuść plik lub kliknij, aby wybrać",
     "dropFiles": "Upuść pliki tutaj",
     "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, itp.",
-    "pageCountWarning": "⚠️ Pliki z więcej niż 3 stronami mogą mieć problemy z przetwarzaniem lub dłuższy czas oczekiwania.",
+    "pageCountWarning": "⚠️ Dokumenty powyżej 4 stron mogą powodować problemy z przetwarzaniem i saldem; nie wszystkie strony mogą zostać przetłumaczone. Zalecamy podzielić plik na części do 3 stron i przesyłać je osobno.",
     "warningDialog": {
       "title": "Ostrzeżenie o rozmiarze dokumentu",
       "pageCountInfo": "Twój dokument ma",
-      "description": "Ze względu na rozmiar dokumentu mogą wystąpić nieścisłości w tłumaczeniu. Proszę dokładnie przejrzeć wynik.",
+      "description": "Dokumenty powyżej 4 stron mogą powodować problemy z przetwarzaniem i saldem, a nie wszystkie strony mogą zostać przetłumaczone. Prosimy podzielić dokument na części do 3 stron i przesyłać je osobno.",
       "understand": "Rozumiem"
     },
     "pageCount": {
@@ -629,7 +629,7 @@
     "translatedSuffix": "przetłumaczony"
   },
   "ErrorAlert": {
-    "ups": "Ups",
+    "ups": "Problem Detected",
     "retry": "Spróbuj ponownie",
     "networkProblem": "Problem z siecią"
   }

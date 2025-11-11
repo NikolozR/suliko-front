@@ -154,11 +154,11 @@
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
     "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc.",
-    "pageCountWarning": "⚠️ Files with more than 3 pages may experience processing issues or longer wait times.",
+    "pageCountWarning": "⚠️ Documents over 4 pages may cause processing and balance issues; some pages may not be translated. We recommend splitting your file into parts of up to 3 pages and uploading them separately.",
     "warningDialog": {
       "title": "Document Size Warning",
       "pageCountInfo": "Your document has",
-      "description": "Due to the size of your document, there might be some inaccuracies in the translation. Please review the result carefully.",
+      "description": "Documents over 4 pages may cause processing and balance issues, and not all pages may be translated. Please split your document into parts of up to 3 pages and upload them separately.",
       "understand": "I Understand"
     },
     "pageCount": {
@@ -647,7 +647,7 @@
     "translatedSuffix": "translated"
   },
   "ErrorAlert": {
-    "ups": "Ups",
+    "ups": "Problem Detected",
     "networkProblem": "Network Problem"
   }
 }

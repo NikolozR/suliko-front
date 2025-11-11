@@ -303,11 +303,8 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
                   <button
                     type="button"
                     onClick={() => {
-                      if (canExactMatch(s, translatedMarkdown)) {
-                        setPreviewSuggestionId(s.id);
-                      } else {
-                        handleAcceptSuggestion(s.id);
-                      }
+                      // Always open preview for any suggestion type
+                      setPreviewSuggestionId(s.id);
                     }}
                     disabled={loadingSuggestionId === s.id}
                     className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
