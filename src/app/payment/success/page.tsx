@@ -81,7 +81,7 @@ export default function PaymentSuccessPage() {
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-green-800 dark:text-green-200 mb-1">
-                        What's Next?
+                        What&apos;s Next?
                       </h3>
                       <p className="text-sm text-green-700 dark:text-green-300">
                         Your balance has been updated. You can now start using our translation services.
