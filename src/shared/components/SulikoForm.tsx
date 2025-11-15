@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { Form } from "@/features/ui/components/ui/form";
 import { Button } from "@/features/ui/components/ui/button";
@@ -69,7 +70,7 @@ const SulikoForm: React.FC = () => {
   );
 
   const form = useForm<LoginFormData | RegisterFormData>({
-    resolver: zodResolver(formSchema as any),
+    resolver: zodResolver(formSchema as z.ZodType<LoginFormData | RegisterFormData>),
     defaultValues: {
       mobile: "",
       password: "",
