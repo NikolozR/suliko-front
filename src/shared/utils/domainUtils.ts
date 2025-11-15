@@ -41,3 +41,21 @@ export function getRequiredVerificationMethod(): 'phone' | 'email' | null {
   return null;
 }
 
+/**
+ * Get the default locale based on the domain
+ * @param hostname Optional hostname, defaults to current window location
+ * @returns 'ka' for suliko.ge, 'en' for suliko.io, 'ka' as fallback
+ */
+export function getDefaultLocale(hostname?: string): 'ka' | 'en' {
+  const domain = hostname || (typeof window !== 'undefined' ? window.location.hostname : '');
+  
+  if (domain.includes('suliko.ge') || domain === 'suliko.ge') {
+    return 'ka';
+  }
+  if (domain.includes('suliko.io') || domain === 'suliko.io') {
+    return 'en';
+  }
+  // Default fallback
+  return 'ka';
+}
+
