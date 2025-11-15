@@ -6,9 +6,10 @@ import { LoginFormData, RegisterFormData } from "@/features/auth/types/types.Aut
 
 interface NameSectionProps {
   form: UseFormReturn<LoginFormData | RegisterFormData>;
+  hideEmail?: boolean;
 }
 
-const NameSection = ({ form }: NameSectionProps) => {
+const NameSection = ({ form, hideEmail = false }: NameSectionProps) => {
   const t = useTranslations('Authorization');
 
   return (
@@ -49,24 +50,26 @@ const NameSection = ({ form }: NameSectionProps) => {
           )}
         />
       </div>
-      <FormField
-        control={form.control}
-        name="email"
-        render={({ field }) => (
-          <FormItem>
-            <FormLabel className="font-bold dark:text-white">{t('email')}</FormLabel>
-            <FormControl>
-              <Input
-                type="email"
-                placeholder={t('emailPlaceholder') || "example@email.com"}
-                className="border-2 shadow-md dark:border-slate-600"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+      {!hideEmail && (
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="font-bold dark:text-white">{t('email')} ({t('optional')})</FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder={t('emailPlaceholder') || "example@email.com"}
+                  className="border-2 shadow-md dark:border-slate-600"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </div>
   );
 };

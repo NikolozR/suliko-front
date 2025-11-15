@@ -7,7 +7,8 @@ interface LoginParams {
   password: string;
 }
 
-interface RegisterParams extends LoginParams {
+interface RegisterParams extends Omit<LoginParams, 'phoneNumber'> {
+  phoneNumber?: string;
   firstname: string;
   lastname: string;
   email: string;
@@ -16,9 +17,12 @@ interface RegisterParams extends LoginParams {
 
 export async function register({ phoneNumber, password, firstname, lastname, email }: Omit<RegisterParams, 'subscribeNewsletter'>) {
   try {
+    // If phoneNumber is not provided or empty, use email in phoneNumber field
+    const phoneNumberToSend = phoneNumber?.trim() || email;
+    
     // TODO: add subscribeNewsletter to the request
     const response = await apiClient.post("/Auth/register-with-phone", {
-      phoneNumber,
+      phoneNumber: phoneNumberToSend,
       password,
       firstname,
       lastname,
@@ -27,7 +31,8 @@ export async function register({ phoneNumber, password, firstname, lastname, ema
     
     if (response.ok) {
       try {
-        const loginResponse = await login({ phoneNumber, password });
+        // Use the same logic for login - if no phoneNumber, use email
+        const loginResponse = await login({ phoneNumber: phoneNumberToSend, password });
         return loginResponse;
       } catch {
         throw new Error("რეგისტრაცია წარმატებულია, მაგრამ შესვლა ვერ მოხერხდა");
@@ -101,16 +106,51 @@ export async function reaccessToken(refreshToken: string) {
   }
 }
 
-export async function sendVerificationCode(phoneNumber: string) {
+export async function sendVerificationCode(phoneNumber?: string, email?: string) {
   try {
-    const response = await apiClient.post("/Auth/send-verification-code", {
-      phoneNumber,
-    });
+    // Trim and validate inputs
+    const trimmedPhone = phoneNumber?.trim();
+    const trimmedEmail = email?.trim();
+    
+    // Check if at least one valid value is provided
+    if (!trimmedPhone && !trimmedEmail) {
+      throw new Error("Either phoneNumber or email must be provided");
+    }
+    
+    // API accepts phoneNumber field which can contain either phone number or email
+    // The API will detect the type and route accordingly
+    const valueToSend = trimmedPhone || trimmedEmail;
+    
+    if (!valueToSend) {
+      throw new Error("Either phoneNumber or email must be provided");
+    }
+    
+    // Always send as phoneNumber field - API handles both phone and email
+    const payload = {
+      phoneNumber: valueToSend
+    };
+    
+    // Debug: Log the payload being sent
+    console.log("Sending verification code with payload:", payload);
+    
+    const response = await apiClient.post("/Auth/send-verification-code", payload);
+    
+    // Check if the API returned an error in the response data
+    if (response.data && typeof response.data === 'object' && 'isSuccess' in response.data) {
+      const apiResponse = response.data as { isSuccess: boolean; message?: string; code?: number };
+      if (!apiResponse.isSuccess) {
+        throw new Error(apiResponse.message || "Verification code sending failed");
+      }
+    }
     
     if (response.ok) {
       return response.data;
     } else {
-      throw new Error("Verification code sending failed");
+      // Try to extract error message from response
+      const errorMessage = response.data && typeof response.data === 'object' && 'message' in response.data
+        ? (response.data as { message: string }).message
+        : "Verification code sending failed";
+      throw new Error(errorMessage);
     }
   } catch (error) {
     const errorMessage = ApiClient.handleApiError(error);

@@ -152,7 +152,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     setIsLoading(true);
     
     try {
-      const response = await sendVerificationCode(data.phoneNumber) as { code: string | number };
+      const response = await sendVerificationCode(data.phoneNumber, undefined) as { code: string | number };
       setPhoneNumber(data.phoneNumber);
       // Store the verification code from the API response
       setSentVerificationCode(response.code?.toString() || "");

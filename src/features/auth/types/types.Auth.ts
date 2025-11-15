@@ -14,10 +14,10 @@ export const createLoginFormSchema = (t: (key: string) => string, locale?: strin
 
 export const createRegisterFormSchema = (t: (key: string) => string, locale?: string) => z.object({
   mobile: z.string()
-    .min(1, t("phoneNumberRequiredError"))
-    .regex(
-      locale === 'pl' ? /^(\+48)?[1-9]\d{8}$/ : /^5\d{8}$/, 
-      t("phoneNumberFormatError")
+    .optional()
+    .refine(
+      (val) => !val || (locale === 'pl' ? /^(\+48)?[1-9]\d{8}$/.test(val) : /^5\d{8}$/.test(val)),
+      { message: t("phoneNumberFormatError") }
     ),
   password: z.string()
     .min(8, t("passwordMinLengthError"))
@@ -25,8 +25,11 @@ export const createRegisterFormSchema = (t: (key: string) => string, locale?: st
   firstname: z.string().optional(),
   lastname: z.string().optional(),
   email: z.string()
-    .min(1, t("emailRequiredError"))
-    .email(t("emailFormatError")),
+    .optional()
+    .refine(
+      (val) => !val || z.string().email().safeParse(val).success,
+      { message: t("emailFormatError") }
+    ),
   confirmPassword: z.string().min(1, t("confirmPasswordRequired")),
   verificationCode: z.string().optional(),
   acceptTerms: z.boolean().refine(val => val === true, {
