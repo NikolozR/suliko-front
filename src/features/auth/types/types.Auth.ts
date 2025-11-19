@@ -1,11 +1,20 @@
 import { z } from "zod";
 
 export const createLoginFormSchema = (t: (key: string) => string, locale?: string) => z.object({
-  mobile: z.string()
-    .min(1, t("phoneNumberRequiredError"))
-    .regex(
-      locale === 'pl' ? /^(\+48)?[1-9]\d{8}$/ : /^5\d{8}$/, 
-      t("phoneNumberFormatError")
+  identifier: z.string()
+    .min(1, t("phoneNumberOrEmailRequired") || "Phone number or email is required")
+    .refine(
+      (val) => {
+        const trimmed = val.trim();
+        // Check if it's a valid email
+        const isEmail = z.string().email().safeParse(trimmed).success;
+        // Check if it's a valid phone number
+        const isPhone = locale === 'pl' 
+          ? /^(\+48)?[1-9]\d{8}$/.test(trimmed.replace(/\s+/g, ''))
+          : /^5\d{8}$/.test(trimmed.replace(/\s+/g, ''));
+        return isEmail || isPhone;
+      },
+      { message: t("phoneNumberOrEmailFormatError") || "Please enter a valid phone number or email address" }
     ),
   password: z.string()
     .min(8, t("passwordMinLengthError"))

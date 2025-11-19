@@ -9,6 +9,7 @@ import { LoginFormData, RegisterFormData } from "@/features/auth/types/types.Aut
 
 interface EmailVerificationSectionProps {
   form: UseFormReturn<LoginFormData | RegisterFormData>;
+  isLoginMode?: boolean;
   isCodeSent: boolean;
   isSendingCode: boolean;
   isCodeVerified: boolean;
@@ -21,6 +22,7 @@ interface EmailVerificationSectionProps {
 
 const EmailVerificationSection = ({
   form,
+  isLoginMode = false,
   isCodeSent,
   isSendingCode,
   isCodeVerified,
@@ -53,21 +55,23 @@ const EmailVerificationSection = ({
                   }} 
                 />
               </FormControl>
-              <Button
-                type="button"
-                className="h-[42px] min-w-[120px] whitespace-nowrap"
-                onClick={onSendCode}
-                disabled={isSendingCode || isCodeSent}
-              >
-                {isCodeSent ? t('codeSent') : isSendingCode ? t('sending') : t('sendCode')}
-              </Button>
+              {!isLoginMode && (
+                <Button
+                  type="button"
+                  className="h-[42px] min-w-[120px] whitespace-nowrap"
+                  onClick={onSendCode}
+                  disabled={isSendingCode || isCodeSent}
+                >
+                  {isCodeSent ? t('codeSent') : isSendingCode ? t('sending') : t('sendCode')}
+                </Button>
+              )}
             </div>
             <FormMessage />
           </FormItem>
         )}
       />
 
-      {isCodeSent && (
+      {!isLoginMode && isCodeSent && (
         <FormField
           control={form.control}
           name="verificationCode"

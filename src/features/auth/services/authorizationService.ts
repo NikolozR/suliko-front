@@ -3,7 +3,8 @@ import { apiClient, ApiClient } from "@/shared/lib/apiClient";
 
 
 interface LoginParams {
-  phoneNumber: string;
+  phoneNumber?: string;
+  email?: string;
   password: string;
 }
 
@@ -58,11 +59,21 @@ export async function register({ phoneNumber, password, firstname, lastname, ema
 
 export async function login({
   phoneNumber,
+  email,
   password,
 }: LoginParams): Promise<LoginResponse> {
   try {
+    // Determine which identifier to use (phone or email)
+    // The backend accepts email in the phoneNumber field, similar to registration
+    const identifier = phoneNumber?.trim() || email?.trim();
+    
+    if (!identifier) {
+      throw new Error("Either phone number or email must be provided");
+    }
+
+    // Send email or phone in the phoneNumber field - backend handles both
     const response = await apiClient.post("/Auth/login-with-phone", {
-      phoneNumber,
+      phoneNumber: identifier,
       password,
     });
     
@@ -71,7 +82,8 @@ export async function login({
     } else {
       // Handle specific error cases
       if (response.status === 400 || response.status === 401) {
-        throw new Error("არასწორი ტელეფონის ნომერი ან პაროლი");
+        // Update error message to be more generic (works for both phone and email)
+        throw new Error("არასწორი მონაცემები ან პაროლი");
       } else if (response.status === 404) {
         throw new Error("მომხმარებელი ვერ მოიძებნა. გთხოვთ ჯერ გაიაროთ რეგისტრაცია");
       } else if (response.status === 422) {

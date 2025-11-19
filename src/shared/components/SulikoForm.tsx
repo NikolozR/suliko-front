@@ -2,8 +2,9 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-import { Form } from "@/features/ui/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/features/ui/components/ui/form";
 import { Button } from "@/features/ui/components/ui/button";
+import { Input } from "@/features/ui/components/ui/input";
 import { useState, useMemo, useEffect } from "react";
 import SulikoFormParticles from "./SulikoFormParticles";
 import {
@@ -72,6 +73,7 @@ const SulikoForm: React.FC = () => {
   const form = useForm<LoginFormData | RegisterFormData>({
     resolver: zodResolver(formSchema as z.ZodType<LoginFormData | RegisterFormData>),
     defaultValues: {
+      identifier: "",
       mobile: "",
       password: "",
       firstname: "",
@@ -131,6 +133,8 @@ const SulikoForm: React.FC = () => {
       trackRegistrationStartServerEvent();
     } else {
       setVerificationMethod(null);
+      // Reset identifier field when switching to login
+      form.setValue("identifier", "");
     }
   }
 
@@ -217,13 +221,24 @@ const SulikoForm: React.FC = () => {
     }
   }
 
+  // Helper function to detect if identifier is email or phone
+  const isEmail = (value: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value.trim());
+  };
+
   async function onSubmit(values: LoginFormData | RegisterFormData) {
     setAuthError(null);
     try {
       if (isLoginMode) {
         const loginValues = values as LoginFormData;
+        const identifier = loginValues.identifier?.trim() || "";
+        
+        // Determine if identifier is email or phone
+        const isEmailValue = isEmail(identifier);
         const data = await login({
-          phoneNumber: loginValues.mobile,
+          phoneNumber: isEmailValue ? undefined : identifier,
+          email: isEmailValue ? identifier : undefined,
           password: loginValues.password,
         });
         setToken(data.token);
@@ -413,17 +428,25 @@ const SulikoForm: React.FC = () => {
               className="flex flex-col gap-8 w-[60%]"
             >
               {isLoginMode ? (
-                <PhoneVerificationSection
-                  form={form}
-                  isLoginMode={isLoginMode}
-                  onPhoneChange={handlePhoneChange}
-                  onSendCode={handleSendPhoneCode}
-                  isCodeSent={isCodeSent}
-                  isSendingCode={isSendingCode}
-                  resendTimer={resendTimer}
-                  onResendCode={handleResendCode}
-                  isCodeVerified={isCodeVerified}
-                  sentVerificationCode={sentVerificationCode}
+                <FormField
+                  control={form.control}
+                  name="identifier"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold dark:text-white">
+                        {t("phoneNumberOrEmail") || "Phone Number or Email"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"} 
+                          className="border-2 shadow-md dark:border-slate-600" 
+                          autoComplete="username"
+                          {...field} 
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               ) : (
                 <>
