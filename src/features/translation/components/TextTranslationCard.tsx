@@ -356,19 +356,20 @@ const TextTranslationCard = () => {
               </div>
               {translatedText && (
                 <div className="w-full flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                     <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                       {t('result')}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => setShowDownloadModal(true)}
                         className="transition-all duration-200"
+                        title={tButton('download')}
                       >
-                        <Download className="h-4 w-4 mr-1" />
+                        <Download className="h-4 w-4" />
                       </Button>
                       <CopyButton 
                         content={translatedText}

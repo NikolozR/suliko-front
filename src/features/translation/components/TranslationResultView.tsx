@@ -174,7 +174,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       <div className={hideOriginalDocument ? "" : "flex flex-col lg:flex-row gap-4 lg:gap-8"}>
         {!hideOriginalDocument && (
           <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
-            <div className="flex items-center justify-between mb-2">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
               <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                 {t('originalDocument')}
               </div>
@@ -183,7 +183,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                 variant="outline"
                 size="sm"
                 onClick={() => setHideOriginalDocument(true)}
-                className="transition-all duration-200"
+                className="transition-all duration-200 flex-shrink-0"
                 title={t('hideOriginal')}
               >
                 <EyeOff className="h-4 w-4" />
@@ -211,62 +211,69 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         )}
 
         <div className={hideOriginalDocument ? "w-full" : "w-full lg:flex-1 min-w-0"}>
-          <div className="flex items-center justify-between mb-2 relative">
-            <div className="flex items-center gap-2">
-              <div className="font-semibold text-suliko-default-color text-sm md:text-base">
-                {t('translatedText')}
+          {/* Header Section - Redesigned to prevent overlapping */}
+          <div className="mb-4 space-y-3">
+            {/* Title and Timer Row */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                  {t('translatedText')}
+                </div>
+                {remainingSeconds > 0 ? (
+                  <span className="text-xs text-muted-foreground flex items-center gap-1 whitespace-nowrap">
+                    <Clock className="h-3 w-3" />
+                    {formatTime(remainingSeconds)}
+                  </span>
+                ) : (
+                  <span className="text-xs text-red-500 flex items-center gap-1 font-medium whitespace-nowrap">
+                    <Clock className="h-3 w-3" />
+                    {t('editorTimeExpired')}
+                  </span>
+                )}
               </div>
-              {remainingSeconds > 0 ? (
-                <span className="text-xs text-muted-foreground flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {formatTime(remainingSeconds)}
-                </span>
-              ) : (
-                <span className="text-xs text-red-500 flex items-center gap-1 font-medium">
-                  <Clock className="h-3 w-3" />
-                  {t('editorTimeExpired')}
-                </span>
-              )}
-              {hideOriginalDocument && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setHideOriginalDocument(false)}
-                  className="transition-all duration-200"
-                  title={t('showOriginal')}
-                >
-                  <Eye className="h-4 w-4" />
-                </Button>
-              )}
-            </div>
-            <div className="flex items-center gap-2 flex-wrap justify-end mt-2 md:mt-0 md:absolute md:right-0 md:bottom-[-4px]">
-              {isOriginalFileSrt() ? (
-                <DownloadButton
-                  content={translatedMarkdown}
-                  size="sm"
-                  variant="outline"
-                  fileType="srt"
-                  label={tButton('download')}
-                />
-              ) : (
-                <>
+              
+              {/* Action Buttons Row */}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                {hideOriginalDocument && (
                   <Button
                     type="button"
                     variant="outline"
                     size="sm"
-                    onClick={() => setShowDownloadModal(true)}
+                    onClick={() => setHideOriginalDocument(false)}
                     className="transition-all duration-200"
+                    title={t('showOriginal')}
                   >
-                    <Download className="h-4 w-4 mr-1" />
+                    <Eye className="h-4 w-4" />
                   </Button>
-                  <CopyButton
+                )}
+                {isOriginalFileSrt() ? (
+                  <DownloadButton
                     content={translatedMarkdown}
                     size="sm"
                     variant="outline"
+                    fileType="srt"
+                    label={tButton('download')}
                   />
-                </>
-              )}
+                ) : (
+                  <>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowDownloadModal(true)}
+                      className="transition-all duration-200"
+                      title={tButton('download')}
+                    >
+                      <Download className="h-4 w-4" />
+                    </Button>
+                    <CopyButton
+                      content={translatedMarkdown}
+                      size="sm"
+                      variant="outline"
+                    />
+                  </>
+                )}
+              </div>
             </div>
           </div>
           <div className="h-full max-h-[400px] md:max-h-[600px] lg:max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>

@@ -67,9 +67,16 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed);
   const storeSetIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
   const [isClient, setIsClient] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const router = useRouter();
@@ -82,22 +89,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     }
   }, [initialUserProfile, userProfile, setUserProfile]);
 
-  // Handle responsive collapsing based on window size, only on client
+  // Handle responsive behavior - don't force collapse on mobile, allow user to toggle
   useEffect(() => {
     if (!isClient) return;
-
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        if (storeIsCollapsed === false) {
-          storeSetIsCollapsed(true);
-        }
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isClient, storeIsCollapsed, storeSetIsCollapsed]);
+    setIsMobile(window.innerWidth < 768);
+  }, [isClient]);
 
   const handleCollapseToggle = () => {
     storeSetIsCollapsed(!storeIsCollapsed);
@@ -125,11 +121,13 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   );
 
   const renderOverlay = () => {
-    if (!effectiveIsCollapsed) {
+    // Show overlay on mobile when sidebar is expanded
+    if (!effectiveIsCollapsed && isMobile) {
       return (
         <div 
-          className="fixed inset-0 bg-black/20 z-30 md:hidden" 
+          className="fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity duration-300" 
           onClick={() => storeSetIsCollapsed(true)}
+          aria-hidden="true"
         />
       );
     }
@@ -141,8 +139,14 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
       {renderOverlay()}
       <aside
         className={`sidebar-main flex flex-col h-screen fixed left-0 top-0 z-40 border-r transition-all duration-300 ${
-          effectiveIsCollapsed ? "w-16" : "w-48 md:w-56 lg:w-64"
-        } ${!effectiveIsCollapsed ? "md:shadow-none shadow-2xl" : ""}`}
+          effectiveIsCollapsed 
+            ? "w-16" 
+            : "w-48 md:w-56 lg:w-64"
+        } ${
+          !effectiveIsCollapsed 
+            ? "md:shadow-none shadow-2xl" 
+            : "md:shadow-none"
+        }`}
       >
         <div className={`flex items-center ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
           {!effectiveIsCollapsed && (
@@ -217,7 +221,19 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
           {token && (
             <div className="relative">
               <button
-                onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+                onClick={() => {
+                  // If sidebar is collapsed, expand it first and open history
+                  if (effectiveIsCollapsed) {
+                    storeSetIsCollapsed(false);
+                    // Use setTimeout to ensure sidebar expands before opening dropdown
+                    setTimeout(() => {
+                      setIsHistoryOpen(true);
+                    }, 100);
+                  } else {
+                    // If sidebar is already expanded, just toggle history dropdown
+                    setIsHistoryOpen(!isHistoryOpen);
+                  }
+                }}
                 className={`sidebar-item group w-full text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : "justify-between"}`}
               >
                 <div className="flex items-center gap-3">
