@@ -289,7 +289,7 @@ const TextTranslationCard = () => {
           retryLabel={tButton('retry') || "Retry"}
         />
       )}
-      <div className={translatedText ? "flex gap-8" : undefined}>
+      <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8" : undefined}>
         <Card className="border-none flex-1 min-w-0 relative">
         <TranslationLoadingOverlay
           isVisible={textLoading}
@@ -323,7 +323,7 @@ const TextTranslationCard = () => {
               layout="horizontal"
               showSwapButton={true}
             />
-            <div className={translatedText ? "flex gap-4 md:gap-8 items-end" : undefined}>
+            <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8 items-stretch md:items-end" : undefined}>
               <div className="w-full flex-1 min-w-0">
                 <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
                   {t('yourText')}
@@ -423,7 +423,7 @@ const TextTranslationCard = () => {
         onClose={() => setShowAuthModal(false)}
       />
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
-        <DialogContent className="max-w-xs">
+        <DialogContent className="max-w-xs mx-4">
           <DialogHeader>
             <DialogTitle>Select Download Format</DialogTitle>
           </DialogHeader>

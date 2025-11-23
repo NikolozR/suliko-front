@@ -171,7 +171,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 
   return (
     <>
-      <div className={hideOriginalDocument ? "" : "lg:flex gap-8"}>
+      <div className={hideOriginalDocument ? "" : "flex flex-col lg:flex-row gap-4 lg:gap-8"}>
         {!hideOriginalDocument && (
           <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
             <div className="flex items-center justify-between mb-2">
@@ -190,7 +190,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
               </Button>
             </div>
             <div
-              className="h-[800px] max-h-[800px] flex flex-col w-full"
+              className="h-[400px] md:h-[600px] lg:h-[800px] max-h-[400px] md:max-h-[600px] lg:max-h-[800px] flex flex-col w-full"
               ref={documentPreviewRef}
             >
               <div className="space-y-4 h-full flex flex-col">
@@ -210,7 +210,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           </div>
         )}
 
-        <div className={hideOriginalDocument ? "w-full" : "w-full md:flex-1 min-w-0"}>
+        <div className={hideOriginalDocument ? "w-full" : "w-full lg:flex-1 min-w-0"}>
           <div className="flex items-center justify-between mb-2 relative">
             <div className="flex items-center gap-2">
               <div className="font-semibold text-suliko-default-color text-sm md:text-base">
@@ -240,7 +240,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                 </Button>
               )}
             </div>
-            <div className="flex items-center gap-2 absolute right-0 bottom-[-4px]">
+            <div className="flex items-center gap-2 flex-wrap justify-end mt-2 md:mt-0 md:absolute md:right-0 md:bottom-[-4px]">
               {isOriginalFileSrt() ? (
                 <DownloadButton
                   content={translatedMarkdown}
@@ -269,14 +269,14 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
               )}
             </div>
           </div>
-          <div className="h-full max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
+          <div className="h-full max-h-[400px] md:max-h-[600px] lg:max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
             <Editor translatedMarkdown={translatedMarkdown} onChange={onEdit} />
           </div>
         </div>
       </div>
       <SuggestionsPanel isSuggestionsLoading={isSuggestionsLoading} />
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
-        <DialogContent className="max-w-xs">
+        <DialogContent className="max-w-xs mx-4">
           <DialogHeader>
             <DialogTitle>Select Download Format</DialogTitle>
           </DialogHeader>

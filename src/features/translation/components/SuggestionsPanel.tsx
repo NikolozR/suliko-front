@@ -406,7 +406,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           if (!open) setPreviewSuggestionId(null);
         }}
       >
-        <DialogContent className="w-full sm:max-w-4xl">
+        <DialogContent className="w-full sm:max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-center">
               {t("SuggestionsPanel.previewTitle", { default: "Suggestion Preview" })}

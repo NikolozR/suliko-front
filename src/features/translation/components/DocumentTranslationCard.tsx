@@ -392,7 +392,7 @@ const DocumentTranslationCard = () => {
           <CardContent>
             <form onSubmit={handleFormSubmit}>
               {/* Unified select row: source, swap, target, model */}
-              <div className="flex flex-row gap-2 md:gap-4 mb-4 items-end">
+              <div className="flex flex-col sm:flex-row gap-2 md:gap-4 mb-4 items-stretch sm:items-end">
                 {/* Source language */}
                 <div className="flex-1 flex flex-col">
                   <span className="block text-xs text-muted-foreground mb-1">{t("sourceLanguage")}</span>
@@ -443,7 +443,7 @@ const DocumentTranslationCard = () => {
                   />
                 </>
               ) : (
-                <div className="flex gap-2 md:gap-4 items-end flex-col md:flex-row">
+                <div className="flex gap-2 md:gap-4 items-stretch sm:items-end flex-col sm:flex-row">
                   <div className="w-full md:flex-1 min-w-0">
                     <DocumentUploadView
                       currentFile={currentFileObj}
