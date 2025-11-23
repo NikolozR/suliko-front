@@ -1,7 +1,7 @@
 "use client";
 
 import { FC } from 'react';
-import { Alert, AlertDescription } from '@/features/ui/components/ui/alert';
+import { Alert } from '@/features/ui/components/ui/alert';
 import { X, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/features/ui/components/ui/button';
 import { cn } from '@/shared/lib/utils';
