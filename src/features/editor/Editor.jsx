@@ -25,13 +25,13 @@ export default function Editor({ translatedMarkdown, onChange }) {
     return () => setIsLayoutReady(false);
   }, []);
 
-  const { ClassicEditor, editorConfig } = useMemo(() => {
+  const { DocumentEditor, editorConfig } = useMemo(() => {
     if (cloud.status !== "success" || !isLayoutReady) {
       return {};
     }
 
     const {
-      ClassicEditor,
+      DocumentEditor,
       Autoformat,
       AutoImage,
       Autosave,
@@ -86,7 +86,7 @@ export default function Editor({ translatedMarkdown, onChange }) {
     const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
     return {
-      ClassicEditor,
+      DocumentEditor,
       editorConfig: {
         toolbar: {
           items: [
@@ -308,14 +308,14 @@ export default function Editor({ translatedMarkdown, onChange }) {
   return (
     <div className="main-container">
       <div
-        className="editor-container editor-container_classic-editor"
+        className="editor-container editor-container_document-editor"
         ref={editorContainerRef}
       >
         <div className="editor-container__editor">
           <div ref={editorRef}>
-            {ClassicEditor && editorConfig && (
+            {DocumentEditor && editorConfig && (
               <CKEditor
-                editor={ClassicEditor}
+                editor={DocumentEditor}
                 config={editorConfig}
                 onReady={(editor) => {
                   editorInstanceRef.current = editor;

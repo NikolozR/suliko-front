@@ -17,12 +17,22 @@
 	margin-right: auto;
 }
 
-.editor-container_classic-editor .editor-container__editor {
-	min-width: 795px;
-	max-width: 795px;
+.editor-container_document-editor .editor-container__editor {
+	min-width: 800px;
+	max-width: 1200px;
 }
 
-/* Ensure CKEditor content area matches preview min-height */
-.ck.ck-content {
+/* Document Editor specific styling - page-like appearance */
+.editor-container_document-editor .ck-editor__editable {
   min-height: 800px;
+  padding: 60px;
+  background: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin: 20px auto;
+}
+
+/* Dark mode support for Document Editor */
+.dark .editor-container_document-editor .ck-editor__editable {
+  background: #1e1e1e;
+  color: #e0e0e0;
 }
