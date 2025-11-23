@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
 import { Check, Star, Zap, Building2, Users, Sparkles, Clock, Mail, Phone, MessageCircle, X, CreditCard } from "lucide-react";
 import { PayAsYouGoModal } from "@/features/pricing/components/PayAsYouGoModal";
+import { formatPriceFromString } from "@/shared/utils/domainUtils";
 
 interface Plan {
   name: string;
@@ -43,7 +44,7 @@ export default function PricingSection() {
   const translatorPlans: Plan[] = [
     {
       name: t("starter.title"),
-      price: t("starter.price"),
+      price: formatPriceFromString(t("starter.price")),
       period: t("starter.period"),
       description: t("starter.description"),
       icon: Star,
@@ -58,7 +59,7 @@ export default function PricingSection() {
     },
     {
       name: t("professional.title"),
-      price: t("professional.price"),
+      price: formatPriceFromString(t("professional.price")),
       period: t("professional.period"),
       description: t("professional.description"),
       icon: Zap,
@@ -76,7 +77,7 @@ export default function PricingSection() {
     },
     {
       name: t("payAsYouGo.title"),
-      price: t("payAsYouGo.price"),
+      price: formatPriceFromString(t("payAsYouGo.price")),
       period: t("payAsYouGo.period"),
       description: t("payAsYouGo.description"),
       icon: CreditCard,
@@ -96,7 +97,7 @@ export default function PricingSection() {
   const businessPlans: Plan[] = [
     {
       name: t("business.title"),
-      price: t("business.price"),
+      price: formatPriceFromString(t("business.price")),
       period: t("business.period"),
       description: t("business.description"),
       icon: Building2,
@@ -113,7 +114,7 @@ export default function PricingSection() {
     },
     {
       name: t("enterpriseBusiness.title"),
-      price: t("enterpriseBusiness.price"),
+      price: formatPriceFromString(t("enterpriseBusiness.price")),
       period: t("enterpriseBusiness.period"),
       description: t("enterpriseBusiness.description"),
       icon: Users,
@@ -246,7 +247,12 @@ export default function PricingSection() {
                     <div className="flex flex-col items-center">
                       <div className="flex items-baseline gap-2">
                          <span className="text-2xl text-muted-foreground line-through">
-                           {plan.price === "173 ₾" ? "216 ₾" : plan.price === "500 ₾" ? "625 ₾" : plan.price}
+                           {(() => {
+                             const numericPrice = plan.price.replace(/[₾€$€\s]/g, '').trim();
+                             if (numericPrice === "173") return formatPriceFromString("216");
+                             if (numericPrice === "500") return formatPriceFromString("625");
+                             return plan.price;
+                           })()}
                          </span>
                         <span className="text-4xl font-bold text-foreground">
                           {plan.price}

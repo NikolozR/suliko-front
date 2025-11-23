@@ -1,5 +1,6 @@
 import { reaccessToken, useAuthStore } from "@/features/auth";
 import { API_BASE_URL } from "@/shared";
+import { getCurrencyCode, getCountryCode } from "@/shared/utils/domainUtils";
 
 
 export interface CreatePaymentResponse {
@@ -8,7 +9,7 @@ export interface CreatePaymentResponse {
 }
 
 
-export async function createPayment(amount: number, currency: string, country: string): Promise<CreatePaymentResponse> {
+export async function createPayment(amount: number, currency?: string, country?: string): Promise<CreatePaymentResponse> {
     const endpoint = '/Payment/create';
     const { refreshToken, token } = useAuthStore.getState();
     const headers = new Headers();
@@ -32,13 +33,17 @@ export async function createPayment(amount: number, currency: string, country: s
     const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;
     const callbackUrl = `${baseUrl}/api/payment/callback`;
   
+    // Determine currency and country based on domain if not provided
+    const paymentCurrency = currency || getCurrencyCode();
+    const paymentCountry = country || getCountryCode();
+  
     let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
       headers,
       body: JSON.stringify({
         amount,
-        currency,
-        country,
+        currency: paymentCurrency,
+        country: paymentCountry,
         AcceptUrl: acceptUrl,
         CancelUrl: cancelUrl,
         CallbackUrl: callbackUrl,
@@ -57,8 +62,8 @@ export async function createPayment(amount: number, currency: string, country: s
           headers,
           body: JSON.stringify({
             amount,
-            currency,
-            country,
+            currency: paymentCurrency,
+            country: paymentCountry,
             AcceptUrl: acceptUrl,
             CancelUrl: cancelUrl,
             CallbackUrl: callbackUrl,

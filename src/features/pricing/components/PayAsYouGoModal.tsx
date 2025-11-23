@@ -8,6 +8,7 @@ import { Input } from '@/features/ui/components/ui/input';
 import { Label } from '@/features/ui/components/ui/label';
 import { CreditCard, AlertCircle } from "lucide-react";
 import { createPayment } from "../services/paymentService";
+import { getCurrencySymbol } from "@/shared/utils/domainUtils";
 
 interface PayAsYouGoModalProps {
   isOpen: boolean;
@@ -20,10 +21,12 @@ const MAXIMUM_AMOUNT = 1000; // Maximum purchase amount
 
 export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
   const t = useTranslations("Pricing");
+  const tError = useTranslations("ErrorAlert");
   const [amount, setAmount] = useState<string>('');
   const [pages, setPages] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const currencySymbol = getCurrencySymbol();
 
   // Calculate pages when amount changes
   useEffect(() => {
@@ -46,17 +49,23 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
     const numericAmount = parseFloat(amount);
     
     if (isNaN(numericAmount) || numericAmount <= 0) {
-      setError(t('payAsYouGoModal.errors.invalidAmount'));
+      const errorMsg = t('payAsYouGoModal.errors.invalidAmount');
+      console.error('PayAsYouGo validation error:', errorMsg);
+      setError(errorMsg);
       return false;
     }
     
     if (numericAmount < MINIMUM_AMOUNT) {
-      setError(t('payAsYouGoModal.errors.minimumAmount', { min: MINIMUM_AMOUNT }));
+      const errorMsg = t('payAsYouGoModal.errors.minimumAmount', { min: MINIMUM_AMOUNT }).replace(/₾|€/g, currencySymbol);
+      console.error('PayAsYouGo validation error:', errorMsg);
+      setError(errorMsg);
       return false;
     }
     
     if (numericAmount > MAXIMUM_AMOUNT) {
-      setError(t('payAsYouGoModal.errors.maximumAmount', { max: MAXIMUM_AMOUNT }));
+      const errorMsg = t('payAsYouGoModal.errors.maximumAmount', { max: MAXIMUM_AMOUNT }).replace(/₾|€/g, currencySymbol);
+      console.error('PayAsYouGo validation error:', errorMsg);
+      setError(errorMsg);
       return false;
     }
     
@@ -73,11 +82,14 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
 
     try {
       const numericAmount = parseFloat(amount);
-      const response = await createPayment(numericAmount, 'GEL', 'GE');
+      // Currency and country will be determined automatically based on domain
+      const response = await createPayment(numericAmount);
       window.open(response.redirectUrl, "_blank");
       onClose();
     } catch (err) {
-      setError(err instanceof Error ? err.message : t('payAsYouGoModal.errors.purchaseFailed'));
+      const errorMsg = err instanceof Error ? err.message : t('payAsYouGoModal.errors.purchaseFailed');
+      console.error('PayAsYouGo purchase error:', errorMsg);
+      setError(errorMsg);
     } finally {
       setIsLoading(false);
     }
@@ -114,7 +126,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
                   className="pr-12"
                 />
                 <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
-                  ₾
+                  {currencySymbol}
                 </span>
               </div>
             </div>
@@ -133,7 +145,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
                     onClick={() => setAmount(suggestedAmount.toString())}
                     className="flex-1 min-w-0"
                   >
-                    {suggestedAmount} ₾
+                    {suggestedAmount} {currencySymbol}
                   </Button>
                 ))}
               </div>
@@ -148,7 +160,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
                   {pages}
                 </div>
                 <div className="text-sm text-muted-foreground">
-                  {t('payAsYouGoModal.pages')} • {amount} ₾
+                  {t('payAsYouGoModal.pages')} • {amount} {currencySymbol}
                 </div>
                 <div className="text-xs text-muted-foreground mt-1">
                   {t('payAsYouGoModal.simpleRate')}
@@ -162,7 +174,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
             <div className="flex items-center gap-2 p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
               <AlertCircle className="h-4 w-4 text-red-600 dark:text-red-400" />
               <span className="text-sm text-red-600 dark:text-red-400">
-                {error}
+                {tError('ups')}
               </span>
             </div>
           )}
@@ -199,7 +211,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
           {/* Info Text */}
           <div className="text-xs text-muted-foreground text-center space-y-1">
             <p>{t('payAsYouGoModal.pagesNeverExpire')}</p>
-            <p>{t('payAsYouGoModal.minimumPurchase', { min: MINIMUM_AMOUNT })}</p>
+            <p>{t('payAsYouGoModal.minimumPurchase', { min: MINIMUM_AMOUNT }).replace(/₾|€/g, currencySymbol)}</p>
           </div>
         </div>
       </DialogContent>

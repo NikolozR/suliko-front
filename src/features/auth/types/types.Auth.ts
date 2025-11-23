@@ -25,11 +25,8 @@ export const createRegisterFormSchema = (t: (key: string) => string, locale?: st
   firstname: z.string().optional(),
   lastname: z.string().optional(),
   email: z.string()
-    .optional()
-    .refine(
-      (val) => !val || z.string().email().safeParse(val).success,
-      { message: t("emailFormatError") }
-    ),
+    .min(1, t("emailRequiredError"))
+    .email(t("emailFormatError")),
   confirmPassword: z.string().min(1, t("confirmPasswordRequired")),
   verificationCode: z.string().optional(),
   acceptTerms: z.boolean().refine(val => val === true, {

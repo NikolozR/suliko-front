@@ -165,7 +165,9 @@ const SulikoForm: React.FC = () => {
         });
       }, 1000);
     } catch (error) {
-      setAuthError(error instanceof Error ? error.message : t("sendCodeError"));
+      const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
+      console.error('Send phone code error:', errorMessage);
+      setAuthError(t("ErrorAlert.ups") || "Error detected");
     } finally {
       setIsSendingCode(false);
     }
@@ -202,7 +204,9 @@ const SulikoForm: React.FC = () => {
         });
       }, 1000);
     } catch (error) {
-      setAuthError(error instanceof Error ? error.message : t("sendCodeError"));
+      const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
+      console.error('Send email code error:', errorMessage);
+      setAuthError(t("ErrorAlert.ups") || "Error detected");
     } finally {
       setIsSendingCode(false);
     }
@@ -246,9 +250,10 @@ const SulikoForm: React.FC = () => {
           return;
         }
 
-        // Determine which field was verified and which is optional
+        // Determine which field was verified
         const phoneNumber = verificationMethod === "phone" ? registerValues.mobile : undefined;
-        const email = verificationMethod === "email" ? registerValues.email : undefined;
+        // Email is now required, so always use it
+        const email = registerValues.email;
 
         // At least one must be provided
         if (!phoneNumber && !email) {
@@ -261,7 +266,7 @@ const SulikoForm: React.FC = () => {
           password: registerValues.password,
           firstname: registerValues.firstname || generateDefaultName(),
           lastname: registerValues.lastname || "",
-          email: email || "",
+          email: email,
           verificationCode: registerValues.verificationCode,
           subscribeNewsletter: registerValues.subscribeNewsletter,
         } as RegisterParams);
@@ -308,17 +313,23 @@ const SulikoForm: React.FC = () => {
           ? error.message
           : "Authentication failed, Invalid credentials";
 
+      // Log actual error to console for debugging
+      console.error('Authentication error:', errorMessage);
+
       if (!isLoginMode && errorMessage.includes("უკვე რეგისტრირებულია")) {
-        setAuthError(`${errorMessage}`);
+        // Set generalized error message
+        setAuthError(t("ErrorAlert.ups") || "Error detected");
       } else if (isLoginMode && errorMessage.includes("ვერ მოიძებნა")) {
-        setAuthError(`${errorMessage}`);
+        // Set generalized error message
+        setAuthError(t("ErrorAlert.ups") || "Error detected");
         setTimeout(() => {
           setIsLoginMode(false);
           setAuthError(null);
           form.reset();
         }, 2000);
       } else {
-        setAuthError(errorMessage);
+        // Set generalized error message
+        setAuthError(t("ErrorAlert.ups") || "Error detected");
       }
     }
   }

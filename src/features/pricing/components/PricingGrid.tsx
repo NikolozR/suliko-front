@@ -14,9 +14,10 @@ export function PricingGrid() {
     setShowPayAsYouGoModal(true);
   };
 
-  const handleSelectPackage = async (amount: number, currency: string = 'GEL', country: string = 'GE') => {
+  const handleSelectPackage = async (amount: number) => {
     try {
-      const response = await createPayment(amount, currency, country);
+      // Currency and country will be determined automatically based on domain
+      const response = await createPayment(amount);
       window.open(response.redirectUrl, "_blank");
     } catch (error) {
       console.error('Payment failed:', error);

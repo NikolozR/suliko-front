@@ -56,7 +56,7 @@ const NameSection = ({ form, hideEmail = false }: NameSectionProps) => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold dark:text-white">{t('email')} ({t('optional')})</FormLabel>
+              <FormLabel className="font-bold dark:text-white">{t('email')}</FormLabel>
               <FormControl>
                 <Input
                   type="email"

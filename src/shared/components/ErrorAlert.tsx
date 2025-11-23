@@ -25,13 +25,10 @@ const ErrorAlert: FC<ErrorAlertProps> = ({
   const t = useTranslations('ErrorAlert');
   const upsText = t('ups');
   
-  // Translate "Failed to Fetch" errors to "Network Problem"
-  const normalizedMessage = message.toLowerCase().includes('failed to fetch') || 
-                             message.toLowerCase().includes('fetch failed') ||
-                             message === 'Failed to Fetch' ||
-                             message === 'Failed to fetch'
-    ? t('networkProblem') 
-    : message;
+  // Log actual error message to console for debugging
+  if (message) {
+    console.error('Error detected:', message);
+  }
   
   if (!message) return null;
   
@@ -55,9 +52,6 @@ const ErrorAlert: FC<ErrorAlertProps> = ({
             <h4 className="text-red-600 dark:text-red-500 font-semibold text-sm shrink-0">
               {upsText}
             </h4>
-            <AlertDescription className="text-gray-600 dark:text-gray-300 break-words text-sm leading-relaxed">
-              {normalizedMessage}
-            </AlertDescription>
           </div>
         </div>
         <div className="flex items-center gap-2 shrink-0">
