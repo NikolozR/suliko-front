@@ -8,7 +8,8 @@ import { Input } from '@/features/ui/components/ui/input';
 import { Label } from '@/features/ui/components/ui/label';
 import { CreditCard, AlertCircle } from "lucide-react";
 import { createPayment } from "../services/paymentService";
-import { getCurrencySymbol } from "@/shared/utils/domainUtils";
+import { getCurrencySymbol, isSulikoIo } from "@/shared/utils/domainUtils";
+import { ContactPaymentModal } from "./ContactPaymentModal";
 
 interface PayAsYouGoModalProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
   const [pages, setPages] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
+  const [showContactPaymentModal, setShowContactPaymentModal] = useState(false);
   const currencySymbol = getCurrencySymbol();
 
   // Calculate pages when amount changes
@@ -77,6 +79,12 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
       return;
     }
 
+    // For suliko.io, show contact modal instead of making payment API call
+    if (isSulikoIo()) {
+      setShowContactPaymentModal(true);
+      return;
+    }
+
     setIsLoading(true);
     setError('');
 
@@ -98,6 +106,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
   const suggestedAmounts = [5, 10, 20, 50];
 
   return (
+    <>
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto p-6">
         <DialogHeader>
@@ -216,5 +225,11 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
         </div>
       </DialogContent>
     </Dialog>
+
+    <ContactPaymentModal 
+      isOpen={showContactPaymentModal} 
+      onClose={() => setShowContactPaymentModal(false)} 
+    />
+    </>
   );
 }
