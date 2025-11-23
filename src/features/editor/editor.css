@@ -29,10 +29,24 @@
   background: white;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   margin: 20px auto;
+  max-width: 21cm; /* A4 width */
+  min-height: 29.7cm; /* A4 height */
+}
+
+/* Document Editor container - centered page layout */
+.editor-container_document-editor {
+  background: #f5f5f5;
+  padding: 40px 20px;
+  min-height: 100vh;
 }
 
 /* Dark mode support for Document Editor */
+.dark .editor-container_document-editor {
+  background: #1a1a1a;
+}
+
 .dark .editor-container_document-editor .ck-editor__editable {
   background: #1e1e1e;
   color: #e0e0e0;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.1);
 }

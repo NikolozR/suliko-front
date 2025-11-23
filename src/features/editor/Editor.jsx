@@ -17,7 +17,19 @@ export default function Editor({ translatedMarkdown, onChange }) {
   const editorRef = useRef(null);
   const editorInstanceRef = useRef(null);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
+  const [error, setError] = useState(null);
   const cloud = useCKEditorCloud({ version: "46.0.0", premium: true });
+
+  // Debug: Log cloud status
+  useEffect(() => {
+    if (cloud.status === "error") {
+      console.error('CKEditor Cloud error:', cloud);
+      setError('Failed to load CKEditor');
+    } else if (cloud.status === "success") {
+      console.log('CKEditor Cloud loaded. Available editors:', Object.keys(cloud.CKEditor || {}));
+      setError(null);
+    }
+  }, [cloud]);
 
   useEffect(() => {
     setIsLayoutReady(true);
@@ -30,8 +42,16 @@ export default function Editor({ translatedMarkdown, onChange }) {
       return {};
     }
 
+    // Check what's available in cloud.CKEditor
+    if (!cloud.CKEditor) {
+      console.error('CKEditor cloud object not available');
+      return {};
+    }
+
+    // DocumentEditor might not be available in Cloud, fallback to ClassicEditor if needed
     const {
-      DocumentEditor,
+      DocumentEditor: DocEditor,
+      ClassicEditor,
       Autoformat,
       AutoImage,
       Autosave,
@@ -85,8 +105,25 @@ export default function Editor({ translatedMarkdown, onChange }) {
     } = cloud.CKEditor;
     const { FormatPainter } = cloud.CKEditorPremiumFeatures;
 
+    // Use DocumentEditor if available, otherwise fallback to ClassicEditor
+    // Note: DocumentEditor might not be available in Cloud CDN
+    const EditorToUse = DocEditor || ClassicEditor;
+    
+    if (!EditorToUse) {
+      console.error('Neither DocumentEditor nor ClassicEditor is available');
+      console.log('Available in cloud.CKEditor:', Object.keys(cloud.CKEditor || {}));
+      return {};
+    }
+
+    // Log which editor we're using
+    if (DocEditor) {
+      console.log('Using DocumentEditor');
+    } else {
+      console.log('DocumentEditor not available, using ClassicEditor with document-like styling');
+    }
+
     return {
-      DocumentEditor,
+      DocumentEditor: EditorToUse,
       editorConfig: {
         toolbar: {
           items: [
@@ -305,6 +342,43 @@ export default function Editor({ translatedMarkdown, onChange }) {
     }
   }, [translatedMarkdown]);
 
+  // Show loading state
+  if (cloud.status === "loading" || !isLayoutReady) {
+    return (
+      <div className="main-container">
+        <div className="editor-container editor-container_document-editor p-8 text-center">
+          <p>Loading editor...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (cloud.status === "error" || error) {
+    return (
+      <div className="main-container">
+        <div className="editor-container editor-container_document-editor p-8 text-center text-red-500">
+          <p>Error loading editor. Please refresh the page.</p>
+          {error && <p className="text-sm mt-2">{error}</p>}
+        </div>
+      </div>
+    );
+  }
+
+  // Show message if editor not available
+  if (!DocumentEditor || !editorConfig) {
+    return (
+      <div className="main-container">
+        <div className="editor-container editor-container_document-editor p-8 text-center">
+          <p>Editor is initializing...</p>
+          <p className="text-sm text-muted-foreground mt-2">
+            Cloud status: {cloud.status}
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="main-container">
       <div
@@ -313,19 +387,23 @@ export default function Editor({ translatedMarkdown, onChange }) {
       >
         <div className="editor-container__editor">
           <div ref={editorRef}>
-            {DocumentEditor && editorConfig && (
-              <CKEditor
-                editor={DocumentEditor}
-                config={editorConfig}
-                onReady={(editor) => {
-                  editorInstanceRef.current = editor;
-                  editor.setData(translatedMarkdown || "");
-                }}
-                onChange={(event, editor) => {
-                  onChange && onChange(editor.getData());
-                }}
-              />
-            )}
+            <CKEditor
+              editor={DocumentEditor}
+              config={editorConfig}
+              onReady={(editor) => {
+                editorInstanceRef.current = editor;
+                editor.setData(translatedMarkdown || "");
+              }}
+              onChange={(event, editor) => {
+                onChange && onChange(editor.getData());
+              }}
+              onError={(error, { willEditorRestart }) => {
+                console.error('CKEditor error:', error);
+                if (willEditorRestart) {
+                  editorInstanceRef.current = null;
+                }
+              }}
+            />
           </div>
         </div>
       </div>
