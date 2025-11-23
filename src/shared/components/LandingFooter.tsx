@@ -54,7 +54,7 @@ export default function LandingFooter() {
                 <Button 
                   size="lg" 
                   className="px-8 py-4 text-base"
-                  onClick={() => window.open('https://calendly.com/mishkaten/suliko-meeting', '_blank')}
+                  onClick={() => window.open('https://calendly.com/misha-suliko/30min', '_blank')}
                 >
                   {t("bookDemo")}
                 </Button>
