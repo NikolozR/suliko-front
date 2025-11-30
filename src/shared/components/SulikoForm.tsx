@@ -388,9 +388,9 @@ const SulikoForm: React.FC = () => {
           onClose={() => setAuthError(null)}
         />
       )}
-      <div className="w-[85%] dark:z-[2] dark:bg-transparent bg-suliko-main-content-bg-color z-[100] pt-[100px]">
+      <div className="w-[85%] dark:z-[2] dark:bg-transparent bg-suliko-main-content-bg-color z-[100] pt-[100px] pb-8">
         <Form {...form}>
-          <div className="flex z-10 flex-col my-[110px] sm:mt-0 justify-center items-center w-full h-full">
+          <div className="flex z-10 flex-col my-[110px] sm:mt-0 sm:my-0 justify-start items-center w-full min-h-full">
             <div className="mb-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 flex w-[60%] max-w-md">
               <button
                 type="button"
@@ -445,7 +445,7 @@ const SulikoForm: React.FC = () => {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel className="font-bold dark:text-white">
-                        {t("phoneNumberOrEmail") || "Phone Number or Email"}
+                        {t("phoneNumberOrEmail") || "Phone Number or Email"} <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
                         <Input 
@@ -561,14 +561,6 @@ const SulikoForm: React.FC = () => {
               {!isLoginMode && (
                 <>
                   <NameSection form={form} hideEmail={verificationMethod === "email"} />
-                  {verificationMethod === "phone" && (
-                    <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
-                      <span className="text-blue-600 dark:text-blue-400">ℹ️</span>
-                      <p className="text-xs text-blue-700 dark:text-blue-300">
-                        {t("emailWillBeAskedLater")}
-                      </p>
-                    </div>
-                  )}
                   {verificationMethod === "email" && (
                     <div className="flex items-center gap-2 p-3 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                       <span className="text-blue-600 dark:text-blue-400">ℹ️</span>

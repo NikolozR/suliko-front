@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { X, Moon, Sun } from "lucide-react";
+import { X, Moon, Sun, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTheme } from "next-themes";
@@ -70,6 +70,7 @@ function MobileNavItem({ children, onClick, isBlogPage }: { href: string; childr
 
 export default function LandingHeader() {
   const t = useTranslations("LandingHeader");
+  const router = useRouter();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -77,6 +78,19 @@ export default function LandingHeader() {
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBlogPage, setIsBlogPage] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  // Prefetch the document page on hover
+  const handleMouseEnter = () => {
+    router.prefetch('/document');
+  };
+
+  // Handle click with loading state
+  const handleGetStartedClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsNavigating(true);
+    router.push('/document');
+  };
   
 
   // Handle mounting
@@ -234,9 +248,25 @@ export default function LandingHeader() {
           <div className="hidden md:flex items-center space-x-4">
             <LanguageSwitcher />
             <ThemeToggle />
-            <Link href="/document">
-              <Button size="sm" className="text-sm">
-                {t("getStarted")}
+            <Link 
+              href="/document" 
+              prefetch={true}
+              onMouseEnter={handleMouseEnter}
+              onClick={handleGetStartedClick}
+            >
+              <Button 
+                size="sm" 
+                className="text-sm"
+                disabled={isNavigating}
+              >
+                {isNavigating ? (
+                  <>
+                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                    {t("loading") || "Loading..."}
+                  </>
+                ) : (
+                  t("getStarted")
+                )}
               </Button>
             </Link>
           </div>
@@ -322,9 +352,27 @@ export default function LandingHeader() {
                     <ThemeToggle />
                   </div>
                   
-                  <Link href="/document" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button className="w-full">
-                      {t("getStarted")}
+                  <Link 
+                    href="/document" 
+                    prefetch={true}
+                    onMouseEnter={handleMouseEnter}
+                    onClick={(e) => {
+                      handleGetStartedClick(e);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <Button 
+                      className="w-full"
+                      disabled={isNavigating}
+                    >
+                      {isNavigating ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {t("loading") || "Loading..."}
+                        </>
+                      ) : (
+                        t("getStarted")
+                      )}
                     </Button>
                   </Link>
                 </div>

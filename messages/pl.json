@@ -112,6 +112,69 @@
     "pages": "stron",
     "completeEmail": "Uzupełnij e-mail"
   },
+  "HelpPage": {
+    "title": "Pomoc i wsparcie",
+    "description": "Potrzebujesz pomocy? Jesteśmy tutaj, aby pomóc. Przeglądaj nasze zasoby lub skontaktuj się z nami.",
+    "contact": {
+      "title": "Informacje kontaktowe",
+      "email": "E-mail",
+      "phone": "Telefon"
+    },
+    "quickLinks": {
+      "title": "Szybkie linki",
+      "apiDocs": "Dokumentacja API",
+      "pricing": "Cennik",
+      "blog": "Blog",
+      "feedback": "Wyślij opinię"
+    },
+    "feedbackCta": {
+      "title": "Masz opinię lub potrzebujesz pomocy?",
+      "description": "Wyślij nam swoją opinię, pytania lub zgłoś problemy za pomocą naszego formularza opinii."
+    }
+  },
+  "FeedbackPage": {
+    "title": "Opinia",
+    "description": "Chcielibyśmy usłyszeć od Ciebie! Podziel się swoimi przemyśleniami, sugestiami lub zgłoś problemy.",
+    "form": {
+      "title": "Wyślij nam opinię",
+      "description": "Wypełnij poniższy formularz, a odpowiemy tak szybko, jak to możliwe.",
+      "email": "E-mail",
+      "emailPlaceholder": "twoj.email@przyklad.pl",
+      "subject": "Temat",
+      "subjectPlaceholder": "Wybierz temat",
+      "message": "Wiadomość",
+      "messagePlaceholder": "Podziel się opinią, sugestiami lub zgłoś problem...",
+      "send": "Wyślij opinię",
+      "sending": "Wysyłanie...",
+      "subjects": {
+        "general": "Ogólne zapytanie",
+        "technical": "Problem techniczny",
+        "billing": "Pytanie dotyczące płatności",
+        "feature": "Prośba o funkcję",
+        "bug": "Zgłoszenie błędu",
+        "other": "Inne"
+      }
+    },
+    "contact": {
+      "title": "Informacje kontaktowe",
+      "email": "E-mail",
+      "phone": "Telefon"
+    },
+    "quickLinks": {
+      "title": "Szybkie linki",
+      "apiDocs": "Dokumentacja API",
+      "pricing": "Cennik",
+      "blog": "Blog"
+    },
+    "success": {
+      "title": "Opinia wysłana pomyślnie!",
+      "description": "Dziękujemy za opinię. Odpowiemy tak szybko, jak to możliwe."
+    },
+    "error": {
+      "title": "Błąd",
+      "description": "Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z nami bezpośrednio pod adresem Info@suliko.ge"
+    }
+  },
   "MainContent": {
     "title": "Twój tłumacz",
     "description": "Wybierz metodę",
@@ -162,7 +225,7 @@
     "description": "Prześlij dokument do tłumaczenia",
     "dragAndDrop": "Przeciągnij i upuść plik lub kliknij, aby wybrać",
     "dropFiles": "Upuść pliki tutaj",
-    "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, itp.",
+    "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, JPEG, PNG, JPG, itp.",
     "pageCountWarning": "⚠️ Dokumenty powyżej 4 stron mogą powodować problemy z przetwarzaniem i saldem; nie wszystkie strony mogą zostać przetłumaczone. Zalecamy podzielić plik na części do 3 stron i przesyłać je osobno.",
     "warningDialog": {
       "title": "Ostrzeżenie o rozmiarze dokumentu",
@@ -180,7 +243,22 @@
       "minute": "minuta",
       "estimatedCost": "Strony do użycia: {cost}",
       "insufficientPages": "Niewystarczający balans stron. Potrzebujesz {needed} stron, ale masz tylko {available} stron. Proszę zakupić więcej stron, aby kontynuować.",
-      "changeFile": "Zmień plik"
+      "changeFile": "Zmień plik",
+      "selectedPages": "Wybrane strony"
+    },
+    "pageSelection": {
+      "title": "Wybierz strony do tłumaczenia",
+      "description": "Twój dokument ma {totalPages} stron, ale tylko {pagesLimit} stron może zostać przetłumaczonych jednocześnie. Proszę wybrać, które {pagesLimit} stron chcesz przetłumaczyć.",
+      "options": {
+        "first3": "Pierwsze 3 strony",
+        "last3": "Ostatnie 3 strony",
+        "middle": "Strony {start}-{end}"
+      },
+      "pages": "Strony {start} do {end}",
+      "confirm": "Potwierdź",
+      "cancel": "Anuluj",
+      "required": "Proszę wybrać, które 3 strony chcesz przetłumaczyć przed kontynuowaniem.",
+      "extractionNotSupported": "Wyodrębnianie stron nie jest obsługiwane dla tego typu pliku. Proszę ręcznie podzielić dokument lub skontaktować się z pomocą techniczną."
     },
     "documentPreview": {
       "loadingText": "Ładowanie pliku tekstowego...",
@@ -214,6 +292,7 @@
     "progress": {
       "longerThanUsual": "Trwa dłużej niż zwykle",
       "starting": "Rozpoczynanie tłumaczenia...",
+      "extractingPages": "Wyodrębnianie wybranych stron...",
       "documentInfo": "Dokument ma {data} stron",
       "wordCount": "Dokument ma {data} słów",
       "estimatedTime": "Dokument potrzebuje {data} minut",
@@ -471,7 +550,8 @@
     "documentsTranslated": "Przetłumaczone dokumenty",
     "languagesSupported": "Obsługiwane języki",
     "accuracyRate": "Wskaźnik dokładności",
-    "supportAvailable": "Dostępne wsparcie"
+    "supportAvailable": "Dostępne wsparcie",
+    "loading": "Ładowanie..."
   },
   "VideoSection": {
     "title": "Zobacz Suliko w akcji",
@@ -483,7 +563,8 @@
     "testimonials": "Opinie",
     "contact": "Kontakt",
     "blog": "Blog",
-    "getStarted": "Zacznij"
+    "getStarted": "Zacznij",
+    "loading": "Ładowanie..."
   },
   "AboutSection": {
     "title": "Dlaczego Suliko?",
@@ -571,12 +652,13 @@
     "location": "Tbilisi, Georgia",
     "bookDemo": "Zamów demo",
     "resources": "Zasoby",
+    "developers": "Integracja B2B",
     "about": "O nas",
     "contactUs": "Kontakt",
     "logIn": "Zaloguj się",
-    "team": "Zespół",
+    "blog": "Blog",
     "testimonials": "Opinie",
-    "links": {
+    "links": { 
       "product": "Produkt",
       "company": "Firma",
       "support": "Wsparcie",
@@ -644,5 +726,113 @@
     "ups": "Problem Detected",
     "retry": "Spróbuj ponownie",
     "networkProblem": "Problem z siecią"
+  },
+  "Developers": {
+    "hero": {
+      "title": "API tłumaczeń dla deweloperów",
+      "subtitle": "Integruj potężne tłumaczenie AI w swoich aplikacjach za pomocą zaledwie kilku linii kodu. Tłumacz artykuły, teksty na stronie i nie tylko jednym kliknięciem."
+    },
+    "features": {
+      "speed": {
+        "title": "Błyskawicznie szybkie",
+        "description": "Otrzymuj tłumaczenia w milisekundach dzięki naszej zoptymalizowanej infrastrukturze API"
+      },
+      "languages": {
+        "title": "Wiele języków",
+        "description": "Wsparcie dla dziesiątków języków z dokładnym tłumaczeniem opartym na AI"
+      },
+      "security": {
+        "title": "Bezpieczne i niezawodne",
+        "description": "Bezpieczeństwo klasy enterprise z unikalnymi kluczami dla każdej firmy"
+      }
+    },
+    "quickStart": {
+      "title": "Przewodnik szybkiego startu",
+      "description": "Zacznij w ciągu minut",
+      "step1": {
+        "title": "Krok 1: Uzyskaj swój klucz API",
+        "description": "Skontaktuj się z nami, aby otrzymać swój unikalny klucz API (uniqueKey), który identyfikuje Twoją firmę. Ten klucz jest wymagany dla wszystkich żądań API."
+      },
+      "step2": {
+        "title": "Krok 2: Pobierz dostępne języki",
+        "description": "Pobierz listę dostępnych języków i ich ID za pomocą naszego endpointu języków:",
+        "endpoint": "GET https://content.api24.ge/api/Language"
+      },
+      "step3": {
+        "title": "Krok 3: Tłumacz swój tekst",
+        "description": "Wyślij swój tekst do tłumaczenia za pomocą naszego endpointu tłumaczeń. Po prostu podaj tekst, ID języka docelowego i swój unikalny klucz."
+      }
+    },
+    "api": {
+      "title": "Dokumentacja API",
+      "description": "Kompletna dokumentacja API do integracji tłumaczeń w swoich aplikacjach",
+      "endpoint": {
+        "title": "Endpoint tłumaczeń",
+        "url": "POST https://content.api24.ge/api/Content/translate",
+        "method": "Żądanie HTTP POST z ciałem JSON"
+      },
+      "request": {
+        "title": "Ciało żądania",
+        "description": "Wyślij swoje żądanie tłumaczenia z następującą strukturą JSON:",
+        "fields": {
+          "description": "Tekst, który chcesz przetłumaczyć (ciąg znaków, wymagane)",
+          "languageId": "ID języka docelowego (liczba, wymagane). Pobierz dostępne ID języków z endpointu /Language.",
+          "uniqueKey": "Unikalny klucz API Twojej firmy (ciąg znaków, wymagane). Skontaktuj się z nami, aby otrzymać swój uniqueKey."
+        }
+      },
+      "response": {
+        "title": "Odpowiedź",
+        "description": "Sukcesna odpowiedź zwróci przetłumaczony tekst:"
+      }
+    },
+    "examples": {
+      "title": "Przykłady kodu",
+      "description": "Gotowe fragmenty kodu w popularnych językach programowania"
+    },
+    "languages": {
+      "title": "Dostępne języki",
+      "description": "Pobierz pełną listę obsługiwanych języków",
+      "info": "Użyj tego endpointu, aby pobrać wszystkie dostępne języki i ich ID:",
+      "endpoint": "GET https://content.api24.ge/api/Language",
+      "response": "Odpowiedź jest tablicą obiektów językowych z następującą strukturą:",
+      "table": {
+        "id": "ID Języka",
+        "english": "Nazwa angielska",
+        "georgian": "Nazwa gruzińska"
+      },
+      "showJson": "Pokaż przykład odpowiedzi JSON"
+    },
+    "enhanceApi": {
+      "title": "API ulepszania tłumaczeń",
+      "description": "Ulepszaj i dopracowuj istniejące tłumaczenia dzięki ulepszaniu wspieranemu przez AI",
+      "endpoint": {
+        "title": "Endpoint ulepszania tłumaczeń",
+        "url": "POST https://content.api24.ge/api/Content/enhance-translate",
+        "method": "Żądanie HTTP POST z ciałem JSON"
+      },
+      "request": {
+        "title": "Ciało żądania",
+        "description": "Wyślij swoje żądanie ulepszenia z następującą strukturą JSON:",
+        "fields": {
+          "userInput": "Oryginalny tekst, który został przetłumaczony (ciąg znaków, wymagane)",
+          "translateOutput": "Przetłumaczony tekst wymagający ulepszenia (ciąg znaków, wymagane)",
+          "targetLanguageId": "ID języka docelowego (liczba, wymagane). Pobierz dostępne ID języków z endpointu /api/Language.",
+          "uniqueKey": "Unikalny klucz API Twojej firmy (ciąg znaków, wymagane). Skontaktuj się z nami, aby otrzymać swój uniqueKey."
+        }
+      },
+      "response": {
+        "title": "Odpowiedź",
+        "description": "Sukcesna odpowiedź zwróci ulepszone tłumaczenie:"
+      },
+      "examples": {
+        "title": "Przykłady kodu ulepszania tłumaczeń",
+        "description": "Fragmenty kodu do ulepszania tłumaczeń w popularnych językach programowania"
+      }
+    },
+    "cta": {
+      "title": "Gotowy, aby zacząć?",
+      "description": "Skontaktuj się z nami już dziś, aby otrzymać swój unikalny klucz API i zacząć tłumaczyć treści w sekundach",
+      "button": "Skontaktuj się z nami"
+    }
   }
 }

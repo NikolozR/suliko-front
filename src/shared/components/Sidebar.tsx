@@ -9,6 +9,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { HistoryDropdown } from "@/features/chatHistory/components/HistoryDropdown";
+import { SidebarLanguageSelector } from "./SidebarLanguageSelector";
 import {
   Plus,
   Clock,
@@ -42,13 +43,13 @@ const NAV_ITEMS = [
     label: "help",
     href: "/help",
     icon: HelpCircle,
-    disabled: true,
+    disabled: false,
   },
   {
     label: "feedback",
     href: "/feedback",
     icon: MessageSquare,
-    disabled: true,
+    disabled: false,
   },
 ];
 
@@ -217,6 +218,10 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               </Link>
             )
           ))}
+
+          <div className="w-full">
+            <SidebarLanguageSelector isCollapsed={effectiveIsCollapsed} />
+          </div>
 
           {token && (
             <div className="relative">

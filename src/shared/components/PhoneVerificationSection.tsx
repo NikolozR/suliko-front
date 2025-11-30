@@ -41,7 +41,7 @@ const PhoneVerificationSection = ({
         name="mobile"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="font-bold dark:text-white">{t('phoneNumber')}</FormLabel>
+            <FormLabel className="font-bold dark:text-white">{t('phoneNumber')} <span className="text-red-500">*</span></FormLabel>
             <div className="flex gap-2 w-full items-center">
               <FormControl className="w-full">
                 <Input 
@@ -77,7 +77,7 @@ const PhoneVerificationSection = ({
           name="verificationCode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold dark:text-white">{t('verificationCode')}</FormLabel>
+              <FormLabel className="font-bold dark:text-white">{t('verificationCode')} <span className="text-red-500">*</span></FormLabel>
               <FormControl>
                 <div className="flex flex-col items-center gap-4">
                   <VerificationCodeInput

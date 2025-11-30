@@ -17,7 +17,7 @@ export default function SulikoFormBanner() {
         : 'suliko-default-bg';
         
     return (
-        <div className={`w-full py-[100px] sm:py-0 sm:w-[50%] h-full ${backgroundClass} flex justify-center items-center z-10`}>
+        <div className={`w-full py-[100px] sm:py-0 sm:w-[50%] sm:min-h-screen ${backgroundClass} flex justify-center items-center z-10`}>
             <SulikoLogo className="lg:w-[400px]" width={300} adaptive={false} defaultColor="Light" />
         </div>
     )

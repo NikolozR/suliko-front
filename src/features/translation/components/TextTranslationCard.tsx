@@ -100,12 +100,12 @@ const TextTranslationCard = () => {
   }, [currentTextValue, currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const translatedRef = useRef<HTMLDivElement | null>(null);
+  const translatedRef = useRef<HTMLTextAreaElement | null>(null);
   const isScrolling = useRef(false);
 
   useEffect(() => {
     const textarea = textareaRef.current;
-    const translated = translatedRef.current?.querySelector("div:last-child");
+    const translated = translatedRef.current;
     if (!textarea || !translated || !translatedText) return;
 
     const syncScroll = (source: Element, target: Element, event: Event) => {
@@ -378,17 +378,15 @@ const TextTranslationCard = () => {
                       />
                     </div>
                   </div>
-                  <div
+                  <Textarea
                     ref={translatedRef}
-                    className="w-full flex-1 px-2 py-2 md:px-3 h-[300px] max-h-[300px] bg-slate-50 dark:bg-input/30 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm flex flex-col"
-                  >
-                    <div 
-                      className="text-foreground flex-1 overflow-y-auto text-sm md:text-base whitespace-pre-wrap"
-                      style={{ lineHeight: '1.6' }}
-                    >
-                      {translatedText}
-                    </div>
-                  </div>
+                    className="w-full flex-1 h-[300px] max-h-[300px] border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm md:text-base bg-slate-50 dark:bg-input/30 border-slate-200 dark:border-slate-700"
+                    value={translatedText}
+                    onChange={(e) => {
+                      setTranslatedText(e.target.value);
+                    }}
+                    placeholder={t('result')}
+                  />
                   {/* Cost display for translated text */}
                   {parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
                     <div className="mt-2 text-suliko-default-color font-semibold text-sm">

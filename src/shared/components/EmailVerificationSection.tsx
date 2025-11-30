@@ -41,7 +41,7 @@ const EmailVerificationSection = ({
         name="email"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="font-bold dark:text-white">{t('email')}</FormLabel>
+            <FormLabel className="font-bold dark:text-white">{t('email')} <span className="text-red-500">*</span></FormLabel>
             <div className="flex gap-2 w-full items-center">
               <FormControl className="w-full">
                 <Input 
@@ -77,7 +77,7 @@ const EmailVerificationSection = ({
           name="verificationCode"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold dark:text-white">{t('verificationCode')}</FormLabel>
+              <FormLabel className="font-bold dark:text-white">{t('verificationCode')} <span className="text-red-500">*</span></FormLabel>
               <FormControl>
                 <div className="flex flex-col items-center gap-4">
                   <VerificationCodeInput

@@ -13,6 +13,7 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { AuthModal } from "@/features/auth";
 import { PageWarningModal } from "@/shared/components/PageWarningModal";
+import { PageRangeSelector } from "@/shared/components/PageRangeSelector";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import TranslationResultView from "./TranslationResultView";
 import DocumentUploadView from "./DocumentUploadView";
@@ -23,7 +24,9 @@ import { z } from "zod";
 import { useTranslations } from "next-intl";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { documentTranslatingWithJobId } from "../utils/documentTranslation";
+import { extractPagesFromDocument } from "../utils/extractPages";
 import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
+import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, type DocumentMetadata } from "@/shared/utils/fileStorage";
 import LanguageSelect from "./LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
@@ -69,6 +72,7 @@ const DocumentTranslationCard = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
   const [showPageWarning, setShowPageWarning] = useState<boolean>(false);
+  const [showPageRangeSelector, setShowPageRangeSelector] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFormData, setLastFormData] = useState<DocumentFormData | null>(null);
   const [/*loadingProgressState*/, /*setLoadingProgressState*/] = useState<number>(0);
@@ -91,6 +95,8 @@ const DocumentTranslationCard = () => {
     estimatedMinutes,
     estimatedCost,
     estimatedWordCount,
+    selectedPageRange,
+    setSelectedPageRange,
   } = useDocumentTranslationStore();
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
 
@@ -149,25 +155,125 @@ const DocumentTranslationCard = () => {
     }
   }, [realPageCount]);
 
+  // Show page range selector when document has more than 4 pages
+  useEffect(() => {
+    if (realPageCount && realPageCount > 4 && currentFileObj) {
+      // Reset selection when a new document is uploaded
+      if (!selectedPageRange) {
+        setShowPageRangeSelector(true);
+      }
+    } else {
+      // Clear selection if document has 4 or fewer pages
+      if (realPageCount && realPageCount <= 4) {
+        setSelectedPageRange(null);
+        setShowPageRangeSelector(false);
+      }
+    }
+  }, [realPageCount, currentFileObj, selectedPageRange, setSelectedPageRange]);
+
   useEffect(() => {
     setValue("currentTargetLanguageId", currentTargetLanguageId);
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
-  const handleFileClick = () => {
-    if (!token) {
-      setShowAuthModal(true);
-      return false;
+  // Restore file from storage when user returns after authentication
+  useEffect(() => {
+    const restoreFile = async () => {
+      // Only restore if user is authenticated and no file is currently loaded
+      if (token && !currentFileObj && typeof window !== 'undefined' && 'indexedDB' in window) {
+        try {
+          const storedFile = await getFileFromStorage();
+          const storedMetadata = await getMetadataFromStorage();
+          
+          if (storedFile) {
+            // Reconstruct FileList from stored File
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(storedFile);
+            const fileList = dataTransfer.files;
+            
+            setCurrentFile(fileList);
+            setValue("currentFile", fileList);
+            
+            // Determine if it's an SRT file
+            const fileExtension = storedFile.name.split(".").pop()?.toLowerCase();
+            const isSrtFile = fileExtension === "srt";
+            setValue("isSrt", isSrtFile);
+            
+            // Restore metadata if available
+            if (storedMetadata) {
+              const { setRealPageCount, setSelectedPageRange, setCurrentSourceLanguageId, setCurrentTargetLanguageId } = useDocumentTranslationStore.getState();
+              
+              if (storedMetadata.realPageCount !== null && storedMetadata.realPageCount !== undefined) {
+                setRealPageCount(storedMetadata.realPageCount);
+              }
+              
+              if (storedMetadata.selectedPageRange) {
+                setSelectedPageRange(storedMetadata.selectedPageRange);
+              }
+              
+              if (storedMetadata.currentSourceLanguageId !== undefined) {
+                setCurrentSourceLanguageId(storedMetadata.currentSourceLanguageId);
+              }
+              
+              if (storedMetadata.currentTargetLanguageId !== undefined) {
+                setCurrentTargetLanguageId(storedMetadata.currentTargetLanguageId);
+              }
+            }
+            
+            // Clear the stored file from IndexedDB after restoring
+            await clearFileFromStorage();
+          }
+        } catch (error) {
+          console.error("Failed to restore file from storage:", error);
+        }
+      }
+    };
+
+    restoreFile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [token]);
+
+  // Clear stored file after successful translation
+  useEffect(() => {
+    const clearStorageAfterTranslation = async () => {
+      if (translatedMarkdown && typeof window !== 'undefined' && 'indexedDB' in window) {
+        try {
+          await clearFileFromStorage();
+        } catch (error) {
+          console.error("Failed to clear file from storage after translation:", error);
+        }
+      }
+    };
+
+    clearStorageAfterTranslation();
+  }, [translatedMarkdown]);
+
+  // Save file to storage before navigating to sign-in
+  const handleSaveFileBeforeAuth = async () => {
+    if (currentFileObj && typeof window !== 'undefined' && 'indexedDB' in window) {
+      try {
+        const metadata: DocumentMetadata = {
+          realPageCount,
+          selectedPageRange,
+          currentSourceLanguageId,
+          currentTargetLanguageId,
+        };
+        await saveFileToStorage(currentFileObj, metadata);
+      } catch (error) {
+        console.error("Failed to save file to storage:", error);
+      }
     }
+  };
+
+  const handleFileClick = () => {
+    // Allow file upload without authentication
+    // Authentication will be checked when user tries to translate
     return true;
   };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    if (!token) {
-      setShowAuthModal(true);
-      event.target.value = "";
-      return;
-    }
+    // Allow file upload without authentication
+    // Authentication will be checked when user tries to translate
 
     if (event.target.files && event.target.files.length > 0) {
       const file = event.target.files[0];
@@ -185,8 +291,8 @@ const DocumentTranslationCard = () => {
         setIsButtonHighlighted(false);
       }, 3000); // Remove highlight after 3 seconds
 
-      // Get exact page count for DOCX files
-      if (fileExtension === "docx") {
+      // Get exact page count for DOCX files (only if authenticated)
+      if (fileExtension === "docx" && token) {
         const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
         
         // Set loading state while counting pages
@@ -217,16 +323,27 @@ const DocumentTranslationCard = () => {
     }
   };
 
-  const handleRemoveFile = () => {
+  const handleRemoveFile = async () => {
     setCurrentFile(null);
     setTranslatedMarkdown("");
     setValue("currentFile", null);
     setValue("isSrt", false);
     clearErrors("currentFile");
     
-    const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
+    const { setRealPageCount, setIsCountingPages, setSelectedPageRange } = useDocumentTranslationStore.getState();
     setRealPageCount(null);
     setIsCountingPages(false);
+    setSelectedPageRange(null);
+    setShowPageRangeSelector(false);
+    
+    // Clear stored file from IndexedDB if it exists
+    if (typeof window !== 'undefined' && 'indexedDB' in window) {
+      try {
+        await clearFileFromStorage();
+      } catch (error) {
+        console.error("Failed to clear file from storage:", error);
+      }
+    }
     
     const fileInput = document.querySelector(
       'input[type="file"]'
@@ -238,12 +355,23 @@ const DocumentTranslationCard = () => {
 
   const onSubmit = async (data: DocumentFormData) => {
     if (!token) {
+      // Save file to storage before showing auth modal
+      await handleSaveFileBeforeAuth();
       setShowAuthModal(true);
       return;
     }
 
     if (!data.currentFile || data.currentFile.length === 0) {
       return;
+    }
+
+    // Check if page range selection is required and selected
+    if (realPageCount && realPageCount > 4) {
+      if (!selectedPageRange) {
+        setShowPageRangeSelector(true);
+        setError(t("pageSelection.required"));
+        return;
+      }
     }
 
     // Store form data for retry
@@ -281,6 +409,36 @@ const DocumentTranslationCard = () => {
     setManualProgress(0, t("progress.starting"));
 
     try {
+      // Extract pages if page range is selected
+      let fileToTranslate = data.currentFile[0];
+      if (realPageCount && realPageCount > 4 && selectedPageRange) {
+        setManualProgress(5, t("progress.extractingPages"));
+        const extractedFile = await extractPagesFromDocument(
+          fileToTranslate,
+          selectedPageRange.startPage,
+          selectedPageRange.endPage
+        );
+        
+        if (!extractedFile) {
+          // If extraction is not supported (e.g., DOCX), show error
+          setError(t("pageSelection.extractionNotSupported"));
+          setIsLoading(false);
+          reset();
+          return;
+        }
+        
+        fileToTranslate = extractedFile;
+        
+        // Create a new FileList with the extracted file
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(extractedFile);
+        const newFileList = dataTransfer.files;
+        
+        // Update form data with extracted file
+        data.currentFile = newFileList;
+        setValue("currentFile", newFileList);
+      }
+
       await documentTranslatingWithJobId(
         data,
         setError,
@@ -479,6 +637,17 @@ const DocumentTranslationCard = () => {
         onClose={() => setShowPageWarning(false)}
         pageCount={estimatedPageCount}
       />
+      {realPageCount && realPageCount > 4 && (
+        <PageRangeSelector
+          isOpen={showPageRangeSelector}
+          onClose={() => {
+            setShowPageRangeSelector(false);
+            // If no selection was made and modal is closed, don't block submission
+            // User can reopen it if needed
+          }}
+          totalPages={realPageCount}
+        />
+      )}
     </>
   );
 };

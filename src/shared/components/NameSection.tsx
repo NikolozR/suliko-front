@@ -20,7 +20,7 @@ const NameSection = ({ form, hideEmail = false }: NameSectionProps) => {
           name="firstname"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel className="font-bold dark:text-white">{t('firstname')} ({t('optional')})</FormLabel>
+              <FormLabel className="font-bold dark:text-white">{t('firstname')}</FormLabel>
               <FormControl>
                 <Input
                   placeholder={t('firstnamePlaceholder')}
@@ -37,7 +37,7 @@ const NameSection = ({ form, hideEmail = false }: NameSectionProps) => {
           name="lastname"
           render={({ field }) => (
             <FormItem className="flex-1">
-              <FormLabel className="font-bold dark:text-white">{t('lastname')} ({t('optional')})</FormLabel>
+              <FormLabel className="font-bold dark:text-white">{t('lastname')}</FormLabel>
               <FormControl>
                 <Input
                   placeholder={t('lastnamePlaceholder')}
@@ -56,7 +56,7 @@ const NameSection = ({ form, hideEmail = false }: NameSectionProps) => {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold dark:text-white">{t('email')}</FormLabel>
+              <FormLabel className="font-bold dark:text-white">{t('email')} <span className="text-red-500">*</span></FormLabel>
               <FormControl>
                 <Input
                   type="email"

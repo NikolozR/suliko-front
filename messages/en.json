@@ -113,6 +113,69 @@
     "pages": "Pages",
     "completeEmail": "Add your email"
   },
+  "HelpPage": {
+    "title": "Help & Support",
+    "description": "Need assistance? We're here to help. Browse our resources or contact us.",
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "apiDocs": "API Documentation",
+      "pricing": "Pricing",
+      "blog": "Blog",
+      "feedback": "Send Feedback"
+    },
+    "feedbackCta": {
+      "title": "Have feedback or need help?",
+      "description": "Send us your feedback, questions, or report issues through our feedback form."
+    }
+  },
+  "FeedbackPage": {
+    "title": "Feedback",
+    "description": "We'd love to hear from you! Share your thoughts, suggestions, or report issues.",
+    "form": {
+      "title": "Send Us Feedback",
+      "description": "Fill out the form below and we'll get back to you as soon as possible.",
+      "email": "Email",
+      "emailPlaceholder": "your.email@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "Select a subject",
+      "message": "Message",
+      "messagePlaceholder": "Share your feedback, suggestions, or report an issue...",
+      "send": "Send Feedback",
+      "sending": "Sending...",
+      "subjects": {
+        "general": "General Inquiry",
+        "technical": "Technical Issue",
+        "billing": "Billing Question",
+        "feature": "Feature Request",
+        "bug": "Bug Report",
+        "other": "Other"
+      }
+    },
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "apiDocs": "API Documentation",
+      "pricing": "Pricing",
+      "blog": "Blog"
+    },
+    "success": {
+      "title": "Feedback sent successfully!",
+      "description": "Thank you for your feedback. We'll get back to you as soon as possible."
+    },
+    "error": {
+      "title": "Error",
+      "description": "An error occurred. Please try again or contact us directly at Info@suliko.ge"
+    }
+  },
   "MainContent": {
     "title": "Your Translator",
     "description": "Choose a method",
@@ -163,7 +226,7 @@
     "description": "Upload document for translation",
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
-    "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc.",
+    "supportedFormats": "Supported file types: PDF, DOCX, TXT, JPEG, PNG, JPG, etc.",
     "pageCountWarning": "⚠️ Documents over 4 pages may cause processing and balance issues; some pages may not be translated. We recommend splitting your file into parts of up to 3 pages and uploading them separately.",
     "warningDialog": {
       "title": "Document Size Warning",
@@ -181,7 +244,22 @@
       "minute": "minute",
       "estimatedCost": "Pages to be used: {cost}",
       "insufficientPages": "Insufficient page balance. You need {needed} pages but only have {available} pages. Please purchase more pages to continue.",
-      "changeFile": "Change File"
+      "changeFile": "Change File",
+      "selectedPages": "Selected pages"
+    },
+    "pageSelection": {
+      "title": "Select Pages to Translate",
+      "description": "Your document has {totalPages} pages, but only {pagesLimit} pages can be translated at once. Please select which {pagesLimit} pages you want to translate.",
+      "options": {
+        "first3": "First 3 pages",
+        "last3": "Last 3 pages",
+        "middle": "Pages {start}-{end}"
+      },
+      "pages": "Pages {start} to {end}",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "required": "Please select which 3 pages to translate before proceeding.",
+      "extractionNotSupported": "Page extraction is not supported for this file type. Please split your document manually or contact support."
     },
     "documentPreview": {
       "loadingText": "Loading text file...",
@@ -216,6 +294,7 @@
     "progress": {
       "longerThanUsual": "Takes longer than usual",
       "starting": "Starting translation...",
+      "extractingPages": "Extracting selected pages...",
       "documentInfo": "Document has {data} pages",
       "wordCount": "Document has {data} words",
       "estimatedTime": "Document needs {data} minutes",
@@ -475,7 +554,8 @@
     "documentsTranslated": "Documents Translated",
     "languagesSupported": "Languages Supported",
     "accuracyRate": "Accuracy Rate",
-    "supportAvailable": "Support Available"
+    "supportAvailable": "Support Available",
+    "loading": "Loading..."
   },
   "VideoSection": {
     "title": "See Suliko in Action",
@@ -487,7 +567,8 @@
     "testimonials": "Testimonials",
     "contact": "Contact",
     "blog": "Blog",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "loading": "Loading..."
   },
   "AboutSection": {
     "title": "Why Choose Suliko?",
@@ -584,10 +665,11 @@
     "location": "Tbilisi, Georgia",
     "bookDemo": "Book A Demo",
     "resources": "Resources",
+    "developers": "B2B Integration",
     "about": "About",
     "contactUs": "Contact Us",
     "logIn": "Log In",
-    "team": "Team",
+    "blog": "Blog",
     "testimonials": "Testimonials",
     "links": {
       "product": "Product",
@@ -656,5 +738,113 @@
   "ErrorAlert": {
     "ups": "Problem Detected",
     "networkProblem": "Network Problem"
+  },
+  "Developers": {
+    "hero": {
+      "title": "Translation API for Developers",
+      "subtitle": "Integrate powerful AI translation into your applications with just a few lines of code. Translate articles, on-site texts, and more in one click."
+    },
+    "features": {
+      "speed": {
+        "title": "Lightning Fast",
+        "description": "Get translations in milliseconds with our optimized API infrastructure"
+      },
+      "languages": {
+        "title": "Multiple Languages",
+        "description": "Support for dozens of languages with accurate AI-powered translation"
+      },
+      "security": {
+        "title": "Secure & Reliable",
+        "description": "Enterprise-grade security with unique keys for each company"
+      }
+    },
+    "quickStart": {
+      "title": "Quick Start Guide",
+      "description": "Get up and running in minutes",
+      "step1": {
+        "title": "Step 1: Get Your API Key",
+        "description": "Contact us to receive your unique API key (uniqueKey) that identifies your company. This key is required for all API requests."
+      },
+      "step2": {
+        "title": "Step 2: Get Available Languages",
+        "description": "Fetch the list of available languages and their IDs using our languages endpoint:",
+        "endpoint": "GET https://content.api24.ge/api/Language"
+      },
+      "step3": {
+        "title": "Step 3: Translate Your Text",
+        "description": "Send your text for translation using our translation endpoint. Simply provide the text, target language ID, and your unique key."
+      }
+    },
+    "api": {
+      "title": "API Documentation",
+      "description": "Complete API reference for integrating translation into your applications",
+      "endpoint": {
+        "title": "Translation Endpoint",
+        "url": "POST https://content.api24.ge/api/Content/translate",
+        "method": "HTTP POST request with JSON body"
+      },
+      "request": {
+        "title": "Request Body",
+        "description": "Send your translation request with the following JSON structure:",
+        "fields": {
+          "description": "The text you want to translate (string, required)",
+          "languageId": "The ID of the target language (number, required). Get available language IDs from the /api/Language endpoint.",
+          "uniqueKey": "Your company's unique API key (string, required). Contact us to receive your uniqueKey."
+        }
+      },
+      "response": {
+        "title": "Response",
+        "description": "A successful response will return the translated text:"
+      }
+    },
+    "examples": {
+      "title": "Code Examples",
+      "description": "Ready-to-use code snippets in popular programming languages"
+    },
+    "languages": {
+      "title": "Available Languages",
+      "description": "Get the complete list of supported languages",
+      "info": "Use this endpoint to retrieve all available languages and their IDs:",
+      "endpoint": "GET https://content.api24.ge/api/Language",
+      "response": "The response is an array of language objects with the following structure:",
+      "table": {
+        "id": "Language ID",
+        "english": "English Name",
+        "georgian": "Georgian Name"
+      },
+      "showJson": "Show JSON response example"
+    },
+    "enhanceApi": {
+      "title": "Enhance Translation API",
+      "description": "Improve and refine existing translations with AI-powered enhancement",
+      "endpoint": {
+        "title": "Enhance Translation Endpoint",
+        "url": "POST https://content.api24.ge/api/Content/enhance-translate",
+        "method": "HTTP POST request with JSON body"
+      },
+      "request": {
+        "title": "Request Body",
+        "description": "Send your enhancement request with the following JSON structure:",
+        "fields": {
+          "userInput": "The original text that was translated (string, required)",
+          "translateOutput": "The translated text that needs enhancement (string, required)",
+          "targetLanguageId": "The ID of the target language (number, required). Get available language IDs from the /api/Language endpoint.",
+          "uniqueKey": "Your company's unique API key (string, required). Contact us to receive your uniqueKey."
+        }
+      },
+      "response": {
+        "title": "Response",
+        "description": "A successful response will return the enhanced translation:"
+      },
+      "examples": {
+        "title": "Enhance Translation Code Examples",
+        "description": "Code snippets for enhancing translations in popular programming languages"
+      }
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "description": "Contact us today to receive your unique API key and start translating content in seconds",
+      "button": "Contact Us"
+    }
   }
 }

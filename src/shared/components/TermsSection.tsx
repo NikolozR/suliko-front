@@ -49,6 +49,7 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
             <div className="space-y-1 leading-none">
               <FormLabel className="text-sm font-normal cursor-pointer">
                 {t("iAcceptThe")}{" "}
+                <span className="text-red-500">*</span>{" "}
                 <Dialog open={isTermsModalOpen} onOpenChange={setIsTermsModalOpen}>
                   <DialogTrigger asChild>
                     <Button

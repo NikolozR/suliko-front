@@ -27,7 +27,7 @@ const PasswordSection = ({
         name="password"
         render={({ field }) => (
           <FormItem>
-            <FormLabel className="font-bold dark:text-white">{t('password')}</FormLabel>
+            <FormLabel className="font-bold dark:text-white">{t('password')} <span className="text-red-500">*</span></FormLabel>
             <FormControl>
               <div className="relative w-full">
                 <Input
@@ -62,7 +62,7 @@ const PasswordSection = ({
           name="confirmPassword"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="font-bold dark:text-white">{t('confirmPassword')}</FormLabel>
+              <FormLabel className="font-bold dark:text-white">{t('confirmPassword')} <span className="text-red-500">*</span></FormLabel>
               <FormControl>
                 <div className="relative w-full">
                   <Input

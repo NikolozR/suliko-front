@@ -1,18 +1,32 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Loader2 } from "lucide-react";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useTheme } from "next-themes";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
+  const router = useRouter();
   const [mounted, setMounted] = useState(false);
   const [videoError, setVideoError] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const { resolvedTheme } = useTheme();
+
+  // Prefetch the document page on hover
+  const handleMouseEnter = () => {
+    router.prefetch('/document');
+  };
+
+  // Handle click with loading state
+  const handleGetStartedClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsNavigating(true);
+    router.push('/document');
+  };
 
 
   useEffect(() => {
@@ -164,10 +178,28 @@ export default function HeroSection() {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
-              <Link href="/document">
-                <Button size="lg" className="px-6 py-3 text-base group">
-                  {t("cta")}
-                  <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <Link 
+                href="/document" 
+                prefetch={true}
+                onMouseEnter={handleMouseEnter}
+                onClick={handleGetStartedClick}
+              >
+                <Button 
+                  size="lg" 
+                  className="px-6 py-3 text-base group"
+                  disabled={isNavigating}
+                >
+                  {isNavigating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      {t("loading") || "Loading..."}
+                    </>
+                  ) : (
+                    <>
+                      {t("cta")}
+                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                    </>
+                  )}
                 </Button>
               </Link>
               <Link href="#pricing">
