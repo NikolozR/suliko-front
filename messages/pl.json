@@ -173,6 +173,10 @@
     "error": {
       "title": "Błąd",
       "description": "Wystąpił błąd. Spróbuj ponownie lub skontaktuj się z nami bezpośrednio pod adresem Info@suliko.ge"
+    },
+    "comingSoon": {
+      "title": "Wkrótce",
+      "description": "Pracujemy nad tą funkcją. Proszę skontaktować się z nami bezpośrednio przez e-mail lub telefon."
     }
   },
   "MainContent": {

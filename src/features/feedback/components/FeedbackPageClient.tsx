@@ -77,14 +77,26 @@ export default function FeedbackPageClient() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Contact Form - Takes 2 columns */}
-          <div className="lg:col-span-2">
-            <Card>
+          <div className="lg:col-span-2 relative">
+            <Card className="relative">
+              {/* Coming Soon Overlay */}
+              <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-10 rounded-lg flex items-center justify-center">
+                <div className="text-center p-8">
+                  <div className="text-4xl font-bold text-foreground mb-2">
+                    {t("comingSoon.title")}
+                  </div>
+                  <p className="text-muted-foreground text-lg">
+                    {t("comingSoon.description")}
+                  </p>
+                </div>
+              </div>
+              
               <CardHeader>
                 <CardTitle>{t("form.title")}</CardTitle>
                 <CardDescription>{t("form.description")}</CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4 pointer-events-none opacity-50">
                   {/* Email Field */}
                   <div className="space-y-2">
                     <Label htmlFor="email">
