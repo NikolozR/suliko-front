@@ -4,7 +4,6 @@ import { useTranslations } from "next-intl";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/features/ui/components/ui/card";
 import { Code, Zap, Globe, Mail, CheckCircle2, BookOpen, Terminal, Lock } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
-import { Link } from "@/i18n/navigation";
 
 // Languages list - sorted by ID for better readability
 const languagesList = [

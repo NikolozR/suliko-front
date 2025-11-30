@@ -9,7 +9,6 @@ import {
   SelectContent,
   SelectItem,
   SelectTrigger,
-  SelectValue,
 } from "@/features/ui";
 import { UKFlag, GeorgianFlag, PolishFlag } from "./flags/FlagIcon";
 
