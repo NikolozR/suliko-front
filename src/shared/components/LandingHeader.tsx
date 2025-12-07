@@ -198,7 +198,7 @@ export default function LandingHeader() {
             : "bg-slate-900/80 backdrop-blur-md"
           : isScrolled
             ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
-            : "bg-transparent"
+            : "bg-background/95 backdrop-blur-md md:bg-transparent"
       } ${
         isHeaderVisible ? "translate-y-0" : "-translate-y-full"
       }`}
@@ -273,7 +273,11 @@ export default function LandingHeader() {
 
           {/* Hamburger Menu Button */}
           <button
-            className="md:hidden p-2 rounded-md text-foreground hover:bg-accent transition-colors relative z-50"
+            className={`md:hidden p-2 rounded-md transition-colors relative z-50 ${
+              isBlogPage
+                ? "text-white hover:bg-white/20 bg-white/10"
+                : "text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
+            }`}
             onClick={toggleMobileMenu}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             type="button"
@@ -300,18 +304,18 @@ export default function LandingHeader() {
 
         {/* Mobile Navigation Overlay */}
         {isMobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-40">
+          <div className="md:hidden fixed inset-0 z-[60]">
             {/* Backdrop */}
             <div 
-              className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             />
             
             {/* Menu Panel */}
-            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-background/98 backdrop-blur-lg border-l border-border shadow-xl transform transition-transform duration-300 ease-in-out">
-              <div className="flex flex-col h-full">
+            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-2xl transform transition-transform duration-300 ease-in-out z-[61]">
+              <div className="flex flex-col h-full bg-inherit">
                 {/* Menu Header */}
-                <div className="flex items-center justify-between p-4 border-b border-border">
+                <div className="flex items-center justify-between p-4 border-b border-border bg-inherit">
                   <h2 className="text-lg font-semibold text-foreground">Menu</h2>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -323,7 +327,7 @@ export default function LandingHeader() {
                 </div>
                 
                 {/* Navigation Items */}
-                <nav className="flex-1 px-4 py-6 space-y-2">
+                <nav className="flex-1 px-4 py-6 space-y-2 bg-inherit">
                   {navItems.map((item) => (
                     <MobileNavItem
                       key={item.id}
@@ -346,7 +350,7 @@ export default function LandingHeader() {
                 </nav>
                 
                 {/* Menu Footer */}
-                <div className="p-4 border-t border-border space-y-4">
+                <div className="p-4 border-t border-border space-y-4 bg-inherit">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-foreground/60">Theme</span>
                     <ThemeToggle />
