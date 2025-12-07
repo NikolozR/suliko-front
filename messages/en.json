@@ -294,6 +294,7 @@
     "translatedText": "Translated Text",
     "sourceLanguage": "Source Language",
     "targetLanguage": "Target Language",
+    "ocrOnly": "OCR Only",
 
     "progress": {
       "longerThanUsual": "Takes longer than usual",

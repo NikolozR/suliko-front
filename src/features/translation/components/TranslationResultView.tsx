@@ -21,6 +21,8 @@ interface TranslationResultViewProps {
   onRemoveFile: () => void;
   onEdit: (content: string) => void;
   isSuggestionsLoading: boolean;
+  isOcrOnly?: boolean;
+  onOcrOnlyChange?: (checked: boolean) => void;
 }
 
 const TranslationResultView: React.FC<TranslationResultViewProps> = ({
@@ -30,6 +32,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   onRemoveFile,
   onEdit,
   isSuggestionsLoading,
+  isOcrOnly,
+  onOcrOnlyChange,
 }) => {
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');

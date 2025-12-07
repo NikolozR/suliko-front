@@ -292,6 +292,7 @@
   "translatedText": "თარგმნილი ტექსტი",
   "sourceLanguage": "საწყისი ენა",
   "targetLanguage": "სამიზნე ენა",
+  "ocrOnly": "მხოლოდ OCR",
   "progress": {
     "longerThanUsual": "ჭირდება მეტი დრო ვიდრე ველოდით",
     "starting": "თარგმნის დაწყება...",

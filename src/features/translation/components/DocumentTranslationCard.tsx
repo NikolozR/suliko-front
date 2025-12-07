@@ -35,6 +35,9 @@ import { useSuggestionsStore } from "../store/suggestionsStore";
 import PageCountDisplay from "./PageCountDisplay";
 import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
 import { useCountdown } from "@/hooks";
+import { Checkbox } from "@/features/ui/components/ui/checkbox";
+import { Label } from "@/features/ui/components/ui/label";
+import { ocrToHtml } from "@/features/translation/services/conversionsService";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -99,6 +102,7 @@ const DocumentTranslationCard = () => {
     setSelectedPageRange,
   } = useDocumentTranslationStore();
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
+  const [isOcrOnly, setIsOcrOnly] = useState(false);
 
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
@@ -328,6 +332,7 @@ const DocumentTranslationCard = () => {
     setTranslatedMarkdown("");
     setValue("currentFile", null);
     setValue("isSrt", false);
+    setIsOcrOnly(false);
     clearErrors("currentFile");
     
     const { setRealPageCount, setIsCountingPages, setSelectedPageRange } = useDocumentTranslationStore.getState();
@@ -365,11 +370,42 @@ const DocumentTranslationCard = () => {
       return;
     }
 
-    // Check if page range selection is required and selected
-    if (realPageCount && realPageCount > 4) {
-      if (!selectedPageRange) {
-        setShowPageRangeSelector(true);
-        setError(t("pageSelection.required"));
+    // For OCR mode, skip page balance check and page range validation
+    if (!isOcrOnly) {
+      // Check if page range selection is required and selected
+      if (realPageCount && realPageCount > 4) {
+        if (!selectedPageRange) {
+          setShowPageRangeSelector(true);
+          setError(t("pageSelection.required"));
+          return;
+        }
+      }
+
+      // Check if user is logged in (has user profile)
+      // If not, refresh session and retry
+      let currentUserProfile = userProfile;
+      if (!currentUserProfile) {
+        try {
+          await fetchUserProfile();
+          // Get updated profile after refresh
+          currentUserProfile = useUserStore.getState().userProfile;
+          if (!currentUserProfile) {
+            setError("Failed to load user profile. Please try again.");
+            return;
+          }
+        } catch (error) {
+          console.error("Failed to refresh session:", error);
+          setError("Failed to load user profile. Please try again.");
+          return;
+        }
+      }
+
+      // Check if user has sufficient page balance
+      const pagesNeeded = Math.ceil(estimatedPageCount || 0);
+      const userPages = Math.floor(currentUserProfile?.balance || 0);
+      
+      if (pagesNeeded > userPages) {
+        setError(t('pageCount.insufficientPages', { needed: pagesNeeded, available: userPages }));
         return;
       }
     }
@@ -377,38 +413,46 @@ const DocumentTranslationCard = () => {
     // Store form data for retry
     setLastFormData(data);
 
-    // Check if user is logged in (has user profile)
-    // If not, refresh session and retry
-    let currentUserProfile = userProfile;
-    if (!currentUserProfile) {
-      try {
-        await fetchUserProfile();
-        // Get updated profile after refresh
-        currentUserProfile = useUserStore.getState().userProfile;
-        if (!currentUserProfile) {
-          setError("Failed to load user profile. Please try again.");
-          return;
-        }
-      } catch (error) {
-        console.error("Failed to refresh session:", error);
-        setError("Failed to load user profile. Please try again.");
-        return;
-      }
-    }
-
-    // Check if user has sufficient page balance
-    const pagesNeeded = Math.ceil(estimatedPageCount || 0);
-    const userPages = Math.floor(currentUserProfile?.balance || 0);
-    
-    if (pagesNeeded > userPages) {
-      setError(t('pageCount.insufficientPages', { needed: pagesNeeded, available: userPages }));
-      return;
-    }
-
     setIsLoading(true);
     setManualProgress(0, t("progress.starting"));
 
     try {
+      // Handle OCR Only mode
+      if (isOcrOnly) {
+        setManualProgress(10, "Processing OCR...");
+        let fileToOcr = data.currentFile[0];
+        
+        // Extract pages if page range is selected (for OCR mode too)
+        if (realPageCount && realPageCount > 4 && selectedPageRange) {
+          setManualProgress(15, t("progress.extractingPages"));
+          const extractedFile = await extractPagesFromDocument(
+            fileToOcr,
+            selectedPageRange.startPage,
+            selectedPageRange.endPage
+          );
+          
+          if (!extractedFile) {
+            setError(t("pageSelection.extractionNotSupported"));
+            setIsLoading(false);
+            reset();
+            return;
+          }
+          
+          fileToOcr = extractedFile;
+        }
+
+        setManualProgress(30, "Running OCR...");
+        const htmlContent = await ocrToHtml(fileToOcr);
+        
+        setManualProgress(90, "Loading result...");
+        setTranslatedMarkdown(htmlContent);
+        
+        setManualProgress(100, t("progress.complete"));
+        await new Promise((resolve) => setTimeout(resolve, 500));
+        return;
+      }
+
+      // Normal translation flow
       // Extract pages if page range is selected
       let fileToTranslate = data.currentFile[0];
       if (realPageCount && realPageCount > 4 && selectedPageRange) {
@@ -539,56 +583,90 @@ const DocumentTranslationCard = () => {
             showTakingLonger={isComplete}
           />
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-foreground">
-              <Upload className="h-5 w-5" />
-              {t("title")}
-            </CardTitle>
-            <CardDescription className="text-muted-foreground">
-              {t("description")}
-            </CardDescription>
+            <div className="flex items-center justify-between">
+              <div className="flex-1">
+                <CardTitle className="flex items-center gap-2 text-foreground">
+                  <Upload className="h-5 w-5" />
+                  {t("title")}
+                </CardTitle>
+                <CardDescription className="text-muted-foreground">
+                  {t("description")}
+                </CardDescription>
+              </div>
+              {/* OCR Only Toggle - Same height as Upload document title */}
+              <div className="flex items-center gap-2">
+                <Label
+                  htmlFor="ocr-only-header"
+                  className="text-sm font-medium cursor-pointer"
+                >
+                  {t("ocrOnly")}
+                </Label>
+                <button
+                  type="button"
+                  id="ocr-only-header"
+                  role="switch"
+                  aria-checked={isOcrOnly}
+                  onClick={() => setIsOcrOnly(!isOcrOnly)}
+                  className={`
+                    relative inline-flex h-7 w-12 items-center rounded-full transition-colors
+                    focus:outline-none focus:ring-2 focus:ring-suliko-default-color focus:ring-offset-2
+                    ${isOcrOnly ? 'bg-suliko-default-color' : 'bg-gray-300 dark:bg-gray-600'}
+                  `}
+                >
+                  <span
+                    className={`
+                      inline-block h-5 w-5 transform rounded-full bg-white transition-transform
+                      ${isOcrOnly ? 'translate-x-6' : 'translate-x-1'}
+                    `}
+                  />
+                </button>
+              </div>
+            </div>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleFormSubmit}>
               {/* Unified select row: source, swap, target, model */}
-              <div className="flex flex-col sm:flex-row gap-2 md:gap-4 mb-4 items-stretch sm:items-end">
-                {/* Source language */}
-                <div className="flex-1 flex flex-col">
-                  <span className="block text-xs text-muted-foreground mb-1">{t("sourceLanguage")}</span>
-                  <LanguageSelect
-                    value={currentSourceLanguageId}
-                    onChange={setCurrentSourceLanguageId}
-                    detectOption={tCommon("automaticDetection")}
-                  />
+              {!isOcrOnly && (
+                <div className="flex flex-col sm:flex-row gap-2 md:gap-4 mb-4 items-stretch sm:items-end">
+                  {/* Source language */}
+                  <div className="flex-1 flex flex-col">
+                    <span className="block text-xs text-muted-foreground mb-1">{t("sourceLanguage")}</span>
+                    <LanguageSelect
+                      value={currentSourceLanguageId}
+                      onChange={setCurrentSourceLanguageId}
+                      detectOption={tCommon("automaticDetection")}
+                    />
+                  </div>
+                  {/* Swap button */}
+                  <div className="flex flex-col justify-end">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      className="h-10 w-10 border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
+                      disabled={currentSourceLanguageId === 0}
+                      onClick={() => {
+                        if (currentSourceLanguageId !== 0) {
+                          const tempSource = currentSourceLanguageId;
+                          const tempTarget = currentTargetLanguageId;
+                          setCurrentSourceLanguageId(tempTarget);
+                          setCurrentTargetLanguageId(tempSource);
+                        }
+                      }}
+                    >
+                      <ArrowRightLeft className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  {/* Target language */}
+                  <div className="flex-1 flex flex-col">
+                    <span className="block text-xs text-muted-foreground mb-1">{t("targetLanguage")}</span>
+                    <LanguageSelect
+                      value={currentTargetLanguageId}
+                      onChange={setCurrentTargetLanguageId}
+                    />
+                  </div>
                 </div>
-                {/* Swap button */}
-                <div className="flex flex-col justify-end">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    className="h-10 w-10 border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
-                    disabled={currentSourceLanguageId === 0}
-                    onClick={() => {
-                      if (currentSourceLanguageId !== 0) {
-                        const tempSource = currentSourceLanguageId;
-                        const tempTarget = currentTargetLanguageId;
-                        setCurrentSourceLanguageId(tempTarget);
-                        setCurrentTargetLanguageId(tempSource);
-                      }
-                    }}
-                  >
-                    <ArrowRightLeft className="h-4 w-4" />
-                  </Button>
-                </div>
-                {/* Target language */}
-                <div className="flex-1 flex flex-col">
-                  <span className="block text-xs text-muted-foreground mb-1">{t("targetLanguage")}</span>
-                  <LanguageSelect
-                    value={currentTargetLanguageId}
-                    onChange={setCurrentTargetLanguageId}
-                  />
-                </div>
-              </div>
+              )}
               {translatedMarkdown ? (
                 <>
                   <TranslationResultView
@@ -598,6 +676,8 @@ const DocumentTranslationCard = () => {
                     onRemoveFile={handleRemoveFile}
                     onEdit={setTranslatedMarkdownWithoutZoomReset}
                     isSuggestionsLoading={suggestionsLoading}
+                    isOcrOnly={isOcrOnly}
+                    onOcrOnlyChange={setIsOcrOnly}
                   />
                 </>
               ) : (
