@@ -35,7 +35,6 @@ import { useSuggestionsStore } from "../store/suggestionsStore";
 import PageCountDisplay from "./PageCountDisplay";
 import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
 import { useCountdown } from "@/hooks";
-import { Checkbox } from "@/features/ui/components/ui/checkbox";
 import { Label } from "@/features/ui/components/ui/label";
 import { ocrToHtml } from "@/features/translation/services/conversionsService";
 
