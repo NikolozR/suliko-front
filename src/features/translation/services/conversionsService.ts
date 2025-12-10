@@ -173,3 +173,77 @@ export async function ocrToHtml(file: File): Promise<string> {
   const htmlContent = await response.text();
   return htmlContent;
 }
+
+export interface UserNamesResponse {
+  success: boolean;
+  message: string;
+  userNames: string[];
+  fileType: string;
+  fileName: string;
+  language: string;
+  textLength?: number;
+  extractionMethod?: string;
+}
+
+/**
+ * Extracts user names from a document
+ * @param file - The document file to extract names from
+ * @param language - The language as a string (e.g., "Georgian", "English", "Russian")
+ * @returns The extracted user names response
+ */
+export async function extractUserNames(
+  file: File,
+  language: string
+): Promise<UserNamesResponse> {
+  const endpoint = "/Document/get-user-names";
+  const formData = new FormData();
+  formData.append("File", file);
+  formData.append("language", language);
+
+  console.log("extractUserNames called with:", { fileName: file.name, language, endpoint: `${API_BASE_URL}${endpoint}` });
+
+  const { token, refreshToken } = useAuthStore.getState();
+
+  const headers = new Headers();
+  if (token) {
+    headers.append("Authorization", `Bearer ${token}`);
+  } else {
+    throw new Error("No token found");
+  }
+
+  console.log("Making API request to extract user names...");
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+  console.log("API response status:", response.status);
+
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+    } catch {
+      useAuthStore.getState().reset();
+      throw new Error("Token refresh failed");
+    }
+  }
+
+  if (response.status < 200 || response.status >= 300) {
+    const errorText = await response.text().catch(() => "Unknown error");
+    console.error("User names extraction failed:", response.status, errorText);
+    throw new Error(`Failed to extract user names: ${errorText}`);
+  }
+
+  const data = await response.json();
+  console.log("User names extraction successful:", data);
+  return data;
+}

@@ -383,7 +383,8 @@
     "showPreview": "Show preview",
     "hidePreview": "Hide preview",
     "indicatorExact": "Exact match: quick apply",
-    "indicatorNonExact": "Non-exact: server apply"
+    "indicatorNonExact": "Non-exact: server apply",
+    "userNamesWarning": "⚠️ User names found in document - Please check for consistency in translation:"
   },
   "Pricing": {
     "paymentModal": {

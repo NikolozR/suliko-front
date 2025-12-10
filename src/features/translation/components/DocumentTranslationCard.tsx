@@ -37,7 +37,8 @@ import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocu
 import { useCountdown } from "@/hooks";
 import { Checkbox } from "@/features/ui/components/ui/checkbox";
 import { Label } from "@/features/ui/components/ui/label";
-import { ocrToHtml } from "@/features/translation/services/conversionsService";
+import { ocrToHtml, extractUserNames } from "@/features/translation/services/conversionsService";
+import { getAllLanguages, type Language } from "@/features/translation/services/languageService";
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -80,7 +81,7 @@ const DocumentTranslationCard = () => {
   const [lastFormData, setLastFormData] = useState<DocumentFormData | null>(null);
   const [/*loadingProgressState*/, /*setLoadingProgressState*/] = useState<number>(0);
   const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
-  const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
+  const { setSuggestionsLoading, suggestionsLoading, setUserNames } = useSuggestionsStore();
   const { token } = useAuthStore();
   const { userProfile, fetchUserProfile } = useUserStore();
   const {
@@ -103,6 +104,7 @@ const DocumentTranslationCard = () => {
   } = useDocumentTranslationStore();
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
   const [isOcrOnly, setIsOcrOnly] = useState(false);
+  const [languages, setLanguages] = useState<Language[]>([]);
 
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
@@ -179,6 +181,22 @@ const DocumentTranslationCard = () => {
     setValue("currentTargetLanguageId", currentTargetLanguageId);
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
+
+  // Fetch languages for name extraction
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      if (token) {
+        try {
+          const langs = await getAllLanguages();
+          setLanguages(Array.isArray(langs) ? langs : []);
+        } catch (error) {
+          console.error("Failed to fetch languages:", error);
+          setLanguages([]);
+        }
+      }
+    };
+    fetchLanguages();
+  }, [token]);
 
   // Restore file from storage when user returns after authentication
   useEffect(() => {
@@ -333,6 +351,7 @@ const DocumentTranslationCard = () => {
     setValue("currentFile", null);
     setValue("isSrt", false);
     setIsOcrOnly(false);
+    setUserNames([]);
     clearErrors("currentFile");
     
     const { setRealPageCount, setIsCountingPages, setSelectedPageRange } = useDocumentTranslationStore.getState();
@@ -483,7 +502,8 @@ const DocumentTranslationCard = () => {
         setValue("currentFile", newFileList);
       }
 
-      await documentTranslatingWithJobId(
+      // Start translation
+      const translationPromise = documentTranslatingWithJobId(
         data,
         setError,
         (_progress, message) => {
@@ -496,6 +516,59 @@ const DocumentTranslationCard = () => {
         },
         setSuggestionsLoading
       );
+
+      // Extract user names in parallel (non-blocking)
+      const extractNamesPromise = (async () => {
+        try {
+          // Skip if source language is auto-detect (0) or languages not loaded
+          if (data.currentSourceLanguageId === 0) {
+            console.log("Skipping name extraction: source language is auto-detect");
+            return;
+          }
+
+          if (languages.length === 0) {
+            console.warn("Languages not loaded yet, skipping name extraction");
+            return;
+          }
+
+          // Get language name from source language ID
+          const sourceLanguage = languages.find((lang: Language) => lang.id === data.currentSourceLanguageId);
+          if (!sourceLanguage) {
+            console.warn("Source language not found for name extraction", {
+              sourceLanguageId: data.currentSourceLanguageId,
+              availableLanguages: languages.map(l => ({ id: l.id, name: l.name }))
+            });
+            return;
+          }
+          
+          // Use the language name (e.g., "Georgian", "English", "Russian")
+          const languageName = sourceLanguage.name.replace(" Language", "").trim();
+          console.log("Extracting user names with language:", languageName);
+          
+          // Extract user names from the original file (before page extraction if any)
+          const originalFile = data.currentFile[0];
+          console.log("Calling extractUserNames API...");
+          const userNamesResult = await extractUserNames(originalFile, languageName);
+          console.log("User names extraction result:", userNamesResult);
+          
+          if (userNamesResult.success && userNamesResult.userNames.length > 0) {
+            const { setUserNames } = useSuggestionsStore.getState();
+            setUserNames(userNamesResult.userNames);
+            console.log("User names set in store:", userNamesResult.userNames);
+          } else {
+            console.log("No user names found or extraction failed");
+          }
+        } catch (error) {
+          // Log error but don't block translation
+          console.error("Failed to extract user names:", error);
+        }
+      })();
+
+      // Wait for translation to complete
+      await translationPromise;
+      
+      // Wait for name extraction (but don't block if it's still running)
+      await extractNamesPromise.catch(() => {});
 
       setManualProgress(100, t("progress.complete"));
       await new Promise((resolve) => setTimeout(resolve, 500));

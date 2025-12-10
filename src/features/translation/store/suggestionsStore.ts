@@ -7,6 +7,8 @@ interface SuggestionsState {
   hasGeneratedMore: boolean;
   suggestionAccepted: boolean;
   focusedSuggestionId: string | null;
+  userNames: string[];
+  setUserNames: (userNames: string[]) => void;
   setSuggestions: (suggestions: Suggestion[]) => void;
   addSuggestions: (newSuggestions: Suggestion[]) => void;
   removeSuggestion: (id: string) => void;
@@ -25,6 +27,8 @@ export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
   hasGeneratedMore: false,
   suggestionAccepted: false,
   focusedSuggestionId: null,
+  userNames: [],
+  setUserNames: (userNames) => set({ userNames }),
   setSuggestions: (suggestions) => set({ suggestions }),
   addSuggestions: (newSuggestions) => set((state) => {
     const existingIds = new Set(state.suggestions.map(s => s.id));
@@ -51,5 +55,6 @@ export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
     suggestions: [],
     hasGeneratedMore: false,
     suggestionAccepted: false,
+    userNames: [],
   }),
 })); 

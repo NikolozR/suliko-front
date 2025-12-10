@@ -41,6 +41,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
     setSuggestionsLoading,
     focusedSuggestionId,
     setFocusedSuggestionId,
+    userNames,
   } = useSuggestionsStore();
   const {
     translatedMarkdown,
@@ -228,6 +229,9 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
     }
   };
 
+  // Debug: log userNames
+  console.log("SuggestionsPanel - userNames:", userNames, "jobId:", jobId);
+  
   // If there's no jobId, don't show anything
   if (!jobId) return null;
   return (
@@ -235,6 +239,26 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
       <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
         {t("SuggestionsPanel.title", { default: "Suggestions" })}
       </div>
+      {/* User Names Warning */}
+      {userNames && userNames.length > 0 && (
+        <div className="mb-4 p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+          <div className="font-semibold text-amber-800 dark:text-amber-200 text-sm mb-2">
+            {t("SuggestionsPanel.userNamesWarning", { 
+              default: "⚠️ User names found in document - Please check for consistency in translation:" 
+            })}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {userNames.map((name, index) => (
+              <span
+                key={index}
+                className="px-3 py-1 bg-amber-100 dark:bg-amber-900/40 text-amber-900 dark:text-amber-100 rounded-md text-sm font-medium"
+              >
+                {name}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
       {(isTranslating || isSuggestionsLoading) && suggestions.length === 0 ? (
         <div className="flex justify-center items-center py-8">
           <LoadingSpinner size="md" variant="primary" />
