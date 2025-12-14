@@ -198,6 +198,9 @@ const DocumentTranslationCard = () => {
             setCurrentFile(fileList);
             setValue("currentFile", fileList);
             
+            // Clear form errors after restoring file so validation passes
+            clearErrors("currentFile");
+            
             // Determine if it's an SRT file
             const fileExtension = storedFile.name.split(".").pop()?.toLowerCase();
             const isSrtFile = fileExtension === "srt";
@@ -537,10 +540,12 @@ const DocumentTranslationCard = () => {
   };
 
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!token) {
+      // Save file to storage before showing auth modal
+      await handleSaveFileBeforeAuth();
       setShowAuthModal(true);
       return;
     }

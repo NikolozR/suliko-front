@@ -119,6 +119,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           editedSuggestedText: s.suggestedText,
           suggestion: s,
           targetLanguageId: currentTargetLanguageId,
+          currentDocumentContent: translatedMarkdown,
         });
         console.log("We Are Here 2", data);
         if (data.success) {
