@@ -14,6 +14,7 @@ export type User = {
   roleName?: string;
   balance?: number;
   createdAt?: string;
+  lastActivityAt?: string;
 };
 
 export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
@@ -69,6 +70,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       { key: "roleName", label: "Role Name" },
       { key: "balance", label: "Balance" },
       { key: "createdAt", label: "Created At" },
+      { key: "lastActivityAt", label: "Last Activity" },
       { key: "actions", label: "Actions" },
     ],
     []
@@ -174,7 +176,8 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       'Role ID',
       'Role Name',
       'Balance',
-      'Created At'
+      'Created At',
+      'Last Activity'
     ];
 
     const csvRows = sortedRows.map(user => [
@@ -187,7 +190,8 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       user.roleId || '',
       user.roleName || '',
       user.balance || 0,
-      user.createdAt ? new Date(user.createdAt).toLocaleString() : ''
+      user.createdAt ? new Date(user.createdAt).toLocaleString() : '',
+      user.lastActivityAt ? new Date(user.lastActivityAt).toLocaleString() : ''
     ]);
 
     // Escape CSV values
@@ -357,6 +361,9 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               </td>
               <td className="p-2">
                 {u.createdAt ? new Date(u.createdAt).toLocaleString() : "-"}
+              </td>
+              <td className="p-2">
+                {u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleString() : "-"}
               </td>
               <td className="p-2 text-right">
                 <button

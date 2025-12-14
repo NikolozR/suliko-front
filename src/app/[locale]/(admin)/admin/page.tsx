@@ -31,6 +31,7 @@ export default async function AdminDashboardPage() {
     roleName?: string;
     balance?: number;
     createdAt?: string;
+    lastActivityAt?: string;
   };
   let users: AdminUser[] = [];
   let total = 0;
