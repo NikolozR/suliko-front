@@ -24,6 +24,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   const [query, setQuery] = useState("");
   const [balanceSort, setBalanceSort] = useState<"none" | "asc" | "desc">("none");
   const [dateSort, setDateSort] = useState<"none" | "asc" | "desc">("none");
+  const [lastActivitySort, setLastActivitySort] = useState<"none" | "asc" | "desc">("none");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [dateFilter, setDateFilter] = useState<{
@@ -141,8 +142,18 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       });
     }
     
+    // Apply last activity sorting
+    if (lastActivitySort !== "none") {
+      copy.sort((a, b) => {
+        const av = a.lastActivityAt ? new Date(a.lastActivityAt).getTime() : -Infinity;
+        const bv = b.lastActivityAt ? new Date(b.lastActivityAt).getTime() : -Infinity;
+        if (lastActivitySort === "asc") return av - bv;
+        return bv - av;
+      });
+    }
+    
     return copy;
-  }, [filteredRows, balanceSort, dateSort]);
+  }, [filteredRows, balanceSort, dateSort, lastActivitySort]);
 
   // Pagination calculations
   const totalPages = Math.ceil(sortedRows.length / itemsPerPage);
@@ -294,7 +305,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
         <thead>
           <tr className="bg-muted/30">
             {columns.map((c) => {
-              if (c.key !== "balance" && c.key !== "actions" && c.key !== "createdAt") {
+              if (c.key !== "balance" && c.key !== "actions" && c.key !== "createdAt" && c.key !== "lastActivityAt") {
                 return (
                   <th key={c.key} className="p-2 text-left">{c.label}</th>
                 );
@@ -328,6 +339,23 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       <span>Created At</span>
                       <span className="inline-block w-3 text-xs">
                         {dateSort === "asc" ? "▲" : dateSort === "desc" ? "▼" : ""}
+                      </span>
+                    </button>
+                  </th>
+                );
+              }
+              if (c.key === "lastActivityAt") {
+                return (
+                  <th key={c.key} className="p-2 text-left">
+                    <button
+                      type="button"
+                      onClick={() => setLastActivitySort(lastActivitySort === "none" ? "asc" : lastActivitySort === "asc" ? "desc" : "none")}
+                      className="inline-flex items-center gap-1 select-none hover:opacity-80"
+                      aria-label="Sort by last activity"
+                    >
+                      <span>Last Activity</span>
+                      <span className="inline-block w-3 text-xs">
+                        {lastActivitySort === "asc" ? "▲" : lastActivitySort === "desc" ? "▼" : ""}
                       </span>
                     </button>
                   </th>
