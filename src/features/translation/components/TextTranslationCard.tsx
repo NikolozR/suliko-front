@@ -25,6 +25,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X } from "lucide-react";
@@ -51,10 +52,12 @@ type DownloadFormatOption = { value: string; label: string; extension: string; i
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
   const tButton = useTranslations('TranslationButton');
+  const translatedSuffix = useTranslatedSuffix();
   const [textLoading, setTextLoading] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const { fetchUserProfile, userProfile } = useUserStore();
+  const [lastFormData, setLastFormData] = useState<FormData | null>(null);
+  const { fetchUserProfileWithRetry, userProfile } = useUserStore();
   
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
@@ -97,12 +100,12 @@ const TextTranslationCard = () => {
   }, [currentTextValue, currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const translatedRef = useRef<HTMLDivElement | null>(null);
+  const translatedRef = useRef<HTMLTextAreaElement | null>(null);
   const isScrolling = useRef(false);
 
   useEffect(() => {
     const textarea = textareaRef.current;
-    const translated = translatedRef.current?.querySelector("div:last-child");
+    const translated = translatedRef.current;
     if (!textarea || !translated || !translatedText) return;
 
     const syncScroll = (source: Element, target: Element, event: Event) => {
@@ -137,7 +140,7 @@ const TextTranslationCard = () => {
     if (!downloadedFormat) return;
     const triggerDownload = async () => {
       const fileType = downloadedFormat.value;
-      const fileName = `translated_text.${fileType}`;
+      const fileName = generateLocalizedFilename("text", fileType, translatedSuffix);
       if (["txt", "md", "srt"].includes(fileType)) {
         const text = translatedText.replace(/<[^>]+>/g, "");
         const blob = new Blob([text], { type: fileType === "md" ? "text/markdown" : fileType === "srt" ? "text/srt" : "text/plain" });
@@ -182,7 +185,7 @@ const TextTranslationCard = () => {
       setDownloadedFormat(null);
     };
     triggerDownload();
-  }, [downloadedFormat, translatedText]);
+  }, [downloadedFormat, translatedText, translatedSuffix]);
 
   const onSubmit = async (data: FormData) => {
     if (!token) {
@@ -190,9 +193,31 @@ const TextTranslationCard = () => {
       return;
     }
 
+    // Store form data for retry
+    setLastFormData(data);
+
+    // Check if user is logged in (has user profile)
+    // If not, refresh session and retry
+    let currentUserProfile = userProfile;
+    if (!currentUserProfile) {
+      try {
+        await fetchUserProfileWithRetry(3, 1000);
+        // Get updated profile after refresh
+        currentUserProfile = useUserStore.getState().userProfile;
+        if (!currentUserProfile) {
+          setError("Failed to load user profile. Please try again.");
+          return;
+        }
+      } catch (error) {
+        console.error("Failed to refresh session:", error);
+        setError("Failed to load user profile. Please try again.");
+        return;
+      }
+    }
+
     // Check if user has sufficient page balance
     const pagesNeeded = Math.ceil((data.currentTextValue.length / 250) * 0.01);
-    const userPages = Math.floor(userProfile?.balance || 0);
+    const userPages = Math.floor(currentUserProfile?.balance || 0);
     
     if (pagesNeeded > userPages) {
       setError(t('insufficientPages', { needed: pagesNeeded, available: userPages }));
@@ -212,7 +237,8 @@ const TextTranslationCard = () => {
       const result: TextTranslateUserContentResponse =
         await translateUserContent(params);
       setTranslatedText(result.text);
-      await fetchUserProfile();
+      // Use retry mechanism to ensure balance is properly updated
+      await fetchUserProfileWithRetry(3, 1000);
     } catch (err) {
       let message = "An unexpected error occurred during translation.";
       if (err instanceof Error) {
@@ -244,9 +270,26 @@ const TextTranslationCard = () => {
         <ErrorAlert
           message={error}
           onClose={() => setError(null)}
+          onRetry={lastFormData ? () => {
+            setError(null);
+            // Retry with refresh session first
+            const retry = async () => {
+              try {
+                // Refresh session first
+                await fetchUserProfileWithRetry(3, 1000);
+                // Retry submission with last form data
+                await onSubmit(lastFormData);
+              } catch (error) {
+                console.error("Retry failed:", error);
+                setError("Failed to retry. Please try again.");
+              }
+            };
+            retry();
+          } : undefined}
+          retryLabel={tButton('retry') || "Retry"}
         />
       )}
-      <div className={translatedText ? "flex gap-8" : undefined}>
+      <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8" : undefined}>
         <Card className="border-none flex-1 min-w-0 relative">
         <TranslationLoadingOverlay
           isVisible={textLoading}
@@ -280,7 +323,7 @@ const TextTranslationCard = () => {
               layout="horizontal"
               showSwapButton={true}
             />
-            <div className={translatedText ? "flex gap-4 md:gap-8 items-end" : undefined}>
+            <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8 items-stretch md:items-end" : undefined}>
               <div className="w-full flex-1 min-w-0">
                 <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
                   {t('yourText')}
@@ -313,19 +356,20 @@ const TextTranslationCard = () => {
               </div>
               {translatedText && (
                 <div className="w-full flex-1 min-w-0">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
                     <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                       {t('result')}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 flex-shrink-0">
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
                         onClick={() => setShowDownloadModal(true)}
                         className="transition-all duration-200"
+                        title={tButton('download')}
                       >
-                        <Download className="h-4 w-4 mr-1" />
+                        <Download className="h-4 w-4" />
                       </Button>
                       <CopyButton 
                         content={translatedText}
@@ -334,17 +378,15 @@ const TextTranslationCard = () => {
                       />
                     </div>
                   </div>
-                  <div
+                  <Textarea
                     ref={translatedRef}
-                    className="w-full flex-1 px-2 py-2 md:px-3 h-[300px] max-h-[300px] bg-slate-50 dark:bg-input/30 border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden shadow-sm flex flex-col"
-                  >
-                    <div 
-                      className="text-foreground flex-1 overflow-y-auto text-sm md:text-base whitespace-pre-wrap"
-                      style={{ lineHeight: '1.6' }}
-                    >
-                      {translatedText}
-                    </div>
-                  </div>
+                    className="w-full flex-1 h-[300px] max-h-[300px] border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm md:text-base bg-slate-50 dark:bg-input/30 border-slate-200 dark:border-slate-700"
+                    value={translatedText}
+                    onChange={(e) => {
+                      setTranslatedText(e.target.value);
+                    }}
+                    placeholder={t('result')}
+                  />
                   {/* Cost display for translated text */}
                   {parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
                     <div className="mt-2 text-suliko-default-color font-semibold text-sm">
@@ -380,7 +422,7 @@ const TextTranslationCard = () => {
         onClose={() => setShowAuthModal(false)}
       />
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
-        <DialogContent className="max-w-xs">
+        <DialogContent className="max-w-xs mx-4">
           <DialogHeader>
             <DialogTitle>Select Download Format</DialogTitle>
           </DialogHeader>

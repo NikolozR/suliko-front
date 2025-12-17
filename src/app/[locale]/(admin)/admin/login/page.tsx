@@ -1,13 +1,11 @@
 "use client";
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { login } from "@/features/auth/services/authorizationService";
 import { useAuthStore } from "@/features/auth/store/authStore";
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const locale = useLocale();
   const setToken = useAuthStore((s) => s.setToken);
   const setRefreshToken = useAuthStore((s) => s.setRefreshToken);
 
@@ -37,7 +35,7 @@ export default function AdminLoginPage() {
         expires.setDate(expires.getDate() + 7);
         document.cookie = `adminAllowed=1; expires=${expires.toUTCString()}; path=/; SameSite=Strict; Secure`;
       }
-      router.push(`/${locale}/admin`);
+      router.push("/admin");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Login failed";
       setError(message);

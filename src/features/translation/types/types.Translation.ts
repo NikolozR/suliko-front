@@ -74,6 +74,7 @@ export interface ApplySuggestionParams {
   outputLanguageId: number;
   editedOriginalText: string;
   editedSuggestedText: string;
+  currentDocumentContent: string;
 }
 
 

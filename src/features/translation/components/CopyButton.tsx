@@ -19,10 +19,38 @@ const CopyButton: React.FC<CopyButtonProps> = ({
 }) => {
   const [copied, setCopied] = useState(false);
 
+  const toPlainText = (value: string): string => {
+    const source = value || "";
+    // If likely HTML, strip tags via DOM parsing for accurate text
+    if (/[<>]/.test(source)) {
+      const container = document.createElement('div');
+      container.innerHTML = source;
+      return container.textContent || container.innerText || "";
+    }
+    // Otherwise treat as Markdown
+    return markdownToTxt(source);
+  };
+
   const handleCopy = async () => {
+    const textToCopy = toPlainText(content);
     try {
-      const plainText = markdownToTxt(content);
-      await navigator.clipboard.writeText(plainText);
+      if (navigator.clipboard && window.isSecureContext) {
+        await navigator.clipboard.writeText(textToCopy);
+      } else {
+        // Fallback for non-secure contexts or when clipboard API is unavailable
+        const textarea = document.createElement('textarea');
+        textarea.value = textToCopy;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.focus();
+        textarea.select();
+        try {
+          document.execCommand('copy');
+        } finally {
+          document.body.removeChild(textarea);
+        }
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {

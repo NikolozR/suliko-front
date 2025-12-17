@@ -9,10 +9,10 @@ const TextTranslationPage = () => {
   const pathname = usePathname();
 
   return (
-    <div className="min-h-screen p-8 bg-suliko-main-content-bg-color">
+    <div className="min-h-screen p-4 md:p-8 bg-suliko-main-content-bg-color">
       <div className="mx-auto">
         <div className="mb-8">
-          <h1 className="text-3xl font-semibold text-foreground">{t('title')}</h1>
+          <h1 className="text-2xl md:text-3xl font-semibold text-foreground">{t('title')}</h1>
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
         

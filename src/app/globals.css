@@ -47,6 +47,392 @@
   margin: 1.67em 0;
 }
 
+/* Blog-specific styles */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Blog prose styles */
+.prose {
+  color: hsl(var(--foreground));
+  max-width: none;
+}
+
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  color: hsl(var(--foreground));
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 2em;
+  margin-bottom: 1em;
+}
+
+.prose h1 {
+  font-size: 2.25em;
+  margin-top: 0;
+}
+
+.prose h2 {
+  font-size: 1.875em;
+}
+
+.prose h3 {
+  font-size: 1.5em;
+}
+
+.prose h4 {
+  font-size: 1.25em;
+}
+
+.prose p {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  line-height: 1.7;
+}
+
+.prose ul,
+.prose ol {
+  margin-top: 1.25em;
+  margin-bottom: 1.25em;
+  padding-left: 1.625em;
+}
+
+.prose li {
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.prose blockquote {
+  border-left: 4px solid hsl(var(--border));
+  padding-left: 1em;
+  margin: 1.6em 0;
+  font-style: italic;
+  color: hsl(var(--muted-foreground));
+}
+
+.prose code {
+  background-color: hsl(var(--muted));
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-size: 0.875em;
+  font-weight: 600;
+}
+
+.prose pre {
+  background-color: hsl(var(--muted));
+  border-radius: 0.5em;
+  padding: 1em;
+  overflow-x: auto;
+  margin: 1.6em 0;
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  font-weight: 400;
+}
+
+.prose a {
+  color: hsl(var(--primary));
+  text-decoration: underline;
+  font-weight: 500;
+}
+
+.prose a:hover {
+  color: hsl(var(--primary));
+  text-decoration: none;
+}
+
+.prose strong {
+  font-weight: 600;
+  color: hsl(var(--foreground));
+}
+
+.prose em {
+  font-style: italic;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid hsl(var(--border));
+  margin: 3em 0;
+}
+
+.prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.6em 0;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid hsl(var(--border));
+  padding: 0.75em;
+  text-align: left;
+}
+
+.prose th {
+  background-color: hsl(var(--muted));
+  font-weight: 600;
+}
+
+.prose img {
+  border-radius: 0.5em;
+  margin: 1.6em 0;
+}
+
+/* Blog animations */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+/* Enhanced hover effects */
+.group:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+.group:hover .group-hover\:translate-x-1 {
+  transform: translateX(0.25rem);
+}
+
+/* Glass morphism effect */
+.backdrop-blur-sm {
+  backdrop-filter: blur(8px);
+}
+
+/* Enhanced shadows */
+.hover\:shadow-2xl:hover {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.hover\:shadow-primary\/5:hover {
+  box-shadow: 0 25px 50px -12px rgba(var(--primary), 0.05);
+}
+
+/* Blog page background enhancements */
+.blog-background {
+  background: linear-gradient(135deg, 
+    hsl(var(--primary) / 0.08) 0%, 
+    hsl(var(--background)) 50%, 
+    hsl(var(--accent) / 0.08) 100%
+  );
+}
+
+.blog-grid-pattern {
+  background-image: radial-gradient(
+    circle at 1px 1px, 
+    hsl(var(--muted-foreground) / 0.25) 1px, 
+    transparent 0
+  );
+  background-size: 20px 20px;
+  opacity: 0.5;
+}
+
+/* Enhanced card backgrounds for better contrast */
+.blog-card {
+  background: hsl(var(--card) / 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid hsl(var(--border) / 0.5);
+}
+
+.blog-card:hover {
+  background: hsl(var(--card));
+  border-color: hsl(var(--primary) / 0.2);
+}
+
+/* Blog page layout enhancements */
+.blog-page-header {
+  padding-top: 5rem; /* Account for fixed header */
+}
+
+.blog-banner {
+  background: linear-gradient(135deg, 
+    hsl(var(--primary) / 0.08) 0%, 
+    hsl(var(--background)) 50%, 
+    hsl(var(--accent) / 0.08) 100%
+  );
+  border-top: 1px solid hsl(var(--border) / 0.2);
+  border-bottom: 1px solid hsl(var(--border) / 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.blog-banner::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at 20% 80%, hsl(var(--primary) / 0.1) 0%, transparent 50%),
+              radial-gradient(circle at 80% 20%, hsl(var(--accent) / 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+.blog-banner-stat {
+  transition: all 0.3s ease-in-out;
+  position: relative;
+  z-index: 1;
+}
+
+.blog-banner-stat:hover {
+  transform: translateY(-4px);
+}
+
+.blog-banner-stat:hover .group-hover\:scale-110 {
+  transform: scale(1.1);
+}
+
+/* Blog Stars Background - New Implementation */
+.blog-stars-background {
+  position: relative;
+  background: linear-gradient(135deg, 
+    #0f172a 0%, 
+    #1e293b 25%,
+    #334155 50%, 
+    #475569 75%,
+    #64748b 100%
+  );
+}
+
+/* Stars Layer 1 - Primary Stars */
+.stars-layer-1 {
+  background-image: 
+    radial-gradient(2px 2px at 20px 30px, hsl(var(--foreground) / 0.8), transparent),
+    radial-gradient(2px 2px at 40px 70px, hsl(var(--foreground) / 0.6), transparent),
+    radial-gradient(1px 1px at 90px 40px, hsl(var(--foreground) / 0.9), transparent),
+    radial-gradient(1px 1px at 130px 80px, hsl(var(--foreground) / 0.7), transparent),
+    radial-gradient(2px 2px at 160px 30px, hsl(var(--foreground) / 0.5), transparent),
+    radial-gradient(1px 1px at 200px 60px, hsl(var(--foreground) / 0.8), transparent),
+    radial-gradient(1px 1px at 240px 20px, hsl(var(--foreground) / 0.6), transparent),
+    radial-gradient(2px 2px at 280px 70px, hsl(var(--foreground) / 0.4), transparent),
+    radial-gradient(1px 1px at 320px 40px, hsl(var(--foreground) / 0.9), transparent),
+    radial-gradient(1px 1px at 360px 80px, hsl(var(--foreground) / 0.7), transparent),
+    radial-gradient(2px 2px at 400px 20px, hsl(var(--foreground) / 0.5), transparent),
+    radial-gradient(1px 1px at 440px 60px, hsl(var(--foreground) / 0.8), transparent),
+    radial-gradient(1px 1px at 480px 30px, hsl(var(--foreground) / 0.6), transparent),
+    radial-gradient(2px 2px at 520px 70px, hsl(var(--foreground) / 0.4), transparent),
+    radial-gradient(1px 1px at 560px 50px, hsl(var(--foreground) / 0.9), transparent),
+    radial-gradient(1px 1px at 600px 10px, hsl(var(--foreground) / 0.7), transparent),
+    radial-gradient(2px 2px at 640px 80px, hsl(var(--foreground) / 0.5), transparent),
+    radial-gradient(1px 1px at 680px 40px, hsl(var(--foreground) / 0.8), transparent),
+    radial-gradient(1px 1px at 720px 20px, hsl(var(--foreground) / 0.6), transparent),
+    radial-gradient(2px 2px at 760px 60px, hsl(var(--foreground) / 0.4), transparent);
+  background-repeat: repeat;
+  background-size: 800px 100px;
+  animation: twinkle 20s linear infinite;
+}
+
+/* Stars Layer 2 - Secondary Stars */
+.stars-layer-2 {
+  background-image: 
+    radial-gradient(1px 1px at 50px 20px, hsl(var(--primary) / 0.7), transparent),
+    radial-gradient(1px 1px at 100px 50px, hsl(var(--primary) / 0.5), transparent),
+    radial-gradient(1px 1px at 150px 10px, hsl(var(--primary) / 0.8), transparent),
+    radial-gradient(1px 1px at 200px 30px, hsl(var(--primary) / 0.4), transparent),
+    radial-gradient(1px 1px at 250px 60px, hsl(var(--primary) / 0.6), transparent),
+    radial-gradient(1px 1px at 300px 15px, hsl(var(--primary) / 0.5), transparent),
+    radial-gradient(1px 1px at 350px 45px, hsl(var(--primary) / 0.8), transparent),
+    radial-gradient(1px 1px at 400px 25px, hsl(var(--primary) / 0.3), transparent),
+    radial-gradient(1px 1px at 450px 55px, hsl(var(--primary) / 0.7), transparent),
+    radial-gradient(1px 1px at 500px 35px, hsl(var(--primary) / 0.5), transparent),
+    radial-gradient(1px 1px at 550px 65px, hsl(var(--primary) / 0.8), transparent),
+    radial-gradient(1px 1px at 600px 5px, hsl(var(--primary) / 0.4), transparent),
+    radial-gradient(1px 1px at 650px 40px, hsl(var(--primary) / 0.6), transparent),
+    radial-gradient(1px 1px at 700px 70px, hsl(var(--primary) / 0.5), transparent),
+    radial-gradient(1px 1px at 750px 20px, hsl(var(--primary) / 0.8), transparent);
+  background-repeat: repeat;
+  background-size: 800px 100px;
+  animation: twinkle 15s linear infinite reverse;
+  opacity: 0.8;
+}
+
+/* Twinkling Animation */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; }
+  50% { opacity: 1; }
+}
+
+/* Dark Theme Adjustments */
+.dark .blog-stars-background {
+  background: linear-gradient(135deg, 
+    #0f172a 0%, 
+    #1e293b 25%,
+    #334155 50%, 
+    #475569 75%,
+    #64748b 100%
+  );
+}
+
+.dark .stars-layer-1 {
+  background-image: 
+    radial-gradient(3px 3px at 20px 30px, hsl(var(--foreground) / 0.9), transparent),
+    radial-gradient(3px 3px at 40px 70px, hsl(var(--foreground) / 0.7), transparent),
+    radial-gradient(2px 2px at 90px 40px, hsl(var(--foreground) / 1), transparent),
+    radial-gradient(2px 2px at 130px 80px, hsl(var(--foreground) / 0.8), transparent),
+    radial-gradient(3px 3px at 160px 30px, hsl(var(--foreground) / 0.6), transparent),
+    radial-gradient(2px 2px at 200px 60px, hsl(var(--foreground) / 0.9), transparent),
+    radial-gradient(2px 2px at 240px 20px, hsl(var(--foreground) / 0.7), transparent),
+    radial-gradient(3px 3px at 280px 70px, hsl(var(--foreground) / 0.5), transparent),
+    radial-gradient(2px 2px at 320px 40px, hsl(var(--foreground) / 1), transparent),
+    radial-gradient(2px 2px at 360px 80px, hsl(var(--foreground) / 0.8), transparent),
+    radial-gradient(3px 3px at 400px 20px, hsl(var(--foreground) / 0.6), transparent),
+    radial-gradient(2px 2px at 440px 60px, hsl(var(--foreground) / 0.9), transparent),
+    radial-gradient(2px 2px at 480px 30px, hsl(var(--foreground) / 0.7), transparent),
+    radial-gradient(3px 3px at 520px 70px, hsl(var(--foreground) / 0.5), transparent),
+    radial-gradient(2px 2px at 560px 50px, hsl(var(--foreground) / 1), transparent),
+    radial-gradient(2px 2px at 600px 10px, hsl(var(--foreground) / 0.8), transparent),
+    radial-gradient(3px 3px at 640px 80px, hsl(var(--foreground) / 0.6), transparent),
+    radial-gradient(2px 2px at 680px 40px, hsl(var(--foreground) / 0.9), transparent),
+    radial-gradient(2px 2px at 720px 20px, hsl(var(--foreground) / 0.7), transparent),
+    radial-gradient(3px 3px at 760px 60px, hsl(var(--foreground) / 0.5), transparent);
+}
+
+.dark .stars-layer-2 {
+  background-image: 
+    radial-gradient(2px 2px at 50px 20px, hsl(var(--primary) / 0.9), transparent),
+    radial-gradient(2px 2px at 100px 50px, hsl(var(--primary) / 0.7), transparent),
+    radial-gradient(2px 2px at 150px 10px, hsl(var(--primary) / 1), transparent),
+    radial-gradient(2px 2px at 200px 30px, hsl(var(--primary) / 0.6), transparent),
+    radial-gradient(2px 2px at 250px 60px, hsl(var(--primary) / 0.8), transparent),
+    radial-gradient(2px 2px at 300px 15px, hsl(var(--primary) / 0.7), transparent),
+    radial-gradient(2px 2px at 350px 45px, hsl(var(--primary) / 1), transparent),
+    radial-gradient(2px 2px at 400px 25px, hsl(var(--primary) / 0.5), transparent),
+    radial-gradient(2px 2px at 450px 55px, hsl(var(--primary) / 0.9), transparent),
+    radial-gradient(2px 2px at 500px 35px, hsl(var(--primary) / 0.7), transparent),
+    radial-gradient(2px 2px at 550px 65px, hsl(var(--primary) / 1), transparent),
+    radial-gradient(2px 2px at 600px 5px, hsl(var(--primary) / 0.6), transparent),
+    radial-gradient(2px 2px at 650px 40px, hsl(var(--primary) / 0.8), transparent),
+    radial-gradient(2px 2px at 700px 70px, hsl(var(--primary) / 0.7), transparent),
+    radial-gradient(2px 2px at 750px 20px, hsl(var(--primary) / 1), transparent);
+}
+
 
 .ck-editor__editable {
   overflow-x: visible !important;
@@ -463,4 +849,28 @@ html.dark .sidebar-main {
 .dark .glass {
   background: rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Email reminder badge flicker animation */
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.7;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  75% {
+    opacity: 0.85;
+    transform: scale(0.99);
+  }
+}
+
+.animate-flicker {
+  animation: flicker 2.5s ease-in-out infinite;
 }

@@ -86,7 +86,7 @@ async function convertFile(
 
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
@@ -120,4 +120,56 @@ export async function pdfToWord(pdf: File): Promise<Blob> {
 
 export async function wordToPdf(word: File): Promise<Blob> {
   return convertFile(word, "pdf", "word-to-pdf");
+}
+
+/**
+ * Converts a document to HTML using OCR
+ * @param file - The document file to OCR
+ * @returns The OCR'd HTML content as a string
+ */
+export async function ocrToHtml(file: File): Promise<string> {
+  const endpoint = "/Document/convert/ocr-to-html";
+  const formData = new FormData();
+  formData.append("File", file);
+
+  const { token, refreshToken } = useAuthStore.getState();
+
+  const headers = new Headers();
+  if (token) {
+    headers.append("Authorization", `Bearer ${token}`);
+  } else {
+    throw new Error("No token found");
+  }
+
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers,
+    body: formData,
+  });
+
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers,
+        body: formData,
+      });
+    } catch {
+      useAuthStore.getState().reset();
+      throw new Error("Token refresh failed");
+    }
+  }
+
+  if (response.status < 200 || response.status >= 300) {
+    const errorText = await response.text().catch(() => "Unknown error");
+    throw new Error(`Failed to OCR document: ${errorText}`);
+  }
+
+  const htmlContent = await response.text();
+  return htmlContent;
 }

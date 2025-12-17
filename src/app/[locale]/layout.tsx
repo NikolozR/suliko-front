@@ -10,6 +10,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
+import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -46,7 +47,7 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* Meta Pixel Code */}
+        {/* Enhanced Meta Pixel Code */}
         <Script
           id="meta-pixel"
           strategy="afterInteractive"
@@ -59,8 +60,20 @@ export default async function LocaleLayout({
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  fbq('init', '763067889892928');
-  fbq('track', 'PageView');`,
+  
+  // Enhanced initialization with additional parameters
+  fbq('init', '763067889892928', {
+    em: 'hashed_email_placeholder', // Will be replaced with actual hashed email
+    ph: 'hashed_phone_placeholder', // Will be replaced with actual hashed phone
+    fbc: 'fb_click_id_placeholder', // Will be replaced with actual click ID
+    fbp: 'fb_browser_id_placeholder' // Will be replaced with actual browser ID
+  });
+  
+  // Track PageView with enhanced parameters
+  fbq('track', 'PageView', {
+    content_name: 'Suliko Landing Page',
+    content_category: 'AI Translation Service'
+  });`,
           }}
         />
         {/* Hotjar Tracking Code for Suliko AI NEW */}{/* Hotjar Tracking Code for Suliko AI NEW */}
@@ -99,6 +112,40 @@ export default async function LocaleLayout({
             `,
           }}
         />
+        
+        {/* Yandex.Metrika counter */}
+        <Script
+          id="yandex-metrika"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(m,e,t,r,i,k,a){
+                m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+                m[i].l=1*new Date();
+                for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+              })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=104728476', 'ym');
+
+              ym(104728476, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+            `,
+          }}
+        />
+        <Script
+          id="yandex-metrika-2"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(m,e,t,r,i,k,a){
+                m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+                m[i].l=1*new Date();
+                for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
+              })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105466504', 'ym');
+
+              ym(105466504, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
+            `,
+          }}
+        />
       </head>
       <body
         suppressHydrationWarning
@@ -109,8 +156,24 @@ export default async function LocaleLayout({
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=763067889892928&ev=PageView&noscript=1" alt="" />
         </noscript>
+        
+        {/* Yandex.Metrika (noscript) */}
+        <noscript>
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://mc.yandex.ru/watch/104728476" style={{ position: 'absolute', left: '-9999px' }} alt="" />
+          </div>
+        </noscript>
+        {/* Yandex.Metrika 2 (noscript) */}
+        <noscript>
+          <div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="https://mc.yandex.ru/watch/105466504" style={{ position: 'absolute', left: '-9999px' }} alt="" />
+          </div>
+        </noscript>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <SessionRefreshProvider />
             <TopRightControls />
             {/* <BetaBanner /> */}
             {children}

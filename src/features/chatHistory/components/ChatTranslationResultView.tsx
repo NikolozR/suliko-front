@@ -1,6 +1,7 @@
 "use client";
 import { ChangeEvent, useRef, useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
+import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 import DocumentPreview from "@/features/translation/components/DocumentPreview";
 import FileInfoDisplay from "@/features/translation/components/FileInfoDisplay";
 import CopyButton from "@/features/translation/components/CopyButton";
@@ -31,6 +32,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
 }) => {
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
+  const translatedSuffix = useTranslatedSuffix();
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
@@ -114,7 +116,8 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     if (!downloadedFormat) return;
     const triggerDownload = async () => {
       const fileType = downloadedFormat.value;
-      const fileName = `translated_document.${fileType}`;
+      const originalFileName = currentFile?.name || "document";
+      const fileName = generateLocalizedFilename(originalFileName, fileType, translatedSuffix);
       if (["txt", "md", "srt"].includes(fileType)) {
         const text = translatedMarkdown.replace(/<[^>]+>/g, "");
         const blob = new Blob([text], { type: fileType === "md" ? "text/markdown" : fileType === "srt" ? "text/srt" : "text/plain" });
@@ -159,7 +162,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
       setDownloadedFormat(null);
     };
     triggerDownload();
-  }, [downloadedFormat, translatedMarkdown]);
+  }, [downloadedFormat, translatedMarkdown, currentFile?.name, translatedSuffix]);
 
   return (
     <>

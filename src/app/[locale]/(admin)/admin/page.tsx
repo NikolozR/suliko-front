@@ -3,6 +3,8 @@ import { cookies } from "next/headers";
 import Link from "next/link";
 import { API_BASE_URL } from "@/shared/constants/api";
 import UsersTable, { User as TableUser } from "./users-table";
+import LanguageManager from "./LanguageManager";
+import LanguageList from "./LanguageList";
 
 export default async function AdminDashboardPage() {
   const cookieStore = await cookies();
@@ -28,6 +30,8 @@ export default async function AdminDashboardPage() {
     roleId?: string;
     roleName?: string;
     balance?: number;
+    createdAt?: string;
+    lastActivityAt?: string;
   };
   let users: AdminUser[] = [];
   let total = 0;
@@ -62,8 +66,14 @@ export default async function AdminDashboardPage() {
       {loadError ? (
         <div className="text-red-600 text-sm">{loadError}</div>
       ) : (
-        <UsersTable initialUsers={users.slice(0, 50) as TableUser[]} />
+        <UsersTable initialUsers={users as TableUser[]} />
       )}
+
+      {/* Language List */}
+      <LanguageList />
+
+      {/* Language Manager */}
+      <LanguageManager />
     </div>
   );
 }

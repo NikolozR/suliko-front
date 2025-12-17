@@ -6,47 +6,70 @@ import { LoginFormData, RegisterFormData } from "@/features/auth/types/types.Aut
 
 interface NameSectionProps {
   form: UseFormReturn<LoginFormData | RegisterFormData>;
+  hideEmail?: boolean;
 }
 
-const NameSection = ({ form }: NameSectionProps) => {
+const NameSection = ({ form, hideEmail = false }: NameSectionProps) => {
   const t = useTranslations('Authorization');
 
   return (
-    <div className="flex gap-4">
-      <FormField
-        control={form.control}
-        name="firstname"
-        render={({ field }) => (
-          <FormItem className="flex-1">
-            <FormLabel className="font-bold dark:text-white">{t('firstname')} ({t('optional')})</FormLabel>
-            <FormControl>
-              <Input
-                placeholder={t('firstnamePlaceholder')}
-                className="border-2 shadow-md dark:border-slate-600"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
-      <FormField
-        control={form.control}
-        name="lastname"
-        render={({ field }) => (
-          <FormItem className="flex-1">
-            <FormLabel className="font-bold dark:text-white">{t('lastname')} ({t('optional')})</FormLabel>
-            <FormControl>
-              <Input
-                placeholder={t('lastnamePlaceholder')}
-                className="border-2 shadow-md dark:border-slate-600"
-                {...field}
-              />
-            </FormControl>
-            <FormMessage />
-          </FormItem>
-        )}
-      />
+    <div className="flex flex-col gap-4">
+      <div className="flex gap-4">
+        <FormField
+          control={form.control}
+          name="firstname"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel className="font-bold dark:text-white">{t('firstname')}</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={t('firstnamePlaceholder')}
+                  className="border-2 shadow-md dark:border-slate-600"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="lastname"
+          render={({ field }) => (
+            <FormItem className="flex-1">
+              <FormLabel className="font-bold dark:text-white">{t('lastname')}</FormLabel>
+              <FormControl>
+                <Input
+                  placeholder={t('lastnamePlaceholder')}
+                  className="border-2 shadow-md dark:border-slate-600"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      </div>
+      {!hideEmail && (
+        <FormField
+          control={form.control}
+          name="email"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="font-bold dark:text-white">{t('email')} <span className="text-red-500">*</span></FormLabel>
+              <FormControl>
+                <Input
+                  type="email"
+                  placeholder={t('emailPlaceholder') || "example@email.com"}
+                  className="border-2 shadow-md dark:border-slate-600"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+      )}
     </div>
   );
 };

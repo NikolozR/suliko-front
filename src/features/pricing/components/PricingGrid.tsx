@@ -4,19 +4,29 @@ import { useState } from "react";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
+import { ContactPaymentModal } from "./ContactPaymentModal";
 import { createPayment } from "../services/paymentService";
+import { isSulikoIo } from "@/shared/utils/domainUtils";
 
 export function PricingGrid() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showPayAsYouGoModal, setShowPayAsYouGoModal] = useState(false);
+  const [showContactPaymentModal, setShowContactPaymentModal] = useState(false);
 
   const handleSelectPayAsYouGo = () => {
     setShowPayAsYouGoModal(true);
   };
 
-  const handleSelectPackage = async (amount: number, currency: string = 'GEL', country: string = 'GE') => {
+  const handleSelectPackage = async (amount: number) => {
+    // For suliko.io, show contact modal instead of making payment API call
+    if (isSulikoIo()) {
+      setShowContactPaymentModal(true);
+      return;
+    }
+
     try {
-      const response = await createPayment(amount, currency, country);
+      // Currency and country will be determined automatically based on domain
+      const response = await createPayment(amount);
       window.open(response.redirectUrl, "_blank");
     } catch (error) {
       console.error('Payment failed:', error);
@@ -50,6 +60,11 @@ export function PricingGrid() {
       <PayAsYouGoModal 
         isOpen={showPayAsYouGoModal} 
         onClose={() => setShowPayAsYouGoModal(false)} 
+      />
+
+      <ContactPaymentModal 
+        isOpen={showContactPaymentModal} 
+        onClose={() => setShowContactPaymentModal(false)} 
       />
     </>
   );

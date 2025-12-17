@@ -1,12 +1,10 @@
 "use client";
 import React from "react";
-import { useRouter } from "next/navigation";
-import { useLocale } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { useAuthStore } from "@/features/auth/store/authStore";
 
 export default function AdminAuthControls() {
   const router = useRouter();
-  const locale = useLocale();
   const resetAuth = useAuthStore((s) => s.reset);
 
   const handleLogout = () => {
@@ -14,7 +12,7 @@ export default function AdminAuthControls() {
     if (typeof document !== "undefined") {
       document.cookie = `adminAllowed=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Strict; Secure`;
     }
-    router.push(`/${locale}/admin/login`);
+    router.push("/admin/login");
   };
 
   return (

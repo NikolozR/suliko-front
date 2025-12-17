@@ -36,7 +36,7 @@ export const translateUserContent = async (
 
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);
@@ -105,7 +105,7 @@ export const translateDocumentUserContent = async (
   
   if (response.status === 401 && token && refreshToken) {
     try {
-      const newTokens = await reaccessToken(refreshToken);
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(newTokens.token);
       setRefreshToken(newTokens.refreshToken);

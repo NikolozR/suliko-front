@@ -7,11 +7,13 @@ import { saveAs } from "file-saver";
 // @ts-expect-error Type errors, nothing special
 import htmlDocx from "html-docx-js/dist/html-docx";
 import { wordToPdf } from "@/features/translation/services/conversionsService";
+import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 
 
 interface DownloadButtonProps {
   content: string; // HTML string
   filename?: string;
+  originalFileName?: string; // Original uploaded file name
   fileType?: "txt" | "md" | "docx" | "pdf" | "srt";
   className?: string;
   size?: "sm" | "default" | "lg" | "icon";
@@ -28,6 +30,7 @@ interface DownloadButtonProps {
 const DownloadButton: React.FC<DownloadButtonProps> = ({
   content,
   filename,
+  originalFileName,
   fileType = "txt",
   className = "",
   size = "sm",
@@ -35,6 +38,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
 }) => {
   const [downloaded, setDownloaded] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
+  const translatedSuffix = useTranslatedSuffix();
 
   const getMimeType = (type: string) => {
     switch (type) {
@@ -52,21 +56,25 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   };
 
   const getDefaultFilename = () => {
+    if (originalFileName) {
+      return generateLocalizedFilename(originalFileName, fileType, translatedSuffix);
+    }
+    
     const timestamp = new Date()
       .toISOString()
       .slice(0, 19)
       .replace(/[:-]/g, "");
     switch (fileType) {
       case "md":
-        return `translated_document_${timestamp}.md`;
+        return `document_${translatedSuffix}_${timestamp}.md`;
       case "pdf":
-        return `translated_document_${timestamp}.pdf`;
+        return `document_${translatedSuffix}_${timestamp}.pdf`;
       case "docx":
-        return `translated_document_${timestamp}.docx`;
+        return `document_${translatedSuffix}_${timestamp}.docx`;
       case "srt":
-        return `translated_subtitles_${timestamp}.srt`;
+        return `subtitles_${translatedSuffix}_${timestamp}.srt`;
       default:
-        return `translated_text_${timestamp}.txt`;
+        return `text_${translatedSuffix}_${timestamp}.txt`;
     }
   };
 

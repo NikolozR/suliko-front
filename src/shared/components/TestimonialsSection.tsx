@@ -3,9 +3,17 @@
 import { Card, CardContent } from "@/features/ui";
 import { Star, Quote } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
+import Captcha from "./Captcha";
+import { useTheme } from "next-themes";
 
 export default function TestimonialsSection() {
   const t = useTranslations("TestimonialsSection");
+  const { resolvedTheme } = useTheme();
+  const [email, setEmail] = useState("");
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const testimonials = [
     {
       name: t("testimonials.translationHouse.name"),
@@ -60,6 +68,46 @@ export default function TestimonialsSection() {
     ];
     const index = initials.charCodeAt(0) % colors.length;
     return colors[index];
+  };
+
+  const handleCaptchaVerify = (token: string | null) => {
+    setCaptchaToken(token);
+  };
+
+  const handleCaptchaError = (error?: unknown) => {
+    console.error('CAPTCHA error:', error);
+    setCaptchaToken(null);
+  };
+
+  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!email || !captchaToken) {
+      setSubmitStatus('error');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setSubmitStatus('idle');
+
+    try {
+      console.log('Submitting newsletter form:', { email, hasCaptchaToken: !!captchaToken });
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Fake successful subscription
+      console.log('Newsletter subscription successful for:', email);
+      setSubmitStatus('success');
+      setEmail('');
+      setCaptchaToken(null);
+      
+    } catch (error) {
+      console.error('Newsletter subscription error:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -146,24 +194,49 @@ export default function TestimonialsSection() {
               <p className="text-muted-foreground mb-8 text-lg">
                 {t("newsletter.subtitle")}
               </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder={t("newsletter.emailPlaceholder")}
-                  className="flex-1 px-4 py-3 rounded-lg bg-white/20 dark:bg-black/20 backdrop-blur-sm border border-white/30 dark:border-white/20 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
-                />
-                <button className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors whitespace-nowrap shadow-lg hover:shadow-xl">
-                  {t("newsletter.subscribeButton")}
-                </button>
-              </div>
-              <div className="flex items-center justify-center gap-4 mt-6">
-                <div className="flex items-center gap-2">
-                  <input type="checkbox" id="newsletter-consent" className="rounded bg-white/20 dark:bg-black/20 border-white/30 dark:border-white/20" />
-                  <label htmlFor="newsletter-consent" className="text-muted-foreground text-sm">
-                    {t("newsletter.notRobot")}
-                  </label>
+              
+              <form onSubmit={handleNewsletterSubmit} className="space-y-6">
+                <div className="flex flex-col sm:flex-row gap-4 justify-center items-center max-w-md mx-auto">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder={t("newsletter.emailPlaceholder")}
+                    className="flex-1 px-4 py-3 rounded-lg bg-white/20 dark:bg-black/20 backdrop-blur-sm border border-white/30 dark:border-white/20 text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary/50 transition-all"
+                    required
+                  />
+                  <button 
+                    type="submit"
+                    disabled={!email || !captchaToken || isSubmitting}
+                    className="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 transition-colors whitespace-nowrap shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isSubmitting ? t("newsletter.subscribing") : t("newsletter.subscribeButton")}
+                  </button>
                 </div>
-              </div>
+                
+                {/* CAPTCHA */}
+                <div className="flex justify-center">
+                  <Captcha
+                    onVerify={handleCaptchaVerify}
+                    onError={handleCaptchaError}
+                    theme={resolvedTheme === 'dark' ? 'dark' : 'light'}
+                    size="normal"
+                  />
+                </div>
+
+                {/* Status Messages */}
+                {submitStatus === 'success' && (
+                  <div className="text-green-600 dark:text-green-400 text-sm">
+                    {t("newsletter.success")}
+                  </div>
+                )}
+                
+                {submitStatus === 'error' && (
+                  <div className="text-red-600 dark:text-red-400 text-sm">
+                    {t("newsletter.error")}
+                  </div>
+                )}
+              </form>
             </div>
           </div>
         </div>

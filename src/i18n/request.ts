@@ -1,12 +1,30 @@
 import {getRequestConfig} from 'next-intl/server';
 import {hasLocale} from 'next-intl';
 import {routing} from './routing';
+import {headers} from 'next/headers';
+
+// Helper function to get default locale based on domain (server-side)
+function getDefaultLocaleForDomain(hostname: string): 'ka' | 'en' {
+  if (hostname.includes('suliko.ge')) {
+    return 'ka';
+  }
+  if (hostname.includes('suliko.io')) {
+    return 'en';
+  }
+  return 'en'; // fallback
+}
  
 export default getRequestConfig(async ({requestLocale}) => {
   const requested = await requestLocale;
+  
+  // Get default locale based on domain
+  const headersList = await headers();
+  const hostname = headersList.get('host') || '';
+  const defaultLocale = getDefaultLocaleForDomain(hostname);
+  
   const locale = hasLocale(routing.locales, requested)
     ? requested
-    : routing.defaultLocale;
+    : defaultLocale;
  
   return {
     locale,

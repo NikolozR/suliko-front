@@ -11,6 +11,7 @@ interface UserState {
   setLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
   fetchUserProfile: () => Promise<void>;
+  fetchUserProfileWithRetry: (maxRetries?: number, delay?: number) => Promise<void>;
   clearUserData: () => void;
 }
 
@@ -37,6 +38,32 @@ export const useUserStore = create<UserState>()(
           set({ error: errorMessage, loading: false });
           if (err instanceof Error && err.message.includes("No token found")) {
             get().clearUserData();
+          }
+        }
+      },
+
+      // Enhanced profile fetch with retry for balance updates
+      fetchUserProfileWithRetry: async (maxRetries = 3, delay = 1000) => {
+        for (let attempt = 1; attempt <= maxRetries; attempt++) {
+          try {
+            set({ loading: true, error: null });
+            const profile = await getUserProfile();
+            set({ userProfile: profile, loading: false });
+            return; // Success, exit retry loop
+          } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : "Failed to load profile";
+            
+            if (attempt === maxRetries) {
+              // Final attempt failed
+              set({ error: errorMessage, loading: false });
+              if (err instanceof Error && err.message.includes("No token found")) {
+                get().clearUserData();
+              }
+              return;
+            }
+            
+            // Wait before retry
+            await new Promise((resolve) => setTimeout(resolve, delay));
           }
         }
       },

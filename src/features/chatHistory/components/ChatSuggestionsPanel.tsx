@@ -73,6 +73,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
           outputLanguageId: currentTargetLanguageId,
           editedOriginalText: s.originalText,
           editedSuggestedText: s.suggestedText,
+          currentDocumentContent: translatedMarkdown,
         });
          console.log(data, "APPLY SUGGESTION RESPONSE");
         if (data.success) {

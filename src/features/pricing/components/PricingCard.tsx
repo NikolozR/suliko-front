@@ -1,5 +1,6 @@
 import { useTranslations } from "next-intl";
 import { Check } from "lucide-react";
+import { formatPriceFromString } from "@/shared/utils/domainUtils";
 
 interface PricingCardProps {
   type: 'starter' | 'professional' | 'payAsYouGo' | 'custom' | 'business' | 'enterpriseBusiness';
@@ -30,7 +31,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
         </h3>
         <div className="mb-6 text-center">
           <span className="text-4xl font-bold text-card-foreground">
-            {t(`${type}.price`)}
+            {formatPriceFromString(t(`${type}.price`))}
           </span>
           <span className="text-muted-foreground">
             {t(`${type}.period`)}

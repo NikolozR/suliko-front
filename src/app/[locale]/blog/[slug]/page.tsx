@@ -1,91 +1,116 @@
-import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
-import BlogPost from '@/features/blog/components/BlogPost';
-import { BlogService } from '@/features/blog/services/blogService';
+import { notFound } from 'next/navigation';
+import { getAllPostSlugs, getPostBySlug } from '@/lib/blog';
+import { BlogPost } from '@/components/blog';
 import LandingHeader from '@/shared/components/LandingHeader';
 import LandingFooter from '@/shared/components/LandingFooter';
-import SulikoParticles from '@/shared/components/SulikoParticles';
-import ScrollToTop from '@/shared/components/ScrollToTop';
+
+// Allow dynamic generation as fallback
+export const dynamic = 'force-dynamic';
+export const dynamicParams = true;
 
 interface BlogPostPageProps {
-  params: Promise<{ slug: string; locale: string }>;
+  params: Promise<{ slug: string }>;
 }
 
 export async function generateStaticParams() {
-  const blogService = BlogService.getInstance();
-  const posts = await blogService.getPosts();
-  
-  return posts.map((post) => ({
-    slug: post.id,
-  }));
+  try {
+    const slugs = getAllPostSlugs();
+    return slugs.map((slug) => ({
+      slug,
+    }));
+  } catch (error) {
+    console.error('Error in generateStaticParams:', error);
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const { slug } = await params;
-  const blogService = BlogService.getInstance();
-  const post = await blogService.getPostById(slug);
+  try {
+    const { slug } = await params;
+    const post = getPostBySlug(slug);
 
-  if (!post) {
+    if (!post) {
+      return {
+        title: 'Post Not Found',
+      };
+    }
     return {
-      title: 'Post Not Found - Suliko Blog',
+      title: `${post.title} | Suliko Blog`,
+      description: post.excerpt,
+      openGraph: {
+        title: post.title,
+        description: post.excerpt,
+        type: 'article',
+        publishedTime: post.date,
+        authors: [post.author],
+        ...(post.coverImage && {
+          images: [
+            {
+              url: post.coverImage,
+              width: 1200,
+              height: 630,
+              alt: post.title,
+            },
+          ],
+        }),
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: post.title,
+        description: post.excerpt,
+        ...(post.coverImage && {
+          images: [post.coverImage],
+        }),
+      },
+    };
+  } catch (error) {
+    console.error('Error in generateMetadata:', error);
+    return {
+      title: 'Error',
     };
   }
-
-  const locale = (await params).locale;
-  const title = post.title[locale] || post.title.en;
-  const description = post.excerpt[locale] || post.excerpt.en;
-
-  return {
-    title: `${title} - Suliko Blog`,
-    description,
-    openGraph: {
-      title: `${title} - Suliko Blog`,
-      description,
-      type: 'article',
-      publishedTime: post.publishedAt,
-      modifiedTime: post.updatedAt,
-      authors: [post.author.name],
-      tags: post.tags,
-      images: post.featuredImage ? [post.featuredImage] : undefined,
-    },
-    twitter: {
-      card: 'summary_large_image',
-      title: `${title} - Suliko Blog`,
-      description,
-      images: post.featuredImage ? [post.featuredImage] : undefined,
-    },
-  };
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const { slug } = await params;
-  const blogService = BlogService.getInstance();
-  const post = await blogService.getPostById(slug);
+  try {
+    const { slug } = await params;
+    const post = getPostBySlug(slug);
 
-  if (!post) {
-    notFound();
-  }
+    if (!post) {
+      notFound();
+    }
 
   return (
-    <div className="min-h-screen relative">
-      {/* Background particles */}
-      <SulikoParticles
-        className="fixed inset-0 z-0"
-        fullScreen={true}
-        particleCount={60}
-        speed={0.5}
-        enableInteractions={true}
-      />
+    <>
+      {/* Header */}
+      <LandingHeader />
       
-      {/* Main content */}
-      <div className="relative z-10">
-        <LandingHeader />
-        <main className="pt-20">
-          <BlogPost post={post} />
-        </main>
-        <LandingFooter />
-        <ScrollToTop />
-      </div>
-    </div>
+      {/* Main Blog Post Page with Stars Background */}
+      <main className="min-h-screen blog-stars-background">
+        {/* Stars Background Layer */}
+        <div className="fixed inset-0 -z-10">
+          <div className="absolute inset-0 stars-layer-1" />
+          <div className="absolute inset-0 stars-layer-2" />
+        </div>
+
+        {/* Content Layer */}
+        <div className="relative z-10">
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 mt-16">
+            <BlogPost post={post} />
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <LandingFooter />
+    </>
   );
+  } catch (error) {
+    console.error('Error in BlogPostPage:', error);
+    notFound();
+  }
 }
+
+
+{/* Commit ovverride */}

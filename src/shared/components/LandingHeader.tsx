@@ -1,31 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Link, useRouter, usePathname } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { X, Moon, Sun } from "lucide-react";
+import { X, Moon, Sun, Loader2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTheme } from "next-themes";
 
-// Navigation hook for smooth scrolling
-function useSmoothScroll() {
-  const scrollToSection = useCallback((sectionId: string) => {
-    const element = document.getElementById(sectionId.replace('#', ''));
-    if (element) {
-      const headerHeight = 80; // Account for fixed header
-      const elementPosition = element.offsetTop - headerHeight;
-      
-      window.scrollTo({
-        top: elementPosition,
-        behavior: 'smooth'
-      });
-    }
-  }, []);
-
-  return { scrollToSection };
-}
 
 // Theme toggle component
 function ThemeToggle() {
@@ -52,11 +35,15 @@ function ThemeToggle() {
 }
 
 // Navigation item component
-function NavItem({ children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
+function NavItem({ children, onClick, isBlogPage }: { href: string; children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
   return (
     <button
       onClick={onClick}
-      className="text-foreground/80 hover:text-foreground transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1"
+      className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+        isBlogPage
+          ? "text-white/90 hover:text-white"
+          : "text-foreground/80 hover:text-foreground"
+      }`}
       type="button"
     >
       {children}
@@ -65,11 +52,15 @@ function NavItem({ children, onClick }: { href: string; children: React.ReactNod
 }
 
 // Mobile nav item component
-function MobileNavItem({ children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
+function MobileNavItem({ children, onClick, isBlogPage }: { href: string; children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
   return (
     <button
       onClick={onClick}
-      className="block w-full text-left px-4 py-4 text-foreground/80 hover:text-foreground hover:bg-accent rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50"
+      className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
+        isBlogPage
+          ? "text-white/90 hover:text-white hover:bg-white/10"
+          : "text-foreground/80 hover:text-foreground hover:bg-accent"
+      }`}
       type="button"
     >
       {children}
@@ -79,29 +70,66 @@ function MobileNavItem({ children, onClick }: { href: string; children: React.Re
 
 export default function LandingHeader() {
   const t = useTranslations("LandingHeader");
+  const router = useRouter();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const router = useRouter();
-  const pathname = usePathname();
+  const [isBlogPage, setIsBlogPage] = useState(false);
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  // Prefetch the document page on hover
+  const handleMouseEnter = () => {
+    router.prefetch('/document');
+  };
+
+  // Handle click with loading state
+  const handleGetStartedClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsNavigating(true);
+    router.push('/document');
+  };
   
-  const { scrollToSection } = useSmoothScroll();
 
   // Handle mounting
   useEffect(() => {
     setMounted(true);
   }, []);
 
+  // Check if we're on a blog page
+  useEffect(() => {
+    const checkBlogPage = () => {
+      setIsBlogPage(window.location.pathname.includes('/blog'));
+    };
+    
+    checkBlogPage();
+    window.addEventListener('popstate', checkBlogPage);
+    return () => window.removeEventListener('popstate', checkBlogPage);
+  }, []);
+
   // Handle scroll detection
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 20);
+      
+      // Hide/show header on scroll
+      if (scrollTop > lastScrollY && scrollTop > 100) {
+        // Scrolling down
+        setIsHeaderVisible(false);
+      } else {
+        // Scrolling up
+        setIsHeaderVisible(true);
+      }
+      
+      setLastScrollY(scrollTop);
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [lastScrollY]);
 
   // Close mobile menu on escape key
   useEffect(() => {
@@ -121,27 +149,18 @@ export default function LandingHeader() {
     { id: 'pricing', label: t("pricing") },
     { id: 'testimonials', label: t("testimonials") },
     { id: 'contact', label: t("contact") },
-    { id: 'blog', label: t("blog"), isExternal: true },
   ];
 
-  // Check if we're on a blog page
-  const isOnBlogPage = pathname?.includes('/blog');
+  // Blog navigation item (separate from scroll items)
+  const blogNavItem = { id: 'blog', label: t("blog"), href: '/blog' };
 
   // Handle navigation click
-  const handleNavClick = (sectionId: string, isExternal = false) => {
-    if (isExternal) {
-      // For external links (like blog), navigate to the page using router
-      router.push(sectionId);
-    } else {
-      // For section links
-      if (isOnBlogPage) {
-        // If we're on blog page, navigate to landing page with section hash
-        router.push(`/#${sectionId.replace('#', '')}`);
-      } else {
-        // If we're on landing page, scroll to section
-        scrollToSection(sectionId);
-      }
-    }
+  const handleNavClick = (sectionId: string) => {
+    // Remove hash if present
+    const cleanSectionId = sectionId.replace('#', '');
+    
+    // Always redirect to landing page with section anchor
+    window.location.href = `/#${cleanSectionId}`;
     setIsMobileMenuOpen(false);
   };
 
@@ -173,9 +192,15 @@ export default function LandingHeader() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-background/95 backdrop-blur-md border-b border-border shadow-sm"
-          : "bg-transparent"
+        isBlogPage
+          ? isScrolled
+            ? "bg-slate-900/95 backdrop-blur-lg border-b border-slate-700 shadow-xl"
+            : "bg-slate-900/80 backdrop-blur-md"
+          : isScrolled
+            ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
+            : "bg-background/95 backdrop-blur-md md:bg-transparent"
+      } ${
+        isHeaderVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       <nav className="container z-50 relative mx-auto px-4 sm:px-6 lg:px-8">
@@ -200,15 +225,22 @@ export default function LandingHeader() {
               {navItems.map((item) => (
                 <NavItem
                   key={item.id}
-                  href={item.isExternal ? `/${item.id}` : `#${item.id}`}
-                  onClick={() => handleNavClick(
-                    item.isExternal ? `/${item.id}` : `#${item.id}`, 
-                    item.isExternal
-                  )}
+                  href=""
+                  onClick={() => handleNavClick(`#${item.id}`)}
+                  isBlogPage={isBlogPage}
                 >
                   <span className="cursor-pointer">{item.label}</span>
                 </NavItem>
               ))}
+              <Link href={blogNavItem.href}>
+                <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+                  isBlogPage
+                    ? "text-white/90 hover:text-white"
+                    : "text-foreground/80 hover:text-foreground"
+                }`}>
+                  {blogNavItem.label}
+                </button>
+              </Link>
             </div>
           </div>
 
@@ -216,16 +248,36 @@ export default function LandingHeader() {
           <div className="hidden md:flex items-center space-x-4">
             <LanguageSwitcher />
             <ThemeToggle />
-            <Link href="/document">
-              <Button size="sm" className="text-sm">
-                {t("getStarted")}
+            <Link 
+              href="/document" 
+              prefetch={true}
+              onMouseEnter={handleMouseEnter}
+              onClick={handleGetStartedClick}
+            >
+              <Button 
+                size="sm" 
+                className="text-sm"
+                disabled={isNavigating}
+              >
+                {isNavigating ? (
+                  <>
+                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                    {t("loading") || "Loading..."}
+                  </>
+                ) : (
+                  t("getStarted")
+                )}
               </Button>
             </Link>
           </div>
 
           {/* Hamburger Menu Button */}
           <button
-            className="md:hidden p-2 rounded-md text-foreground hover:bg-accent transition-colors relative z-50"
+            className={`md:hidden p-2 rounded-md transition-colors relative z-50 ${
+              isBlogPage
+                ? "text-white hover:bg-white/20 bg-white/10"
+                : "text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
+            }`}
             onClick={toggleMobileMenu}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             type="button"
@@ -252,18 +304,18 @@ export default function LandingHeader() {
 
         {/* Mobile Navigation Overlay */}
         {isMobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-40">
+          <div className="md:hidden fixed inset-0 z-[60]">
             {/* Backdrop */}
             <div 
-              className="absolute inset-0 bg-black/20 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             />
             
             {/* Menu Panel */}
-            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-background/95 backdrop-blur-md border-l border-border shadow-xl transform transition-transform duration-300 ease-in-out">
-              <div className="flex flex-col h-full">
+            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-2xl transform transition-transform duration-300 ease-in-out z-[61]">
+              <div className="flex flex-col h-full bg-inherit">
                 {/* Menu Header */}
-                <div className="flex items-center justify-between p-4 border-b border-border">
+                <div className="flex items-center justify-between p-4 border-b border-border bg-inherit">
                   <h2 className="text-lg font-semibold text-foreground">Menu</h2>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
@@ -275,31 +327,56 @@ export default function LandingHeader() {
                 </div>
                 
                 {/* Navigation Items */}
-                <nav className="flex-1 px-4 py-6 space-y-2">
+                <nav className="flex-1 px-4 py-6 space-y-2 bg-inherit">
                   {navItems.map((item) => (
                     <MobileNavItem
                       key={item.id}
-                      href={item.isExternal ? `/${item.id}` : `#${item.id}`}
-                      onClick={() => handleNavClick(
-                        item.isExternal ? `/${item.id}` : `#${item.id}`, 
-                        item.isExternal
-                      )}
+                      href=""
+                      onClick={() => handleNavClick(`#${item.id}`)}
+                      isBlogPage={isBlogPage}
                     >
                       {item.label}
                     </MobileNavItem>
                   ))}
+                  <Link href={blogNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
+                      isBlogPage
+                        ? "text-white/90 hover:text-white hover:bg-white/10"
+                        : "text-foreground/80 hover:text-foreground hover:bg-accent"
+                    }`}>
+                      {blogNavItem.label}
+                    </button>
+                  </Link>
                 </nav>
                 
                 {/* Menu Footer */}
-                <div className="p-4 border-t border-border space-y-4">
+                <div className="p-4 border-t border-border space-y-4 bg-inherit">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-foreground/60">Theme</span>
                     <ThemeToggle />
                   </div>
                   
-                  <Link href="/document" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button className="w-full">
-                      {t("getStarted")}
+                  <Link 
+                    href="/document" 
+                    prefetch={true}
+                    onMouseEnter={handleMouseEnter}
+                    onClick={(e) => {
+                      handleGetStartedClick(e);
+                      setIsMobileMenuOpen(false);
+                    }}
+                  >
+                    <Button 
+                      className="w-full"
+                      disabled={isNavigating}
+                    >
+                      {isNavigating ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          {t("loading") || "Loading..."}
+                        </>
+                      ) : (
+                        t("getStarted")
+                      )}
                     </Button>
                   </Link>
                 </div>

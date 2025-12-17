@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui/components/ui/card";
 import { Input } from "@/features/ui/components/ui/input";
-import { Phone, Mail } from "lucide-react";
+import { Button } from "@/features/ui/components/ui/button";
+import { Phone, Mail, Edit } from "lucide-react";
 import { UpdateUserProfile, UserProfile } from "@/features/auth/types/types.User";
 import { useTranslations } from "next-intl";
 import { FieldErrors } from "react-hook-form";
@@ -9,6 +10,10 @@ interface ProfileContactInfoProps {
   userProfile: UserProfile;
   isEditing?: boolean;
   onChange?: (field: keyof UpdateUserProfile, value: string) => void;
+  onEdit?: () => void;
+  onSave?: () => void;
+  onCancel?: () => void;
+  isUpdating?: boolean;
   errors?: FieldErrors<{
     firstName: string;
     lastName: string;
@@ -21,18 +26,58 @@ export const ProfileContactInfo = ({
   userProfile, 
   isEditing, 
   onChange, 
+  onEdit,
+  onSave,
+  onCancel,
+  isUpdating,
   errors = {} 
 }: ProfileContactInfoProps) => {
   const t = useTranslations("Profile");
+  const needsEmailReminder = Boolean(
+    userProfile?.email && userProfile.email.toLowerCase().includes("example.com")
+  );
+  
   return (
     <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm rounded-2xl">
       <CardHeader className="pb-2 pt-6 px-8">
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <div className="p-2 bg-green-100 rounded-lg">
-            <Mail className="h-5 w-5 text-green-600" />
-          </div>
-          {t("contactInformation")}
-        </CardTitle>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center gap-2 text-xl">
+            <div className="p-2 bg-green-100 rounded-lg">
+              <Mail className="h-5 w-5 text-green-600" />
+            </div>
+            {t("contactInformation")}
+          </CardTitle>
+          {!isEditing && onEdit && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={onEdit}
+              className={`flex items-center gap-2 ${needsEmailReminder ? "animate-flicker" : ""}`}
+            >
+              <Edit className="h-4 w-4" />
+              {t("edit")}
+            </Button>
+          )}
+          {isEditing && (
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onCancel}
+                disabled={isUpdating}
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={onSave}
+                disabled={isUpdating}
+              >
+                {isUpdating ? t("saving") : t("save")}
+              </Button>
+            </div>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="space-y-6 px-8 pb-8 pt-2">
         <div className="flex items-center gap-4 p-4 bg-muted rounded-xl">
@@ -49,7 +94,7 @@ export const ProfileContactInfo = ({
           </div>
         </div>
 
-        <div className="flex items-center gap-4 p-4 bg-muted rounded-xl">
+        <div className={`flex items-center gap-4 p-4 bg-muted rounded-xl ${needsEmailReminder ? "animate-flicker" : ""}`}>
           <div className="p-3 bg-purple-100 rounded-lg">
             <Mail className="h-5 w-5 text-purple-600" />
           </div>

@@ -1,6 +1,5 @@
 "use client";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
@@ -10,6 +9,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { HistoryDropdown } from "@/features/chatHistory/components/HistoryDropdown";
+import { SidebarLanguageSelector } from "./SidebarLanguageSelector";
 import {
   Plus,
   Clock,
@@ -43,13 +43,13 @@ const NAV_ITEMS = [
     label: "help",
     href: "/help",
     icon: HelpCircle,
-    disabled: true,
+    disabled: false,
   },
   {
     label: "feedback",
     href: "/feedback",
     icon: MessageSquare,
-    disabled: true,
+    disabled: false,
   },
 ];
 
@@ -59,7 +59,6 @@ interface SidebarProps {
 
 export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const pathname = usePathname();
-  const locale = useLocale();
   const { token, reset } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();
@@ -69,9 +68,16 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed);
   const storeSetIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
   const [isClient, setIsClient] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
   const router = useRouter();
@@ -84,22 +90,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     }
   }, [initialUserProfile, userProfile, setUserProfile]);
 
-  // Handle responsive collapsing based on window size, only on client
+  // Handle responsive behavior - don't force collapse on mobile, allow user to toggle
   useEffect(() => {
     if (!isClient) return;
-
-    const handleResize = () => {
-      if (window.innerWidth < 768) {
-        if (storeIsCollapsed === false) {
-          storeSetIsCollapsed(true);
-        }
-      }
-    };
-
-    handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, [isClient, storeIsCollapsed, storeSetIsCollapsed]);
+    setIsMobile(window.innerWidth < 768);
+  }, [isClient]);
 
   const handleCollapseToggle = () => {
     storeSetIsCollapsed(!storeIsCollapsed);
@@ -120,14 +115,20 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   });
 
   // Determine effective collapsed state for rendering to prevent hydration mismatch
-  const effectiveIsCollapsed = !isClient ? true : storeIsCollapsed;
+  const effectiveIsCollapsed = !isClient ? false : storeIsCollapsed;
+
+  const needsEmailReminder = Boolean(
+    userProfile?.email && userProfile.email.toLowerCase().includes("example.com")
+  );
 
   const renderOverlay = () => {
-    if (!effectiveIsCollapsed) {
+    // Show overlay on mobile when sidebar is expanded
+    if (!effectiveIsCollapsed && isMobile) {
       return (
         <div 
-          className="fixed inset-0 bg-black/20 z-30 md:hidden" 
+          className="fixed inset-0 bg-black/50 z-30 md:hidden transition-opacity duration-300" 
           onClick={() => storeSetIsCollapsed(true)}
+          aria-hidden="true"
         />
       );
     }
@@ -139,19 +140,24 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
       {renderOverlay()}
       <aside
         className={`sidebar-main flex flex-col h-screen fixed left-0 top-0 z-40 border-r transition-all duration-300 ${
-          effectiveIsCollapsed ? "w-16" : "w-48 md:w-56 lg:w-64"
-        } ${!effectiveIsCollapsed ? "md:shadow-none shadow-2xl" : ""}`}
+          effectiveIsCollapsed 
+            ? "w-16" 
+            : "w-48 md:w-56 lg:w-64"
+        } ${
+          !effectiveIsCollapsed 
+            ? "md:shadow-none shadow-2xl" 
+            : "md:shadow-none"
+        }`}
       >
         <div className={`flex items-center ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
           {!effectiveIsCollapsed && (
-            <button
-              type="button"
-              onClick={() => router.push(`/${locale}`)}
+            <Link
+              href="/"
               className="transition-all duration-300 cursor-pointer"
               aria-label="Go to landing page"
             >
               <SulikoLogo />
-            </button>
+            </Link>
           )}
           <button
             onClick={handleCollapseToggle}
@@ -187,24 +193,52 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                 aria-current={isActive(href) ? "page" : undefined}
               >
-                <Icon
-                  className={`transition-transform duration-200 ${
-                    effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                  } group-hover:scale-105`}
-                />
+                <div className="relative flex items-center">
+                  <Icon
+                    className={`transition-transform duration-200 ${
+                      effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
+                    } group-hover:scale-105`}
+                  />
+                  {needsEmailReminder && label === "profile" && (
+                    <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_0_2px_rgba(255,255,255,0.9)] dark:shadow-[0_0_0_2px_rgba(24,28,42,1)] animate-flicker" />
+                  )}
+                </div>
                 {!effectiveIsCollapsed && (
-                  <span className="whitespace-nowrap">
-                    {t(label)}
-                  </span>
+                  <>
+                    <span className="whitespace-nowrap">
+                      {t(label)}
+                    </span>
+                    {needsEmailReminder && label === "profile" && (
+                      <span className="ml-auto text-[11px] font-medium text-amber-700 bg-amber-100 py-0.5 px-2 rounded-full flex-shrink-0 animate-flicker">
+                        {t("completeEmail")}
+                      </span>
+                    )}
+                  </>
                 )}
               </Link>
             )
           ))}
 
+          <div className="w-full">
+            <SidebarLanguageSelector isCollapsed={effectiveIsCollapsed} />
+          </div>
+
           {token && (
             <div className="relative">
               <button
-                onClick={() => setIsHistoryOpen(!isHistoryOpen)}
+                onClick={() => {
+                  // If sidebar is collapsed, expand it first and open history
+                  if (effectiveIsCollapsed) {
+                    storeSetIsCollapsed(false);
+                    // Use setTimeout to ensure sidebar expands before opening dropdown
+                    setTimeout(() => {
+                      setIsHistoryOpen(true);
+                    }, 100);
+                  } else {
+                    // If sidebar is already expanded, just toggle history dropdown
+                    setIsHistoryOpen(!isHistoryOpen);
+                  }
+                }}
                 className={`sidebar-item group w-full text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : "justify-between"}`}
               >
                 <div className="flex items-center gap-3">

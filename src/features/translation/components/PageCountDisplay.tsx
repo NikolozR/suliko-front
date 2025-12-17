@@ -40,31 +40,39 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
     estimatedMinutes, 
     estimatedCost, 
     updateEstimations,
+    selectedPageRange,
   } = useDocumentTranslationStore();
   const t = useTranslations("DocumentTranslationCard");
   const PRICE_PER_PAGE = 1; // 1 GEL = 1 page
   
-  // Update estimations when file changes
+  // Update estimations when file changes or page range is selected
   useEffect(() => {
     if (file) {
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
       
-      // Calculate page count based on real count or estimation
-      const pageCount = (() => {
-        // For PDFs and DOCX, use the real page count if available
-        if ((fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null) {
-          return realPageCount;
-        }
-        
-        // For other file types or when real count isn't loaded yet, use estimation
-        return estimatePageCount(file);
-      })();
+      // If page range is selected (for documents > 4 pages), use 3 pages
+      let pageCount: number;
+      if (selectedPageRange && realPageCount && realPageCount > 4) {
+        // Always use 3 pages when a range is selected
+        pageCount = 3;
+      } else {
+        // Calculate page count based on real count or estimation
+        pageCount = (() => {
+          // For PDFs and DOCX, use the real page count if available
+          if ((fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null) {
+            return realPageCount;
+          }
+          
+          // For other file types or when real count isn't loaded yet, use estimation
+          return estimatePageCount(file);
+        })();
+      }
       
       const minutes = pageCount * 2;
       const cost = (Math.ceil(pageCount) * PRICE_PER_PAGE).toString(); // Pages to be used
       updateEstimations(pageCount, minutes, cost, pageCount * 483);
     }
-  }, [file, realPageCount, updateEstimations, PRICE_PER_PAGE]);
+  }, [file, realPageCount, selectedPageRange, updateEstimations, PRICE_PER_PAGE]);
   
   if (!file) return null;
   
@@ -85,9 +93,19 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
   // Use values from global state
   const hasRealCount = (fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null;
 
+  const isPageRangeSelected = selectedPageRange && realPageCount && realPageCount > 4;
+  
   return (
     <div className="text-sm text-muted-foreground mt-2">
-      {hasRealCount ? t("pageCount.actual") : t("pageCount.estimated")}: {estimatedPageCount} {estimatedPageCount !== 1 ? t("pageCount.pages") : t("pageCount.page")}
+      {isPageRangeSelected ? (
+        <>
+          <span className="text-amber-600 dark:text-amber-500 font-medium">
+            {t("pageCount.selectedPages")}: {selectedPageRange.startPage}-{selectedPageRange.endPage}
+          </span>
+          <span className="mx-1">•</span>
+        </>
+      ) : null}
+      {hasRealCount && !isPageRangeSelected ? t("pageCount.actual") : t("pageCount.estimated")}: {estimatedPageCount} {estimatedPageCount !== 1 ? t("pageCount.pages") : t("pageCount.page")}
       (~{estimatedMinutes} {estimatedMinutes !== 1 ? t("pageCount.minutes") : t("pageCount.minute")})
       <div className="mt-1 text-suliko-default-color font-semibold">
         {t("pageCount.estimatedCost", { cost: estimatedCost })}

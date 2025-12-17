@@ -17,12 +17,94 @@
 	margin-right: auto;
 }
 
-.editor-container_classic-editor .editor-container__editor {
-	min-width: 795px;
-	max-width: 795px;
+.editor-container_document-editor .editor-container__editor {
+	min-width: 0;
+	width: 100%;
+	max-width: 1200px;
 }
 
-/* Ensure CKEditor content area matches preview min-height */
-.ck.ck-content {
-  min-height: 800px;
+/* Document Editor specific styling - page-like appearance */
+.editor-container_document-editor .ck-editor__editable {
+  min-height: 400px;
+  padding: 20px;
+  background: white !important;
+  color: #333 !important;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  margin: 10px auto;
+  max-width: 21cm; /* A4 width */
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .editor-container_document-editor .ck-editor__editable {
+    min-height: 800px;
+    padding: 60px;
+    margin: 20px auto;
+    min-height: 29.7cm; /* A4 height */
+  }
+}
+
+/* Document Editor container - centered page layout - always light */
+.editor-container_document-editor {
+  background: #f5f5f5 !important;
+  padding: 10px;
+  min-height: 100vh;
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+  .editor-container_document-editor {
+    padding: 40px 20px;
+  }
+}
+
+/* Force light theme for CKEditor - override dark mode */
+.editor-container_document-editor .ck-editor,
+.editor-container_document-editor .ck-editor__main,
+.editor-container_document-editor .ck-editor__editable,
+.editor-container_document-editor .ck-toolbar,
+.editor-container_document-editor .ck-toolbar__separator,
+.editor-container_document-editor .ck-button,
+.editor-container_document-editor .ck-dropdown {
+  background: white !important;
+  color: #333 !important;
+  border-color: #ccc !important;
+}
+
+/* Force light theme for toolbar */
+.editor-container_document-editor .ck-toolbar {
+  background: #fafafa !important;
+  border-bottom: 1px solid #ddd !important;
+}
+
+/* Force light theme for buttons and dropdowns */
+.editor-container_document-editor .ck-button:not(.ck-disabled):hover {
+  background: #e6e6e6 !important;
+}
+
+.editor-container_document-editor .ck-button.ck-on {
+  background: #e6e6e6 !important;
+}
+
+/* Force light theme for dropdown panels */
+.editor-container_document-editor .ck-dropdown__panel {
+  background: white !important;
+  color: #333 !important;
+  border: 1px solid #ccc !important;
+}
+
+/* Override any dark mode styles */
+.dark .editor-container_document-editor,
+.dark .editor-container_document-editor .ck-editor__editable,
+.dark .editor-container_document-editor .ck-toolbar,
+.dark .editor-container_document-editor .ck-editor {
+  background: #f5f5f5 !important;
+  color: #333 !important;
+}
+
+.dark .editor-container_document-editor .ck-editor__editable {
+  background: white !important;
+  color: #333 !important;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) !important;
 }

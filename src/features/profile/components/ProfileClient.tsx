@@ -8,6 +8,7 @@ import {
   ProfileHero,
   ProfilePersonalInfo,
   ProfileContactInfo,
+  ProfilePasswordChange,
   ProfileSkeleton,
   ProfileError,
   ProfileNotFound,
@@ -174,25 +175,29 @@ export default function ProfileClient() {
       <ProfileHero
         userProfile={currentUserProfile}
         onLogout={handleLogout}
-        isEditing={isEditing}
-        onEdit={handleEdit}
-        onSave={handleSave}
-        onCancel={handleCancel}
-        isUpdating={isUpdating}
       />
       <div className="space-y-6">
         <ProfilePersonalInfo
           userProfile={currentUserProfile}
           isEditing={isEditing}
           onChange={handleChange}
+          onEdit={handleEdit}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          isUpdating={isUpdating}
           errors={validationErrors}
         />
         <ProfileContactInfo
           userProfile={currentUserProfile}
           isEditing={isEditing}
           onChange={handleChange}
+          onEdit={handleEdit}
+          onSave={handleSave}
+          onCancel={handleCancel}
+          isUpdating={isUpdating}
           errors={validationErrors}
         />
+        <ProfilePasswordChange />
       </div>
     </div>
   );

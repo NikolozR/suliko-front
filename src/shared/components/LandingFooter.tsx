@@ -51,7 +51,11 @@ export default function LandingFooter() {
               
               {/* Book A Demo Button */}
               <div>
-                <Button size="lg" className="px-8 py-4 text-base">
+                <Button 
+                  size="lg" 
+                  className="px-8 py-4 text-base"
+                  onClick={() => window.open('https://calendly.com/misha-suliko/30min', '_blank')}
+                >
                   {t("bookDemo")}
                 </Button>
               </div>
@@ -65,12 +69,12 @@ export default function LandingFooter() {
                 <h3 className="font-semibold text-foreground mb-6 text-lg">{t("resources")}</h3>
                 <ul className="space-y-4">
                   <li>
-                    <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                      {t("links.blog")}
+                    <Link href="/developers" className="text-muted-foreground hover:text-foreground transition-colors">
+                      {t("developers")}
                     </Link>
                   </li>
                   <li>
-                    <Link href="/login" className="text-muted-foreground hover:text-foreground transition-colors">
+                    <Link href="/sign-in" className="text-muted-foreground hover:text-foreground transition-colors">
                       {t("logIn")}
                     </Link>
                   </li>
@@ -87,8 +91,8 @@ export default function LandingFooter() {
                     </Link>
                   </li>
                   <li>
-                    <Link href="/team" className="text-muted-foreground hover:text-foreground transition-colors">
-                      {t("team")}
+                    <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
+                      {t("blog")}
                     </Link>
                   </li>
                   <li>

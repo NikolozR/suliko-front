@@ -19,6 +19,7 @@ interface DocumentTranslationState {
   estimatedMinutes: number;
   estimatedCost: string;
   estimatedWordCount: number;
+  selectedPageRange: { startPage: number; endPage: number } | null;
   setCurrentSourceLanguageId: (languageId: number) => void;
   setCurrentTargetLanguageId: (languageId: number) => void;
   setOriginalTargetLanguageId: (languageId: number) => void;
@@ -38,6 +39,7 @@ interface DocumentTranslationState {
   setEstimatedCost: (cost: string) => void;
   setEstimatedWordCount: (wordCount: number) => void;
   updateEstimations: (pageCount: number, minutes: number, cost: string, words: number) => void;
+  setSelectedPageRange: (range: { startPage: number; endPage: number } | null) => void;
   reset: () => void;
 }
 
@@ -59,6 +61,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   estimatedMinutes: 0,
   estimatedCost: '0.00',
   estimatedWordCount: 0,
+  selectedPageRange: null,
   setJobId: (jobId: string) => set({ jobId: jobId }),
   setChatId: (chatId: string) => set({ chatId: chatId }),
   setCurrentSourceLanguageId: (languageId) => set({ currentSourceLanguageId: languageId }),
@@ -67,7 +70,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   },
   setOriginalTargetLanguageId: (languageId) => set({ originalTargetLanguageId: languageId }),
   setSourceLanguageId: (languageId) => set({ sourceLanguageId: languageId }),
-  setCurrentFile: (file) => set({ currentFile: file, realPageCount: null }),
+  setCurrentFile: (file) => set({ currentFile: file, realPageCount: null, selectedPageRange: null }),
   setTranslatedMarkdown: (text) => {
     set({ translatedMarkdown: text, shouldResetZoom: true });
   },
@@ -86,6 +89,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
   setEstimatedWordCount: (wordCount: number) => set({ estimatedWordCount: wordCount }), 
   updateEstimations: (pageCount: number, minutes: number, cost: string, words: number) => 
     set({ estimatedPageCount: pageCount, estimatedMinutes: minutes, estimatedCost: cost, estimatedWordCount: words }),
+  setSelectedPageRange: (range: { startPage: number; endPage: number } | null) => set({ selectedPageRange: range }),
   reset: () => set({ 
     currentFile: null, 
     translatedMarkdown: '', 
@@ -104,6 +108,7 @@ export const useDocumentTranslationStore = create<DocumentTranslationState>()((s
     estimatedPageCount: 0,
     estimatedMinutes: 0,
     estimatedCost: '0.00',
-    estimatedWordCount: 0
+    estimatedWordCount: 0,
+    selectedPageRange: null
   }),
 })); 

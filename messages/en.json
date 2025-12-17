@@ -4,6 +4,7 @@
     "description": "Enter your phone number and password",
     "phoneNumber": "Phone",
     "password": "Password",
+    "email": "Email",
     "firstname": "First Name",
     "lastname": "Last Name",
     "confirmPassword": "Confirm Password",
@@ -20,6 +21,8 @@
     "phoneNumberFormatError": "Phone number must be in Georgian format: 5XXXXXXXX",
     "passwordMinLengthError": "Password must be at least 8 characters long",
     "passwordRegexError": "Password must contain at least one number and one symbol",
+    "emailRequiredError": "Email is required",
+    "emailFormatError": "Please enter a valid email address",
     "AuthenticationFailed": "Authentication failed, Invalid credentials",
     "sendCode": "Send Code",
     "codeSent": "Code Sent",
@@ -37,6 +40,11 @@
     "phoneNumberPlaceholder": "5XX XX XX XX",
     "passwordPlaceholder": "********",
     "confirmPasswordPlaceholder": "Re-enter your password",
+    "emailPlaceholder": "a.tsereteli@suliko.ge",
+    "phoneNumberOrEmail": "Phone Number or Email",
+    "phoneNumberOrEmailPlaceholder": "Enter phone number or email",
+    "phoneNumberOrEmailRequired": "Phone number or email is required",
+    "phoneNumberOrEmailFormatError": "Please enter a valid phone number or email address",
     "termsAndConditions": "Terms and Conditions",
     "privacyPolicy": "Privacy Policy",
     "iAcceptThe": "I accept the",
@@ -46,6 +54,44 @@
     "acceptTermsError": "You must accept the terms, conditions and privacy policy",
     "acceptTermsAndConditionsError": "You must accept the terms and conditions",
     "acceptPrivacyPolicyError": "You must accept the privacy policy",
+    "forgotPassword": "Forgot Password?",
+    "recoverPassword": "Recover Password",
+    "enterPhoneForRecovery": "Enter your phone number to recover your password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
+    "passwordRecoverySuccess": "Password recovered successfully! You can now login with your new password.",
+    "passwordRecoveryError": "Password recovery failed. Please try again.",
+    "phoneNumberForRecovery": "Phone Number for Recovery",
+    "step1": "Step 1: Enter Phone Number",
+    "step2": "Step 2: Enter Verification Code",
+    "step3": "Step 3: Set New Password",
+    "enterNewPassword": "Enter new password",
+    "repeatNewPassword": "Repeat new password",
+    "backToLogin": "Back to Login",
+    "verify": "Verify",
+    "passwordRecoveryDescription": "Enter your phone number and we'll send you a password recovery link.",
+    "sendRecoveryLink": "Send Recovery Link",
+    "passwordRecoverySuccessTitle": "Recovery Link Sent",
+    "passwordRecoverySuccessMessage": "We've sent a password recovery link to your phone number. Please check your messages.",
+    "close": "Close",
+    "cancel": "Cancel",
+    "enterPhoneNumber": "Enter your phone number",
+    "verificationCodeSent": "Verification code sent to your phone",
+    "validateCode": "Validate Code",
+    "passwordResetSuccess": "Password Reset Successfully",
+    "passwordResetSuccessMessage": "Your password has been reset successfully. You can now log in with your new password.",
+    "corsError": "Connection Error",
+    "corsErrorMessage": "Unable to connect to the server. This might be due to network restrictions or server configuration. Please try again or contact support if the problem persists.",
+    "networkError": "Network Error",
+    "networkErrorMessage": "Please check your internet connection and try again.",
+    "chooseVerificationMethod": "Choose how you'd like to verify your account",
+    "verifyWithPhone": "Verify with Phone",
+    "verifyWithEmail": "Verify with Email",
+    "changeVerificationMethod": "Change verification method",
+    "emailWillBeAskedLater": "You can add and verify your email after registration",
+    "phoneWillBeAskedLater": "You can add and verify your phone number after registration",
+    "phoneVerificationDescription": "We'll send a verification code to your phone number",
+    "emailVerificationDescription": "We'll send a verification code to your email address",
     "termsText": "1. General Provisions\n\nThese terms and conditions govern the use of the translation service (\"Service\") offered by Suliko LLC (hereinafter - \"Company\", \"we\"). By accessing or using the Service, you as a user (\"User\") agree to the terms of this document.\n\n2. User Obligations\n\nWhen using the Service, you are obligated to use it only for legal purposes and not violate applicable laws.\n\nIt is prohibited to use the Service to create, distribute, or transmit any harmful or illegal content.\n\n3. Intellectual Property\n\nYou retain ownership of the text you upload to the Service. By using the Service, you grant the Company a limited, non-exclusive license to process and use this text solely for performing and improving the translation service.\n\nThe Service, all its components, software, design, and other materials constitute the intellectual property of the Company and are protected by copyright.\n\n4. Limitation of Liability\n\nThe Service is provided \"as is\" without any warranty. The Company makes no guarantee that the Service will be uninterrupted, error-free, or secure.\n\nThe Company is not liable for any direct, indirect, incidental, or other damages caused by the use of the Service.\n\n5. Service Termination\n\nThe Company has the right to restrict or terminate user access to the Service at any time and for any reason if the user violates these terms and conditions.\n\n6. Changes\n\nThe Company reserves the right to make changes to these terms and conditions at any time. Changes take effect immediately upon posting on the website or application.",
     "privacyText": "1. Information Collection\n\nInformation You Provide: We collect the text that you upload for using the translation service.\n\nTechnical and Usage Data: We may collect information about your device, IP address, browser type, and service usage (e.g., translation frequency, languages used) for analytics and service improvement.\n\n2. Information Usage\n\nCollected information is used for the following purposes:\n\nTo perform the translation service.\n\nTo improve the service and adapt it to your needs.\n\nFor analytics on how users use the service.\n\nTo resolve technical issues and ensure security.\n\n3. Data Security\n\nWe employ reasonable administrative, technical, and physical measures to protect your data from unauthorized access, use, or disclosure. However, no method of data transmission over the Internet is 100% secure.\n\n4. Your Rights\n\nYou have the right to request access to, correction, or deletion of your data. To exercise these rights, please contact us.\n\n5. Data Retention\n\nWe will retain your personal data only for as long as necessary to fulfill the purposes outlined in this policy."
   },
@@ -57,7 +103,6 @@
   },
   "Sidebar": {
     "newProject": "New Project",
-    "blog": "Blog",
     "history": "History",
     "profile": "Profile",
     "logout": "Logout",
@@ -65,7 +110,75 @@
     "feedback": "Feedback",
     "login": "Login",
     "balance": "Balance",
-    "pages": "Pages"
+    "pages": "Pages",
+    "completeEmail": "Add your email"
+  },
+  "HelpPage": {
+    "title": "Help & Support",
+    "description": "Need assistance? We're here to help. Browse our resources or contact us.",
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "apiDocs": "API Documentation",
+      "pricing": "Pricing",
+      "blog": "Blog",
+      "feedback": "Send Feedback"
+    },
+    "feedbackCta": {
+      "title": "Have feedback or need help?",
+      "description": "Send us your feedback, questions, or report issues through our feedback form."
+    }
+  },
+  "FeedbackPage": {
+    "title": "Feedback",
+    "description": "We'd love to hear from you! Share your thoughts, suggestions, or report issues.",
+    "form": {
+      "title": "Send Us Feedback",
+      "description": "Fill out the form below and we'll get back to you as soon as possible.",
+      "email": "Email",
+      "emailPlaceholder": "your.email@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "Select a subject",
+      "message": "Message",
+      "messagePlaceholder": "Share your feedback, suggestions, or report an issue...",
+      "send": "Send Feedback",
+      "sending": "Sending...",
+      "subjects": {
+        "general": "General Inquiry",
+        "technical": "Technical Issue",
+        "billing": "Billing Question",
+        "feature": "Feature Request",
+        "bug": "Bug Report",
+        "other": "Other"
+      }
+    },
+    "contact": {
+      "title": "Contact Information",
+      "email": "Email",
+      "phone": "Phone"
+    },
+    "quickLinks": {
+      "title": "Quick Links",
+      "apiDocs": "API Documentation",
+      "pricing": "Pricing",
+      "blog": "Blog"
+    },
+    "success": {
+      "title": "Feedback sent successfully!",
+      "description": "Thank you for your feedback. We'll get back to you as soon as possible."
+    },
+    "error": {
+      "title": "Error",
+      "description": "An error occurred. Please try again or contact us directly at Info@suliko.ge"
+    },
+    "comingSoon": {
+      "title": "Coming Soon",
+      "description": "We're working on this feature. Please contact us directly via email or phone."
+    }
   },
   "MainContent": {
     "title": "Your Translator",
@@ -79,7 +192,8 @@
     "textIputPlaceholder": "Once upon a time...",
     "result": "Translated text",
     "yourText": "Your text",
-    "orPress": "or press"
+    "orPress": "or press",
+    "insufficientPages": "Insufficient page balance. You need {needed} pages but only have {available} pages. Please purchase more pages to continue."
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "What language do you want to translate to",
@@ -100,7 +214,8 @@
     "translate": "Translate",
     "loading": "Loading...",
     "download": "Download",
-    "copy": "Copy"
+    "copy": "Copy",
+    "retry": "Retry"
   },
   "DownloadFormats": {
     "chooseFormat": "Choose download format",
@@ -115,12 +230,12 @@
     "description": "Upload document for translation",
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
-    "supportedFormats": "Supported file types: PDF, DOCX, TXT, etc.",
-    "pageCountWarning": "⚠️ Files with more than 3 pages may experience processing issues or longer wait times.",
+    "supportedFormats": "Supported file types: PDF, DOCX, TXT, JPEG, PNG, JPG, etc.",
+    "pageCountWarning": "⚠️ Documents over 4 pages may cause processing and balance issues; some pages may not be translated. We recommend splitting your file into parts of up to 3 pages and uploading them separately.",
     "warningDialog": {
       "title": "Document Size Warning",
       "pageCountInfo": "Your document has",
-      "description": "Due to the size of your document, there might be some inaccuracies in the translation. Please review the result carefully.",
+      "description": "Documents over 4 pages may cause processing and balance issues, and not all pages may be translated. Please split your document into parts of up to 3 pages and upload them separately.",
       "understand": "I Understand"
     },
     "pageCount": {
@@ -133,7 +248,22 @@
       "minute": "minute",
       "estimatedCost": "Pages to be used: {cost}",
       "insufficientPages": "Insufficient page balance. You need {needed} pages but only have {available} pages. Please purchase more pages to continue.",
-      "changeFile": "Change File"
+      "changeFile": "Change File",
+      "selectedPages": "Selected pages"
+    },
+    "pageSelection": {
+      "title": "Select Pages to Translate",
+      "description": "Your document has {totalPages} pages, but only {pagesLimit} pages can be translated at once. Please select which {pagesLimit} pages you want to translate.",
+      "options": {
+        "first3": "First 3 pages",
+        "last3": "Last 3 pages",
+        "middle": "Pages {start}-{end}"
+      },
+      "pages": "Pages {start} to {end}",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "required": "Please select which 3 pages to translate before proceeding.",
+      "extractionNotSupported": "Page extraction is not supported for this file type. Please split your document manually or contact support."
     },
     "documentPreview": {
       "loadingText": "Loading text file...",
@@ -164,10 +294,12 @@
     "translatedText": "Translated Text",
     "sourceLanguage": "Source Language",
     "targetLanguage": "Target Language",
+    "ocrOnly": "OCR Only",
 
     "progress": {
       "longerThanUsual": "Takes longer than usual",
       "starting": "Starting translation...",
+      "extractingPages": "Extracting selected pages...",
       "documentInfo": "Document has {data} pages",
       "wordCount": "Document has {data} words",
       "estimatedTime": "Document needs {data} minutes",
@@ -208,6 +340,12 @@
     "emailPlaceholder": "Enter email",
     "balance": "Balance",
     "currentBalance": "Current Balance",
+    "changePassword": "Change Password",
+    "currentPassword": "Current Password",
+    "enterCurrentPassword": "Enter current password",
+    "enterNewPassword": "Enter new password",
+    "changing": "Changing...",
+    "passwordChangedSuccessfully": "Password changed successfully!",
     "pages": "pages"
   },
   "LanguageSwitcher": {
@@ -421,7 +559,8 @@
     "documentsTranslated": "Documents Translated",
     "languagesSupported": "Languages Supported",
     "accuracyRate": "Accuracy Rate",
-    "supportAvailable": "Support Available"
+    "supportAvailable": "Support Available",
+    "loading": "Loading..."
   },
   "VideoSection": {
     "title": "See Suliko in Action",
@@ -433,7 +572,8 @@
     "testimonials": "Testimonials",
     "contact": "Contact",
     "blog": "Blog",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "loading": "Loading..."
   },
   "AboutSection": {
     "title": "Why Choose Suliko?",
@@ -463,7 +603,8 @@
       "languagesSupported": "Languages Supported",
       "happyCustomers": "Happy Customers",
       "uptimeGuarantee": "Uptime Guarantee"
-    }
+    },
+    "desktopDisclaimer": "For the best user experience, we recommend using Suliko on desktop devices."
   },
   "TestimonialsSection": {
     "title": "What Our Customers Say",
@@ -480,11 +621,13 @@
       "contactSales": "Contact Sales"
     },
     "newsletter": {
-      "title": "Keep Yourself Up to Date",
-      "subtitle": "Join our updates and be the first one to know about new trends in translation",
+      "title": "Stay Informed",
+      "subtitle": "Subscribe to our newsletter and be the first to know about new translation trends",
       "emailPlaceholder": "EMAIL",
       "subscribeButton": "SUBSCRIBE",
-      "notRobot": "I'm not a robot"
+      "subscribing": "SUBSCRIBING...",
+      "success": "✅ Successfully subscribed to newsletter!",
+      "error": "❌ Failed to subscribe. Please try again."
     },
     "testimonials": {
       "translationHouse": {
@@ -527,10 +670,11 @@
     "location": "Tbilisi, Georgia",
     "bookDemo": "Book A Demo",
     "resources": "Resources",
+    "developers": "B2B Integration",
     "about": "About",
     "contactUs": "Contact Us",
     "logIn": "Log In",
-    "team": "Team",
+    "blog": "Blog",
     "testimonials": "Testimonials",
     "links": {
       "product": "Product",
@@ -543,7 +687,6 @@
       "integrations": "Integrations",
       "aboutUs": "About Us",
       "careers": "Careers",
-      "blog": "Blog",
       "press": "Press",
       "helpCenter": "Help Center",
       "contactSupport": "Contact Support",
@@ -567,36 +710,6 @@
       "copyright": "© 2025 Suliko. All rights reserved."
     }
   },
-  "Blog": {
-    "title": "Blog",
-    "description": "Latest insights and updates from Suliko",
-    "readMore": "Read More",
-    "readTime": "{minutes} min read",
-    "publishedOn": "Published on {date}",
-    "byAuthor": "By {author}",
-    "categories": "Categories",
-    "tags": "Tags",
-    "search": "Search posts...",
-    "noPosts": "No blog posts found",
-    "featured": "Featured",
-    "recent": "Recent Posts",
-    "allPosts": "All Posts",
-    "backToBlog": "Back to Blog",
-    "featuredPost": "Featured Post",
-    "lastUpdated": "Last updated: {date}",
-    "clearFilters": "Clear Filters",
-    "noResults": "No posts found",
-    "adjustFilters": "Try adjusting your search or filter criteria.",
-    "viewAllPosts": "View All Posts",
-    "readFullPost": "Read Full Post",
-    "searchPlaceholder": "Search blog posts...",
-    "loading": "Loading blog posts...",
-    "error": "Error loading blog posts",
-    "errorLoading": "Error Loading Blog",
-    "featuredPosts": "Featured Posts",
-    "noPostsFound": "No posts found",
-    "tryAdjustingFilters": "Try adjusting your search or filter criteria."
-  },
   "ReferralPage": {
     "title": "Referral Program",
     "subtitle": "Leave us your contact number and get 25 additional documents for free",
@@ -615,5 +728,128 @@
     "tryAgain": "Try Again",
     "startTranslating": "Start Translating",
     "viewPricing": "View Pricing"
+  },
+  "ThankYouPage": {
+    "title": "Thank You!",
+    "message": "Your referral information has been submitted successfully! We'll contact you soon with details about your 25 additional free documents.",
+    "startTranslating": "Start Translating",
+    "viewPricing": "View Pricing",
+    "infoTitle": "What's Next?",
+    "infoMessage": "Our team will review your submission and add 25 additional documents to your account. You'll receive a confirmation email within 24 hours."
+  },
+  "Download": {
+    "translatedSuffix": "translated"
+  },
+  "ErrorAlert": {
+    "ups": "Problem Detected",
+    "networkProblem": "Network Problem"
+  },
+  "Developers": {
+    "hero": {
+      "title": "Translation API for Developers",
+      "subtitle": "Integrate powerful AI translation into your applications with just a few lines of code. Translate articles, on-site texts, and more in one click."
+    },
+    "features": {
+      "speed": {
+        "title": "Lightning Fast",
+        "description": "Get translations in milliseconds with our optimized API infrastructure"
+      },
+      "languages": {
+        "title": "Multiple Languages",
+        "description": "Support for dozens of languages with accurate AI-powered translation"
+      },
+      "security": {
+        "title": "Secure & Reliable",
+        "description": "Enterprise-grade security with unique keys for each company"
+      }
+    },
+    "quickStart": {
+      "title": "Quick Start Guide",
+      "description": "Get up and running in minutes",
+      "step1": {
+        "title": "Step 1: Get Your API Key",
+        "description": "Contact us to receive your unique API key (uniqueKey) that identifies your company. This key is required for all API requests."
+      },
+      "step2": {
+        "title": "Step 2: Get Available Languages",
+        "description": "Fetch the list of available languages and their IDs using our languages endpoint:",
+        "endpoint": "GET https://content.api24.ge/api/Language"
+      },
+      "step3": {
+        "title": "Step 3: Translate Your Text",
+        "description": "Send your text for translation using our translation endpoint. Simply provide the text, target language ID, and your unique key."
+      }
+    },
+    "api": {
+      "title": "API Documentation",
+      "description": "Complete API reference for integrating translation into your applications",
+      "endpoint": {
+        "title": "Translation Endpoint",
+        "url": "POST https://content.api24.ge/api/Content/translate",
+        "method": "HTTP POST request with JSON body"
+      },
+      "request": {
+        "title": "Request Body",
+        "description": "Send your translation request with the following JSON structure:",
+        "fields": {
+          "description": "The text you want to translate (string, required)",
+          "languageId": "The ID of the target language (number, required). Get available language IDs from the /api/Language endpoint.",
+          "uniqueKey": "Your company's unique API key (string, required). Contact us to receive your uniqueKey."
+        }
+      },
+      "response": {
+        "title": "Response",
+        "description": "A successful response will return the translated text:"
+      }
+    },
+    "examples": {
+      "title": "Code Examples",
+      "description": "Ready-to-use code snippets in popular programming languages"
+    },
+    "languages": {
+      "title": "Available Languages",
+      "description": "Get the complete list of supported languages",
+      "info": "Use this endpoint to retrieve all available languages and their IDs:",
+      "endpoint": "GET https://content.api24.ge/api/Language",
+      "response": "The response is an array of language objects with the following structure:",
+      "table": {
+        "id": "Language ID",
+        "english": "English Name",
+        "georgian": "Georgian Name"
+      },
+      "showJson": "Show JSON response example"
+    },
+    "enhanceApi": {
+      "title": "Enhance Translation API",
+      "description": "Improve and refine existing translations with AI-powered enhancement",
+      "endpoint": {
+        "title": "Enhance Translation Endpoint",
+        "url": "POST https://content.api24.ge/api/Content/enhance-translate",
+        "method": "HTTP POST request with JSON body"
+      },
+      "request": {
+        "title": "Request Body",
+        "description": "Send your enhancement request with the following JSON structure:",
+        "fields": {
+          "userInput": "The original text that was translated (string, required)",
+          "translateOutput": "The translated text that needs enhancement (string, required)",
+          "targetLanguageId": "The ID of the target language (number, required). Get available language IDs from the /api/Language endpoint.",
+          "uniqueKey": "Your company's unique API key (string, required). Contact us to receive your uniqueKey."
+        }
+      },
+      "response": {
+        "title": "Response",
+        "description": "A successful response will return the enhanced translation:"
+      },
+      "examples": {
+        "title": "Enhance Translation Code Examples",
+        "description": "Code snippets for enhancing translations in popular programming languages"
+      }
+    },
+    "cta": {
+      "title": "Ready to Get Started?",
+      "description": "Contact us today to receive your unique API key and start translating content in seconds",
+      "button": "Contact Us"
+    }
   }
 }

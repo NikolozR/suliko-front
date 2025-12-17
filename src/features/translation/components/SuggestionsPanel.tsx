@@ -119,6 +119,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           editedSuggestedText: s.suggestedText,
           suggestion: s,
           targetLanguageId: currentTargetLanguageId,
+          currentDocumentContent: translatedMarkdown,
         });
         console.log("We Are Here 2", data);
         if (data.success) {
@@ -303,11 +304,8 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
                   <button
                     type="button"
                     onClick={() => {
-                      if (canExactMatch(s, translatedMarkdown)) {
-                        setPreviewSuggestionId(s.id);
-                      } else {
-                        handleAcceptSuggestion(s.id);
-                      }
+                      // Always open preview for any suggestion type
+                      setPreviewSuggestionId(s.id);
                     }}
                     disabled={loadingSuggestionId === s.id}
                     className="p-1.5 rounded-md hover:bg-green-50 dark:hover:bg-green-900/20 transition-colors group disabled:opacity-50 disabled:cursor-not-allowed"
@@ -409,7 +407,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           if (!open) setPreviewSuggestionId(null);
         }}
       >
-        <DialogContent className="w-full sm:max-w-4xl">
+        <DialogContent className="w-full sm:max-w-4xl mx-4 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="text-center">
               {t("SuggestionsPanel.previewTitle", { default: "Suggestion Preview" })}

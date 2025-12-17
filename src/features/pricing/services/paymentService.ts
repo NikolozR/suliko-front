@@ -1,5 +1,6 @@
 import { reaccessToken, useAuthStore } from "@/features/auth";
 import { API_BASE_URL } from "@/shared";
+import { getCurrencyCode, getCountryCode } from "@/shared/utils/domainUtils";
 
 
 export interface CreatePaymentResponse {
@@ -8,7 +9,7 @@ export interface CreatePaymentResponse {
 }
 
 
-export async function createPayment(amount: number, currency: string, country: string): Promise<CreatePaymentResponse> {
+export async function createPayment(amount: number, currency?: string, country?: string): Promise<CreatePaymentResponse> {
     const endpoint = '/Payment/create';
     const { refreshToken, token } = useAuthStore.getState();
     const headers = new Headers();
@@ -19,20 +20,39 @@ export async function createPayment(amount: number, currency: string, country: s
     } else {
       throw new Error("No token found");
     }
+
+    // Get base URL and locale-aware paths for callback URLs
+    const isBrowser = typeof window !== 'undefined';
+    const baseUrl = isBrowser ? window.location.origin : '';
+    const path = isBrowser ? window.location.pathname : '';
+    const localeFromPath = (() => {
+      const first = path.split('/').filter(Boolean)[0];
+      return ['en', 'ka', 'pl'].includes(first || '') ? `/${first}` : '';
+    })();
+    const acceptUrl = `${baseUrl}${localeFromPath}/payment/success`;
+    const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;
+    const callbackUrl = `${baseUrl}/api/payment/callback`;
+  
+    // Determine currency and country based on domain if not provided
+    const paymentCurrency = currency || getCurrencyCode();
+    const paymentCountry = country || getCountryCode();
   
     let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "POST",
       headers,
       body: JSON.stringify({
         amount,
-        currency,
-        country,
+        currency: paymentCurrency,
+        country: paymentCountry,
+        AcceptUrl: acceptUrl,
+        CancelUrl: cancelUrl,
+        CallbackUrl: callbackUrl,
       }),
     });
   
     if (response.status === 401 && token && refreshToken) {
       try {
-        const newTokens = await reaccessToken(refreshToken);
+        const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
         const { setToken, setRefreshToken } = useAuthStore.getState();
         setToken(newTokens.token);
         setRefreshToken(newTokens.refreshToken);
@@ -42,8 +62,11 @@ export async function createPayment(amount: number, currency: string, country: s
           headers,
           body: JSON.stringify({
             amount,
-            currency,
-            country,
+            currency: paymentCurrency,
+            country: paymentCountry,
+            AcceptUrl: acceptUrl,
+            CancelUrl: cancelUrl,
+            CallbackUrl: callbackUrl,
           }),
         });
       } catch (error) {

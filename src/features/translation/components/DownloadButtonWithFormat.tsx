@@ -3,10 +3,12 @@ import { useState } from "react";
 import { Download, Check, FileText, File } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import FormatSelector, { DownloadFormat } from "./FormatSelector";
+import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 
 interface DownloadButtonWithFormatProps {
   content: string;
   filename?: string;
+  originalFileName?: string; // Original uploaded file name
   availableFormats?: DownloadFormat[];
   onDownload?: (format: DownloadFormat, content: string) => void;
   className?: string;
@@ -43,6 +45,7 @@ const defaultFormats: DownloadFormat[] = [
 const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
   content,
   filename,
+  originalFileName,
   availableFormats = defaultFormats,
   onDownload,
   className = "",
@@ -52,6 +55,7 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
 }) => {
   const [selectedFormat, setSelectedFormat] = useState<DownloadFormat>(availableFormats[0]);
   const [downloaded, setDownloaded] = useState(false);
+  const translatedSuffix = useTranslatedSuffix();
 
   const getMimeType = (format: DownloadFormat) => {
     switch (format.value) {
@@ -65,8 +69,12 @@ const DownloadButtonWithFormat: React.FC<DownloadButtonWithFormatProps> = ({
   };
 
   const getDefaultFilename = (format: DownloadFormat) => {
+    if (originalFileName) {
+      return generateLocalizedFilename(originalFileName, format.extension, translatedSuffix);
+    }
+    
     const timestamp = new Date().toISOString().slice(0, 19).replace(/[:-]/g, '');
-    return `translated_document_${timestamp}.${format.extension}`;
+    return `document_${translatedSuffix}_${timestamp}.${format.extension}`;
   };
 
   const handleDownload = () => {
