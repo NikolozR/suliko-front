@@ -54,7 +54,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
              */}
 
             {Array.from({
-              length: type === 'payAsYouGo' ? 5 : 3
+              length: type === 'payAsYouGo' ? 4 : 3
             }, (_, i) => (
               <li key={i} className="flex items-center text-sm">
                 <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />

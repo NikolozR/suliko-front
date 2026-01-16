@@ -493,8 +493,7 @@
         "0": "1 strona = 1 GEL",
         "1": "Brak miesięcznego zobowiązania",
         "2": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
-        "3": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
-        "4": "Strony nigdy nie wygasają"
+        "3": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
       "cta": "Kup kredyty"
     },
@@ -553,8 +552,8 @@
     "close": "Zamknij"
   },
   "Landing": {
-    "title": "Suliko AI Tłumacz",
-    "description": "Przetłumacz dokument w 5 minut.",
+    "title": "Suliko AI Tłumacz - Przetłumacz dokument w 5 minut.",
+    "description": "Asystent tłumacza – prześlij dokument i skróć czas tłumaczenia nawet o 70%. Skoncentruj się na treści, a nie na pracy technicznej.",
     "cta": "Zacznij tłumaczyć",
     "viewPricing": "Zobacz ceny",
     "trustedBy": "Zaufane przez profesjonalistów na całym świecie",

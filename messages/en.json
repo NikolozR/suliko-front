@@ -495,8 +495,7 @@
         "0": "1 page = 1 GEL",
         "1": "No monthly commitment",
         "2": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
-        "3": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages",
-        "4": "Pages never expire"
+        "3": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
       "cta": "Buy Credits"
     },
@@ -555,8 +554,8 @@
     "close": "Close"
   },
   "Landing": {
-    "title": "Suliko Translation",
-    "description": "Translate a document in 5 minutes.",
+    "title": "Suliko Translation - Translate a document in 5 minutes.",
+    "description": "Translator’s Assistant – Upload your document and reduce translation time by up to 70%. Focus on the content, not the technical work. ",
     "cta": "Start translating",
     "viewPricing": "View Pricing",
     "trustedBy": "Trusted by professionals worldwide",

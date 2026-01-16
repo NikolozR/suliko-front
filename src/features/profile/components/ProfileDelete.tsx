@@ -62,7 +62,7 @@ export const ProfileDeleteAccount: React.FC = () => {
     <>
       <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm rounded-2xl">
         <CardHeader className="pb-2 pt-6 px-8">
-          <CardTitle className="flex items-center gap-2 text-xl text-red-600">
+          <CardTitle className="flex items-center gap-2 text-xl text-white">
             <div className="p-2 bg-red-100 rounded-lg">
               <AlertTriangle className="h-5 w-5 text-red-600" />
             </div>
