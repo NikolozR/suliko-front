@@ -494,9 +494,9 @@
       "features": {
         "0": "1 page = 1 GEL",
         "1": "No monthly commitment",
-        "2": "Pages never expire",
-        "3": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
-        "4": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
+        "2": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "3": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages",
+        "4": "Pages never expire"
       },
       "cta": "Buy Credits"
     },

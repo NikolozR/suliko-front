@@ -492,9 +492,9 @@
       "features": {
         "0": "1 strona = 1 GEL",
         "1": "Brak miesięcznego zobowiązania",
-        "2": "Strony nigdy nie wygasają",
-        "3": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
-        "4": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
+        "2": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "3": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
+        "4": "Strony nigdy nie wygasają"
       },
       "cta": "Kup kredyty"
     },
