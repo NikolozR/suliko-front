@@ -155,3 +155,57 @@ export const changePassword = async (passwordData: ChangePasswordRequest) => {
     );
   }
 }
+
+
+export const deleteAccount = async (userId: string) => {
+  const { refreshToken, token } = useAuthStore.getState();
+
+  if (!token) {
+    throw new Error("No token found");
+  }
+
+  const endpoint = `/User/${userId}`;
+  const headers = new Headers();
+
+  headers.set("Authorization", `Bearer ${token}`);
+
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    headers,
+    method: "DELETE",
+  });
+
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = await reaccessToken(refreshToken) as {
+        token: string;
+        refreshToken: string;
+      };
+
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
+
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        headers,
+        method: "DELETE",
+      });
+    } catch (error) {
+      useAuthStore.getState().reset();
+      throw new Error("Failed to refresh token " + error);
+    }
+  }
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({
+      message: "Failed to delete account and couldn't parse error JSON.",
+    }));
+
+    throw new Error(
+      `Failed to delete account: ${response.status} ${
+        response.statusText
+      }. ${errorData?.message || ""}`
+    );
+  }
+};

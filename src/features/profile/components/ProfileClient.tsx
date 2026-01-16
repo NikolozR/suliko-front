@@ -19,6 +19,7 @@ import ErrorAlert from "@/shared/components/ErrorAlert";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { ProfileDeleteAccount } from "./ProfileDelete";
 
 const profileUpdateSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
@@ -198,6 +199,7 @@ export default function ProfileClient() {
           errors={validationErrors}
         />
         <ProfilePasswordChange />
+        <ProfileDeleteAccount />
       </div>
     </div>
   );

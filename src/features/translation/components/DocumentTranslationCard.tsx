@@ -35,7 +35,6 @@ import { useSuggestionsStore } from "../store/suggestionsStore";
 import PageCountDisplay from "./PageCountDisplay";
 import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
 import { useCountdown } from "@/hooks";
-import { Label } from "@/features/ui/components/ui/label";
 import { ocrToHtml } from "@/features/translation/services/conversionsService";
 
 const isFileListAvailable =
@@ -597,8 +596,8 @@ const DocumentTranslationCard = () => {
                   {t("description")}
                 </CardDescription>
               </div>
-              {/* OCR Only Toggle - Same height as Upload document title */}
-              <div className="flex items-center gap-2">
+              {/* OCR Only Toggle - waishala */}
+              {/* <div className="flex items-center gap-2">
                 <Label
                   htmlFor="ocr-only-header"
                   className="text-sm font-medium cursor-pointer"
@@ -624,7 +623,7 @@ const DocumentTranslationCard = () => {
                     `}
                   />
                 </button>
-              </div>
+              </div> */}
             </div>
           </CardHeader>
           <CardContent>

@@ -705,7 +705,7 @@ html.dark .sidebar-main {
 
 @keyframes shootingStar {
   0% {
-    transform: translateX(-100px) translateY(-100px) rotate(45deg);
+    transform: translateX(-100px) translateY(-100px) rotate(-135deg);
     opacity: 0;
   }
   10% {
@@ -715,7 +715,7 @@ html.dark .sidebar-main {
     opacity: 1;
   }
   100% {
-    transform: translateX(100vw) translateY(100vh) rotate(45deg);
+    transform: translateX(100vw) translateY(100vh) rotate(-135deg);
     opacity: 0;
   }
 }

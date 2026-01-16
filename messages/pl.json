@@ -294,20 +294,20 @@
     "sourceLanguage": "Język źródłowy",
     "targetLanguage": "Język docelowy",
     "progress": {
-      "longerThanUsual": "Trwa dłużej niż zwykle",
+      "longerThanUsual": "Trwa to dłużej niż zwykle",
       "starting": "Rozpoczynanie tłumaczenia...",
       "extractingPages": "Wyodrębnianie wybranych stron...",
-      "documentInfo": "Dokument ma {data} stron",
+      "documentInfo": "Dokument ma {data} stron(y)",
       "wordCount": "Dokument ma {data} słów",
-      "estimatedTime": "Dokument potrzebuje {data} minut",
-      "estimatedCost": "Strony do użycia: {data}",
-      "documentType": "Typ dokumentu to {data} rozszerzenie",
+      "estimatedTime": "Dokument wymaga {data} min.",
+      "estimatedCost": "Strony do wykorzystania: {data}",
+      "documentType": "Typ dokumentu to rozszerzenie {data}",
       "preparing": "Przygotowywanie dokumentu...",
-      "analyzing": "Analizowanie zawartości...",
+      "analyzing": "Analizowanie treści...",
       "translating": "Tłumaczenie...",
-      "firstPageDone": "Suliko już przetłumaczył pierwszą stronę",
+      "firstPageDone": "Suliko przetłumaczył(a) już pierwszą stronę",
       "checkingMistakes": "Suliko sprawdza błędy",
-      "stillChecking": "Nadal sprawdza...",
+      "stillChecking": "Wciąż sprawdzam...",
       "enhancing": "Ulepszanie tłumaczenia...",
       "finalizing": "Finalizowanie...",
       "waiting": "Oczekiwanie na zakończenie...",
@@ -341,9 +341,16 @@
     "currentPassword": "Aktualne hasło",
     "enterCurrentPassword": "Wprowadź aktualne hasło",
     "enterNewPassword": "Wprowadź nowe hasło",
+    "newPassword": "Nowe hasło",
+    "confirmNewPassword": "Potwierdź nowe hasło",
     "changing": "Zmienianie...",
     "passwordChangedSuccessfully": "Hasło zostało pomyślnie zmienione!",
-    "pages": "stron"
+    "pages": "stron",
+    "deleteAccount": "Usuń konto",
+    "deleteAccountWarning": "Ta akcja jest stała i nie można jej cofnąć.",
+    "deleteAccountConfirm": "Czy na pewno chcesz usunąć konto?",
+    "confirmDelete": "Tak, usuń",
+    "deleting": "Usuwanie..."
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -430,9 +437,9 @@
       "description": "Idealny dla rozwijających się firm i zespołów",
       "features": {
         "0": "300 stron miesięcznie",
-        "1": "Priorytetowe wsparcie e-mailowe i czatowe",
-        "2": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
-        "3": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
+        "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
+        "3": "Priorytetowe wsparcie e-mailowe i czatowe",
         "4": "Narzędzia współpracy zespołowej"
       },
       "cta": "Kup kredyty",
@@ -514,7 +521,7 @@
     },
     "enterpriseBusiness": {
       "title": "Suliko Enterprise",
-      "price": "1,500 ₾", 
+      "price": "1,500 ₾",
       "period": "/miesiąc",
       "description": "Dla dużych organizacji i agencji",
       "features": {
@@ -547,7 +554,7 @@
   },
   "Landing": {
     "title": "Suliko AI Tłumacz",
-    "description": "Asystent tłumaczenia dla profesjonalnych tłumaczy — Prześlij dowolny dokument i skróć czas tłumaczenia nawet o 70%. Skoncentruj się na treści, nie na pracy technicznej.",
+    "description": "Przetłumacz dokument w 5 minut.",
     "cta": "Zacznij tłumaczyć",
     "viewPricing": "Zobacz ceny",
     "trustedBy": "Zaufane przez profesjonalistów na całym świecie",
@@ -624,28 +631,28 @@
       },
       "irakliVekua": {
         "name": "ირაკლი ვეკუა",
-        "role": "Właściciel firmy",
+        "role": "Przedsiębiorca",
         "company": "Irakli Vekua",
-        "content": "Jako właściciel firmy pracujący z międzynarodowymi partnerami, Suliko było nieocenione. Jakość tłumaczenia dokumentów jest wyjątkowa, a szybkość pozwala nam szybko reagować na możliwości biznesowe."
+        "content": "Moje doświadczenie z pracą w Suliko było nieocenione. W przeciwieństwie do ChatGPT i jego odpowiedników, jakość tłumaczenia dokumentów jest wyjątkowa, a szybkość pozwala nam błyskawicznie reagować na okazje biznesowe.”"
       },
       "iuristi": {
         "name": "Zespół Iuristi.ge",
         "role": "Usługi prawne",
         "company": "Iuristi.ge",
-        "content": "Tłumaczenie dokumentów prawnych wymaga absolutnej precyzji. Dokładność Suliko w tłumaczeniu złożonej terminologii prawnej i zachowaniu kontekstu była wybitna. Zrewolucjonizowało to nasze przetwarzanie dokumentów prawnych."
+        "content": "Tłumaczenie dokumentów prawnych wymaga absolutnej precyzji. Dokładność Suliko w tłumaczeniu złożonej terminologii prawnej i zachowaniu kontekstu jest bezkonkurencyjna."
       },
       "nebulaAI": {
         "name": "Nebula AI Hub",
         "role": "Firma technologiczna AI",
         "company": "Nebula AI Hub",
-        "content": "Pracując w technologii AI, doceniamy wyrafinowanie silnika tłumaczeniowego Suliko. Jakość i niezawodność przekroczyły nasze oczekiwania, czyniąc to naszym głównym rozwiązaniem do tłumaczenia dokumentów technicznych."
+        "content": "Pracując z technologiami, doceniamy zaawansowanie silnika tłumaczeniowego Suliko. Jakość i niezawodność przerosły nasze oczekiwania."
       },
       "api24": {
         "name": "API24",
         "role": "Menedżer Produktu",
         "company": "API24",
         "email": "info@api24.ge",
-        "content": "API24 to narzędzie do zarządzania produktami i zapasami dla rynków e-commerce. Dostarczamy wszystkie potrzebne dane za pomocą API. Suliko było kluczowe w pomaganiu nam w lokalizacji dokumentacji naszej platformy i interfejsów użytkownika dla rynków międzynarodowych, zapewniając dostępność naszej dokumentacji API dla programistów na całym świecie."
+        "content": "Wchodząc na skalę międzynarodową, lokalizacja była kluczowym wyzwaniem dla API24. Suliko odegrało decydującą rolę w adaptacji naszego interfejsu i dokumentacji technicznej. Pozwoliło nam to udostępnić naszą platformę programistom na całym świecie."
       }
     }
   },
@@ -662,7 +669,7 @@
     "logIn": "Zaloguj się",
     "blog": "Blog",
     "testimonials": "Opinie",
-    "links": { 
+    "links": {
       "product": "Produkt",
       "company": "Firma",
       "support": "Wsparcie",
@@ -680,7 +687,7 @@
       "community": "Społeczność",
       "privacyPolicy": "Polityka prywatności",
       "termsOfService": "Warunki usługi",
-      "cookiePolicy": "Polityka plików cookie", 
+      "cookiePolicy": "Polityka plików cookie",
       "gdpr": "RODO"
     },
     "newsletter": {

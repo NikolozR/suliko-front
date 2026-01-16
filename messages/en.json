@@ -201,15 +201,6 @@
     "selectLanguagePlaceholder": "Select Language",
     "automaticDetection": "Automatic Detection"
   },
-  "TranslationLoadingOverlay": {
-    "progress": "Progress",
-    "processingDocument": "Processing document...",
-    "applySuggestion": "Applying suggestion...",
-    "translatingText": "Translating text...",
-    "estimatedTime": "Estimated time remaining",
-    "takingLonger": "Document is taking longer than expected",
-    "thankYouForPatience": "Thank you for your patience"
-  },
   "TranslationButton": {
     "translate": "Translate",
     "loading": "Loading...",
@@ -295,7 +286,6 @@
     "sourceLanguage": "Source Language",
     "targetLanguage": "Target Language",
     "ocrOnly": "OCR Only",
-
     "progress": {
       "longerThanUsual": "Takes longer than usual",
       "starting": "Starting translation...",
@@ -318,6 +308,13 @@
       "complete": "Translation complete!",
       "unexpectedError": "An unexpected error occurred during translation."
     }
+  },
+  "TranslationLoadingOverlay": {
+    "progress": "Postęp",
+    "processingDocument": "Przetwarzanie dokumentu...",
+    "translatingText": "Tłumaczenie tekstu...",
+    "longerThanExpected": "Przetwarzanie dokumentu trwa dłużej niż oczekiwano",
+    "thankYou": "Dziękujemy za cierpliwość"
   },
   "Profile": {
     "fullName": "Full Name",
@@ -344,9 +341,16 @@
     "currentPassword": "Current Password",
     "enterCurrentPassword": "Enter current password",
     "enterNewPassword": "Enter new password",
+    "newPassword": "New Password",
+    "confirmNewPassword": "Confirm New Password",
     "changing": "Changing...",
     "passwordChangedSuccessfully": "Password changed successfully!",
-    "pages": "pages"
+    "pages": "pages",
+    "deleteAccount": "Delete account",
+    "deleteAccountWarning": "This action is permanent and cannot be undone.",
+    "deleteAccountConfirm": "Are you sure you want to delete your account?",
+    "confirmDelete": "Yes, delete",
+    "deleting": "Deleting..."
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -435,9 +439,9 @@
       "description": "Ideal for growing businesses and teams",
       "features": {
         "0": "300 pages per month",
-        "1": "Priority email & chat support",
-        "2": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
-        "3": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages",
+        "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
+        "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages",
+        "3": "Priority email & chat support",
         "4": "Team collaboration tools"
       },
       "cta": "Buy Credits",
@@ -552,7 +556,7 @@
   },
   "Landing": {
     "title": "Suliko Translation",
-    "description": "Translation Assistant for Professional Translators — Upload any document and reduce translation time by up to 70%. Focus on content, not technical work.",
+    "description": "Translate a document in 5 minutes.",
     "cta": "Start translating",
     "viewPricing": "View Pricing",
     "trustedBy": "Trusted by professionals worldwide",
@@ -638,28 +642,28 @@
       },
       "irakliVekua": {
         "name": "ირაკლი ვეკუა",
-        "role": "Business Owner",
+        "role": "Entrepreneur",
         "company": "Irakli Vekua",
-        "content": "As a business owner dealing with international partners, Suliko has been invaluable. The document translation quality is exceptional, and the speed allows us to respond quickly to business opportunities."
+        "content": "For me, the experience of working with Suliko has been invaluable. Unlike ChatGPT and its analogues, the quality of document translation is outstanding, and the speed allows us to keep up with business opportunities quickly."
       },
       "iuristi": {
         "name": "Iuristi.ge Team",
         "role": "Legal Services",
         "company": "Iuristi.ge",
-        "content": "Legal document translation requires absolute precision. Suliko's accuracy in translating complex legal terminology and maintaining context has been outstanding. It's revolutionized our legal document processing."
+        "content": "Translating legal documents requires absolute precision. Suliko's accuracy in translating complex legal terminology and maintaining context is unrivaled."
       },
       "nebulaAI": {
         "name": "Nebula AI Hub",
         "role": "AI Technology Company",
         "company": "Nebula AI Hub",
-        "content": "Working in technology, we appreciate the sophistication of Suliko's translation engine. The quality and reliability have exceeded our expectations, making it our go-to solution for technical document translation."
+        "content": "When working with technology, we appreciate the sophistication of Suliko's translation engine. The quality and reliability have exceeded our expectations."
       },
       "api24": {
         "name": "API24",
         "role": "Product Manager",
         "company": "API24",
         "email": "info@api24.ge",
-        "content": "API24 is a product and stock management tool for e-commerce marketplaces. We provide all needed data using API. Suliko has been instrumental in helping us localize our platform documentation and user interfaces for international markets, ensuring our API documentation is accessible to developers worldwide."
+        "content": "When expanding on an international scale, localization was a critical challenge for API24. Suliko played a decisive role in adapting our interface and technical documentation. This allowed us to make our platform accessible to developers worldwide."
       }
     }
   },

@@ -47,10 +47,14 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
             {t(`${type}.description`)}
           </p>
           <ul className="space-y-2">
-            {Array.from({ 
-              length: type === 'starter' ? 3 : 
-                     type === 'professional' ? 5 : 
-                     type === 'payAsYouGo' ? 5 : 7 
+
+            {/* type === 'starter' ? 3 : 
+                     type === 'professional' ? 3 : 
+                     type === 'payAsYouGo' ? 2 : 3 
+             */}
+
+            {Array.from({
+              length: type === 'payAsYouGo' ? 5 : 3
             }, (_, i) => (
               <li key={i} className="flex items-center text-sm">
                 <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
@@ -69,7 +73,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
     <div className="bg-card rounded-lg shadow-lg p-8 border border-border flex flex-col h-full">
       {renderCardContent()}
       <div className="mt-auto pt-8">
-        <button 
+        <button
           onClick={onSelect}
           className="w-full cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg transition duration-200"
         >

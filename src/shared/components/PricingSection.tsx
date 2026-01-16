@@ -37,7 +37,7 @@ export default function PricingSection() {
       setIsPayAsYouGoModalOpen(true);
     } else {
       // Redirect to document translation page
-      router.push("/document");
+      router.push("/price");
     }
   };
 
@@ -67,8 +67,6 @@ export default function PricingSection() {
         t("professional.features.0"),
         t("professional.features.1"),
         t("professional.features.2"),
-        t("professional.features.3"),
-        t("professional.features.4")
       ],
       cta: t("professional.cta"),
       popular: true,
