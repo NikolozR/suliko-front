@@ -28,7 +28,7 @@ import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X } from "lucide-react";
+import { FileText, File, Download, X, FileDown } from "lucide-react";
 import React from "react";
 import { useUserStore } from "@/features/auth/store/userStore";
 import ErrorAlert from "@/shared/components/ErrorAlert";
@@ -165,6 +165,56 @@ const TextTranslationCard = () => {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
+      } else if (fileType === "pdf") {
+        const { jsPDF } = await import("jspdf");
+        const html2canvas = (await import("html2canvas")).default;
+
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "pdf-export";
+        wrapper.innerHTML = translatedText;
+
+        wrapper.style.position = "fixed";
+        wrapper.style.left = "-9999px";
+        wrapper.style.top = "0";
+        wrapper.style.width = "794px";
+        wrapper.style.background = "#ffffff";
+        wrapper.style.padding = "24px";
+
+        document.body.appendChild(wrapper);
+
+        try {
+          const canvas = await html2canvas(wrapper, {
+            scale: 2,
+            backgroundColor: "#ffffff",
+            useCORS: true,
+          });
+
+          const imgData = canvas.toDataURL("image/png");
+          const pdf = new jsPDF("p", "mm", "a4");
+
+          const imgWidth = 190;
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+          let y = 10;
+          let heightLeft = imgHeight;
+
+          pdf.addImage(imgData, "PNG", 10, y, imgWidth, imgHeight);
+          heightLeft -= 277;
+
+          while (heightLeft > 0) {
+            pdf.addPage();
+            y = heightLeft - imgHeight;
+            pdf.addImage(imgData, "PNG", 10, y, imgWidth, imgHeight);
+            heightLeft -= 277;
+          }
+
+          pdf.save(fileName);
+        } catch(err){
+          alert(err)
+        } finally {
+          document.body.removeChild(wrapper);
+        }
       }
       setDownloadedFormat(null);
     };
@@ -411,7 +461,7 @@ const TextTranslationCard = () => {
             <DialogTitle>Select Download Format</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-3 mt-2">
-            {[{ value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
+            {[{ value: "pdf", label: "PDF Document", extension: "pdf", icon: <FileDown className='w-4 h-4' /> }, { value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
               <Button
                 key={format.value}
                 variant="outline"
