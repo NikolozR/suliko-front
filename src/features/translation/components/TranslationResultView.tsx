@@ -135,23 +135,6 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-      } else if (fileType === "pdf") {
-        // Convert HTML to docx blob
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedMarkdown}</body></html>`;
-        // @ts-expect-error Type errors, nothing special
-        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
-        const docxBlob = htmlDocx.asBlob(fullHtml);
-        const docxFile = new (window.File || File)([docxBlob], "temp.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-        const { wordToPdf } = await import("@/features/translation/services/conversionsService");
-        const pdfBlob = await wordToPdf(docxFile);
-        const url = URL.createObjectURL(pdfBlob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = fileName;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
         const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedMarkdown}</body></html>`;
         // @ts-expect-error Type errors, nothing special
@@ -290,7 +273,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
             <DialogTitle>Select Download Format</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-3 mt-2">
-            {[{ value: "pdf", label: "PDF Document", extension: "pdf", icon: <FileText className='w-4 h-4' /> }, { value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
+            {[{ value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
               <Button
                 key={format.value}
                 variant="outline"
