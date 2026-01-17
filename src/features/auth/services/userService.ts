@@ -43,8 +43,7 @@ export const getUserProfile = async (): Promise<UserProfile> => {
       message: "Failed to fetch user profile and couldn't parse error JSON.",
     }));
     throw new Error(
-      `Failed to fetch user profile: ${response.status} ${
-        response.statusText
+      `Failed to fetch user profile: ${response.status} ${response.statusText
       }. ${errorData?.message || ""}`
     );
   }
@@ -95,8 +94,7 @@ export const updateUserProfile = async (userProfile: UpdateUserProfile) => {
       message: "Failed to update user profile and couldn't parse error JSON.",
     }));
     throw new Error(
-      `Failed to update user profile: ${response.status} ${
-        response.statusText
+      `Failed to update user profile: ${response.status} ${response.statusText
       }. ${errorData?.message || ""}`
     );
   }
@@ -149,8 +147,7 @@ export const changePassword = async (passwordData: ChangePasswordRequest) => {
       message: "Failed to change password and couldn't parse error JSON.",
     }));
     throw new Error(
-      `Failed to change password: ${response.status} ${
-        response.statusText
+      `Failed to change password: ${response.status} ${response.statusText
       }. ${errorData?.message || ""}`
     );
   }
@@ -158,7 +155,7 @@ export const changePassword = async (passwordData: ChangePasswordRequest) => {
 
 
 export const deleteAccount = async (userId: string) => {
-  const { refreshToken, token } = useAuthStore.getState();
+  const { refreshToken, token, reset } = useAuthStore.getState();
 
   if (!token) {
     throw new Error("No token found");
@@ -173,7 +170,7 @@ export const deleteAccount = async (userId: string) => {
     headers,
     method: "DELETE",
   });
-
+  reset()
   if (response.status === 401 && token && refreshToken) {
     try {
       const newTokens = await reaccessToken(refreshToken) as {
@@ -203,8 +200,7 @@ export const deleteAccount = async (userId: string) => {
     }));
 
     throw new Error(
-      `Failed to delete account: ${response.status} ${
-        response.statusText
+      `Failed to delete account: ${response.status} ${response.statusText
       }. ${errorData?.message || ""}`
     );
   }
