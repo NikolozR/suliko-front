@@ -28,6 +28,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <meta name="verify-paysera" content="721377f22d833010bfe006025ff10ad4"></meta>
+      </head>
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
