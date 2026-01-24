@@ -53,6 +53,7 @@
     "react-dom": "^19.0.0",
     "react-google-recaptcha": "^3.1.0",
     "react-hook-form": "^7.56.2",
+    "react-hot-toast": "^2.6.0",
     "react-markdown": "^10.1.0",
     "react-particles": "^2.12.2",
     "react-pdf": "^9.2.1",

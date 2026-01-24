@@ -37,6 +37,8 @@ import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocu
 import { useCountdown } from "@/hooks";
 import { ocrToHtml } from "@/features/translation/services/conversionsService";
 
+import toaster, { toast } from 'react-hot-toast'
+
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
 
@@ -377,7 +379,8 @@ const DocumentTranslationCard = () => {
       if (realPageCount && realPageCount > 4) {
         if (!selectedPageRange) {
           setShowPageRangeSelector(true);
-          setError(t("pageSelection.required"));
+          toast.error(t("pageSelection.required"))
+          // setError(t("pageSelection.required"));
           return;
         }
       }
@@ -541,6 +544,11 @@ const DocumentTranslationCard = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
+
+    if(error){
+      toaster.error(t("ups"))
+      return
+    }
     if (!token) {
       // Save file to storage before showing auth modal
       await handleSaveFileBeforeAuth();

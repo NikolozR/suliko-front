@@ -83,8 +83,8 @@ export default function PricingSection() {
         t("payAsYouGo.features.0"),
         t("payAsYouGo.features.1"),
         t("payAsYouGo.features.2"),
-        t("payAsYouGo.features.3"),
-        t("payAsYouGo.features.4")
+        t("payAsYouGo.features.3")
+        // t("payAsYouGo.features.4")
       ],
       cta: t("payAsYouGo.cta"),
       popular: false,

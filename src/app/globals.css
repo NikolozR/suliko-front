@@ -975,3 +975,27 @@ html.dark .sidebar-main {
   animation: flicker 2.5s ease-in-out infinite;
 }
 
+
+.custom_scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;           /* Firefox */
+  scrollbar-color: #6b7280; /* thumb track */
+}
+
+.custom_scroll::-webkit-scrollbar {
+  height: 6px; /* horizontal scrollbar */
+}
+
+.custom_scroll::-webkit-scrollbar-track {
+  background-color: #111111 !important;
+  border-radius: 10px;
+}
+
+.custom_scroll::-webkit-scrollbar-thumb {
+  background-color: #6b7280;
+  border-radius: 10px;
+}
+
+.custom_scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #4b5563;
+}

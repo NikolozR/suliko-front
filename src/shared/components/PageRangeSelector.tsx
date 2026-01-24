@@ -40,16 +40,16 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
   // Generate page range options
   const pageRangeOptions: PageRangeOption[] = useMemo(() => {
     if (totalPages <= 4) return [];
-    
+
     const options: PageRangeOption[] = [];
-    
+
     // First 3 pages
     options.push({
       label: t("options.first3"),
       startPage: 1,
       endPage: 3,
     });
-    
+
     // Sliding window options (pages 2-4, 3-5, etc.)
     for (let start = 2; start <= totalPages - 2; start++) {
       const end = start + 2;
@@ -61,7 +61,7 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
         });
       }
     }
-    
+
     // Last 3 pages
     if (totalPages >= 3) {
       options.push({
@@ -70,7 +70,7 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
         endPage: totalPages,
       });
     }
-    
+
     return options;
   }, [totalPages, t]);
 
@@ -106,30 +106,28 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
             {t("description", { totalPages, pagesLimit: 3 })}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="py-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {pageRangeOptions.map((option, index) => {
               const isSelected =
                 selectedOption?.startPage === option.startPage &&
                 selectedOption?.endPage === option.endPage;
-              
+
               return (
                 <Card
                   key={index}
-                  className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02] ${
-                    isSelected
-                      ? "border-2 border-primary bg-primary/5"
-                      : "border hover:border-primary/50"
-                  }`}
+                  className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02] ${isSelected
+                    ? "border-2 border-primary bg-primary/5"
+                    : "border hover:border-primary/50"
+                    }`}
                   onClick={() => handleSelect(option)}
                 >
                   <CardContent className="p-4">
                     <div className="flex items-center justify-between">
                       <div className="flex-1">
-                        <h3 className={`font-semibold text-base mb-1 ${
-                          isSelected ? "text-primary" : "text-foreground"
-                        }`}>
+                        <h3 className={`font-semibold text-base mb-1 ${isSelected ? "text-primary" : "text-foreground"
+                          }`}>
                           {option.label}
                         </h3>
                         <p className="text-sm text-muted-foreground">
@@ -147,23 +145,25 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
                         </div>
                       )}
                     </div>
-                    <div className="mt-3 flex gap-1">
+                    <div className="mt-3 w-full flex flex-nowrap custom_scroll pb-3 overflow-x-auto gap-2">
                       {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => {
-                        const isInRange = pageNum >= option.startPage && pageNum <= option.endPage;
+                        const isInRange =
+                          pageNum >= option.startPage && pageNum <= option.endPage;
+
                         return (
                           <div
                             key={pageNum}
-                            className={`h-8 w-8 rounded flex items-center justify-center text-xs font-medium transition-colors ${
-                              isInRange
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-muted text-muted-foreground opacity-50"
-                            }`}
+                            className={`h-8 w-8 min-w-8 flex-shrink-0 rounded text-xs font-medium transition-colors flex items-center justify-center ${isInRange
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground opacity-50"
+                              }`}
                           >
                             {pageNum}
                           </div>
                         );
                       })}
                     </div>
+
                   </CardContent>
                 </Card>
               );

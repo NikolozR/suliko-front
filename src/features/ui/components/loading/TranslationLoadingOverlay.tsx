@@ -52,7 +52,7 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
     <div
       className={cn(
         'flex flex-col items-center justify-center space-y-4 p-8',
-        overlay && 'absolute inset-0 bg-background/80 backdrop-blur-sm z-50',
+        overlay && 'absolute inset-0 bg-background/80 backdrop-blur-sm z-30',
         !overlay && 'py-12',
         className
       )}
