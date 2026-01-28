@@ -7,6 +7,7 @@ export interface UpdateUserProfile {
   userName: string;
   roleId: string;
   balance: number;
+  hasSeenRegistrationBonus?: boolean;
 }
 
 export interface UserProfile extends UpdateUserProfile {

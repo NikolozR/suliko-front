@@ -247,6 +247,24 @@ const SulikoForm: React.FC = () => {
         });
         setToken(data.token);
         setRefreshToken(data.refreshToken);
+        
+        // Fetch user profile to check hasSeenRegistrationBonus
+        try {
+          await fetchUserProfile();
+          const profileState = useUserStore.getState().userProfile;
+          if (profileState && profileState.hasSeenRegistrationBonus === false) {
+            // Update the flag to true
+            const { roleName, ...profileData } = profileState;
+            await updateUserProfile({
+              ...profileData,
+              hasSeenRegistrationBonus: true,
+            });
+            setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
+          }
+        } catch (profileError) {
+          console.error("Failed to check/update registration bonus flag:", profileError);
+        }
+        
         triggerWelcomeModal();
         router.push("/document");
       } else {
