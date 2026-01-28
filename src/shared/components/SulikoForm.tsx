@@ -253,10 +253,16 @@ const SulikoForm: React.FC = () => {
           await fetchUserProfile();
           const profileState = useUserStore.getState().userProfile;
           if (profileState && profileState.hasSeenRegistrationBonus === false) {
-            // Update the flag to true (exclude roleName as it's not part of UpdateUserProfile)
-            const { roleName: _roleName, ...profileData } = profileState;
+            // Update the flag to true
             await updateUserProfile({
-              ...profileData,
+              id: profileState.id,
+              firstName: profileState.firstName,
+              lastName: profileState.lastName,
+              phoneNUmber: profileState.phoneNUmber,
+              email: profileState.email,
+              userName: profileState.userName,
+              roleId: profileState.roleId,
+              balance: profileState.balance,
               hasSeenRegistrationBonus: true,
             });
             setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
