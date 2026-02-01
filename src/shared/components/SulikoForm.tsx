@@ -61,12 +61,12 @@ const SulikoForm: React.FC = () => {
       isLoginMode
         ? createLoginFormSchema(t, locale)
         : createRegisterFormSchema(t, locale).refine(
-            (data) => data.password === data.confirmPassword,
-            {
-              message: t("passwordsDoNotMatch"),
-              path: ["confirmPassword"],
-            }
-          ),
+          (data) => data.password === data.confirmPassword,
+          {
+            message: t("passwordsDoNotMatch"),
+            path: ["confirmPassword"],
+          }
+        ),
     [t, locale, isLoginMode]
   );
 
@@ -121,12 +121,12 @@ const SulikoForm: React.FC = () => {
     setResendTimer(0);
     setSentVerificationCode("");
     setIsCodeVerified(false);
-    
+
     // Set verification method based on domain when switching to registration
     if (!newIsLoginMode) {
       const requiredMethod = getRequiredVerificationMethod();
       setVerificationMethod(requiredMethod);
-      
+
       // Track when user starts registration process
       trackRegistrationStart();
       // Also send server-side event
@@ -237,7 +237,7 @@ const SulikoForm: React.FC = () => {
       if (isLoginMode) {
         const loginValues = values as LoginFormData;
         const identifier = loginValues.identifier?.trim() || "";
-        
+
         // Determine if identifier is email or phone
         const isEmailValue = isEmail(identifier);
         const data = await login({
@@ -247,7 +247,7 @@ const SulikoForm: React.FC = () => {
         });
         setToken(data.token);
         setRefreshToken(data.refreshToken);
-        
+
         // Fetch user profile to check hasSeenRegistrationBonus
         try {
           await fetchUserProfile();
@@ -266,12 +266,11 @@ const SulikoForm: React.FC = () => {
               hasSeenRegistrationBonus: true,
             });
             setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
+            triggerWelcomeModal();
           }
         } catch (profileError) {
           console.error("Failed to check/update registration bonus flag:", profileError);
         }
-        
-        triggerWelcomeModal();
         router.push("/document");
       } else {
         const registerValues = values as RegisterFormData;
@@ -309,21 +308,21 @@ const SulikoForm: React.FC = () => {
           verificationCode: registerValues.verificationCode,
           subscribeNewsletter: registerValues.subscribeNewsletter,
         } as RegisterParams);
-        
+
         // Track successful registration
         trackRegistrationComplete({
           phoneNumber: phoneNumber || "",
           firstName: registerValues.firstname || generateDefaultName(),
           lastName: registerValues.lastname || ""
         });
-        
+
         // Also send server-side event for more reliable tracking
         await trackRegistrationServerEvent({
           phone: phoneNumber || "",
           firstName: registerValues.firstname || generateDefaultName(),
           lastName: registerValues.lastname || ""
         });
-        
+
         setToken(data.token);
         setRefreshToken(data.refreshToken);
 
@@ -419,22 +418,20 @@ const SulikoForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => !isLoginMode && toggleAuthMode()}
-                className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-                  isLoginMode
+                className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${isLoginMode
                     ? "bg-suliko-default-color text-white shadow-sm"
                     : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
-                }`}
+                  }`}
               >
                 {t("login")}
               </button>
               <button
                 type="button"
                 onClick={() => isLoginMode && toggleAuthMode()}
-                className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${
-                  !isLoginMode
+                className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${!isLoginMode
                     ? "bg-suliko-default-color text-white shadow-sm"
                     : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
-                }`}
+                  }`}
               >
                 {t("register")}
               </button>
@@ -472,11 +469,11 @@ const SulikoForm: React.FC = () => {
                         {t("phoneNumberOrEmail") || "Phone Number or Email"} <span className="text-red-500">*</span>
                       </FormLabel>
                       <FormControl>
-                        <Input 
-                          placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"} 
-                          className="border-2 shadow-md dark:border-slate-600" 
+                        <Input
+                          placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"}
+                          className="border-2 shadow-md dark:border-slate-600"
                           autoComplete="username"
-                          {...field} 
+                          {...field}
                         />
                       </FormControl>
                       <FormMessage />
@@ -522,7 +519,7 @@ const SulikoForm: React.FC = () => {
                       </div>
                     </div>
                   )}
-                  
+
                   {verificationMethod === "phone" && (
                     <>
                       <PhoneVerificationSection
@@ -551,7 +548,7 @@ const SulikoForm: React.FC = () => {
                       )}
                     </>
                   )}
-                  
+
                   {verificationMethod === "email" && (
                     <>
                       <EmailVerificationSection
@@ -627,7 +624,7 @@ const SulikoForm: React.FC = () => {
           </div>
         </Form>
       </div>
-      
+
       <PasswordRecoveryModal
         isOpen={showPasswordRecovery}
         onClose={() => setShowPasswordRecovery(false)}
