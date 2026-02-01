@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Providers from "./providers";
 
@@ -36,6 +37,23 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
       >
         <Providers>{children}</Providers>
+        
+        {/* Brevo Tracker */}
+        <Script
+          src="https://cdn.brevo.com/js/sdk-loader.js"
+          strategy="afterInteractive"
+        />
+        <Script id="brevo-init" strategy="afterInteractive">
+          {`
+            window.Brevo = window.Brevo || [];
+            Brevo.push([
+              "init",
+              {
+                client_key: "k9gjme1efnz6rcx1wtl5w9oy",
+              }
+            ]);
+          `}
+        </Script>
       </body>
     </html>
   );
