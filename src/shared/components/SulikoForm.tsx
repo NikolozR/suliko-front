@@ -473,6 +473,10 @@ const SulikoForm: React.FC = () => {
                           placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"}
                           className="border-2 shadow-md dark:border-slate-600"
                           autoComplete="username"
+                          
+
+
+                          
                           {...field}
                         />
                       </FormControl>

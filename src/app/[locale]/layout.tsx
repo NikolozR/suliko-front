@@ -11,6 +11,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
 import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
+import MobileOverlay from "@/shared/components/MobileOverlay";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -173,6 +174,7 @@ export default async function LocaleLayout({
         </noscript>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <MobileOverlay />
             <SessionRefreshProvider />
             <TopRightControls />
             {/* <BetaBanner /> */}

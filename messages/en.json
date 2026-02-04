@@ -854,5 +854,11 @@
       "description": "Contact us today to receive your unique API key and start translating content in seconds",
       "button": "Contact Us"
     }
+  },
+  "mobileOverlay": {
+    "title": "Best viewed on desktop",
+    "mobileOverlayText": "This website is designed for the desktop experience. For full functionality and the best experience please visit from a PC or larger screen.",
+    "continueAnyway": "Continue anyway",
+    "usePC": "I will use PC"
   }
 }

@@ -844,5 +844,11 @@
       "description": "Skontaktuj się z nami już dziś, aby otrzymać swój unikalny klucz API i zacząć tłumaczyć treści w sekundach",
       "button": "Skontaktuj się z nami"
     }
+  },
+  "mobileOverlay": {
+    "title": "Najlepiej wyświetlać na komputerze",
+    "mobileOverlayText": "Ta strona została zaprojektowana z myślą o komputerach stacjonarnych. Aby uzyskać pełną funkcjonalność i najlepsze wrażenia, odwiedź ją na komputerze PC lub urządzeniu z większym ekranem.",
+    "continueAnyway": "Kontynuuj mimo to",
+    "usePC": "Skorzystam z komputera"
   }
 }
