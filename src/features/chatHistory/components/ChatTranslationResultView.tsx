@@ -146,56 +146,95 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         const { jsPDF } = await import("jspdf");
         const html2canvas = (await import("html2canvas")).default;
 
-
+        // --- Create isolated wrapper ---
         const wrapper = document.createElement("div");
         wrapper.className = "pdf-export";
         wrapper.innerHTML = translatedMarkdown;
 
-        wrapper.style.position = "fixed";
-        wrapper.style.left = "-9999px";
-        wrapper.style.top = "0";
-        wrapper.style.width = "794px";
-        wrapper.style.background = "#ffffff";
-        wrapper.style.padding = "24px";
+        Object.assign(wrapper.style, {
+          position: "fixed",
+          left: "-10000px",
+          top: "0",
+          width: "794px",              // A4 @ 96dpi
+          padding: "24px",
+          backgroundColor: "#ffffff",
+          color: "#000000",            // 🔴 force readable text
+          fontFamily: "Arial, sans-serif",
+          boxSizing: "border-box",
+          lineHeight: "1.5",
+        });
 
         document.body.appendChild(wrapper);
 
         try {
+          // --- Wait for fonts ---
+          if (document.fonts?.ready) {
+            await document.fonts.ready;
+          }
+
+          // --- Wait for images ---
+          const images = wrapper.querySelectorAll("img");
+          await Promise.all(
+            [...images].map(img =>
+              img.complete
+                ? Promise.resolve()
+                : new Promise(resolve => {
+                  img.onload = resolve;
+                  img.onerror = resolve;
+                })
+            )
+          );
+
+          // --- Let browser fully paint (CRITICAL) ---
+          await new Promise(r => requestAnimationFrame(r));
+          await new Promise(r => requestAnimationFrame(r));
+
+          // --- Render to canvas ---
           const canvas = await html2canvas(wrapper, {
             scale: 2,
             backgroundColor: "#ffffff",
             useCORS: true,
+            logging: false,
           });
 
           const imgData = canvas.toDataURL("image/png");
-          const pdf = new jsPDF("p", "mm", "a4");
 
-          const imgWidth = 190;
+          // --- Create PDF ---
+          const pdf = new jsPDF({
+            orientation: "p",
+            unit: "mm",
+            format: "a4",
+          });
+
+          const pageWidth = 210;
+          const pageHeight = 297;
+          const margin = 10;
+
+          const imgWidth = pageWidth - margin * 2;
           const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-          let y = 10;
+          let position = margin;
           let heightLeft = imgHeight;
 
-          pdf.addImage(imgData, "PNG", 10, y, imgWidth, imgHeight);
-          heightLeft -= 277;
+          pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+          heightLeft -= pageHeight - margin * 2;
 
           while (heightLeft > 0) {
             pdf.addPage();
-            y = heightLeft - imgHeight;
-            pdf.addImage(imgData, "PNG", 10, y, imgWidth, imgHeight);
-            heightLeft -= 277;
+            position = heightLeft - imgHeight + margin;
+            pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
+            heightLeft -= pageHeight - margin * 2;
           }
 
           pdf.save(fileName);
-        } catch(err){
-          alert(err)
+        } catch (err) {
+          console.error("PDF export failed:", err);
+          alert("Failed to generate PDF");
         } finally {
           document.body.removeChild(wrapper);
         }
       }
-
-
-
+  
       setDownloadedFormat(null);
     };
     triggerDownload();
@@ -313,7 +352,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
             <DialogTitle>Select Download Format</DialogTitle>
           </DialogHeader>
           <div className="flex flex-col gap-3 mt-2">
-            {[{ value: "pdf", label: "PDF Document", extension: "pdf", icon: <FileDown className='w-4 h-4' />}, { value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
+            {[{ value: "pdf", label: "PDF Document", extension: "pdf", icon: <FileDown className='w-4 h-4' /> }, { value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
               <Button
                 key={format.value}
                 variant="outline"
