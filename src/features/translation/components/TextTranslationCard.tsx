@@ -410,7 +410,7 @@ const TextTranslationCard = () => {
                 layout="horizontal"
                 showSwapButton={true}
               />
-              <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8 items-stretch md:items-end" : undefined}>
+              <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8 items-stretch md:items-start" : undefined}>
                 <div className="w-full flex-1 min-w-0">
                   <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
                     {t('yourText')}
