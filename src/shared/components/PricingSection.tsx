@@ -247,7 +247,7 @@ export default function PricingSection() {
                         <span className="text-2xl text-muted-foreground line-through">
                           {(() => {
                             const numericPrice = plan.price.replace(/[₾€$€\s]/g, '').trim();
-                            if (numericPrice === "173") return formatPriceFromString("216");
+                            if (numericPrice === "50") return formatPriceFromString("62");
                             if (numericPrice === "500") return formatPriceFromString("625");
                             return plan.price;
                           })()}

@@ -35,11 +35,11 @@ export function PricingGrid() {
   }
 
   const handleStarterPackage = () => {
-    handleSelectPackage(57); // 57 GEL for Starter package
+    handleSelectPackage(20); // 20 GEL/EUR for Starter package
   };
 
   const handleProfessionalPackage = () => {
-    handleSelectPackage(173); // 173 GEL for Professional package
+    handleSelectPackage(50); // 50 GEL/EUR for Professional package
   };
 
   // Removed handleTrySuliko as it's no longer used

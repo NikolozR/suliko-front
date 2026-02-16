@@ -418,12 +418,12 @@
     },
     "starter": {
       "title": "Startowy",
-      "price": "57 ₾",
+      "price": "20 ₾",
       "period": "/miesiąc",
-      "documents": "75 stron miesięcznie",
+      "documents": "100 dokumentów miesięcznie",
       "description": "Idealny dla osób indywidualnych i małych projektów",
       "features": {
-        "0": "75 stron miesięcznie",
+        "0": "100 dokumentów miesięcznie",
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
@@ -431,12 +431,12 @@
     },
     "professional": {
       "title": "Profesjonalny",
-      "price": "173 ₾",
+      "price": "50 ₾",
       "period": "/miesiąc",
-      "documents": "300 stron miesięcznie",
+      "documents": "500 dokumentów miesięcznie",
       "description": "Idealny dla rozwijających się firm i zespołów",
       "features": {
-        "0": "300 stron miesięcznie",
+        "0": "500 dokumentów miesięcznie",
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
         "3": "Priorytetowe wsparcie e-mailowe i czatowe",

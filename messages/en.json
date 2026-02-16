@@ -420,12 +420,12 @@
     },
     "starter": {
       "title": "Starter",
-      "price": "57 ₾",
+      "price": "20 ₾",
       "period": "/month",
-      "documents": "75 pages per month",
+      "documents": "100 documents per month",
       "description": "Perfect for individuals and small projects",
       "features": {
-        "0": "75 pages per month",
+        "0": "100 documents per month",
         "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
@@ -433,12 +433,12 @@
     },
     "professional": {
       "title": "Professional",
-      "price": "173 ₾",
+      "price": "50 ₾",
       "period": "/month",
-      "documents": "300 pages per month",
+      "documents": "500 documents per month",
       "description": "Ideal for growing businesses and teams",
       "features": {
-        "0": "300 pages per month",
+        "0": "500 documents per month",
         "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages",
         "3": "Priority email & chat support",
