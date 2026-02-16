@@ -50,12 +50,13 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
     if (file) {
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
       
-      // If page range is selected (for documents > 4 pages), use 3 pages
+      // DISABLED: If page range is selected (for documents > 10 pages), use 3 pages
+      // Splitting functionality is kept in repository but not used
       let pageCount: number;
-      if (selectedPageRange && realPageCount && realPageCount > 4) {
-        // Always use 3 pages when a range is selected
-        pageCount = 3;
-      } else {
+      // if (selectedPageRange && realPageCount && realPageCount > 10) {
+      //   // Always use 3 pages when a range is selected
+      //   pageCount = 3;
+      // } else {
         // Calculate page count based on real count or estimation
         pageCount = (() => {
           // For PDFs and DOCX, use the real page count if available
@@ -66,7 +67,18 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
           // For other file types or when real count isn't loaded yet, use estimation
           return estimatePageCount(file);
         })();
-      }
+      // }
+        // Calculate page count based on real count or estimation
+        pageCount = (() => {
+          // For PDFs and DOCX, use the real page count if available
+          if ((fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null) {
+            return realPageCount;
+          }
+          
+          // For other file types or when real count isn't loaded yet, use estimation
+          return estimatePageCount(file);
+        })();
+      // }
       
       const minutes = pageCount * 2;
       const cost = (Math.ceil(pageCount) * PRICE_PER_PAGE).toString(); // Pages to be used
@@ -93,19 +105,21 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
   // Use values from global state
   const hasRealCount = (fileExtension === 'pdf' || fileExtension === 'docx') && realPageCount !== null;
 
-  const isPageRangeSelected = selectedPageRange && realPageCount && realPageCount > 4;
+  // DISABLED: Page range selection display - Splitting functionality is kept in repository but not used
+  // const isPageRangeSelected = selectedPageRange && realPageCount && realPageCount > 10;
   
   return (
     <div className="text-sm text-muted-foreground mt-2">
-      {isPageRangeSelected ? (
+      {/* DISABLED: Page range selection display */}
+      {/* {isPageRangeSelected ? (
         <>
           <span className="text-amber-600 dark:text-amber-500 font-medium">
             {t("pageCount.selectedPages")}: {selectedPageRange.startPage}-{selectedPageRange.endPage}
           </span>
           <span className="mx-1">•</span>
         </>
-      ) : null}
-      {hasRealCount && !isPageRangeSelected ? t("pageCount.actual") : t("pageCount.estimated")}: {estimatedPageCount} {estimatedPageCount !== 1 ? t("pageCount.pages") : t("pageCount.page")}
+      ) : null} */}
+      {hasRealCount ? t("pageCount.actual") : t("pageCount.estimated")}: {estimatedPageCount} {estimatedPageCount !== 1 ? t("pageCount.pages") : t("pageCount.page")}
       (~{estimatedMinutes} {estimatedMinutes !== 1 ? t("pageCount.minutes") : t("pageCount.minute")})
       <div className="mt-1 text-suliko-default-color font-semibold">
         {t("pageCount.estimatedCost", { cost: estimatedCost })}
