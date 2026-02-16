@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
+import { formatBalance } from "@/shared/utils/domainUtils";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, FileDown } from "lucide-react";
@@ -303,7 +304,10 @@ const TextTranslationCard = () => {
     const userPages = currentUserProfile?.balance || 0;
 
     if (pagesNeeded > userPages) {
-      setError(t('insufficientPages', { needed: pagesNeeded, available: userPages }));
+      setError(t('insufficientPages', { 
+        needed: formatBalance(pagesNeeded), 
+        available: formatBalance(userPages) 
+      }));
       return;
     }
 
@@ -490,12 +494,6 @@ const TextTranslationCard = () => {
                         <span>
                           {countWords(translatedText)} {countWords(translatedText) === 1 ? 'word' : 'words'}
                         </span>
-                      </div>
-                    )}
-                    {/* Cost display for translated text */}
-                    {currentTextValue && currentTextValue.length > 0 && (
-                      <div className="mt-2 text-suliko-default-color font-semibold text-sm">
-                        Pages to be used: {(currentTextValue.length / 2500).toFixed(2)}
                       </div>
                     )}
                   </div>

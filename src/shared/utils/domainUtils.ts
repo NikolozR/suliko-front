@@ -116,3 +116,23 @@ export function formatPriceFromString(priceString: string): string {
   return formatPrice(numericValue);
 }
 
+/**
+ * Format balance/pages count smartly
+ * If the value is a whole number (e.g., 59.0), display as "59"
+ * If the value has decimal places (e.g., 59.4), display with decimals (e.g., "59.4")
+ * @param balance The balance value to format
+ * @returns Formatted balance string
+ */
+export function formatBalance(balance: number): string {
+  // Round to 2 decimal places to handle floating point precision issues
+  const rounded = Math.round(balance * 100) / 100;
+  
+  // Check if the rounded value is a whole number
+  if (rounded % 1 === 0) {
+    return rounded.toString();
+  }
+  
+  // Otherwise, format with decimals and remove trailing zeros
+  return rounded.toFixed(2).replace(/\.?0+$/, '');
+}
+
