@@ -496,6 +496,12 @@ const TextTranslationCard = () => {
                         </span>
                       </div>
                     )}
+                    {/* Spacer to match "Pages to be used" height in input section */}
+                    {currentTextValue && currentTextValue.length > 0 && (
+                      <div className="mt-2 text-suliko-default-color font-semibold text-sm opacity-0 pointer-events-none">
+                        Pages to be used: 0.00
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
