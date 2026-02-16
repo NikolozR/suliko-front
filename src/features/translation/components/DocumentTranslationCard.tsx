@@ -12,8 +12,9 @@ import { Upload } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { AuthModal } from "@/features/auth";
-import { PageWarningModal } from "@/shared/components/PageWarningModal";
-import { PageRangeSelector } from "@/shared/components/PageRangeSelector";
+// DISABLED: Unused imports - Splitting functionality is kept in repository but not used
+// import { PageWarningModal } from "@/shared/components/PageWarningModal";
+// import { PageRangeSelector } from "@/shared/components/PageRangeSelector";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import TranslationResultView from "./TranslationResultView";
 import DocumentUploadView from "./DocumentUploadView";
@@ -24,7 +25,8 @@ import { z } from "zod";
 import { useTranslations } from "next-intl";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { documentTranslatingWithJobId } from "../utils/documentTranslation";
-import { extractPagesFromDocument } from "../utils/extractPages";
+// DISABLED: Unused import - Splitting functionality is kept in repository but not used
+// import { extractPagesFromDocument } from "../utils/extractPages";
 import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, type DocumentMetadata } from "@/shared/utils/fileStorage";
 import LanguageSelect from "./LanguageSelect";
@@ -37,7 +39,9 @@ import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocu
 import { useCountdown } from "@/hooks";
 import { ocrToHtml } from "@/features/translation/services/conversionsService";
 
-import toaster, { toast } from 'react-hot-toast'
+// DISABLED: Unused import - Splitting functionality is kept in repository but not used
+// import toaster, { toast } from 'react-hot-toast'
+import toaster from 'react-hot-toast'
 
 const isFileListAvailable =
   typeof window !== "undefined" && "FileList" in window;
@@ -74,8 +78,9 @@ const DocumentTranslationCard = () => {
   const tCommon = useTranslations("CommonLanguageSelect");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
-  const [showPageWarning, setShowPageWarning] = useState<boolean>(false);
-  const [showPageRangeSelector, setShowPageRangeSelector] = useState<boolean>(false);
+  // DISABLED: Unused state - Splitting functionality is kept in repository but not used
+  // const [showPageWarning, setShowPageWarning] = useState<boolean>(false);
+  // const [showPageRangeSelector, setShowPageRangeSelector] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFormData, setLastFormData] = useState<DocumentFormData | null>(null);
   const [/*loadingProgressState*/, /*setLoadingProgressState*/] = useState<number>(0);
@@ -99,7 +104,8 @@ const DocumentTranslationCard = () => {
     estimatedCost,
     estimatedWordCount,
     selectedPageRange,
-    setSelectedPageRange,
+    // DISABLED: Unused setter - Splitting functionality is kept in repository but not used
+    // setSelectedPageRange,
   } = useDocumentTranslationStore();
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
   const [isOcrOnly, setIsOcrOnly] = useState(false);
@@ -153,11 +159,12 @@ const DocumentTranslationCard = () => {
     },
   });
 
-  useEffect(() => {
-    if (realPageCount && realPageCount > 3) {
-      setShowPageWarning(true);
-    }
-  }, [realPageCount]);
+  // DISABLED: Show page warning - Splitting functionality is kept in repository but not used
+  // useEffect(() => {
+  //   if (realPageCount && realPageCount > 3) {
+  //     setShowPageWarning(true);
+  //   }
+  // }, [realPageCount]);
 
   // DISABLED: Show page range selector when document has more than 10 pages
   // Splitting functionality is kept in repository but not used
@@ -209,15 +216,16 @@ const DocumentTranslationCard = () => {
             
             // Restore metadata if available
             if (storedMetadata) {
-              const { setRealPageCount, setSelectedPageRange, setCurrentSourceLanguageId, setCurrentTargetLanguageId } = useDocumentTranslationStore.getState();
+              const { setRealPageCount, /* setSelectedPageRange, */ setCurrentSourceLanguageId, setCurrentTargetLanguageId } = useDocumentTranslationStore.getState();
               
               if (storedMetadata.realPageCount !== null && storedMetadata.realPageCount !== undefined) {
                 setRealPageCount(storedMetadata.realPageCount);
               }
               
-              if (storedMetadata.selectedPageRange) {
-                setSelectedPageRange(storedMetadata.selectedPageRange);
-              }
+              // DISABLED: Restore page range selection - Splitting functionality is kept in repository but not used
+              // if (storedMetadata.selectedPageRange) {
+              //   setSelectedPageRange(storedMetadata.selectedPageRange);
+              // }
               
               if (storedMetadata.currentSourceLanguageId !== undefined) {
                 setCurrentSourceLanguageId(storedMetadata.currentSourceLanguageId);
@@ -340,11 +348,12 @@ const DocumentTranslationCard = () => {
     setIsOcrOnly(false);
     clearErrors("currentFile");
     
-    const { setRealPageCount, setIsCountingPages, setSelectedPageRange } = useDocumentTranslationStore.getState();
+    const { setRealPageCount, setIsCountingPages, /* setSelectedPageRange */ } = useDocumentTranslationStore.getState();
     setRealPageCount(null);
     setIsCountingPages(false);
-    setSelectedPageRange(null);
-    setShowPageRangeSelector(false);
+    // DISABLED: Clear page range selection - Splitting functionality is kept in repository but not used
+    // setSelectedPageRange(null);
+    // setShowPageRangeSelector(false);
     
     // Clear stored file from IndexedDB if it exists
     if (typeof window !== 'undefined' && 'indexedDB' in window) {
@@ -427,7 +436,7 @@ const DocumentTranslationCard = () => {
       // Handle OCR Only mode
       if (isOcrOnly) {
         setManualProgress(10, "Processing OCR...");
-        let fileToOcr = data.currentFile[0];
+        const fileToOcr = data.currentFile[0];
         
         // DISABLED: Extract pages if page range is selected (for OCR mode too)
         // Splitting functionality is kept in repository but not used
