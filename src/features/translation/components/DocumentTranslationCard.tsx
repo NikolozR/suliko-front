@@ -463,7 +463,7 @@ const DocumentTranslationCard = () => {
       // Normal translation flow
       // DISABLED: Extract pages if page range is selected
       // Splitting functionality is kept in repository but not used
-      let fileToTranslate = data.currentFile[0];
+      // let fileToTranslate = data.currentFile[0];
       // if (realPageCount && realPageCount > 10 && selectedPageRange) {
       //   setManualProgress(5, t("progress.extractingPages"));
       //   const extractedFile = await extractPagesFromDocument(
@@ -481,17 +481,16 @@ const DocumentTranslationCard = () => {
       //   }
       //   
       //   fileToTranslate = extractedFile;
+      //   
+      //   // Create a new FileList with the extracted file
+      //   const dataTransfer = new DataTransfer();
+      //   dataTransfer.items.add(extractedFile);
+      //   const newFileList = dataTransfer.files;
+      //   
+      //   // Update form data with extracted file
+      //   data.currentFile = newFileList;
+      //   setValue("currentFile", newFileList);
       // }
-        
-        // Create a new FileList with the extracted file
-        const dataTransfer = new DataTransfer();
-        dataTransfer.items.add(extractedFile);
-        const newFileList = dataTransfer.files;
-        
-        // Update form data with extracted file
-        data.currentFile = newFileList;
-        setValue("currentFile", newFileList);
-      }
 
       await documentTranslatingWithJobId(
         data,
