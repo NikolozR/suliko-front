@@ -237,6 +237,12 @@
       "description": "Dokumenty powyżej 4 stron mogą powodować problemy z przetwarzaniem i saldem, a nie wszystkie strony mogą zostać przetłumaczone. Prosimy podzielić dokument na części do 3 stron i przesyłać je osobno.",
       "understand": "Rozumiem"
     },
+    "emailDialog": {
+      "title": "Wymagany adres e-mail",
+      "description": "Proszę dodać adres e-mail do swojego profilu przed tłumaczeniem dokumentów. Pomoże nam to wysyłać ważne powiadomienia.",
+      "proceed": "Przejdź, aby dodać e-mail",
+      "continueAnyway": "Kontynuuj mimo to"
+    },
     "pageCount": {
       "countingPages": "Liczenie stron...",
       "actual": "Rzeczywista",
@@ -395,6 +401,13 @@
       "close": "Zamknij"
     },
     "email": "Info@suliko.ge",
+    "signInToPay": "Proszę zalogować się, aby kontynuować płatność.",
+    "offerModal": {
+      "title": "Specjalna oferta",
+      "description": "Skorzystaj z naszej oferty ograniczonej czasowo przed kontynuacją płatności.",
+      "proceed": "Przejdź do płatności",
+      "okay": "OK"
+    },
     "title": "Pakiety cenowe",
     "description": "Wybierz pakiet, który Ci odpowiada",
     "forTranslators": "Dla tłumaczy",

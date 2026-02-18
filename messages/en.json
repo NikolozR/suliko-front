@@ -229,6 +229,12 @@
       "description": "Documents over 4 pages may cause processing and balance issues, and not all pages may be translated. Please split your document into parts of up to 3 pages and upload them separately.",
       "understand": "I Understand"
     },
+    "emailDialog": {
+      "title": "Email Required",
+      "description": "Please add your email address to your profile before translating documents. This helps us send you important notifications.",
+      "proceed": "Proceed to add the email",
+      "continueAnyway": "Continue anyway"
+    },
     "pageCount": {
       "countingPages": "Counting pages...",
       "actual": "Actual",
@@ -397,6 +403,13 @@
       "close": "Close"
     },
     "email": "Info@suliko.ge",
+    "signInToPay": "Please sign in to proceed with the payment.",
+    "offerModal": {
+      "title": "Special Offer",
+      "description": "Enjoy our limited-time promotion before continuing to payment.",
+      "proceed": "Proceed to payment",
+      "okay": "Okay"
+    },
     "title": "Pricing Packages",
     "description": "Choose a package that suits you",
     "forTranslators": "For Translators",

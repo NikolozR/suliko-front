@@ -22,7 +22,9 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import ErrorAlert from "@/shared/components/ErrorAlert";
+import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { documentTranslatingWithJobId } from "../utils/documentTranslation";
 import { extractPagesFromDocument } from "../utils/extractPages";
 import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
@@ -74,6 +76,7 @@ const DocumentTranslationCard = () => {
   const tCommon = useTranslations("CommonLanguageSelect");
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [showAuthModal, setShowAuthModal] = useState<boolean>(false);
+  const [showEmailModal, setShowEmailModal] = useState<boolean>(false);
   const [showPageWarning, setShowPageWarning] = useState<boolean>(false);
   const [showPageRangeSelector, setShowPageRangeSelector] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,6 +86,7 @@ const DocumentTranslationCard = () => {
   const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
   const { userProfile, fetchUserProfile } = useUserStore();
+  const router = useRouter();
   const {
     realPageCount,
     currentFile,
@@ -544,15 +548,31 @@ const DocumentTranslationCard = () => {
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-
-    if(error){
-      toaster.error(t("ups"))
-      return
+    if (error) {
+      toaster.error(t("ups"));
+      return;
     }
+
     if (!token) {
       // Save file to storage before showing auth modal
       await handleSaveFileBeforeAuth();
       setShowAuthModal(true);
+      return;
+    }
+
+    // ensure profile is loaded and check email
+    let profile = userProfile;
+    if (!profile) {
+      try {
+        await fetchUserProfile();
+      } catch (err) {
+        console.error("Failed to fetch profile for email check", err);
+      }
+      profile = useUserStore.getState().userProfile;
+    }
+
+    if (profile && !profile.email) {
+      setShowEmailModal(true);
       return;
     }
 
@@ -739,6 +759,19 @@ const DocumentTranslationCard = () => {
           totalPages={realPageCount}
         />
       )}
+
+      <EmailPromptModal
+        isOpen={showEmailModal}
+        onClose={() => setShowEmailModal(false)}
+        onProceed={() => {
+          setShowEmailModal(false);
+          router.push("/profile");
+        }}
+        onContinueAnyway={() => {
+          setShowEmailModal(false);
+          handleSubmit(onSubmit, handleFormError)();
+        }}
+      />
     </>
   );
 };

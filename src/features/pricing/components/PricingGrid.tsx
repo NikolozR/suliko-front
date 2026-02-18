@@ -7,23 +7,33 @@ import { PayAsYouGoModal } from "./PayAsYouGoModal";
 import { ContactPaymentModal } from "./ContactPaymentModal";
 import { createPayment } from "../services/paymentService";
 import { isSulikoIo } from "@/shared/utils/domainUtils";
+import { useAuthStore } from "@/features/auth";
+import { useRouter } from "@/i18n/navigation";
+import toast from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export function PricingGrid() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showPayAsYouGoModal, setShowPayAsYouGoModal] = useState(false);
   const [showContactPaymentModal, setShowContactPaymentModal] = useState(false);
+  const { token } = useAuthStore();
+  const router = useRouter();
+  const t = useTranslations("Pricing");
 
-  const handleSelectPayAsYouGo = () => {
-    setShowPayAsYouGoModal(true);
-  };
 
+  
   const handleSelectPackage = async (amount: number) => {
+    if(!token){
+      toast.error(t("signInToPay"));
+      router.push("/sign-in");
+      return;
+    }
+
     // For suliko.io, show contact modal instead of making payment API call
     if (isSulikoIo()) {
       setShowContactPaymentModal(true);
       return;
     }
-
     try {
       // Currency and country will be determined automatically based on domain
       const response = await createPayment(amount);
@@ -33,7 +43,6 @@ export function PricingGrid() {
       // Could show an error modal here
     }
   }
-
   const handleStarterPackage = () => {
     handleSelectPackage(57); // 57 GEL for Starter package
   };
@@ -41,7 +50,10 @@ export function PricingGrid() {
   const handleProfessionalPackage = () => {
     handleSelectPackage(173); // 173 GEL for Professional package
   };
-
+  const handleSelectPayAsYouGo = () => {
+    handleSelectPackage(1); // 173 GEL for Professional package
+  };
+  
   // Removed handleTrySuliko as it's no longer used
 
   return (

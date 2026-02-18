@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { routing } from "@/i18n/routing"; 
 import { useTranslations } from "next-intl";
 
+// we persist dismissals across sessions so the overlay is only shown once per user
 const STORAGE_KEY = "dismissMobileOverlay";
 
 export default function MobileOverlay() {
@@ -17,6 +18,7 @@ export default function MobileOverlay() {
     if (typeof window === "undefined") return;
 
     const check = () => {
+      // use localStorage instead of sessionStorage so the flag survives reloads
       const dismissed = sessionStorage.getItem(STORAGE_KEY) === "1";
       const path = pathname || "/";
       const segments = path.split("/").filter(Boolean);
@@ -50,7 +52,7 @@ export default function MobileOverlay() {
         <p className="text-sm text-muted-foreground mb-6">{t("mobileOverlayText")}</p>
         <div className="flex justify-center gap-3">
           <button
-            onClick={() => dismiss(false)}
+            onClick={() => dismiss(true)}
             className="px-4 py-2 rounded-md border border-transparent bg-transparent text-muted-foreground hover:underline"
           >
             {t("continueAnyway")}
