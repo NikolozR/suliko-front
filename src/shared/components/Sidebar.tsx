@@ -10,6 +10,7 @@ import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { HistoryDropdown } from "@/features/chatHistory/components/HistoryDropdown";
 import { SidebarLanguageSelector } from "./SidebarLanguageSelector";
+import { formatBalance } from "@/shared/utils/domainUtils";
 import {
   Plus,
   Clock,
@@ -272,7 +273,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                     <Link href="/price" className="flex flex-col min-w-0 hover:opacity-80 transition-opacity">
                       <span className="text-xs text-muted-foreground">{t('balance')}</span>
                       <span className="font-semibold text-green-600">
-                        {Math.floor(userProfile.balance || 0)} {t('pages')}
+                        {formatBalance(userProfile.balance || 0)} {t('pages')}
                       </span>
                     </Link>
                   )}

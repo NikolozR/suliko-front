@@ -26,6 +26,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
+import { formatBalance } from "@/shared/utils/domainUtils";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, FileDown } from "lucide-react";
@@ -54,6 +55,12 @@ const TextTranslationCard = () => {
   const tButton = useTranslations('TranslationButton');
   const translatedSuffix = useTranslatedSuffix();
   const [textLoading, setTextLoading] = useState(false);
+
+  // Helper function to count words
+  const countWords = (text: string): number => {
+    if (!text.trim()) return 0;
+    return text.trim().split(/\s+/).filter(word => word.length > 0).length;
+  };
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [lastFormData, setLastFormData] = useState<FormData | null>(null);
@@ -292,11 +299,15 @@ const TextTranslationCard = () => {
     }
 
     // Check if user has sufficient page balance
-    const pagesNeeded = Math.ceil((data.currentTextValue.length / 250) * 0.01);
-    const userPages = Math.floor(currentUserProfile?.balance || 0);
+    // 2500 characters = 1 page, so 250 characters = 0.1 page
+    const pagesNeeded = data.currentTextValue.length / 2500;
+    const userPages = currentUserProfile?.balance || 0;
 
     if (pagesNeeded > userPages) {
-      setError(t('insufficientPages', { needed: pagesNeeded, available: userPages }));
+      setError(t('insufficientPages', { 
+        needed: formatBalance(pagesNeeded), 
+        available: formatBalance(userPages) 
+      }));
       return;
     }
 
@@ -399,7 +410,7 @@ const TextTranslationCard = () => {
                 layout="horizontal"
                 showSwapButton={true}
               />
-              <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8 items-stretch md:items-end" : undefined}>
+              <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8 items-stretch md:items-start" : undefined}>
                 <div className="w-full flex-1 min-w-0">
                   <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
                     {t('yourText')}
@@ -423,10 +434,21 @@ const TextTranslationCard = () => {
                       }}
                     />
                   </div>
+                  {/* Character and word count display */}
+                  {currentTextValue && (
+                    <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                      <span>
+                        {currentTextValue.length} {currentTextValue.length === 1 ? 'character' : 'characters'}
+                      </span>
+                      <span>
+                        {countWords(currentTextValue)} {countWords(currentTextValue) === 1 ? 'word' : 'words'}
+                      </span>
+                    </div>
+                  )}
                   {/* Cost display for input text */}
-                  {currentTextValue && parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
+                  {currentTextValue && currentTextValue.length > 0 && (
                     <div className="mt-2 text-suliko-default-color font-semibold text-sm">
-                      Pages to be used: {Math.ceil((currentTextValue.length / 250) * 0.01)}
+                      Pages to be used: {(currentTextValue.length / 2500).toFixed(2)}
                     </div>
                   )}
                 </div>
@@ -463,10 +485,21 @@ const TextTranslationCard = () => {
                       }}
                       placeholder={t('result')}
                     />
-                    {/* Cost display for translated text */}
-                    {parseFloat(((currentTextValue.length / 250) * 0.01).toFixed(2)) > 0 && (
-                      <div className="mt-2 text-suliko-default-color font-semibold text-sm">
-                        Pages to be used: {Math.ceil((currentTextValue.length / 250) * 0.01)}
+                    {/* Character and word count display for translated text */}
+                    {translatedText && (
+                      <div className="mt-2 flex items-center gap-4 text-xs text-muted-foreground">
+                        <span>
+                          {translatedText.length} {translatedText.length === 1 ? 'character' : 'characters'}
+                        </span>
+                        <span>
+                          {countWords(translatedText)} {countWords(translatedText) === 1 ? 'word' : 'words'}
+                        </span>
+                      </div>
+                    )}
+                    {/* Spacer to match "Pages to be used" height in input section */}
+                    {currentTextValue && currentTextValue.length > 0 && (
+                      <div className="mt-2 text-suliko-default-color font-semibold text-sm opacity-0 pointer-events-none">
+                        Pages to be used: 0.00
                       </div>
                     )}
                   </div>

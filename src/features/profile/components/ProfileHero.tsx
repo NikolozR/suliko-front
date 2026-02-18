@@ -7,6 +7,7 @@ import { useUser } from "@/features/auth/hooks/useUser";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
+import { formatBalance } from "@/shared/utils/domainUtils";
 
 interface ProfileHeroProps {
   userProfile: UserProfile;
@@ -71,7 +72,7 @@ export const ProfileHero = ({ userProfile, onLogout }: ProfileHeroProps) => {
               </Badge>
               <Link href="/price" className="block hover:opacity-80 transition-opacity cursor-pointer">
                 <p className="text-xl text-white/80">
-                  {Math.floor(userProfile.balance || 0)} {t("pages")}
+                  {formatBalance(userProfile.balance || 0)} {t("pages")}
                 </p>
               </Link>
             </div>

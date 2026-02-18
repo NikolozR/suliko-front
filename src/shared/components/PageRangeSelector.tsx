@@ -38,8 +38,9 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
   );
 
   // Generate page range options
+  // DISABLED: Threshold changed from 4 to 10, but component kept in repository
   const pageRangeOptions: PageRangeOption[] = useMemo(() => {
-    if (totalPages <= 4) return [];
+    if (totalPages <= 10) return [];
 
     const options: PageRangeOption[] = [];
 
@@ -90,7 +91,8 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
     onClose();
   };
 
-  if (totalPages <= 4) {
+  // DISABLED: Threshold changed from 4 to 10, but component kept in repository
+  if (totalPages <= 10) {
     return null;
   }
 
