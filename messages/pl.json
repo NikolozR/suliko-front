@@ -403,8 +403,12 @@
     "email": "Info@suliko.ge",
     "signInToPay": "Proszę zalogować się, aby kontynuować płatność.",
     "offerModal": {
-      "title": "Specjalna oferta",
-      "description": "Skorzystaj z naszej oferty ograniczonej czasowo przed kontynuacją płatności.",
+      "title": "Subskrybuj i tłumacz taniej! ✨",
+      "description": "Do 28 lutego aktywuj pakiet miesięczny w wyjątkowej cenie:",
+      "packages": [
+        "📑 100 stron/miesiąc — 20₾ (zamiast 57₾)",
+        "📑 500 stron/miesiąc — 50₾ (zamiast 173₾)"
+      ],
       "proceed": "Przejdź do płatności",
       "okay": "OK"
     },

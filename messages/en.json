@@ -405,8 +405,12 @@
     "email": "Info@suliko.ge",
     "signInToPay": "Please sign in to proceed with the payment.",
     "offerModal": {
-      "title": "Special Offer",
-      "description": "Enjoy our limited-time promotion before continuing to payment.",
+      "title": "Subscribe and Translate for Less! ✨",
+      "description": "Until February 28, activate a monthly package at a special price:",
+      "packages": [
+        "📑 100 pages/month — 20₾ (instead of 57₾)",
+        "📑 500 pages/month — 50₾ (instead of 173₾)"
+      ],
       "proceed": "Proceed to payment",
       "okay": "Okay"
     },

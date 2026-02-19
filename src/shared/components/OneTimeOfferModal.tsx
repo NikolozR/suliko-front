@@ -1,4 +1,5 @@
 'use client';
+
 import React, { useEffect, useState } from 'react';
 import {
   Dialog,
@@ -36,24 +37,26 @@ export default function OneTimeOfferModal() {
 
   if (!show) return null;
 
+  const packages = t.raw('offerModal.packages') as string[];
+
   return (
     <Dialog open={show} onOpenChange={close}>
-      <DialogContent className="w-fit rounded-lg py-[40px] px-[70px]">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-center">
-            {t('offerModal.title')}
-          </DialogTitle>
+          <DialogTitle className='text-center'>{t('offerModal.title')}</DialogTitle>
         </DialogHeader>
-        <div className="mt-4 text-center space-y-3">
-          <p className="text-muted-foreground">
-            {t('offerModal.description')}
-          </p>
-        </div>
-        <DialogFooter className="flex !justify-center items-center gap-2 mt-4">
+
+        <p className='text-center'>{t('offerModal.description')}</p>
+
+        <ul className='text-center'>
+          {packages.map((pkg, index) => (
+            <li key={index}>{pkg}</li>
+          ))}
+        </ul>
+
+        <DialogFooter>
           <Button onClick={proceed}>{t('offerModal.proceed')}</Button>
-          <Button variant="outline" onClick={close}>
-            {t('offerModal.okay')}
-          </Button>
+          <Button variant="outline" onClick={close}>{t('offerModal.okay')}</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
