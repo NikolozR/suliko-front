@@ -316,11 +316,11 @@
     }
   },
   "TranslationLoadingOverlay": {
-    "progress": "Postęp",
-    "processingDocument": "Przetwarzanie dokumentu...",
-    "translatingText": "Tłumaczenie tekstu...",
-    "longerThanExpected": "Przetwarzanie dokumentu trwa dłużej niż oczekiwano",
-    "thankYou": "Dziękujemy za cierpliwość"
+    "progress": "Progress",
+    "processingDocument": "Processing document...",
+    "translatingText": "Translating text...",
+    "longerThanExpected": "Processing document takes longer than expected",
+    "thankYou": "Thank you for your patience"
   },
   "Profile": {
     "fullName": "Full Name",

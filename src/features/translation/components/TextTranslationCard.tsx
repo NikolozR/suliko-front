@@ -33,6 +33,8 @@ import { FileText, File, Download, X, FileDown } from "lucide-react";
 import React from "react";
 import { useUserStore } from "@/features/auth/store/userStore";
 import ErrorAlert from "@/shared/components/ErrorAlert";
+import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
+import { useRouter } from "@/i18n/navigation";
 
 const textTranslationSchema = z.object({
   currentTextValue: z
@@ -55,6 +57,7 @@ const TextTranslationCard = () => {
   const tButton = useTranslations('TranslationButton');
   const translatedSuffix = useTranslatedSuffix();
   const [textLoading, setTextLoading] = useState(false);
+  const router = useRouter();
 
   // Helper function to count words
   const countWords = (text: string): number => {
@@ -62,9 +65,12 @@ const TextTranslationCard = () => {
     return text.trim().split(/\s+/).filter(word => word.length > 0).length;
   };
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [showEmailModal, setShowEmailModal] = useState<boolean>(false);
+
   const [error, setError] = useState<string | null>(null);
   const [lastFormData, setLastFormData] = useState<FormData | null>(null);
   const { fetchUserProfileWithRetry, userProfile } = useUserStore();
+
 
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
@@ -276,6 +282,8 @@ const TextTranslationCard = () => {
       return;
     }
 
+    
+
     // Store form data for retry
     setLastFormData(data);
 
@@ -298,15 +306,20 @@ const TextTranslationCard = () => {
       }
     }
 
+    if (currentUserProfile && (!currentUserProfile.email || currentUserProfile.email.endsWith('@example.com'))) {
+      setShowEmailModal(true);
+      return;
+    }
+
     // Check if user has sufficient page balance
     // 2500 characters = 1 page, so 250 characters = 0.1 page
     const pagesNeeded = data.currentTextValue.length / 2500;
     const userPages = currentUserProfile?.balance || 0;
 
     if (pagesNeeded > userPages) {
-      setError(t('insufficientPages', { 
-        needed: formatBalance(pagesNeeded), 
-        available: formatBalance(userPages) 
+      setError(t('insufficientPages', {
+        needed: formatBalance(pagesNeeded),
+        available: formatBalance(userPages)
       }));
       return;
     }
@@ -336,6 +349,8 @@ const TextTranslationCard = () => {
     } finally {
       setTextLoading(false);
     }
+
+
   };
 
   const handleFormError = () => {
@@ -529,6 +544,18 @@ const TextTranslationCard = () => {
         <AuthModal
           isOpen={showAuthModal}
           onClose={() => setShowAuthModal(false)}
+        />
+        <EmailPromptModal
+          isOpen={showEmailModal}
+          onClose={() => setShowEmailModal(false)}
+          onProceed={() => {
+            setShowEmailModal(false);
+            router.push("/profile");
+          }}
+          onContinueAnyway={() => {
+            setShowEmailModal(false);
+            handleSubmit(onSubmit, handleFormError)();
+          }}
         />
         <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
           <DialogContent className="max-w-xs mx-4">

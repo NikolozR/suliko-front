@@ -586,10 +586,11 @@ const DocumentTranslationCard = () => {
       profile = useUserStore.getState().userProfile;
     }
 
-    if (profile && !profile.email) {
+    if (profile && (!profile.email || profile.email.endsWith('@example.com'))) {
       setShowEmailModal(true);
       return;
     }
+    console.log("User profile for email check:", profile);
 
     handleSubmit(onSubmit, handleFormError)();
   };
