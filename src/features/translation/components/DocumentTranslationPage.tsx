@@ -39,7 +39,7 @@ const DocumentTranslationPage = () => {
                 </span>
               ))}
             </div>
-            {userProfile?.firstName}
+            <span className="absolute ml-48">{userProfile?.firstName}</span>
           </div>
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
