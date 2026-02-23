@@ -16,7 +16,7 @@ import {
   DialogDescription,
   DialogFooter
 } from "@/features/ui/components/ui/dialog";
-import { Trash2, AlertTriangle } from "lucide-react";
+import { Trash2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { deleteAccount } from "@/features/auth/services/userService";
 import { useUserStore } from "@/features/auth/store/userStore";
@@ -60,17 +60,17 @@ export const ProfileDeleteAccount: React.FC = () => {
 
   return (
     <>
-      <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm rounded-2xl">
-        <CardHeader className="pb-2 pt-6 px-8">
-          <CardTitle className="flex items-center gap-2 text-xl text-white">
-            <div className="p-2 bg-red-100 rounded-lg">
-              <AlertTriangle className="h-5 w-5 text-red-600" />
+      <Card className="border border-border/60 bg-card shadow-sm rounded-2xl">
+        <CardHeader className="pb-2 pt-6 px-6 md:px-8">
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <div className="p-1.5 rounded-lg bg-destructive/10">
+              <Trash2 className="h-4 w-4 text-destructive" />
             </div>
             {t("deleteAccount")}
           </CardTitle>
         </CardHeader>
 
-        <CardContent className="px-8 pb-8 pt-2 space-y-4">
+        <CardContent className="px-6 md:px-8 pb-8 pt-2 space-y-4">
           {error && (
             <ErrorAlert message={error} onClose={() => setError(null)} />
           )}

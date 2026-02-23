@@ -166,17 +166,14 @@ export default function ProfileClient() {
   const validationErrors = form.formState.errors;
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 max-w-3xl">
       {updateError && (
         <ErrorAlert
           message={updateError}
           onClose={() => setUpdateError(null)}
         />
       )}
-      <ProfileHero
-        userProfile={currentUserProfile}
-        onLogout={handleLogout}
-      />
+      <ProfileHero userProfile={currentUserProfile} />
       <div className="space-y-6">
         <ProfilePersonalInfo
           userProfile={currentUserProfile}

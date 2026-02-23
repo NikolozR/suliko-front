@@ -10,7 +10,7 @@ import SuggestionsPanel from './SuggestionsPanel';
 import Editor from "@/features/editor/Editor";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
 import React from "react";
 
 
@@ -35,6 +35,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
 }) => {
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
+  const tDownload = useTranslations('DownloadFormats');
   const translatedSuffix = useTranslatedSuffix();
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
@@ -297,13 +298,17 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                   {t('translatedText')}
                 </div>
                 {remainingSeconds > 0 ? (
-                  <span className="text-xs text-muted-foreground flex items-center gap-1 whitespace-nowrap">
+                  <span className={`text-xs flex items-center gap-1 whitespace-nowrap px-2 py-0.5 rounded-full ${
+                    remainingSeconds <= 120
+                      ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
+                      : "text-muted-foreground"
+                  }`}>
                     <Clock className="h-3 w-3" />
                     {formatTime(remainingSeconds)}
                   </span>
                 ) : (
-                  <span className="text-xs text-red-500 flex items-center gap-1 font-medium whitespace-nowrap">
-                    <Clock className="h-3 w-3" />
+                  <span className="text-xs flex items-center gap-1 font-medium whitespace-nowrap px-2 py-0.5 rounded-full bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400">
+                    <AlertTriangle className="h-3 w-3" />
                     {t('editorTimeExpired')}
                   </span>
                 )}
@@ -360,24 +365,27 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       </div>
       <SuggestionsPanel isSuggestionsLoading={isSuggestionsLoading} />
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
-        <DialogContent className="max-w-xs mx-4">
+        <DialogContent className="max-w-xs mx-4 rounded-2xl">
           <DialogHeader>
-            <DialogTitle>Select Download Format</DialogTitle>
+            <DialogTitle className="text-base font-semibold">{tDownload('chooseFormat')}</DialogTitle>
           </DialogHeader>
-          <div className="flex flex-col gap-3 mt-2">
-            {[{ value: "pdf", label: "PDF Document", extension: "pdf", icon: <FileDown className='w-4 h-4' /> }, { value: "docx", label: "Word Document", extension: "docx", icon: <File className='w-4 h-4' /> }, { value: "txt", label: "Text File", extension: "txt", icon: <FileText className='w-4 h-4' /> }].map(format => (
+          <div className="flex flex-col gap-2 mt-2">
+            {[
+              { value: "pdf", label: tDownload("pdfDocument"), extension: "pdf", icon: <FileDown className="w-4 h-4 text-red-500 dark:text-red-400" /> },
+              { value: "docx", label: tDownload("wordDocument"), extension: "docx", icon: <File className="w-4 h-4 text-blue-500 dark:text-blue-400" /> },
+              { value: "txt", label: tDownload("textFile"), extension: "txt", icon: <FileText className="w-4 h-4 text-muted-foreground" /> },
+            ].map(format => (
               <Button
                 key={format.value}
                 variant="outline"
-                size="sm"
-                className="flex items-center gap-2 justify-start"
+                className="flex items-center gap-3 justify-start h-11 rounded-xl border-border/60 hover:border-primary/30 hover:bg-muted/50 transition-all"
                 onClick={() => {
                   setShowDownloadModal(false);
                   setDownloadedFormat(format);
                 }}
               >
                 {format.icon}
-                {format.label}
+                <span className="text-sm">{format.label}</span>
               </Button>
             ))}
           </div>

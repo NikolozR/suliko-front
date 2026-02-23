@@ -36,7 +36,7 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
   if (!isMounted) {
     // Server-side render with collapsed state to prevent layout shift
     return (
-      <main className="sidebar-content" style={{ marginLeft: '4rem', transition: 'margin-left 300ms ease' }}>
+      <main className="sidebar-content pt-10" style={{ marginLeft: '4rem', transition: 'margin-left 300ms ease' }}>
         {children}
       </main>
     );
@@ -44,7 +44,7 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
 
   return (
     <>
-      <main className="sidebar-content">
+      <main className="sidebar-content pt-10">
         {children}
       </main>
       <WelcomeModal 

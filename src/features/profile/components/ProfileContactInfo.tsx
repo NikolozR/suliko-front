@@ -38,12 +38,12 @@ export const ProfileContactInfo = ({
   );
   
   return (
-    <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm rounded-2xl">
-      <CardHeader className="pb-2 pt-6 px-8">
+    <Card className="border border-border/60 bg-card shadow-sm rounded-2xl">
+      <CardHeader className="pb-2 pt-6 px-6 md:px-8">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <div className="p-2 bg-green-100 rounded-lg">
-              <Mail className="h-5 w-5 text-green-600" />
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <div className="p-1.5 rounded-lg bg-muted">
+              <Mail className="h-4 w-4 text-muted-foreground" />
             </div>
             {t("contactInformation")}
           </CardTitle>
@@ -79,10 +79,10 @@ export const ProfileContactInfo = ({
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-6 px-8 pb-8 pt-2">
-        <div className="flex items-center gap-4 p-4 bg-muted rounded-xl">
-          <div className="p-3 bg-blue-100 rounded-lg">
-            <Phone className="h-5 w-5 text-blue-600" />
+      <CardContent className="space-y-6 px-6 md:px-8 pb-8 pt-2">
+        <div className="flex items-center gap-4 p-4 rounded-xl bg-muted/50 border border-border/40">
+          <div className="p-2 rounded-lg bg-muted">
+            <Phone className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="flex-1">
             <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">
@@ -94,9 +94,9 @@ export const ProfileContactInfo = ({
           </div>
         </div>
 
-        <div className={`flex items-center gap-4 p-4 bg-muted rounded-xl ${needsEmailReminder ? "animate-flicker" : ""}`}>
-          <div className="p-3 bg-purple-100 rounded-lg">
-            <Mail className="h-5 w-5 text-purple-600" />
+        <div className={`flex items-center gap-4 p-4 rounded-xl bg-muted/50 border border-border/40 ${needsEmailReminder ? "animate-flicker" : ""}`}>
+          <div className="p-2 rounded-lg bg-muted">
+            <Mail className="h-4 w-4 text-muted-foreground" />
           </div>
           <div className="flex-1">
             <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">

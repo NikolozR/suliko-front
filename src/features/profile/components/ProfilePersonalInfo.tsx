@@ -35,12 +35,12 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({
 }) => {
   const t = useTranslations("Profile");
   return (
-    <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm rounded-2xl">
-      <CardHeader className="pb-2 pt-6 px-8">
+    <Card className="border border-border/60 bg-card shadow-sm rounded-2xl">
+      <CardHeader className="pb-2 pt-6 px-6 md:px-8">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2 text-xl">
-            <div className="p-2 bg-blue-100 rounded-lg">
-              <User className="h-5 w-5 text-blue-600" />
+          <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+            <div className="p-1.5 rounded-lg bg-muted">
+              <User className="h-4 w-4 text-muted-foreground" />
             </div>
             {t("personalInformation")}
           </CardTitle>
@@ -76,7 +76,7 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({
           )}
         </div>
       </CardHeader>
-      <CardContent className="space-y-6 px-8 pb-8 pt-2">
+      <CardContent className="space-y-6 px-6 md:px-8 pb-8 pt-2">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="text-sm font-medium text-muted-foreground uppercase tracking-wide">

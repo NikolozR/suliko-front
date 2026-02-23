@@ -41,7 +41,7 @@ export default function AboutSection() {
 
         {/* Mission Statement */}
         <div className="max-w-3xl mx-auto mb-16">
-          <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <Card className="border border-primary/20 rounded-2xl bg-gradient-to-br from-card via-card to-primary/5">
             <CardContent className="p-8 text-center">
               <h3 className="text-2xl font-bold text-foreground mb-4">{t("mission")}</h3>
               <p className="text-lg text-muted-foreground leading-relaxed">
@@ -56,7 +56,7 @@ export default function AboutSection() {
         {/* Features Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card key={index} className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+            <Card key={index} className="group border border-border/60 rounded-2xl hover:shadow-md hover:border-primary/20 transition-all duration-300 hover:-translate-y-1">
               <CardContent className="p-6 text-center">
                 <div className="inline-flex items-center justify-center w-16 h-16 bg-primary/10 rounded-full mb-4 group-hover:bg-primary/20 transition-colors">
                   <feature.icon className="h-8 w-8 text-primary" />
@@ -74,7 +74,7 @@ export default function AboutSection() {
 
         {/* Desktop Experience Disclaimer */}
         <div className="max-w-3xl mx-auto mt-16">
-          <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-secondary/5">
+          <Card className="border border-primary/20 rounded-2xl bg-gradient-to-br from-card via-card to-primary/5">
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
                 <div className="flex-shrink-0">

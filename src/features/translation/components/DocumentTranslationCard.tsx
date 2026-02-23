@@ -23,10 +23,10 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useRouter } from "@/i18n/navigation";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
-import { documentTranslatingWithJobId } from "../utils/documentTranslation";
+import { startTranslationProject } from "../utils/startTranslationProject";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
 import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
@@ -301,6 +301,14 @@ const DocumentTranslationCard = () => {
       const fileExtension = file.name.split(".").pop()?.toLowerCase();
       const isSrtFile = fileExtension === "srt";
 
+      // Clear previous translation result when selecting a new file
+      setTranslatedMarkdown("");
+      const { setSuggestions, setJobId, setChatId } = useDocumentTranslationStore.getState();
+      setSuggestions([]);
+      setJobId("");
+      setChatId("");
+      useSuggestionsStore.getState().reset();
+
       setCurrentFile(event.target.files);
       setValue("currentFile", event.target.files);
       setValue("isSrt", isSrtFile);
@@ -434,12 +442,11 @@ const DocumentTranslationCard = () => {
     // Store form data for retry
     setLastFormData(data);
 
-    setIsLoading(true);
-    setManualProgress(0, t("progress.starting"));
-
     try {
       // Handle OCR Only mode
       if (isOcrOnly) {
+        setIsLoading(true);
+        setManualProgress(0, t("progress.starting"));
         setManualProgress(10, "Processing OCR...");
         const fileToOcr = data.currentFile[0];
 
@@ -506,22 +513,8 @@ const DocumentTranslationCard = () => {
       //   setValue("currentFile", newFileList);
       // }
 
-      await documentTranslatingWithJobId(
-        data,
-        setError,
-        (_progress, message) => {
-          if (
-            message.toLowerCase().includes("error") ||
-            message.toLowerCase().includes("failed")
-          ) {
-            setOverrideMessage(message);
-          }
-        },
-        setSuggestionsLoading
-      );
-
-      setManualProgress(100, t("progress.complete"));
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      const { chatId } = await startTranslationProject(data);
+      router.push(`/projects/${chatId}`);
     } catch (err) {
       let message = t("progress.unexpectedError");
       if (err instanceof Error) {

@@ -92,16 +92,16 @@ export const ProfilePasswordChange: React.FC = () => {
   };
 
   return (
-    <Card className="border-0 shadow-xl bg-card/80 backdrop-blur-sm rounded-2xl">
-      <CardHeader className="pb-2 pt-6 px-8">
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <div className="p-2 bg-red-100 rounded-lg">
-            <Lock className="h-5 w-5 text-red-600" />
+    <Card className="border border-border/60 bg-card shadow-sm rounded-2xl">
+      <CardHeader className="pb-2 pt-6 px-6 md:px-8">
+        <CardTitle className="flex items-center gap-2 text-lg font-semibold">
+          <div className="p-1.5 rounded-lg bg-muted">
+            <Lock className="h-4 w-4 text-muted-foreground" />
           </div>
           {t("changePassword")}
         </CardTitle>
       </CardHeader>
-      <CardContent className="px-8 pb-8 pt-2">
+      <CardContent className="px-6 md:px-8 pb-8 pt-2">
         {error && (
           <ErrorAlert
             message={error}

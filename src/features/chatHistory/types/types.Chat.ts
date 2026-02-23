@@ -1,6 +1,6 @@
 import { Suggestion } from "@/features/translation";
 
-export type ChatStatus = 'Completed' | 'InProgress' | 'Failed';
+export type ChatStatus = 'Completed' | 'InProgress' | 'Failed' | 'Queued';
 
 export interface Chat {
     chatId: string;
@@ -22,10 +22,15 @@ export interface ChatDetailed {
     originalFileName: string;
     fileType: string;
     targetLanguageName: string;
+    sourceLanguageName?: string;
     status: ChatStatus;
     createdAt: string;
     lastActivityAt: string;
-    translationResult: ChatTrnalsationResult;
+    translationResult?: ChatTrnalsationResult;
+    fileSizeKB?: number;
+    pageCount?: number;
+    estimatedWordCount?: number;
+    estimatedTimeMinutes?: number;
 }
 
 export interface ChatTrnalsationResult {

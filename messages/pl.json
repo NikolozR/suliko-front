@@ -103,8 +103,10 @@
   "Sidebar": {
     "newProject": "Nowy projekt",
     "history": "Historia",
+    "projects": "Projekty",
     "profile": "Profil",
     "logout": "Wyloguj się",
+    "fillBalance": "Doładuj saldo",
     "help": "Pomoc",
     "feedback": "Opinie",
     "login": "Zaloguj się",
@@ -319,6 +321,8 @@
       "waiting": "Oczekiwanie na zakończenie...",
       "thankYou": "Dziękujemy za cierpliwość",
       "complete": "Tłumaczenie zakończone!",
+      "uploading": "Przesyłanie dokumentu...",
+      "projectStarted": "Projekt uruchomiony! Przekierowanie...",
       "unexpectedError": "Wystąpił nieoczekiwany błąd podczas tłumaczenia."
     }
   },
@@ -343,6 +347,7 @@
     "emailPlaceholder": "Wprowadź adres e-mail",
     "balance": "Saldo",
     "currentBalance": "Aktualne saldo",
+    "fillBalance": "Doładuj saldo",
     "changePassword": "Zmień hasło",
     "currentPassword": "Aktualne hasło",
     "enterCurrentPassword": "Wprowadź aktualne hasło",
@@ -368,6 +373,50 @@
     "title": "Historia tłumaczeń",
     "noHistory": "Nie znaleziono historii tłumaczeń",
     "loading": "Ładowanie historii"
+  },
+  "Projects": {
+    "title": "Projekty tłumaczeń",
+    "noProjects": "Brak projektów. Prześlij dokument i kliknij Tłumacz, aby rozpocząć.",
+    "loading": "Ładowanie projektów...",
+    "viewAll": "Zobacz wszystkie projekty",
+    "status": {
+      "Completed": "Zakończone",
+      "InProgress": "Przetwarzanie",
+      "Failed": "Błąd",
+      "Queued": "W kolejce",
+      "Processing": "Przetwarzanie"
+    }
+  },
+  "Project": {
+    "notFound": "Nie znaleziono projektu",
+    "elapsed": "Upłynęło",
+    "processing": "Twój dokument jest tłumaczony. Możesz opuścić tę stronę i wrócić później.",
+    "processingInfo": {
+      "title": "Tłumaczenie w toku",
+      "fileType": "Typ pliku",
+      "sourceLanguage": "Źródło",
+      "targetLanguage": "Docelowy",
+      "pages": "Strony",
+      "approxWords": "Ok. słów",
+      "estimatedTime": "Szac. czas",
+      "leaveAndReturn": "Możesz opuścić tę stronę i wrócić później — tłumaczenie będzie tutaj."
+    },
+    "processingTips": {
+      "title": "Czy wiesz, że?",
+      "tip1": "Średni tłumacz profesjonalny tłumaczy ok. 2000–2500 słów dziennie.",
+      "tip2": "Tłumaczenie AI przetwarza dokument w minuty, nie w dni.",
+      "tip3": "Suliko zachowuje oryginalne formatowanie — nagłówki, listy i inne.",
+      "tip4": "Możesz edytować wynik tłumaczenia przed pobraniem.",
+      "tip5": "Jakość tłumaczenia rośnie, gdy tekst źródłowy jest czytelny i dobrze ustrukturyzowany.",
+      "tip6": "Różne języki mają różną gęstość słów — np. polski używa mniej słów niż angielski dla tego samego znaczenia."
+    },
+    "status": {
+      "Completed": "Zakończone",
+      "InProgress": "Przetwarzanie",
+      "Failed": "Błąd",
+      "Queued": "W kolejce",
+      "Processing": "Przetwarzanie"
+    }
   },
   "Chat": {
     "details": "Szczegóły czatu",

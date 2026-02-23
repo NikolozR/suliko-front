@@ -414,13 +414,13 @@ const SulikoForm: React.FC = () => {
       <div className="w-[85%] dark:z-[2] dark:bg-transparent bg-suliko-main-content-bg-color z-[100] pt-[100px] pb-8">
         <Form {...form}>
           <div className="flex z-10 flex-col my-[110px] sm:mt-0 sm:my-0 justify-start items-center w-full min-h-full">
-            <div className="mb-6 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 flex w-[60%] max-w-md">
+            <div className="mb-6 bg-muted rounded-xl p-1 flex w-[60%] max-w-md">
               <button
                 type="button"
                 onClick={() => !isLoginMode && toggleAuthMode()}
-                className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${isLoginMode
+                className={`cursor-pointer flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${isLoginMode
                     ? "bg-suliko-default-color text-white shadow-sm"
-                    : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+                    : "text-muted-foreground hover:text-foreground"
                   }`}
               >
                 {t("login")}
@@ -428,9 +428,9 @@ const SulikoForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => isLoginMode && toggleAuthMode()}
-                className={`cursor-pointer flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all ${!isLoginMode
+                className={`cursor-pointer flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${!isLoginMode
                     ? "bg-suliko-default-color text-white shadow-sm"
-                    : "text-gray-600 dark:text-gray-300 hover:text-gray-800 dark:hover:text-gray-100"
+                    : "text-muted-foreground hover:text-foreground"
                   }`}
               >
                 {t("register")}
@@ -488,37 +488,35 @@ const SulikoForm: React.FC = () => {
                 <>
                   {!verificationMethod && !getRequiredVerificationMethod() && (
                     <div className="flex flex-col gap-4 w-full">
-                      <p className="text-center text-base font-medium text-gray-700 dark:text-gray-300 mb-2">
+                      <p className="text-center text-base font-medium text-foreground mb-2">
                         {t("chooseVerificationMethod")}
                       </p>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-full">
                         <button
                           type="button"
                           onClick={() => setVerificationMethod("phone")}
-                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-suliko-default-color dark:hover:border-suliko-default-color transition-all duration-200 hover:shadow-lg bg-white dark:bg-gray-800 cursor-pointer"
+                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-all duration-200 hover:shadow-md bg-card cursor-pointer"
                         >
                           <div className="text-4xl mb-3">📱</div>
-                          <div className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                          <div className="text-lg font-semibold text-foreground mb-1">
                             {t("verifyWithPhone")}
                           </div>
-                          <div className="text-xs text-center text-gray-500 dark:text-gray-400">
+                          <div className="text-xs text-center text-muted-foreground">
                             {t("phoneVerificationDescription")}
                           </div>
-                          <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-suliko-default-color transition-all duration-200"></div>
                         </button>
                         <button
                           type="button"
                           onClick={() => setVerificationMethod("email")}
-                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-gray-300 dark:border-gray-600 rounded-lg hover:border-suliko-default-color dark:hover:border-suliko-default-color transition-all duration-200 hover:shadow-lg bg-white dark:bg-gray-800 cursor-pointer"
+                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-all duration-200 hover:shadow-md bg-card cursor-pointer"
                         >
                           <div className="text-4xl mb-3">📧</div>
-                          <div className="text-lg font-semibold text-gray-900 dark:text-white mb-1">
+                          <div className="text-lg font-semibold text-foreground mb-1">
                             {t("verifyWithEmail")}
                           </div>
-                          <div className="text-xs text-center text-gray-500 dark:text-gray-400">
+                          <div className="text-xs text-center text-muted-foreground">
                             {t("emailVerificationDescription")}
                           </div>
-                          <div className="absolute inset-0 rounded-lg border-2 border-transparent group-hover:border-suliko-default-color transition-all duration-200"></div>
                         </button>
                       </div>
                     </div>
@@ -545,7 +543,7 @@ const SulikoForm: React.FC = () => {
                             setVerificationMethod(null);
                             form.setValue("mobile", "");
                           }}
-                          className="text-sm text-gray-600 dark:text-gray-400 hover:text-suliko-default-color dark:hover:text-suliko-default-color transition-colors underline"
+                          className="text-sm text-muted-foreground hover:text-suliko-default-color transition-colors underline"
                         >
                           {t("changeVerificationMethod")}
                         </button>
@@ -573,7 +571,7 @@ const SulikoForm: React.FC = () => {
                             setVerificationMethod(null);
                             form.setValue("email", "");
                           }}
-                          className="text-sm text-gray-600 dark:text-gray-400 hover:text-suliko-default-color dark:hover:text-suliko-default-color transition-colors underline"
+                          className="text-sm text-muted-foreground hover:text-suliko-default-color transition-colors underline"
                         >
                           {t("changeVerificationMethod")}
                         </button>

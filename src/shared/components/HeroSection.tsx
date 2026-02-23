@@ -214,13 +214,13 @@ export default function HeroSection() {
           <div className="lg:col-span-3 flex justify-center lg:justify-end">
             <div className="relative w-full" style={{ maxWidth: '600px' }}>
               {videoError ? (
-                <div className="w-full h-64 bg-gray-100 dark:bg-gray-800 rounded-xl shadow-2xl ring-1 ring-black/10 dark:ring-white/10 flex items-center justify-center">
-                  <p className="text-gray-500">Video failed to load</p>
+                <div className="w-full h-64 bg-muted rounded-2xl shadow-2xl ring-1 ring-border flex items-center justify-center">
+                  <p className="text-muted-foreground text-sm">Video failed to load</p>
                 </div>
               ) : (
                 <video
                   ref={videoRef}
-                  className="w-full h-auto rounded-xl shadow-2xl ring-1 ring-black/10 dark:ring-white/10"
+                  className="w-full h-auto rounded-2xl shadow-2xl ring-1 ring-border"
                   autoPlay
                   muted
                   loop

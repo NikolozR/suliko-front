@@ -104,8 +104,10 @@
   "Sidebar": {
     "newProject": "New Project",
     "history": "History",
+    "projects": "Projects",
     "profile": "Profile",
     "logout": "Logout",
+    "fillBalance": "Fill Balance",
     "help": "Help",
     "feedback": "Feedback",
     "login": "Login",
@@ -312,6 +314,8 @@
       "waiting": "Waiting for completion...",
       "thankYou": "Thank you for your patience",
       "complete": "Translation complete!",
+      "uploading": "Uploading document...",
+      "projectStarted": "Project started! Redirecting...",
       "unexpectedError": "An unexpected error occurred during translation."
     }
   },
@@ -343,6 +347,7 @@
     "emailPlaceholder": "Enter email",
     "balance": "Balance",
     "currentBalance": "Current Balance",
+    "fillBalance": "Fill Balance",
     "changePassword": "Change Password",
     "currentPassword": "Current Password",
     "enterCurrentPassword": "Enter current password",
@@ -368,6 +373,50 @@
     "title": "Translation History",
     "noHistory": "No translation history found",
     "loading": "Loading history"
+  },
+  "Projects": {
+    "title": "Translation Projects",
+    "noProjects": "No projects yet. Upload a document and click Translate to get started.",
+    "loading": "Loading projects...",
+    "viewAll": "View all projects",
+    "status": {
+      "Completed": "Completed",
+      "InProgress": "Processing",
+      "Failed": "Failed",
+      "Queued": "Queued",
+      "Processing": "Processing"
+    }
+  },
+  "Project": {
+    "notFound": "Project not found",
+    "elapsed": "Elapsed",
+    "processing": "Your document is being translated. You can leave this page and come back later.",
+    "processingInfo": {
+      "title": "Translation in progress",
+      "fileType": "File type",
+      "sourceLanguage": "Source",
+      "targetLanguage": "Target",
+      "pages": "Pages",
+      "approxWords": "Approx. words",
+      "estimatedTime": "Est. time",
+      "leaveAndReturn": "You can leave this page and come back later — your translation will be here."
+    },
+    "processingTips": {
+      "title": "Did you know?",
+      "tip1": "The average professional translator handles about 2,000–2,500 words per day.",
+      "tip2": "AI translation can process your document in minutes, not days.",
+      "tip3": "Suliko preserves your original formatting, including headings and lists.",
+      "tip4": "You can edit the translation result directly before downloading.",
+      "tip5": "Translation quality improves when the source text is clear and well-structured.",
+      "tip6": "Different languages have different word densities — Georgian uses fewer words than English for the same meaning."
+    },
+    "status": {
+      "Completed": "Completed",
+      "InProgress": "Processing",
+      "Failed": "Failed",
+      "Queued": "Queued",
+      "Processing": "Processing"
+    }
   },
   "Chat": {
     "details": "Chat Details",

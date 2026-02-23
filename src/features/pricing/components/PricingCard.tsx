@@ -70,12 +70,12 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
   };
 
   return (
-    <div className="bg-card rounded-lg shadow-lg p-8 border border-border flex flex-col h-full">
+    <div className="bg-card rounded-2xl shadow-sm p-8 border border-border/60 flex flex-col h-full hover:border-primary/30 hover:shadow-md transition-all duration-200">
       {renderCardContent()}
       <div className="mt-auto pt-8">
         <button
           onClick={onSelect}
-          className="w-full cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-lg transition duration-200"
+          className="w-full cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-xl transition duration-200"
         >
           {t(`${type}.cta`)}
         </button>
