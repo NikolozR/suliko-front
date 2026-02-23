@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import {
@@ -30,7 +29,6 @@ const profileUpdateSchema = z.object({
 type ProfileFormData = z.infer<typeof profileUpdateSchema>;
 
 export default function ProfileClient() {
-  const { reset } = useAuthStore();
   const { token } = useAuthStore();
   const {
     userProfile,
@@ -39,7 +37,6 @@ export default function ProfileClient() {
     fetchUserProfile: originalFetchUserProfile,
     setUserProfile,
   } = useUserStore();
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -61,11 +58,6 @@ export default function ProfileClient() {
       fetchUserProfile();
     }
   }, [token, userProfile, loading, error, fetchUserProfile]);
-
-  const handleLogout = () => {
-    reset();
-    router.push("/sign-in");
-  };
 
   const handleEdit = () => {
     setIsEditing(true);

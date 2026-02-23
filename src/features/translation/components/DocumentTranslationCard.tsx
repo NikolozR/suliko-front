@@ -89,7 +89,7 @@ const DocumentTranslationCard = () => {
   const [lastFormData, setLastFormData] = useState<DocumentFormData | null>(null);
   const [/*loadingProgressState*/, /*setLoadingProgressState*/] = useState<number>(0);
   const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
-  const { setSuggestionsLoading, suggestionsLoading } = useSuggestionsStore();
+  const { suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
   const { userProfile, fetchUserProfile } = useUserStore();
   const router = useRouter();
@@ -118,7 +118,7 @@ const DocumentTranslationCard = () => {
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
 
-  const { loadingProgress, loadingMessage, setOverrideMessage, setManualProgress, reset } =
+  const { loadingProgress, loadingMessage, setManualProgress, reset } =
     useDocumentLoadingProgress({
       isLoading,
       t,

@@ -143,7 +143,7 @@ export default function ProjectDetailPage() {
 
         // Still in progress, poll again
         setTimeout(poll, 3000);
-      } catch (err) {
+      } catch {
         if (!cancelled) {
           setTimeout(poll, 5000);
         }
@@ -259,7 +259,7 @@ export default function ProjectDetailPage() {
     tick();
     const id = setInterval(tick, 1000);
     return () => clearInterval(id);
-  }, [chat?.chatId, chat?.status, chat?.createdAt]);
+  }, [chat, chat?.chatId, chat?.status, chat?.createdAt]);
 
   if (loading) {
     return (
