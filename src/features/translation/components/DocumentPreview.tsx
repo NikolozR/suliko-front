@@ -13,6 +13,24 @@ interface DocumentPreviewProps {
   file: File | null;
 }
 
+type PdfDocumentComponent = React.ComponentType<{
+  file: string;
+  onLoadSuccess: ({ numPages }: { numPages: number }) => void;
+  onLoadError: (error: Error) => void;
+  loading?: React.ReactNode;
+  error?: React.ReactNode;
+  children?: React.ReactNode;
+}>;
+
+type PdfPageComponent = React.ComponentType<{
+  pageNumber: number;
+  width: number;
+  scale: number;
+  renderTextLayer: boolean;
+  renderAnnotationLayer: boolean;
+  className?: string;
+}>;
+
 // Helper function to get file type
 const getFileType = (file: File): string => {
   const extension = file.name.split('.').pop()?.toLowerCase() || '';
@@ -298,8 +316,8 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [pdfModule, setPdfModule] = useState<{
-    Document: React.ComponentType<any>;
-    Page: React.ComponentType<any>;
+    Document: PdfDocumentComponent;
+    Page: PdfPageComponent;
   } | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(600);
@@ -345,8 +363,8 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
         ).toString();
         if (!cancelled) {
           setPdfModule({
-            Document: mod.Document as React.ComponentType<any>,
-            Page: mod.Page as React.ComponentType<any>,
+            Document: mod.Document as unknown as PdfDocumentComponent,
+            Page: mod.Page as unknown as PdfPageComponent,
           });
         }
       })
