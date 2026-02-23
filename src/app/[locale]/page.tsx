@@ -39,25 +39,27 @@ export default function LandingPage() {
 
   useEffect(() => {
     let mounted = true;
-    const idleCallback =
-      "requestIdleCallback" in window
-        ? window.requestIdleCallback(() => {
-            if (mounted) {
-              setShowDeferredSections(true);
-            }
-          }, { timeout: 1200 })
-        : window.setTimeout(() => {
-            if (mounted) {
-              setShowDeferredSections(true);
-            }
-          }, 350);
+    let idleCallbackId: number | null = null;
+    let timeoutId: number | null = null;
+    const onReady = () => {
+      if (mounted) {
+        setShowDeferredSections(true);
+      }
+    };
+
+    if (typeof window.requestIdleCallback === "function") {
+      idleCallbackId = window.requestIdleCallback(onReady, { timeout: 1200 });
+    } else {
+      timeoutId = window.setTimeout(onReady, 350);
+    }
 
     return () => {
       mounted = false;
-      if ("cancelIdleCallback" in window && typeof idleCallback === "number") {
-        window.cancelIdleCallback(idleCallback);
-      } else {
-        window.clearTimeout(idleCallback as number);
+      if (idleCallbackId !== null && typeof window.cancelIdleCallback === "function") {
+        window.cancelIdleCallback(idleCallbackId);
+      }
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
       }
     };
   }, []);
