@@ -1,8 +1,8 @@
 "use client";
 import { ChangeEvent, useRef, useEffect, useState } from "react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
-import DocumentPreview from "./DocumentPreview";
 import FileInfoDisplay from "./FileInfoDisplay";
 import CopyButton from "./CopyButton";
 import DownloadButton from "./DownloadButton";
@@ -12,6 +12,18 @@ import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
 import React from "react";
+import { toast } from "react-hot-toast";
+import { Skeleton } from "@/features/ui/components/ui/skeleton";
+
+const DocumentPreview = dynamic(() => import("./DocumentPreview"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-full p-4">
+      <Skeleton className="mb-3 h-6 w-40" />
+      <Skeleton className="h-[260px] w-full rounded-lg" />
+    </div>
+  ),
+});
 
 
 interface TranslationResultViewProps {
@@ -236,7 +248,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           pdf.save(fileName);
         } catch (err) {
           console.error("PDF export failed:", err);
-          alert("Failed to generate PDF");
+          toast.error("Failed to generate PDF. Please try again.");
         } finally {
           document.body.removeChild(wrapper);
         }
@@ -263,6 +275,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                 onClick={() => setHideOriginalDocument(true)}
                 className="transition-all duration-200 flex-shrink-0"
                 title={t('hideOriginal')}
+                aria-label={t('hideOriginal')}
               >
                 <EyeOff className="h-4 w-4" />
               </Button>
@@ -324,6 +337,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                     onClick={() => setHideOriginalDocument(false)}
                     className="transition-all duration-200"
                     title={t('showOriginal')}
+                    aria-label={t('showOriginal')}
                   >
                     <Eye className="h-4 w-4" />
                   </Button>
@@ -345,6 +359,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                       onClick={() => setShowDownloadModal(true)}
                       className="transition-all duration-200"
                       title={tButton('download')}
+                      aria-label={tButton('download')}
                     >
                       <Download className="h-4 w-4" />
                     </Button>
@@ -395,6 +410,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
             size="sm"
             className="absolute top-2 right-2"
             onClick={() => setShowDownloadModal(false)}
+            aria-label="Close"
           >
             <X className="h-4 w-4" />
           </Button>

@@ -443,9 +443,10 @@ const DocumentTranslationCard = () => {
     setLastFormData(data);
 
     try {
+      setIsLoading(true);
+
       // Handle OCR Only mode
       if (isOcrOnly) {
-        setIsLoading(true);
         setManualProgress(0, t("progress.starting"));
         setManualProgress(10, "Processing OCR...");
         const fileToOcr = data.currentFile[0];

@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Link, useRouter } from "@/i18n/navigation";
-import { Button } from "@/features/ui";
-import { X, Moon, Sun, Loader2 } from "lucide-react";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { X, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTheme } from "next-themes";
+import { LoadingButton } from "@/features/ui/components/loading";
 
 
 // Theme toggle component
@@ -35,7 +35,7 @@ function ThemeToggle() {
 }
 
 // Navigation item component
-function NavItem({ children, onClick, isBlogPage }: { href: string; children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
+function NavItem({ children, onClick, isBlogPage }: { children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
   return (
     <button
       onClick={onClick}
@@ -52,7 +52,7 @@ function NavItem({ children, onClick, isBlogPage }: { href: string; children: Re
 }
 
 // Mobile nav item component
-function MobileNavItem({ children, onClick, isBlogPage }: { href: string; children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
+function MobileNavItem({ children, onClick, isBlogPage }: { children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
   return (
     <button
       onClick={onClick}
@@ -71,6 +71,7 @@ function MobileNavItem({ children, onClick, isBlogPage }: { href: string; childr
 export default function LandingHeader() {
   const t = useTranslations("LandingHeader");
   const router = useRouter();
+  const pathname = usePathname();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -100,14 +101,8 @@ export default function LandingHeader() {
 
   // Check if we're on a blog page
   useEffect(() => {
-    const checkBlogPage = () => {
-      setIsBlogPage(window.location.pathname.includes('/blog'));
-    };
-    
-    checkBlogPage();
-    window.addEventListener('popstate', checkBlogPage);
-    return () => window.removeEventListener('popstate', checkBlogPage);
-  }, []);
+    setIsBlogPage(pathname.includes('/blog'));
+  }, [pathname]);
 
   // Handle scroll detection
   useEffect(() => {
@@ -156,12 +151,19 @@ export default function LandingHeader() {
 
   // Handle navigation click
   const handleNavClick = (sectionId: string) => {
-    // Remove hash if present
     const cleanSectionId = sectionId.replace('#', '');
-    
-    // Always redirect to landing page with section anchor
-    window.location.href = `/#${cleanSectionId}`;
     setIsMobileMenuOpen(false);
+
+    if (pathname === "/") {
+      const targetSection = document.getElementById(cleanSectionId);
+      if (targetSection) {
+        targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
+        window.history.replaceState(null, "", `#${cleanSectionId}`);
+        return;
+      }
+    }
+
+    router.push(`/#${cleanSectionId}`);
   };
 
   // Toggle mobile menu
@@ -225,7 +227,6 @@ export default function LandingHeader() {
               {navItems.map((item) => (
                 <NavItem
                   key={item.id}
-                  href=""
                   onClick={() => handleNavClick(`#${item.id}`)}
                   isBlogPage={isBlogPage}
                 >
@@ -254,20 +255,14 @@ export default function LandingHeader() {
               onMouseEnter={handleMouseEnter}
               onClick={handleGetStartedClick}
             >
-              <Button 
-                size="sm" 
+              <LoadingButton
+                size="sm"
                 className="text-sm"
-                disabled={isNavigating}
+                isLoading={isNavigating}
+                loadingText={t("loading") || "Loading..."}
               >
-                {isNavigating ? (
-                  <>
-                    <Loader2 className="mr-2 h-3 w-3 animate-spin" />
-                    {t("loading") || "Loading..."}
-                  </>
-                ) : (
-                  t("getStarted")
-                )}
-              </Button>
+                {t("getStarted")}
+              </LoadingButton>
             </Link>
           </div>
 
@@ -331,7 +326,6 @@ export default function LandingHeader() {
                   {navItems.map((item) => (
                     <MobileNavItem
                       key={item.id}
-                      href=""
                       onClick={() => handleNavClick(`#${item.id}`)}
                       isBlogPage={isBlogPage}
                     >
@@ -365,19 +359,13 @@ export default function LandingHeader() {
                       setIsMobileMenuOpen(false);
                     }}
                   >
-                    <Button 
+                    <LoadingButton
                       className="w-full"
-                      disabled={isNavigating}
+                      isLoading={isNavigating}
+                      loadingText={t("loading") || "Loading..."}
                     >
-                      {isNavigating ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          {t("loading") || "Loading..."}
-                        </>
-                      ) : (
-                        t("getStarted")
-                      )}
-                    </Button>
+                      {t("getStarted")}
+                    </LoadingButton>
                   </Link>
                 </div>
               </div>

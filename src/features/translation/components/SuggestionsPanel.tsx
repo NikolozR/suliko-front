@@ -21,10 +21,30 @@ import {
   DialogTitle,
 } from "@/features/ui/components/ui/dialog";
 import { Button } from "@/features/ui/components/ui/button";
+import { Skeleton } from "@/features/ui/components/ui/skeleton";
 
 interface SuggestionsPanelProps {
   isSuggestionsLoading: boolean;
 }
+
+const SuggestionSkeletonCards = () => (
+  <div className="flex flex-row gap-4 overflow-x-auto pb-2">
+    {Array.from({ length: 3 }).map((_, index) => (
+      <div
+        key={index}
+        className="min-w-[320px] max-w-[400px] rounded-lg border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-800"
+      >
+        <div className="mb-3 flex items-center justify-between">
+          <Skeleton className="h-5 w-40" />
+          <Skeleton className="h-6 w-16" />
+        </div>
+        <Skeleton className="mb-2 h-4 w-full" />
+        <Skeleton className="mb-2 h-4 w-5/6" />
+        <Skeleton className="h-24 w-full" />
+      </div>
+    ))}
+  </div>
+);
 
 const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
   isSuggestionsLoading,
@@ -237,15 +257,14 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
         {t("SuggestionsPanel.title", { default: "Suggestions" })}
       </div>
       {(isTranslating || isSuggestionsLoading) && suggestions.length === 0 ? (
-        <div className="flex justify-center items-center py-8">
-          <LoadingSpinner size="md" variant="primary" />
-        </div>
+        <SuggestionSkeletonCards />
       ) : suggestions.length > 0 ? (
         <div className="flex flex-row gap-4 overflow-x-auto pb-2">
-          {suggestions.map((s: Suggestion) => (
+          {suggestions.map((s: Suggestion, index: number) => (
             <div
               key={s.id}
-              className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col min-w-[320px] max-w-[400px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200"
+              className="animate-slideUpScale bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col min-w-[320px] max-w-[400px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200"
+              style={{ animationDelay: `${Math.min(index * 70, 280)}ms` }}
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="font-semibold text-foreground" title={s.title}>

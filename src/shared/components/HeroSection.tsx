@@ -3,14 +3,16 @@
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useTheme } from "next-themes";
+import { LoadingButton } from "@/features/ui/components/loading";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
+  const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -31,6 +33,14 @@ export default function HeroSection() {
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const onChange = () => setIsReducedMotion(media.matches);
+    onChange();
+    media.addEventListener("change", onChange);
+    return () => media.removeEventListener("change", onChange);
   }, []);
 
   useEffect(() => {
@@ -60,7 +70,7 @@ export default function HeroSection() {
 
   // Generate stable star positions using useMemo to avoid hydration mismatches
   const starData = useMemo(() => {
-    if (!mounted) return { stars: [], mediumStars: [], smallStars: [], shootingStars: [] };
+    if (!mounted || isReducedMotion) return { stars: [], mediumStars: [], smallStars: [], shootingStars: [] };
     
     const generateStars = (count: number, size: number) => {
       return Array.from({ length: count }, (_, i) => ({
@@ -85,7 +95,7 @@ export default function HeroSection() {
         animationDuration: 2 + Math.random() * 2,
       })),
     };
-  }, [mounted]);
+  }, [mounted, isReducedMotion]);
 
   return (
     <section className="relative h-[93.5vh] flex items-center justify-center overflow-hidden">
@@ -184,23 +194,17 @@ export default function HeroSection() {
                 onMouseEnter={handleMouseEnter}
                 onClick={handleGetStartedClick}
               >
-                <Button 
-                  size="lg" 
+                <LoadingButton
+                  size="lg"
                   className="px-6 py-3 text-base group"
-                  disabled={isNavigating}
+                  isLoading={isNavigating}
+                  loadingText={t("loading") || "Loading..."}
                 >
-                  {isNavigating ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      {t("loading") || "Loading..."}
-                    </>
-                  ) : (
-                    <>
-                      {t("cta")}
-                      <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </>
-                  )}
-                </Button>
+                  <>
+                    {t("cta")}
+                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </>
+                </LoadingButton>
               </Link>
               <Link href="#pricing">
                 <Button variant="outline" size="lg" className="px-6 py-3 text-base">
@@ -221,7 +225,7 @@ export default function HeroSection() {
                 <video
                   ref={videoRef}
                   className="w-full h-auto rounded-2xl shadow-2xl ring-1 ring-border"
-                  autoPlay
+                  autoPlay={!isReducedMotion}
                   muted
                   loop
                   playsInline
@@ -240,11 +244,13 @@ export default function HeroSection() {
 
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
-        <div className="w-6 h-10 border-2 border-foreground/30 rounded-full flex justify-center">
-          <div className="w-1 h-3 bg-foreground/50 rounded-full mt-2 animate-pulse" />
+      {!isReducedMotion && (
+        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-foreground/30 rounded-full flex justify-center">
+            <div className="w-1 h-3 bg-foreground/50 rounded-full mt-2 animate-pulse" />
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

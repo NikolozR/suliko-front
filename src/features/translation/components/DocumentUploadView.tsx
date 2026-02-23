@@ -1,8 +1,19 @@
 "use client";
 import { ChangeEvent } from "react";
+import dynamic from "next/dynamic";
 import FileUploadArea from "./FileUploadArea";
 import FileInfoDisplay from "./FileInfoDisplay";
-import DocumentPreview from "./DocumentPreview";
+import { Skeleton } from "@/features/ui/components/ui/skeleton";
+
+const DocumentPreview = dynamic(() => import("./DocumentPreview"), {
+  ssr: false,
+  loading: () => (
+    <div className="h-full p-4">
+      <Skeleton className="h-6 w-48 mb-3" />
+      <Skeleton className="h-[260px] w-full rounded-lg" />
+    </div>
+  ),
+});
 
 interface DocumentUploadViewProps {
   currentFile: File | null;

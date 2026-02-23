@@ -15,10 +15,36 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Suliko",
-  description: "Suliko Description",
+  title: {
+    default: "Suliko | AI Translation Platform",
+    template: "%s | Suliko",
+  },
+  description:
+    "Translate documents and text with AI-assisted workflows, fast turnaround, and a clean editor experience built for teams.",
+  applicationName: "Suliko",
+  keywords: [
+    "AI translation",
+    "document translation",
+    "text translation",
+    "multilingual",
+    "localization",
+  ],
+  openGraph: {
+    title: "Suliko | AI Translation Platform",
+    description:
+      "Translate documents and text with AI-assisted workflows and a clean editing experience.",
+    type: "website",
+    images: ["/Suliko_logo_black.svg"],
+  },
+  twitter: {
+    card: "summary",
+    title: "Suliko | AI Translation Platform",
+    description:
+      "Translate documents and text with AI-assisted workflows and a clean editing experience.",
+    images: ["/Suliko_logo_black.svg"],
+  },
   icons: {
-    icon: '/favicon.ico',
+    icon: "/favicon.ico",
   },
 };
 

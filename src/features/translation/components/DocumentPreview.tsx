@@ -1,18 +1,13 @@
 "use client";
 import React, { useEffect, useState, useRef } from 'react';
-import { Document, Page, pdfjs } from 'react-pdf';
 import { useTranslations } from "next-intl";
 import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles } from 'lucide-react';
 import { Button } from '@/features/ui/components/ui/button';
 import { useDocumentTranslationStore } from '@/features/translation/store/documentTranslationStore';
+import { Skeleton } from '@/features/ui/components/ui/skeleton';
 import Image from 'next/image';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url,
-).toString();
 
 interface DocumentPreviewProps {
   file: File | null;
@@ -53,18 +48,36 @@ const readFileAsText = (file: File): Promise<string> => {
   });
 };
 
+const PreviewLoadingState: React.FC<{ stage: string }> = ({ stage }) => {
+  return (
+    <div className="h-full p-4">
+      <div className="mb-3 text-sm text-muted-foreground">{stage}</div>
+      <div className="space-y-3">
+        <Skeleton className="h-4 w-2/3" />
+        <Skeleton className="h-4 w-5/6" />
+        <Skeleton className="h-4 w-3/4" />
+        <Skeleton className="h-24 w-full rounded-lg" />
+        <Skeleton className="h-4 w-4/6" />
+      </div>
+    </div>
+  );
+};
+
 // Text Preview Component
 const TextPreview: React.FC<{ file: File }> = ({ file }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [stage, setStage] = useState("Preparing preview...");
 
   useEffect(() => {
     const loadContent = async () => {
       try {
         setLoading(true);
+        setStage("Preparing preview...");
         const text = await readFileAsText(file);
+        setStage("Rendering preview...");
         setContent(text);
       } catch (err) {
         setError(t('loadError'));
@@ -78,11 +91,7 @@ const TextPreview: React.FC<{ file: File }> = ({ file }) => {
   }, [file, t]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-full text-muted-foreground">
-        <p>{t('loadingText')}</p>
-      </div>
-    );
+    return <PreviewLoadingState stage={stage} />;
   }
 
   if (error) {
@@ -108,12 +117,15 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [stage, setStage] = useState("Preparing subtitle preview...");
 
   useEffect(() => {
     const loadContent = async () => {
       try {
         setLoading(true);
+        setStage("Preparing subtitle preview...");
         const text = await readFileAsText(file);
+        setStage("Rendering subtitle preview...");
         setContent(text);
       } catch (err) {
         setError(t('loadErrorSubtitle'));
@@ -127,11 +139,7 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
   }, [file, t]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-full text-muted-foreground">
-        <p>{t('loadingSubtitle')}</p>
-      </div>
-    );
+    return <PreviewLoadingState stage={stage} />;
   }
 
   if (error) {
@@ -168,6 +176,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
   const [content, setContent] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [stage, setStage] = useState("Preparing preview...");
   const [scale, setScale] = useState<number>(1.0);
   const containerRef = useRef<HTMLDivElement>(null);
   const { shouldResetZoom, setShouldResetZoom } = useDocumentTranslationStore();
@@ -184,7 +193,9 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
     const loadContent = async () => {
       try {
         setLoading(true);
+        setStage("Preparing preview...");
         const arrayBuffer = await file.arrayBuffer();
+        setStage("Rendering document...");
         const mammoth = (await import('mammoth')).default;
         const result = await mammoth.convertToHtml({ arrayBuffer });
         setContent(result.value);
@@ -208,11 +219,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
   }, [shouldResetZoom, setShouldResetZoom]);
 
   if (loading) {
-    return (
-      <div className="flex justify-center items-center h-full text-muted-foreground">
-        <p>{t('loadingWord')}</p>
-      </div>
-    );
+    return <PreviewLoadingState stage={stage} />;
   }
 
   if (error) {
@@ -290,10 +297,15 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
 const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [fileUrl, setFileUrl] = useState<string | null>(null);
+  const [pdfModule, setPdfModule] = useState<{
+    Document: React.ComponentType<any>;
+    Page: React.ComponentType<any>;
+  } | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(600);
   const [scale, setScale] = useState<number>(1.0);
   const [isRendering, setIsRendering] = useState<boolean>(false);
+  const [stage, setStage] = useState("Preparing preview...");
   const containerRef = useRef<HTMLDivElement>(null);
   
   const { shouldResetZoom, setShouldResetZoom, translatedMarkdown, setRealPageCount } = useDocumentTranslationStore();
@@ -322,11 +334,38 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
   const handleResetZoom = () => updateScale(1.0);
 
   useEffect(() => {
+    let cancelled = false;
+    setStage("Preparing preview...");
+
+    import("react-pdf")
+      .then((mod) => {
+        mod.pdfjs.GlobalWorkerOptions.workerSrc = new URL(
+          "pdfjs-dist/build/pdf.worker.min.mjs",
+          import.meta.url
+        ).toString();
+        if (!cancelled) {
+          setPdfModule({
+            Document: mod.Document as React.ComponentType<any>,
+            Page: mod.Page as React.ComponentType<any>,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to load PDF viewer:", error);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
     if (file) {
       const url = URL.createObjectURL(file);
       setFileUrl(url);
       setNumPages(null);
       setIsRendering(true);
+      setStage("Rendering pages...");
       
       return () => {
         URL.revokeObjectURL(url);
@@ -370,6 +409,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
     setNumPages(nextNumPages);
     setRealPageCount(nextNumPages); // Set the real page count from PDF parser for loading progress calculation
     setIsRendering(false);
+    setStage("Ready");
   };
 
   const onDocumentLoadError = (error: Error) => {
@@ -385,21 +425,24 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
     );
   }
 
+  if (!pdfModule) {
+    return <PreviewLoadingState stage={stage} />;
+  }
+
+  const PdfDocument = pdfModule.Document;
+  const PdfPage = pdfModule.Page;
+
   return (
     <div className="w-full h-full flex flex-col">
       <div 
         ref={containerRef} 
         className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-y-auto mb-4"
       >
-        <Document
+        <PdfDocument
           file={fileUrl}
           onLoadSuccess={onDocumentLoadSuccess}
           onLoadError={onDocumentLoadError}
-          loading={
-            <div className="flex justify-center items-center h-full text-muted-foreground">
-              <p>{t('loadingPdf')}</p>
-            </div>
-          }
+          loading={<PreviewLoadingState stage={stage || t('loadingPdf')} />}
           error={
             <div className="flex justify-center items-center h-full text-red-500">
               <p>{t('loadErrorPdf')}</p>
@@ -407,7 +450,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
           }
         >
           {numPages && Array.from(new Array(numPages), (_, index) => (
-            <Page
+            <PdfPage
               key={`page_${index + 1}`}
               pageNumber={index + 1}
               width={containerWidth}
@@ -417,7 +460,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
               className="flex justify-center mb-2 shadow-md"
             />
           ))}
-        </Document>
+        </PdfDocument>
       </div>
 
       <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
@@ -478,6 +521,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [scale, setScale] = useState<number>(1.0);
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
+  const [stage, setStage] = useState("Preparing image preview...");
   const containerRef = useRef<HTMLDivElement>(null);
   const { shouldResetZoom, setShouldResetZoom } = useDocumentTranslationStore();
 
@@ -491,12 +535,14 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
 
   useEffect(() => {
     if (file) {
+      setStage("Preparing image preview...");
       const url = URL.createObjectURL(file);
       setImageUrl(url);
 
       // Get image dimensions
       const img = new window.Image();
       img.onload = () => {
+        setStage("Rendering image...");
         setDimensions({
           width: img.width,
           height: img.height
@@ -521,11 +567,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
   }, [shouldResetZoom, setShouldResetZoom]);
 
   if (!imageUrl || !dimensions) {
-    return (
-      <div className="flex justify-center items-center h-full text-muted-foreground">
-        <p>{t('loadingImage')}</p>
-      </div>
-    );
+    return <PreviewLoadingState stage={stage || t('loadingImage')} />;
   }
 
   return (
