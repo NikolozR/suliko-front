@@ -39,7 +39,6 @@ const SulikoParticles: React.FC<SulikoParticlesProps> = ({
   );
 
   const isDark = mounted && resolvedTheme === "dark";
-  const backgroundColor = isDark ? "#181c2a" : "#ffffff";
   const particleColor = isDark ? "#3b59f3" : "#11289c";
   const linkColor = isDark ? "#6c7ae0" : "#4e5da5";
 
@@ -52,14 +51,14 @@ const SulikoParticles: React.FC<SulikoParticlesProps> = ({
       style={{
         position: "absolute",
         inset: 0,
-        zIndex: -10,
+        zIndex: 0,
         pointerEvents: enableInteractions ? "auto" : "none",
       }}
       options={{
         fullScreen: { enable: fullScreen },
         background: {
           color: {
-            value: backgroundColor,
+            value: "transparent",
           },
         },
         fpsLimit: 120,

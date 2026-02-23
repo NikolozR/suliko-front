@@ -865,6 +865,31 @@ html.dark .sidebar-main {
   animation: shootingStar 3s linear infinite;
 }
 
+.animate-star-fall {
+  animation: starFall 7s linear infinite;
+  transform: translate3d(0, 0, 0) rotate(22deg);
+}
+
+@keyframes starFall {
+  0% {
+    opacity: 0;
+    transform: translate3d(-14vw, -12vh, 0) rotate(22deg);
+  }
+
+  8% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(18vw, 118vh, 0) rotate(22deg);
+  }
+}
+
 .animate-slideUpScale {
   animation: slideUpScale 0.24s ease-out forwards;
 }
@@ -1126,5 +1151,14 @@ html.dark .sidebar-main {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  /* Keep the language greeting cycle visible on translation page */
+  .slot-track {
+    animation: slotScroll 13s infinite !important;
+  }
+
+  .slot-item {
+    transition-duration: 0ms !important;
   }
 }

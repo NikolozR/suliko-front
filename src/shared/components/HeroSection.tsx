@@ -66,11 +66,13 @@ export default function HeroSection() {
   // Theme-aware star colors
   const isDark = mounted && resolvedTheme === "dark";
   const starColor = isDark ? "white" : "#1e40af"; // Blue for light theme, white for dark
-  const shootingStarColor = isDark ? "from-white via-blue-200" : "from-blue-600 via-blue-400";
+  const fallingStarGradient = isDark
+    ? "linear-gradient(90deg, rgba(255,255,255,0.95), rgba(147,197,253,0.7), rgba(147,197,253,0))"
+    : "linear-gradient(90deg, rgba(37,99,235,0.95), rgba(96,165,250,0.7), rgba(96,165,250,0))";
 
   // Generate stable star positions using useMemo to avoid hydration mismatches
   const starData = useMemo(() => {
-    if (!mounted || isReducedMotion) return { stars: [], mediumStars: [], smallStars: [], shootingStars: [] };
+    if (!mounted || isReducedMotion) return { stars: [], mediumStars: [], smallStars: [], fallingStars: [] };
     
     const generateStars = (count: number, size: number) => {
       return Array.from({ length: count }, (_, i) => ({
@@ -84,15 +86,16 @@ export default function HeroSection() {
     };
 
     return {
-      stars: generateStars(40, 1), // Large stars
-      mediumStars: generateStars(60, 0.5), // Medium stars
-      smallStars: generateStars(100, 0), // Small stars
-      shootingStars: Array.from({ length: 2 }, (_, i) => ({
+      stars: generateStars(24, 1), // Large stars
+      mediumStars: generateStars(36, 0.5), // Medium stars
+      smallStars: generateStars(48, 0), // Small stars
+      fallingStars: Array.from({ length: 6 }, (_, i) => ({
         id: i,
-        left: Math.random() * 20,
-        top: Math.random() * 20,
-        animationDelay: Math.random() * 10,
-        animationDuration: 2 + Math.random() * 2,
+        left: 4 + Math.random() * 92,
+        animationDelay: Math.random() * 9,
+        animationDuration: 5 + Math.random() * 4,
+        length: 60 + Math.random() * 80,
+        opacity: 0.55 + Math.random() * 0.35,
       })),
     };
   }, [mounted, isReducedMotion]);
@@ -154,15 +157,17 @@ export default function HeroSection() {
           ))}
         </div>
 
-        {/* Shooting stars */}
+        {/* Falling stars */}
         <div className="absolute inset-0">
-          {starData.shootingStars.map((star) => (
+          {starData.fallingStars.map((star) => (
             <div
-              key={`shooting-${star.id}`}
-              className={`absolute w-24 h-px bg-gradient-to-r ${shootingStarColor} to-transparent animate-shooting-star`}
+              key={`falling-${star.id}`}
+              className="absolute top-[-14%] h-px animate-star-fall will-change-transform"
               style={{
                 left: `${star.left}%`,
-                top: `${star.top}%`,
+                width: `${star.length}px`,
+                opacity: star.opacity,
+                backgroundImage: fallingStarGradient,
                 animationDelay: `${star.animationDelay}s`,
                 animationDuration: `${star.animationDuration}s`,
               }}
