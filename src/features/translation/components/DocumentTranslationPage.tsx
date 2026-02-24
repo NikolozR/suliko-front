@@ -8,7 +8,7 @@ import { useUserStore } from "@/features/auth";
 const DocumentTranslationPage = () => {
   const t = useTranslations('MainContent');
   const pathname = usePathname();
-  const { userProfile } = useUserStore()
+  const { userProfile } = useUserStore();
 
   const items = [
     'გამარჯობა',

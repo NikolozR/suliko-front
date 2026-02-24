@@ -3,16 +3,44 @@ import { Upload, Type } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { usePathname, Link } from "@/i18n/navigation";
 import TextTranslationCard from "./TextTranslationCard";
+import { useUserStore } from "@/features/auth/store/userStore";
 
 const TextTranslationPage = () => {
   const t = useTranslations('MainContent');
   const pathname = usePathname();
+    const { userProfile } = useUserStore();
+  
+
+  const items = [
+    'გამარჯობა',
+    'Cześć',
+    'Hello',
+    'Bonjour',
+    'Ciao',
+    'Hallo',
+    'Hola',
+    "你好",
+    'こんにちは',
+    '안녕하세요',
+    'مرحبا',
+    'שלום',
+    'नमस्ते',
+  ]
 
   return (
     <div className="min-h-screen p-4 md:p-8 bg-suliko-main-content-bg-color">
       <div className="mx-auto">
         <div className="mb-8">
-          <h1 className="text-2xl md:text-3xl font-semibold text-foreground">{t('title')}</h1>
+          <div className="text-2xl md:text-3xl font-semibold text-foreground slot-container flex gap-5">
+            <div className="slot-track">
+              {items.concat(items).map((item, i) => (
+                <span key={i} className="slot-item">
+                  {item}
+                </span>
+              ))}
+            </div>
+            <span className="absolute ml-48">{userProfile?.firstName}</span>
+          </div>
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
         
