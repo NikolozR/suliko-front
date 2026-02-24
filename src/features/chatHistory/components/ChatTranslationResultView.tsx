@@ -205,6 +205,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
             orientation: "p",
             unit: "mm",
             format: "a4",
+            compress: true
           });
 
           const pageWidth = 210;

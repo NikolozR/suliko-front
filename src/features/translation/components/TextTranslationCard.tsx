@@ -239,6 +239,7 @@ const TextTranslationCard = () => {
             orientation: "p",
             unit: "mm",
             format: "a4",
+            compress: true
           });
 
           const pageWidth = 210;

@@ -223,6 +223,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
             orientation: "p",
             unit: "mm",
             format: "a4",
+            compress: true,
           });
 
           const pageWidth = 210;
