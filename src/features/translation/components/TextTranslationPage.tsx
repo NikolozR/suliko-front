@@ -46,13 +46,13 @@ const TextTranslationPage = () => {
         
         {/* Navigation Tabs */}
         <div className="w-full mb-6">
-          <div className="bg-muted text-muted-foreground inline-flex h-9 w-full items-center justify-center rounded-lg p-[3px]">
+          <div className="bg-muted text-muted-foreground inline-flex h-9 w-full items-center justify-center rounded-lg p-0.75">
             <div className="grid w-full grid-cols-2 gap-0">
               <Link
                 href="/text"
                 className={`cursor-pointer flex items-center gap-2 h-[calc(100%-1px)] flex-1 justify-center rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${
                     pathname.split('/')[pathname.split('/').length - 1] === 'text'
-                    ? '!bg-suliko-default-color text-white shadow-sm border-suliko-default-color z-10'
+                    ? 'bg-suliko-default-color! text-white shadow-sm border-suliko-default-color z-10'
                     : 'text-foreground hover:bg-background/50 border-transparent'
                 }`}
               >
@@ -63,7 +63,7 @@ const TextTranslationPage = () => {
                 href="/document"
                 className={`cursor-pointer flex items-center gap-2 h-[calc(100%-1px)] flex-1 justify-center rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${
                   pathname.split('/')[pathname.split('/').length - 1] === 'document'
-                    ? '!bg-suliko-default-color text-white shadow-sm border-suliko-default-color z-10'
+                    ? 'bg-suliko-default-color! text-white shadow-sm border-suliko-default-color z-10'
                     : 'text-foreground hover:bg-background/50 border-transparent'
                 }`}
               >
