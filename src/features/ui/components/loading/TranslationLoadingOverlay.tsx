@@ -1,4 +1,6 @@
-import React from 'react';
+"use client";
+
+import React, { useEffect, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/shared/lib/utils';
 import LoadingDots from './LoadingDots';
@@ -12,6 +14,7 @@ interface TranslationLoadingOverlayProps {
   className?: string;
   overlay?: boolean;
   showTakingLonger?: boolean;
+  estimatedMinutes?: number;
 }
 
 const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
@@ -21,10 +24,53 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
   progress,
   className,
   overlay = true,
-  showTakingLonger = false
+  showTakingLonger = false,
+  estimatedMinutes,
 }) => {
   const t = useTranslations("TranslationLoadingOverlay");
-  if (!isVisible) return null;
+  const tProjectTips = useTranslations("Project.processingTips");
+  const tProjectInfo = useTranslations("Project.processingInfo");
+  const [tipIndex, setTipIndex] = useState(0);
+
+  const tips = useMemo(
+    () => [
+      tProjectTips("tip1"),
+      tProjectTips("tip2"),
+      tProjectTips("tip3"),
+      tProjectTips("tip4"),
+      tProjectTips("tip5"),
+      tProjectTips("tip6"),
+    ],
+    [tProjectTips]
+  );
+
+  useEffect(() => {
+    if (type !== "document") return;
+    const intervalId = setInterval(() => {
+      setTipIndex((prev) => (prev + 1) % tips.length);
+    }, 10000);
+    return () => clearInterval(intervalId);
+  }, [type, tips.length]);
+
+  const stageLabels = useMemo(
+    () => [
+      t("stageUpload"),
+      t("stageQueue"),
+      t("stageAnalyze"),
+      t("stageTranslate"),
+      t("stageFinalize"),
+    ],
+    [t]
+  );
+
+  const currentStageIndex = useMemo(() => {
+    const safeProgress = typeof progress === "number" ? Math.max(0, Math.min(100, progress)) : 0;
+    if (safeProgress < 15) return 0;
+    if (safeProgress < 30) return 1;
+    if (safeProgress < 55) return 2;
+    if (safeProgress < 90) return 3;
+    return 4;
+  }, [progress]);
 
   const getIcon = () => {
     switch (type) {
@@ -47,6 +93,8 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
         return t('translatingText');
     }
   };
+
+  if (!isVisible) return null;
 
   return (
     <div
@@ -87,6 +135,52 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
               style={{ width: `${Math.min(100, Math.max(0, progress))}%` }}
             />
           </div>
+        </div>
+      )}
+
+      {type === "document" && (
+        <div className="w-full max-w-md space-y-3">
+          <div className="flex flex-wrap gap-2 justify-center">
+            {stageLabels.map((label, index) => {
+              const isDone = index < currentStageIndex;
+              const isCurrent = index === currentStageIndex;
+              return (
+                <span
+                  key={label}
+                  className={cn(
+                    "text-[11px] px-2.5 py-1 rounded-full border transition-colors",
+                    isDone && "bg-suliko-default-color/10 border-suliko-default-color/30 text-suliko-default-color",
+                    isCurrent && "bg-primary/10 border-primary/30 text-primary font-medium",
+                    !isDone && !isCurrent && "bg-muted/50 border-border text-muted-foreground"
+                  )}
+                >
+                  {label}
+                </span>
+              );
+            })}
+          </div>
+
+          <div className="rounded-lg border border-border/70 bg-muted/30 px-3 py-2 text-center">
+            <p className="text-xs font-medium text-foreground">{tProjectTips("title")}</p>
+            <p className="text-xs text-muted-foreground mt-1">{tips[tipIndex]}</p>
+          </div>
+
+          <div className="rounded-lg border border-border/70 bg-background/80 px-3 py-2">
+            <p className="text-xs font-medium text-foreground">{t("whileYouWait")}</p>
+            <ul className="mt-1 space-y-1 text-xs text-muted-foreground">
+              <li>{t("actionTone")}</li>
+              <li>{t("actionTerms")}</li>
+              <li>{t("actionFormat")}</li>
+            </ul>
+          </div>
+
+          <p className="text-[11px] text-center text-muted-foreground">
+            {estimatedMinutes
+              ? t("estimatedTimeWithValue", { minutes: estimatedMinutes })
+              : t("estimatedTime")}
+            {" · "}
+            {tProjectInfo("leaveAndReturn")}
+          </p>
         </div>
       )}
 

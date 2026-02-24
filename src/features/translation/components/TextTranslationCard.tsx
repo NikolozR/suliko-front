@@ -14,7 +14,6 @@ import TranslationSubmitButton from "./TranslationSubmitButton";
 import CopyButton from "./CopyButton";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
-import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
 import {
   TextTranslateUserContentParams,
   TextTranslateUserContentResponse,
@@ -393,11 +392,6 @@ const TextTranslationCard = () => {
       )}
       <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8" : undefined}>
         <Card className="border-none flex-1 min-w-0 relative">
-          <TranslationLoadingOverlay
-            isVisible={textLoading}
-            type="text"
-            message={tButton('loading')}
-          />
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-foreground">
               <Type className="h-5 w-5" />

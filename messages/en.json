@@ -324,7 +324,20 @@
     "processingDocument": "Processing document...",
     "translatingText": "Translating text...",
     "longerThanExpected": "Processing document takes longer than expected",
-    "thankYou": "Thank you for your patience"
+    "takingLonger": "This is taking longer than usual",
+    "thankYou": "Thank you for your patience",
+    "thankYouForPatience": "Thank you for your patience",
+    "estimatedTime": "Estimated remaining time",
+    "estimatedTimeWithValue": "Estimated time: about {minutes} minutes",
+    "whileYouWait": "While you wait",
+    "actionTone": "Choose your preferred tone (formal, neutral, natural).",
+    "actionTerms": "Prepare terms you do not want translated.",
+    "actionFormat": "Decide your download format in advance.",
+    "stageUpload": "Uploading",
+    "stageQueue": "Queueing",
+    "stageAnalyze": "Analyzing",
+    "stageTranslate": "Translating",
+    "stageFinalize": "Finalizing"
   },
   "Profile": {
     "fullName": "Full Name",

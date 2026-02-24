@@ -14,6 +14,7 @@ export async function getStatus(jobId: string): Promise<JobStatusResponse> {
 
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     headers,
+    cache: "no-store",
   });
 
   if (response.status === 401 && token && refreshToken) {
@@ -25,6 +26,7 @@ export async function getStatus(jobId: string): Promise<JobStatusResponse> {
       headers.set("Authorization", `Bearer ${newTokens.token}`);
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         headers,
+        cache: "no-store",
       });
     } catch {
       useAuthStore.getState().reset();

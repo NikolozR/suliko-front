@@ -39,18 +39,32 @@ export default function ProjectsPage() {
   const locale = useLocale();
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchProjects = async () => {
       try {
-        const response = await getChatHistory();
+        const response = await getChatHistory({ pageSize: 20, pageNumber: 1 });
+        if (cancelled) return;
         setChats(response.data.chats);
+        setError(null);
       } catch (err) {
+        if (cancelled) return;
         setError(err instanceof Error ? err.message : "Failed to load projects");
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     };
 
     fetchProjects();
+    const intervalId = setInterval(fetchProjects, 5000);
+    const onWindowFocus = () => fetchProjects();
+    window.addEventListener("focus", onWindowFocus);
+
+    return () => {
+      cancelled = true;
+      clearInterval(intervalId);
+      window.removeEventListener("focus", onWindowFocus);
+    };
   }, []);
 
   if (loading) {

@@ -31,6 +31,7 @@ export const getChatHistory = async (
     {
       method: "GET",
       headers,
+      cache: "no-store",
     }
   );
 
@@ -46,6 +47,7 @@ export const getChatHistory = async (
         {
           method: "GET",
           headers,
+          cache: "no-store",
         }
       );
     } catch {
@@ -80,6 +82,7 @@ export const getChatById = async (
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "GET",
     headers,
+    cache: "no-store",
   });
   if (response.status === 401 && token && refreshToken) {
     try {
@@ -91,6 +94,7 @@ export const getChatById = async (
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "GET",
         headers,
+        cache: "no-store",
       });
     } catch {
       useAuthStore.getState().reset();
@@ -123,6 +127,7 @@ export const getSingleChatHistoryOriginalFile = async (id: string): Promise<File
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
     method: "GET",
     headers,
+    cache: "no-store",
   });
 
   if (response.status === 401 && token && refreshToken) {
@@ -135,6 +140,7 @@ export const getSingleChatHistoryOriginalFile = async (id: string): Promise<File
       response = await fetch(`${API_BASE_URL}${endpoint}`, {
         method: "GET",
         headers,
+        cache: "no-store",
       });
     } catch {
       useAuthStore.getState().reset();

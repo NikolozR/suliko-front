@@ -37,6 +37,17 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
     if (isOpen) {
       fetchHistory();
     }
+
+    const handleProjectsUpdated = () => {
+      if (isOpen) {
+        fetchHistory();
+      }
+    };
+
+    window.addEventListener("projects-updated", handleProjectsUpdated);
+    return () => {
+      window.removeEventListener("projects-updated", handleProjectsUpdated);
+    };
   }, [isOpen]);
 
   if (!isOpen) return null;

@@ -1153,6 +1153,11 @@ html.dark .sidebar-main {
     transition-duration: 0.01ms !important;
   }
 
+  /* Keep loading spinners visible */
+  .animate-spin {
+    animation: spin 1s linear infinite !important;
+  }
+
   /* Keep the language greeting cycle visible on translation page */
   .slot-track {
     animation: slotScroll 13s infinite !important;

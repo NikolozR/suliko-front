@@ -29,7 +29,6 @@ import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
-import { TranslationLoadingOverlay } from "@/features/ui/components/loading";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, type DocumentMetadata } from "@/shared/utils/fileStorage";
 import LanguageSelect from "./LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
@@ -444,6 +443,7 @@ const DocumentTranslationCard = () => {
 
     try {
       setIsLoading(true);
+      setManualProgress(5, t("progress.uploading"));
 
       // Handle OCR Only mode
       if (isOcrOnly) {
@@ -515,6 +515,8 @@ const DocumentTranslationCard = () => {
       // }
 
       const { chatId } = await startTranslationProject(data);
+      setManualProgress(12, t("progress.projectStarted"));
+      window.dispatchEvent(new Event("projects-updated"));
       router.push(`/projects/${chatId}`);
     } catch (err) {
       let message = t("progress.unexpectedError");
@@ -616,13 +618,6 @@ const DocumentTranslationCard = () => {
       )}
       <div className={translatedMarkdown ? "flex gap-8" : undefined}>
         <Card className="border-none flex-1 min-w-0 relative">
-          <TranslationLoadingOverlay
-            isVisible={isLoading}
-            type="document"
-            message={loadingMessage || tButton("loading")}
-            progress={loadingProgress}
-            showTakingLonger={isComplete}
-          />
           <CardHeader>
             <div className="flex items-center justify-between">
               <div className="flex-1">

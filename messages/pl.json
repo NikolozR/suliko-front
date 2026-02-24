@@ -209,7 +209,17 @@
     "translatingText": "Tłumaczenie tekstu...",
     "estimatedTime": "Szacowany pozostały czas",
     "takingLonger": "Dokument zajmuje więcej czasu niż oczekiwano",
-    "thankYouForPatience": "Dziękujemy za cierpliwość"
+    "thankYouForPatience": "Dziękujemy za cierpliwość",
+    "estimatedTimeWithValue": "Szacowany czas: około {minutes} min",
+    "whileYouWait": "W międzyczasie",
+    "actionTone": "Wybierz preferowany ton (formalny, neutralny, naturalny).",
+    "actionTerms": "Przygotuj terminy, których nie chcesz tłumaczyć.",
+    "actionFormat": "Wybierz z góry format pobrania.",
+    "stageUpload": "Przesyłanie",
+    "stageQueue": "Kolejkowanie",
+    "stageAnalyze": "Analiza",
+    "stageTranslate": "Tłumaczenie",
+    "stageFinalize": "Finalizacja"
   },
   "TranslationButton": {
     "translate": "Tłumacz",

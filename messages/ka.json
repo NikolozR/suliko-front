@@ -206,7 +206,20 @@
     "processingDocument": "დოკუმენტის დამუშავება...",
     "translatingText": "ტექსტის თარგმნა...",
     "longerThanExpected": "დოკუმენტის თარგმნას იმაზე მეტი დრო სჭირდება, ვიდრე მოსალოდნელი იყო",
-    "thankYou": "მადლობა მოთმინებისთვის"
+    "takingLonger": "პროცესი ჩვეულებრივზე მეტხანს მიმდინარეობს",
+    "thankYou": "მადლობა მოთმინებისთვის",
+    "thankYouForPatience": "მადლობა მოთმინებისთვის",
+    "estimatedTime": "სავარაუდო დარჩენილი დრო",
+    "estimatedTimeWithValue": "სავარაუდო დრო: დაახლოებით {minutes} წუთი",
+    "whileYouWait": "სანამ ელოდებით",
+    "actionTone": "აირჩიეთ სასურველი ტონი (ფორმალური, ნეიტრალური, ბუნებრივი).",
+    "actionTerms": "მოამზადეთ ტერმინები, რომლებიც არ უნდა ითარგმნოს.",
+    "actionFormat": "წინასწარ აირჩიეთ ჩამოტვირთვის ფორმატი.",
+    "stageUpload": "ატვირთვა",
+    "stageQueue": "რიგში ჩასმა",
+    "stageAnalyze": "ანალიზი",
+    "stageTranslate": "თარგმნა",
+    "stageFinalize": "დასრულება"
   },
   "TranslationButton": {
     "translate": "თარგმნა",
