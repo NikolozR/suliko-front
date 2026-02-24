@@ -117,7 +117,7 @@ const DocumentTranslationCard = () => {
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
 
-  const { loadingProgress, loadingMessage, setManualProgress, reset } =
+  const { setManualProgress, reset } =
     useDocumentLoadingProgress({
       isLoading,
       t,
@@ -131,7 +131,7 @@ const DocumentTranslationCard = () => {
   // Calculate countdown duration: 4 minutes base + 25 seconds per additional page
   const countdownMinutes = estimatedPageCount > 0 ? 4 + Math.ceil((estimatedPageCount - 1) * 25 / 60) : 4;
 
-  const { isComplete, start, stop } = useCountdown({
+  const { start, stop } = useCountdown({
     initialMinutes: countdownMinutes,
     autoStart: false, // We'll start it manually
     onComplete: () => {
