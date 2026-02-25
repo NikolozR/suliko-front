@@ -66,7 +66,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
-  
+
   const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed);
   const storeSetIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
   const [isClient, setIsClient] = useState(false);
@@ -127,11 +127,10 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     if (isMobile) {
       return (
         <div
-          className={`fixed inset-0 z-30 md:hidden transition-all duration-300 ${
-            !effectiveIsCollapsed
+          className={`fixed inset-0 z-30 md:hidden transition-all duration-300 ${!effectiveIsCollapsed
               ? "bg-black/40 backdrop-blur-[2px] opacity-100 pointer-events-auto"
               : "bg-transparent opacity-0 pointer-events-none"
-          }`}
+            }`}
           onClick={() => storeSetIsCollapsed(true)}
           aria-hidden="true"
         />
@@ -144,17 +143,14 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     <>
       {renderOverlay()}
       <aside
-        className={`sidebar-main flex flex-col h-screen fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${
-          effectiveIsCollapsed 
-            ? "w-16" 
+        className={`sidebar-main flex flex-col h-screen overflow-auto fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
+            ? "w-16"
             : "w-48 md:w-56 lg:w-64"
-        } ${
-          !effectiveIsCollapsed 
-            ? "md:shadow-none shadow-xl" 
+          } ${!effectiveIsCollapsed
+            ? "md:shadow-none shadow-xl"
             : "md:shadow-none"
-        } ${
-          isMobile && effectiveIsCollapsed ? "-translate-x-full md:translate-x-0" : "translate-x-0"
-        }`}
+          } ${isMobile && effectiveIsCollapsed ? "-translate-x-full md:translate-x-0" : "translate-x-0"
+          }`}
       >
         <div className={`flex items-center ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
           {!effectiveIsCollapsed && (
@@ -197,18 +193,16 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   resetTextTranslation();
                   resetDocumentTranslation();
                 } : undefined}
-                className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
-                  isActive(href)
+                className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
                     ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
                     : ""
-                } ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                  } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                 aria-current={isActive(href) ? "page" : undefined}
               >
                 <div className="relative flex items-center">
                   <Icon
-                    className={`transition-transform duration-200 ${
-                      effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                    } group-hover:scale-105`}
+                    className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
+                      } group-hover:scale-105`}
                   />
                   {needsEmailReminder && label === "profile" && (
                     <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_0_2px_rgba(255,255,255,0.9)] dark:shadow-[0_0_0_2px_rgba(24,28,42,1)] animate-flicker" />
@@ -239,16 +233,14 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               <div className="flex items-center">
                 <Link
                   href="/projects"
-                  className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
-                    pathname === "/projects" || pathname?.startsWith("/projects/")
+                  className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/")
                       ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
                       : ""
-                  } ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                    } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                   aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") ? "page" : undefined}
                 >
-                  <Clock className={`transition-transform duration-200 ${
-                    effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                  } group-hover:scale-105`} />
+                  <Clock className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
+                    } group-hover:scale-105`} />
                   {!effectiveIsCollapsed && (
                     <span className="whitespace-nowrap truncate">{t("projects")}</span>
                   )}
@@ -272,23 +264,25 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
           {token ? (
             <>
               {userProfile && (
-                <div className={`flex items-center gap-3 p-3 rounded-lg bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 mb-2 ${
-                  effectiveIsCollapsed ? "justify-center" : ""
-                }`}>
+                <div className={`flex items-center gap-3 p-3 rounded-lg mb-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 ${effectiveIsCollapsed ? "justify-center" : ""
+                  }`}>
                   <Link href='/price'>
                     <Wallet className="h-5 w-5 cursor-pointer text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
                   </Link>
                   {!effectiveIsCollapsed && (
-                    <Link href="/price" className="flex flex-col min-w-0 hover:opacity-80 transition-opacity">
+                    <Link href="/price" className="flex flex-col min-w-0 w-full hover:opacity-80 transition-opacity">
                       <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70">{t('balance')}</span>
-                      <span className="font-semibold text-emerald-700 dark:text-emerald-300">
+                      <span className="font-semibold flex items-center w-full justify-between  text-emerald-700 dark:text-emerald-300">
                         {formatBalance(userProfile.balance || 0)} {t('pages')}
+                        <PlusCircle
+                          className={`transition-transform duration-200 h-5 w-5 group-hover:scale-105`}
+                        />
                       </span>
                     </Link>
                   )}
                 </div>
               )}
-              <Link href="/price" className="block">
+              {/* <Link href="/price" className="block">
                 <Button
                   variant="outline"
                   className={`w-full flex items-center gap-3 text-white bg-emerald-600 hover:bg-emerald-700 border-0 py-2.5 rounded transition-all group ${
@@ -304,11 +298,10 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                     </span>
                   )}
                 </Button>
-              </Link>
+              </Link> */}
               <Button
-                className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${
-                  effectiveIsCollapsed ? "justify-center px-0" : "justify-start px-3"
-                }`}
+                className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${effectiveIsCollapsed ? "justify-center px-0" : "justify-start px-3"
+                  }`}
                 onClick={() => {
                   reset();
                   resetTextTranslation();
@@ -317,9 +310,8 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 }}
               >
                 <LogOut
-                  className={`transition-transform duration-200 ${
-                    effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                  } group-hover:scale-105`}
+                  className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
+                    } group-hover:scale-105`}
                 />
                 {!effectiveIsCollapsed && (
                   <span className="whitespace-nowrap">
@@ -331,14 +323,12 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
           ) : (
             <Link
               href="/sign-in"
-              className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${
-                effectiveIsCollapsed ? "justify-center" : ""
-              }`}
+              className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""
+                }`}
             >
               <User
-                className={`transition-transform duration-200 ${
-                  effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                } group-hover:scale-105`}
+                className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
+                  } group-hover:scale-105`}
               />
               {!effectiveIsCollapsed && (
                 <span className="whitespace-nowrap">

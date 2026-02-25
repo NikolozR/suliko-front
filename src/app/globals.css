@@ -1,6 +1,17 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+
+
+@font-face {
+  font-family: 'Main Font';
+  src: url('../../fonts/bpg_mrgvlovani_caps_2010.ttf')
+}
+
+*{
+  font-family: 'Main Font', sans-serif;
+}
+
 @custom-variant dark (&:is(.dark *));
 
 /* Fix CKEditor list item indent and visibility */

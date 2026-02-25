@@ -25,6 +25,7 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
       try {
         setLoading(true);
         const response = await getChatHistory();
+        response.data.chats.pop();
         setChats(response.data.chats);
         setError(null);
       } catch (err) {

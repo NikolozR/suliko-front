@@ -148,6 +148,8 @@ const DocumentTranslationCard = () => {
     }
   }, [isLoading, start, stop]);
 
+
+
   const {
     handleSubmit,
     formState: { errors },
@@ -267,6 +269,16 @@ const DocumentTranslationCard = () => {
 
     clearStorageAfterTranslation();
   }, [translatedMarkdown]);
+
+
+  useEffect(() => {
+    if (currentFile && currentFile.length > 0) {
+      setValue("currentFile", currentFile, { shouldValidate: true });
+      clearErrors("currentFile");
+    } else {
+      setValue("currentFile", null);
+    }
+  }, [currentFile, setValue, clearErrors]);
 
   // Save file to storage before navigating to sign-in
   const handleSaveFileBeforeAuth = async () => {
@@ -558,6 +570,12 @@ const DocumentTranslationCard = () => {
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!currentFileObj) {
+      setError("Please select a file to translate.");
+      return;
+    }
+
 
     if (error) {
       toaster.error(t("ups"));
