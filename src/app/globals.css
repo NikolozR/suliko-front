@@ -8,8 +8,17 @@
   src: url('../../fonts/bpg_mrgvlovani_caps_2010.ttf')
 }
 
+@font-face {
+  font-family: 'Secondary Font';
+  src: url('../../fonts/bpg_arial_2009.ttf')
+}
+
 *:not(.ck):not(.ck *) {
   font-family: 'Main Font', sans-serif;
+}
+
+.ck *{
+  font-family: 'Secondary Font', sans-serif;
 }
 
 @custom-variant dark (&:is(.dark *));
