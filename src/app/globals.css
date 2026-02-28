@@ -8,7 +8,7 @@
   src: url('../../fonts/bpg_mrgvlovani_caps_2010.ttf')
 }
 
-*{
+*:not(.ck) {
   font-family: 'Main Font', sans-serif;
 }
 
