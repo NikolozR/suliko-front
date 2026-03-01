@@ -194,6 +194,8 @@ const DocumentTranslationCard = () => {
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
+  console.log("Current file object:", currentFileObj);
+
   // Restore file from storage when user returns after authentication
   useEffect(() => {
     const restoreFile = async () => {

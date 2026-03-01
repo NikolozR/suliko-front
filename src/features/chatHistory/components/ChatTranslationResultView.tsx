@@ -12,8 +12,12 @@ import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
 import React from "react";
+import { updateChatDocumentContent } from "../services/chatService";
+import SaveButton from "@/features/translation/components/SaveButton";
+import toast from "react-hot-toast";
 
 interface ChatTranslationResultViewProps {
+  chatId: string;
   currentFile: File;
   translatedMarkdown: string;
   onFileChange?: (event: ChangeEvent<HTMLInputElement>) => void;
@@ -23,6 +27,7 @@ interface ChatTranslationResultViewProps {
 }
 
 const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
+  chatId,
   currentFile,
   translatedMarkdown,
   onFileChange,
@@ -236,11 +241,29 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
           document.body.removeChild(wrapper);
         }
       }
-  
+
       setDownloadedFormat(null);
     };
     triggerDownload();
   }, [downloadedFormat, translatedMarkdown, currentFile?.name, translatedSuffix]);
+
+
+  const handleSaveDocument = async (): Promise<void> => {
+  try {
+    await updateChatDocumentContent(chatId, translatedMarkdown);
+    toast.success("Changes saved successfully.");
+  } catch (error: unknown) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Failed to save changes. Please try again.";
+
+    toast.error(message);
+
+    throw error; // IMPORTANT → so SaveButton knows it failed
+  }
+};
+
 
   return (
     <>
@@ -292,11 +315,10 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
                 {t('translatedText')}
               </div>
               {remainingSeconds > 0 ? (
-                <span className={`text-xs flex items-center gap-1 px-2 py-0.5 rounded-full ${
-                  remainingSeconds <= 120
-                    ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
-                    : "text-muted-foreground"
-                }`}>
+                <span className={`text-xs flex items-center gap-1 px-2 py-0.5 rounded-full ${remainingSeconds <= 120
+                  ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
+                  : "text-muted-foreground"
+                  }`}>
                   <Clock className="h-3 w-3" />
                   {formatTime(remainingSeconds)}
                 </span>
@@ -344,6 +366,11 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
                     size="sm"
                     variant="outline"
                   />
+                  <SaveButton
+                    disabled={remainingSeconds <= 0}
+                    onSave={handleSaveDocument}
+                  />
+
                 </>
               )}
             </div>

@@ -15,6 +15,7 @@ import React from "react";
 import { toast } from "react-hot-toast";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
 
+
 const DocumentPreview = dynamic(() => import("./DocumentPreview"), {
   ssr: false,
   loading: () => (
@@ -260,6 +261,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
     triggerDownload();
   }, [downloadedFormat, translatedMarkdown, currentFile?.name, translatedSuffix]);
 
+  
   return (
     <>
       <div className={hideOriginalDocument ? "" : "flex flex-col lg:flex-row gap-4 lg:gap-8"}>
@@ -312,11 +314,10 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                   {t('translatedText')}
                 </div>
                 {remainingSeconds > 0 ? (
-                  <span className={`text-xs flex items-center gap-1 whitespace-nowrap px-2 py-0.5 rounded-full ${
-                    remainingSeconds <= 120
-                      ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
-                      : "text-muted-foreground"
-                  }`}>
+                  <span className={`text-xs flex items-center gap-1 whitespace-nowrap px-2 py-0.5 rounded-full ${remainingSeconds <= 120
+                    ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
+                    : "text-muted-foreground"
+                    }`}>
                     <Clock className="h-3 w-3" />
                     {formatTime(remainingSeconds)}
                   </span>

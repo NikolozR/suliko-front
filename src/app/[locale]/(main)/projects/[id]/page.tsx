@@ -329,6 +329,8 @@ export default function ProjectDetailPage() {
     setTranslatedMarkdownWithoutZoomReset,
   ]);
 
+  
+
   // --- Derived state for rendering ---
   const SECONDS_PER_MESSAGE = 15;
   const progressIdx = elapsedSeconds >= 240
@@ -457,6 +459,7 @@ export default function ProjectDetailPage() {
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
           isSuggestionsLoading={isSuggestionsLoading}
+          chatId={chat.chatId}
         />
       </div>
     );
