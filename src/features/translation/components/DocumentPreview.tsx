@@ -331,9 +331,6 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
     (state) => state.shouldResetZoom
   );
 
-  const translatedMarkdown = useDocumentTranslationStore(
-    (state) => state.translatedMarkdown
-  );
 
   const setShouldResetZoom = useDocumentTranslationStore(
     (state) => state.setShouldResetZoom
@@ -432,11 +429,11 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
 
   // Reset zoom to 100% when translation is completed and markdown is shown
   useEffect(() => {
-    if (shouldResetZoom && translatedMarkdown) {
+    if (shouldResetZoom) {
       updateScale(1.0);
       setShouldResetZoom(false);
     }
-  }, [shouldResetZoom, translatedMarkdown, setShouldResetZoom]);
+  }, [shouldResetZoom, setShouldResetZoom]);
 
   const onDocumentLoadSuccess = ({ numPages: nextNumPages }: { numPages: number }) => {
     setNumPages(nextNumPages);
