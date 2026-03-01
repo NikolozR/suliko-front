@@ -435,6 +435,10 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
     }
   }, [shouldResetZoom, setShouldResetZoom]);
 
+  useEffect(() => {
+    console.log("FILE CHANGED");
+  }, [file]);
+
   const onDocumentLoadSuccess = ({ numPages: nextNumPages }: { numPages: number }) => {
     setNumPages(nextNumPages);
     setRealPageCount(nextNumPages); // Set the real page count from PDF parser for loading progress calculation
