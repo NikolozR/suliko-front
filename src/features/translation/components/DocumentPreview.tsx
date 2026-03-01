@@ -34,12 +34,12 @@ type PdfPageComponent = React.ComponentType<{
 // Helper function to get file type
 const getFileType = (file: File): string => {
   const extension = file.name.split('.').pop()?.toLowerCase() || '';
-  
+
   // Image types
   if (['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp'].includes(extension)) {
     return 'image';
   }
-  
+
   // Document types
   switch (extension) {
     case 'pdf':
@@ -250,11 +250,11 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div 
+      <div
         ref={containerRef}
         className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-auto mb-4"
       >
-        <div 
+        <div
           className="p-4 min-h-full"
           style={{
             transform: `scale(${scale})`,
@@ -262,7 +262,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
             transition: 'transform 0.2s ease-in-out'
           }}
         >
-          <div 
+          <div
             dangerouslySetInnerHTML={{ __html: content }}
             className="prose prose-sm max-w-none dark:prose-invert bg-white dark:bg-slate-900 p-8 rounded-lg shadow-sm text-foreground"
           />
@@ -325,8 +325,23 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
   const [isRendering, setIsRendering] = useState<boolean>(false);
   const [stage, setStage] = useState("Preparing preview...");
   const containerRef = useRef<HTMLDivElement>(null);
-  
-  const { shouldResetZoom, setShouldResetZoom, translatedMarkdown, setRealPageCount } = useDocumentTranslationStore();
+
+  // const { shouldResetZoom, setShouldResetZoom, translatedMarkdown, setRealPageCount } = useDocumentTranslationStore();
+  const shouldResetZoom = useDocumentTranslationStore(
+    (state) => state.shouldResetZoom
+  );
+
+  const translatedMarkdown = useDocumentTranslationStore(
+    (state) => state.translatedMarkdown
+  );
+
+  const setShouldResetZoom = useDocumentTranslationStore(
+    (state) => state.setShouldResetZoom
+  );
+
+  const setRealPageCount = useDocumentTranslationStore(
+    (state) => state.setRealPageCount
+  );
 
   const minScale = 0.5;
   const maxScale = 3.0;
@@ -337,11 +352,11 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
 
   const updateScale = (newScale: number) => {
     setScale(newScale);
-    
+
     if (scaleTimeoutRef.current) {
       clearTimeout(scaleTimeoutRef.current);
     }
-    
+
     scaleTimeoutRef.current = setTimeout(() => {
       debouncedScale.current = newScale;
     }, 150);
@@ -384,7 +399,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
       setNumPages(null);
       setIsRendering(true);
       setStage("Rendering pages...");
-      
+
       return () => {
         URL.revokeObjectURL(url);
         setFileUrl(null);
@@ -410,7 +425,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
       const newWidth = entries[0]?.contentRect.width || 600;
       setContainerWidth(newWidth > 0 ? newWidth : 600);
     });
-    
+
     resizeObserver.observe(container);
     return () => resizeObserver.unobserve(container);
   }, []);
@@ -452,8 +467,8 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div 
-        ref={containerRef} 
+      <div
+        ref={containerRef}
         className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-y-auto mb-4"
       >
         <PdfDocument
@@ -590,13 +605,13 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
 
   return (
     <div className="w-full h-full flex flex-col">
-      <div 
+      <div
         ref={containerRef}
         className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-auto mb-4"
       >
         <div className="flex justify-center min-h-full p-4">
           <div
-            style={{ 
+            style={{
               transform: `scale(${scale})`,
               transformOrigin: 'center',
               transition: 'transform 0.2s ease-in-out',
@@ -721,4 +736,4 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
   }
 };
 
-export default DocumentPreview;
+export default React.memo(DocumentPreview);
