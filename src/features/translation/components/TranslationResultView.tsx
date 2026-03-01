@@ -1,6 +1,6 @@
 "use client";
 import { ChangeEvent, useRef, useEffect, useState } from "react";
-import dynamic from "next/dynamic";
+// import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 import FileInfoDisplay from "./FileInfoDisplay";
@@ -13,18 +13,22 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/
 import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
 import React from "react";
 import { toast } from "react-hot-toast";
-import { Skeleton } from "@/features/ui/components/ui/skeleton";
+import DocumentPreview from "./DocumentPreview";
+// import { Skeleton } from "@/features/ui/components/ui/skeleton";
 
 
-const DocumentPreview = dynamic(() => import("./DocumentPreview"), {
-  ssr: false,
-  loading: () => (
-    <div className="h-full p-4">
-      <Skeleton className="mb-3 h-6 w-40" />
-      <Skeleton className="h-[260px] w-full rounded-lg" />
-    </div>
-  ),
-});
+
+
+
+// const DocumentPreview = dynamic(() => import("./DocumentPreview"), {
+//   ssr: false,
+//   loading: () => (
+//     <div className="h-full p-4">
+//       <Skeleton className="mb-3 h-6 w-40" />
+//       <Skeleton className="h-[260px] w-full rounded-lg" />
+//     </div>
+//   ),
+// });
 
 
 interface TranslationResultViewProps {

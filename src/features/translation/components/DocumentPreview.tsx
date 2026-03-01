@@ -408,7 +408,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
       setFileUrl(null);
       setNumPages(null);
     }
-  }, [file, t]);
+  }, [file]);
 
   useEffect(() => {
     const container = containerRef.current;
