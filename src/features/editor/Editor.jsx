@@ -23,14 +23,14 @@ export default function Editor({ translatedMarkdown, onChange }) {
 
 
   // Debug: Log cloud status
-  useEffect(() => {
-    if (cloud.status === "error") {
-      console.error('CKEditor Cloud error:', cloud);
-      setError('Failed to load CKEditor');
-    } else if (cloud.status === "success") {
-      setError(null);
-    }
-  }, [cloud]);
+  // useEffect(() => {
+  //   if (cloud.status === "error") {
+  //     console.error('CKEditor Cloud error:', cloud);
+  //     setError('Failed to load CKEditor');
+  //   } else if (cloud.status === "success") {
+  //     setError(null);
+  //   }
+  // }, [cloud]);
 
   useEffect(() => {
     setIsLayoutReady(true);
