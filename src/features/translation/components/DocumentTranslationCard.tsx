@@ -199,57 +199,40 @@ const DocumentTranslationCard = () => {
   // Restore file from storage when user returns after authentication
   useEffect(() => {
     const restoreFile = async () => {
-      // Only restore if user is authenticated and no file is currently loaded
-      if (token && !currentFileObj && typeof window !== 'undefined' && 'indexedDB' in window) {
-        try {
-          const storedFile = await getFileFromStorage();
-          const storedMetadata = await getMetadataFromStorage();
+      if (!token || currentFileObj || typeof window === 'undefined' || !('indexedDB' in window)) return;
 
-          if (storedFile) {
-            // Reconstruct FileList from stored File
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(storedFile);
-            const fileList = dataTransfer.files;
+      try {
+        const storedFile = await getFileFromStorage();
+        const storedMetadata = await getMetadataFromStorage();
 
-            setCurrentFile(fileList);
-            setValue("currentFile", fileList);
+        if (!storedFile) return;
 
-            // Clear form errors after restoring file so validation passes
-            clearErrors("currentFile");
+        // Reconstruct FileList
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(storedFile);
+        const fileList = dataTransfer.files;
 
-            // Determine if it's an SRT file
-            const fileExtension = storedFile.name.split(".").pop()?.toLowerCase();
-            const isSrtFile = fileExtension === "srt";
-            setValue("isSrt", isSrtFile);
+        setCurrentFile(fileList);
+        setValue("currentFile", fileList);
+        clearErrors("currentFile");
 
-            // Restore metadata if available
-            if (storedMetadata) {
-              const { setRealPageCount, /* setSelectedPageRange, */ setCurrentSourceLanguageId, setCurrentTargetLanguageId } = useDocumentTranslationStore.getState();
+        // Set SRT flag
+        setValue("isSrt", storedFile.name.split(".").pop()?.toLowerCase() === "srt");
 
-              if (storedMetadata.realPageCount !== null && storedMetadata.realPageCount !== undefined) {
-                setRealPageCount(storedMetadata.realPageCount);
-              }
+        // Restore metadata
+        if (storedMetadata) {
+          const { setRealPageCount, setCurrentSourceLanguageId, setCurrentTargetLanguageId } =
+            useDocumentTranslationStore.getState();
 
-              // DISABLED: Restore page range selection - Splitting functionality is kept in repository but not used
-              // if (storedMetadata.selectedPageRange) {
-              //   setSelectedPageRange(storedMetadata.selectedPageRange);
-              // }
-
-              if (storedMetadata.currentSourceLanguageId !== undefined) {
-                setCurrentSourceLanguageId(storedMetadata.currentSourceLanguageId);
-              }
-
-              if (storedMetadata.currentTargetLanguageId !== undefined) {
-                setCurrentTargetLanguageId(storedMetadata.currentTargetLanguageId);
-              }
-            }
-
-            // Clear the stored file from IndexedDB after restoring
-            await clearFileFromStorage();
-          }
-        } catch (error) {
-          console.error("Failed to restore file from storage:", error);
+          if (storedMetadata.realPageCount != null) setRealPageCount(storedMetadata.realPageCount);
+          if (storedMetadata.currentSourceLanguageId != null) setCurrentSourceLanguageId(storedMetadata.currentSourceLanguageId);
+          if (storedMetadata.currentTargetLanguageId != null) setCurrentTargetLanguageId(storedMetadata.currentTargetLanguageId);
         }
+
+        // Clear storage after restoring
+        await clearFileFromStorage();
+      } catch (err) {
+        console.error("Failed to restore file from storage:", err);
       }
     };
 
@@ -306,97 +289,87 @@ const DocumentTranslationCard = () => {
   };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    // Allow file upload without authentication
-    // Authentication will be checked when user tries to translate
+    if (!event.target.files || event.target.files.length === 0) return;
 
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      const fileExtension = file.name.split(".").pop()?.toLowerCase();
-      const isSrtFile = fileExtension === "srt";
+    const file = event.target.files[0];
+    const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
+    const isSrtFile = fileExtension === "srt";
 
-      // Clear previous translation result when selecting a new file
-      setTranslatedMarkdown("");
-      const { setSuggestions, setJobId, setChatId } = useDocumentTranslationStore.getState();
-      setSuggestions([]);
-      setJobId("");
-      setChatId("");
-      useSuggestionsStore.getState().reset();
+    // Clear previous translation results and suggestions
+    setTranslatedMarkdown("");
+    const { setSuggestions, setJobId, setChatId } = useDocumentTranslationStore.getState();
+    setSuggestions([]);
+    setJobId("");
+    setChatId("");
+    useSuggestionsStore.getState().reset();
 
-      setCurrentFile(event.target.files);
-      setValue("currentFile", event.target.files);
-      setValue("isSrt", isSrtFile);
-      clearErrors("currentFile");
+    // Update current file in state and form
+    setCurrentFile(event.target.files);
+    setValue("currentFile", event.target.files);
+    setValue("isSrt", isSrtFile);
+    clearErrors("currentFile");
 
-      // Highlight the translate button after file upload
-      setIsButtonHighlighted(true);
-      setTimeout(() => {
-        setIsButtonHighlighted(false);
-      }, 3000); // Remove highlight after 3 seconds
+    // Highlight translate button briefly
+    setIsButtonHighlighted(true);
+    setTimeout(() => setIsButtonHighlighted(false), 3000);
 
-      // Get exact page count for DOCX files (only if authenticated)
-      if (fileExtension === "docx" && token) {
-        const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
+    const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
 
-        // Set loading state while counting pages
-        setIsCountingPages(true);
-        setRealPageCount(null); // Reset previous count
+    if (fileExtension === "docx" && token) {
+      // Count DOCX pages if authenticated
+      setIsCountingPages(true);
+      setRealPageCount(null);
 
-        try {
-          const pageCountResult = await countPages(file);
-          const pageCount = pageCountResult.pageCount || pageCountResult.pages || null;
-          setRealPageCount(pageCount);
-
-          // DISABLED: Show warning if page count is more than 3
-          // Splitting functionality is kept in repository but not used
-
-        } catch (error) {
-          console.error("Failed to count DOCX pages:", error);
-          // Fallback to null so estimation is used
-          setRealPageCount(null);
-        } finally {
-          // Always clear loading state
-          setIsCountingPages(false);
-        }
-      } else if (fileExtension !== "pdf") {
-        // Reset page count for non-PDF, non-DOCX files (PDF count is handled by DocumentPreview)
-        const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
+      try {
+        const pageCountResult = await countPages(file);
+        const pageCount = pageCountResult.pageCount || pageCountResult.pages || null;
+        setRealPageCount(pageCount);
+      } catch (err) {
+        console.error("Failed to count DOCX pages:", err);
         setRealPageCount(null);
+      } finally {
         setIsCountingPages(false);
       }
+    } else if (fileExtension !== "pdf") {
+      // For non-PDF/non-DOCX, reset page count
+      setRealPageCount(null);
+      setIsCountingPages(false);
     }
   };
 
   const handleRemoveFile = async () => {
-    setCurrentFile(null);
-    setTranslatedMarkdown("");
-    setValue("currentFile", null);
-    setValue("isSrt", false);
-    setIsOcrOnly(false);
-    clearErrors("currentFile");
+  // Clear translation result and OCR flag
+  setTranslatedMarkdown("");
+  setIsOcrOnly(false);
 
-    const { setRealPageCount, setIsCountingPages, /* setSelectedPageRange */ } = useDocumentTranslationStore.getState();
-    setRealPageCount(null);
-    setIsCountingPages(false);
-    // DISABLED: Clear page range selection - Splitting functionality is kept in repository but not used
-    // setSelectedPageRange(null);
-    // setShowPageRangeSelector(false);
+  // Clear form values
+  setValue("currentFile", null, { shouldValidate: false });
+  setValue("isSrt", false, { shouldValidate: false });
+  clearErrors("currentFile");
 
-    // Clear stored file from IndexedDB if it exists
-    if (typeof window !== 'undefined' && 'indexedDB' in window) {
-      try {
-        await clearFileFromStorage();
-      } catch (error) {
-        console.error("Failed to clear file from storage:", error);
-      }
+  // Clear document translation store states
+  const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
+  setRealPageCount(null);
+  setIsCountingPages(false);
+
+  // Clear IndexedDB storage if any
+  if (typeof window !== "undefined" && "indexedDB" in window) {
+    try {
+      await clearFileFromStorage();
+    } catch (error) {
+      console.error("Failed to clear file from storage:", error);
     }
+  }
 
-    const fileInput = document.querySelector(
-      'input[type="file"]'
-    ) as HTMLInputElement;
-    if (fileInput) {
-      fileInput.value = "";
-    }
-  };
+  // Only reset the file input element once
+  const fileInput = document.querySelector('input[type="file"]') as HTMLInputElement;
+  if (fileInput && fileInput.files?.length) {
+    fileInput.value = "";
+  }
+
+  // Only update currentFile once after everything else is done
+  setCurrentFile(null);
+};
 
   const onSubmit = async (data: DocumentFormData) => {
     if (!token) {
