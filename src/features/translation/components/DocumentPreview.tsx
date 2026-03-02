@@ -407,24 +407,44 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
     }
   }, [file]);
 
+  const lastWidthRef = useRef<number>(600);
+  const widthChangeThreshold = 5;
+  const debounceMs = 100;
+
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
     const measureWidth = () => {
       const width = container.offsetWidth || container.clientWidth || 600;
-      setContainerWidth(width > 0 ? width : 600);
+      const safeWidth = width > 0 ? width : 600;
+      lastWidthRef.current = safeWidth;
+      setContainerWidth(safeWidth);
     };
 
     measureWidth();
 
+    let debounceTimer: NodeJS.Timeout | null = null;
+
     const resizeObserver = new ResizeObserver(entries => {
       const newWidth = entries[0]?.contentRect.width || 600;
-      setContainerWidth(newWidth > 0 ? newWidth : 600);
+      const safeWidth = newWidth > 0 ? newWidth : 600;
+
+      if (debounceTimer) clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        const lastWidth = lastWidthRef.current;
+        if (Math.abs(safeWidth - lastWidth) <= widthChangeThreshold) return;
+        lastWidthRef.current = safeWidth;
+        setContainerWidth(safeWidth);
+        debounceTimer = null;
+      }, debounceMs);
     });
 
     resizeObserver.observe(container);
-    return () => resizeObserver.unobserve(container);
+    return () => {
+      if (debounceTimer) clearTimeout(debounceTimer);
+      resizeObserver.unobserve(container);
+    };
   }, []);
 
   // Reset zoom to 100% when translation is completed and markdown is shown
@@ -434,10 +454,6 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
       setShouldResetZoom(false);
     }
   }, [shouldResetZoom, setShouldResetZoom]);
-
-  useEffect(() => {
-    console.log("FILE CHANGED");
-  }, [file]);
 
   const onDocumentLoadSuccess = ({ numPages: nextNumPages }: { numPages: number }) => {
     setNumPages(nextNumPages);
