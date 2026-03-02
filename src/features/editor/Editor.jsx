@@ -12,7 +12,7 @@ const LICENSE_KEY = process.env.NEXT_PUBLIC_CKEDITOR_LICENSE_KEY;
 
 
 
-export default function Editor({ translatedMarkdown, onChange }) {
+export default function Editor({ translatedMarkdown, onChange, hoveredText }) {
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
   const editorInstanceRef = useRef(null);
@@ -347,6 +347,77 @@ export default function Editor({ translatedMarkdown, onChange }) {
       editor.setData(incoming);
     }
   }, [translatedMarkdown]);
+
+  // Highlight hovered suggestion text inside the editor when possible.
+  useEffect(() => {
+    const editor = editorInstanceRef.current;
+    if (!editor) return;
+
+    // Editable DOM root – works for both Classic and Document editors.
+    const editableElement =
+      editor.ui?.view?.editable?.element ||
+      editor.sourceElement ||
+      null;
+
+    if (!editableElement) return;
+
+    const selection = window.getSelection();
+
+    // Clear highlight when no hovered text
+    if (!hoveredText) {
+      if (selection && selection.rangeCount > 0) {
+        selection.removeAllRanges();
+      }
+      return;
+    }
+
+    // Simple substring search over text nodes
+    const search = hoveredText.trim();
+    if (!search) return;
+
+    const walker = document.createTreeWalker(
+      editableElement,
+      NodeFilter.SHOW_TEXT
+    );
+
+    let foundRange = null;
+    let currentNode = walker.nextNode();
+
+    while (currentNode) {
+      const text = currentNode.textContent || "";
+      const index = text.indexOf(search);
+      if (index !== -1) {
+        const range = document.createRange();
+        range.setStart(currentNode, index);
+        range.setEnd(currentNode, index + search.length);
+        foundRange = range;
+        break;
+      }
+      currentNode = walker.nextNode();
+    }
+
+    if (foundRange && selection) {
+      selection.removeAllRanges();
+      selection.addRange(foundRange);
+
+      // Scroll into view if needed
+      const rect = foundRange.getBoundingClientRect();
+      if (rect && rect.top !== 0 && !Number.isNaN(rect.top)) {
+        const container =
+          editableElement.closest(".overflow-y-auto") || editableElement;
+        const containerEl =
+          container instanceof HTMLElement ? container : editableElement;
+        const containerRect = containerEl.getBoundingClientRect();
+        if (
+          rect.top < containerRect.top ||
+          rect.bottom > containerRect.bottom
+        ) {
+          containerEl.scrollTop +=
+            rect.top - containerRect.top - containerRect.height / 4;
+        }
+      }
+    }
+  }, [hoveredText]);
 
   // Show loading state
   if (cloud.status === "loading" || !isLayoutReady) {

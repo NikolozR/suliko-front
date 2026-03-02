@@ -8,6 +8,7 @@ import CopyButton from "./CopyButton";
 import DownloadButton from "./DownloadButton";
 import SuggestionsPanel from './SuggestionsPanel';
 import Editor from "@/features/editor/Editor";
+import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
@@ -63,6 +64,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
   const [editorDeadline, setEditorDeadline] = useState<number | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
+  const { hoveredSuggestionOriginalText } = useSuggestionsStore();
 
   const isOriginalFileSrt = () => {
     const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
@@ -380,7 +382,11 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
             </div>
           </div>
           <div className="h-full max-h-[400px] md:max-h-[600px] lg:max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
-            <Editor translatedMarkdown={translatedMarkdown} onChange={onEdit} />
+            <Editor
+              translatedMarkdown={translatedMarkdown}
+              onChange={onEdit}
+              hoveredText={hoveredSuggestionOriginalText}
+            />
           </div>
         </div>
       </div>

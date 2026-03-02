@@ -61,6 +61,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
     setSuggestionsLoading,
     focusedSuggestionId,
     setFocusedSuggestionId,
+    setHoveredSuggestionOriginalText,
   } = useSuggestionsStore();
   const {
     translatedMarkdown,
@@ -263,6 +264,14 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           {suggestions.map((s: Suggestion, index: number) => (
             <div
               key={s.id}
+              onMouseEnter={() => {
+                if (canExactMatch(s, translatedMarkdown)) {
+                  setHoveredSuggestionOriginalText(s.originalText);
+                }
+              }}
+              onMouseLeave={() => {
+                setHoveredSuggestionOriginalText(null);
+              }}
               className="animate-slideUpScale bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col min-w-[320px] max-w-[400px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200"
               style={{ animationDelay: `${Math.min(index * 70, 280)}ms` }}
             >
