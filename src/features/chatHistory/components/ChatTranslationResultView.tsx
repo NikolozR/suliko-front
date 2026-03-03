@@ -94,6 +94,23 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     };
   }, [translatedMarkdown]);
 
+
+  useEffect(() => {
+    if (remainingSeconds <= 0) return;
+
+    const autosaveInterval = setInterval(async () => {
+      try {
+        await updateChatDocumentContent(chatId, translatedMarkdown);
+        toast.success("Autosaved.", { id: "autosave", duration: 1500 });
+      } catch {
+        toast.error("Autosave failed.", { id: "autosave" });
+      }
+    }, 10000);
+
+    return () => clearInterval(autosaveInterval);
+  }, [chatId, translatedMarkdown, remainingSeconds]);
+
+
   useEffect(() => {
     if (editorDeadline === null) {
       setEditorDeadline(Date.now() + 10 * 60 * 1000);
@@ -251,20 +268,20 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
 
 
   const handleSaveDocument = async (): Promise<void> => {
-  try {
-    await updateChatDocumentContent(chatId, translatedMarkdown);
-    toast.success("Changes saved successfully.");
-  } catch (error: unknown) {
-    const message =
-      error instanceof Error
-        ? error.message
-        : "Failed to save changes. Please try again.";
+    try {
+      await updateChatDocumentContent(chatId, translatedMarkdown);
+      toast.success("Changes saved successfully.");
+    } catch (error: unknown) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Failed to save changes. Please try again.";
 
-    toast.error(message);
+      toast.error(message);
 
-    throw error; // IMPORTANT → so SaveButton knows it failed
-  }
-};
+      throw error; // IMPORTANT → so SaveButton knows it failed
+    }
+  };
 
 
   return (
