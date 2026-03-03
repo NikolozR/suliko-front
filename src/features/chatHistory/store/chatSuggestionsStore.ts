@@ -7,6 +7,7 @@ interface ChatSuggestionsState {
   hasGeneratedMore: boolean;
   suggestionAccepted: boolean;
   focusedSuggestionId: string | null;
+  hoveredSuggestionOriginalText: string | null;
   setSuggestions: (suggestions: Suggestion[]) => void;
   addSuggestions: (newSuggestions: Suggestion[]) => void;
   removeSuggestion: (id: string) => void;
@@ -16,6 +17,7 @@ interface ChatSuggestionsState {
   setFocusedSuggestionId: (id: string | null) => void;
   setSuggestionAccepted: (value: boolean) => void;
   setSuggestionsLoading: (value: boolean) => void;
+  setHoveredSuggestionOriginalText: (text: string | null) => void;
   reset: () => void;
 }
 
@@ -25,6 +27,7 @@ export const useChatSuggestionsStore = create<ChatSuggestionsState>()((set) => (
   hasGeneratedMore: false,
   suggestionAccepted: false,
   focusedSuggestionId: null,
+   hoveredSuggestionOriginalText: null,
   setSuggestions: (suggestions) => set({ suggestions }),
   addSuggestions: (newSuggestions) => set((state) => {
     const existingIds = new Set(state.suggestions.map(s => s.id));
@@ -47,12 +50,14 @@ export const useChatSuggestionsStore = create<ChatSuggestionsState>()((set) => (
   setFocusedSuggestionId: (id) => set({ focusedSuggestionId: id }),
   setSuggestionAccepted: (value) => set({ suggestionAccepted: value }),
   setSuggestionsLoading: (value) => set({ suggestionsLoading: value }),
+  setHoveredSuggestionOriginalText: (text) => set({ hoveredSuggestionOriginalText: text }),
   reset: () => set({ 
     suggestions: [],
     hasGeneratedMore: false,
     suggestionAccepted: false,
     focusedSuggestionId: null,
     suggestionsLoading: false,
+    hoveredSuggestionOriginalText: null,
   }),
 }));
 

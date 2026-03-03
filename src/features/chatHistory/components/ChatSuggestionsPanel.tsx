@@ -22,6 +22,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
     setSuggestionAccepted,
     focusedSuggestionId,
     setFocusedSuggestionId,
+    setHoveredSuggestionOriginalText,
   } = useChatSuggestionsStore();
 
   const {
@@ -114,6 +115,14 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
           {suggestions.map((s: Suggestion) => (
             <div
               key={s.id}
+              onMouseEnter={() => {
+                if (canExactMatch(s, translatedMarkdown)) {
+                  setHoveredSuggestionOriginalText(s.originalText);
+                }
+              }}
+              onMouseLeave={() => {
+                setHoveredSuggestionOriginalText(null);
+              }}
               className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col min-w-[320px] max-w-[400px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200"
             >
               <div className="flex items-center justify-between gap-2">

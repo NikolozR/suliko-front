@@ -8,6 +8,7 @@ import CopyButton from "@/features/translation/components/CopyButton";
 import DownloadButton from "@/features/translation/components/DownloadButton";
 import ChatSuggestionsPanel from './ChatSuggestionsPanel';
 import Editor from "@/features/editor/Editor";
+import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
@@ -48,6 +49,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
   const [editorDeadline, setEditorDeadline] = useState<number | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
+  const { hoveredSuggestionOriginalText } = useChatSuggestionsStore();
 
   const isOriginalFileSrt = () => {
     const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
@@ -376,7 +378,11 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
             </div>
           </div>
           <div className="h-[calc(100vh-240px)] max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
-            <Editor translatedMarkdown={translatedMarkdown} onChange={onEdit} />
+            <Editor
+              translatedMarkdown={translatedMarkdown}
+              onChange={onEdit}
+              hoveredText={hoveredSuggestionOriginalText}
+            />
           </div>
         </div>
       </div>
