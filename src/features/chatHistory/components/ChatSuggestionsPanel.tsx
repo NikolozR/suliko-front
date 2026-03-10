@@ -1,6 +1,6 @@
 import { Check, X, Flame, Clock } from "lucide-react";
 import { useState } from "react";
-import { ApplySuggestionResponse, Suggestion } from "@/features/translation";
+import { ApplySuggestionResponse, Suggestion, useDocumentTranslationStore } from "@/features/translation";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { useChatEditingStore } from "../store/chatEditingStore";
 import { LoadingSpinner } from "@/features/ui/components/loading";
@@ -100,10 +100,12 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
     setLoadingSuggestionId(id);
     try {
       const s = suggestions.find((sg: Suggestion) => sg.id === id)!;
-      const currentContent = useChatEditingStore.getState().translatedMarkdown;
-
-      if (canExactMatch(s, currentContent)) {
-        const newContent = currentContent.replaceAll(s.originalText, s.suggestedText);
+      if (canExactMatch(s, translatedMarkdown)) {
+        let newContent = translatedMarkdown;
+        newContent = translatedMarkdown.replaceAll(
+          s.originalText,
+          s.suggestedText
+        );
         setTranslatedMarkdownWithoutZoomReset(newContent);
         acceptSuggestion(id);
         setSuggestionAccepted(true);
