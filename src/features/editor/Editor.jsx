@@ -16,6 +16,7 @@ export default function Editor({ translatedMarkdown, onChange, hoveredText }) {
   const editorContainerRef = useRef(null);
   const editorRef = useRef(null);
   const editorInstanceRef = useRef(null);
+  const isSettingDataRef = useRef(false);
   const [isLayoutReady, setIsLayoutReady] = useState(false);
   const [error, setError] = useState(null);
   const cloud = useCKEditorCloud({ version: "46.0.0", premium: true });
@@ -337,14 +338,18 @@ export default function Editor({ translatedMarkdown, onChange, hoveredText }) {
     }
   }, [editorConfig]);
 
-  // Keep the editor content in sync with external state changes
+  // Keep the editor content in sync with external state changes.
+  // Guard with isSettingDataRef so the onChange below doesn't echo the
+  // change back to the store and trigger a re-render/dimming loop.
   useEffect(() => {
     const editor = editorInstanceRef.current;
     if (!editor) return;
     const incoming = translatedMarkdown || "";
     const current = editor.getData();
     if (current !== incoming) {
+      isSettingDataRef.current = true;
       editor.setData(incoming);
+      isSettingDataRef.current = false;
     }
   }, [translatedMarkdown]);
 
@@ -472,7 +477,10 @@ export default function Editor({ translatedMarkdown, onChange, hoveredText }) {
                 editor.setData(translatedMarkdown || "");
               }}
               onChange={(event, editor) => {
-                onChange && onChange(editor.getData());
+                // Don't propagate changes that we triggered ourselves via setData
+                if (!isSettingDataRef.current) {
+                  onChange && onChange(editor.getData());
+                }
               }}
               onError={(error, { willEditorRestart }) => {
                 console.error('CKEditor error:', error);
