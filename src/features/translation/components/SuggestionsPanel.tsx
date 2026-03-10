@@ -104,35 +104,32 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           document.body.removeChild(textarea);
         }
       }
-    } catch {}
+    } catch { }
   };
 
   const canExactMatch = (suggestion: Suggestion, content: string) => {
     return content.includes(suggestion.originalText);
   };
 
+  // const handleAcceptSuggestion = async (id: string) => {
   const handleAcceptSuggestion = async (id: string) => {
     setLoadingSuggestionId(id);
     try {
       const s = suggestions.find((sg: Suggestion) => sg.id === id)!;
-      if (canExactMatch(s, translatedMarkdown)) {
-        let newContent = translatedMarkdown;
-        newContent = translatedMarkdown.replaceAll(
-          s.originalText,
-          s.suggestedText
-        );
+      const currentContent = useDocumentTranslationStore.getState().translatedMarkdown;
+
+      if (canExactMatch(s, currentContent)) {
+        const newContent = currentContent.replaceAll(s.originalText, s.suggestedText);
         setTranslatedMarkdownWithoutZoomReset(newContent);
         acceptSuggestion(id);
         setSuggestionAccepted(true);
         if (focusedSuggestionId === id) {
           setFocusedSuggestionId(null);
-          // setPreviewBackup(null);
         }
       } else {
         const { applySuggestion } = await import(
           "@/features/translation/services/suggestionsService"
         );
-        console.log("We Are Here");
         const data: ApplySuggestionResponse = await applySuggestion({
           chatId: chatId,
           outputLanguageId: currentTargetLanguageId,
@@ -140,16 +137,14 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
           editedSuggestedText: s.suggestedText,
           suggestion: s,
           targetLanguageId: currentTargetLanguageId,
-          currentDocumentContent: translatedMarkdown,
+          currentDocumentContent: currentContent,
         });
-        console.log("We Are Here 2", data);
         if (data.success) {
           setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
           acceptSuggestion(id);
           setSuggestionAccepted(true);
           if (focusedSuggestionId === id) {
             setFocusedSuggestionId(null);
-            // setPreviewBackup(null);
           }
         } else {
           console.error("Failed to apply suggestion:", data.errorMessage);
@@ -161,6 +156,55 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
       setLoadingSuggestionId(null);
     }
   };
+  //   setLoadingSuggestionId(id);
+  //   try {
+  //     const s = suggestions.find((sg: Suggestion) => sg.id === id)!;
+  //     if (canExactMatch(s, translatedMarkdown)) {
+  //       let newContent = translatedMarkdown;
+  //       newContent = translatedMarkdown.replaceAll(
+  //         s.originalText,
+  //         s.suggestedText
+  //       );
+  //       setTranslatedMarkdownWithoutZoomReset(newContent);
+  //       acceptSuggestion(id);
+  //       setSuggestionAccepted(true);
+  //       if (focusedSuggestionId === id) {
+  //         setFocusedSuggestionId(null);
+  //         // setPreviewBackup(null);
+  //       }
+  //     } else {
+  //       const { applySuggestion } = await import(
+  //         "@/features/translation/services/suggestionsService"
+  //       );
+  //       console.log("We Are Here");
+  //       const data: ApplySuggestionResponse = await applySuggestion({
+  //         chatId: chatId,
+  //         outputLanguageId: currentTargetLanguageId,
+  //         editedOriginalText: s.originalText,
+  //         editedSuggestedText: s.suggestedText,
+  //         suggestion: s,
+  //         targetLanguageId: currentTargetLanguageId,
+  //         currentDocumentContent: translatedMarkdown,
+  //       });
+  //       console.log("We Are Here 2", data);
+  //       if (data.success) {
+  //         setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
+  //         acceptSuggestion(id);
+  //         setSuggestionAccepted(true);
+  //         if (focusedSuggestionId === id) {
+  //           setFocusedSuggestionId(null);
+  //           // setPreviewBackup(null);
+  //         }
+  //       } else {
+  //         console.error("Failed to apply suggestion:", data.errorMessage);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error applying suggestion:", error);
+  //   } finally {
+  //     setLoadingSuggestionId(null);
+  //   }
+  // };
 
   const handleSuggestionTextChange = (id: string, newText: string) => {
     updateSuggestionText(id, newText);
@@ -286,11 +330,11 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({
                     title={
                       canExactMatch(s, translatedMarkdown)
                         ? t("SuggestionsPanel.indicatorExact", {
-                            default: "Exact match: quick apply",
-                          })
+                          default: "Exact match: quick apply",
+                        })
                         : t("SuggestionsPanel.indicatorNonExact", {
-                            default: "Non-exact: server apply",
-                          })
+                          default: "Non-exact: server apply",
+                        })
                     }
                   >
                     {canExactMatch(s, translatedMarkdown) ? (

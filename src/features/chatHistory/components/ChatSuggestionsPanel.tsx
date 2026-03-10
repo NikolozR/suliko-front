@@ -1,6 +1,6 @@
 import { Check, X, Flame, Clock } from "lucide-react";
 import { useState } from "react";
-import { ApplySuggestionResponse, Suggestion } from "@/features/translation";
+import { ApplySuggestionResponse, Suggestion, useDocumentTranslationStore } from "@/features/translation";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { useChatEditingStore } from "../store/chatEditingStore";
 import { LoadingSpinner } from "@/features/ui/components/loading";
@@ -47,16 +47,63 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
     return content.includes(suggestion.originalText);
   };
 
+  // const handleAcceptSuggestion = async (id: string) => {
+  //   setLoadingSuggestionId(id);
+  //   try {
+  //     const s = suggestions.find((sg: Suggestion) => sg.id === id)!;
+  //     if (canExactMatch(s, translatedMarkdown)) {
+  //       let newContent = translatedMarkdown;
+  //       newContent = translatedMarkdown.replaceAll(
+  //         s.originalText,
+  //         s.suggestedText
+  //       );
+  //       setTranslatedMarkdownWithoutZoomReset(newContent);
+  //       acceptSuggestion(id);
+  //       setSuggestionAccepted(true);
+  //       if (focusedSuggestionId === id) {
+  //         setFocusedSuggestionId(null);
+  //       }
+  //     } else {
+  //       const { applySuggestion } = await import(
+  //         "@/features/translation/services/suggestionsService"
+  //       );
+  //       const data: ApplySuggestionResponse = await applySuggestion({
+  //         chatId: chatId,
+  //         suggestion: s,
+  //         targetLanguageId: currentTargetLanguageId,
+  //         outputLanguageId: currentTargetLanguageId,
+  //         editedOriginalText: s.originalText,
+  //         editedSuggestedText: s.suggestedText,
+  //         currentDocumentContent: translatedMarkdown,
+  //       });
+  //        console.log(data, "APPLY SUGGESTION RESPONSE");
+  //       if (data.success) {
+  //         setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
+  //         acceptSuggestion(id);
+  //         setSuggestionAccepted(true);
+  //         if (focusedSuggestionId === id) {
+  //           setFocusedSuggestionId(null);
+  //         }
+  //       } else {
+  //         console.error("Failed to apply suggestion:", data.errorMessage);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error applying suggestion:", error);
+  //   } finally {
+  //     setLoadingSuggestionId(null);
+  //   }
+  // };
+
+
   const handleAcceptSuggestion = async (id: string) => {
     setLoadingSuggestionId(id);
     try {
       const s = suggestions.find((sg: Suggestion) => sg.id === id)!;
-      if (canExactMatch(s, translatedMarkdown)) {
-        let newContent = translatedMarkdown;
-        newContent = translatedMarkdown.replaceAll(
-          s.originalText,
-          s.suggestedText
-        );
+      const currentContent = useDocumentTranslationStore.getState().translatedMarkdown;
+
+      if (canExactMatch(s, currentContent)) {
+        const newContent = currentContent.replaceAll(s.originalText, s.suggestedText);
         setTranslatedMarkdownWithoutZoomReset(newContent);
         acceptSuggestion(id);
         setSuggestionAccepted(true);
@@ -69,14 +116,13 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
         );
         const data: ApplySuggestionResponse = await applySuggestion({
           chatId: chatId,
-          suggestion: s,
-          targetLanguageId: currentTargetLanguageId,
           outputLanguageId: currentTargetLanguageId,
           editedOriginalText: s.originalText,
           editedSuggestedText: s.suggestedText,
-          currentDocumentContent: translatedMarkdown,
+          suggestion: s,
+          targetLanguageId: currentTargetLanguageId,
+          currentDocumentContent: currentContent,
         });
-         console.log(data, "APPLY SUGGESTION RESPONSE");
         if (data.success) {
           setTranslatedMarkdownWithoutZoomReset(data.updatedContent);
           acceptSuggestion(id);
@@ -94,7 +140,6 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
       setLoadingSuggestionId(null);
     }
   };
-
   const handleSuggestionTextChange = (id: string, newText: string) => {
     updateSuggestionText(id, newText);
   };
@@ -135,11 +180,11 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
                     title={
                       canExactMatch(s, translatedMarkdown)
                         ? t("SuggestionsPanel.indicatorExact", {
-                            default: "Exact match: quick apply",
-                          })
+                          default: "Exact match: quick apply",
+                        })
                         : t("SuggestionsPanel.indicatorNonExact", {
-                            default: "Non-exact: server apply",
-                          })
+                          default: "Non-exact: server apply",
+                        })
                     }
                   >
                     {canExactMatch(s, translatedMarkdown) ? (
