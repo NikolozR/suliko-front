@@ -96,6 +96,7 @@ export default function ProjectDetailPage() {
   const mountTimeRef = useRef(Date.now());
   const pollCancelledRef = useRef(false);
   const isTerminalRef = useRef(false);
+  const hasHydratedRef = useRef(false);
 
   // Reset stores when switching projects
   useEffect(() => {
@@ -110,6 +111,7 @@ export default function ProjectDetailPage() {
     mountTimeRef.current = Date.now();
     pollCancelledRef.current = false;
     isTerminalRef.current = false;
+    hasHydratedRef.current = false;
     resetChatEditingStore();
     resetChatSuggestionsStore();
   }, [projectId, resetChatEditingStore, resetChatSuggestionsStore]);
@@ -264,9 +266,11 @@ export default function ProjectDetailPage() {
   // Hydrate when we have translation result
   useEffect(() => {
     if (!chat || chat.chatId !== projectId) return;
+    if (hasHydratedRef.current) return;
     const hasContent = translatedMarkdown || chat.translationResult?.translatedContent;
     if (!hasContent) return;
 
+    hasHydratedRef.current = true;
     const content = translatedMarkdown || chat.translationResult?.translatedContent || "";
     resetChatEditingStore();
     resetChatSuggestionsStore();
