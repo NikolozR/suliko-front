@@ -197,7 +197,8 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
   const [stage, setStage] = useState("Preparing preview...");
   const [scale, setScale] = useState<number>(1.0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { shouldResetZoom, setShouldResetZoom } = useDocumentTranslationStore();
+  const shouldResetZoom = useDocumentTranslationStore((state) => state.shouldResetZoom);
+  const setShouldResetZoom = useDocumentTranslationStore((state) => state.setShouldResetZoom);
 
   const minScale = 0.5;
   const maxScale = 3.0;
@@ -573,7 +574,8 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
   const [stage, setStage] = useState("Preparing image preview...");
   const containerRef = useRef<HTMLDivElement>(null);
-  const { shouldResetZoom, setShouldResetZoom } = useDocumentTranslationStore();
+  const shouldResetZoom = useDocumentTranslationStore((state) => state.shouldResetZoom);
+  const setShouldResetZoom = useDocumentTranslationStore((state) => state.setShouldResetZoom);
 
   const minScale = 0.5;
   const maxScale = 3.0;
