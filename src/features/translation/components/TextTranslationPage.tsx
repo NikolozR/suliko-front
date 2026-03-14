@@ -8,8 +8,8 @@ import { useUserStore } from "@/features/auth/store/userStore";
 const TextTranslationPage = () => {
   const t = useTranslations('MainContent');
   const pathname = usePathname();
-    const { userProfile } = useUserStore();
-  
+  const { userProfile } = useUserStore();
+
 
   const items = [
     'გამარჯობა',
@@ -28,10 +28,10 @@ const TextTranslationPage = () => {
   ]
 
   return (
-    <div className="min-h-screen p-4 md:p-8 bg-suliko-main-content-bg-color">
+    <div className="min-h-screen pl-8 p-4 md:p-8 bg-suliko-main-content-bg-color">
       <div className="mx-auto">
         <div className="mb-8">
-          <div className="text-2xl md:text-3xl font-semibold text-foreground slot-container flex gap-5">
+          <div className="text-2xl w-full gap-x-5 md:text-3xl font-semibold text-foreground flex-wrap slot-container flex gap-5">
             <div className="slot-track">
               {items.concat(items).map((item, i) => (
                 <span key={i} className="slot-item">
@@ -39,33 +39,32 @@ const TextTranslationPage = () => {
                 </span>
               ))}
             </div>
-            <span className="absolute ml-48">{userProfile?.firstName}</span>
+            <span className="md:block hidden">{userProfile?.firstName}</span>
           </div>
+          <span className="md:hidden block md:text-3xl text-2xl mt-2">{userProfile?.firstName}</span>
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
-        
+
         {/* Navigation Tabs */}
         <div className="w-full mb-6">
           <div className="bg-muted text-muted-foreground inline-flex h-9 w-full items-center justify-center rounded-lg p-0.75">
             <div className="grid w-full grid-cols-2 gap-0">
               <Link
                 href="/text"
-                className={`cursor-pointer flex items-center gap-2 h-[calc(100%-1px)] flex-1 justify-center rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${
-                    pathname.split('/')[pathname.split('/').length - 1] === 'text'
+                className={`cursor-pointer flex items-center gap-2 h-[calc(100%-1px)] flex-1 justify-center rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${pathname.split('/')[pathname.split('/').length - 1] === 'text'
                     ? 'bg-suliko-default-color! text-white shadow-sm border-suliko-default-color z-10'
                     : 'text-foreground hover:bg-background/50 border-transparent'
-                }`}
+                  }`}
               >
                 <Type className="h-5 w-5" />
                 {t('textTab')}
               </Link>
               <Link
                 href="/document"
-                className={`cursor-pointer flex items-center gap-2 h-[calc(100%-1px)] flex-1 justify-center rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${
-                  pathname.split('/')[pathname.split('/').length - 1] === 'document'
+                className={`cursor-pointer flex items-center gap-2 h-[calc(100%-1px)] flex-1 justify-center rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${pathname.split('/')[pathname.split('/').length - 1] === 'document'
                     ? 'bg-suliko-default-color! text-white shadow-sm border-suliko-default-color z-10'
                     : 'text-foreground hover:bg-background/50 border-transparent'
-                }`}
+                  }`}
               >
                 <Upload className="h-5 w-5" />
                 {t('documentTab')}

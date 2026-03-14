@@ -67,7 +67,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
 
-  const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed);
+  const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed!);
   const storeSetIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
   const [isClient, setIsClient] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
@@ -78,6 +78,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
       setIsMobile(window.innerWidth < 768);
     };
     checkMobile();
+
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
@@ -92,15 +93,15 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     }
   }, [initialUserProfile, userProfile, setUserProfile]);
 
-  // Handle responsive behavior - don't force collapse on mobile, allow user to toggle
-  useEffect(() => {
-    if (!isClient) return;
-    setIsMobile(window.innerWidth < 768);
-  }, [isClient]);
-
   const handleCollapseToggle = () => {
     storeSetIsCollapsed(!storeIsCollapsed);
   };
+
+  useEffect(() => {
+    if (isMobile) {
+      storeSetIsCollapsed(true);
+    }
+  }, [isMobile, storeSetIsCollapsed]);
 
   const isActive = (href: string) => {
     if (href === '/text') {
@@ -117,42 +118,43 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   });
 
   // Determine effective collapsed state for rendering to prevent hydration mismatch
-  const effectiveIsCollapsed = !isClient ? false : storeIsCollapsed;
+  // On screens < 680px, always treat as collapsed regardless of stored preference
+  const effectiveIsCollapsed = !isClient ? false : (isMobile || storeIsCollapsed);
 
   const needsEmailReminder = Boolean(
     userProfile?.email && userProfile.email.toLowerCase().includes("example.com")
   );
 
-  const renderOverlay = () => {
-    if (isMobile) {
-      return (
-        <div
-          className={`fixed inset-0 z-30 md:hidden transition-all duration-300 ${!effectiveIsCollapsed
-              ? "bg-black/40 backdrop-blur-[2px] opacity-100 pointer-events-auto"
-              : "bg-transparent opacity-0 pointer-events-none"
-            }`}
-          onClick={() => storeSetIsCollapsed(true)}
-          aria-hidden="true"
-        />
-      );
-    }
-    return null;
-  };
+  // const renderOverlay = () => {
+  //   if (isMobile) {
+  //     return (
+  //       <div
+  //         className={`fixed inset-0 z-30 md:hidden transition-all duration-300 ${!effectiveIsCollapsed
+  //             ? "bg-black/40 backdrop-blur-[2px] opacity-100 pointer-events-auto"
+  //             : "bg-transparent opacity-0 pointer-events-none"
+  //           }`}
+  //         onClick={() => storeSetIsCollapsed(true)}
+  //         aria-hidden="true"
+  //       />
+  //     );
+  //   }
+  //   return null;
+  // };
 
   return (
     <>
-      {renderOverlay()}
+      {/* {renderOverlay()} */}
       <aside
         className={`sidebar-main flex flex-col h-screen overflow-auto fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
-            ? "w-16"
-            : "w-48 md:w-56 lg:w-64"
+          ? "w-20"
+          : "w-48 md:w-56 lg:w-64"
           } ${!effectiveIsCollapsed
             ? "md:shadow-none shadow-xl"
             : "md:shadow-none"
-          } ${isMobile && effectiveIsCollapsed ? "-translate-x-full md:translate-x-0" : "translate-x-0"
+          } ${isMobile && effectiveIsCollapsed ? "md:translate-x-0" : "translate-x-0"
           }`}
       >
-        <div className={`flex items-center ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-6`}>
+        <div className={`flex items-center h-20 ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-3`}>
           {!effectiveIsCollapsed && (
             <Link
               href="/"
@@ -162,16 +164,20 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               <SulikoLogo />
             </Link>
           )}
-          <button
-            onClick={handleCollapseToggle}
-            className="sidebar-button flex-shrink-0 p-1.5 rounded-lg cursor-pointer transition-colors"
-            aria-label={effectiveIsCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {effectiveIsCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
-          </button>
+          <div className="flex flex-col gap-y-2 justify-between h-full">
+            <ThemeToggle />
+            <button
+              onClick={handleCollapseToggle}
+              className={`sidebar-button flex-shrink-0 p-1.5 h-9 w-9  rounded-lg cursor-pointer transition-colors ${isMobile ? "hidden" : "block"}`}
+              aria-label={effectiveIsCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+            >
+              {effectiveIsCollapsed ? <ChevronRight className="h-6 w-6" /> : <ChevronLeft className="h-6 w-6" />}
+            </button>
+          </div>
+
         </div>
 
-        <nav className="flex-1 px-2 space-y-1">
+        <nav className="flex-1 px-2 pt-2 space-y-1">
           {visibleNavItems.map(({ label, href, icon: Icon, disabled }) => (
             disabled ? (
               <span
@@ -194,8 +200,8 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   resetDocumentTranslation();
                 } : undefined}
                 className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
-                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
-                    : ""
+                  ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                  : ""
                   } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                 aria-current={isActive(href) ? "page" : undefined}
               >
@@ -234,8 +240,8 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 <Link
                   href="/projects"
                   className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/")
-                      ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
-                      : ""
+                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                    : ""
                     } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                   aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") ? "page" : undefined}
                 >
@@ -337,9 +343,6 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               )}
             </Link>
           )}
-          <div className="mt-3 flex justify-center">
-            <ThemeToggle />
-          </div>
         </div>
       </aside>
     </>

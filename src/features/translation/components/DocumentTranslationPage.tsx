@@ -27,11 +27,10 @@ const DocumentTranslationPage = () => {
   ]
 
   return (
-    <div className="min-h-screen p-4 md:p-8 bg-suliko-main-content-bg-color">
+    <div className="min-h-screen pl-8 p-4 md:p-8 bg-suliko-main-content-bg-color">
       <div className="mx-auto">
         <div className="mb-8">
-          {/* <h1 className="">{t('title')}</h1> */}
-          <div className="text-2xl md:text-3xl font-semibold text-foreground slot-container flex gap-5">
+          <div className="text-2xl w-full gap-x-5 md:text-3xl font-semibold text-foreground flex-wrap slot-container flex gap-5">
             <div className="slot-track">
               {items.concat(items).map((item, i) => (
                 <span key={i} className="slot-item">
@@ -39,8 +38,9 @@ const DocumentTranslationPage = () => {
                 </span>
               ))}
             </div>
-            <span className="absolute ml-48">{userProfile?.firstName}</span>
+            <span className="md:block hidden">{userProfile?.firstName}</span>
           </div>
+          <span className="md:hidden block md:text-3xl text-2xl mt-2">{userProfile?.firstName}</span>
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
 
