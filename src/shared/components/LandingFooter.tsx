@@ -36,9 +36,9 @@ export default function LandingFooter() {
                 <Image
                   src={mounted && resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
                   alt="Suliko"
-                  width={120}
-                  height={120}
-                  className="h-32 w-32"
+                  width={56}
+                  height={56}
+                  className="h-14 w-auto"
                 />
               </Link>
               
@@ -143,9 +143,17 @@ export default function LandingFooter() {
 
         {/* Bottom Bar */}
         <div className="py-6 border-t border-border">
-          <div className="flex justify-center items-center">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3">
             <div className="text-muted-foreground text-sm">
               {t("bottom.copyright")}
+            </div>
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <Link href="/privacy" className="hover:text-foreground transition-colors">
+                {t("bottom.privacy")}
+              </Link>
+              <Link href="/terms" className="hover:text-foreground transition-colors">
+                {t("bottom.terms")}
+              </Link>
             </div>
           </div>
         </div>
