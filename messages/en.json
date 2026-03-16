@@ -742,6 +742,12 @@
         "company": "API24",
         "email": "info@api24.ge",
         "content": "When expanding on an international scale, localization was a critical challenge for API24. Suliko played a decisive role in adapting our interface and technical documentation. This allowed us to make our platform accessible to developers worldwide."
+      },
+      "legalPro": {
+        "name": "Legal Pro Group",
+        "role": "Senior Attorney",
+        "company": "Legal Pro Group",
+        "content": "Suliko has dramatically reduced the time our firm spends on document translation. The accuracy and consistency across large document sets is outstanding."
       }
     }
   },
@@ -789,7 +795,9 @@
       "error": "❌ Failed to subscribe. Please try again."
     },
     "bottom": {
-      "copyright": "© 2025 Suliko. All rights reserved."
+      "copyright": "© 2025 Suliko. All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service"
     }
   },
   "ReferralPage": {

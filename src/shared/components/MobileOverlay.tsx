@@ -26,7 +26,7 @@ export default function MobileOverlay() {
       const isLanding =
         segments.length === 0 || (segments.length === 1 && ((routing.locales as unknown as string[]).includes(segments[0])));
 
-      setShow(window.innerWidth < 1024 && !dismissed && !isLanding);
+      setShow(window.innerWidth < 1024 && !dismissed);
     };
 
     check();
