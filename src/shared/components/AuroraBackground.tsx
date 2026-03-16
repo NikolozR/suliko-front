@@ -16,8 +16,8 @@ export default function AuroraBackground() {
           height: "55vw",
           maxWidth: "700px",
           maxHeight: "700px",
-          background: "radial-gradient(ellipse at center, rgba(99,102,241,0.35) 0%, rgba(139,92,246,0.2) 45%, transparent 72%)",
-          filter: "blur(48px)",
+          background: "radial-gradient(ellipse at center, rgba(99,102,241,0.65) 0%, rgba(139,92,246,0.4) 45%, transparent 72%)",
+          filter: "blur(36px)",
           animation: "aurora-drift-1 22s ease-in-out infinite",
           willChange: "transform",
         }}
@@ -33,8 +33,8 @@ export default function AuroraBackground() {
           height: "60vw",
           maxWidth: "750px",
           maxHeight: "750px",
-          background: "radial-gradient(ellipse at center, rgba(139,92,246,0.3) 0%, rgba(167,139,250,0.18) 40%, transparent 70%)",
-          filter: "blur(56px)",
+          background: "radial-gradient(ellipse at center, rgba(139,92,246,0.6) 0%, rgba(167,139,250,0.35) 40%, transparent 70%)",
+          filter: "blur(42px)",
           animation: "aurora-drift-2 28s ease-in-out infinite",
           willChange: "transform",
         }}
@@ -50,8 +50,8 @@ export default function AuroraBackground() {
           height: "45vw",
           maxWidth: "580px",
           maxHeight: "580px",
-          background: "radial-gradient(ellipse at center, rgba(20,184,166,0.25) 0%, rgba(6,182,212,0.15) 45%, transparent 72%)",
-          filter: "blur(44px)",
+          background: "radial-gradient(ellipse at center, rgba(20,184,166,0.55) 0%, rgba(6,182,212,0.30) 45%, transparent 72%)",
+          filter: "blur(34px)",
           animation: "aurora-drift-3 18s ease-in-out infinite",
           willChange: "transform",
         }}
@@ -67,8 +67,8 @@ export default function AuroraBackground() {
           height: "35vw",
           maxWidth: "440px",
           maxHeight: "440px",
-          background: "radial-gradient(ellipse at center, rgba(59,130,246,0.22) 0%, rgba(99,102,241,0.12) 50%, transparent 75%)",
-          filter: "blur(40px)",
+          background: "radial-gradient(ellipse at center, rgba(59,130,246,0.50) 0%, rgba(99,102,241,0.25) 50%, transparent 75%)",
+          filter: "blur(30px)",
           animation: "aurora-drift-4 15s ease-in-out infinite",
           willChange: "transform",
         }}

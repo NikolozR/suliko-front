@@ -373,11 +373,11 @@ html {
   100% { transform: translate(0%,   0%)  scale(1);    border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; }
 }
 
-/* Aurora — light mode: subtle; dark mode: full vibrance */
-html:not(.dark) .aurora-orb-1 { opacity: 0.45; }
-html:not(.dark) .aurora-orb-2 { opacity: 0.40; }
-html:not(.dark) .aurora-orb-3 { opacity: 0.35; }
-html:not(.dark) .aurora-orb-4 { opacity: 0.30; }
+/* Aurora — light mode: visible; dark mode: full vibrance */
+html:not(.dark) .aurora-orb-1 { opacity: 0.70; }
+html:not(.dark) .aurora-orb-2 { opacity: 0.65; }
+html:not(.dark) .aurora-orb-3 { opacity: 0.60; }
+html:not(.dark) .aurora-orb-4 { opacity: 0.55; }
 html.dark .aurora-orb-1 { opacity: 1;    }
 html.dark .aurora-orb-2 { opacity: 1;    }
 html.dark .aurora-orb-3 { opacity: 0.9;  }
