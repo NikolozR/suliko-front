@@ -89,6 +89,9 @@ export default function VideoSection() {
     return `${minutes}:${seconds.toString().padStart(2, "0")}`;
   };
 
+  // Guard against NaN when duration is 0 before video loads
+  const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
+
   return (
     <section className="py-20 bg-muted/30">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -113,114 +116,104 @@ export default function VideoSection() {
                 Your browser does not support the video tag.
               </video>
 
+              {/* Centered play button overlay — shown when video is paused */}
+              {!isPlaying && (
+                <button
+                  onClick={togglePlay}
+                  aria-label="Play video"
+                  className="absolute inset-0 flex items-center justify-center group"
+                >
+                  <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-white/30 transition-colors">
+                    <Play className="h-7 w-7 text-white fill-white ml-1" />
+                  </div>
+                </button>
+              )}
+
               {/* Custom Controls */}
               <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-              {/* Progress Bar */}
-              <div className="mb-3">
-                <input
-                  ref={progressRef}
-                  type="range"
-                  min="0"
-                  max={duration || 0}
-                  value={currentTime}
-                  onChange={handleProgressChange}
-                  className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
-                  style={{
-                    background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, rgba(255,255,255,0.3) ${(currentTime / duration) * 100}%, rgba(255,255,255,0.3) 100%)`
-                  }}
-                />
-              </div>
-
-              {/* Control Buttons */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
-                  {/* Play/Pause Button */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={togglePlay}
-                    className="text-white hover:bg-white/20 p-2"
-                  >
-                    {isPlaying ? (
-                      <Pause className="h-5 w-5" />
-                    ) : (
-                      <Play className="h-5 w-5" />
-                    )}
-                  </Button>
-
-                  {/* Time Display */}
-                  <span className="text-white text-sm font-mono">
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </span>
-                </div>
-
-                <div className="flex items-center gap-3">
-                  {/* Volume Control */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={toggleMute}
-                    className="text-white hover:bg-white/20 p-2"
-                  >
-                    {isMuted || volume === 0 ? (
-                      <VolumeX className="h-5 w-5" />
-                    ) : (
-                      <Volume2 className="h-5 w-5" />
-                    )}
-                  </Button>
-
+                {/* Progress Bar */}
+                <div className="mb-3">
                   <input
+                    ref={progressRef}
                     type="range"
                     min="0"
-                    max="1"
-                    step="0.1"
-                    value={volume}
-                    onChange={handleVolumeChange}
-                    className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
+                    max={duration || 0}
+                    value={currentTime}
+                    onChange={handleProgressChange}
+                    className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer video-slider"
                     style={{
-                      background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${volume * 100}%, rgba(255,255,255,0.3) ${volume * 100}%, rgba(255,255,255,0.3) 100%)`
+                      background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${progressPercent}%, rgba(255,255,255,0.3) ${progressPercent}%, rgba(255,255,255,0.3) 100%)`
                     }}
                   />
-
-                  {/* Fullscreen Button */}
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={toggleFullscreen}
-                    className="text-white hover:bg-white/20 p-2"
-                  >
-                    <Maximize className="h-5 w-5" />
-                  </Button>
                 </div>
-              </div>
+
+                {/* Control Buttons */}
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    {/* Play/Pause Button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={togglePlay}
+                      className="text-white hover:bg-white/20 p-2"
+                    >
+                      {isPlaying ? (
+                        <Pause className="h-5 w-5" />
+                      ) : (
+                        <Play className="h-5 w-5" />
+                      )}
+                    </Button>
+
+                    {/* Time Display */}
+                    <span className="text-white text-sm font-mono">
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-3">
+                    {/* Volume Control */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={toggleMute}
+                      className="text-white hover:bg-white/20 p-2"
+                    >
+                      {isMuted || volume === 0 ? (
+                        <VolumeX className="h-5 w-5" />
+                      ) : (
+                        <Volume2 className="h-5 w-5" />
+                      )}
+                    </Button>
+
+                    <input
+                      type="range"
+                      min="0"
+                      max="1"
+                      step="0.1"
+                      value={volume}
+                      onChange={handleVolumeChange}
+                      className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer video-slider"
+                      style={{
+                        background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${volume * 100}%, rgba(255,255,255,0.3) ${volume * 100}%, rgba(255,255,255,0.3) 100%)`
+                      }}
+                    />
+
+                    {/* Fullscreen Button */}
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={toggleFullscreen}
+                      className="text-white hover:bg-white/20 p-2"
+                    >
+                      <Maximize className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
-      <style jsx>{`
-        .slider::-webkit-slider-thumb {
-          appearance: none;
-          height: 16px;
-          width: 16px;
-          border-radius: 50%;
-          background: #3b82f6;
-          cursor: pointer;
-          border: 2px solid white;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .slider::-moz-range-thumb {
-          height: 16px;
-          width: 16px;
-          border-radius: 50%;
-          background: #3b82f6;
-          cursor: pointer;
-          border: 2px solid white;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        }
-      `}</style>
     </section>
   );
 }

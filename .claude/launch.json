@@ -1,0 +1,19 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Next.js Dev Server",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["node_modules/.bin/next", "dev", "--turbopack"],
+      "port": 3000,
+      "autoPort": true
+    },
+    {
+      "name": "Next.js Production Preview",
+      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
+      "runtimeArgs": ["node_modules/.bin/next", "start"],
+      "port": 3000,
+      "autoPort": true
+    }
+  ]
+}

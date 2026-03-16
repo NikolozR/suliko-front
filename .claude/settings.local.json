@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /c/Users/User/Documents/GitHub/suliko-front/.claude/worktrees/eager-noether/src/app/[locale] -maxdepth 1 -type f -o -type d)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(where npm:*)",
+      "Bash(echo $PATH)",
+      "Read(//usr/**)",
+      "Bash(cmd.exe /c \"where npm\")",
+      "Bash(powershell.exe -Command \"Get-Command npm | Select-Object -ExpandProperty Source\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Program Files\\\\nodejs\\\\'' -ErrorAction SilentlyContinue | Select-Object Name\")",
+      "Bash(powershell.exe -Command \"Get-Item ''C:\\\\Program Files\\\\nodejs\\\\node.exe'' | Select-Object FullName\")",
+      "Bash(powershell.exe -Command \"Test-Path ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\next\\\\dist\\\\bin\\\\next''\")",
+      "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\.bin\\\\next'' -First 2\")",
+      "Bash(powershell.exe -Command \"Get-Content ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\.bin\\\\next.cmd'' -First 3\")",
+      "Bash(powershell.exe -Command \"Get-Item ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\next\\\\dist\\\\bin\\\\next.js'' -ErrorAction SilentlyContinue | Select-Object FullName; Get-Item ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\next\\\\dist\\\\bin\\\\next'' -ErrorAction SilentlyContinue | Select-Object FullName\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\next\\\\dist\\\\bin'' | Select-Object Name\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\next'' -Recurse -Filter ''*.js'' -Depth 3 | Where-Object { $_.Name -match ''^next'' } | Select-Object FullName -First 5\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\next'' -Name -Depth 1 | Select-Object -First 15\")",
+      "Bash(powershell.exe -Command \"Get-ChildItem ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules'' -Name | Select-Object -First 20\")",
+      "Bash(cmd.exe /c \"SET PATH=C:\\\\Program Files\\\\nodejs;%PATH% && cd /d C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether && rmdir /s /q node_modules 2>nul & echo cleaned\")",
+      "Bash(cmd.exe /c \"SET PATH=C:\\\\Program Files\\\\nodejs;%PATH% && cd /d C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether && \"\"C:\\\\Program Files\\\\nodejs\\\\npm.cmd\"\" install 2>&1 && echo INSTALL_DONE\")",
+      "Bash(powershell.exe -Command \"\\(Get-ChildItem ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules'' -ErrorAction SilentlyContinue\\).Count; Test-Path ''C:\\\\Users\\\\User\\\\Documents\\\\GitHub\\\\suliko-front\\\\.claude\\\\worktrees\\\\eager-noether\\\\node_modules\\\\next''\")"
+    ]
+  }
+}
