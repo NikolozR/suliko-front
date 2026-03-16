@@ -1,6 +1,21 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+html {
+  font-size: 80%;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+.pause-on-hover:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
 
 
 @font-face {
@@ -336,11 +351,9 @@
 .blog-stars-background {
   position: relative;
   background: linear-gradient(135deg,
-      #0f172a 0%,
-      #1e293b 25%,
-      #334155 50%,
-      #475569 75%,
-      #64748b 100%);
+      hsl(var(--background)) 0%,
+      hsl(var(--muted)) 50%,
+      hsl(var(--background)) 100%);
 }
 
 /* Stars Layer 1 - Primary Stars */
@@ -408,15 +421,7 @@
   }
 }
 
-/* Dark Theme Adjustments */
-.dark .blog-stars-background {
-  background: linear-gradient(135deg,
-      #0f172a 0%,
-      #1e293b 25%,
-      #334155 50%,
-      #475569 75%,
-      #64748b 100%);
-}
+/* Dark Theme Adjustments — background handled by CSS vars above */
 
 .dark .stars-layer-1 {
   background-image:
@@ -1186,4 +1191,23 @@ html.dark .sidebar-main {
   .slot-item {
     transition-duration: 0ms !important;
   }
+}
+
+/* Accordion animations */
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
 }

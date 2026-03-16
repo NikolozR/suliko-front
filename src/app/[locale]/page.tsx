@@ -20,6 +20,9 @@ const VideoSection = dynamic(() => import("@/shared/components/VideoSection"), {
 const TestimonialsSection = dynamic(() => import("@/shared/components/TestimonialsSection"), {
   loading: () => <LandingSectionSkeleton withCards />,
 });
+const FAQSection = dynamic(() => import("@/shared/components/FAQSection"), {
+  loading: () => <LandingSectionSkeleton />,
+});
 const LandingFooter = dynamic(() => import("@/shared/components/LandingFooter"), {
   loading: () => (
     <div className="border-t border-border bg-muted/30 px-4 py-10">
@@ -86,6 +89,7 @@ export default function LandingPage() {
               <PricingSection />
               <VideoSection />
               <TestimonialsSection />
+              <FAQSection />
             </>
           ) : (
             <>

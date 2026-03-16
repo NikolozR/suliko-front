@@ -67,8 +67,8 @@ export default function HeroSection() {
   const isDark = mounted && resolvedTheme === "dark";
   const starColor = isDark ? "white" : "#1e40af"; // Blue for light theme, white for dark
   const fallingStarGradient = isDark
-    ? "linear-gradient(90deg, rgba(255,255,255,0.95), rgba(147,197,253,0.7), rgba(147,197,253,0))"
-    : "linear-gradient(90deg, rgba(37,99,235,0.95), rgba(96,165,250,0.7), rgba(96,165,250,0))";
+    ? "linear-gradient(270deg, rgba(255,255,255,0.95), rgba(147,197,253,0.7), rgba(147,197,253,0))"
+    : "linear-gradient(270deg, rgba(37,99,235,0.95), rgba(96,165,250,0.7), rgba(96,165,250,0))";
 
   // Generate stable star positions using useMemo to avoid hydration mismatches
   const starData = useMemo(() => {
@@ -180,21 +180,29 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
           {/* Left column: text */}
           <div className="lg:col-span-2">
+            {/* Badge pill */}
+            <div className="flex justify-center lg:justify-start mb-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary font-medium">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                {t("badge")}
+              </div>
+            </div>
+
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground mb-4 leading-tight text-center lg:text-left">
+            <h1 className="text-3xl sm:text-4xl lg:text-4xl font-bold text-foreground mb-4 leading-tight text-center lg:text-left">
               {t("title")}
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg sm:text-xl text-muted-foreground mb-6 max-w-3xl mx-auto lg:mx-0 leading-relaxed text-center lg:text-left">
+            <p className="text-sm sm:text-base text-muted-foreground mb-6 mx-auto lg:mx-0 leading-relaxed text-center lg:text-left">
               {t("description")}
             </p>
 
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
-              <Link 
-                href="/document" 
+              <Link
+                href="/document"
                 prefetch={true}
                 onMouseEnter={handleMouseEnter}
                 onClick={handleGetStartedClick}
@@ -205,10 +213,10 @@ export default function HeroSection() {
                   isLoading={isNavigating}
                   loadingText={t("loading") || "Loading..."}
                 >
-                  <>
+                  <span className="flex items-center gap-2">
                     {t("cta")}
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </>
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
                 </LoadingButton>
               </Link>
               <Link href="#pricing">
@@ -216,6 +224,22 @@ export default function HeroSection() {
                   {t("viewPricing")}
                 </Button>
               </Link>
+            </div>
+
+            {/* Social proof stats */}
+            <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center lg:justify-start mt-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-foreground">50K+</span>
+                <span>{t("documentsTranslated")}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-foreground">50+</span>
+                <span>{t("languagesSupported")}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-foreground">98%</span>
+                <span>{t("accuracyRate")}</span>
+              </div>
             </div>
           </div>
 

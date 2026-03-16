@@ -25,130 +25,125 @@ export default function LandingFooter() {
   return (
     <footer id="contact" className="bg-muted/50 border-t border-border">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Main Footer Content */}
-        <div className="py-16">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            
-            {/* Left Pane */}
-            <div className="space-y-8">
-              {/* Logo */}
-              <Link href="/" className="flex items-center space-x-2">
-                <Image
-                  src={mounted && resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
-                  alt="Suliko"
-                  width={120}
-                  height={120}
-                  className="h-32 w-32"
-                />
-              </Link>
-              
-              {/* Description */}
-              <div className="max-w-md">
-                <p className="text-muted-foreground leading-relaxed text-base">
-                  {t("description")}
-                </p>
-              </div>
-              
-              {/* Book A Demo Button */}
-              <div>
-                <Button 
-                  size="lg" 
-                  className="px-8 py-4 text-base"
-                  onClick={() => window.open('https://calendly.com/misha-suliko/30min', '_blank')}
+        <div className="py-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+
+          {/* Col 1: Brand */}
+          <div className="space-y-4">
+            <Link href="/" className="inline-flex items-center">
+              <Image
+                src={mounted && resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
+                alt="Suliko"
+                width={80}
+                height={80}
+                className="h-14 w-14"
+              />
+            </Link>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {t("description")}
+            </p>
+            <div className="flex gap-2 pt-1">
+              {socialLinks.map((social, index) => (
+                <a
+                  key={index}
+                  href={social.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="p-2 rounded-full bg-background hover:bg-accent transition-colors"
+                  aria-label={social.label}
                 >
-                  {t("bookDemo")}
-                </Button>
-              </div>
-            </div>
-
-            {/* Right Pane */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              
-              {/* Resources */}
-              <div>
-                <h3 className="font-semibold text-foreground mb-6 text-lg">{t("resources")}</h3>
-                <ul className="space-y-4">
-                  <li>
-                    <Link href="/developers" className="text-muted-foreground hover:text-foreground transition-colors">
-                      {t("developers")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/sign-in" className="text-muted-foreground hover:text-foreground transition-colors">
-                      {t("logIn")}
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              {/* About */}
-              <div>
-                <h3 className="font-semibold text-foreground mb-6 text-lg">{t("about")}</h3>
-                <ul className="space-y-4">
-                  <li>
-                    <Link href="#about" className="text-muted-foreground hover:text-foreground transition-colors">
-                      {t("links.aboutUs")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                      {t("blog")}
-                    </Link>
-                  </li>
-                  <li>
-                    <Link href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">
-                      {t("testimonials")}
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-
-              {/* Contact Us */}
-              <div>
-                <h3 className="font-semibold text-foreground mb-6 text-lg">{t("contactUs")}</h3>
-                
-                {/* Social Media Links */}
-                <div className="flex space-x-4 mb-6">
-                  {socialLinks.map((social, index) => (
-                    <a
-                      key={index}
-                      href={social.href}
-                      target={social.href.startsWith('http') ? '_blank' : undefined}
-                      rel={social.href.startsWith('http') ? 'noopener noreferrer' : undefined}
-                      className="p-2 rounded-full bg-background hover:bg-accent transition-colors"
-                      aria-label={social.label}
-                    >
-                      <social.icon className="h-5 w-5 text-muted-foreground hover:text-foreground" />
-                    </a>
-                  ))}
-                </div>
-
-                {/* Email */}
-                <div className="flex items-center text-muted-foreground mb-3">
-                  <Mail className="h-4 w-4 mr-3" />
-                  <a href={`mailto:${t("email")}`} className="hover:text-foreground transition-colors">
-                    {t("email")}
-                  </a>
-                </div>
-
-                {/* Phone */}
-                <div className="flex items-center text-muted-foreground">
-                  <Phone className="h-4 w-4 mr-3" />
-                  <span>{t("phone")}</span>
-                </div>
-              </div>
+                  <social.icon className="h-4 w-4 text-muted-foreground" />
+                </a>
+              ))}
             </div>
           </div>
+
+          {/* Col 2: Resources */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">
+              {t("resources")}
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="/developers" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t("developers")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/sign-in" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t("logIn")}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 3: About */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">
+              {t("about")}
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <Link href="#about" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t("links.aboutUs")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t("blog")}
+                </Link>
+              </li>
+              <li>
+                <Link href="#testimonials" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t("testimonials")}
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Col 4: Contact */}
+          <div>
+            <h3 className="font-semibold text-foreground mb-4 text-sm uppercase tracking-wider">
+              {t("contactUs")}
+            </h3>
+            <ul className="space-y-3">
+              <li>
+                <a
+                  href={`mailto:${t("email")}`}
+                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <Mail className="h-4 w-4 shrink-0" />
+                  <span>{t("email")}</span>
+                </a>
+              </li>
+              <li>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Phone className="h-4 w-4 shrink-0" />
+                  <span className="whitespace-nowrap">{t("phone")}</span>
+                </div>
+              </li>
+            </ul>
+            <div className="mt-6">
+              <Button
+                size="sm"
+                className="w-full"
+                onClick={() => window.open('https://calendly.com/misha-suliko/30min', '_blank')}
+              >
+                {t("bookDemo")}
+              </Button>
+            </div>
+          </div>
+
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-6 border-t border-border">
-          <div className="flex justify-center items-center">
-            <div className="text-muted-foreground text-sm">
-              {t("bottom.copyright")}
-            </div>
-          </div>
+        <div className="py-5 border-t border-border flex justify-center">
+          <p className="text-sm text-muted-foreground">
+            {t("bottom.copyright")}
+          </p>
         </div>
+
       </div>
     </footer>
   );
