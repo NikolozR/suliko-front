@@ -633,8 +633,9 @@
     "close": "Close"
   },
   "Landing": {
-    "title": "Suliko Translation - Translate a document in 5 minutes.",
-    "description": "Translator’s Assistant – Upload your document and reduce translation time by up to 70%. Focus on the content, not the technical work. ",
+    "title": "Translate Documents in Minutes.",
+    "description": "Upload your document and cut translation time by 70%.",
+    "badge": "CAT Tool",
     "cta": "Start translating",
     "viewPricing": "View Pricing",
     "trustedBy": "Trusted by professionals worldwide",
@@ -652,6 +653,7 @@
     "about": "About",
     "pricing": "Pricing",
     "testimonials": "Testimonials",
+    "faq": "FAQ",
     "contact": "Contact",
     "blog": "Blog",
     "getStarted": "Get Started",
@@ -659,7 +661,7 @@
   },
   "AboutSection": {
     "title": "Why Choose Suliko?",
-    "subtitle": "",
+    "subtitle": "The intelligent assistant that helps translators work faster and businesses scale — without sacrificing quality.",
     "mission": "Our Mission",
     "missionText": "Our mission is to make translation faster, more accurate, and accessible to everyone. Suliko combines artificial intelligence and translator expertise to make document translation a simple process — a matter of minutes, not hours. We want professional translators and businesses to have a unified, intelligent tool that preserves text format, structure, and meaning accuracy in any language.",
     "video": {
@@ -742,12 +744,6 @@
         "company": "API24",
         "email": "info@api24.ge",
         "content": "When expanding on an international scale, localization was a critical challenge for API24. Suliko played a decisive role in adapting our interface and technical documentation. This allowed us to make our platform accessible to developers worldwide."
-      },
-      "legalPro": {
-        "name": "Legal Pro Group",
-        "role": "Senior Attorney",
-        "company": "Legal Pro Group",
-        "content": "Suliko has dramatically reduced the time our firm spends on document translation. The accuracy and consistency across large document sets is outstanding."
       }
     }
   },
@@ -795,9 +791,7 @@
       "error": "❌ Failed to subscribe. Please try again."
     },
     "bottom": {
-      "copyright": "© 2025 Suliko. All rights reserved.",
-      "privacy": "Privacy Policy",
-      "terms": "Terms of Service"
+      "copyright": "© 2026 Suliko. All rights reserved."
     }
   },
   "ReferralPage": {
@@ -947,5 +941,39 @@
     "mobileOverlayText": "This website is designed for the desktop experience. For full functionality and the best experience please visit from a PC or larger screen.",
     "continueAnyway": "Continue anyway",
     "usePC": "I will use PC"
+  },
+  "FAQ": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about Suliko Translation",
+    "items": {
+      "quality": {
+        "question": "How accurate are the translations?",
+        "answer": "Suliko uses advanced AI models trained on professional translation corpora. Our accuracy rate is 98% for supported language pairs, and the editor lets you review and refine every segment before finalising your document."
+      },
+      "languages": {
+        "question": "Which languages are supported?",
+        "answer": "We currently support over 50 languages, including Georgian, English, French, Turkish, Polish, Ukrainian, Arabic, and many more. Georgian is a first-class citizen — our models are specifically fine-tuned for it."
+      },
+      "formats": {
+        "question": "What file formats can I upload?",
+        "answer": "You can upload PNG, JPG, JPEG, PDF, DOCX, and TXT files. The document is parsed automatically and presented in a side-by-side editor so you can see the original alongside the translation."
+      },
+      "pricing": {
+        "question": "Is there a free tier?",
+        "answer": "Yes — every new user receives 25 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow."
+      },
+      "security": {
+        "question": "Is my document data secure?",
+        "answer": "Your documents are encrypted in transit (TLS 1.3) and at rest. We do not use your content to train our models, and you can request permanent deletion of your data at any time."
+      },
+      "georgian": {
+        "question": "Why is Suliko especially good for Georgian?",
+        "answer": "Georgian is a morphologically complex language that most general-purpose AI systems handle poorly. Suliko's models are fine-tuned on Georgian legal, medical, and business texts, resulting in significantly better output than generic translation services."
+      },
+      "api": {
+        "question": "Do you offer an API or business integrations?",
+        "answer": "Yes. Our Business and Enterprise plans include API access so you can integrate Suliko directly into your own workflows and applications. Contact our sales team for custom volume pricing and SLA options."
+      }
+    }
   }
 }

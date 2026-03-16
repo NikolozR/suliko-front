@@ -3,11 +3,10 @@
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { useEffect, useRef, useState, useMemo } from "react";
 import { useTheme } from "next-themes";
 import { LoadingButton } from "@/features/ui/components/loading";
-import Image from "next/image";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
@@ -68,8 +67,8 @@ export default function HeroSection() {
   const isDark = mounted && resolvedTheme === "dark";
   const starColor = isDark ? "white" : "#1e40af"; // Blue for light theme, white for dark
   const fallingStarGradient = isDark
-    ? "linear-gradient(90deg, rgba(255,255,255,0.95), rgba(147,197,253,0.7), rgba(147,197,253,0))"
-    : "linear-gradient(90deg, rgba(37,99,235,0.95), rgba(96,165,250,0.7), rgba(96,165,250,0))";
+    ? "linear-gradient(270deg, rgba(255,255,255,0.95), rgba(147,197,253,0.7), rgba(147,197,253,0))"
+    : "linear-gradient(270deg, rgba(37,99,235,0.95), rgba(96,165,250,0.7), rgba(96,165,250,0))";
 
   // Generate stable star positions using useMemo to avoid hydration mismatches
   const starData = useMemo(() => {
@@ -178,26 +177,27 @@ export default function HeroSection() {
       </div>
 
       <div className="relative z-10 container mx-auto px-12 sm:px-16 lg:px-24">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
           {/* Left column: text */}
-          <div>
-            {/* Badge */}
+          <div className="lg:col-span-2">
+            {/* Badge pill */}
             <div className="flex justify-center lg:justify-start mb-4">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-medium bg-primary/10 text-primary border border-primary/20">
-                <Sparkles className="h-3.5 w-3.5" />
-                AI-Powered Translation
-              </span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary font-medium">
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                {t("badge")}
+              </div>
             </div>
 
             {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground mb-4 leading-tight text-center lg:text-left">
+            <h1 className="text-3xl sm:text-4xl lg:text-4xl font-bold text-foreground mb-4 leading-tight text-center lg:text-left">
               {t("title")}
             </h1>
 
             {/* Subheadline */}
-            <p className="text-lg sm:text-xl text-muted-foreground mb-6 max-w-3xl mx-auto lg:mx-0 leading-relaxed text-center lg:text-left">
+            <p className="text-sm sm:text-base text-muted-foreground mb-6 mx-auto lg:mx-0 leading-relaxed text-center lg:text-left">
               {t("description")}
             </p>
+
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
@@ -213,10 +213,10 @@ export default function HeroSection() {
                   isLoading={isNavigating}
                   loadingText={t("loading") || "Loading..."}
                 >
-                  <>
+                  <span className="flex items-center gap-2">
                     {t("cta")}
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </>
+                    <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
                 </LoadingButton>
               </Link>
               <Link href="#pricing">
@@ -226,29 +226,30 @@ export default function HeroSection() {
               </Link>
             </div>
 
-            {/* Trust bar */}
-            <div className="mt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 text-sm text-muted-foreground">
-              <span className="flex items-center gap-1">
-                <span className="text-yellow-400">★★★★★</span>
-                <span>Trusted by 50K+ users</span>
-              </span>
-              <span className="hidden sm:inline text-border">·</span>
-              <span>No credit card required</span>
+            {/* Social proof stats */}
+            <div className="flex flex-wrap gap-x-6 gap-y-2 justify-center lg:justify-start mt-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-foreground">50K+</span>
+                <span>{t("documentsTranslated")}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-foreground">50+</span>
+                <span>{t("languagesSupported")}</span>
+              </div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-semibold text-foreground">98%</span>
+                <span>{t("accuracyRate")}</span>
+              </div>
             </div>
           </div>
 
           {/* Right column: video mockup */}
-          <div className="flex justify-center lg:justify-end">
+          <div className="lg:col-span-3 flex justify-center lg:justify-end">
             <div className="relative w-full" style={{ maxWidth: '600px' }}>
               {videoError ? (
-                <Image
-                  src="/video-poster.png"
-                  alt="Suliko AI translation platform screenshot"
-                  width={600}
-                  height={400}
-                  className="w-full h-auto rounded-2xl shadow-2xl ring-1 ring-border"
-                  priority
-                />
+                <div className="w-full h-64 bg-muted rounded-2xl shadow-2xl ring-1 ring-border flex items-center justify-center">
+                  <p className="text-muted-foreground text-sm">Video failed to load</p>
+                </div>
               ) : (
                 <video
                   ref={videoRef}

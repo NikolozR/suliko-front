@@ -168,6 +168,7 @@ export default function LandingHeader() {
     { id: 'about', label: t("about") },
     { id: 'pricing', label: t("pricing") },
     { id: 'testimonials', label: t("testimonials") },
+    { id: 'faq', label: t("faq") },
     { id: 'contact', label: t("contact") },
   ];
 

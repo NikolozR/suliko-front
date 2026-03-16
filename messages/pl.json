@@ -628,8 +628,9 @@
     "close": "Zamknij"
   },
   "Landing": {
-    "title": "Suliko AI Tłumacz - Przetłumacz dokument w 5 minut.",
-    "description": "Asystent tłumacza – prześlij dokument i skróć czas tłumaczenia nawet o 70%. Skoncentruj się na treści, a nie na pracy technicznej.",
+    "title": "Tłumacz dokumenty w minutach.",
+    "description": "Prześlij dokument i skróć czas tłumaczenia o 70%.",
+    "badge": "Narzędzie CAT",
     "cta": "Zacznij tłumaczyć",
     "viewPricing": "Zobacz ceny",
     "trustedBy": "Zaufane przez profesjonalistów na całym świecie",
@@ -647,6 +648,7 @@
     "about": "O nas",
     "pricing": "Ceny",
     "testimonials": "Opinie",
+    "faq": "FAQ",
     "contact": "Kontakt",
     "blog": "Blog",
     "getStarted": "Zacznij",
@@ -654,7 +656,7 @@
   },
   "AboutSection": {
     "title": "Dlaczego Suliko?",
-    "subtitle": "",
+    "subtitle": "Inteligentny asystent, który pomaga tłumaczom pracować szybciej, a firmom się rozwijać — bez utraty jakości.",
     "mission": "Nasza misja",
     "missionText": "Naszą misją jest uczynienie tłumaczenia szybszym, dokładniejszym i dostępnym dla wszystkich. Suliko łączy sztuczną inteligencję z doświadczeniem tłumaczy, aby tłumaczenie dokumentów stało się prostym procesem — sprawą minut, a nie godzin. Chcemy, aby profesjonalni tłumacze i firmy mieli zunifikowane, inteligentne narzędzie, które zachowuje format tekstu, strukturę i dokładność znaczenia w każdym języku.",
     "video": {
@@ -728,12 +730,6 @@
         "company": "API24",
         "email": "info@api24.ge",
         "content": "Wchodząc na skalę międzynarodową, lokalizacja była kluczowym wyzwaniem dla API24. Suliko odegrało decydującą rolę w adaptacji naszego interfejsu i dokumentacji technicznej. Pozwoliło nam to udostępnić naszą platformę programistom na całym świecie."
-      },
-      "legalPro": {
-        "name": "Legal Pro Group",
-        "role": "Starszy Radca Prawny",
-        "company": "Legal Pro Group",
-        "content": "Suliko znacznie skróciło czas, jaki nasza kancelaria poświęca na tłumaczenie dokumentów. Dokładność i spójność w przypadku dużych zestawów dokumentów jest wyjątkowa."
       }
     }
   },
@@ -781,9 +777,7 @@
       "error": "❌ Nie udało się zasubskrybować. Spróbuj ponownie."
     },
     "bottom": {
-      "copyright": "© 2025 Suliko. Wszystkie prawa zastrzeżone.",
-      "privacy": "Polityka Prywatności",
-      "terms": "Warunki Użytkowania"
+      "copyright": "© 2026 Suliko. Wszystkie prawa zastrzeżone."
     }
   },
   "ReferralPage": {
@@ -934,5 +928,39 @@
     "mobileOverlayText": "Ta strona została zaprojektowana z myślą o komputerach stacjonarnych. Aby uzyskać pełną funkcjonalność i najlepsze wrażenia, odwiedź ją na komputerze PC lub urządzeniu z większym ekranem.",
     "continueAnyway": "Kontynuuj mimo to",
     "usePC": "Skorzystam z komputera"
+  },
+  "FAQ": {
+    "title": "Często zadawane pytania",
+    "subtitle": "Wszystko, co musisz wiedzieć o Suliko Translation",
+    "items": {
+      "quality": {
+        "question": "Jak dokładne są tłumaczenia?",
+        "answer": "Suliko używa zaawansowanych modeli AI wytrenowanych na profesjonalnych korpusach tłumaczeniowych. Wskaźnik dokładności wynosi 98% dla obsługiwanych par językowych, a edytor pozwala przeglądać i dopracowywać każdy segment."
+      },
+      "languages": {
+        "question": "Które języki są obsługiwane?",
+        "answer": "Obecnie obsługujemy ponad 50 języków, w tym gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i wiele innych."
+      },
+      "formats": {
+        "question": "Jakie formaty plików mogę przesłać?",
+        "answer": "Możesz przesłać pliki PNG, JPG, JPEG, PDF, DOCX i TXT. Dokument jest automatycznie analizowany i wyświetlany w edytorze porównawczym."
+      },
+      "pricing": {
+        "question": "Czy jest bezpłatny plan?",
+        "answer": "Tak — każdy nowy użytkownik otrzymuje 25 bezpłatnych stron do przetłumaczenia. Następnie możesz wybrać plan miesięczny (Starter, Professional) lub opcję pay-as-you-go."
+      },
+      "security": {
+        "question": "Czy moje dane dokumentów są bezpieczne?",
+        "answer": "Twoje dokumenty są szyfrowane podczas przesyłania (TLS 1.3) i przechowywania. Nie używamy Twojej treści do trenowania modeli i możesz w dowolnym momencie zażądać trwałego usunięcia danych."
+      },
+      "georgian": {
+        "question": "Dlaczego Suliko jest szczególnie dobre dla języka gruzińskiego?",
+        "answer": "Gruziński jest morfologicznie złożonym językiem, z którym ogólne systemy AI radzą sobie słabo. Modele Suliko są dostrojone na gruzińskich tekstach prawniczych, medycznych i biznesowych."
+      },
+      "api": {
+        "question": "Czy oferujecie API lub integracje biznesowe?",
+        "answer": "Tak. Plany Business i Enterprise obejmują dostęp do API, dzięki czemu możesz zintegrować Suliko bezpośrednio z własnymi procesami. Skontaktuj się z naszym zespołem sprzedaży w sprawie cen."
+      }
+    }
   }
 }
