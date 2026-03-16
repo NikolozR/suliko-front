@@ -3,17 +3,15 @@
   "configurations": [
     {
       "name": "Next.js Dev Server",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
-      "runtimeArgs": ["node_modules/.bin/next", "dev", "--turbopack"],
-      "port": 3000,
-      "autoPort": true
+      "runtimeExecutable": "node",
+      "runtimeArgs": ["C:\\Program Files\\nodejs\\node_modules\\npm\\bin\\npm-cli.js", "run", "dev"],
+      "port": 3000
     },
     {
       "name": "Next.js Production Preview",
-      "runtimeExecutable": "C:\\Program Files\\nodejs\\node.exe",
-      "runtimeArgs": ["node_modules/.bin/next", "start"],
-      "port": 3000,
-      "autoPort": true
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "start"],
+      "port": 3000
     }
   ]
 }
