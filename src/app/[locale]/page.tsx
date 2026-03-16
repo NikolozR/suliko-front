@@ -30,9 +30,6 @@ const LandingFooter = dynamic(() => import("@/shared/components/LandingFooter"),
     </div>
   ),
 });
-const SulikoParticles = dynamic(() => import("@/shared/components/SulikoParticles"), {
-  ssr: false,
-});
 
 export default function LandingPage() {
   const [showDeferredSections, setShowDeferredSections] = useState(false);
@@ -65,18 +62,8 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen relative">
-      {/* Background particles */}
-      <SulikoParticles
-        className="fixed inset-0 z-0"
-        fullScreen
-        particleCount={60}
-        speed={0.5}
-        enableInteractions={false}
-      />
-      
-      {/* Main content */}
-      <div className="relative z-10">
+    <div className="min-h-screen">
+      <div>
         <LandingHeader />
         <main>
           <HeroSection />

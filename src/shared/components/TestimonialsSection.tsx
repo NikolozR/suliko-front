@@ -52,8 +52,16 @@ export default function TestimonialsSection() {
       role: t("testimonials.api24.role"),
       company: t("testimonials.api24.company"),
       avatar: "A24",
-      rating: 5,
+      rating: 4,
       content: t("testimonials.api24.content")
+    },
+    {
+      name: t("testimonials.legalPro.name"),
+      role: t("testimonials.legalPro.role"),
+      company: t("testimonials.legalPro.company"),
+      avatar: "LP",
+      rating: 5,
+      content: t("testimonials.legalPro.content")
     }
   ];
 
@@ -91,17 +99,17 @@ export default function TestimonialsSection() {
     setSubmitStatus('idle');
 
     try {
-      console.log('Submitting newsletter form:', { email, hasCaptchaToken: !!captchaToken });
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Fake successful subscription
-      console.log('Newsletter subscription successful for:', email);
+      const res = await fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, captchaToken }),
+      });
+
+      if (!res.ok) throw new Error('Subscription failed');
+
       setSubmitStatus('success');
       setEmail('');
       setCaptchaToken(null);
-      
     } catch (error) {
       console.error('Newsletter subscription error:', error);
       setSubmitStatus('error');
