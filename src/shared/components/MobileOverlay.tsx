@@ -23,10 +23,11 @@ export default function MobileOverlay() {
       const path = pathname || "/";
       const segments = path.split("/").filter(Boolean);
       // Landing page is either root `/` (no segments) or just `/locale` (one segment equal to a known locale)
-      const isLanding =
-        segments.length === 0 || (segments.length === 1 && ((routing.locales as unknown as string[]).includes(segments[0])));
-
-      setShow(window.innerWidth < 1024 && !dismissed && !isLanding);
+      setShow(
+        window.innerWidth < 1024 &&
+          !dismissed &&
+          !(segments.length === 0 || (segments.length === 1 && (routing.locales as unknown as string[]).includes(segments[0])))
+      );
     };
 
     check();
