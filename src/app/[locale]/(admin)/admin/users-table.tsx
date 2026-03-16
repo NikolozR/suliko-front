@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { updateUserProfile } from "@/features/auth/services/userService";
+import { updateUserProfile, deleteUser } from "@/features/auth/services/userService";
 
 export type User = {
   id: string;
@@ -18,6 +18,7 @@ export type User = {
 };
 
 type SaveState = "idle" | "confirm" | "saving" | "saved";
+type DeleteState = "idle" | "confirm" | "deleting";
 
 const SortIcon = ({ dir }: { dir: "none" | "asc" | "desc" }) => (
   <span style={{ marginLeft: 4, opacity: dir === "none" ? 0.35 : 1, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>
@@ -37,6 +38,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   const [itemsPerPage, setItemsPerPage] = useState(20);
   const [dateFilter, setDateFilter] = useState<{ from?: string; to?: string }>({});
   const [showRoleId, setShowRoleId] = useState(false);
+  const [deleteStates, setDeleteStates] = useState<Record<string, DeleteState>>({});
+
+  const getDeleteState = (id: string): DeleteState => deleteStates[id] ?? "idle";
+  const setDeleteState = (id: string, state: DeleteState) =>
+    setDeleteStates((prev) => ({ ...prev, [id]: state }));
 
   const getSaveState = (id: string): SaveState => saveStates[id] ?? "idle";
   const setSaveState = (id: string, state: SaveState) =>
@@ -86,6 +92,28 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   };
 
   const handleCancelSave = (id: string) => setSaveState(id, "idle");
+
+  const handleDeleteClick = async (id: string) => {
+    const current = getDeleteState(id);
+    if (current === "idle") {
+      setDeleteState(id, "confirm");
+      return;
+    }
+    if (current === "confirm") {
+      setError(null);
+      setDeleteState(id, "deleting");
+      try {
+        await deleteUser(id);
+        setRows((prev) => prev.filter((r) => r.id !== id));
+        setDeleteStates((prev) => { const next = { ...prev }; delete next[id]; return next; });
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : "Failed to delete user");
+        setDeleteState(id, "idle");
+      }
+    }
+  };
+
+  const handleCancelDelete = (id: string) => setDeleteState(id, "idle");
 
   const toggleSort = (current: "none" | "asc" | "desc"): "none" | "asc" | "desc" =>
     current === "none" ? "asc" : current === "asc" ? "desc" : "none";
@@ -548,6 +576,48 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       >
                         {state === "saving" ? "Saving…" : state === "saved" ? "✓ Saved" : state === "confirm" ? "Confirm?" : "Save"}
                       </button>
+                      {(() => {
+                        const ds = getDeleteState(u.id);
+                        return (
+                          <>
+                            {ds === "confirm" && (
+                              <button
+                                onClick={() => handleCancelDelete(u.id)}
+                                style={{
+                                  background: "transparent",
+                                  border: "1px solid #2a2d3a",
+                                  borderRadius: 6,
+                                  padding: "5px 10px",
+                                  color: "#64748b",
+                                  fontSize: 12,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            )}
+                            <button
+                              disabled={ds === "deleting"}
+                              onClick={() => handleDeleteClick(u.id)}
+                              style={{
+                                background: ds === "confirm" ? "rgba(239,68,68,0.9)" : "rgba(239,68,68,0.08)",
+                                border: `1px solid ${ds === "confirm" ? "rgba(239,68,68,0.9)" : "rgba(239,68,68,0.25)"}`,
+                                borderRadius: 6,
+                                padding: "5px 12px",
+                                color: ds === "confirm" ? "#fff" : "#f87171",
+                                fontSize: 12,
+                                fontWeight: ds === "confirm" ? 700 : 500,
+                                cursor: ds === "deleting" ? "not-allowed" : "pointer",
+                                transition: "all 0.15s",
+                                opacity: ds === "deleting" ? 0.6 : 1,
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {ds === "deleting" ? "Deleting…" : ds === "confirm" ? "Sure?" : "Delete"}
+                            </button>
+                          </>
+                        );
+                      })()}
                     </div>
                   </td>
                 </tr>
