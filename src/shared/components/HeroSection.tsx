@@ -179,7 +179,7 @@ export default function HeroSection() {
   return (
     <section className="relative h-[93.5vh] flex items-center justify-center overflow-hidden">
       {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900" />
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50/80 via-white/75 to-purple-50/80 dark:from-gray-900/85 dark:via-gray-800/80 dark:to-blue-900/85" />
       
       {/* Star Field Background */}
       <div className="absolute inset-0 overflow-hidden">

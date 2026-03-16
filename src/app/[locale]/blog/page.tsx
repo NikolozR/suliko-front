@@ -3,6 +3,7 @@ import { getAllPosts } from '@/lib/blog';
 import { BlogGrid, NewsletterSection } from '@/components/blog';
 import BlogBanner from '@/components/blog/BlogBanner';
 import LandingHeader from '@/shared/components/LandingHeader';
+import AuroraBackground from '@/shared/components/AuroraBackground';
 import LandingFooter from '@/shared/components/LandingFooter';
 import { Link } from '@/i18n/navigation';
 import { ChevronLeft } from 'lucide-react';
@@ -29,12 +30,8 @@ export default function BlogPage() {
       <LandingHeader />
 
       {/* Main Blog Page */}
-      <main className="min-h-screen blog-stars-background">
-        {/* Stars Background Layer */}
-        <div className="fixed inset-0 -z-10">
-          <div className="absolute inset-0 stars-layer-1" />
-          <div className="absolute inset-0 stars-layer-2" />
-        </div>
+      <main className="min-h-screen">
+        <AuroraBackground />
 
         {/* Content */}
         <div className="relative z-10 pt-24">

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import LandingHeader from "@/shared/components/LandingHeader";
 import HeroSection from "@/shared/components/HeroSection";
-import ParticleBackground from "@/shared/components/ParticleBackground";
+import AuroraBackground from "@/shared/components/AuroraBackground";
 import ScrollToTop from "@/shared/components/ScrollToTop";
 import LandingSectionSkeleton from "@/shared/components/landing/LandingSectionSkeleton";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
@@ -67,7 +67,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen">
-      <ParticleBackground />
+      <AuroraBackground />
       <div style={{ position: "relative", zIndex: 1 }}>
         <LandingHeader />
         <main>

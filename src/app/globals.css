@@ -347,124 +347,41 @@ html {
   transform: scale(1.1);
 }
 
-/* Blog Stars Background - New Implementation */
-.blog-stars-background {
-  position: relative;
-  background: linear-gradient(135deg,
-      hsl(var(--background)) 0%,
-      hsl(var(--muted)) 50%,
-      hsl(var(--background)) 100%);
+/* Aurora Background — blob drift animations */
+@keyframes aurora-drift-1 {
+  0%   { transform: translate(0%,   0%)   scale(1);    border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%; }
+  25%  { transform: translate(6%,   8%)   scale(1.08); border-radius: 40% 60% 30% 70% / 70% 30% 60% 40%; }
+  50%  { transform: translate(12%,  4%)   scale(0.95); border-radius: 70% 30% 50% 50% / 30% 70% 50% 50%; }
+  75%  { transform: translate(4%,  -6%)   scale(1.05); border-radius: 50% 50% 40% 60% / 60% 40% 70% 30%; }
+  100% { transform: translate(0%,   0%)   scale(1);    border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%; }
+}
+@keyframes aurora-drift-2 {
+  0%   { transform: translate(0%,   0%)  scale(1);    border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%; }
+  33%  { transform: translate(-8%, 10%)  scale(1.1);  border-radius: 60% 40% 40% 60% / 30% 70% 30% 70%; }
+  66%  { transform: translate(-4%, -8%)  scale(0.92); border-radius: 50% 50% 70% 30% / 40% 60% 50% 50%; }
+  100% { transform: translate(0%,   0%)  scale(1);    border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%; }
+}
+@keyframes aurora-drift-3 {
+  0%   { transform: translate(0%,   0%)  scale(1);    border-radius: 70% 30% 40% 60% / 40% 70% 30% 60%; }
+  40%  { transform: translate(5%, -10%)  scale(1.12); border-radius: 30% 70% 60% 40% / 60% 40% 70% 30%; }
+  80%  { transform: translate(-5%,  6%)  scale(0.97); border-radius: 60% 40% 30% 70% / 30% 60% 40% 70%; }
+  100% { transform: translate(0%,   0%)  scale(1);    border-radius: 70% 30% 40% 60% / 40% 70% 30% 60%; }
+}
+@keyframes aurora-drift-4 {
+  0%   { transform: translate(0%,   0%)  scale(1);    border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; }
+  50%  { transform: translate(-6%, -6%)  scale(1.15); border-radius: 40% 60% 50% 50% / 50% 50% 40% 60%; }
+  100% { transform: translate(0%,   0%)  scale(1);    border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; }
 }
 
-/* Stars Layer 1 - Primary Stars */
-.stars-layer-1 {
-  background-image:
-    radial-gradient(2px 2px at 20px 30px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(2px 2px at 40px 70px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(1px 1px at 90px 40px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(1px 1px at 130px 80px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(2px 2px at 160px 30px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(1px 1px at 200px 60px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(1px 1px at 240px 20px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 280px 70px, hsl(var(--foreground) / 0.4), transparent),
-    radial-gradient(1px 1px at 320px 40px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(1px 1px at 360px 80px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(2px 2px at 400px 20px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(1px 1px at 440px 60px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(1px 1px at 480px 30px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 520px 70px, hsl(var(--foreground) / 0.4), transparent),
-    radial-gradient(1px 1px at 560px 50px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(1px 1px at 600px 10px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(2px 2px at 640px 80px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(1px 1px at 680px 40px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(1px 1px at 720px 20px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 760px 60px, hsl(var(--foreground) / 0.4), transparent);
-  background-repeat: repeat;
-  background-size: 800px 100px;
-  animation: twinkle 20s linear infinite;
-}
-
-/* Stars Layer 2 - Secondary Stars */
-.stars-layer-2 {
-  background-image:
-    radial-gradient(1px 1px at 50px 20px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(1px 1px at 100px 50px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(1px 1px at 150px 10px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(1px 1px at 200px 30px, hsl(var(--primary) / 0.4), transparent),
-    radial-gradient(1px 1px at 250px 60px, hsl(var(--primary) / 0.6), transparent),
-    radial-gradient(1px 1px at 300px 15px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(1px 1px at 350px 45px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(1px 1px at 400px 25px, hsl(var(--primary) / 0.3), transparent),
-    radial-gradient(1px 1px at 450px 55px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(1px 1px at 500px 35px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(1px 1px at 550px 65px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(1px 1px at 600px 5px, hsl(var(--primary) / 0.4), transparent),
-    radial-gradient(1px 1px at 650px 40px, hsl(var(--primary) / 0.6), transparent),
-    radial-gradient(1px 1px at 700px 70px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(1px 1px at 750px 20px, hsl(var(--primary) / 0.8), transparent);
-  background-repeat: repeat;
-  background-size: 800px 100px;
-  animation: twinkle 15s linear infinite reverse;
-  opacity: 0.8;
-}
-
-/* Twinkling Animation */
-@keyframes twinkle {
-
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Dark Theme Adjustments — background handled by CSS vars above */
-
-.dark .stars-layer-1 {
-  background-image:
-    radial-gradient(3px 3px at 20px 30px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(3px 3px at 40px 70px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(2px 2px at 90px 40px, hsl(var(--foreground) / 1), transparent),
-    radial-gradient(2px 2px at 130px 80px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(3px 3px at 160px 30px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 200px 60px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(2px 2px at 240px 20px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(3px 3px at 280px 70px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(2px 2px at 320px 40px, hsl(var(--foreground) / 1), transparent),
-    radial-gradient(2px 2px at 360px 80px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(3px 3px at 400px 20px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 440px 60px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(2px 2px at 480px 30px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(3px 3px at 520px 70px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(2px 2px at 560px 50px, hsl(var(--foreground) / 1), transparent),
-    radial-gradient(2px 2px at 600px 10px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(3px 3px at 640px 80px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 680px 40px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(2px 2px at 720px 20px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(3px 3px at 760px 60px, hsl(var(--foreground) / 0.5), transparent);
-}
-
-.dark .stars-layer-2 {
-  background-image:
-    radial-gradient(2px 2px at 50px 20px, hsl(var(--primary) / 0.9), transparent),
-    radial-gradient(2px 2px at 100px 50px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(2px 2px at 150px 10px, hsl(var(--primary) / 1), transparent),
-    radial-gradient(2px 2px at 200px 30px, hsl(var(--primary) / 0.6), transparent),
-    radial-gradient(2px 2px at 250px 60px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(2px 2px at 300px 15px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(2px 2px at 350px 45px, hsl(var(--primary) / 1), transparent),
-    radial-gradient(2px 2px at 400px 25px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(2px 2px at 450px 55px, hsl(var(--primary) / 0.9), transparent),
-    radial-gradient(2px 2px at 500px 35px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(2px 2px at 550px 65px, hsl(var(--primary) / 1), transparent),
-    radial-gradient(2px 2px at 600px 5px, hsl(var(--primary) / 0.6), transparent),
-    radial-gradient(2px 2px at 650px 40px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(2px 2px at 700px 70px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(2px 2px at 750px 20px, hsl(var(--primary) / 1), transparent);
-}
+/* Aurora — light mode: subtle; dark mode: full vibrance */
+html:not(.dark) .aurora-orb-1 { opacity: 0.45; }
+html:not(.dark) .aurora-orb-2 { opacity: 0.40; }
+html:not(.dark) .aurora-orb-3 { opacity: 0.35; }
+html:not(.dark) .aurora-orb-4 { opacity: 0.30; }
+html.dark .aurora-orb-1 { opacity: 1;    }
+html.dark .aurora-orb-2 { opacity: 1;    }
+html.dark .aurora-orb-3 { opacity: 0.9;  }
+html.dark .aurora-orb-4 { opacity: 0.85; }
 
 
 .ck-editor__editable {
