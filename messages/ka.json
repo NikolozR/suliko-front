@@ -334,7 +334,10 @@
       "complete": "თარგმანი დასრულებულია!",
       "uploading": "დოკუმენტის ატვირთვა...",
       "projectStarted": "პროექტი დაიწყო! გადამისამართება...",
-      "unexpectedError": "თარგმნის პროცესში მოხდა გაუთვალისწინებელი შეცდომა."
+      "unexpectedError": "თარგმნის პროცესში მოხდა გაუთვალისწინებელი შეცდომა.",
+      "stepUploading": "ატვირთვა",
+      "stepTranslating": "თარგმნა",
+      "stepReady": "მზადაა"
     }
   },
   "Profile": {
@@ -453,7 +456,10 @@
     "showPreview": "წინასწარი ნახვა",
     "hidePreview": "წინასწარი ნახვის დამალვა",
     "indicatorExact": "ზუსტი დამთხვევა: სწრაფი გამოყენება",
-    "indicatorNonExact": "არაზუსტი: სერვერზე გამოყენება"
+    "indicatorNonExact": "არაზუსტი: სერვერზე გამოყენება",
+    "instant": "მყისიერი",
+    "review": "განხილვა",
+    "acceptAllInstant": "ყველა მყისიერის მიღება"
   },
   "Pricing": {
     "paymentModal": {

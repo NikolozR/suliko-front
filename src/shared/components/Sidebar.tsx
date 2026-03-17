@@ -199,10 +199,13 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   resetTextTranslation();
                   resetDocumentTranslation();
                 } : undefined}
-                className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
-                  ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
-                  : ""
-                  } ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                className={label === "newProject"
+                  ? `group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center" : ""}`
+                  : `sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
+                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                    : ""
+                  } ${effectiveIsCollapsed ? "justify-center" : ""}`
+                }
                 aria-current={isActive(href) ? "page" : undefined}
               >
                 <div className="relative flex items-center">
@@ -278,12 +281,20 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   {!effectiveIsCollapsed && (
                     <Link href="/price" className="flex flex-col min-w-0 w-full hover:opacity-80 transition-opacity">
                       <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70">{t('balance')}</span>
-                      <span className="font-semibold flex items-center w-full justify-between  text-emerald-700 dark:text-emerald-300">
+                      <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
                         {formatBalance(userProfile.balance || 0)} {t('pages')}
-                        <PlusCircle
-                          className={`transition-transform duration-200 h-5 w-5 group-hover:scale-105`}
-                        />
+                        <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
                       </span>
+                      {/* Balance bar */}
+                      {(() => {
+                        const pct = Math.min(100, ((userProfile.balance || 0) / 50) * 100);
+                        const barColor = pct > 40 ? "bg-emerald-500" : pct > 10 ? "bg-amber-500" : "bg-red-500";
+                        return (
+                          <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
+                            <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+                          </div>
+                        );
+                      })()}
                     </Link>
                   )}
                 </div>

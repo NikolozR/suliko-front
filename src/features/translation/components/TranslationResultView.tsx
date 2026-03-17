@@ -11,7 +11,7 @@ import Editor from "@/features/editor/Editor";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle, Pencil } from "lucide-react";
 import React from "react";
 import { toast } from "react-hot-toast";
 import DocumentPreview from "./DocumentPreview";
@@ -273,9 +273,12 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       <div className={hideOriginalDocument ? "" : "flex flex-col lg:flex-row gap-4 lg:gap-8"}>
         {!hideOriginalDocument && (
           <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-              <div className="font-semibold text-suliko-default-color text-sm md:text-base">
-                {t('originalDocument')}
+            <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-border">
+              <div className="flex items-center gap-2">
+                <FileText className="h-4 w-4 text-suliko-default-color" aria-hidden="true" />
+                <span className="font-semibold text-suliko-default-color text-sm md:text-base">
+                  {t('originalDocument')}
+                </span>
               </div>
               <Button
                 type="button"
@@ -311,11 +314,11 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         )}
 
         <div className={hideOriginalDocument ? "w-full" : "w-full lg:flex-1 min-w-0"}>
-          {/* Header Section - Redesigned to prevent overlapping */}
-          <div className="mb-4 space-y-3">
-            {/* Title and Timer Row */}
+          {/* Header Section */}
+          <div className="mb-4 border-b border-border pb-2">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2 flex-wrap">
+                <Pencil className="h-4 w-4 text-suliko-default-color" aria-hidden="true" />
                 <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                   {t('translatedText')}
                 </div>

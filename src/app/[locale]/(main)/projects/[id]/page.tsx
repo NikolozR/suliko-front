@@ -378,7 +378,7 @@ export default function ProjectDetailPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <div className="flex items-center gap-4 mb-8">
           <Skeleton className="h-10 w-10" />
           <Skeleton className="h-8 w-48" />
@@ -399,7 +399,7 @@ export default function ProjectDetailPage() {
 
   if (error && liveStatus === "Failed" && chat) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
             <ArrowLeft className="h-6 w-6" />
@@ -420,7 +420,7 @@ export default function ProjectDetailPage() {
 
   if (error && !chat) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full mb-4">
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -434,7 +434,7 @@ export default function ProjectDetailPage() {
 
   if (!chat) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full mb-4">
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -446,7 +446,7 @@ export default function ProjectDetailPage() {
   // Completed + hydrated — show result
   if (chat.chatId === projectId && hydrated && reconstructedFile) {
     return (
-      <div className="container mx-auto p-6 max-w-[1600px]">
+      <div className="container mx-auto p-3 sm:p-6 max-w-[1600px]">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
             <ArrowLeft className="h-6 w-6" />
@@ -479,7 +479,7 @@ export default function ProjectDetailPage() {
   const estMinutes = chat.estimatedTimeMinutes;
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
       <div className="flex items-center gap-4 mb-8">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
           <ArrowLeft className="h-6 w-6" />
