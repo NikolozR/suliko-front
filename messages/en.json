@@ -316,7 +316,10 @@
       "complete": "Translation complete!",
       "uploading": "Uploading document...",
       "projectStarted": "Project started! Redirecting...",
-      "unexpectedError": "An unexpected error occurred during translation."
+      "unexpectedError": "An unexpected error occurred during translation.",
+      "stepUploading": "Uploading",
+      "stepTranslating": "Translating",
+      "stepReady": "Ready"
     }
   },
   "TranslationLoadingOverlay": {
@@ -455,7 +458,10 @@
     "showPreview": "Show preview",
     "hidePreview": "Hide preview",
     "indicatorExact": "Exact match: quick apply",
-    "indicatorNonExact": "Non-exact: server apply"
+    "indicatorNonExact": "Non-exact: server apply",
+    "instant": "Instant",
+    "review": "Review",
+    "acceptAllInstant": "Accept all Instant"
   },
   "Pricing": {
     "paymentModal": {

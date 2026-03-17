@@ -333,7 +333,10 @@
       "complete": "Tłumaczenie zakończone!",
       "uploading": "Przesyłanie dokumentu...",
       "projectStarted": "Projekt uruchomiony! Przekierowanie...",
-      "unexpectedError": "Wystąpił nieoczekiwany błąd podczas tłumaczenia."
+      "unexpectedError": "Wystąpił nieoczekiwany błąd podczas tłumaczenia.",
+      "stepUploading": "Przesyłanie",
+      "stepTranslating": "Tłumaczenie",
+      "stepReady": "Gotowe"
     }
   },
   "Profile": {
@@ -450,7 +453,10 @@
     "showPreview": "Pokaż podgląd",
     "hidePreview": "Ukryj podgląd",
     "indicatorExact": "Dokładne dopasowanie: szybkie zastosowanie",
-    "indicatorNonExact": "Niedokładne: zastosowanie na serwerze"
+    "indicatorNonExact": "Niedokładne: zastosowanie na serwerze",
+    "instant": "Natychmiastowe",
+    "review": "Do przeglądu",
+    "acceptAllInstant": "Zaakceptuj wszystkie natychmiastowe"
   },
   "Pricing": {
     "paymentModal": {

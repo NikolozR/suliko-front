@@ -1,4 +1,4 @@
-import { Check, X, Flame, Clock, Copy } from "lucide-react";
+import { Check, X, Copy } from "lucide-react";
 import { useState } from "react";
 import { ApplySuggestionResponse, Suggestion } from "@/features/translation";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
@@ -128,15 +128,31 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
   if (!jobId) return null;
   return (
     <div className="mt-6">
-      <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
-        {t("SuggestionsPanel.title", { default: "Suggestions" })}
+      <div className="flex items-center justify-between gap-2 mb-2">
+        <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+          {t("SuggestionsPanel.title", { default: "Suggestions" })}
+        </div>
+        {suggestions.some((s: Suggestion) => canExactMatch(s, translatedMarkdown)) && (
+          <button
+            type="button"
+            onClick={async () => {
+              const instantSuggestions = suggestions.filter((s: Suggestion) => canExactMatch(s, translatedMarkdown));
+              for (const s of instantSuggestions) {
+                await handleAcceptSuggestion(s.id);
+              }
+            }}
+            className="text-xs font-semibold px-3 py-1 rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 hover:bg-green-200 dark:hover:bg-green-900/60 transition-colors whitespace-nowrap"
+          >
+            {t("SuggestionsPanel.acceptAllInstant", { default: "Accept all Instant" })}
+          </button>
+        )}
       </div>
       {(isTranslating || isSuggestionsLoading) && suggestions.length === 0 ? (
         <div className="flex justify-center items-center py-8">
           <LoadingSpinner size="md" variant="primary" />
         </div>
       ) : suggestions.length > 0 ? (
-        <div className="flex flex-row gap-4 overflow-x-auto pb-2">
+        <div className="flex flex-col gap-4 pb-2 sm:flex-row sm:overflow-x-auto">
           {suggestions.map((s: Suggestion) => (
             <div
               key={s.id}
@@ -148,31 +164,28 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
               onMouseLeave={() => {
                 setHoveredSuggestionOriginalText(null);
               }}
-              className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col min-w-[320px] max-w-[400px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200"
+              className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col w-full sm:min-w-[260px] sm:max-w-[360px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="font-semibold text-foreground" title={s.title}>
                   {s.title}
                 </div>
                 <div className="flex gap-1 items-center">
-                  <span
-                    className="p-1.5 rounded-md"
-                    title={
-                      canExactMatch(s, translatedMarkdown)
-                        ? t("SuggestionsPanel.indicatorExact", {
-                          default: "Exact match: quick apply",
-                        })
-                        : t("SuggestionsPanel.indicatorNonExact", {
-                          default: "Non-exact: server apply",
-                        })
-                    }
-                  >
-                    {canExactMatch(s, translatedMarkdown) ? (
-                      <Flame className="w-4 h-4 text-orange-500" />
-                    ) : (
-                      <Clock className="w-4 h-4 text-amber-500" />
-                    )}
-                  </span>
+                  {canExactMatch(s, translatedMarkdown) ? (
+                    <span
+                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 whitespace-nowrap"
+                      title={t("SuggestionsPanel.indicatorExact", { default: "Quick apply" })}
+                    >
+                      {t("SuggestionsPanel.instant", { default: "Instant" })}
+                    </span>
+                  ) : (
+                    <span
+                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 whitespace-nowrap"
+                      title={t("SuggestionsPanel.indicatorNonExact", { default: "Server apply" })}
+                    >
+                      {t("SuggestionsPanel.review", { default: "Review" })}
+                    </span>
+                  )}
                   <button
                     type="button"
                     onClick={() => setPreviewSuggestionId(s.id)}
@@ -197,16 +210,25 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
                   </button>
                 </div>
               </div>
-              <div className="text-sm text-foreground mb-2 leading-relaxed">
+              <div className="text-sm text-foreground mb-1 leading-relaxed">
                 {s.description}
               </div>
-              <Textarea
-                value={s.suggestedText || ""}
-                onChange={(e) => handleSuggestionTextChange(s.id, e.target.value)}
-                className="text-xs font-mono resize-none min-h-[80px] max-h-[200px]"
-                placeholder={t("SuggestionsPanel.editPlaceholder")}
-                disabled={loadingSuggestionId === s.id}
-              />
+              <div className="mt-auto space-y-1">
+                {/* Diff: red = original (read-only), green = suggested (editable) */}
+                <div className="text-xs rounded-md bg-background border border-border p-2 space-y-1 font-mono leading-relaxed">
+                  <div className="line-clamp-2 text-red-600 dark:text-red-400 line-through opacity-80 select-none">
+                    {s.originalText.slice(0, 120)}{s.originalText.length > 120 ? "…" : ""}
+                  </div>
+                  <div
+                    contentEditable={loadingSuggestionId !== s.id}
+                    suppressContentEditableWarning
+                    onBlur={(e) => handleSuggestionTextChange(s.id, e.currentTarget.textContent || "")}
+                    className="text-green-700 dark:text-green-400 outline-none focus:ring-1 focus:ring-green-500/40 rounded px-0.5 whitespace-pre-wrap break-words min-h-[1.2em] cursor-text"
+                  >
+                    {s.suggestedText}
+                  </div>
+                </div>
+              </div>
             </div>
           ))}
         </div>

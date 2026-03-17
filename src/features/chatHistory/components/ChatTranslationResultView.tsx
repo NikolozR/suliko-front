@@ -286,9 +286,9 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
 
   return (
     <>
-      <div className={hideOriginalDocument ? "" : "lg:flex gap-6 xl:gap-8"}>
+      <div className={hideOriginalDocument ? "" : "md:flex gap-4 lg:gap-6 xl:gap-8"}>
         {!hideOriginalDocument && (
-          <div className="w-full mb-10 lg:mb-0 md:flex-[0.95] min-w-0">
+          <div className="w-full mb-6 md:mb-0 md:flex-[0.95] min-w-0">
             <div className="flex items-center justify-between mb-3 pb-2 border-b border-border/40">
               <div className="font-semibold text-foreground text-sm md:text-base flex items-center gap-2">
                 <FileText className="h-4 w-4 text-muted-foreground" />
@@ -306,7 +306,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
               </Button>
             </div>
             <div
-              className="h-[calc(100vh-240px)] max-h-[calc(100vh-240px)] flex flex-col w-full"
+              className="min-h-[300px] h-[50vh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] flex flex-col w-full"
               ref={documentPreviewRef}
             >
               <div className="space-y-4 h-full flex flex-col">
@@ -327,8 +327,8 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         )}
 
         <div className={hideOriginalDocument ? "w-full" : "w-full md:flex-[1.05] min-w-0"}>
-          <div className="flex items-center justify-between mb-3 pb-2 border-b border-border/40 relative">
-            <div className="flex items-center gap-2">
+          <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-border/40 flex-wrap">
+            <div className="flex items-center gap-2 flex-wrap">
               <div className="font-semibold text-foreground text-sm md:text-base flex items-center gap-2">
                 <FileText className="h-4 w-4 text-muted-foreground" />
                 {t('translatedText')}
@@ -360,7 +360,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
                 </Button>
               )}
             </div>
-            <div className="flex items-center gap-2 absolute right-0 bottom-[-4px]">
+            <div className="flex items-center gap-1 flex-wrap">
               {isOriginalFileSrt() ? (
                 <DownloadButton
                   content={translatedMarkdown}
@@ -394,7 +394,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
               )}
             </div>
           </div>
-          <div className="h-[calc(100vh-240px)] max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
+          <div className="min-h-[300px] h-[50vh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
             <Editor
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}
