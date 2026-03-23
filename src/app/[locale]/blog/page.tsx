@@ -8,18 +8,29 @@ import LandingFooter from '@/shared/components/LandingFooter';
 import { Link } from '@/i18n/navigation';
 import { ChevronLeft } from 'lucide-react';
 
-// Allow dynamic generation for better Vercel compatibility
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: 'Blog | Suliko',
-  description: 'Read the latest insights, tips, and updates from the Suliko team.',
-  openGraph: {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const domain = locale === 'ka' ? 'https://suliko.ge' : locale === 'en' ? 'https://suliko.io' : 'https://suliko.ge/pl';
+
+  return {
     title: 'Blog | Suliko',
     description: 'Read the latest insights, tips, and updates from the Suliko team.',
-    type: 'website',
-  },
-};
+    alternates: {
+      canonical: `${domain}/blog`,
+    },
+    openGraph: {
+      title: 'Blog | Suliko',
+      description: 'Read the latest insights, tips, and updates from the Suliko team.',
+      type: 'website',
+    },
+  };
+}
 
 export default function BlogPage() {
   const posts = getAllPosts();

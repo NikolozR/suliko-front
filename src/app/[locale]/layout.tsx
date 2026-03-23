@@ -5,6 +5,9 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/features/ui";
 // import BetaBanner from "@/shared/components/BetaBanner";
 import { Analytics } from '@vercel/analytics/next';
+import { Toaster } from "react-hot-toast";
+import RouteTransitionProgress from "@/shared/components/RouteTransitionProgress";
+import WebVitalsMonitor from "@/shared/components/WebVitalsMonitor";
 
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -24,30 +27,74 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: {
-    default: "Suliko — AI-Powered Document Translation",
-    template: "%s | Suliko",
-  },
-  description:
-    "Translate documents with AI precision. Suliko delivers fast, accurate, and secure translations for legal, technical, and business documents in 50+ languages.",
-  keywords: ["document translation", "AI translation", "legal translation", "Suliko"],
-  openGraph: {
-    type: "website",
-    siteName: "Suliko",
-    title: "Suliko — AI-Powered Document Translation",
+const DOMAIN_KA = "https://suliko.ge";
+const DOMAIN_EN = "https://suliko.io";
+const DOMAIN_PL = "https://suliko.ge/pl";
+
+function getCanonical(locale: string): string {
+  if (locale === "ka") return DOMAIN_KA;
+  if (locale === "en") return DOMAIN_EN;
+  return DOMAIN_PL;
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  return {
+    title: {
+      default: "Suliko — AI-Powered Document Translation",
+      template: "%s | Suliko",
+    },
     description:
-      "Translate documents with AI precision. Fast, accurate, and secure translations for legal, technical, and business documents.",
-    images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Suliko AI Translation" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Suliko — AI-Powered Document Translation",
-    description: "Fast, accurate, and secure AI document translations in 50+ languages.",
-    images: ["/og-image.png"],
-  },
-  icons: {
-    icon: '/favicon.ico',
+      "Translate documents with AI precision. Suliko delivers fast, accurate, and secure translations for legal, technical, and business documents in 50+ languages.",
+    keywords: ["document translation", "AI translation", "legal translation", "Suliko"],
+    alternates: {
+      canonical: getCanonical(locale),
+      languages: {
+        ka: DOMAIN_KA,
+        en: DOMAIN_EN,
+        pl: DOMAIN_PL,
+        "x-default": DOMAIN_KA,
+      },
+    },
+    openGraph: {
+      type: "website",
+      siteName: "Suliko",
+      title: "Suliko — AI-Powered Document Translation",
+      description:
+        "Translate documents with AI precision. Fast, accurate, and secure translations for legal, technical, and business documents.",
+      images: [{ url: "/Suliko_logo_black.svg", width: 1200, height: 630, alt: "Suliko AI Translation" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Suliko — AI-Powered Document Translation",
+      description: "Fast, accurate, and secure AI document translations in 50+ languages.",
+      images: ["/Suliko_logo_black.svg"],
+    },
+    icons: {
+      icon: '/favicon.ico',
+    },
+  };
+}
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Suliko",
+  url: "https://suliko.ge",
+  logo: "https://suliko.ge/Suliko_logo_black.svg",
+  sameAs: [
+    "https://www.facebook.com/profile.php?id=61564358761003",
+    "https://www.linkedin.com/company/suliko-ai/",
+  ],
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: "Info@suliko.ge",
+    contactType: "customer support",
   },
 };
 
@@ -63,7 +110,6 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-
 
   return (
     <html lang={locale} suppressHydrationWarning>
@@ -81,7 +127,7 @@ export default async function LocaleLayout({
   t.src=v;s=b.getElementsByTagName(e)[0];
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
-  
+
   // Enhanced initialization with additional parameters
   fbq('init', '763067889892928', {
     em: 'hashed_email_placeholder', // Will be replaced with actual hashed email
@@ -89,7 +135,7 @@ export default async function LocaleLayout({
     fbc: 'fb_click_id_placeholder', // Will be replaced with actual click ID
     fbp: 'fb_browser_id_placeholder' // Will be replaced with actual browser ID
   });
-  
+
   // Track PageView with enhanced parameters
   fbq('track', 'PageView', {
     content_name: 'Suliko Landing Page',
@@ -97,7 +143,7 @@ export default async function LocaleLayout({
   });`,
           }}
         />
-        {/* Hotjar Tracking Code for Suliko AI NEW */}{/* Hotjar Tracking Code for Suliko AI NEW */}
+        {/* Hotjar Tracking Code for Suliko AI NEW */}
         <Script
           id="hotjar"
           strategy="afterInteractive"
@@ -114,7 +160,7 @@ export default async function LocaleLayout({
             `,
           }}
         />
-        
+
         {/* Crisp Chat Widget */}
         <Script
           id="crisp-chat"
@@ -133,7 +179,7 @@ export default async function LocaleLayout({
             `,
           }}
         />
-        
+
         {/* Yandex.Metrika counter */}
         <Script
           id="yandex-metrika"
@@ -171,13 +217,19 @@ export default async function LocaleLayout({
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
-      > 
+      >
+        {/* Organization structured data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+        />
+
         {/* Meta Pixel (noscript) */}
         <noscript>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=763067889892928&ev=PageView&noscript=1" alt="" />
         </noscript>
-        
+
         {/* Yandex.Metrika (noscript) */}
         <noscript>
           <div>
@@ -194,15 +246,35 @@ export default async function LocaleLayout({
         </noscript>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <RouteTransitionProgress />
+            <WebVitalsMonitor />
             <MobileOverlay />
             {/* <OneTimeOfferModal /> */}
             <SessionRefreshProvider />
             <TopRightControls />
             {/* <BetaBanner /> */}
             {children}
+            <Toaster position="top-right" />
             <Analytics />
           </ThemeProvider>
         </NextIntlClientProvider>
+
+        {/* Brevo Tracker */}
+        <Script
+          src="https://cdn.brevo.com/js/sdk-loader.js"
+          strategy="afterInteractive"
+        />
+        <Script id="brevo-init" strategy="afterInteractive">
+          {`
+            window.Brevo = window.Brevo || [];
+            Brevo.push([
+              "init",
+              {
+                client_key: "k9gjme1efnz6rcx1wtl5w9oy",
+              }
+            ]);
+          `}
+        </Script>
       </body>
     </html>
   );
