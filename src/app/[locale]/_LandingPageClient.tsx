@@ -1,0 +1,104 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import dynamic from "next/dynamic";
+import LandingHeader from "@/shared/components/LandingHeader";
+import HeroSection from "@/shared/components/HeroSection";
+import AuroraBackground from "@/shared/components/AuroraBackground";
+import ScrollToTop from "@/shared/components/ScrollToTop";
+import LandingSectionSkeleton from "@/shared/components/landing/LandingSectionSkeleton";
+import { Skeleton } from "@/features/ui/components/ui/skeleton";
+
+const AboutSection = dynamic(() => import("@/shared/components/AboutSection"), {
+  loading: () => <LandingSectionSkeleton />,
+});
+const PricingSection = dynamic(() => import("@/shared/components/PricingSection"), {
+  loading: () => <LandingSectionSkeleton withCards />,
+});
+const VideoSection = dynamic(() => import("@/shared/components/VideoSection"), {
+  loading: () => <LandingSectionSkeleton />,
+});
+const TestimonialsSection = dynamic(() => import("@/shared/components/TestimonialsSection"), {
+  loading: () => <LandingSectionSkeleton withCards />,
+});
+const FAQSection = dynamic(() => import("@/shared/components/FAQSection"), {
+  loading: () => <LandingSectionSkeleton />,
+});
+const LandingFooter = dynamic(() => import("@/shared/components/LandingFooter"), {
+  loading: () => (
+    <div className="border-t border-border bg-muted/30 px-4 py-10">
+      <div className="mx-auto max-w-6xl space-y-4">
+        <Skeleton className="h-7 w-44" />
+        <Skeleton className="h-5 w-80 max-w-full" />
+      </div>
+    </div>
+  ),
+});
+
+export default function LandingPageClient() {
+  const [showDeferredSections, setShowDeferredSections] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    let idleCallbackId: number | null = null;
+    let timeoutId: number | null = null;
+    const onReady = () => {
+      if (mounted) {
+        setShowDeferredSections(true);
+      }
+    };
+
+    if (typeof window.requestIdleCallback === "function") {
+      idleCallbackId = window.requestIdleCallback(onReady, { timeout: 1200 });
+    } else {
+      timeoutId = window.setTimeout(onReady, 350);
+    }
+
+    return () => {
+      mounted = false;
+      if (idleCallbackId !== null && typeof window.cancelIdleCallback === "function") {
+        window.cancelIdleCallback(idleCallbackId);
+      }
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, []);
+
+  return (
+    <div className="min-h-screen">
+      <AuroraBackground />
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <LandingHeader />
+        <main>
+          <HeroSection />
+          {showDeferredSections ? (
+            <>
+              <AboutSection />
+              <PricingSection />
+              <VideoSection />
+              <TestimonialsSection />
+              <FAQSection />
+            </>
+          ) : (
+            <>
+              <LandingSectionSkeleton minHeight={500} />
+              <LandingSectionSkeleton withCards minHeight={800} />
+            </>
+          )}
+        </main>
+        {showDeferredSections ? (
+          <LandingFooter />
+        ) : (
+          <div className="border-t border-border bg-muted/30 px-4 py-10" style={{ minHeight: 300 }}>
+            <div className="mx-auto max-w-6xl space-y-4">
+              <Skeleton className="h-7 w-44" />
+              <Skeleton className="h-5 w-80 max-w-full" />
+            </div>
+          </div>
+        )}
+        <ScrollToTop />
+      </div>
+    </div>
+  );
+}

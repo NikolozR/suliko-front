@@ -20,12 +20,18 @@ html {
 
 @font-face {
   font-family: 'Main Font';
-  src: url('../../fonts/bpg_mrgvlovani_caps_2010.ttf')
+  src: url('../../fonts/bpg_mrgvlovani_caps_2010.ttf') format('truetype');
+  font-display: swap;
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
   font-family: 'Secondary Font';
-  src: url('../../fonts/bpg_arial_2009.ttf')
+  src: url('../../fonts/bpg_arial_2009.ttf') format('truetype');
+  font-display: swap;
+  font-weight: normal;
+  font-style: normal;
 }
 
 *:not(.ck):not(.ck *) {

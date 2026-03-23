@@ -4,11 +4,12 @@ import { Skeleton } from "@/features/ui/components/ui/skeleton";
 
 interface LandingSectionSkeletonProps {
   withCards?: boolean;
+  minHeight?: number;
 }
 
-export default function LandingSectionSkeleton({ withCards = false }: LandingSectionSkeletonProps) {
+export default function LandingSectionSkeleton({ withCards = false, minHeight }: LandingSectionSkeletonProps) {
   return (
-    <section className="py-20">
+    <section className="py-20" style={minHeight ? { minHeight } : undefined}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-4xl space-y-4 text-center">
           <Skeleton className="mx-auto h-10 w-72" />
