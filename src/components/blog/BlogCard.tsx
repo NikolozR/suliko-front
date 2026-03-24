@@ -1,5 +1,8 @@
+"use client";
+
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import type { BlogPost } from "@/lib/blog-types";
 import { formatDate } from "@/lib/format-date";
 import { BookOpen, ArrowRight } from "lucide-react";
@@ -9,6 +12,8 @@ interface BlogCardProps {
 }
 
 export default function BlogCard({ post }: BlogCardProps) {
+  const t = useTranslations("Blog.card");
+
   return (
     <article className="group flex flex-col bg-card/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/20 hover:bg-card hover:-translate-y-0.5">
       <Link href={`/blog/${post.slug}`} className="flex flex-col flex-1">
@@ -66,7 +71,7 @@ export default function BlogCard({ post }: BlogCardProps) {
             </div>
 
             <span className="flex items-center gap-1 text-xs text-primary font-medium group-hover:gap-2 transition-all duration-200">
-              Read more
+              {t("readMore")}
               <ArrowRight className="h-3 w-3" />
             </span>
           </div>

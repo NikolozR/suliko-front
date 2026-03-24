@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from "react";
 import { Search, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import type { BlogPost } from "@/lib/blog-types";
 import BlogCard from "./BlogCard";
 
@@ -10,6 +11,7 @@ interface BlogGridProps {
 }
 
 export default function BlogGrid({ posts }: BlogGridProps) {
+  const t = useTranslations("Blog.grid");
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -34,9 +36,9 @@ export default function BlogGrid({ posts }: BlogGridProps) {
     return (
       <div className="text-center py-16">
         <h3 className="text-lg font-medium text-muted-foreground mb-2">
-          No blog posts yet
+          {t("noPosts")}
         </h3>
-        <p className="text-muted-foreground">Check back later for new content!</p>
+        <p className="text-muted-foreground">{t("noPostsSubtitle")}</p>
       </div>
     );
   }
@@ -52,7 +54,7 @@ export default function BlogGrid({ posts }: BlogGridProps) {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search articles…"
+            placeholder={t("searchPlaceholder")}
             className="w-full pl-9 pr-9 py-2 rounded-lg border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/50 transition-all"
           />
           {query && (
@@ -88,12 +90,12 @@ export default function BlogGrid({ posts }: BlogGridProps) {
       {/* Results */}
       {filtered.length === 0 ? (
         <div className="text-center py-16">
-          <p className="text-muted-foreground">No posts match your search.</p>
+          <p className="text-muted-foreground">{t("noResults")}</p>
           <button
             onClick={() => { setQuery(""); setActiveTag(null); }}
             className="mt-3 text-sm text-primary hover:underline"
           >
-            Clear filters
+            {t("clearFilters")}
           </button>
         </div>
       ) : (

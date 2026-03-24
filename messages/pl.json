@@ -644,11 +644,14 @@
     "languagesSupported": "Obsługiwane języki",
     "accuracyRate": "Wskaźnik dokładności",
     "supportAvailable": "Dostępne wsparcie",
-    "loading": "Ładowanie..."
+    "loading": "Ładowanie...",
+    "videoUnavailable": "Wideo niedostępne"
   },
   "VideoSection": {
     "title": "Zobacz Suliko w akcji",
-    "description": "Obejrzyj, jak działa nasza platforma tłumaczeniowa oparta na AI i dowiedz się, dlaczego profesjonaliści na całym świecie ufają Suliko w swoich potrzebach tłumaczeniowych."
+    "description": "Obejrzyj, jak działa nasza platforma tłumaczeniowa oparta na AI i dowiedz się, dlaczego profesjonaliści na całym świecie ufają Suliko w swoich potrzebach tłumaczeniowych.",
+    "browserNotSupported": "Twoja przeglądarka nie obsługuje tagu wideo.",
+    "videoUnavailable": "Wideo niedostępne"
   },
   "LandingHeader": {
     "about": "O nas",
@@ -967,6 +970,35 @@
         "question": "Czy oferujecie API lub integracje biznesowe?",
         "answer": "Tak. Plany Business i Enterprise obejmują dostęp do API, dzięki czemu możesz zintegrować Suliko bezpośrednio z własnymi procesami. Skontaktuj się z naszym zespołem sprzedaży w sprawie cen."
       }
+    }
+  },
+  "Blog": {
+    "backToHome": "Powrót na stronę główną",
+    "title": "Blog",
+    "subtitle": "Spostrzeżenia, wskazówki i aktualności od zespołu Suliko na temat technologii tłumaczeń AI.",
+    "banner": {
+      "articles": "Artykuły",
+      "topics": "Tematy",
+      "authors": "Autorzy",
+      "avgRead": "Śr. czas czytania"
+    },
+    "grid": {
+      "noPosts": "Brak wpisów na blogu",
+      "noPostsSubtitle": "Sprawdź ponownie później!",
+      "searchPlaceholder": "Szukaj artykułów\u2026",
+      "noResults": "Brak wpisów pasujących do wyszukiwania.",
+      "clearFilters": "Wyczyść filtry"
+    },
+    "card": {
+      "readMore": "Czytaj więcej"
+    },
+    "newsletter": {
+      "label": "Newsletter",
+      "title": "Bądź na bieżąco",
+      "subtitle": "Otrzymuj najnowsze spostrzeżenia i aktualizacje na swoją skrzynkę.",
+      "placeholder": "Wpisz swój e-mail",
+      "subscribe": "Subskrybuj",
+      "noSpam": "Bez spamu, rezygnacja w dowolnym momencie."
     }
   }
 }

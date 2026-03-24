@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { getAllPosts } from '@/lib/blog';
 import { BlogGrid, NewsletterSection } from '@/components/blog';
 import BlogBanner from '@/components/blog/BlogBanner';
@@ -32,8 +33,9 @@ export async function generateMetadata({
   };
 }
 
-export default function BlogPage() {
+export default async function BlogPage() {
   const posts = getAllPosts();
+  const t = await getTranslations('Blog');
 
   return (
     <>
@@ -53,13 +55,13 @@ export default function BlogPage() {
               className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
             >
               <ChevronLeft className="h-4 w-4" />
-              Back to home
+              {t('backToHome')}
             </Link>
             <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
-              Blog
+              {t('title')}
             </h1>
             <p className="text-muted-foreground max-w-xl">
-              Insights, tips, and updates from the Suliko team on AI translation technology.
+              {t('subtitle')}
             </p>
           </div>
 

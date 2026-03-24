@@ -649,11 +649,14 @@
     "languagesSupported": "Languages Supported",
     "accuracyRate": "Accuracy Rate",
     "supportAvailable": "Support Available",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "videoUnavailable": "Video unavailable"
   },
   "VideoSection": {
     "title": "See Suliko in Action",
-    "description": "Watch how our AI-powered translation platform works and discover why professionals worldwide trust Suliko for their translation needs."
+    "description": "Watch how our AI-powered translation platform works and discover why professionals worldwide trust Suliko for their translation needs.",
+    "browserNotSupported": "Your browser does not support the video tag.",
+    "videoUnavailable": "Video unavailable"
   },
   "LandingHeader": {
     "about": "About",
@@ -980,6 +983,35 @@
         "question": "Do you offer an API or business integrations?",
         "answer": "Yes. Our Business and Enterprise plans include API access so you can integrate Suliko directly into your own workflows and applications. Contact our sales team for custom volume pricing and SLA options."
       }
+    }
+  },
+  "Blog": {
+    "backToHome": "Back to home",
+    "title": "Blog",
+    "subtitle": "Insights, tips, and updates from the Suliko team on AI translation technology.",
+    "banner": {
+      "articles": "Articles",
+      "topics": "Topics",
+      "authors": "Authors",
+      "avgRead": "Avg read"
+    },
+    "grid": {
+      "noPosts": "No blog posts yet",
+      "noPostsSubtitle": "Check back later for new content!",
+      "searchPlaceholder": "Search articles\u2026",
+      "noResults": "No posts match your search.",
+      "clearFilters": "Clear filters"
+    },
+    "card": {
+      "readMore": "Read more"
+    },
+    "newsletter": {
+      "label": "Newsletter",
+      "title": "Stay Updated",
+      "subtitle": "Get the latest insights and updates delivered to your inbox.",
+      "placeholder": "Enter your email",
+      "subscribe": "Subscribe",
+      "noSpam": "No spam, unsubscribe at any time."
     }
   }
 }

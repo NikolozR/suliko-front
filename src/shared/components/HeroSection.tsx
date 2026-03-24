@@ -167,7 +167,7 @@ export default function HeroSection() {
               {/* Video */}
               {videoError ? (
                 <div className="flex aspect-video w-full items-center justify-center bg-slate-900">
-                  <p className="text-sm text-slate-600">Video unavailable</p>
+                  <p className="text-sm text-slate-600">{t("videoUnavailable")}</p>
                 </div>
               ) : (
                 <video
