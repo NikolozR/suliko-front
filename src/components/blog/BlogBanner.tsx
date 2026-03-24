@@ -1,15 +1,20 @@
+"use client";
+
 import { BookOpen, TrendingUp, Users, Clock } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface BlogBannerProps {
   postCount: number;
 }
 
 export default function BlogBanner({ postCount }: BlogBannerProps) {
+  const t = useTranslations("Blog.banner");
+
   const stats = [
-    { icon: BookOpen, value: `${postCount}+`, label: "Articles" },
-    { icon: TrendingUp, value: "8+", label: "Topics" },
-    { icon: Users, value: "5+", label: "Authors" },
-    { icon: Clock, value: "4 min", label: "Avg read" },
+    { icon: BookOpen, value: `${postCount}+`, label: t("articles") },
+    { icon: TrendingUp, value: "8+", label: t("topics") },
+    { icon: Users, value: "5+", label: t("authors") },
+    { icon: Clock, value: "4 min", label: t("avgRead") },
   ];
 
   return (

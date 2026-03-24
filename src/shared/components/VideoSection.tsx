@@ -113,7 +113,7 @@ export default function VideoSection() {
                 poster="/video-poster.png"
               >
                 <source src="/api/video2" type="video/mp4" />
-                Your browser does not support the video tag.
+                {t("browserNotSupported")}
               </video>
 
               {/* Centered play button overlay — shown when video is paused */}
