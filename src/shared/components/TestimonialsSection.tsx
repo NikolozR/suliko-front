@@ -153,7 +153,7 @@ export default function TestimonialsSection() {
                     </div>
 
                     {/* Content — grows to fill space, pushing author to bottom */}
-                    <p className="flex-1 text-sm text-muted-foreground leading-relaxed mb-4">
+                    <p className="flex-1 min-h-0 overflow-y-auto text-sm text-muted-foreground leading-relaxed mb-4 pr-1">
                       &ldquo;{testimonial.content}&rdquo;
                     </p>
 
