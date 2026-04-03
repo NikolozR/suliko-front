@@ -140,7 +140,7 @@ export async function createFlittPayment(
   })();
   const acceptUrl = `${baseUrl}${localeFromPath}/payment/success`;
   const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;
-  const callbackUrl = `${baseUrl}/api/payment/callback`;
+  // const callbackUrl = `${baseUrl}/api/payment/callback`;
 
   const paymentCurrency = currency || getCurrencyCode();
   const paymentCountry = country || getCountryCode();
@@ -152,7 +152,6 @@ export async function createFlittPayment(
     orderDescription: `Suliko ${paymentCurrency} ${amount}`,
     acceptUrl,
     cancelUrl,
-    callbackUrl,
   };
 
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
