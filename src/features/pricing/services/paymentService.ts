@@ -19,7 +19,7 @@ export interface FlittCheckoutRequest {
   orderDescription?: string;
   acceptUrl?: string;
   cancelUrl?: string;
-  callbackUrl?: string;
+  server_callback_url?: string;
 }
 
 export interface FlittCheckoutResponse {
@@ -140,7 +140,7 @@ export async function createFlittPayment(
   })();
   const acceptUrl = `${baseUrl}${localeFromPath}/payment/success`;
   const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;
-  const callbackUrl = `https://content.api24/api/payment/flitt-callback`;
+  const server_callback_url = `https://content.api24/api/payment/flitt-callback`;
 
   const paymentCurrency = currency || getCurrencyCode();
   const paymentCountry = country || getCountryCode();
@@ -152,7 +152,7 @@ export async function createFlittPayment(
     orderDescription: `Suliko ${paymentCurrency} ${amount}`,
     acceptUrl,
     cancelUrl,
-    callbackUrl,
+    server_callback_url,
   };
 
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
