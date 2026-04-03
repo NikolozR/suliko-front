@@ -140,7 +140,7 @@ export async function createFlittPayment(
   })();
   const acceptUrl = `${baseUrl}${localeFromPath}/payment/success`;
   const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;
-  const server_callback_url = `https://content.api24/api/payment/flitt-callback`;
+  const server_callback_url = `https://content.api24.ge/api/payment/flitt-callback`;
 
   const paymentCurrency = currency || getCurrencyCode();
   const paymentCountry = country || getCountryCode();
