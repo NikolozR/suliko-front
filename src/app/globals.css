@@ -1134,3 +1134,5 @@ html.dark .sidebar-main {
 .animate-accordion-up {
   animation: accordion-up 0.2s ease-out;
 }
+
+/* Move Crisp chat widget to right-middle on mobile — handled via JS CRISP_READY_TRIGGER */

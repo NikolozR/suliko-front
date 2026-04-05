@@ -14,7 +14,6 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
 import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
-import MobileOverlay from "@/shared/components/MobileOverlay";
 // import OneTimeOfferModal from "@/shared/components/OneTimeOfferModal";
 
 const geistSans = Geist({
@@ -169,6 +168,21 @@ export default async function LocaleLayout({
             __html: `
               window.$crisp=[];
               window.CRISP_WEBSITE_ID="b6b29d3c-ed85-4bf6-bfce-b95961ccf6dc";
+              window.CRISP_READY_TRIGGER=function(){
+                if(window.innerWidth<768){
+                  setTimeout(function(){
+                    var all=document.querySelectorAll("*");
+                    for(var i=0;i<all.length;i++){
+                      var s=window.getComputedStyle(all[i]);
+                      if(s.position==="fixed"&&parseInt(s.bottom)<40&&parseInt(s.right)<40&&parseInt(s.zIndex)>1000){
+                        all[i].style.setProperty("bottom","auto","important");
+                        all[i].style.setProperty("top","50%","important");
+                        all[i].style.setProperty("transform","translateY(-50%)","important");
+                      }
+                    }
+                  },1000);
+                }
+              };
               (function(){
                 d=document;
                 s=d.createElement("script");
@@ -248,7 +262,6 @@ export default async function LocaleLayout({
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <RouteTransitionProgress />
             <WebVitalsMonitor />
-            <MobileOverlay />
             {/* <OneTimeOfferModal /> */}
             <SessionRefreshProvider />
             <TopRightControls />

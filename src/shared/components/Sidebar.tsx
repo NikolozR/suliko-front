@@ -145,13 +145,12 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     <>
       {/* {renderOverlay()} */}
       <aside
-        className={`sidebar-main flex flex-col h-screen overflow-auto fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
+        className={`sidebar-main hidden md:flex flex-col h-[100dvh] overflow-auto fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
           ? "w-20"
           : "w-48 md:w-56 lg:w-64"
           } ${!effectiveIsCollapsed
             ? "md:shadow-none shadow-xl"
             : "md:shadow-none"
-          } ${isMobile && effectiveIsCollapsed ? "md:translate-x-0" : "translate-x-0"
           }`}
       >
         <div className={`flex items-center h-20 ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-3`}>
@@ -327,8 +326,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 }}
               >
                 <LogOut
-                  className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                    } group-hover:scale-105`}
+                  className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"} group-hover:scale-105`}
                 />
                 {!effectiveIsCollapsed && (
                   <span className="whitespace-nowrap">
@@ -344,8 +342,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 }`}
             >
               <User
-                className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                  } group-hover:scale-105`}
+                className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"} group-hover:scale-105`}
               />
               {!effectiveIsCollapsed && (
                 <span className="whitespace-nowrap">

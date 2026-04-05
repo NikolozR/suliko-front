@@ -22,7 +22,12 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
     
     // Set CSS custom properties based on sidebar state
     const root = document.documentElement;
-    if (isCollapsed) {
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) {
+      root.style.setProperty('--sidebar-width', '0');
+      root.style.setProperty('--sidebar-width-md', '0');
+      root.style.setProperty('--sidebar-width-lg', '0');
+    } else if (isCollapsed) {
       root.style.setProperty('--sidebar-width', '4rem');
       root.style.setProperty('--sidebar-width-md', '4rem');
       root.style.setProperty('--sidebar-width-lg', '4rem');
@@ -44,7 +49,7 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
 
   return (
     <>
-      <main className="sidebar-content pt-10">
+      <main className="sidebar-content pt-10 pb-20 md:pb-0">
         {children}
       </main>
       <WelcomeModal 
