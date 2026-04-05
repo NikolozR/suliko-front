@@ -32,6 +32,8 @@ export default function CrispChatButton() {
 
   const openChat = () => {
     if (typeof window !== "undefined" && window.$crisp) {
+      // chat:hide suppresses the widget entirely — must re-show before opening.
+      window.$crisp.push(["do", "chat:show"]);
       window.$crisp.push(["do", "chat:open"]);
     }
   };
