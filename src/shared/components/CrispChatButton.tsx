@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect } from "react";
+
 declare global {
   interface Window {
     $crisp: unknown[];
@@ -7,6 +9,27 @@ declare global {
 }
 
 export default function CrispChatButton() {
+  // Hide the default Crisp launcher while this button is mounted (sign-in page).
+  // Restore it when navigating away so other pages still get the default bubble.
+  useEffect(() => {
+    const hide = () => {
+      if (typeof window !== "undefined" && window.$crisp) {
+        window.$crisp.push(["do", "chat:hide"]);
+      }
+    };
+
+    // Crisp loads async — try immediately and once more after it finishes loading.
+    hide();
+    const timer = setTimeout(hide, 1500);
+
+    return () => {
+      clearTimeout(timer);
+      if (typeof window !== "undefined" && window.$crisp) {
+        window.$crisp.push(["do", "chat:show"]);
+      }
+    };
+  }, []);
+
   const openChat = () => {
     if (typeof window !== "undefined" && window.$crisp) {
       window.$crisp.push(["do", "chat:open"]);
