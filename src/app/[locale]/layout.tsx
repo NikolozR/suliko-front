@@ -14,6 +14,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
 import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
+import { GoogleOAuthProvider } from '@react-oauth/google';
 // import OneTimeOfferModal from "@/shared/components/OneTimeOfferModal";
 
 const geistSans = Geist({
@@ -258,6 +259,7 @@ export default async function LocaleLayout({
             <img src="https://mc.yandex.ru/watch/105466504" style={{ position: 'absolute', left: '-9999px' }} alt="" />
           </div>
         </noscript>
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <RouteTransitionProgress />
@@ -271,6 +273,7 @@ export default async function LocaleLayout({
             <Analytics />
           </ThemeProvider>
         </NextIntlClientProvider>
+        </GoogleOAuthProvider>
 
         {/* Brevo Tracker */}
         <Script
