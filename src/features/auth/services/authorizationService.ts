@@ -203,6 +203,20 @@ export async function resetPassword(phoneNumber: string, newPassword: string, to
   }
 }
 
+export async function loginWithGoogle(idToken: string): Promise<LoginResponse> {
+  try {
+    const response = await apiClient.post<LoginResponse>("/Auth/login-with-google", idToken);
+    if (response.ok) {
+      return response.data;
+    } else {
+      throw new Error("Google login failed");
+    }
+  } catch (error) {
+    const errorMessage = ApiClient.handleApiError(error);
+    throw new Error(errorMessage);
+  }
+}
+
 export type { LoginParams, RegisterParams };
 
 

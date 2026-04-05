@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useRef, useEffect, useState } from "react";
+import { ChangeEvent, useRef, useEffect, useState, useCallback } from "react";
 // import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
@@ -31,6 +31,71 @@ import DocumentPreview from "./DocumentPreview";
 //   ),
 // });
 
+/**
+ * Isolated column that only re-renders when currentFile or hide state changes.
+ * Receives currentFile as prop (no store subscription) so it does NOT re-render
+ * when translatedMarkdown changes (avoids flickering on CKEditor keystrokes).
+ */
+const DocumentPreviewColumn = React.memo(function DocumentPreviewColumn({
+  documentPreviewRef,
+  hideOriginalDocument,
+  setHideOriginalDocument,
+  onFileChange,
+  onRemoveFile,
+  currentFile,
+}: {
+  documentPreviewRef: React.RefObject<HTMLDivElement | null>;
+  hideOriginalDocument: boolean;
+  setHideOriginalDocument: (hide: boolean) => void;
+  onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onRemoveFile: () => void;
+  currentFile: File | null;
+}) {
+  const t = useTranslations("DocumentTranslationCard");
+
+  if (hideOriginalDocument) return null;
+
+  return (
+    <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+        <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+          {t("originalDocument")}
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setHideOriginalDocument(true)}
+          className="transition-all duration-200 flex-shrink-0"
+          title={t("hideOriginal")}
+          aria-label={t("hideOriginal")}
+        >
+          <EyeOff className="h-4 w-4" />
+        </Button>
+      </div>
+      <div
+        className="h-[400px] md:h-[600px] lg:h-[800px] max-h-[400px] md:max-h-[600px] lg:max-h-[800px] flex flex-col w-full"
+        ref={documentPreviewRef}
+      >
+        <div className="space-y-4 h-full flex flex-col">
+          <div className="flex-1 min-h-0">
+            {currentFile && (
+              <DocumentPreview key={currentFile.name + currentFile.size} file={currentFile} />
+            )}
+          </div>
+          {currentFile && (
+            <FileInfoDisplay
+              file={currentFile}
+              onFileChange={onFileChange}
+              onRemoveFile={onRemoveFile}
+              id="file-upload-change-split"
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
 
 interface TranslationResultViewProps {
   currentFile: File;
@@ -66,18 +131,32 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
   const { hoveredSuggestionOriginalText } = useSuggestionsStore();
 
+  const onFileChangeRef = useRef(onFileChange);
+  const onRemoveFileRef = useRef(onRemoveFile);
+  onFileChangeRef.current = onFileChange;
+  onRemoveFileRef.current = onRemoveFile;
+  const stableOnFileChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => onFileChangeRef.current?.(e),
+    []
+  );
+  const stableOnRemoveFile = useCallback(() => onRemoveFileRef.current?.(), []);
+
   const isOriginalFileSrt = () => {
     const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
     return fileExtension === 'srt';
   };
 
+  const hasTranslatedContent = !!translatedMarkdown;
+
   useEffect(() => {
+    if (!hasTranslatedContent) return;
+
     const documentContainer =
       documentPreviewRef.current?.querySelector(".overflow-y-auto");
     const markdownContainer =
       markdownPreviewRef.current?.querySelector(".overflow-y-auto");
 
-    if (!documentContainer || !markdownContainer || !translatedMarkdown) return;
+    if (!documentContainer || !markdownContainer) return;
 
     const syncScroll = (source: Element, target: Element, event: Event) => {
       if (isScrolling.current) return;
@@ -105,7 +184,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       documentContainer.removeEventListener("scroll", handleDocumentScroll);
       markdownContainer.removeEventListener("scroll", handleMarkdownScroll);
     };
-  }, [translatedMarkdown]);
+  }, [hasTranslatedContent]);
 
   // Start 10-minute editor timer on first mount of the result view
   useEffect(() => {
@@ -271,47 +350,14 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   return (
     <>
       <div className={hideOriginalDocument ? "" : "flex flex-col lg:flex-row gap-4 lg:gap-8"}>
-        {!hideOriginalDocument && (
-          <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-border">
-              <div className="flex items-center gap-2">
-                <FileText className="h-4 w-4 text-suliko-default-color" aria-hidden="true" />
-                <span className="font-semibold text-suliko-default-color text-sm md:text-base">
-                  {t('originalDocument')}
-                </span>
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setHideOriginalDocument(true)}
-                className="transition-all duration-200 flex-shrink-0"
-                title={t('hideOriginal')}
-                aria-label={t('hideOriginal')}
-              >
-                <EyeOff className="h-4 w-4" />
-              </Button>
-            </div>
-            <div
-              className="h-[400px] md:h-[600px] lg:h-[800px] max-h-[400px] md:max-h-[600px] lg:max-h-[800px] flex flex-col w-full"
-              ref={documentPreviewRef}
-            >
-              <div className="space-y-4 h-full flex flex-col">
-                <div className="flex-1 min-h-0">
-                  <DocumentPreview file={currentFile} />
-                </div>
-                {currentFile && (
-                  <FileInfoDisplay
-                    file={currentFile}
-                    onFileChange={onFileChange}
-                    onRemoveFile={onRemoveFile}
-                    id="file-upload-change-split"
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        <DocumentPreviewColumn
+          documentPreviewRef={documentPreviewRef}
+          hideOriginalDocument={hideOriginalDocument}
+          setHideOriginalDocument={setHideOriginalDocument}
+          onFileChange={stableOnFileChange}
+          onRemoveFile={stableOnRemoveFile}
+          currentFile={currentFile}
+        />
 
         <div className={hideOriginalDocument ? "w-full" : "w-full lg:flex-1 min-w-0"}>
           {/* Header Section */}

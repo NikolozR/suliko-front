@@ -11,7 +11,9 @@ import {
   register,
   login,
   sendCode,
+  loginWithGoogle,
 } from "@/features/auth/services/authorizationService";
+import { GoogleLogin } from "@react-oauth/google";
 import { updateUserProfile } from "@/features/auth/services/userService";
 import PasswordRecoveryModal from "@/features/auth/components/PasswordRecoveryModal";
 import type { RegisterParams } from "@/features/auth/services/authorizationService";
@@ -402,6 +404,37 @@ const SulikoForm: React.FC = () => {
     }
   };
 
+  async function handleGoogleSuccess(credentialResponse: { credential?: string }) {
+    if (!credentialResponse.credential) return;
+    setAuthError(null);
+    try {
+      const data = await loginWithGoogle(credentialResponse.credential);
+      setToken(data.token);
+      setRefreshToken(data.refreshToken);
+      await fetchUserProfile();
+      const profileState = useUserStore.getState().userProfile;
+      if (profileState && profileState.hasSeenRegistrationBonus === false) {
+        await updateUserProfile({
+          id: profileState.id,
+          firstName: profileState.firstName,
+          lastName: profileState.lastName,
+          phoneNUmber: profileState.phoneNUmber,
+          email: profileState.email,
+          userName: profileState.userName,
+          roleId: profileState.roleId,
+          balance: profileState.balance,
+          hasSeenRegistrationBonus: true,
+        });
+        setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
+        triggerWelcomeModal();
+      }
+      router.push("/document");
+    } catch (error) {
+      console.error("Google login error:", error);
+      setAuthError(t("ErrorAlert.ups") || "Error detected");
+    }
+  }
+
   return (
     <>
       <SulikoFormParticles />
@@ -622,6 +655,21 @@ const SulikoForm: React.FC = () => {
                   </button>
                 </div>
               )}
+
+              <div className="flex items-center gap-3">
+                <div className="flex-1 h-px bg-border" />
+                <span className="text-xs text-muted-foreground">{t("orContinueWith") || "or"}</span>
+                <div className="flex-1 h-px bg-border" />
+              </div>
+
+              <div className="flex justify-center">
+                <GoogleLogin
+                  onSuccess={handleGoogleSuccess}
+                  onError={() => setAuthError(t("ErrorAlert.ups") || "Error detected")}
+                  useOneTap={false}
+                  width="100%"
+                />
+              </div>
             </form>
           </div>
         </Form>
