@@ -24,6 +24,48 @@ interface TermsSectionProps {
   form: UseFormReturn<LoginFormData | RegisterFormData>;
 }
 
+function parseDocumentSections(text: string) {
+  const blocks = text.split(/\n\n+/);
+  const sections: { heading: string | null; body: string }[] = [];
+  let current: { heading: string | null; body: string } | null = null;
+
+  for (const block of blocks) {
+    const trimmed = block.trim();
+    if (!trimmed) continue;
+    const isHeading = /^\d+\.\s/.test(trimmed) && trimmed.split("\n").length === 1;
+    if (isHeading) {
+      if (current) sections.push(current);
+      current = { heading: trimmed, body: "" };
+    } else {
+      if (current) {
+        current.body += (current.body ? "\n\n" : "") + trimmed;
+      } else {
+        sections.push({ heading: null, body: trimmed });
+      }
+    }
+  }
+  if (current) sections.push(current);
+  return sections;
+}
+
+function DocumentText({ text }: { text: string }) {
+  const sections = parseDocumentSections(text);
+  return (
+    <div className="space-y-5">
+      {sections.map((section, i) => (
+        <div key={i}>
+          {section.heading && (
+            <h4 className="font-semibold text-gray-900 mb-1.5">{section.heading}</h4>
+          )}
+          {section.body && (
+            <p className="text-gray-900 leading-7 whitespace-pre-wrap text-sm">{section.body}</p>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
+
 const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
   const t = useTranslations("Authorization");
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
@@ -41,7 +83,6 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
                 onCheckedChange={(checked) => {
                   const isChecked = checked === true;
                   field.onChange(isChecked);
-                  // Also set privacy policy to the same value
                   form.setValue("acceptPrivacyPolicy", isChecked, { shouldValidate: true });
                 }}
               />
@@ -60,15 +101,41 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
                       {t("termsAndPrivacy")}
                     </Button>
                   </DialogTrigger>
-                  <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                    <DialogHeader>
-                      <DialogTitle>{t("termsAndPrivacy")}</DialogTitle>
-                    </DialogHeader>
-                    <div className="mt-4 space-y-4 text-sm">
-                      <h3 className="font-semibold">{t("termsAndConditions")}</h3>
-                      <p className="whitespace-pre-wrap">{t("termsText")}</p>
-                      <h3 className="font-semibold mt-8">{t("privacyPolicy")}</h3>
-                      <p className="whitespace-pre-wrap">{t("privacyText")}</p>
+                  <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col p-0 gap-0">
+                    {/* Header */}
+                    <div className="px-8 py-5 border-b border-gray-100 bg-white rounded-t-lg">
+                      <DialogTitle className="text-xl font-bold text-gray-900">
+                        {t("termsAndPrivacy")}
+                      </DialogTitle>
+                      <p className="text-xs text-gray-500 mt-1">შკს სულიკო ეი აი · ID: 400403265</p>
+                    </div>
+
+                    {/* Scrollable body */}
+                    <div className="overflow-y-auto px-8 py-6 space-y-8 bg-gray-50">
+
+                      {/* Terms */}
+                      <section>
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="h-px flex-1 bg-gray-100" />
+                          <span className="text-xs font-semibold uppercase tracking-widest text-gray-600">
+                            {t("termsAndConditions")}
+                          </span>
+                          <div className="h-px flex-1 bg-gray-100" />
+                        </div>
+                        <DocumentText text={t("termsText")} />
+                      </section>
+
+                      {/* Privacy */}
+                      <section>
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="h-px flex-1 bg-gray-100" />
+                          <span className="text-xs font-semibold uppercase tracking-widest text-gray-600">
+                            {t("privacyPolicy")}
+                          </span>
+                          <div className="h-px flex-1 bg-gray-100" />
+                        </div>
+                        <DocumentText text={t("privacyText")} />
+                      </section>
                     </div>
                   </DialogContent>
                 </Dialog>
