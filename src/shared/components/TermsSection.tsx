@@ -14,7 +14,6 @@ import { Button } from "@/features/ui/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/features/ui/components/ui/dialog";
