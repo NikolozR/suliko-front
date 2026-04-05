@@ -46,6 +46,7 @@ type RegistrationStep = 1 | 2 | 3;
 
 const SulikoForm: React.FC = () => {
   const t = useTranslations("Authorization");
+  const tError = useTranslations("ErrorAlert");
   const locale = useLocale();
   const router = useRouter();
   const { setToken, setRefreshToken, triggerWelcomeModal } = useAuthStore();
@@ -176,7 +177,7 @@ const SulikoForm: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
       console.error("Send phone code error:", errorMessage);
-      setAuthError(t("ErrorAlert.ups") || "Error detected");
+      setAuthError(tError("ups"));
     } finally {
       setIsSendingCode(false);
     }
@@ -214,7 +215,7 @@ const SulikoForm: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
       console.error("Send email code error:", errorMessage);
-      setAuthError(t("ErrorAlert.ups") || "Error detected");
+      setAuthError(tError("ups"));
     } finally {
       setIsSendingCode(false);
     }
@@ -365,7 +366,7 @@ const SulikoForm: React.FC = () => {
       } else if (isLoginMode && errorMessage.includes("ვერ მოიძებნა")) {
         setAuthError(t("accountNotFound"));
       } else {
-        setAuthError(t("ErrorAlert.ups") || "Error detected");
+        setAuthError(tError("ups"));
       }
     } finally {
       setIsSubmitting(false);
@@ -428,7 +429,7 @@ const SulikoForm: React.FC = () => {
       router.push("/document");
     } catch (error) {
       console.error("Google login error:", error);
-      setAuthError(t("ErrorAlert.ups") || "Error detected");
+      setAuthError(tError("ups"));
     } finally {
       setIsSubmitting(false);
     }
