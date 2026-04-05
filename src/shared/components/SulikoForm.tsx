@@ -42,6 +42,7 @@ import {
 
 const SulikoForm: React.FC = () => {
   const t = useTranslations("Authorization");
+  const tError = useTranslations("ErrorAlert");
   const locale = useLocale();
   const router = useRouter();
   const { setToken, setRefreshToken, triggerWelcomeModal } = useAuthStore();
@@ -173,7 +174,7 @@ const SulikoForm: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
       console.error('Send phone code error:', errorMessage);
-      setAuthError(t("ErrorAlert.ups") || "Error detected");
+      setAuthError(tError("ups"));
     } finally {
       setIsSendingCode(false);
     }
@@ -212,7 +213,7 @@ const SulikoForm: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
       console.error('Send email code error:', errorMessage);
-      setAuthError(t("ErrorAlert.ups") || "Error detected");
+      setAuthError(tError("ups"));
     } finally {
       setIsSendingCode(false);
     }
@@ -358,10 +359,10 @@ const SulikoForm: React.FC = () => {
 
       if (!isLoginMode && errorMessage.includes("უკვე რეგისტრირებულია")) {
         // Set generalized error message
-        setAuthError(t("ErrorAlert.ups") || "Error detected");
+        setAuthError(tError("ups"));
       } else if (isLoginMode && errorMessage.includes("ვერ მოიძებნა")) {
         // Set generalized error message
-        setAuthError(t("ErrorAlert.ups") || "Error detected");
+        setAuthError(tError("ups"));
         setTimeout(() => {
           setIsLoginMode(false);
           setAuthError(null);
@@ -369,7 +370,7 @@ const SulikoForm: React.FC = () => {
         }, 2000);
       } else {
         // Set generalized error message
-        setAuthError(t("ErrorAlert.ups") || "Error detected");
+        setAuthError(tError("ups"));
       }
     }
   }
@@ -431,7 +432,7 @@ const SulikoForm: React.FC = () => {
       router.push("/document");
     } catch (error) {
       console.error("Google login error:", error);
-      setAuthError(t("ErrorAlert.ups") || "Error detected");
+      setAuthError(tError("ups"));
     }
   }
 
@@ -665,7 +666,7 @@ const SulikoForm: React.FC = () => {
               <div className="flex justify-center">
                 <GoogleLogin
                   onSuccess={handleGoogleSuccess}
-                  onError={() => setAuthError(t("ErrorAlert.ups") || "Error detected")}
+                  onError={() => setAuthError(tError("ups"))}
                   useOneTap={false}
                   width="100%"
                 />
