@@ -411,10 +411,10 @@ const SulikoForm: React.FC = () => {
           onClose={() => setAuthError(null)}
         />
       )}
-      <div className="w-[85%] dark:z-[2] dark:bg-transparent bg-suliko-main-content-bg-color z-[100] pt-[100px] pb-8">
+      <div className="w-[85%] dark:z-[2] dark:bg-transparent bg-suliko-main-content-bg-color z-[100] pt-[60px] sm:pt-[100px] pb-8">
         <Form {...form}>
-          <div className="flex z-10 flex-col my-[110px] sm:mt-0 sm:my-0 justify-start items-center w-full min-h-full">
-            <div className="mb-6 bg-muted rounded-xl p-1 flex w-[60%] max-w-md">
+          <div className="flex z-10 flex-col my-[30px] sm:my-0 justify-start items-center w-full min-h-full">
+            <div className="mb-6 bg-muted rounded-xl p-1 flex w-[85%] sm:w-[60%] max-w-md">
               <button
                 type="button"
                 onClick={() => !isLoginMode && toggleAuthMode()}
@@ -457,7 +457,7 @@ const SulikoForm: React.FC = () => {
                   }
                 )(e);
               }}
-              className="flex flex-col gap-8 w-[60%]"
+              className="flex flex-col gap-8 w-[85%] sm:w-[60%]"
             >
               {isLoginMode ? (
                 <FormField

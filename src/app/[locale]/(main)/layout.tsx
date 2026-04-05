@@ -1,4 +1,5 @@
 import Sidebar from "@/shared/components/Sidebar";
+import MobileBottomNav from "@/shared/components/MobileBottomNav";
 import { cookies } from "next/headers";
 import { getUserProfile } from "@/features/auth/services/userService";
 import ResponsiveMainContent from "@/shared/components/ResponsiveMainContent";
@@ -36,6 +37,7 @@ export default async function MainLayout({
       <ResponsiveMainContent>
         {children}
       </ResponsiveMainContent>
+      <MobileBottomNav />
     </div>
   );
 } 
