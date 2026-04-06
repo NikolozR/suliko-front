@@ -1012,7 +1012,7 @@
     "grid": {
       "noPosts": "No blog posts yet",
       "noPostsSubtitle": "Check back later for new content!",
-      "searchPlaceholder": "Search articles\u2026",
+      "searchPlaceholder": "Search articles…",
       "noResults": "No posts match your search.",
       "clearFilters": "Clear filters"
     },
@@ -1027,5 +1027,10 @@
       "subscribe": "Subscribe",
       "noSpam": "No spam, unsubscribe at any time."
     }
+  },
+  "Terms": {
+    "backToHome": "Back to home",
+    "pageTitle": "Terms & Conditions | Suliko",
+    "pageDescription": "Read the full Terms and Conditions for the Suliko AI translation service."
   }
 }

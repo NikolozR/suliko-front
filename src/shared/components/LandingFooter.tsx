@@ -138,10 +138,16 @@ export default function LandingFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-5 border-t border-border flex justify-center">
+        <div className="py-5 border-t border-border flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
           <p className="text-sm text-muted-foreground">
             {t("bottom.copyright")}
           </p>
+          <Link
+            href="/terms"
+            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+          >
+            {t("links.termsOfService")}
+          </Link>
         </div>
 
       </div>

@@ -999,7 +999,7 @@
     "grid": {
       "noPosts": "Brak wpisów na blogu",
       "noPostsSubtitle": "Sprawdź ponownie później!",
-      "searchPlaceholder": "Szukaj artykułów\u2026",
+      "searchPlaceholder": "Szukaj artykułów…",
       "noResults": "Brak wpisów pasujących do wyszukiwania.",
       "clearFilters": "Wyczyść filtry"
     },
@@ -1014,5 +1014,10 @@
       "subscribe": "Subskrybuj",
       "noSpam": "Bez spamu, rezygnacja w dowolnym momencie."
     }
+  },
+  "Terms": {
+    "backToHome": "Wróć do strony głównej",
+    "pageTitle": "Warunki i zasady | Suliko",
+    "pageDescription": "Przeczytaj pełne Warunki i zasady korzystania z usługi tłumaczenia AI Suliko."
   }
 }
