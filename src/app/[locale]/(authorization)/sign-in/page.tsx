@@ -1,21 +1,15 @@
 import SulikoForm from "@/shared/components/SulikoForm";
-import SulikoFormBanner from "@/shared/components/SulikoFormBanner";
-import SulikoLogo from "@/shared/components/SulikoLogo";
-import { Link } from "@/i18n/navigation";
+import AuroraBackground from "@/shared/components/AuroraBackground";
+import CrispChatButton from "@/shared/components/CrispChatButton";
 
 export default function SignIn() {
   return (
-    <div className="flex flex-col-reverse sm:flex-row justify-center items-start min-h-[100dvh] w-full overflow-y-auto">
-      <div className="flex relative items-start sm:w-[50%] w-full justify-center sm:min-h-[100dvh] py-4 sm:py-0">
-        <Link href="/">
-          <SulikoLogo
-            className="absolute z-1000 sm:block top-[20px] left-[20px] cursor-pointer"
-            width={100}
-          />
-        </Link>
+    <div className="relative flex justify-center items-center min-h-[100dvh] w-full overflow-y-auto">
+      <AuroraBackground />
+      <div className="relative flex items-center justify-center w-full min-h-[100dvh]">
         <SulikoForm />
       </div>
-      <SulikoFormBanner />
+      <CrispChatButton />
     </div>
   );
-} 
+}
