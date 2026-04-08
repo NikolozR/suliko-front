@@ -666,6 +666,7 @@
     "faq": "FAQ",
     "contact": "Contact",
     "blog": "Blog",
+    "notary": "Notary",
     "getStarted": "Get Started",
     "loading": "Loading..."
   },
@@ -1013,6 +1014,86 @@
       "placeholder": "Enter your email",
       "subscribe": "Subscribe",
       "noSpam": "No spam, unsubscribe at any time."
+    }
+  },
+  "NotaryPromo": {
+    "heading": "Suliko also does notarial translations",
+    "subheading": "Certified, fast, and legally valid translations for your official documents.",
+    "cta": "Learn More"
+  },
+  "NotaryHeader": {
+    "services": "Services",
+    "pricing": "Pricing",
+    "faq": "FAQ",
+    "contact": "Contact",
+    "backToSuliko": "Suliko",
+    "loading": "Loading..."
+  },
+  "NotaryPage": {
+    "hero": {
+      "badge": "Certified Translations",
+      "heading": "Professional Notary Translation Services",
+      "subheading": "Fast, accurate, and certified translations for all your official documents. Trusted by thousands of clients in Tbilisi.",
+      "cta": "Upload Document",
+      "ctaSecondary": "View Prices",
+      "badge1": "Certified Translations",
+      "badge2": "5-min Response",
+      "badge3": "Same Day Delivery"
+    },
+    "services": {
+      "sectionBadge": "How It Works",
+      "heading": "Simple 3-Step Process",
+      "subheading": "From document upload to certified translation — fast and simple.",
+      "step1Title": "Upload Your Document",
+      "step1Desc": "Send us your document via our online form or WhatsApp.",
+      "step2Title": "We Translate & Certify",
+      "step2Desc": "Our certified translators complete the translation with notary stamp.",
+      "step3Title": "Receive Your Translation",
+      "step3Desc": "Pick up in person or receive by courier — same day available."
+    },
+    "pricing": {
+      "sectionBadge": "Pricing",
+      "heading": "Translation Prices",
+      "subheading": "Transparent pricing for all language pairs. No hidden fees.",
+      "languageCol": "Language",
+      "priceCol": "Price per page",
+      "notaryTitle": "Notary Approval",
+      "notaryTier1": "1 page",
+      "notaryTier1Price": "6 ₾ per page",
+      "notaryTier2": "2–10 pages",
+      "notaryTier2Price": "4 ₾ per page",
+      "notaryTier3": "11–50 pages",
+      "notaryTier3Price": "3 ₾ per page",
+      "notaryTier4": "51+ pages",
+      "notaryTier4Price": "2 ₾ per page",
+      "vatNote": "18% VAT + 5 ₾ fixed fee applied",
+      "discountTitle": "Volume Discounts",
+      "discount1": "10% off for 50+ pages",
+      "discount2": "15% off for 100+ pages"
+    },
+    "faq": {
+      "sectionBadge": "FAQ",
+      "heading": "Frequently Asked Questions",
+      "subheading": "Everything you need to know about our notary translation services.",
+      "q1": "How long does a notary translation take?",
+      "a1": "Standard translations are usually completed within 1–2 business days. Express same-day service is available for urgent documents — contact us for details.",
+      "q2": "What documents can you translate?",
+      "a2": "We translate all official documents including passports, birth certificates, marriage certificates, diplomas, contracts, medical records, court documents, and more.",
+      "q3": "What is the price per page?",
+      "a3": "Prices start from 20 ₾ per page for English/Russian translations, and vary by language. Notary certification costs 2–6 ₾ per page depending on volume.",
+      "q4": "Do you provide certified / notarized translations?",
+      "a4": "Yes. All our translations can be notarially certified, making them legally valid for official use in Georgia and internationally.",
+      "q5": "Can I submit a document online?",
+      "a5": "Absolutely. Upload your document through our online form or send it via WhatsApp. We will review it and send you a price quote within 5 minutes.",
+      "q6": "Do you translate to languages other than Georgian?",
+      "a6": "Yes — we translate between 20+ language pairs including English, Russian, German, French, Turkish, Armenian, Arabic, Chinese, and many more."
+    },
+    "contact": {
+      "heading": "Ready to Get Started?",
+      "subheading": "Send us your document and get a quote in 5 minutes.",
+      "whatsapp": "WhatsApp Us",
+      "email": "Email Us",
+      "address": "Tbilisi, Business Center Karvasla, 7 Kotne Dadiani St."
     }
   }
 }

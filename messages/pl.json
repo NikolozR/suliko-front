@@ -661,6 +661,7 @@
     "faq": "FAQ",
     "contact": "Kontakt",
     "blog": "Blog",
+    "notary": "Notarialne",
     "getStarted": "Zacznij",
     "loading": "Ładowanie..."
   },
@@ -1000,6 +1001,86 @@
       "placeholder": "Wpisz swój e-mail",
       "subscribe": "Subskrybuj",
       "noSpam": "Bez spamu, rezygnacja w dowolnym momencie."
+    }
+  },
+  "NotaryPromo": {
+    "heading": "Suliko tłumaczy też notarialnie",
+    "subheading": "Certyfikowane, szybkie i prawnie ważne tłumaczenia oficjalnych dokumentów.",
+    "cta": "Dowiedz się więcej"
+  },
+  "NotaryHeader": {
+    "services": "Usługi",
+    "pricing": "Ceny",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "backToSuliko": "Suliko",
+    "loading": "Ładowanie..."
+  },
+  "NotaryPage": {
+    "hero": {
+      "badge": "Certyfikowane tłumaczenia",
+      "heading": "Profesjonalne notarialne usługi tłumaczeniowe",
+      "subheading": "Szybkie, dokładne i certyfikowane tłumaczenia wszystkich oficjalnych dokumentów. Zaufało nam tysiące klientów w Tbilisi.",
+      "cta": "Prześlij dokument",
+      "ctaSecondary": "Cennik",
+      "badge1": "Certyfikowane tłumaczenia",
+      "badge2": "Odpowiedź w 5 min",
+      "badge3": "Dostawa tego samego dnia"
+    },
+    "services": {
+      "sectionBadge": "Jak to działa",
+      "heading": "Prosty 3-etapowy proces",
+      "subheading": "Od przesłania dokumentu do certyfikowanego tłumaczenia — szybko i prosto.",
+      "step1Title": "Prześlij swój dokument",
+      "step1Desc": "Wyślij nam dokument przez formularz online lub WhatsApp.",
+      "step2Title": "Tłumaczymy i certyfikujemy",
+      "step2Desc": "Nasi certyfikowani tłumacze wykonują tłumaczenie z pieczęcią notarialną.",
+      "step3Title": "Odbierz tłumaczenie",
+      "step3Desc": "Odbierz osobiście lub przez kuriera — dostawa tego samego dnia dostępna."
+    },
+    "pricing": {
+      "sectionBadge": "Cennik",
+      "heading": "Ceny tłumaczeń",
+      "subheading": "Przejrzyste ceny dla wszystkich par językowych. Bez ukrytych opłat.",
+      "languageCol": "Język",
+      "priceCol": "Cena za stronę",
+      "notaryTitle": "Poświadczenie notarialne",
+      "notaryTier1": "1 strona",
+      "notaryTier1Price": "6 ₾ za stronę",
+      "notaryTier2": "2–10 stron",
+      "notaryTier2Price": "4 ₾ za stronę",
+      "notaryTier3": "11–50 stron",
+      "notaryTier3Price": "3 ₾ za stronę",
+      "notaryTier4": "51+ stron",
+      "notaryTier4Price": "2 ₾ za stronę",
+      "vatNote": "18% VAT + 5 ₾ opłata stała",
+      "discountTitle": "Rabaty za ilość",
+      "discount1": "10% zniżki za 50+ stron",
+      "discount2": "15% zniżki za 100+ stron"
+    },
+    "faq": {
+      "sectionBadge": "FAQ",
+      "heading": "Najczęściej zadawane pytania",
+      "subheading": "Wszystko, co musisz wiedzieć o naszych usługach tłumaczenia notarialnego.",
+      "q1": "Ile trwa tłumaczenie notarialne?",
+      "a1": "Standardowe tłumaczenia są zwykle realizowane w ciągu 1–2 dni roboczych. Ekspresowa usługa tego samego dnia jest dostępna dla pilnych dokumentów — skontaktuj się z nami.",
+      "q2": "Jakie dokumenty możecie przetłumaczyć?",
+      "a2": "Tłumaczymy wszystkie oficjalne dokumenty, w tym paszporty, akty urodzenia, akty małżeństwa, dyplomy, umowy, dokumentację medyczną, dokumenty sądowe i inne.",
+      "q3": "Ile kosztuje jedna strona?",
+      "a3": "Ceny zaczynają się od 20 ₾ za stronę dla tłumaczeń angielskiego/rosyjskiego i różnią się w zależności od języka. Poświadczenie notarialne kosztuje 2–6 ₾ za stronę.",
+      "q4": "Czy wystawiacie certyfikowane/notarialne tłumaczenia?",
+      "a4": "Tak. Wszystkie nasze tłumaczenia mogą zostać notarialnie poświadczone, co nadaje im moc prawną do użytku w Gruzji i za granicą.",
+      "q5": "Czy mogę przesłać dokument online?",
+      "a5": "Oczywiście. Prześlij dokument przez nasz formularz online lub wyślij przez WhatsApp. Sprawdzimy go i wyślemy wycenę w ciągu 5 minut.",
+      "q6": "Czy tłumaczycie na języki inne niż gruziński?",
+      "a6": "Tak — tłumaczymy ponad 20 par językowych, w tym angielski, rosyjski, niemiecki, francuski, turecki, ormiański, arabski, chiński i wiele innych."
+    },
+    "contact": {
+      "heading": "Gotowy, żeby zacząć?",
+      "subheading": "Wyślij nam dokument i otrzymaj wycenę w 5 minut.",
+      "whatsapp": "WhatsApp",
+      "email": "E-mail",
+      "address": "Tbilisi, Centrum Biznesowe Karvasla, ul. Kotne Dadiani 7"
     }
   }
 }

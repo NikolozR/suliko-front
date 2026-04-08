@@ -24,6 +24,10 @@ const TestimonialsSection = dynamic(() => import("@/shared/components/Testimonia
 const FAQSection = dynamic(() => import("@/shared/components/FAQSection"), {
   loading: () => <LandingSectionSkeleton />,
 });
+const NotaryPromoSection = dynamic(() => import("@/shared/components/NotaryPromoSection"), {
+  loading: () => <LandingSectionSkeleton minHeight={180} />,
+});
+
 const LandingFooter = dynamic(() => import("@/shared/components/LandingFooter"), {
   loading: () => (
     <div className="border-t border-border bg-muted/30 px-4 py-10">
@@ -79,6 +83,7 @@ export default function LandingPageClient() {
               <VideoSection />
               <TestimonialsSection />
               <FAQSection />
+              <NotaryPromoSection />
             </>
           ) : (
             <>

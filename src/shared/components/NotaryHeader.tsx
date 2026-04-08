@@ -1,0 +1,274 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { Link, usePathname } from "@/i18n/navigation";
+import { X, Moon, Sun } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
+import { useTheme } from "next-themes";
+
+function ThemeToggle() {
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
+
+  return (
+    <button
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
+      className="relative p-2 rounded-md hover:bg-accent transition-colors"
+      type="button"
+      aria-label="Toggle theme"
+    >
+      <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+    </button>
+  );
+}
+
+function NavItem({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="relative transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 text-foreground/80 hover:text-foreground"
+      type="button"
+    >
+      {children}
+    </button>
+  );
+}
+
+function MobileNavItem({
+  children,
+  onClick,
+}: {
+  children: React.ReactNode;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className="block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 text-foreground/80 hover:text-foreground hover:bg-accent"
+      type="button"
+    >
+      {children}
+    </button>
+  );
+}
+
+export default function NotaryHeader() {
+  const t = useTranslations("NotaryHeader");
+  const pathname = usePathname();
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const [lastScrollY, setLastScrollY] = useState(0);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      setIsScrolled(scrollTop > 20);
+      if (scrollTop > lastScrollY && scrollTop > 100) {
+        setIsHeaderVisible(false);
+      } else {
+        setIsHeaderVisible(true);
+      }
+      setLastScrollY(scrollTop);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [lastScrollY]);
+
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && isMobileMenuOpen) {
+        setIsMobileMenuOpen(false);
+      }
+    };
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
+  }, [isMobileMenuOpen]);
+
+  const navItems = [
+    { id: "services", label: t("services") },
+    { id: "pricing", label: t("pricing") },
+    { id: "faq", label: t("faq") },
+    { id: "contact", label: t("contact") },
+  ];
+
+  const handleNavClick = (sectionId: string) => {
+    setIsMobileMenuOpen(false);
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  if (!mounted) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
+        <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 lg:h-20">
+            <div className="h-24 w-24 lg:h-32 lg:w-32 bg-muted animate-pulse rounded" />
+            <div className="hidden md:flex items-center space-x-8">
+              <div className="h-4 w-16 bg-muted animate-pulse rounded" />
+              <div className="h-4 w-16 bg-muted animate-pulse rounded" />
+            </div>
+          </div>
+        </nav>
+      </header>
+    );
+  }
+
+  return (
+    <header
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        isScrolled
+          ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
+          : "bg-background/95 backdrop-blur-md md:bg-transparent"
+      } ${isHeaderVisible ? "translate-y-0" : "-translate-y-full"}`}
+    >
+      <nav className="container z-50 relative mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
+
+          {/* Logo */}
+          <Link href="/" className="flex items-center space-x-2 relative z-50">
+            <Image
+              src={
+                resolvedTheme === "dark"
+                  ? "/Suliko_logo_white.svg"
+                  : "/Suliko_logo_black.svg"
+              }
+              alt="Suliko"
+              width={120}
+              height={120}
+              className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32"
+              priority
+            />
+          </Link>
+
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center justify-center flex-1">
+            <div className="flex items-center space-x-8">
+              {navItems.map((item) => (
+                <NavItem key={item.id} onClick={() => handleNavClick(item.id)}>
+                  {item.label}
+                </NavItem>
+              ))}
+            </div>
+          </div>
+
+          {/* Right Controls */}
+          <div className="hidden md:flex items-center space-x-4">
+            <LanguageSwitcher />
+            <ThemeToggle />
+            {/* SULIKO back button */}
+            <Link href="/">
+              <button
+                type="button"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold border border-[var(--suliko-default-color)] text-[var(--suliko-default-color)] hover:bg-[var(--suliko-default-color)] hover:text-white transition-colors duration-200"
+              >
+                ← {t("backToSuliko")}
+              </button>
+            </Link>
+          </div>
+
+          {/* Hamburger */}
+          <button
+            className="md:hidden p-2 rounded-md transition-colors relative z-50 text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            type="button"
+          >
+            <div className="w-6 h-6 flex flex-col justify-center items-center">
+              <span
+                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${
+                  isMobileMenuOpen ? "rotate-45 translate-y-1" : "-translate-y-1"
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${
+                  isMobileMenuOpen ? "opacity-0" : "opacity-100"
+                }`}
+              />
+              <span
+                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${
+                  isMobileMenuOpen ? "-rotate-45 -translate-y-1" : "translate-y-1"
+                }`}
+              />
+            </div>
+          </button>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden fixed inset-0 z-[60]">
+            <div
+              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-2xl z-[61]">
+              <div className="flex flex-col h-full bg-inherit">
+                <div className="flex items-center justify-between p-4 border-b border-border bg-inherit">
+                  <h2 className="text-lg font-semibold text-foreground">Menu</h2>
+                  <button
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="p-2 rounded-md hover:bg-accent transition-colors"
+                    type="button"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <nav className="flex-1 px-4 py-6 space-y-2 bg-inherit">
+                  {navItems.map((item) => (
+                    <MobileNavItem
+                      key={item.id}
+                      onClick={() => handleNavClick(item.id)}
+                    >
+                      {item.label}
+                    </MobileNavItem>
+                  ))}
+                </nav>
+                <div className="p-4 border-t border-border space-y-4 bg-inherit">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-foreground/60">Theme</span>
+                    <ThemeToggle />
+                  </div>
+                  <Link
+                    href="/"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block w-full"
+                  >
+                    <button
+                      type="button"
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold border border-[var(--suliko-default-color)] text-[var(--suliko-default-color)] hover:bg-[var(--suliko-default-color)] hover:text-white transition-colors duration-200"
+                    >
+                      ← {t("backToSuliko")}
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+      </nav>
+    </header>
+  );
+}

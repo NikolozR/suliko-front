@@ -175,6 +175,10 @@ export default function LandingHeader() {
   // Blog navigation item (separate from scroll items)
   const blogNavItem = { id: 'blog', label: t("blog"), href: '/blog' };
 
+  // Notary navigation item
+  const notaryNavItem = { id: 'notary', label: t("notary"), href: '/notary' };
+  const isNotaryPage = pathname.includes('/notary');
+
   // Handle navigation click
   const handleNavClick = (sectionId: string) => {
     const cleanSectionId = sectionId.replace('#', '');
@@ -267,6 +271,17 @@ export default function LandingHeader() {
                     : "text-foreground/80 hover:text-foreground"
                 }`}>
                   {blogNavItem.label}
+                </button>
+              </Link>
+              <Link href={notaryNavItem.href}>
+                <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+                  isNotaryPage
+                    ? "text-[var(--suliko-default-color)]"
+                    : isBlogPage
+                      ? "text-white/90 hover:text-white"
+                      : "text-foreground/80 hover:text-foreground"
+                }`}>
+                  {notaryNavItem.label}
                 </button>
               </Link>
             </div>
@@ -366,6 +381,17 @@ export default function LandingHeader() {
                         : "text-foreground/80 hover:text-foreground hover:bg-accent"
                     }`}>
                       {blogNavItem.label}
+                    </button>
+                  </Link>
+                  <Link href={notaryNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
+                      isNotaryPage
+                        ? "text-[var(--suliko-default-color)] bg-primary/5 border-primary/20"
+                        : isBlogPage
+                          ? "text-white/90 hover:text-white hover:bg-white/10"
+                          : "text-foreground/80 hover:text-foreground hover:bg-accent"
+                    }`}>
+                      {notaryNavItem.label}
                     </button>
                   </Link>
                 </nav>
