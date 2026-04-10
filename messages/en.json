@@ -1138,6 +1138,7 @@
         "dragDrop": "Drag & drop files here or",
         "browse": "browse",
         "maxFiles": "Maximum 5 files (10MB each)",
+        "name": "Your Name",
         "email": "Your Email",
         "send": "Get Free Quote",
         "remove": "Remove",

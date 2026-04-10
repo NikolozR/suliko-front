@@ -21,8 +21,10 @@ export default function NotaryFileUploadForm() {
   const [isDragging, setIsDragging] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [notification, setNotification] = useState<Notification | null>(null);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const formRef = useRef<HTMLFormElement>(null);
 
   const validateFiles = (newFiles: File[]) => {
     if (files.length + newFiles.length > MAX_FILES) {
@@ -38,47 +40,42 @@ export default function NotaryFileUploadForm() {
     return true;
   };
 
-  const fileToBase64 = (file: File): Promise<string> =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve((reader.result as string).split(",")[1]);
-      reader.onerror = reject;
-    });
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (files.length === 0) return;
     setIsSending(true);
 
-    const form = formRef.current!;
-    const emailValue = (form.querySelector('[name="email"]') as HTMLInputElement).value;
-    const phoneValue = (form.querySelector('[name="phone"]') as HTMLInputElement).value;
-
     try {
-      const attachments = await Promise.all(
-        files.map(async (file) => ({
-          name: file.name,
-          data: await fileToBase64(file),
-        }))
-      );
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("email", email);
+      formData.append("phone", phone);
+      files.forEach((file) => formData.append("files", file));
 
-      await emailjs.send(
+      emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
         process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
         {
-          email: emailValue,
-          phone: phoneValue || "N/A",
+          to_email: email,
+          to_name: name,
           file_count: files.length,
           file_names: files.map((f) => f.name).join(", "),
-          attachments,
         },
         process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
-      );
+      ).catch((err) => console.error("EmailJS confirmation error:", err));
+
+
+      const res = await fetch("/api/notary-upload", { method: "POST", body: formData });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "Unknown error");
 
       setNotification({ type: "success", message: t("success") });
+
       setFiles([]);
-      form.reset();
+      setName("");
+      setEmail("");
+      setPhone("");
     } catch (error) {
       console.error("Submission error:", error);
       setNotification({ type: "error", message: t("error") });
@@ -109,7 +106,7 @@ export default function NotaryFileUploadForm() {
 
   return (
     <div className="max-w-2xl mx-auto px-2 sm:px-4 md:px-6">
-      <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
+      <form onSubmit={handleSubmit} className="space-y-6">
 
         {/* Benefit badges */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -121,10 +118,23 @@ export default function NotaryFileUploadForm() {
           ))}
         </div>
 
+        {/* Name */}
+        <input
+          type="text"
+          name="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          placeholder={t("name")}
+          required
+          className="w-full p-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 text-sm"
+        />
+
         {/* Email */}
         <input
           type="email"
           name="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           placeholder={t("email")}
           required
           className="w-full p-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 text-sm"
@@ -134,6 +144,8 @@ export default function NotaryFileUploadForm() {
         <input
           type="tel"
           name="phone"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
           placeholder={t("phone")}
           className="w-full p-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 text-sm"
         />
