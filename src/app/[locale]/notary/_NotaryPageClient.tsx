@@ -18,6 +18,11 @@ const NotaryPricingSection = dynamic(
   { loading: () => <LandingSectionSkeleton withCards /> }
 );
 
+const NotaryCalculatorSection = dynamic(
+  () => import("@/shared/components/notary/NotaryCalculatorSection"),
+  { loading: () => <LandingSectionSkeleton /> }
+);
+
 const NotaryFAQSection = dynamic(
   () => import("@/shared/components/notary/NotaryFAQSection"),
   { loading: () => <LandingSectionSkeleton /> }
@@ -79,6 +84,7 @@ export default function NotaryPageClient() {
             <>
               <NotaryHowItWorksSection />
               <NotaryPricingSection />
+              <NotaryCalculatorSection />
               <NotaryFAQSection />
               <NotaryContactSection />
             </>

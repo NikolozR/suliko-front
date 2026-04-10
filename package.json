@@ -12,6 +12,7 @@
   "dependencies": {
     "@ckeditor/ckeditor5-react": "^11.0.0",
     "@cyntler/react-doc-viewer": "^1.17.0",
+    "@emailjs/browser": "^4.4.1",
     "@hookform/resolvers": "^5.0.1",
     "@radix-ui/react-accordion": "^1.2.12",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -32,6 +33,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "file-saver": "^2.0.5",
+    "framer-motion": "^12.38.0",
     "gray-matter": "^4.0.3",
     "html-docx-js": "^0.3.1",
     "html2canvas": "^1.4.1",

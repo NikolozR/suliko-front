@@ -1107,6 +1107,52 @@
       "whatsapp": "WhatsApp Us",
       "email": "Email Us",
       "address": "Tbilisi, Business Center Karvasla, 7 Kotne Dadiani St."
+    },
+    "calculator": {
+      "tabs": {
+        "calculator": "Price Calculator",
+        "upload": "Upload Document",
+        "calcTitle": "Estimate Translation Cost Instantly",
+        "uploadTitle": "Send Us Your Document For Free Quote",
+        "uploadSub": "Quick response ~ 5 minutes"
+      },
+      "priceCalc": {
+        "sourceLanguage": "Source Language",
+        "targetLanguage": "Target Language",
+        "pageCount": "Number of Pages",
+        "notaryApproval": "Notary Approval Required",
+        "calculate": "Calculate Price",
+        "translationDetails": "Translation Details",
+        "pricePerPage": "Price per page",
+        "discount": "Bulk discount",
+        "notaryCost": "Notary cost",
+        "totalPrice": "Total",
+        "copyEmail": "Copy Email",
+        "copyPhone": "Copy Phone",
+        "swipeDown": "Swipe down to close",
+        "delivery90": "About 90 minutes",
+        "delivery180": "About 180 minutes",
+        "deliveryCustom": "Custom, we will contact you"
+      },
+      "uploadForm": {
+        "dragDrop": "Drag & drop files here or",
+        "browse": "browse",
+        "maxFiles": "Maximum 5 files (10MB each)",
+        "email": "Your Email",
+        "send": "Get Free Quote",
+        "remove": "Remove",
+        "success": "Files sent successfully!",
+        "error": "Error sending files. Please try again.",
+        "invalidEmail": "Please enter a valid email",
+        "tooManyFiles": "Maximum 5 files allowed",
+        "fileTooLarge": "File size exceeds 10MB",
+        "phone": "Phone Number (optional)",
+        "benefit1": "Free price estimate",
+        "benefit2": "Fast response within 5 minutes",
+        "benefit3": "Professional translation services",
+        "callUs": "Or call us directly:",
+        "sending": "Sending..."
+      }
     }
   },
   "Terms": {

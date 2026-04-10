@@ -1094,6 +1094,52 @@
       "whatsapp": "WhatsApp",
       "email": "E-mail",
       "address": "Tbilisi, Centrum Biznesowe Karvasla, ul. Kotne Dadiani 7"
+    },
+    "calculator": {
+      "tabs": {
+        "calculator": "Kalkulator cen",
+        "upload": "Prześlij dokument",
+        "calcTitle": "Błyskawicznie oszacuj koszt tłumaczenia",
+        "uploadTitle": "Wyślij nam dokument po bezpłatną wycenę",
+        "uploadSub": "Szybka odpowiedź ~ 5 minut"
+      },
+      "priceCalc": {
+        "sourceLanguage": "Język źródłowy",
+        "targetLanguage": "Język docelowy",
+        "pageCount": "Liczba stron",
+        "notaryApproval": "Wymagane poświadczenie notarialne",
+        "calculate": "Oblicz cenę",
+        "translationDetails": "Szczegóły tłumaczenia",
+        "pricePerPage": "Cena za stronę",
+        "discount": "Rabat ilościowy",
+        "notaryCost": "Koszt notarialny",
+        "totalPrice": "Suma",
+        "copyEmail": "Kopiuj e-mail",
+        "copyPhone": "Kopiuj numer",
+        "swipeDown": "Przesuń w dół, aby zamknąć",
+        "delivery90": "Około 90 minut",
+        "delivery180": "Około 180 minut",
+        "deliveryCustom": "Indywidualnie, skontaktujemy się z Tobą"
+      },
+      "uploadForm": {
+        "dragDrop": "Przeciągnij i upuść pliki tutaj lub",
+        "browse": "przeglądaj",
+        "maxFiles": "Maksymalnie 5 plików (10MB każdy)",
+        "email": "Twój e-mail",
+        "send": "Uzyskaj bezpłatną wycenę",
+        "remove": "Usuń",
+        "success": "Pliki zostały wysłane pomyślnie!",
+        "error": "Błąd podczas wysyłania. Spróbuj ponownie.",
+        "invalidEmail": "Wpisz prawidłowy adres e-mail",
+        "tooManyFiles": "Dozwolone maksymalnie 5 plików",
+        "fileTooLarge": "Rozmiar pliku przekracza 10MB",
+        "phone": "Numer telefonu (opcjonalnie)",
+        "benefit1": "Bezpłatna wycena",
+        "benefit2": "Szybka odpowiedź w ciągu 5 minut",
+        "benefit3": "Profesjonalne usługi tłumaczeniowe",
+        "callUs": "Lub zadzwoń do nas:",
+        "sending": "Wysyłanie..."
+      }
     }
   },
   "Terms": {
