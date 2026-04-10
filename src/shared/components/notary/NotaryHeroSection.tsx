@@ -17,7 +17,7 @@ export default function NotaryHeroSection() {
   };
 
   const scrollToContact = () => {
-    document.getElementById("contact")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
   return (
