@@ -24,7 +24,7 @@ export default function NotaryPriceCalculator() {
   const [pageCount, setPageCount] = useState(1);
   const [notaryApproval, setNotaryApproval] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [translationPrice, setTranslationPrice] = useState(0);
+  // const [translationPrice, setTranslationPrice] = useState(0);
   const [notaryPrice, setNotaryPrice] = useState(0);
   const [discountAmount, setDiscountAmount] = useState(0);
   const [deliveryTime, setDeliveryTime] = useState("");
@@ -67,7 +67,7 @@ export default function NotaryPriceCalculator() {
     const basePrice = getLanguagePairPrice(fromLang, toLang);
     const { translationCost, discount } = calculateTranslationPrice(basePrice, pageCount);
     const notaryCost = notaryApproval ? calculateNotaryPrice(pageCount) : 0;
-    setTranslationPrice(translationCost);
+    // setTranslationPrice(translationCost);
     setNotaryPrice(notaryCost);
     setDiscountAmount(discount);
     setTotalPrice(translationCost + notaryCost);
