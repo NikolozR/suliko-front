@@ -132,7 +132,7 @@ export default function LandingHeader() {
 
   // Track active section via IntersectionObserver
   useEffect(() => {
-    const sectionIds = ['about', 'pricing', 'testimonials', 'contact'];
+    const sectionIds = ['about', 'pricing', 'contact'];
     const observers: IntersectionObserver[] = [];
 
     sectionIds.forEach((id) => {
@@ -167,7 +167,6 @@ export default function LandingHeader() {
   const navItems = [
     { id: 'about', label: t("about") },
     { id: 'pricing', label: t("pricing") },
-    { id: 'testimonials', label: t("testimonials") },
     { id: 'faq', label: t("faq") },
     { id: 'contact', label: t("contact") },
   ];
