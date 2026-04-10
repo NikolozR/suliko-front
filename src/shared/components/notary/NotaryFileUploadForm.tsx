@@ -26,6 +26,10 @@ export default function NotaryFileUploadForm() {
   const [phone, setPhone] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+    emailjs.init({ publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY! });
+  }, []);
+
   const validateFiles = (newFiles: File[]) => {
     if (files.length + newFiles.length > MAX_FILES) {
       setNotification({ type: "error", message: t("tooManyFiles") });
@@ -60,8 +64,7 @@ export default function NotaryFileUploadForm() {
           to_name: name,
           file_count: files.length,
           file_names: files.map((f) => f.name).join(", "),
-        },
-        process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY!
+        }
       ).catch((err) => console.error("EmailJS confirmation error:", err));
 
 
