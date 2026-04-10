@@ -53,8 +53,18 @@ export default function NotaryFileUploadForm() {
       const formData = new FormData();
       formData.append("name", name);
       formData.append("email", email);
-      formData.append("phone", phone);
-      files.forEach((file) => formData.append("files", file));
+      formData.append("phone", phone || "N/A");
+      formData.append("_subject", "New Notary File Submission");
+      formData.append("_captcha", "false");
+      files.forEach((file) => formData.append("attachment", file, file.name));
+
+      const res = await fetch("https://formsubmit.co/ajax/info@th.com.ge", {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: formData,
+      });
+
+      if (!res.ok) throw new Error("Failed to send");
 
       emailjs.send(
         process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
@@ -66,12 +76,6 @@ export default function NotaryFileUploadForm() {
           file_names: files.map((f) => f.name).join(", "),
         }
       ).catch((err) => console.error("EmailJS confirmation error:", err));
-
-
-      const res = await fetch("/api/notary-upload", { method: "POST", body: formData });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Unknown error");
 
       setNotification({ type: "success", message: t("success") });
 
