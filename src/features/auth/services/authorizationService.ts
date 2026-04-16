@@ -205,7 +205,7 @@ export async function resetPassword(phoneNumber: string, newPassword: string, to
 
 export async function loginWithGoogle(idToken: string): Promise<LoginResponse> {
   try {
-    const response = await apiClient.post<LoginResponse>("/Auth/login-with-google", idToken);
+    const response = await apiClient.post<LoginResponse>("/Auth/login-with-google", { idToken });
     if (response.ok) {
       return response.data;
     } else {
