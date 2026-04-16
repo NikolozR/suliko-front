@@ -164,7 +164,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
               onMouseLeave={() => {
                 setHoveredSuggestionOriginalText(null);
               }}
-              className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col w-full sm:min-w-[260px] sm:max-w-[360px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-all duration-200"
+              className="bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-lg p-3 flex flex-col w-full sm:min-w-[260px] sm:max-w-[360px] gap-2 shadow-sm hover:shadow-md hover:border-suliko-default-color/30 transition-[box-shadow,border-color] duration-200"
             >
               <div className="flex items-center justify-between gap-2">
                 <div className="font-semibold text-foreground" title={s.title}>

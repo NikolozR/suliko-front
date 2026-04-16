@@ -585,7 +585,7 @@ const SulikoForm: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setVerificationMethod("phone")}
-                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-all duration-200 hover:shadow-md bg-card cursor-pointer"
+                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-[border-color,box-shadow] duration-200 hover:shadow-md bg-card cursor-pointer"
                         >
                           <div className="text-4xl mb-3">📱</div>
                           <div className="text-lg font-semibold text-foreground mb-1">
@@ -598,7 +598,7 @@ const SulikoForm: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setVerificationMethod("email")}
-                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-all duration-200 hover:shadow-md bg-card cursor-pointer"
+                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-[border-color,box-shadow] duration-200 hover:shadow-md bg-card cursor-pointer"
                         >
                           <div className="text-4xl mb-3">📧</div>
                           <div className="text-lg font-semibold text-foreground mb-1">

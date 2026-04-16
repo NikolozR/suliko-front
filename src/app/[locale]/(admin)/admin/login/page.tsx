@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
           borderRadius: 16,
           border: "1px solid #2a2d3a",
           overflow: "hidden",
-          animation: "fadeUp 0.4s ease both",
+          animation: "fadeUp 0.35s cubic-bezier(0.23,1,0.32,1) both",
         }}
       >
         {/* Amber top accent bar */}
@@ -245,12 +245,6 @@ export default function AdminLoginPage() {
         </div>
       </div>
 
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }
