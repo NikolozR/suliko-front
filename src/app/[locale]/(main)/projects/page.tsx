@@ -124,7 +124,7 @@ export default function ProjectsPage() {
             const Icon = config.icon;
             return (
               <Link key={chat.chatId} href={`/projects/${chat.chatId}`}>
-                <Card className="p-4 border border-border/60 hover:border-primary/30 hover:shadow-sm transition-all cursor-pointer group">
+                <Card className="p-4 border border-border/60 hover:border-primary/30 hover:shadow-sm transition-[border-color,box-shadow] cursor-pointer group">
                   <div className="flex items-center gap-4">
                     <div className={`p-2.5 rounded-lg shrink-0 ${config.bg}`}>
                       <Icon className={`h-5 w-5 ${config.color}`} />

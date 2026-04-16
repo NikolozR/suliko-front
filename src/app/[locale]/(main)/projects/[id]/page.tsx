@@ -508,7 +508,7 @@ export default function ProjectDetailPage() {
             </div>
             <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
               <div
-                className="bg-primary h-2 rounded-full transition-all duration-700 ease-out"
+                className="bg-primary h-2 rounded-full transition-[width] duration-500 ease-out"
                 style={{ width: `${simulatedProgress}%` }}
               />
             </div>

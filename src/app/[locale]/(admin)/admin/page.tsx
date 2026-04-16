@@ -136,7 +136,7 @@ export default async function AdminDashboardPage() {
               borderLeft: "3px solid #f59e0b",
               borderRadius: 12,
               padding: "20px 24px",
-              animation: `fadeUp 0.4s ease ${stat.delay} both`,
+              animation: `fadeUp 0.35s cubic-bezier(0.23,1,0.32,1) ${stat.delay} both`,
             }}
           >
             <div style={{ fontSize: 12, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
@@ -221,12 +221,6 @@ export default async function AdminDashboardPage() {
         <LanguageManager />
       </section>
 
-      <style>{`
-        @keyframes fadeUp {
-          from { opacity: 0; transform: translateY(16px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-      `}</style>
     </div>
   );
 }

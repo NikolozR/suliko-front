@@ -70,7 +70,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
   };
 
   return (
-    <div className="bg-card rounded-2xl shadow-sm p-8 border border-border/60 flex flex-col h-full hover:border-primary/30 hover:shadow-md transition-all duration-200">
+    <div className="bg-card rounded-2xl shadow-sm p-8 border border-border/60 flex flex-col h-full hover:border-primary/30 hover:shadow-md transition-[border-color,box-shadow] duration-200">
       {renderCardContent()}
       <div className="mt-auto pt-8">
         <button

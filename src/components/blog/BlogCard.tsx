@@ -15,7 +15,7 @@ export default function BlogCard({ post }: BlogCardProps) {
   const t = useTranslations("Blog.card");
 
   return (
-    <article className="group flex flex-col bg-card/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:shadow-lg transition-all duration-300 hover:border-primary/20 hover:bg-card hover:-translate-y-0.5">
+    <article className="group flex flex-col bg-card/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:shadow-lg transition-[transform,box-shadow,border-color,background-color] duration-300 hover:border-primary/20 hover:bg-card [@media(hover:hover)]:hover:-translate-y-0.5">
       <Link href={`/blog/${post.slug}`} className="flex flex-col flex-1">
         {/* Image / fallback */}
         <div className="relative h-52 w-full overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 flex-shrink-0">
@@ -70,7 +70,7 @@ export default function BlogCard({ post }: BlogCardProps) {
               )}
             </div>
 
-            <span className="flex items-center gap-1 text-xs text-primary font-medium group-hover:gap-2 transition-all duration-200">
+            <span className="flex items-center gap-1 text-xs text-primary font-medium group-hover:gap-2 transition-[gap] duration-200">
               {t("readMore")}
               <ArrowRight className="h-3 w-3" />
             </span>

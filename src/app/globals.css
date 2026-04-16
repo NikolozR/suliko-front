@@ -255,7 +255,7 @@ html {
 }
 
 .animate-fade-in-up {
-  animation: fade-in-up 0.6s ease-out forwards;
+  animation: fade-in-up 0.4s var(--ease-out-strong) forwards;
   opacity: 0;
 }
 
@@ -340,13 +340,15 @@ html {
 }
 
 .blog-banner-stat {
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s var(--ease-out-strong);
   position: relative;
   z-index: 1;
 }
 
-.blog-banner-stat:hover {
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .blog-banner-stat:hover {
+    transform: translateY(-4px);
+  }
 }
 
 .blog-banner-stat:hover .group-hover\:scale-110 {
@@ -355,28 +357,28 @@ html {
 
 /* Aurora Background — blob drift animations */
 @keyframes aurora-drift-1 {
-  0%   { transform: translate(0%,   0%)   scale(1);    border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%; }
-  25%  { transform: translate(6%,   8%)   scale(1.08); border-radius: 40% 60% 30% 70% / 70% 30% 60% 40%; }
-  50%  { transform: translate(12%,  4%)   scale(0.95); border-radius: 70% 30% 50% 50% / 30% 70% 50% 50%; }
-  75%  { transform: translate(4%,  -6%)   scale(1.05); border-radius: 50% 50% 40% 60% / 60% 40% 70% 30%; }
-  100% { transform: translate(0%,   0%)   scale(1);    border-radius: 60% 40% 70% 30% / 50% 60% 40% 70%; }
+  0%   { transform: translate(0%,   0%)   scale(1);    }
+  25%  { transform: translate(6%,   8%)   scale(1.08); }
+  50%  { transform: translate(12%,  4%)   scale(0.95); }
+  75%  { transform: translate(4%,  -6%)   scale(1.05); }
+  100% { transform: translate(0%,   0%)   scale(1);    }
 }
 @keyframes aurora-drift-2 {
-  0%   { transform: translate(0%,   0%)  scale(1);    border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%; }
-  33%  { transform: translate(-8%, 10%)  scale(1.1);  border-radius: 60% 40% 40% 60% / 30% 70% 30% 70%; }
-  66%  { transform: translate(-4%, -8%)  scale(0.92); border-radius: 50% 50% 70% 30% / 40% 60% 50% 50%; }
-  100% { transform: translate(0%,   0%)  scale(1);    border-radius: 40% 60% 60% 40% / 70% 30% 70% 30%; }
+  0%   { transform: translate(0%,   0%)  scale(1);    }
+  33%  { transform: translate(-8%, 10%)  scale(1.1);  }
+  66%  { transform: translate(-4%, -8%)  scale(0.92); }
+  100% { transform: translate(0%,   0%)  scale(1);    }
 }
 @keyframes aurora-drift-3 {
-  0%   { transform: translate(0%,   0%)  scale(1);    border-radius: 70% 30% 40% 60% / 40% 70% 30% 60%; }
-  40%  { transform: translate(5%, -10%)  scale(1.12); border-radius: 30% 70% 60% 40% / 60% 40% 70% 30%; }
-  80%  { transform: translate(-5%,  6%)  scale(0.97); border-radius: 60% 40% 30% 70% / 30% 60% 40% 70%; }
-  100% { transform: translate(0%,   0%)  scale(1);    border-radius: 70% 30% 40% 60% / 40% 70% 30% 60%; }
+  0%   { transform: translate(0%,   0%)  scale(1);    }
+  40%  { transform: translate(5%, -10%)  scale(1.12); }
+  80%  { transform: translate(-5%,  6%)  scale(0.97); }
+  100% { transform: translate(0%,   0%)  scale(1);    }
 }
 @keyframes aurora-drift-4 {
-  0%   { transform: translate(0%,   0%)  scale(1);    border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; }
-  50%  { transform: translate(-6%, -6%)  scale(1.15); border-radius: 40% 60% 50% 50% / 50% 50% 40% 60%; }
-  100% { transform: translate(0%,   0%)  scale(1);    border-radius: 50% 50% 60% 40% / 60% 40% 50% 50%; }
+  0%   { transform: translate(0%,   0%)  scale(1);    }
+  50%  { transform: translate(-6%, -6%)  scale(1.15); }
+  100% { transform: translate(0%,   0%)  scale(1);    }
 }
 
 /* Aurora — light mode: visible; dark mode: full vibrance */
@@ -541,6 +543,8 @@ body {
   --suliko-default-hover-color: #11289c;
   --suliko-main-content-bg-color: #e6e6e7;
   --radius: 0.625rem;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
 
   --background: #ffffff;
   --foreground: #0a0a0a;
@@ -751,7 +755,7 @@ html.dark .sidebar-main {
 }
 
 .animate-slideInFromTop {
-  animation: slideInFromTop 0.3s ease-out forwards;
+  animation: slideInFromTop 0.2s var(--ease-out-strong) forwards;
 }
 
 /* Star Field Animations */
@@ -904,15 +908,15 @@ html.dark .sidebar-main {
 }
 
 .animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out forwards;
+  animation: fadeInUp 0.4s var(--ease-out-strong) forwards;
 }
 
 .animate-fadeInLeft {
-  animation: fadeInLeft 0.6s ease-out forwards;
+  animation: fadeInLeft 0.4s var(--ease-out-strong) forwards;
 }
 
 .animate-fadeInRight {
-  animation: fadeInRight 0.6s ease-out forwards;
+  animation: fadeInRight 0.4s var(--ease-out-strong) forwards;
 }
 
 .animate-float {
@@ -922,8 +926,8 @@ html.dark .sidebar-main {
 /* Intersection Observer animations */
 .fade-in {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(20px);
+  transition: opacity 0.4s var(--ease-out-strong), transform 0.4s var(--ease-out-strong);
 }
 
 .fade-in.visible {
@@ -1133,6 +1137,16 @@ html.dark .sidebar-main {
 
 .animate-accordion-up {
   animation: accordion-up 0.2s ease-out;
+}
+
+/* Shared fadeUp utility — used by admin login, dashboard, etc. */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.35s var(--ease-out-strong) both;
 }
 
 /* Move Crisp chat widget to right-middle on mobile — handled via JS CRISP_READY_TRIGGER */
