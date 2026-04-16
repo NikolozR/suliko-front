@@ -101,6 +101,7 @@
     "passwordHintSpecial": "Contains a special character",
     "alreadyRegistered": "This account is already registered. Try logging in.",
     "accountNotFound": "No account found. Please check your credentials.",
+    "registrationSuccessLoginFailed": "Registration complete! Please sign in.",
     "pleaseWait": "Please wait…",
     "continue": "Continue",
     "back": "Back",

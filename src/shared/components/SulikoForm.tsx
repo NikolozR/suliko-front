@@ -361,7 +361,13 @@ const SulikoForm: React.FC = () => {
 
       console.error("Authentication error:", errorMessage);
 
-      if (!isLoginMode && errorMessage.includes("უკვე რეგისტრირებულია")) {
+      if (!isLoginMode && errorMessage.includes("REGISTRATION_SUCCESS_LOGIN_FAILED")) {
+        // Registration succeeded but auto-login failed — switch to login view
+        resetRegistrationState();
+        setIsLoginMode(true);
+        form.setValue("identifier", "");
+        setAuthError(t("registrationSuccessLoginFailed") || "Registration complete! Please sign in.");
+      } else if (!isLoginMode && errorMessage.includes("უკვე რეგისტრირებულია")) {
         setAuthError(t("alreadyRegistered"));
       } else if (isLoginMode && errorMessage.includes("ვერ მოიძებნა")) {
         setAuthError(t("accountNotFound"));

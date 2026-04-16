@@ -17,43 +17,46 @@ interface RegisterParams extends Omit<LoginParams, 'phoneNumber'> {
 }
 
 export async function register({ phoneNumber, password, firstname, lastname, email }: Omit<RegisterParams, 'subscribeNewsletter'>) {
+  // If phoneNumber is not provided or empty, use email in phoneNumber field
+  const phoneNumberToSend = phoneNumber?.trim() || email;
+
+  let response;
   try {
-    // If phoneNumber is not provided or empty, use email in phoneNumber field
-    const phoneNumberToSend = phoneNumber?.trim() || email;
-    
-    // TODO: add subscribeNewsletter to the request
-    const response = await apiClient.post("/Auth/register-with-phone", {
+    response = await apiClient.post("/Auth/register-with-phone", {
       phoneNumber: phoneNumberToSend,
       password,
       firstname,
       lastname,
       email,
     });
-    
-    if (response.ok) {
-      try {
-        // Use the same logic for login - if no phoneNumber, use email
-        const loginResponse = await login({ phoneNumber: phoneNumberToSend, password });
-        return loginResponse;
-      } catch {
-        throw new Error("რეგისტრაცია წარმატებულია, მაგრამ შესვლა ვერ მოხერხდა");
-      }
-    } else {
-      // Handle specific error cases
-      if (response.status === 400 || response.status === 409) {
-        throw new Error("ეს ტელეფონის ნომერი უკვე რეგისტრირებულია");
-      } else if (response.status === 422) {
-        throw new Error("არასწორი მონაცემების ფორმატი");
-      } else if (response.status === 500) {
-        throw new Error("ეს ტელეფონის ნომერი უკვე რეგისტრირებულია");
-      } else {
-        throw new Error("რეგისტრაცია ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით");
-      }
-    }
   } catch (error) {
-    // Handle CORS and other errors
     const errorMessage = ApiClient.handleApiError(error);
     throw new Error(errorMessage);
+  }
+
+  if (response.ok) {
+    // Auto-login after successful registration
+    try {
+      const loginResponse = await login({ phoneNumber: phoneNumberToSend, password });
+      return loginResponse;
+    } catch {
+      throw new Error("REGISTRATION_SUCCESS_LOGIN_FAILED");
+    }
+  }
+
+  if (response.status === 409) {
+    throw new Error("მომხმარებელი უკვე რეგისტრირებულია");
+  } else if (response.status === 400) {
+    const serverMessage = response.data && typeof response.data === 'object' && 'message' in response.data
+      ? (response.data as { message: string }).message
+      : null;
+    throw new Error(serverMessage || "მომხმარებელი უკვე რეგისტრირებულია");
+  } else if (response.status === 422) {
+    throw new Error("არასწორი მონაცემების ფორმატი");
+  } else if (response.status === 500) {
+    throw new Error("სერვერის შეცდომა. გთხოვთ სცადოთ მოგვიანებით");
+  } else {
+    throw new Error("რეგისტრაცია ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით");
   }
 }
 
