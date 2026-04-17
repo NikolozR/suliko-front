@@ -30,7 +30,7 @@ export function PricingGrid() {
       return;
     }
 
-    const choice = localStorage.getItem("paymentChoice") || "paysera";
+    const choice = localStorage.getItem("paymentChoice") || "flitt";
 
     // For suliko.io, show contact modal instead of making payment API call
     if (isSulikoIo()) {
