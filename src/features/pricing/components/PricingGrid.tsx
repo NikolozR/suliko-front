@@ -5,7 +5,7 @@ import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
 import { ContactPaymentModal } from "./ContactPaymentModal";
-import { createFlittPayment, createPayment } from "../services/paymentService";
+import { createFlittPayment, createFlittSubscription, createPayment } from "../services/paymentService";
 import { isSulikoIo } from "@/shared/utils/domainUtils";
 import { useAuthStore } from "@/features/auth";
 import { useRouter } from "@/i18n/navigation";
@@ -58,12 +58,34 @@ export function PricingGrid() {
       }
     }
   }
-  const handleStarterPackage = () => {
-    handleSelectPackage(20); // 20 GEL/EUR for Starter package
+  const handleStarterPackage = async () => {
+    if (!token) {
+      toast.error(t("signInToPay"));
+      router.push("/sign-in");
+      return;
+    }
+    if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
+    try {
+      const response = await createFlittSubscription("starter", 20);
+      window.open(response.checkoutUrl, "_blank");
+    } catch (error) {
+      console.error("Subscription failed:", error);
+    }
   };
 
-  const handleProfessionalPackage = () => {
-    handleSelectPackage(50); // 50 GEL/EUR for Professional package
+  const handleProfessionalPackage = async () => {
+    if (!token) {
+      toast.error(t("signInToPay"));
+      router.push("/sign-in");
+      return;
+    }
+    if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
+    try {
+      const response = await createFlittSubscription("professional", 50);
+      window.open(response.checkoutUrl, "_blank");
+    } catch (error) {
+      console.error("Subscription failed:", error);
+    }
   };
   const handleSelectPayAsYouGo = () => {
     handleSelectPackage(1); // 173 GEL for Professional package

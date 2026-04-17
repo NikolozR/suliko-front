@@ -529,7 +529,7 @@
         "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
-      "cta": "Buy Credits"
+      "cta": "Subscribe"
     },
     "professional": {
       "title": "Professional",
@@ -544,7 +544,7 @@
         "3": "Priority email & chat support",
         "4": "Team collaboration tools"
       },
-      "cta": "Buy Credits",
+      "cta": "Subscribe",
       "popular": "Most Popular"
     },
     "custom": {
@@ -637,6 +637,7 @@
       },
       "cta": "Contact Sales"
     },
+    "billedMonthly": "Billed monthly · Cancel any time",
     "select": "Select",
     "needCustomSolution": "Need a custom solution? Contact us at"
   },
