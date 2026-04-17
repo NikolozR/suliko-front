@@ -20,6 +20,7 @@ export interface FlittCheckoutRequest {
   acceptUrl?: string;
   cancelUrl?: string;
   server_callback_url?: string;
+  saveCard?: boolean;
 }
 
 export interface FlittCheckoutResponse {
@@ -118,7 +119,8 @@ export async function createPayment(amount: number, currency?: string, country?:
 export async function createFlittPayment(
   amount: number,
   currency?: string,
-  country?: string
+  country?: string,
+  saveCard?: boolean
 ): Promise<FlittCheckoutResponse> {
   const endpoint = "/Payment/flitt-create";
   const { refreshToken, token } = useAuthStore.getState();
@@ -153,6 +155,7 @@ export async function createFlittPayment(
     acceptUrl,
     cancelUrl,
     server_callback_url,
+    saveCard: saveCard ?? false,
   };
 
   let response = await fetch(`${API_BASE_URL}${endpoint}`, {
