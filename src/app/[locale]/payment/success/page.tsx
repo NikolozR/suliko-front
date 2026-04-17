@@ -6,21 +6,17 @@ import { Card, CardContent } from "@/features/ui";
 import { Button } from "@/features/ui";
 import LandingHeader from "@/shared/components/LandingHeader";
 import LandingFooter from "@/shared/components/LandingFooter";
+import { useUserStore } from "@/features/auth/store/userStore";
 
 export default function PaymentSuccessPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const fetchUserProfileWithRetry = useUserStore((s) => s.fetchUserProfileWithRetry);
 
   useEffect(() => {
-    // You can extract payment information from URL parameters if needed
-    const orderId = searchParams.get('orderId');
-    const transactionId = searchParams.get('transactionId');
-    
-    if (orderId || transactionId) {
-      console.log('Payment success - Order ID:', orderId, 'Transaction ID:', transactionId);
-      // TODO: Fetch payment details and update user balance
-    }
-  }, [searchParams]);
+    // Refresh balance after payment — webhook may take a few seconds to process
+    fetchUserProfileWithRetry(5, 2000);
+  }, [fetchUserProfileWithRetry]);
 
   return (
     <div className="min-h-screen relative">
