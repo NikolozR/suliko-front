@@ -20,6 +20,8 @@ export interface FlittCheckoutRequest {
   acceptUrl?: string;
   cancelUrl?: string;
   server_callback_url?: string;
+  isSubscription?: boolean;
+  planName?: string;
 }
 
 export interface FlittCheckoutResponse {
@@ -186,6 +188,83 @@ export async function createFlittPayment(
     const errorData = await response.json();
     console.log(errorData);
     throw new Error(errorData.error || "Flitt payment failed");
+  }
+
+  const data = await response.json();
+  return data as FlittCheckoutResponse;
+}
+
+export async function createFlittSubscription(
+  planName: string,
+  amount: number,
+): Promise<FlittCheckoutResponse> {
+  const endpoint = "/Payment/flitt-create";
+  const { refreshToken, token } = useAuthStore.getState();
+  const headers = new Headers();
+
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+    headers.set("Content-Type", "application/json");
+  } else {
+    throw new Error("No token found");
+  }
+
+  const isBrowser = typeof window !== "undefined";
+  const baseUrl = isBrowser ? window.location.origin : "";
+  const path = isBrowser ? window.location.pathname : "";
+  const localeFromPath = (() => {
+    const first = path.split("/").filter(Boolean)[0];
+    return ["en", "ka", "pl"].includes(first || "") ? `/${first}` : "";
+  })();
+  const acceptUrl = `${baseUrl}${localeFromPath}/payment/success`;
+  const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;
+  const server_callback_url = `https://content.api24.ge/api/payment/flitt-callback`;
+
+  const paymentCurrency = getCurrencyCode();
+  const paymentCountry = getCountryCode();
+
+  const body: FlittCheckoutRequest = {
+    amount,
+    currency: paymentCurrency,
+    country: paymentCountry,
+    orderDescription: `Suliko ${planName} subscription`,
+    acceptUrl,
+    cancelUrl,
+    server_callback_url,
+    isSubscription: true,
+    planName,
+  };
+
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(body),
+  });
+
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = (await reaccessToken(refreshToken)) as {
+        token: string;
+        refreshToken: string;
+      };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(body),
+      });
+    } catch (error) {
+      useAuthStore.getState().reset();
+      throw new Error("Failed to refresh token " + error);
+    }
+  }
+
+  if (response.status !== 200) {
+    const errorData = await response.json();
+    throw new Error(errorData.error || "Subscription checkout failed");
   }
 
   const data = await response.json();

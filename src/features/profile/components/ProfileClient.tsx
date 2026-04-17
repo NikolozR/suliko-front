@@ -14,6 +14,7 @@ import {
 } from "./";
 import { UpdateUserProfile } from "@/features/auth/types/types.User";
 import { updateUserProfile } from "@/features/auth/services/userService";
+import { cancelSubscription } from "@/features/pricing/services/subscriptionService";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -40,6 +41,7 @@ export default function ProfileClient() {
   const [isEditing, setIsEditing] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [isCanceling, setIsCanceling] = useState(false);
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
@@ -188,6 +190,59 @@ export default function ProfileClient() {
           errors={validationErrors}
         />
         <ProfilePasswordChange />
+
+        {/* Subscription section */}
+        {userProfile.subscription && (
+          <div className="bg-card rounded-2xl border border-border/60 shadow-sm p-6">
+            <h2 className="text-lg font-semibold mb-4 text-card-foreground">Subscription</h2>
+            <div className="flex flex-col gap-3">
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Plan</span>
+                <span className="font-medium capitalize">{userProfile.subscription.planName}</span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Status</span>
+                <span className={`font-medium ${userProfile.subscription.status === 'Active' ? 'text-green-600' : userProfile.subscription.status === 'PastDue' ? 'text-amber-600' : 'text-red-600'}`}>
+                  {userProfile.subscription.status}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">Pages used</span>
+                <span className="font-medium">
+                  {userProfile.subscription.pagesUsed} / {userProfile.subscription.monthlyPageLimit ?? '∞'}
+                </span>
+              </div>
+              <div className="flex justify-between text-sm">
+                <span className="text-muted-foreground">
+                  {userProfile.subscription.autoRenew ? 'Renews on' : 'Access until'}
+                </span>
+                <span className="font-medium">
+                  {new Date(userProfile.subscription.currentPeriodEnd).toLocaleDateString()}
+                </span>
+              </div>
+              {userProfile.subscription.autoRenew && (
+                <button
+                  onClick={async () => {
+                    setIsCanceling(true);
+                    try {
+                      await cancelSubscription();
+                      await originalFetchUserProfile();
+                    } catch {
+                      /* error shown by toast in production */
+                    } finally {
+                      setIsCanceling(false);
+                    }
+                  }}
+                  disabled={isCanceling}
+                  className="mt-2 text-sm text-red-500 hover:text-red-600 underline disabled:opacity-50 text-left"
+                >
+                  {isCanceling ? 'Canceling…' : 'Cancel subscription'}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+
         <ProfileDeleteAccount />
       </div>
     </div>

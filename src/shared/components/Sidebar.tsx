@@ -279,21 +279,42 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   </Link>
                   {!effectiveIsCollapsed && (
                     <Link href="/price" className="flex flex-col min-w-0 w-full hover:opacity-80 transition-opacity">
-                      <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70">{t('balance')}</span>
-                      <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
-                        {formatBalance(userProfile.balance || 0)} {t('pages')}
-                        <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
-                      </span>
-                      {/* Balance bar */}
-                      {(() => {
-                        const pct = Math.min(100, ((userProfile.balance || 0) / 50) * 100);
-                        const barColor = pct > 40 ? "bg-emerald-500" : pct > 10 ? "bg-amber-500" : "bg-red-500";
-                        return (
-                          <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
-                            <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
-                          </div>
-                        );
-                      })()}
+                      {userProfile.subscription?.status === 'Active' ? (
+                        <>
+                          <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70 capitalize">{userProfile.subscription.planName}</span>
+                          <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
+                            {userProfile.subscription.pagesUsed} / {userProfile.subscription.monthlyPageLimit ?? '∞'} {t('pages')}
+                            <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
+                          </span>
+                          {(() => {
+                            const limit = userProfile.subscription.monthlyPageLimit;
+                            const pct = limit ? Math.min(100, (userProfile.subscription.pagesUsed / limit) * 100) : 0;
+                            const barColor = pct < 60 ? "bg-emerald-500" : pct < 85 ? "bg-amber-500" : "bg-red-500";
+                            return (
+                              <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
+                                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+                              </div>
+                            );
+                          })()}
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70">{t('balance')}</span>
+                          <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
+                            {formatBalance(userProfile.balance || 0)} {t('pages')}
+                            <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
+                          </span>
+                          {(() => {
+                            const pct = Math.min(100, ((userProfile.balance || 0) / 50) * 100);
+                            const barColor = pct > 40 ? "bg-emerald-500" : pct > 10 ? "bg-amber-500" : "bg-red-500";
+                            return (
+                              <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
+                                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+                              </div>
+                            );
+                          })()}
+                        </>
+                      )}
                     </Link>
                   )}
                 </div>
