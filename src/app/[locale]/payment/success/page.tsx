@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Card, CardContent } from "@/features/ui";
 import { Button } from "@/features/ui";
 import LandingHeader from "@/shared/components/LandingHeader";
@@ -10,7 +10,6 @@ import { useUserStore } from "@/features/auth/store/userStore";
 
 export default function PaymentSuccessPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const fetchUserProfileWithRetry = useUserStore((s) => s.fetchUserProfileWithRetry);
 
   useEffect(() => {
