@@ -36,7 +36,9 @@ async function withTokenRefresh<T>(fn: (headers: Headers) => Promise<Response>):
 
   if (!response.ok) {
     const err = await response.json().catch(() => ({}));
-    throw new Error(err.message || "Request failed");
+    const msg = err.error || err.message || "Request failed";
+    const detail = err.detail ? ` (${err.detail})` : err.flittStatus ? ` [Flitt: ${err.flittStatus}]` : "";
+    throw new Error(msg + detail);
   }
 
   return response.json() as Promise<T>;
