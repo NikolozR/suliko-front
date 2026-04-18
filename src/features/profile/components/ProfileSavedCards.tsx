@@ -7,10 +7,11 @@ import { Skeleton } from "@/features/ui/components/ui/skeleton";
 import { CreditCard, Trash2, Plus } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useSavedCardsStore } from "@/features/pricing/store/savedCardsStore";
+import { AddCardModal } from "@/features/pricing/components/AddCardModal";
 
 export const ProfileSavedCards: React.FC = () => {
   const t = useTranslations("Profile");
-  const { cards, loading, addingCard, fetchCards, deleteCard, initiateAddCard } = useSavedCardsStore();
+  const { cards, loading, error, showAddModal, fetchCards, deleteCard, openAddModal, closeAddModal, saveCardLocally } = useSavedCardsStore();
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export const ProfileSavedCards: React.FC = () => {
   };
 
   return (
+    <>
     <Card className="border border-border/60 bg-card shadow-sm rounded-2xl">
       <CardHeader className="pb-2 pt-6 px-6 md:px-8">
         <div className="flex items-center justify-between">
@@ -43,20 +45,20 @@ export const ProfileSavedCards: React.FC = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={initiateAddCard}
-            disabled={addingCard}
+            onClick={openAddModal}
             className="flex items-center gap-2"
           >
-            {addingCard ? (
-              <div className="h-4 w-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Plus className="h-4 w-4" />
-            )}
+            <Plus className="h-4 w-4" />
             {t("savedCards.addCard")}
           </Button>
         </div>
       </CardHeader>
       <CardContent className="px-6 md:px-8 pb-8 pt-2">
+        {error && (
+          <div className="mb-4 rounded-lg border border-destructive/40 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
+        )}
         {loading ? (
           <div className="space-y-3">
             <Skeleton className="h-14 w-full rounded-lg" />
@@ -130,5 +132,12 @@ export const ProfileSavedCards: React.FC = () => {
         )}
       </CardContent>
     </Card>
+
+    <AddCardModal
+      open={showAddModal}
+      onOpenChange={(open) => { if (!open) closeAddModal(); }}
+      onSave={saveCardLocally}
+    />
+    </>
   );
 };
