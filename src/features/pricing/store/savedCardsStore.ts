@@ -6,16 +6,20 @@ interface SavedCardsState {
   cards: SavedCard[];
   loading: boolean;
   addingCard: boolean;
+  showAddModal: boolean;
   error: string | null;
   fetchCards: () => Promise<void>;
   deleteCard: (id: string) => Promise<void>;
-  initiateAddCard: () => Promise<void>;
+  openAddModal: () => void;
+  closeAddModal: () => void;
+  saveCardLocally: (card: Omit<SavedCard, "id">) => void;
 }
 
 export const useSavedCardsStore = create<SavedCardsState>((set, get) => ({
   cards: [],
   loading: false,
   addingCard: false,
+  showAddModal: false,
   error: null,
 
   fetchCards: async () => {
@@ -38,15 +42,16 @@ export const useSavedCardsStore = create<SavedCardsState>((set, get) => ({
     }
   },
 
-  initiateAddCard: async () => {
-    set({ addingCard: true, error: null });
-    try {
-      const { checkoutUrl } = await addCard();
-      window.open(checkoutUrl, "_blank");
-    } catch (err) {
-      set({ error: err instanceof Error ? err.message : "Failed to initiate card addition" });
-    } finally {
-      set({ addingCard: false });
-    }
+  openAddModal: () => set({ showAddModal: true, error: null }),
+  closeAddModal: () => set({ showAddModal: false }),
+
+  saveCardLocally: (card) => {
+    const cards = get().cards;
+    const newCard: SavedCard = {
+      ...card,
+      id: `local-${Date.now()}`,
+      isDefault: cards.length === 0,
+    };
+    set({ cards: [...cards, newCard], showAddModal: false });
   },
 }));
