@@ -116,7 +116,7 @@ export default function HeroSection() {
                   </span>
                 </LoadingButton>
               </Link>
-              <Link href="#pricing">
+              <Link href="/notary">
                 <Button
                   variant="outline"
                   size="lg"
