@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ProfileDeleteAccount } from "./ProfileDelete";
+import { ProfileSavedCards } from "./";
 
 const profileUpdateSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
@@ -243,6 +244,7 @@ export default function ProfileClient() {
           </div>
         )}
 
+        <ProfileSavedCards />
         <ProfileDeleteAccount />
       </div>
     </div>

@@ -392,7 +392,18 @@
     "deleteAccountWarning": "This action is permanent and cannot be undone.",
     "deleteAccountConfirm": "Are you sure you want to delete your account?",
     "confirmDelete": "Yes, delete",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "savedCards": {
+      "title": "Saved Cards",
+      "empty": "No saved cards on file",
+      "masked": "****",
+      "expires": "Expires",
+      "default": "Default",
+      "deleteButton": "Delete",
+      "confirmDelete": "Sure?",
+      "cancelDelete": "Cancel",
+      "addCard": "Add Card"
+    }
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -613,6 +624,7 @@
       "processing": "Processing...",
       "pagesNeverExpire": "Pages never expire and can be used anytime",
       "minimumPurchase": "Minimum purchase: {min} ₾",
+      "saveCard": "Save card for future payments",
       "errors": {
         "invalidAmount": "Please enter a valid amount",
         "minimumAmount": "Minimum purchase amount is {min} ₾",

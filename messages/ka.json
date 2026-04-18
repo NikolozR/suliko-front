@@ -390,7 +390,18 @@
     "deleteAccountWarning": "ეს მოქმედება შეუქცევადია და მისი გაუქმება შეუძლებელია.",
     "deleteAccountConfirm": "ნამდვილად გსურთ ანგარიშის წაშლა?",
     "confirmDelete": "დიახ, წაშლა",
-    "deleting": "იშლება..."
+    "deleting": "იშლება...",
+    "savedCards": {
+      "title": "შენახული ბარათები",
+      "empty": "შენახული ბარათები არ მოიძებნა",
+      "masked": "****",
+      "expires": "ვადა",
+      "default": "ძირითადი",
+      "deleteButton": "წაშლა",
+      "confirmDelete": "დარწმუნებული ხარ?",
+      "cancelDelete": "გაუქმება",
+      "addCard": "ბარათის დამატება"
+    }
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -611,6 +622,7 @@
       "processing": "მუშავდება...",
       "pagesNeverExpire": "გვერდებს ვადა არასდროს ეწურება და ნებისმიერ დროს შეიძლება გამოყენება",
       "minimumPurchase": "მინიმალური შეძენა: {min} ₾",
+      "saveCard": "ბარათის შენახვა მომავალი გადახდებისთვის",
       "errors": {
         "invalidAmount": "გთხოვთ შეიყვანოთ სწორი თანხა",
         "minimumAmount": "მინიმალური შეძენის თანხა არის {min} ₾",

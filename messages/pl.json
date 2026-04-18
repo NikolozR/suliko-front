@@ -389,7 +389,18 @@
     "deleteAccountWarning": "Ta akcja jest stała i nie można jej cofnąć.",
     "deleteAccountConfirm": "Czy na pewno chcesz usunąć konto?",
     "confirmDelete": "Tak, usuń",
-    "deleting": "Usuwanie..."
+    "deleting": "Usuwanie...",
+    "savedCards": {
+      "title": "Zapisane karty",
+      "empty": "Brak zapisanych kart",
+      "masked": "****",
+      "expires": "Wygasa",
+      "default": "Domyślna",
+      "deleteButton": "Usuń",
+      "confirmDelete": "Na pewno?",
+      "cancelDelete": "Anuluj",
+      "addCard": "Dodaj kartę"
+    }
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -608,6 +619,7 @@
       "processing": "Przetwarzanie...",
       "pagesNeverExpire": "Strony nigdy nie wygasają i mogą być używane w dowolnym momencie",
       "minimumPurchase": "Minimalny zakup: {min} ₾",
+      "saveCard": "Zapisz kartę do przyszłych płatności",
       "errors": {
         "invalidAmount": "Proszę wprowadzić prawidłową kwotę",
         "minimumAmount": "Minimalna kwota zakupu to {min} ₾",
