@@ -50,6 +50,8 @@
     "iAcceptThe": "I accept the",
     "and": "and",
     "subscribeNewsletter": "Subscribe to newsletter for updates and special offers",
+    "referralCode": "Referral Code",
+    "referralCodePlaceholder": "Enter referral code (optional)",
     "termsAndPrivacy": "Terms, Conditions and Privacy Policy",
     "acceptTermsError": "You must accept the terms, conditions and privacy policy",
     "acceptTermsAndConditionsError": "You must accept the terms and conditions",
@@ -374,7 +376,12 @@
     "deleteAccountWarning": "This action is permanent and cannot be undone.",
     "deleteAccountConfirm": "Are you sure you want to delete your account?",
     "confirmDelete": "Yes, delete",
-    "deleting": "Deleting..."
+    "deleting": "Deleting...",
+    "referral": "Referral Program",
+    "referralDescription": "Share your code with friends. Both of you earn 50 pages when they register.",
+    "copyCode": "Copy Code",
+    "copyLink": "Copy Link",
+    "copied": "Copied!"
   },
   "LanguageSwitcher": {
     "english": "English",

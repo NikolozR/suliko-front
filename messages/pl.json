@@ -48,6 +48,8 @@
     "iAcceptThe": "Akceptuję",
     "and": "i",
     "subscribeNewsletter": "Zapisz się do newslettera, aby otrzymywać aktualizacje i specjalne oferty",
+    "referralCode": "Kod polecający",
+    "referralCodePlaceholder": "Wprowadź kod polecający (opcjonalnie)",
     "termsAndPrivacy": "Warunki, zasady i polityka prywatności",
     "acceptTermsError": "Musisz zaakceptować warunki, zasady i politykę prywatności",
     "acceptTermsAndConditionsError": "Musisz zaakceptować warunki i zasady",
@@ -371,7 +373,12 @@
     "deleteAccountWarning": "Ta akcja jest stała i nie można jej cofnąć.",
     "deleteAccountConfirm": "Czy na pewno chcesz usunąć konto?",
     "confirmDelete": "Tak, usuń",
-    "deleting": "Usuwanie..."
+    "deleting": "Usuwanie...",
+    "referral": "Program polecania",
+    "referralDescription": "Udostępnij kod znajomym. Oboje otrzymacie 50 stron.",
+    "copyCode": "Kopiuj kod",
+    "copyLink": "Kopiuj link",
+    "copied": "Skopiowano!"
   },
   "LanguageSwitcher": {
     "english": "English",

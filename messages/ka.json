@@ -48,6 +48,8 @@
     "iAcceptThe": "ვეთანხმები",
     "and": "და",
     "subscribeNewsletter": "გამოიწერეთ სიახლეები განახლებებისა და სპეციალური შეთავაზებებისთვის",
+    "referralCode": "რეფერალური კოდი",
+    "referralCodePlaceholder": "შეიყვანეთ რეფერალური კოდი (სურვილისამებრ)",
     "termsAndPrivacy": "წესები, პირობები და კონფიდენციალურობის პოლიტიკა",
     "acceptTermsError": "თქვენ უნდა მიიღოთ წესები, პირობები და კონფიდენციალურობის პოლიტიკა",
     "acceptTermsAndConditionsError": "თქვენ უნდა მიიღოთ წესები და პირობები",
@@ -372,7 +374,12 @@
     "deleteAccountWarning": "ეს მოქმედება შეუქცევადია და მისი გაუქმება შეუძლებელია.",
     "deleteAccountConfirm": "ნამდვილად გსურთ ანგარიშის წაშლა?",
     "confirmDelete": "დიახ, წაშლა",
-    "deleting": "იშლება..."
+    "deleting": "იშლება...",
+    "referral": "რეფერალური პროგრამა",
+    "referralDescription": "გაუზიარეთ კოდი მეგობრებს. ორივე მიიღებთ 50 გვერდს.",
+    "copyCode": "კოდის კოპირება",
+    "copyLink": "ლინკის კოპირება",
+    "copied": "დაკოპირებულია!"
   },
   "LanguageSwitcher": {
     "english": "English",

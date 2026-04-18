@@ -11,6 +11,7 @@ import {
   ProfileSkeleton,
   ProfileError,
   ProfileNotFound,
+  ProfileReferral,
 } from "./";
 import { UpdateUserProfile } from "@/features/auth/types/types.User";
 import { updateUserProfile } from "@/features/auth/services/userService";
@@ -187,6 +188,9 @@ export default function ProfileClient() {
           isUpdating={isUpdating}
           errors={validationErrors}
         />
+        {userProfile.referralCode && (
+          <ProfileReferral referralCode={userProfile.referralCode} />
+        )}
         <ProfilePasswordChange />
         <ProfileDeleteAccount />
       </div>

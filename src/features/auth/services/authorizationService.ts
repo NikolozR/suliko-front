@@ -14,13 +14,14 @@ interface RegisterParams extends Omit<LoginParams, 'phoneNumber'> {
   lastname: string;
   email: string;
   subscribeNewsletter?: boolean;
+  referralCode?: string;
 }
 
-export async function register({ phoneNumber, password, firstname, lastname, email }: Omit<RegisterParams, 'subscribeNewsletter'>) {
+export async function register({ phoneNumber, password, firstname, lastname, email, referralCode }: Omit<RegisterParams, 'subscribeNewsletter'>) {
   try {
     // If phoneNumber is not provided or empty, use email in phoneNumber field
     const phoneNumberToSend = phoneNumber?.trim() || email;
-    
+
     // TODO: add subscribeNewsletter to the request
     const response = await apiClient.post("/Auth/register-with-phone", {
       phoneNumber: phoneNumberToSend,
@@ -28,6 +29,7 @@ export async function register({ phoneNumber, password, firstname, lastname, ema
       firstname,
       lastname,
       email,
+      ...(referralCode?.trim() ? { referralCode: referralCode.trim() } : {}),
     });
     
     if (response.ok) {

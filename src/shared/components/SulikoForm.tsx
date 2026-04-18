@@ -6,6 +6,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Button } from "@/features/ui/components/ui/button";
 import { Input } from "@/features/ui/components/ui/input";
 import { useState, useMemo, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import SulikoFormParticles from "./SulikoFormParticles";
 import {
   register,
@@ -42,6 +43,8 @@ const SulikoForm: React.FC = () => {
   const t = useTranslations("Authorization");
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const refFromUrl = searchParams.get("ref") ?? "";
   const { setToken, setRefreshToken, triggerWelcomeModal } = useAuthStore();
   const fetchUserProfile = useUserStore((state) => state.fetchUserProfile);
   const setUserProfile = useUserStore((state) => state.setUserProfile);
@@ -84,6 +87,7 @@ const SulikoForm: React.FC = () => {
       acceptTerms: false,
       acceptPrivacyPolicy: false,
       subscribeNewsletter: false,
+      referralCode: refFromUrl,
     },
   });
 
@@ -101,6 +105,12 @@ const SulikoForm: React.FC = () => {
       setIsCodeVerified(false);
     }
   }, [verificationCode, sentVerificationCode, isLoginMode]);
+
+  useEffect(() => {
+    if (refFromUrl && !isLoginMode) {
+      form.setValue("referralCode", refFromUrl);
+    }
+  }, [refFromUrl, isLoginMode, form]);
 
   // Automatically set verification method based on domain when switching to registration mode
   useEffect(() => {
@@ -307,6 +317,7 @@ const SulikoForm: React.FC = () => {
           email: email,
           verificationCode: registerValues.verificationCode,
           subscribeNewsletter: registerValues.subscribeNewsletter,
+          referralCode: registerValues.referralCode?.trim() || undefined,
         } as RegisterParams);
 
         // Track successful registration
@@ -603,6 +614,29 @@ const SulikoForm: React.FC = () => {
               />
 
               {!isLoginMode && <TermsSection form={form} />}
+
+              {!isLoginMode && (
+                <FormField
+                  control={form.control}
+                  name="referralCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold dark:text-white">
+                        {t("referralCode")} <span className="text-muted-foreground text-xs ml-1">({t("optional")})</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t("referralCodePlaceholder")}
+                          className="border-2 shadow-md dark:border-slate-600"
+                          autoComplete="off"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               <Button
                 className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"

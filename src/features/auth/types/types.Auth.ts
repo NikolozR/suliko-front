@@ -45,6 +45,7 @@ export const createRegisterFormSchema = (t: (key: string) => string, locale?: st
     message: t("acceptPrivacyPolicyError"),
   }),
   subscribeNewsletter: z.boolean().optional(),
+  referralCode: z.string().optional(),
 });
 
 export type LoginFormData = z.infer<ReturnType<typeof createLoginFormSchema>>;
