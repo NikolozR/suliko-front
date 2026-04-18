@@ -94,7 +94,7 @@ export default function HeroSection() {
             </p>
 
             {/* CTAs */}
-            <div className="mb-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+            <div className="mb-10 flex w-full flex-col gap-3 sm:w-auto">
               <Link
                 href="/document"
                 prefetch
