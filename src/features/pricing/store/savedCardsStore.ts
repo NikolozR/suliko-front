@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { SavedCard } from "../types/savedCard";
-import { getSavedCards, deleteSavedCard, addCard } from "../services/savedCardService";
+import { getSavedCards, deleteSavedCard } from "../services/savedCardService";
 
 interface SavedCardsState {
   cards: SavedCard[];
