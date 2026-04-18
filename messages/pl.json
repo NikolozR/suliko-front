@@ -535,7 +535,7 @@
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
-      "cta": "Kup kredyty"
+      "cta": "Subskrybuj"
     },
     "professional": {
       "title": "Profesjonalny",
@@ -550,7 +550,7 @@
         "3": "Priorytetowe wsparcie e-mailowe i czatowe",
         "4": "Narzędzia współpracy zespołowej"
       },
-      "cta": "Kup kredyty",
+      "cta": "Subskrybuj",
       "popular": "Najpopularniejszy"
     },
     "custom": {
@@ -644,6 +644,7 @@
       },
       "cta": "Skontaktuj się ze sprzedażą"
     },
+    "billedMonthly": "Rozliczane miesięcznie · Anuluj w dowolnym momencie",
     "select": "Wybierz",
     "needCustomSolution": "Potrzebujesz niestandardowego rozwiązania? Skontaktuj się z nami"
   },

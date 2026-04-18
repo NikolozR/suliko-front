@@ -79,6 +79,11 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
         >
           {t(`${type}.cta`)}
         </button>
+        {(type === 'starter' || type === 'professional') && (
+          <p className="text-xs text-muted-foreground text-center mt-2">
+            {t('billedMonthly')}
+          </p>
+        )}
       </div>
     </div>
   );
