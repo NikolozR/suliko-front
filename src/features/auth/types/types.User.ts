@@ -24,5 +24,6 @@ export interface UpdateUserProfile {
 
 export interface UserProfile extends UpdateUserProfile {
   roleName: string;
+  referralCode?: string;
   subscription?: SubscriptionInfo | null;
 }

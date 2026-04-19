@@ -14,10 +14,10 @@ interface RegisterParams extends Omit<LoginParams, 'phoneNumber'> {
   lastname: string;
   email: string;
   subscribeNewsletter?: boolean;
+  referralCode?: string;
 }
 
-export async function register({ phoneNumber, password, firstname, lastname, email }: Omit<RegisterParams, 'subscribeNewsletter'>) {
-  // If phoneNumber is not provided or empty, use email in phoneNumber field
+export async function register({ phoneNumber, password, firstname, lastname, email, referralCode }: Omit<RegisterParams, 'subscribeNewsletter'>) {
   const phoneNumberToSend = phoneNumber?.trim() || email;
 
   let response;
@@ -28,6 +28,7 @@ export async function register({ phoneNumber, password, firstname, lastname, ema
       firstname,
       lastname,
       email,
+      ...(referralCode?.trim() ? { referralCode: referralCode.trim() } : {}),
     });
   } catch (error) {
     const errorMessage = ApiClient.handleApiError(error);

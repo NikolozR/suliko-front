@@ -1,4 +1,5 @@
 export { default as ProfileClient } from './ProfileClient';
+export { ProfileReferral } from './ProfileReferral';
 export { ProfileHero } from './ProfileHero';
 export { ProfilePersonalInfo } from './ProfilePersonalInfo';
 export { ProfileContactInfo } from './ProfileContactInfo';
