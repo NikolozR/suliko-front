@@ -1,60 +1,75 @@
 import { Metadata } from 'next';
+import { getTranslations } from 'next-intl/server';
 import { getAllPosts } from '@/lib/blog';
 import { BlogGrid, NewsletterSection } from '@/components/blog';
 import BlogBanner from '@/components/blog/BlogBanner';
 import LandingHeader from '@/shared/components/LandingHeader';
+import AuroraBackground from '@/shared/components/AuroraBackground';
 import LandingFooter from '@/shared/components/LandingFooter';
+import { Link } from '@/i18n/navigation';
+import { ChevronLeft } from 'lucide-react';
 
-// Allow dynamic generation for better Vercel compatibility
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: 'Blog | Suliko',
-  description: 'Read the latest insights, tips, and updates from the Suliko team.',
-  openGraph: {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const domain = locale === 'ka' ? 'https://suliko.ge' : locale === 'en' ? 'https://suliko.io' : 'https://suliko.ge/pl';
+
+  return {
     title: 'Blog | Suliko',
     description: 'Read the latest insights, tips, and updates from the Suliko team.',
-    type: 'website',
-  },
-};
+    alternates: {
+      canonical: `${domain}/blog`,
+    },
+    openGraph: {
+      title: 'Blog | Suliko',
+      description: 'Read the latest insights, tips, and updates from the Suliko team.',
+      type: 'website',
+    },
+  };
+}
 
-export default function BlogPage() {
+export default async function BlogPage() {
   const posts = getAllPosts();
+  const t = await getTranslations('Blog');
 
   return (
     <>
       {/* Header */}
       <LandingHeader />
-      
-      {/* Main Blog Page with Stars Background */}
-      <main className="min-h-screen blog-stars-background">
-         {/* Stars Background Layer */}
-         <div className="fixed inset-0 -z-10">
-           <div className="absolute inset-0 stars-layer-1" />
-           <div className="absolute inset-0 stars-layer-2" />
-         </div>
 
-        {/* Content Layer */}
-        <div className="relative z-10">
-           {/* Page Header */}
-           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-             <div className="text-center mb-16 mt-16">
-               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">
-                 Blog
-               </h1>
-               <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                 Discover insights, tips, and updates from the Suliko team. 
-                 Stay informed about the latest in AI translation technology.
-               </p>
-             </div>
-           </div>
+      {/* Main Blog Page */}
+      <main className="min-h-screen">
+        <AuroraBackground />
 
-          {/* Banner Section */}
+        {/* Content */}
+        <div className="relative z-10 pt-24">
+          {/* Page Header */}
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
+            >
+              <ChevronLeft className="h-4 w-4" />
+              {t('backToHome')}
+            </Link>
+            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
+              {t('title')}
+            </h1>
+            <p className="text-muted-foreground max-w-xl">
+              {t('subtitle')}
+            </p>
+          </div>
+
+          {/* Stats Banner */}
           <BlogBanner postCount={posts.length} />
 
           {/* Blog Content */}
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
-            {/* Blog Grid */}
             <BlogGrid posts={posts} />
 
             {/* Newsletter Section */}

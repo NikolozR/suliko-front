@@ -145,13 +145,12 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     <>
       {/* {renderOverlay()} */}
       <aside
-        className={`sidebar-main flex flex-col h-screen overflow-auto fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
+        className={`sidebar-main hidden md:flex flex-col h-[100dvh] overflow-auto fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
           ? "w-20"
           : "w-48 md:w-56 lg:w-64"
           } ${!effectiveIsCollapsed
             ? "md:shadow-none shadow-xl"
             : "md:shadow-none"
-          } ${isMobile && effectiveIsCollapsed ? "md:translate-x-0" : "translate-x-0"
           }`}
       >
         <div className={`flex items-center h-20 ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-3`}>
@@ -199,10 +198,13 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   resetTextTranslation();
                   resetDocumentTranslation();
                 } : undefined}
-                className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
-                  ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
-                  : ""
-                  } ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                className={label === "newProject"
+                  ? `group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center" : ""}`
+                  : `sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
+                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                    : ""
+                  } ${effectiveIsCollapsed ? "justify-center" : ""}`
+                }
                 aria-current={isActive(href) ? "page" : undefined}
               >
                 <div className="relative flex items-center">
@@ -277,13 +279,42 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   </Link>
                   {!effectiveIsCollapsed && (
                     <Link href="/price" className="flex flex-col min-w-0 w-full hover:opacity-80 transition-opacity">
-                      <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70">{t('balance')}</span>
-                      <span className="font-semibold flex items-center w-full justify-between  text-emerald-700 dark:text-emerald-300">
-                        {formatBalance(userProfile.balance || 0)} {t('pages')}
-                        <PlusCircle
-                          className={`transition-transform duration-200 h-5 w-5 group-hover:scale-105`}
-                        />
-                      </span>
+                      {userProfile.subscription?.status === 'Active' ? (
+                        <>
+                          <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70 capitalize">{userProfile.subscription.planName}</span>
+                          <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
+                            {userProfile.subscription.pagesUsed} / {userProfile.subscription.monthlyPageLimit ?? '∞'} {t('pages')}
+                            <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
+                          </span>
+                          {(() => {
+                            const limit = userProfile.subscription.monthlyPageLimit;
+                            const pct = limit ? Math.min(100, (userProfile.subscription.pagesUsed / limit) * 100) : 0;
+                            const barColor = pct < 60 ? "bg-emerald-500" : pct < 85 ? "bg-amber-500" : "bg-red-500";
+                            return (
+                              <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
+                                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+                              </div>
+                            );
+                          })()}
+                        </>
+                      ) : (
+                        <>
+                          <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70">{t('balance')}</span>
+                          <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
+                            {formatBalance(userProfile.balance || 0)} {t('pages')}
+                            <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
+                          </span>
+                          {(() => {
+                            const pct = Math.min(100, ((userProfile.balance || 0) / 50) * 100);
+                            const barColor = pct > 40 ? "bg-emerald-500" : pct > 10 ? "bg-amber-500" : "bg-red-500";
+                            return (
+                              <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
+                                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
+                              </div>
+                            );
+                          })()}
+                        </>
+                      )}
                     </Link>
                   )}
                 </div>
@@ -316,8 +347,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 }}
               >
                 <LogOut
-                  className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                    } group-hover:scale-105`}
+                  className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"} group-hover:scale-105`}
                 />
                 {!effectiveIsCollapsed && (
                   <span className="whitespace-nowrap">
@@ -333,8 +363,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 }`}
             >
               <User
-                className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                  } group-hover:scale-105`}
+                className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"} group-hover:scale-105`}
               />
               {!effectiveIsCollapsed && (
                 <span className="whitespace-nowrap">

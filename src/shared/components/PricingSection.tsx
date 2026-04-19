@@ -174,7 +174,7 @@ export default function PricingSection() {
     <section id="pricing" className="py-20 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-4xl font-bold text-foreground mb-6">
             {t("title")}
           </h2>
           <p className="text-xl text-muted-foreground leading-relaxed mb-8">

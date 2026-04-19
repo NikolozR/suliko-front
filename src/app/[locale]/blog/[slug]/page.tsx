@@ -5,8 +5,7 @@ import { BlogPost } from '@/components/blog';
 import LandingHeader from '@/shared/components/LandingHeader';
 import LandingFooter from '@/shared/components/LandingFooter';
 
-// Allow dynamic generation as fallback
-export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 export const dynamicParams = true;
 
 interface BlogPostPageProps {
@@ -38,6 +37,13 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
     return {
       title: `${post.title} | Suliko Blog`,
       description: post.excerpt,
+      alternates: {
+        canonical: `https://suliko.io/blog/${slug}`,
+        languages: {
+          en: `https://suliko.io/blog/${slug}`,
+          "x-default": `https://suliko.io/blog/${slug}`,
+        },
+      },
       openGraph: {
         title: post.title,
         description: post.excerpt,
@@ -81,8 +87,28 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       notFound();
     }
 
+  const articleSchema = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.date,
+    author: { "@type": "Person", name: post.author },
+    ...(post.coverImage && { image: post.coverImage }),
+    publisher: {
+      "@type": "Organization",
+      name: "Suliko",
+      logo: { "@type": "ImageObject", url: "https://suliko.io/Suliko_logo_black.svg" },
+    },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://suliko.io/blog/${post.slug}` },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+      />
       {/* Header */}
       <LandingHeader />
       

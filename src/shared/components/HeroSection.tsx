@@ -3,37 +3,32 @@
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { ArrowRight } from "lucide-react";
-import { useEffect, useRef, useState, useMemo } from "react";
-import { useTheme } from "next-themes";
+import { ArrowRight, Zap } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { LoadingButton } from "@/features/ui/components/loading";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [videoError, setVideoError] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [demoUrl, setDemoUrl] = useState("suliko.ai/document");
   const videoRef = useRef<HTMLVideoElement | null>(null);
-  const { resolvedTheme } = useTheme();
 
-  // Prefetch the document page on hover
-  const handleMouseEnter = () => {
-    router.prefetch('/document');
-  };
+  useEffect(() => {
+    const host = window.location.hostname;
+    if (host.endsWith(".ge")) setDemoUrl("suliko.ge/document");
+    else if (host.endsWith(".io")) setDemoUrl("suliko.io/document");
+  }, []);
 
-  // Handle click with loading state
+  const handleMouseEnter = () => router.prefetch("/document");
+
   const handleGetStartedClick = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsNavigating(true);
-    router.push('/document');
+    router.push("/document");
   };
-
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     const media = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -44,192 +39,141 @@ export default function HeroSection() {
   }, []);
 
   useEffect(() => {
-    // Try to programmatically start playback when ready
     const v = videoRef.current;
     if (!v) return;
-    const onCanPlay = () => {
-      // Some browsers require an explicit play() call even when muted
-      v.play().catch((err) => console.log("Video play failed:", err));
-    };
-    const onError = (e: Event) => {
-      console.error("Video error:", e);
-      setVideoError(true);
-    };
+    const onCanPlay = () => v.play().catch(() => {});
+    const onError = () => setVideoError(true);
     v.addEventListener("canplay", onCanPlay);
     v.addEventListener("error", onError);
     return () => {
       v.removeEventListener("canplay", onCanPlay);
       v.removeEventListener("error", onError);
     };
-  }, [mounted]);
-
-  // Theme-aware star colors
-  const isDark = mounted && resolvedTheme === "dark";
-  const starColor = isDark ? "white" : "#1e40af"; // Blue for light theme, white for dark
-  const fallingStarGradient = isDark
-    ? "linear-gradient(90deg, rgba(255,255,255,0.95), rgba(147,197,253,0.7), rgba(147,197,253,0))"
-    : "linear-gradient(90deg, rgba(37,99,235,0.95), rgba(96,165,250,0.7), rgba(96,165,250,0))";
-
-  // Generate stable star positions using useMemo to avoid hydration mismatches
-  const starData = useMemo(() => {
-    if (!mounted || isReducedMotion) return { stars: [], mediumStars: [], smallStars: [], fallingStars: [] };
-    
-    const generateStars = (count: number, size: number) => {
-      return Array.from({ length: count }, (_, i) => ({
-        id: i,
-        left: Math.random() * 100,
-        top: Math.random() * 100,
-        animationDelay: Math.random() * 4,
-        animationDuration: 2 + Math.random() * 3,
-        opacity: size === 1 ? 0.3 + Math.random() * 0.4 : undefined,
-      }));
-    };
-
-    return {
-      stars: generateStars(24, 1), // Large stars
-      mediumStars: generateStars(36, 0.5), // Medium stars
-      smallStars: generateStars(48, 0), // Small stars
-      fallingStars: Array.from({ length: 6 }, (_, i) => ({
-        id: i,
-        left: 4 + Math.random() * 92,
-        animationDelay: Math.random() * 9,
-        animationDuration: 5 + Math.random() * 4,
-        length: 60 + Math.random() * 80,
-        opacity: 0.55 + Math.random() * 0.35,
-      })),
-    };
-  }, [mounted, isReducedMotion]);
+  }, []);
 
   return (
-    <section className="relative h-[93.5vh] flex items-center justify-center overflow-hidden">
-      {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900" />
-      
-      {/* Star Field Background */}
-      <div className="absolute inset-0 overflow-hidden">
-        {/* Stars Layer 1 - Large twinkling stars */}
-        <div className="absolute inset-0">
-          {starData.stars.map((star) => (
-            <div
-              key={`star-1-${star.id}`}
-              className="absolute w-1 h-1 rounded-full animate-twinkle"
-              style={{
-                backgroundColor: starColor,
-                left: `${star.left}%`,
-                top: `${star.top}%`,
-                animationDelay: `${star.animationDelay}s`,
-                animationDuration: `${star.animationDuration}s`,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Stars Layer 2 - Medium stars */}
-        <div className="absolute inset-0">
-          {starData.mediumStars.map((star) => (
-            <div
-              key={`star-2-${star.id}`}
-              className="absolute w-0.5 h-0.5 rounded-full animate-slow-twinkle"
-              style={{
-                backgroundColor: starColor,
-                left: `${star.left}%`,
-                top: `${star.top}%`,
-                animationDelay: `${star.animationDelay + 1}s`,
-                animationDuration: `${star.animationDuration + 1}s`,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Stars Layer 3 - Small static stars */}
-        <div className="absolute inset-0">
-          {starData.smallStars.map((star) => (
-            <div
-              key={`star-3-${star.id}`}
-              className="absolute w-px h-px rounded-full"
-              style={{
-                backgroundColor: starColor,
-                left: `${star.left}%`,
-                top: `${star.top}%`,
-                opacity: star.opacity,
-              }}
-            />
-          ))}
-        </div>
-
-        {/* Falling stars */}
-        <div className="absolute inset-0">
-          {starData.fallingStars.map((star) => (
-            <div
-              key={`falling-${star.id}`}
-              className="absolute top-[-14%] h-px animate-star-fall will-change-transform"
-              style={{
-                left: `${star.left}%`,
-                width: `${star.length}px`,
-                opacity: star.opacity,
-                backgroundImage: fallingStarGradient,
-                animationDelay: `${star.animationDelay}s`,
-                animationDuration: `${star.animationDuration}s`,
-              }}
-            />
-          ))}
-        </div>
+    <section className="relative flex min-h-[93.5vh] items-center overflow-hidden bg-slate-950">
+      {/* Ambient glow orbs */}
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -left-40 -top-40 h-[560px] w-[560px] rounded-full bg-blue-600/20 blur-[120px]" />
+        <div className="absolute bottom-0 left-1/2 h-[400px] w-[700px] -translate-x-1/2 rounded-full bg-indigo-600/10 blur-[140px]" />
+        <div className="absolute right-0 top-1/3 h-[380px] w-[380px] rounded-full bg-cyan-500/10 blur-[100px]" />
       </div>
 
-      <div className="relative z-10 container mx-auto px-12 sm:px-16 lg:px-24">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-10 items-center">
-          {/* Left column: text */}
-          <div className="lg:col-span-2">
-            {/* Main Headline */}
-            <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-foreground mb-4 leading-tight text-center lg:text-left">
+      {/* Subtle dot grid */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-40"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgba(148,163,184,0.12) 1px, transparent 1px)",
+          backgroundSize: "32px 32px",
+        }}
+      />
+
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 py-24 sm:px-10 lg:px-16">
+        <div className="grid grid-cols-1 items-center gap-14 lg:grid-cols-2 lg:gap-12">
+
+          {/* ── Left: copy ── */}
+          <div className="flex flex-col items-start">
+
+            {/* Badge */}
+            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-400">
+              <Zap className="h-3.5 w-3.5" aria-hidden="true" />
+              {t("badge")}
+            </div>
+
+            {/* Heading */}
+            <h1 className="mb-5 max-w-xl text-balance text-[2.75rem] font-bold leading-[1.1] tracking-tight text-white sm:text-5xl xl:text-6xl">
               {t("title")}
             </h1>
 
-            {/* Subheadline */}
-            <p className="text-lg sm:text-xl text-muted-foreground mb-6 max-w-3xl mx-auto lg:mx-0 leading-relaxed text-center lg:text-left">
+            {/* Sub-heading */}
+            <p className="mb-8 max-w-md text-base leading-relaxed text-slate-400 sm:text-lg">
               {t("description")}
             </p>
 
-
-            {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 justify-center lg:justify-start items-center">
-              <Link 
-                href="/document" 
-                prefetch={true}
+            {/* CTAs */}
+            <div className="mb-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+              <Link
+                href="/document"
+                prefetch
                 onMouseEnter={handleMouseEnter}
                 onClick={handleGetStartedClick}
               >
                 <LoadingButton
                   size="lg"
-                  className="px-6 py-3 text-base group"
+                  className="w-full sm:w-auto group"
                   isLoading={isNavigating}
-                  loadingText={t("loading") || "Loading..."}
+                  loadingText="Loading…"
                 >
-                  <>
+                  <span className="flex items-center gap-2">
                     {t("cta")}
-                    <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </>
+                    <ArrowRight
+                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                      aria-hidden="true"
+                    />
+                  </span>
                 </LoadingButton>
               </Link>
-              <Link href="#pricing">
-                <Button variant="outline" size="lg" className="px-6 py-3 text-base">
+              <Link href="/notary">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="w-full border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-white sm:w-auto"
+                >
                   {t("viewPricing")}
                 </Button>
               </Link>
             </div>
+
+            {/* Stats */}
+            <dl className="grid grid-cols-3 gap-6">
+              {[
+                { value: "50K+", label: t("documentsTranslated") },
+                { value: "50+", label: t("languagesSupported") },
+                { value: "98%", label: t("accuracyRate") },
+              ].map((stat, i) => (
+                <div key={i} className="flex flex-col gap-0.5">
+                  <dd className="text-2xl font-bold text-white">{stat.value}</dd>
+                  <dt className="text-xs leading-snug text-slate-500">{stat.label}</dt>
+                </div>
+              ))}
+            </dl>
           </div>
 
-          {/* Right column: video mockup */}
-          <div className="lg:col-span-3 flex justify-center lg:justify-end">
-            <div className="relative w-full" style={{ maxWidth: '600px' }}>
+          {/* ── Right: product mockup ── */}
+          <div className="relative flex items-center justify-center lg:justify-end">
+            {/* Glow behind card */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-4 rounded-3xl bg-blue-500/20 blur-3xl"
+            />
+
+            {/* Browser chrome */}
+            <div className="relative w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-900 shadow-[0_32px_64px_rgba(0,0,0,0.6)]">
+              {/* Title bar */}
+              <div className="flex items-center gap-2 border-b border-white/[0.06] bg-slate-900/90 px-4 py-3">
+                <div className="flex gap-1.5" aria-hidden="true">
+                  <div className="h-3 w-3 rounded-full bg-red-400/60" />
+                  <div className="h-3 w-3 rounded-full bg-yellow-400/60" />
+                  <div className="h-3 w-3 rounded-full bg-green-400/60" />
+                </div>
+                <div className="mx-3 flex h-5 flex-1 items-center overflow-hidden rounded-full bg-white/[0.05] px-3">
+                  <span className="truncate text-xs text-slate-500">{demoUrl}</span>
+                </div>
+              </div>
+
+              {/* Video */}
               {videoError ? (
-                <div className="w-full h-64 bg-muted rounded-2xl shadow-2xl ring-1 ring-border flex items-center justify-center">
-                  <p className="text-muted-foreground text-sm">Video failed to load</p>
+                <div className="flex aspect-video w-full items-center justify-center bg-slate-900">
+                  <p className="text-sm text-slate-600">{t("videoUnavailable")}</p>
                 </div>
               ) : (
                 <video
                   ref={videoRef}
-                  className="w-full h-auto rounded-2xl shadow-2xl ring-1 ring-border"
+                  className="block h-auto w-full"
+                  title="Suliko product demo"
                   autoPlay={!isReducedMotion}
                   muted
                   loop
@@ -244,18 +188,9 @@ export default function HeroSection() {
               )}
             </div>
           </div>
+
         </div>
       </div>
-
-
-      {/* Scroll Indicator */}
-      {!isReducedMotion && (
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 animate-bounce">
-          <div className="w-6 h-10 border-2 border-foreground/30 rounded-full flex justify-center">
-            <div className="w-1 h-3 bg-foreground/50 rounded-full mt-2 animate-pulse" />
-          </div>
-        </div>
-      )}
     </section>
   );
 }

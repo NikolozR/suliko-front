@@ -18,12 +18,11 @@ interface RegisterParams extends Omit<LoginParams, 'phoneNumber'> {
 }
 
 export async function register({ phoneNumber, password, firstname, lastname, email, referralCode }: Omit<RegisterParams, 'subscribeNewsletter'>) {
-  try {
-    // If phoneNumber is not provided or empty, use email in phoneNumber field
-    const phoneNumberToSend = phoneNumber?.trim() || email;
+  const phoneNumberToSend = phoneNumber?.trim() || email;
 
-    // TODO: add subscribeNewsletter to the request
-    const response = await apiClient.post("/Auth/register-with-phone", {
+  let response;
+  try {
+    response = await apiClient.post("/Auth/register-with-phone", {
       phoneNumber: phoneNumberToSend,
       password,
       firstname,
@@ -31,31 +30,34 @@ export async function register({ phoneNumber, password, firstname, lastname, ema
       email,
       ...(referralCode?.trim() ? { referralCode: referralCode.trim() } : {}),
     });
-    
-    if (response.ok) {
-      try {
-        // Use the same logic for login - if no phoneNumber, use email
-        const loginResponse = await login({ phoneNumber: phoneNumberToSend, password });
-        return loginResponse;
-      } catch {
-        throw new Error("რეგისტრაცია წარმატებულია, მაგრამ შესვლა ვერ მოხერხდა");
-      }
-    } else {
-      // Handle specific error cases
-      if (response.status === 400 || response.status === 409) {
-        throw new Error("ეს ტელეფონის ნომერი უკვე რეგისტრირებულია");
-      } else if (response.status === 422) {
-        throw new Error("არასწორი მონაცემების ფორმატი");
-      } else if (response.status === 500) {
-        throw new Error("ეს ტელეფონის ნომერი უკვე რეგისტრირებულია");
-      } else {
-        throw new Error("რეგისტრაცია ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით");
-      }
-    }
   } catch (error) {
-    // Handle CORS and other errors
     const errorMessage = ApiClient.handleApiError(error);
     throw new Error(errorMessage);
+  }
+
+  if (response.ok) {
+    // Auto-login after successful registration
+    try {
+      const loginResponse = await login({ phoneNumber: phoneNumberToSend, password });
+      return loginResponse;
+    } catch {
+      throw new Error("REGISTRATION_SUCCESS_LOGIN_FAILED");
+    }
+  }
+
+  if (response.status === 409) {
+    throw new Error("მომხმარებელი უკვე რეგისტრირებულია");
+  } else if (response.status === 400) {
+    const serverMessage = response.data && typeof response.data === 'object' && 'message' in response.data
+      ? (response.data as { message: string }).message
+      : null;
+    throw new Error(serverMessage || "მომხმარებელი უკვე რეგისტრირებულია");
+  } else if (response.status === 422) {
+    throw new Error("არასწორი მონაცემების ფორმატი");
+  } else if (response.status === 500) {
+    throw new Error("სერვერის შეცდომა. გთხოვთ სცადოთ მოგვიანებით");
+  } else {
+    throw new Error("რეგისტრაცია ვერ მოხერხდა. გთხოვთ სცადოთ მოგვიანებით");
   }
 }
 
@@ -200,6 +202,20 @@ export async function resetPassword(phoneNumber: string, newPassword: string, to
     return response.data;
   } catch (error) {
     // Handle CORS and other errors
+    const errorMessage = ApiClient.handleApiError(error);
+    throw new Error(errorMessage);
+  }
+}
+
+export async function loginWithGoogle(idToken: string): Promise<LoginResponse> {
+  try {
+    const response = await apiClient.post<LoginResponse>("/Auth/login-with-google", idToken);
+    if (response.ok) {
+      return response.data;
+    } else {
+      throw new Error("Google login failed");
+    }
+  } catch (error) {
     const errorMessage = ApiClient.handleApiError(error);
     throw new Error(errorMessage);
   }

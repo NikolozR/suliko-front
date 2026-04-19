@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowRightLeft } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
@@ -22,16 +23,18 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
   showSwapButton = false
 }) => {
   const t = useTranslations('CommonLanguageSelect');
-  const containerClasses = layout === "horizontal" 
+  const [isRotating, setIsRotating] = useState(false);
+  const containerClasses = layout === "horizontal"
     ? "flex gap-2 md:gap-4 flex-col sm:flex-row items-end mb-6 h-full justify-end"
     : "flex gap-2 md:gap-4 flex-col sm:flex-row md:flex-col items-end mb-6";
 
 
   const handleSwapLanguages = () => {
     if (sourceLanguageId !== 0) {
+      setIsRotating(true);
+      setTimeout(() => setIsRotating(false), 300);
       const tempSource = sourceLanguageId;
       const tempTarget = targetLanguageId;
-      
       onSourceLanguageChange(tempTarget);
       onTargetLanguageChange(tempSource);
     }
@@ -60,7 +63,7 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
             disabled={sourceLanguageId === 0}
             onClick={handleSwapLanguages}
           >
-            <ArrowRightLeft className="h-4 w-4" />
+            <ArrowRightLeft className={`h-4 w-4 transition-transform duration-300 ${isRotating ? "rotate-180" : ""}`} />
           </Button>
         </div>
       )}

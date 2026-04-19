@@ -117,7 +117,7 @@ const DocumentTranslationCard = () => {
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
 
-  const { setManualProgress, reset } =
+  const { loadingProgress, loadingMessage, setManualProgress, reset } =
     useDocumentLoadingProgress({
       isLoading,
       t,
@@ -733,6 +733,40 @@ const DocumentTranslationCard = () => {
                 formError={token ? getFormError() : null}
                 isHighlighted={isButtonHighlighted}
               />
+
+              {/* Progress bar + step indicator */}
+              {isLoading && (
+                <div className="mt-4 space-y-3">
+                  {/* Step indicator */}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    {[
+                      { label: t("progress.stepUploading"), threshold: 0 },
+                      { label: t("progress.stepTranslating"), threshold: 15 },
+                      { label: t("progress.stepReady"), threshold: 90 },
+                    ].map((step, i, arr) => {
+                      const isActive = loadingProgress >= step.threshold && (i === arr.length - 1 || loadingProgress < arr[i + 1].threshold);
+                      const isDone = i < arr.length - 1 && loadingProgress >= arr[i + 1].threshold;
+                      return (
+                        <div key={step.label} className="flex items-center gap-1">
+                          <span className={`w-2 h-2 rounded-full transition-colors duration-500 ${isDone ? "bg-green-500" : isActive ? "bg-suliko-default-color animate-pulse" : "bg-border"}`} />
+                          <span className={isDone || isActive ? "text-foreground font-medium" : ""}>{step.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* Progress bar */}
+                  <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full rounded-full suliko-default-bg transition-all duration-500 ease-out"
+                      style={{ width: `${Math.min(100, loadingProgress)}%` }}
+                    />
+                  </div>
+                  {/* Status message */}
+                  {loadingMessage && (
+                    <p className="text-xs text-center text-muted-foreground truncate">{loadingMessage}</p>
+                  )}
+                </div>
+              )}
             </form>
           </CardContent>
         </Card>

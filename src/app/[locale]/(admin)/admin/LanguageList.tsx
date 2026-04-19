@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { API_BASE_URL } from "@/shared/constants/api";
 import { useAuthStore } from "@/features/auth/store/authStore";
 
@@ -11,57 +10,57 @@ interface Language {
   nameGeo: string;
 }
 
+const panelStyle: React.CSSProperties = {
+  background: "#13151f",
+  border: "1px solid #2a2d3a",
+  borderRadius: 12,
+  overflow: "hidden",
+  marginBottom: 16,
+};
+
+const thStyle: React.CSSProperties = {
+  padding: "11px 16px",
+  textAlign: "left",
+  fontSize: 11,
+  fontWeight: 600,
+  color: "#64748b",
+  textTransform: "uppercase",
+  letterSpacing: "0.08em",
+  background: "#0f1117",
+  borderBottom: "1px solid #2a2d3a",
+};
+
+const tdStyle: React.CSSProperties = {
+  padding: "12px 16px",
+  fontSize: 13,
+  color: "#cbd5e1",
+  borderTop: "1px solid #1e2130",
+};
+
 export default function LanguageList() {
   const token = useAuthStore((s) => s.token);
   const [languages, setLanguages] = useState<Language[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [deleteMessage, setDeleteMessage] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<number | null>(null);
+  const [successMsg, setSuccessMsg] = useState<string | null>(null);
 
   const fetchLanguages = useCallback(async () => {
-    if (!token) {
-      setError("Missing auth token. Please re-login as admin.");
-      return;
-    }
-
+    if (!token) { setError("Missing auth token. Please re-login."); return; }
     setLoading(true);
     setError(null);
-    
     try {
-      console.log("Fetching languages...");
-      const response = await fetch(`${API_BASE_URL}/Language`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      const res = await fetch(`${API_BASE_URL}/Language`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log("Languages response status:", response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to fetch languages: ${response.status} - ${errorText}`);
-      }
-
-      const data = await response.json();
-      console.log("Languages data:", data);
-
-      // Handle different response formats
-      let languagesList: Language[] = [];
-      if (Array.isArray(data)) {
-        languagesList = data;
-      } else if (data && typeof data === 'object') {
-        // Handle case where response might be wrapped in an object
-        const items = data.items || data.data || [];
-        if (Array.isArray(items)) {
-          languagesList = items;
-        }
-      }
-
-      setLanguages(languagesList);
+      if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+      const data = await res.json();
+      let list: Language[] = [];
+      if (Array.isArray(data)) list = data;
+      else if (data?.items || data?.data) list = data.items ?? data.data ?? [];
+      setLanguages(list);
     } catch (err: unknown) {
-      console.error("Language fetch error:", err);
       setError(err instanceof Error ? err.message : "Failed to fetch languages");
     } finally {
       setLoading(false);
@@ -69,152 +68,216 @@ export default function LanguageList() {
   }, [token]);
 
   const deleteLanguage = async (id: number) => {
-    if (!token) {
-      setError("Missing auth token. Please re-login as admin.");
-      return;
-    }
-
+    if (!token) { setError("Missing auth token."); return; }
     setDeletingId(id);
-    setDeleteMessage(null);
+    setConfirmId(null);
+    setSuccessMsg(null);
     setError(null);
-
     try {
-      console.log(`Deleting language with ID: ${id}`);
-      const response = await fetch(`${API_BASE_URL}/Language/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/Language/${id}`, {
         method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      console.log("DELETE response status:", response.status);
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to delete language: ${response.status} - ${errorText}`);
-      }
-
-      // Remove the deleted language from the list
-      setLanguages(prev => prev.filter(lang => lang.id !== id));
-      setDeleteMessage(`✅ Language with ID ${id} deleted successfully.`);
-      
-      // Clear success message after 3 seconds
-      setTimeout(() => setDeleteMessage(null), 3000);
-
+      if (!res.ok) throw new Error(`Failed to delete: ${res.status}`);
+      setLanguages((prev) => prev.filter((l) => l.id !== id));
+      setSuccessMsg(`Language #${id} deleted.`);
+      setTimeout(() => setSuccessMsg(null), 3000);
     } catch (err: unknown) {
-      console.error("Delete language error:", err);
-      setError(err instanceof Error ? err.message : "Failed to delete language");
+      setError(err instanceof Error ? err.message : "Failed to delete");
     } finally {
       setDeletingId(null);
     }
   };
 
-  useEffect(() => {
-    fetchLanguages();
-  }, [token, fetchLanguages]);
-
-  if (loading) {
-    return (
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>System Languages</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="text-center py-4">Loading languages...</div>
-        </CardContent>
-      </Card>
-    );
-  }
-
-  if (error) {
-    return (
-      <Card className="mt-6">
-        <CardHeader>
-          <CardTitle>System Languages</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
-            <div className="flex items-center gap-2 text-red-700 dark:text-red-300">
-              <span className="text-lg">⚠️</span>
-              <span className="text-sm font-medium">{error}</span>
-            </div>
-          </div>
-          <button 
-            onClick={fetchLanguages}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors duration-200 font-medium text-sm"
-          >
-            🔄 Retry
-          </button>
-        </CardContent>
-      </Card>
-    );
-  }
+  useEffect(() => { fetchLanguages(); }, [token, fetchLanguages]);
 
   return (
-    <Card className="mt-6">
-      <CardHeader>
-        <CardTitle>System Languages ({languages.length})</CardTitle>
-        {deleteMessage && (
-          <div className="mt-2 p-3 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-            <div className="text-green-700 dark:text-green-300 text-sm font-medium">
-              {deleteMessage}
-            </div>
-          </div>
-        )}
-      </CardHeader>
-      <CardContent>
-        {languages.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground">
-            <div className="text-lg mb-2">📝</div>
-            <div>No languages found</div>
-          </div>
-        ) : (
-          <div className="space-y-1">
-            {/* Header */}
-            <div className="grid grid-cols-4 gap-4 p-4 bg-slate-100 dark:bg-slate-800 rounded-lg font-semibold text-sm text-slate-700 dark:text-slate-300">
-              <div>ID</div>
-              <div>Name (English)</div>
-              <div>Name (Georgian)</div>
-              <div>Actions</div>
-            </div>
-            {/* Rows */}
-            {languages.map((language, index) => (
-              <div 
-                key={language.id} 
-                className={`grid grid-cols-4 gap-4 p-4 border border-slate-200 dark:border-slate-700 rounded-lg transition-colors duration-200 hover:bg-slate-50 dark:hover:bg-slate-800 hover:border-slate-300 dark:hover:border-slate-600 ${
-                  index % 2 === 0 ? 'bg-white dark:bg-slate-900' : 'bg-slate-50/50 dark:bg-slate-800/50'
-                }`}
-              >
-                <div className="font-medium text-slate-900 dark:text-slate-100">{language.id}</div>
-                <div className="text-slate-700 dark:text-slate-300">{language.name}</div>
-                <div className="text-slate-700 dark:text-slate-300">{language.nameGeo}</div>
-                <div className="flex items-center">
-                  <button
-                    onClick={() => deleteLanguage(language.id)}
-                    disabled={deletingId === language.id}
-                    className={`px-3 py-1 text-sm rounded-lg font-medium transition-colors duration-200 ${
-                      deletingId === language.id
-                        ? 'bg-gray-400 text-gray-200 cursor-not-allowed'
-                        : 'bg-red-600 hover:bg-red-700 text-white'
-                    }`}
-                    title={`Delete ${language.name}`}
-                  >
-                    {deletingId === language.id ? '⏳' : '🗑️'} {deletingId === language.id ? 'Deleting...' : 'Delete'}
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="mt-6 flex justify-end">
-          <button 
+    <div style={panelStyle}>
+      {/* Header */}
+      <div
+        style={{
+          padding: "14px 16px",
+          borderBottom: "1px solid #2a2d3a",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+        }}
+      >
+        <span
+          style={{
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 700,
+            fontSize: 15,
+            color: "#f8fafc",
+          }}
+        >
+          System Languages
+          {!loading && (
+            <span
+              style={{
+                marginLeft: 8,
+                fontFamily: "'JetBrains Mono', monospace",
+                fontWeight: 400,
+                fontSize: 12,
+                color: "#64748b",
+              }}
+            >
+              ({languages.length})
+            </span>
+          )}
+        </span>
+        <button
+          onClick={fetchLanguages}
+          style={{
+            background: "transparent",
+            border: "1px solid #2a2d3a",
+            borderRadius: 7,
+            padding: "6px 12px",
+            color: "#64748b",
+            fontSize: 12,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            gap: 5,
+            transition: "color 0.15s, border-color 0.15s",
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = "#fbbf24";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(251,191,36,0.4)";
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.color = "#64748b";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "#2a2d3a";
+          }}
+        >
+          <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+          </svg>
+          Refresh
+        </button>
+      </div>
+
+      {/* Feedback */}
+      {successMsg && (
+        <div style={{ padding: "10px 16px", background: "rgba(34,197,94,0.08)", borderBottom: "1px solid rgba(34,197,94,0.15)", color: "#86efac", fontSize: 13 }}>
+          ✓ {successMsg}
+        </div>
+      )}
+      {error && (
+        <div style={{ padding: "10px 16px", background: "rgba(239,68,68,0.08)", borderBottom: "1px solid rgba(239,68,68,0.15)", color: "#fca5a5", fontSize: 13, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <span>{error}</span>
+          <button
             onClick={fetchLanguages}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 font-medium text-sm"
+            style={{ background: "rgba(239,68,68,0.2)", border: "none", borderRadius: 6, padding: "4px 10px", color: "#fca5a5", fontSize: 12, cursor: "pointer" }}
           >
-            🔄 Refresh
+            Retry
           </button>
         </div>
-      </CardContent>
-    </Card>
+      )}
+
+      {/* Loading */}
+      {loading ? (
+        <div style={{ padding: "32px", textAlign: "center", color: "#475569", fontSize: 14 }}>
+          Loading languages…
+        </div>
+      ) : languages.length === 0 ? (
+        <div style={{ padding: "32px", textAlign: "center", color: "#475569", fontSize: 14 }}>
+          No languages found
+        </div>
+      ) : (
+        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, width: 60 }}>ID</th>
+              <th style={thStyle}>English Name</th>
+              <th style={thStyle}>Georgian Name</th>
+              <th style={{ ...thStyle, textAlign: "right" }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {languages.map((lang) => (
+              <tr key={lang.id} style={{ transition: "background 0.12s" }} className="admin-table-row">
+                <td style={tdStyle}>
+                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: "#475569" }}>{lang.id}</span>
+                </td>
+                <td style={tdStyle}>{lang.name}</td>
+                <td style={tdStyle}>{lang.nameGeo}</td>
+                <td style={{ ...tdStyle, textAlign: "right" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
+                    {confirmId === lang.id ? (
+                      <>
+                        <button
+                          onClick={() => setConfirmId(null)}
+                          style={{
+                            background: "transparent",
+                            border: "1px solid #2a2d3a",
+                            borderRadius: 6,
+                            padding: "5px 10px",
+                            color: "#64748b",
+                            fontSize: 12,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => deleteLanguage(lang.id)}
+                          style={{
+                            background: "rgba(239,68,68,0.15)",
+                            border: "1px solid rgba(239,68,68,0.4)",
+                            borderRadius: 6,
+                            padding: "5px 12px",
+                            color: "#fca5a5",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            cursor: "pointer",
+                          }}
+                        >
+                          Sure? Delete
+                        </button>
+                      </>
+                    ) : (
+                      <button
+                        disabled={deletingId === lang.id}
+                        onClick={() => setConfirmId(lang.id)}
+                        style={{
+                          background: "transparent",
+                          border: "1px solid rgba(239,68,68,0.25)",
+                          borderRadius: 6,
+                          padding: "5px 12px",
+                          color: "#f87171",
+                          fontSize: 12,
+                          cursor: deletingId === lang.id ? "not-allowed" : "pointer",
+                          opacity: deletingId === lang.id ? 0.5 : 1,
+                          transition: "all 0.15s",
+                        }}
+                        onMouseEnter={(e) => {
+                          if (deletingId !== lang.id) {
+                            (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.1)";
+                            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(239,68,68,0.5)";
+                          }
+                        }}
+                        onMouseLeave={(e) => {
+                          (e.currentTarget as HTMLButtonElement).style.background = "transparent";
+                          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(239,68,68,0.25)";
+                        }}
+                      >
+                        {deletingId === lang.id ? "Deleting…" : "Delete"}
+                      </button>
+                    )}
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
+
+      <style>{`
+        .admin-table-row:hover td {
+          background: rgba(251, 191, 36, 0.03);
+        }
+      `}</style>
+    </div>
   );
 }

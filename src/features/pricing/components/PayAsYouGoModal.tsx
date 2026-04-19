@@ -7,7 +7,8 @@ import { Button } from '@/features/ui/components/ui/button';
 import { Input } from '@/features/ui/components/ui/input';
 import { Label } from '@/features/ui/components/ui/label';
 import { CreditCard, AlertCircle } from "lucide-react";
-import { createPayment } from "../services/paymentService";
+import { Checkbox } from "@/features/ui/components/ui/checkbox";
+import { createFlittPayment } from "../services/paymentService";
 import { getCurrencySymbol, isSulikoIo } from "@/shared/utils/domainUtils";
 import { ContactPaymentModal } from "./ContactPaymentModal";
 
@@ -28,6 +29,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
   const [showContactPaymentModal, setShowContactPaymentModal] = useState(false);
+  const [saveCard, setSaveCard] = useState(false);
   const currencySymbol = getCurrencySymbol();
 
   // Calculate pages when amount changes
@@ -90,9 +92,8 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
 
     try {
       const numericAmount = parseFloat(amount);
-      // Currency and country will be determined automatically based on domain
-      const response = await createPayment(numericAmount);
-      window.open(response.redirectUrl, "_blank");
+      const response = await createFlittPayment(numericAmount, undefined, undefined, saveCard);
+      window.open(response.checkoutUrl, "_blank");
       onClose();
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : t('payAsYouGoModal.errors.purchaseFailed');
@@ -187,6 +188,18 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
               </span>
             </div>
           )}
+
+          {/* Save Card Checkbox */}
+          <div className="flex items-center gap-3">
+            <Checkbox
+              id="saveCard"
+              checked={saveCard}
+              onCheckedChange={(checked) => setSaveCard(checked === true)}
+            />
+            <Label htmlFor="saveCard" className="text-sm text-muted-foreground cursor-pointer">
+              {t('payAsYouGoModal.saveCard')}
+            </Label>
+          </div>
 
           {/* Action Buttons */}
           <div className="flex gap-3">

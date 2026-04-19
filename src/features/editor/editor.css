@@ -7,104 +7,225 @@
 }
 
 :root {
-	--ck-content-font-family: 'Lato';
+	--editor-font-family: 'Lato', sans-serif;
 }
+
+/* ── Outer wrapper ─────────────────────────────────────────── */
 
 .main-container {
-	font-family: var(--ck-content-font-family);
-	width: fit-content;
-	margin-left: auto;
-	margin-right: auto;
+	font-family: var(--editor-font-family);
+	width: 100%;
 }
 
-.editor-container_document-editor .editor-container__editor {
+.editor-container_document-editor {
+	background: #f5f5f5;
+	padding: 10px;
+	min-height: 100vh;
+	width: 100%;
+	overflow-x: auto;
+}
+
+@media (min-width: 768px) {
+	.editor-container_document-editor {
+		padding: 20px;
+	}
+}
+
+.editor-container__editor {
 	min-width: 0;
 	width: 100%;
 	max-width: 1200px;
+	margin: 0 auto;
 }
 
-/* Document Editor specific styling - page-like appearance */
-.editor-container_document-editor .ck-editor__editable {
-  min-height: 400px;
-  padding: 20px;
-  background: white !important;
-  color: #333 !important;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  margin: 10px auto;
-  max-width: 21cm; /* A4 width */
-  width: 100%;
+/* ── Toolbar ───────────────────────────────────────────────── */
+
+.tiptap-toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 2px;
+	align-items: center;
+	padding: 6px 8px;
+	background: #fafafa;
+	border: 1px solid #ddd;
+	border-bottom: none;
+	max-width: 21cm;
+	margin: 20px auto 0;
+}
+
+.toolbar-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	border: none;
+	border-radius: 3px;
+	background: transparent;
+	color: #333;
+	cursor: pointer;
+	transition: background 0.1s;
+}
+
+.toolbar-btn:hover:not(.toolbar-btn--disabled) {
+	background: #e6e6e6;
+}
+
+.toolbar-btn--active {
+	background: #d0d0d0;
+}
+
+.toolbar-btn--disabled {
+	opacity: 0.35;
+	cursor: default;
+}
+
+.toolbar-divider {
+	display: inline-block;
+	width: 1px;
+	height: 18px;
+	background: #ccc;
+	margin: 0 3px;
+}
+
+/* ── Tiptap editable area ──────────────────────────────────── */
+
+.tiptap-editor {
+	min-height: 400px;
+	padding: 20px;
+	background: white;
+	color: #333;
+	box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+	margin: 0 auto;
+	max-width: 21cm;
+	width: 100%;
+	outline: none;
+	font-family: var(--editor-font-family);
+	font-size: 14px;
+	line-height: 1.6;
 }
 
 @media (min-width: 768px) {
-  .editor-container_document-editor .ck-editor__editable {
-    min-height: 800px;
-    padding: 60px;
-    margin: 20px auto;
-    min-height: 29.7cm; /* A4 height */
-  }
+	.tiptap-editor {
+		min-height: 29.7cm;
+		padding: 60px;
+	}
 }
 
-/* Document Editor container - centered page layout - always light */
-.editor-container_document-editor {
-  background: #f5f5f5 !important;
-  padding: 10px;
-  min-height: 100vh;
-  width: 100%;
-  overflow-x: auto;
+/* Placeholder */
+.tiptap-editor p.is-editor-empty:first-child::before {
+	content: attr(data-placeholder);
+	float: left;
+	color: #aaa;
+	pointer-events: none;
+	height: 0;
 }
 
-@media (min-width: 768px) {
-  .editor-container_document-editor {
-    padding: 40px 20px;
-  }
+/* Headings */
+.tiptap-editor h1 { font-size: 2em; font-weight: 700; margin: 0.67em 0; }
+.tiptap-editor h2 { font-size: 1.5em; font-weight: 700; margin: 0.83em 0; }
+.tiptap-editor h3 { font-size: 1.17em; font-weight: 700; margin: 1em 0; }
+.tiptap-editor h4 { font-size: 1em; font-weight: 700; margin: 1.33em 0; }
+.tiptap-editor h5 { font-size: 0.83em; font-weight: 700; margin: 1.67em 0; }
+.tiptap-editor h6 { font-size: 0.67em; font-weight: 700; margin: 2.33em 0; }
+
+/* Paragraphs */
+.tiptap-editor p { margin: 0.5em 0; }
+
+/* Lists */
+.tiptap-editor ul { list-style: disc; padding-left: 1.5em; margin: 0.5em 0; }
+.tiptap-editor ol { list-style: decimal; padding-left: 1.5em; margin: 0.5em 0; }
+.tiptap-editor li { margin: 0.25em 0; }
+
+/* Blockquote */
+.tiptap-editor blockquote {
+	border-left: 3px solid #ccc;
+	margin: 0.5em 0;
+	padding-left: 1em;
+	color: #555;
 }
 
-/* Force light theme for CKEditor - override dark mode */
-.editor-container_document-editor .ck-editor,
-.editor-container_document-editor .ck-editor__main,
-.editor-container_document-editor .ck-editor__editable,
-.editor-container_document-editor .ck-toolbar,
-.editor-container_document-editor .ck-toolbar__separator,
-.editor-container_document-editor .ck-button,
-.editor-container_document-editor .ck-dropdown {
-  background: white !important;
-  color: #333 !important;
-  border-color: #ccc !important;
+/* Code */
+.tiptap-editor code {
+	background: #f0f0f0;
+	border-radius: 3px;
+	padding: 0.1em 0.3em;
+	font-family: monospace;
+	font-size: 0.9em;
 }
 
-/* Force light theme for toolbar */
-.editor-container_document-editor .ck-toolbar {
-  background: #fafafa !important;
-  border-bottom: 1px solid #ddd !important;
+.tiptap-editor pre {
+	background: #f0f0f0;
+	border-radius: 4px;
+	padding: 0.75em 1em;
+	overflow-x: auto;
 }
 
-/* Force light theme for buttons and dropdowns */
-.editor-container_document-editor .ck-button:not(.ck-disabled):hover {
-  background: #e6e6e6 !important;
+.tiptap-editor pre code {
+	background: none;
+	padding: 0;
 }
 
-.editor-container_document-editor .ck-button.ck-on {
-  background: #e6e6e6 !important;
+/* Horizontal rule */
+.tiptap-editor hr {
+	border: none;
+	border-top: 1px solid #ccc;
+	margin: 1em 0;
 }
 
-/* Force light theme for dropdown panels */
-.editor-container_document-editor .ck-dropdown__panel {
-  background: white !important;
-  color: #333 !important;
-  border: 1px solid #ccc !important;
+/* Links */
+.tiptap-editor a {
+	color: #2563eb;
+	text-decoration: underline;
 }
 
-/* Override any dark mode styles */
-.dark .editor-container_document-editor,
-.dark .editor-container_document-editor .ck-editor__editable,
-.dark .editor-container_document-editor .ck-toolbar,
-.dark .editor-container_document-editor .ck-editor {
-  background: #f5f5f5 !important;
-  color: #333 !important;
+/* Images */
+.tiptap-editor img {
+	max-width: 100%;
+	height: auto;
 }
 
-.dark .editor-container_document-editor .ck-editor__editable {
-  background: white !important;
-  color: #333 !important;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1) !important;
+/* Tables */
+.tiptap-editor table {
+	border-collapse: collapse;
+	width: 100%;
+	margin: 0.5em 0;
+}
+
+.tiptap-editor th,
+.tiptap-editor td {
+	border: 1px solid #ccc;
+	padding: 6px 10px;
+	text-align: left;
+	vertical-align: top;
+}
+
+.tiptap-editor th {
+	background: #f5f5f5;
+	font-weight: 600;
+}
+
+/* Selected cell highlight */
+.tiptap-editor .selectedCell {
+	background: #dbeafe;
+}
+
+/* Dark mode — force light theme in editor area (same as CKEditor behaviour) */
+.dark .main-container,
+.dark .editor-container_document-editor {
+	background: #f5f5f5;
+}
+
+.dark .tiptap-editor {
+	background: white;
+	color: #333;
+}
+
+.dark .tiptap-toolbar {
+	background: #fafafa;
+	border-color: #ddd;
+}
+
+.dark .toolbar-btn {
+	color: #333;
 }

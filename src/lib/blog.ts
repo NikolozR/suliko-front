@@ -3,18 +3,9 @@ import path from 'path';
 import matter from 'gray-matter';
 import readingTime from 'reading-time';
 import { format } from 'date-fns';
+import type { BlogPost } from './blog-types';
 
-export interface BlogPost {
-  slug: string;
-  title: string;
-  date: string;
-  excerpt: string;
-  coverImage?: string;
-  author: string;
-  tags?: string[];
-  content: string;
-  readingTime: string;
-}
+export type { BlogPost } from './blog-types';
 
 // Use absolute path for better Vercel compatibility
 const contentDirectory = path.join(process.cwd(), 'content', 'blog');
