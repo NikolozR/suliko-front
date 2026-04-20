@@ -72,6 +72,7 @@ export default function Editor({ translatedMarkdown, onChange, hoveredText }: Ed
     const current = editor.getHTML();
     if (current !== incoming) {
       isSettingDataRef.current = true;
+      console.log('[Editor] setContent length:', incoming.length, 'preview:', incoming.slice(0, 200));
       editor.commands.setContent(incoming);
       isSettingDataRef.current = false;
     }
@@ -118,8 +119,8 @@ export default function Editor({ translatedMarkdown, onChange, hoveredText }: Ed
 
   return (
     <div className="main-container" ref={containerRef}>
+      <Toolbar editor={editor} />
       <div className="editor-container editor-container_document-editor">
-        <Toolbar editor={editor} />
         <div className="editor-container__editor">
           <EditorContent editor={editor} />
         </div>

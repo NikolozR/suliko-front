@@ -248,96 +248,25 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
-        const { jsPDF } = await import("jspdf");
-        const html2canvas = (await import("html2canvas")).default;
-
-        // --- Create isolated wrapper ---
-        const wrapper = document.createElement("div");
-        wrapper.className = "pdf-export";
-        wrapper.innerHTML = translatedMarkdown;
-
-        Object.assign(wrapper.style, {
-          position: "fixed",
-          left: "-10000px",
-          top: "0",
-          width: "794px",              // A4 @ 96dpi
-          padding: "24px",
-          backgroundColor: "#ffffff",
-          color: "#000000",            // 🔴 force readable text
-          fontFamily: "Arial, sans-serif",
-          boxSizing: "border-box",
-          lineHeight: "1.5",
-        });
-
-        document.body.appendChild(wrapper);
-
         try {
-          // --- Wait for fonts ---
-          if (document.fonts?.ready) {
-            await document.fonts.ready;
-          }
+          console.log('[PDF] Starting HTML→DOCX→PDF conversion');
+          // @ts-expect-error no types
+          const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
+          const { wordToPdf } = await import("@/features/translation/services/conversionsService");
+          const { saveAs } = await import("file-saver");
 
-          // --- Wait for images ---
-          const images = wrapper.querySelectorAll("img");
-          await Promise.all(
-            [...images].map(img =>
-              img.complete
-                ? Promise.resolve()
-                : new Promise(resolve => {
-                  img.onload = resolve;
-                  img.onerror = resolve;
-                })
-            )
-          );
-
-          // --- Let browser fully paint (CRITICAL) ---
-          await new Promise(r => requestAnimationFrame(r));
-          await new Promise(r => requestAnimationFrame(r));
-
-          // --- Render to canvas ---
-          const canvas = await html2canvas(wrapper, {
-            scale: 2,
-            backgroundColor: "#ffffff",
-            useCORS: true,
-            logging: false,
-          });
-
-          const imgData = canvas.toDataURL("image/png");
-
-          // --- Create PDF ---
-          const pdf = new jsPDF({
-            orientation: "p",
-            unit: "mm",
-            format: "a4",
-            compress: true,
-          });
-
-          const pageWidth = 210;
-          const pageHeight = 297;
-          const margin = 10;
-
-          const imgWidth = pageWidth - margin * 2;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-          let position = margin;
-          let heightLeft = imgHeight;
-
-          pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight - margin * 2;
-
-          while (heightLeft > 0) {
-            pdf.addPage();
-            position = heightLeft - imgHeight + margin;
-            pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight - margin * 2;
-          }
-
-          pdf.save(fileName);
+          const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${translatedMarkdown}</body></html>`;
+          console.log('[PDF] Converting HTML to DOCX, html length:', fullHtml.length);
+          const docxBlob = htmlDocx.asBlob(fullHtml);
+          console.log('[PDF] DOCX blob created, size:', docxBlob.size);
+          const docxFile = new File([docxBlob], "temp.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
+          console.log('[PDF] Sending DOCX to backend for PDF conversion');
+          const pdfBlob = await wordToPdf(docxFile);
+          console.log('[PDF] PDF blob received, size:', pdfBlob.size);
+          saveAs(pdfBlob, fileName);
         } catch (err) {
           console.error("PDF export failed:", err);
           toast.error("Failed to generate PDF. Please try again.");
-        } finally {
-          document.body.removeChild(wrapper);
         }
       }
 

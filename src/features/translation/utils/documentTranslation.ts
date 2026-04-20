@@ -71,6 +71,8 @@ export async function documentTranslatingWithJobId(
     onProgress?.(70, "Retrieving results...");
     const resultBlob = (await getResult(currentJobId)) as Blob;
     const text = await resultBlob.text();
+    console.log('[Translation] blob size:', resultBlob.size, 'text length:', text.length);
+    console.log('[Translation] first 500 chars:', text.slice(0, 500));
     setTranslatedMarkdown(text);
     setIsTranslating(false);
 
