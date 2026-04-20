@@ -14,7 +14,7 @@ export const generatePdfFromHtml = async (
   </style>`;
 
   const opt = {
-    margin: [15, 12, 15, 12],
+    margin: [15, 12, 15, 12] as [number, number, number, number],
     filename,
     image: { type: "jpeg", quality: 0.98 },
     html2canvas: {
