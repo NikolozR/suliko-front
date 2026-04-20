@@ -3,7 +3,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Upload, X, Send, Check, FileText, Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import emailjs from "@emailjs/browser";
 import { useTranslations } from "next-intl";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -34,10 +33,6 @@ export default function NotaryFileUploadForm() {
   ];
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    emailjs.init({ publicKey: process.env.NEXT_PUBLIC_EMAILJS_PUBLIC_KEY! });
-  }, []);
-
   const validateFiles = (newFiles: File[]) => {
     if (files.length + newFiles.length > MAX_FILES) {
       setNotification({ type: "error", message: t("tooManyFiles") });
@@ -65,31 +60,14 @@ export default function NotaryFileUploadForm() {
       formData.append("source_language", sourceLanguage);
       formData.append("target_language", targetLanguage);
       formData.append("notarial_certification", notarialCertification ? "Yes" : "No");
-      formData.append("_subject", "New Notary File Submission");
-      formData.append("_captcha", "false");
-      files.forEach((file) => formData.append("attachment", file, file.name));
+      files.forEach((file) => formData.append("files", file, file.name));
 
-      const res = await fetch("https://formsubmit.co/ajax/info@th.com.ge", {
+      const res = await fetch("/api/notary-upload", {
         method: "POST",
-        headers: { Accept: "application/json" },
         body: formData,
       });
 
       if (!res.ok) throw new Error("Failed to send");
-
-      emailjs.send(
-        process.env.NEXT_PUBLIC_EMAILJS_SERVICE_ID!,
-        process.env.NEXT_PUBLIC_EMAILJS_TEMPLATE_ID!,
-        {
-          to_email: email,
-          to_name: name,
-          file_count: files.length,
-          file_names: files.map((f) => f.name).join(", "),
-          source_language: sourceLanguage,
-          target_language: targetLanguage,
-          notarial_certification: notarialCertification ? "Yes" : "No",
-        }
-      ).catch((err) => console.error("EmailJS confirmation error:", err));
 
       setNotification({ type: "success", message: t("success") });
 
