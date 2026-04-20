@@ -24,6 +24,14 @@ export default function NotaryFileUploadForm() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [notarialCertification, setNotarialCertification] = useState(false);
+  const [sourceLanguage, setSourceLanguage] = useState("ინგლისური");
+  const [targetLanguage, setTargetLanguage] = useState("ქართული");
+
+  const languages = [
+    "ქართული", "ინგლისური", "რუსული", "გერმანული",
+    "ფრანგული", "ესპანური", "იტალიური", "თურქული", "არაბული",
+  ];
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -54,6 +62,9 @@ export default function NotaryFileUploadForm() {
       formData.append("name", name);
       formData.append("email", email);
       formData.append("phone", phone || "N/A");
+      formData.append("source_language", sourceLanguage);
+      formData.append("target_language", targetLanguage);
+      formData.append("notarial_certification", notarialCertification ? "Yes" : "No");
       formData.append("_subject", "New Notary File Submission");
       formData.append("_captcha", "false");
       files.forEach((file) => formData.append("attachment", file, file.name));
@@ -74,6 +85,9 @@ export default function NotaryFileUploadForm() {
           to_name: name,
           file_count: files.length,
           file_names: files.map((f) => f.name).join(", "),
+          source_language: sourceLanguage,
+          target_language: targetLanguage,
+          notarial_certification: notarialCertification ? "Yes" : "No",
         }
       ).catch((err) => console.error("EmailJS confirmation error:", err));
 
@@ -83,6 +97,9 @@ export default function NotaryFileUploadForm() {
       setName("");
       setEmail("");
       setPhone("");
+      setNotarialCertification(false);
+      setSourceLanguage("ინგლისური");
+      setTargetLanguage("ქართული");
     } catch (error) {
       console.error("Submission error:", error);
       setNotification({ type: "error", message: t("error") });
@@ -156,6 +173,45 @@ export default function NotaryFileUploadForm() {
           placeholder={t("phone")}
           className="w-full p-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 text-sm"
         />
+
+        {/* Notarial certification checkbox */}
+        <label className="flex items-center gap-3 cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={notarialCertification}
+            onChange={(e) => setNotarialCertification(e.target.checked)}
+            className="w-5 h-5 rounded border-gray-300 dark:border-slate-600 accent-blue-500 cursor-pointer"
+          />
+          <span className="text-sm text-gray-700 dark:text-slate-300">სანოტარო დამოწმება</span>
+        </label>
+
+        {/* Language selectors */}
+        <div className="grid grid-cols-2 gap-3">
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-500 dark:text-slate-400">საწყისი ენა</label>
+            <select
+              value={sourceLanguage}
+              onChange={(e) => setSourceLanguage(e.target.value)}
+              className="w-full p-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+              {languages.map((lang) => (
+                <option key={lang} value={lang}>{lang}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-1">
+            <label className="text-xs text-gray-500 dark:text-slate-400">სამიზნე ენა</label>
+            <select
+              value={targetLanguage}
+              onChange={(e) => setTargetLanguage(e.target.value)}
+              className="w-full p-3 border border-gray-300 dark:border-slate-700 rounded-lg bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-100 focus:ring-2 focus:ring-blue-500 text-sm"
+            >
+              {languages.map((lang) => (
+                <option key={lang} value={lang}>{lang}</option>
+              ))}
+            </select>
+          </div>
+        </div>
 
         {/* Drop zone */}
         <div
