@@ -51,6 +51,9 @@
 	border-bottom: none;
 	max-width: 21cm;
 	margin: 20px auto 0;
+	position: sticky;
+	top: 0;
+	z-index: 10;
 }
 
 .toolbar-btn {
