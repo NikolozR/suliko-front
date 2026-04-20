@@ -11,7 +11,7 @@ import Editor from "@/features/editor/Editor";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle, Pencil } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff, FileDown, Pencil } from "lucide-react";
 import React from "react";
 import { toast } from "react-hot-toast";
 import DocumentPreview from "./DocumentPreview";
@@ -128,7 +128,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
   const [editorDeadline, setEditorDeadline] = useState<number | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
+  // const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
   const { hoveredSuggestionOriginalText } = useSuggestionsStore();
 
   const onFileChangeRef = useRef(onFileChange);
@@ -195,25 +195,25 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   }, [editorDeadline]);
 
   // Tick countdown each second
-  useEffect(() => {
-    if (editorDeadline === null) return;
-    const intervalId = setInterval(() => {
-      const secondsLeft = Math.max(0, Math.floor((editorDeadline - Date.now()) / 1000));
-      setRemainingSeconds(secondsLeft);
-      if (secondsLeft <= 0) {
-        clearInterval(intervalId);
-      }
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [editorDeadline]);
+  // useEffect(() => {
+  //   if (editorDeadline === null) return;
+  //   const intervalId = setInterval(() => {
+  //     const secondsLeft = Math.max(0, Math.floor((editorDeadline - Date.now()) / 1000));
+  //     setRemainingSeconds(secondsLeft);
+  //     if (secondsLeft <= 0) {
+  //       clearInterval(intervalId);
+  //     }
+  //   }, 1000);
+  //   return () => clearInterval(intervalId);
+  // }, [editorDeadline]);
 
-  const formatTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    const mm = String(minutes).padStart(2, "0");
-    const ss = String(seconds).padStart(2, "0");
-    return `${mm}:${ss}`;
-  };
+  // const formatTime = (totalSeconds: number) => {
+  //   const minutes = Math.floor(totalSeconds / 60);
+  //   const seconds = totalSeconds % 60;
+  //   const mm = String(minutes).padStart(2, "0");
+  //   const ss = String(seconds).padStart(2, "0");
+  //   return `${mm}:${ss}`;
+  // };
 
   useEffect(() => {
     if (!downloadedFormat) return;
@@ -249,21 +249,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
         try {
-          console.log('[PDF] Starting HTML→DOCX→PDF conversion');
-          // @ts-expect-error no types
-          const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
-          const { wordToPdf } = await import("@/features/translation/services/conversionsService");
-          const { saveAs } = await import("file-saver");
-
-          const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${translatedMarkdown}</body></html>`;
-          console.log('[PDF] Converting HTML to DOCX, html length:', fullHtml.length);
-          const docxBlob = htmlDocx.asBlob(fullHtml);
-          console.log('[PDF] DOCX blob created, size:', docxBlob.size);
-          const docxFile = new File([docxBlob], "temp.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-          console.log('[PDF] Sending DOCX to backend for PDF conversion');
-          const pdfBlob = await wordToPdf(docxFile);
-          console.log('[PDF] PDF blob received, size:', pdfBlob.size);
-          saveAs(pdfBlob, fileName);
+          const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+          await generatePdfFromHtml(translatedMarkdown, fileName);
         } catch (err) {
           console.error("PDF export failed:", err);
           toast.error("Failed to generate PDF. Please try again.");
@@ -297,7 +284,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                 <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                   {t('translatedText')}
                 </div>
-                {remainingSeconds > 0 ? (
+                {/* {remainingSeconds > 0 ? (
                   <span className={`text-xs flex items-center gap-1 whitespace-nowrap px-2 py-0.5 rounded-full ${remainingSeconds <= 120
                     ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
                     : "text-muted-foreground"
@@ -310,7 +297,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                     <AlertTriangle className="h-3 w-3" />
                     {t('editorTimeExpired')}
                   </span>
-                )}
+                )} */}
               </div>
 
               {/* Action Buttons Row */}

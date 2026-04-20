@@ -11,7 +11,7 @@ import Editor from "@/features/editor/Editor";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff,  FileDown } from "lucide-react";
 import React from "react";
 import { updateChatDocumentContent } from "../services/chatService";
 import SaveButton from "@/features/translation/components/SaveButton";
@@ -129,13 +129,13 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     return () => clearInterval(intervalId);
   }, [editorDeadline]);
 
-  const formatTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    const mm = String(minutes).padStart(2, "0");
-    const ss = String(seconds).padStart(2, "0");
-    return `${mm}:${ss}`;
-  };
+  // const formatTime = (totalSeconds: number) => {
+  //   const minutes = Math.floor(totalSeconds / 60);
+  //   const seconds = totalSeconds % 60;
+  //   const mm = String(minutes).padStart(2, "0");
+  //   const ss = String(seconds).padStart(2, "0");
+  //   return `${mm}:${ss}`;
+  // };
 
   useEffect(() => {
     if (!downloadedFormat) return;
@@ -168,96 +168,12 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
-        const { jsPDF } = await import("jspdf");
-        const html2canvas = (await import("html2canvas")).default;
-
-        // --- Create isolated wrapper ---
-        const wrapper = document.createElement("div");
-        wrapper.className = "pdf-export";
-        wrapper.innerHTML = translatedMarkdown;
-
-        Object.assign(wrapper.style, {
-          position: "fixed",
-          left: "-10000px",
-          top: "0",
-          width: "794px",              // A4 @ 96dpi
-          padding: "24px",
-          backgroundColor: "#ffffff",
-          color: "#000000",            // 🔴 force readable text
-          fontFamily: "Arial, sans-serif",
-          boxSizing: "border-box",
-          lineHeight: "1.5",
-        });
-
-        document.body.appendChild(wrapper);
-
         try {
-          // --- Wait for fonts ---
-          if (document.fonts?.ready) {
-            await document.fonts.ready;
-          }
-
-          // --- Wait for images ---
-          const images = wrapper.querySelectorAll("img");
-          await Promise.all(
-            [...images].map(img =>
-              img.complete
-                ? Promise.resolve()
-                : new Promise(resolve => {
-                  img.onload = resolve;
-                  img.onerror = resolve;
-                })
-            )
-          );
-
-          // --- Let browser fully paint (CRITICAL) ---
-          await new Promise(r => requestAnimationFrame(r));
-          await new Promise(r => requestAnimationFrame(r));
-
-          // --- Render to canvas ---
-          const canvas = await html2canvas(wrapper, {
-            scale: 2,
-            backgroundColor: "#ffffff",
-            useCORS: true,
-            logging: false,
-          });
-
-          const imgData = canvas.toDataURL("image/png");
-
-          // --- Create PDF ---
-          const pdf = new jsPDF({
-            orientation: "p",
-            unit: "mm",
-            format: "a4",
-            compress: true
-          });
-
-          const pageWidth = 210;
-          const pageHeight = 297;
-          const margin = 10;
-
-          const imgWidth = pageWidth - margin * 2;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-          let position = margin;
-          let heightLeft = imgHeight;
-
-          pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight - margin * 2;
-
-          while (heightLeft > 0) {
-            pdf.addPage();
-            position = heightLeft - imgHeight + margin;
-            pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight - margin * 2;
-          }
-
-          pdf.save(fileName);
+          const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+          await generatePdfFromHtml(translatedMarkdown, fileName);
         } catch (err) {
           console.error("PDF export failed:", err);
           alert("Failed to generate PDF");
-        } finally {
-          document.body.removeChild(wrapper);
         }
       }
 
@@ -333,7 +249,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
                 <FileText className="h-4 w-4 text-muted-foreground" />
                 {t('translatedText')}
               </div>
-              {remainingSeconds > 0 ? (
+              {/* {remainingSeconds > 0 ? (
                 <span className={`text-xs flex items-center gap-1 px-2 py-0.5 rounded-full ${remainingSeconds <= 120
                   ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
                   : "text-muted-foreground"
@@ -346,7 +262,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
                   <AlertTriangle className="h-3 w-3" />
                   {t('editorTimeExpired')}
                 </span>
-              )}
+              )} */}
               {hideOriginalDocument && (
                 <Button
                   type="button"
