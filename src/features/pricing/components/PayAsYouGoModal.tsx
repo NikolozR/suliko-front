@@ -94,6 +94,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
       const numericAmount = parseFloat(amount);
       // const response = await createFlittPayment(numericAmount, undefined, undefined, saveCard);
       const response = await createPayment(numericAmount);
+      // window.open(response.checkoutUrl, "_blank"); 
       window.open(response.redirectUrl, "_blank");
       onClose();
     } catch (err) {
