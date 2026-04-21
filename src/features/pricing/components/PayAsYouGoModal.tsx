@@ -8,7 +8,7 @@ import { Input } from '@/features/ui/components/ui/input';
 import { Label } from '@/features/ui/components/ui/label';
 import { CreditCard, AlertCircle } from "lucide-react";
 import { Checkbox } from "@/features/ui/components/ui/checkbox";
-import { createFlittPayment } from "../services/paymentService";
+import { createFlittPayment, createPayment } from "../services/paymentService";
 import { getCurrencySymbol, isSulikoIo } from "@/shared/utils/domainUtils";
 import { ContactPaymentModal } from "./ContactPaymentModal";
 
@@ -92,8 +92,9 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
 
     try {
       const numericAmount = parseFloat(amount);
-      const response = await createFlittPayment(numericAmount, undefined, undefined, saveCard);
-      window.open(response.checkoutUrl, "_blank");
+      // const response = await createFlittPayment(numericAmount, undefined, undefined, saveCard);
+      const response = await createPayment(numericAmount);
+      window.open(response.redirectUrl, "_blank");
       onClose();
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : t('payAsYouGoModal.errors.purchaseFailed');
