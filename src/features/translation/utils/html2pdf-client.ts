@@ -19,12 +19,13 @@ export const generatePdfFromHtml = async (
 
   const styles = `
     <style>
-      * { box-sizing: border-box; }
+      * { box-sizing: border-box; color: #111 !important; }
       body {
         font-family: Georgia, 'Times New Roman', serif;
         font-size: 13px;
         line-height: 1.6;
         color: #111;
+        background-color: #fff;
       }
       hr.page-break {
         page-break-before: always;
@@ -50,6 +51,7 @@ export const generatePdfFromHtml = async (
       scale: 2,
       useCORS: true,
       letterRendering: true,
+      backgroundColor: '#ffffff',
     },
     jsPDF: {
       unit: "mm" as const,
