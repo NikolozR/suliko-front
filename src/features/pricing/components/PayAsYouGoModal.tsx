@@ -8,7 +8,7 @@ import { Input } from '@/features/ui/components/ui/input';
 import { Label } from '@/features/ui/components/ui/label';
 import { CreditCard, AlertCircle } from "lucide-react";
 import { Checkbox } from "@/features/ui/components/ui/checkbox";
-import { createFlittPayment, createPayment } from "../services/paymentService";
+import { createPayment } from "../services/paymentService";
 import { getCurrencySymbol, isSulikoIo } from "@/shared/utils/domainUtils";
 import { ContactPaymentModal } from "./ContactPaymentModal";
 
