@@ -5,7 +5,7 @@ import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
 import { ContactPaymentModal } from "./ContactPaymentModal";
-import { createFlittPayment, createFlittSubscription, createPayment } from "../services/paymentService";
+import { createFlittPayment, createPayment } from "../services/paymentService";
 import { isSulikoIo } from "@/shared/utils/domainUtils";
 import { useAuthStore } from "@/features/auth";
 import { useRouter } from "@/i18n/navigation";
