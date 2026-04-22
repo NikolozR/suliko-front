@@ -58,6 +58,8 @@ export function PricingGrid() {
       }
     }
   }
+  const [showPaymentContactOverlay, setShowPaymentContactOverlay] = useState(false);
+
   const handleStarterPackage = async () => {
     if (!token) {
       toast.error(t("signInToPay"));
@@ -65,12 +67,7 @@ export function PricingGrid() {
       return;
     }
     if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    try {
-      const response = await createFlittSubscription("starter", 20);
-      window.open(response.checkoutUrl, "_blank");
-    } catch (error) {
-      console.error("Subscription failed:", error);
-    }
+    setShowPaymentContactOverlay(true);
   };
 
   const handleProfessionalPackage = async () => {
@@ -80,12 +77,7 @@ export function PricingGrid() {
       return;
     }
     if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    try {
-      const response = await createFlittSubscription("professional", 50);
-      window.open(response.checkoutUrl, "_blank");
-    } catch (error) {
-      console.error("Subscription failed:", error);
-    }
+    setShowPaymentContactOverlay(true);
   };
   const handleSelectPayAsYouGo = () => {
     handleSelectPackage(1); // 173 GEL for Professional package
@@ -115,6 +107,37 @@ export function PricingGrid() {
         isOpen={showContactPaymentModal}
         onClose={() => setShowContactPaymentModal(false)}
       />
+
+      {showPaymentContactOverlay && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+          onClick={() => setShowPaymentContactOverlay(false)}
+        >
+          <div
+            className="bg-card rounded-2xl shadow-xl p-8 max-w-sm w-full mx-4 text-center"
+            onClick={e => e.stopPropagation()}
+          >
+            <p className="text-lg font-semibold text-card-foreground mb-2">
+              გადახდა მუშაობს ტექნიკურად
+            </p>
+            <p className="text-muted-foreground mb-6">
+              გადახდისთვის დაგვიკავშირდით:
+            </p>
+            <a
+              href="tel:568420553"
+              className="text-3xl font-bold text-primary block mb-6"
+            >
+              568 42 05 53
+            </a>
+            <button
+              onClick={() => setShowPaymentContactOverlay(false)}
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              დახურვა
+            </button>
+          </div>
+        </div>
+      )}
     </>
   );
 }
