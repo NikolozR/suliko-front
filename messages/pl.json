@@ -628,9 +628,9 @@
       "minimumPurchase": "Minimalny zakup: {min} ₾",
       "saveCard": "Zapisz kartę do przyszłych płatności",
       "contactPayment": {
-        "title": "Płatność jest obecnie obsługiwana ręcznie",
-        "subtitle": "Skontaktuj się z nami w sprawie płatności:",
-        "manualTransferNotice": "W tej sytuacji awaryjnej środki należy przelać ręcznie przelewem bankowym.",
+        "title": "Trwają prace techniczne.",
+        "subtitle": "System płatności jest tymczasowo niedostępny.",
+        "manualTransferNotice": "W trakcie prac technicznych środki można dodać wyłącznie ręcznie przelewem bankowym.",
         "bankAccountLabel": "Numer rachunku bankowego:",
         "copyButton": "Kopiuj",
         "copiedButton": "Skopiowano",
