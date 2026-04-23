@@ -630,6 +630,19 @@
       "pagesNeverExpire": "გვერდებს ვადა არასდროს ეწურება და ნებისმიერ დროს შეიძლება გამოყენება",
       "minimumPurchase": "მინიმალური შეძენა: {min} ₾",
       "saveCard": "ბარათის შენახვა მომავალი გადახდებისთვის",
+      "contactPayment": {
+        "title": "გადახდა მუშაობს ტექნიკურად",
+        "subtitle": "გადახდისთვის დაგვიკავშირდით:",
+        "manualTransferNotice": "ამ საგანგებო სიტუაციაში თანხის ჩარიცხვა საჭიროა ხელით ბანკის გადარიცხვით.",
+        "bankAccountLabel": "საბანკო ანგარიშის ნომერი:",
+        "copyButton": "კოპირება",
+        "copiedButton": "დაკოპირდა",
+        "receiptNotice": "ჩარიცხვის შემდეგ ქვითარი გამოგვიგზავნეთ ელფოსტაზე",
+        "receiptNoticeSuffix": "ან ჩვენს WhatsApp-ზე",
+        "callButton": "დარეკვა",
+        "whatsappButton": "WhatsApp-ის გახსნა",
+        "close": "დახურვა"
+      },
       "errors": {
         "invalidAmount": "გთხოვთ შეიყვანოთ სწორი თანხა",
         "minimumAmount": "მინიმალური შეძენის თანხა არის {min} ₾",
