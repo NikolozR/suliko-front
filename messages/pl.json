@@ -627,6 +627,19 @@
       "pagesNeverExpire": "Strony nigdy nie wygasają i mogą być używane w dowolnym momencie",
       "minimumPurchase": "Minimalny zakup: {min} ₾",
       "saveCard": "Zapisz kartę do przyszłych płatności",
+      "contactPayment": {
+        "title": "Trwają prace techniczne.",
+        "subtitle": "System płatności jest tymczasowo niedostępny.",
+        "manualTransferNotice": "W trakcie prac technicznych środki można dodać wyłącznie ręcznie przelewem bankowym.",
+        "bankAccountLabel": "Numer rachunku bankowego:",
+        "copyButton": "Kopiuj",
+        "copiedButton": "Skopiowano",
+        "receiptNotice": "Po przelewie wyślij potwierdzenie płatności na nasz e-mail",
+        "receiptNoticeSuffix": "lub na nasz WhatsApp",
+        "callButton": "Zadzwoń",
+        "whatsappButton": "Otwórz WhatsApp",
+        "close": "Zamknij"
+      },
       "errors": {
         "invalidAmount": "Proszę wprowadzić prawidłową kwotę",
         "minimumAmount": "Minimalna kwota zakupu to {min} ₾",
