@@ -633,9 +633,9 @@
       "minimumPurchase": "Minimum purchase: {min} ₾",
       "saveCard": "Save card for future payments",
       "contactPayment": {
-        "title": "Payment is currently handled manually",
-        "subtitle": "Please contact us for payment:",
-        "manualTransferNotice": "In this emergency situation, funds must be transferred manually via bank transfer.",
+        "title": "Technical maintenance is in progress.",
+        "subtitle": "The payment system is temporarily unavailable.",
+        "manualTransferNotice": "During maintenance, funds can only be added manually via bank transfer.",
         "bankAccountLabel": "Bank account number:",
         "copyButton": "Copy",
         "copiedButton": "Copied",
