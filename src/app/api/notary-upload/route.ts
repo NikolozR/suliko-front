@@ -47,6 +47,7 @@ export async function POST(request: NextRequest) {
       subject: `New Notary Submission from ${name}`,
       html: `
         <h2>New Notary File Submission</h2>
+        <h3>www.suliko.ge</h3>
         <p><strong>Name:</strong> ${name}</p>
         <p><strong>Email:</strong> ${email}</p>
         <p><strong>Phone:</strong> ${phone}</p>

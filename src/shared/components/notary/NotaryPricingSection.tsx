@@ -4,27 +4,16 @@ import { useTranslations } from "next-intl";
 import { Tag, Percent } from "lucide-react";
 
 const LANGUAGE_PRICES: { name: string; price: number }[] = [
-  { name: "English",    price: 20   },
-  { name: "Russian",    price: 20   },
+  { name: "English",    price: 22.5   },
+  { name: "Russian",    price: 22.5   },
   { name: "German",     price: 30   },
   { name: "French",     price: 30   },
-  { name: "Italian",    price: 25   },
-  { name: "Spanish",    price: 50   },
-  { name: "Turkish",    price: 22.5 },
-  { name: "Armenian",   price: 25   },
-  { name: "Azerbaijani",price: 22.5 },
-  { name: "Arabic",     price: 45   },
-  { name: "Portuguese", price: 50   },
-  { name: "Dutch",      price: 50   },
-  { name: "Swedish",    price: 50   },
-  { name: "Norwegian",  price: 50   },
-  { name: "Finnish",    price: 50   },
-  { name: "Latvian",    price: 30   },
-  { name: "Slovak",     price: 30   },
-  { name: "Jewish",     price: 35   },
-  { name: "Chinese",    price: 70   },
-  { name: "Japanese",   price: 100  },
-  { name: "Korean",     price: 100  },
+  { name: "Italian",    price: 30   },
+  { name: "Spanish",    price: 30   },
+  { name: "Turkish",    price: 30 },
+  { name: "Armenian",   price: 30   },
+  { name: "Azerbaijani",price: 30 },
+  { name: "Portuguese", price: 30   },
 ];
 
 export default function NotaryPricingSection() {

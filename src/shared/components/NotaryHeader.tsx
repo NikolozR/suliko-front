@@ -138,12 +138,13 @@ export default function NotaryHeader() {
   }
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled
+    <div
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
           ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
-          : "bg-background/95 backdrop-blur-md md:bg-transparent"
-      } ${isHeaderVisible ? "translate-y-0" : "-translate-y-full"}`}
+          : resolvedTheme === "dark"
+            ? "bg-background/95 backdrop-blur-md md:bg-transparent"
+            : "bg-white! backdrop-blur-md md:bg-transparent"
+        } ${isHeaderVisible ? "translate-y-0" : "-translate-y-full"}`}
     >
       <nav className="container z-50 relative mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
@@ -153,8 +154,8 @@ export default function NotaryHeader() {
             <Image
               src={
                 resolvedTheme === "dark"
-                  ? "/Suliko_logo_white.svg"
-                  : "/Suliko_logo_black.svg"
+                  ? "/sulikoNotary.svg"
+                  : "/sulikoNotaryDark.svg"
               }
               alt="Suliko"
               width={120}
@@ -199,19 +200,16 @@ export default function NotaryHeader() {
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
               <span
-                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${
-                  isMobileMenuOpen ? "rotate-45 translate-y-1" : "-translate-y-1"
-                }`}
+                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "rotate-45 translate-y-1" : "-translate-y-1"
+                  }`}
               />
               <span
-                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${
-                  isMobileMenuOpen ? "opacity-0" : "opacity-100"
-                }`}
+                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "opacity-0" : "opacity-100"
+                  }`}
               />
               <span
-                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${
-                  isMobileMenuOpen ? "-rotate-45 -translate-y-1" : "translate-y-1"
-                }`}
+                className={`block h-0.5 w-6 bg-current transition-all duration-300 ease-in-out ${isMobileMenuOpen ? "-rotate-45 -translate-y-1" : "translate-y-1"
+                  }`}
               />
             </div>
           </button>
@@ -269,6 +267,6 @@ export default function NotaryHeader() {
           </div>
         )}
       </nav>
-    </header>
+    </div>
   );
 }

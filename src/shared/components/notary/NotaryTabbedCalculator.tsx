@@ -6,12 +6,16 @@ import { Calculator, Upload } from "lucide-react";
 import { useTranslations } from "next-intl";
 import NotaryPriceCalculator from "./NotaryPriceCalculator";
 import NotaryFileUploadForm from "./NotaryFileUploadForm";
+import { useTheme } from "next-themes";
 
 type Tab = "calculator" | "upload";
 
 export default function NotaryTabbedCalculator() {
   const t = useTranslations("NotaryPage.calculator.tabs");
-  const [activeTab, setActiveTab] = useState<Tab>("calculator");
+  const [activeTab, setActiveTab] = useState<Tab>("upload");
+
+  const { resolvedTheme } = useTheme();
+
 
   const tabClass = (tab: Tab) =>
     `flex-1 px-4 py-3 sm:py-4 font-semibold text-sm sm:text-base transition-all duration-300 ${
@@ -54,7 +58,7 @@ export default function NotaryTabbedCalculator() {
               exit={{ opacity: 0, x: 20 }}
               transition={{ duration: 0.3 }}
             >
-              <h3 className="text-xl sm:text-2xl font-bold text-blue-600 mb-5 text-center">
+              <h3 className={`$text-xl sm:text-2xl font-bold ${resolvedTheme === "dark" ? "text-white" : "text-blue-600"} mb-5 text-center`}>
                 {t("calcTitle")}
               </h3>
               <NotaryPriceCalculator />
@@ -70,10 +74,10 @@ export default function NotaryTabbedCalculator() {
               transition={{ duration: 0.3 }}
             >
               <div className="text-center mb-6">
-                <h3 className="text-xl sm:text-2xl font-bold text-blue-600 mb-2">
+                <h3 className={`$text-xl sm:text-2xl font-bold ${resolvedTheme === "dark" ? "text-white" : "text-blue-600"} mb-5 text-center`}>
                   {t("uploadTitle")}
                 </h3>
-                <p className="text-blue-600 font-medium">
+                <p className={`text-blue-600 font-medium ${resolvedTheme === "dark" ? "text-white" : "text-blue-600"}`}>
                   ⚡ {t("uploadSub")}
                 </p>
               </div>

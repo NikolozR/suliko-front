@@ -52,6 +52,15 @@ export const generatePdfFromHtml = async (
       useCORS: true,
       letterRendering: true,
       backgroundColor: '#ffffff',
+      onclone: (clonedDoc: Document) => {
+        // Remove dark-mode class so CSS variables resolve to light-mode values
+        clonedDoc.documentElement.classList.remove('dark');
+        clonedDoc.documentElement.setAttribute('style', 'color-scheme: light;');
+        clonedDoc.body.setAttribute(
+          'style',
+          'background-color:#fff !important; color:#111 !important;'
+        );
+      },
     },
     jsPDF: {
       unit: "mm" as const,
