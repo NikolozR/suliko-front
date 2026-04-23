@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
@@ -13,13 +13,23 @@ import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 
 
-export function PricingGrid() {
+interface PricingGridProps {
+  autoOpenContactModal?: boolean;
+}
+
+export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showPayAsYouGoModal, setShowPayAsYouGoModal] = useState(false);
   const [showContactPaymentModal, setShowContactPaymentModal] = useState(false);
   const { token } = useAuthStore();
   const router = useRouter();
   const t = useTranslations("Pricing");
+
+  useEffect(() => {
+    if (autoOpenContactModal) {
+      setShowContactPaymentModal(true);
+    }
+  }, [autoOpenContactModal]);
 
 
 

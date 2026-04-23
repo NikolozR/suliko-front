@@ -11,7 +11,7 @@ export default function PricePackages() {
         <p className="text-muted-foreground text-lg">{t("description")}</p>
       </div>
       
-      <PricingGrid />
+      <PricingGrid autoOpenContactModal />
     </div>
   );
 }

@@ -632,6 +632,19 @@
       "pagesNeverExpire": "Pages never expire and can be used anytime",
       "minimumPurchase": "Minimum purchase: {min} ₾",
       "saveCard": "Save card for future payments",
+      "contactPayment": {
+        "title": "Payment is currently handled manually",
+        "subtitle": "Please contact us for payment:",
+        "manualTransferNotice": "In this emergency situation, funds must be transferred manually via bank transfer.",
+        "bankAccountLabel": "Bank account number:",
+        "copyButton": "Copy",
+        "copiedButton": "Copied",
+        "receiptNotice": "After transfer, please send your receipt to our email",
+        "receiptNoticeSuffix": "or to our WhatsApp",
+        "callButton": "Call",
+        "whatsappButton": "Open WhatsApp",
+        "close": "Close"
+      },
       "errors": {
         "invalidAmount": "Please enter a valid amount",
         "minimumAmount": "Minimum purchase amount is {min} ₾",
