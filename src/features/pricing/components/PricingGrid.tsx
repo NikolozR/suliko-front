@@ -68,11 +68,9 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       }
     }
   }
-  // ── SUBSCRIPTION OVERLAY STATE (commented out while awaiting Flitt approval) ──
-  // const [showPaymentContactOverlay, setShowPaymentContactOverlay] = useState(false);
+  const [showPaymentContactOverlay, setShowPaymentContactOverlay] = useState(false);
 
-  // ── TEST MODE TOGGLE (commented out — leave /pricetest page intact for future use) ──
-  // const isTestMode = () => typeof window !== "undefined" && localStorage.getItem("paymentMode") === "test";
+  const isTestMode = () => typeof window !== "undefined" && localStorage.getItem("paymentMode") === "test";
 
   const handleStarterPackage = async () => {
     if (!token) {
@@ -81,7 +79,7 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       return;
     }
     if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    // ── ONE-TIME PAYMENT (subscription flow commented out below) ──
+    if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
     try {
       const response = await createFlittPayment(20);
       window.open(response.checkoutUrl, "_blank");
@@ -105,14 +103,14 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       return;
     }
     if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    // ── ONE-TIME PAYMENT (subscription flow commented out below) ──
+    if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
     try {
       const response = await createFlittPayment(50);
       window.open(response.checkoutUrl, "_blank");
     } catch (error) {
       console.error("Payment failed:", error);
     }
-    // ── SUBSCRIPTION FLOW (restore once Flitt approves) ──
+// ── SUBSCRIPTION FLOW (restore once Flitt approves) ──
     // if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
     // try {
     //   const response = await createFlittSubscription("professional", 50);
@@ -150,7 +148,6 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
         onClose={() => setShowContactPaymentModal(false)}
       />
 
-      {/* ── CONTACT OVERLAY (commented out while awaiting Flitt subscription approval) ──
       {showPaymentContactOverlay && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -181,7 +178,6 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
           </div>
         </div>
       )}
-      ── END CONTACT OVERLAY ── */}
     </>
   );
 }
