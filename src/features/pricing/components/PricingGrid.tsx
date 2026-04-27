@@ -5,7 +5,7 @@ import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
 import { ContactPaymentModal } from "./ContactPaymentModal";
-import { createFlittPayment, createFlittSubscription, createPayment } from "../services/paymentService";
+import { createFlittPayment, /* createFlittSubscription, */ createPayment } from "../services/paymentService";
 import { isSulikoIo } from "@/shared/utils/domainUtils";
 import { useAuthStore } from "@/features/auth";
 import { useRouter } from "@/i18n/navigation";
@@ -68,9 +68,11 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       }
     }
   }
-  const [showPaymentContactOverlay, setShowPaymentContactOverlay] = useState(false);
+  // ── SUBSCRIPTION OVERLAY STATE (commented out while awaiting Flitt approval) ──
+  // const [showPaymentContactOverlay, setShowPaymentContactOverlay] = useState(false);
 
-  const isTestMode = () => typeof window !== "undefined" && localStorage.getItem("paymentMode") === "test";
+  // ── TEST MODE TOGGLE (commented out — leave /pricetest page intact for future use) ──
+  // const isTestMode = () => typeof window !== "undefined" && localStorage.getItem("paymentMode") === "test";
 
   const handleStarterPackage = async () => {
     if (!token) {
@@ -79,13 +81,21 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       return;
     }
     if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
+    // ── ONE-TIME PAYMENT (subscription flow commented out below) ──
     try {
-      const response = await createFlittSubscription("starter", 20);
+      const response = await createFlittPayment(20);
       window.open(response.checkoutUrl, "_blank");
     } catch (error) {
-      console.error("Subscription failed:", error);
+      console.error("Payment failed:", error);
     }
+    // ── SUBSCRIPTION FLOW (restore once Flitt approves) ──
+    // if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
+    // try {
+    //   const response = await createFlittSubscription("starter", 20);
+    //   window.open(response.checkoutUrl, "_blank");
+    // } catch (error) {
+    //   console.error("Subscription failed:", error);
+    // }
   };
 
   const handleProfessionalPackage = async () => {
@@ -95,13 +105,21 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       return;
     }
     if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
+    // ── ONE-TIME PAYMENT (subscription flow commented out below) ──
     try {
-      const response = await createFlittSubscription("professional", 50);
+      const response = await createFlittPayment(50);
       window.open(response.checkoutUrl, "_blank");
     } catch (error) {
-      console.error("Subscription failed:", error);
+      console.error("Payment failed:", error);
     }
+    // ── SUBSCRIPTION FLOW (restore once Flitt approves) ──
+    // if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
+    // try {
+    //   const response = await createFlittSubscription("professional", 50);
+    //   window.open(response.checkoutUrl, "_blank");
+    // } catch (error) {
+    //   console.error("Subscription failed:", error);
+    // }
   };
   const handleSelectPayAsYouGo = () => {
     handleSelectPackage(1); // 173 GEL for Professional package
@@ -132,6 +150,7 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
         onClose={() => setShowContactPaymentModal(false)}
       />
 
+      {/* ── CONTACT OVERLAY (commented out while awaiting Flitt subscription approval) ──
       {showPaymentContactOverlay && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
@@ -162,6 +181,7 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
           </div>
         </div>
       )}
+      ── END CONTACT OVERLAY ── */}
     </>
   );
 }
