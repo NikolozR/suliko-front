@@ -70,6 +70,8 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
   }
   const [showPaymentContactOverlay, setShowPaymentContactOverlay] = useState(false);
 
+  const isTestMode = () => typeof window !== "undefined" && localStorage.getItem("paymentMode") === "test";
+
   const handleStarterPackage = async () => {
     if (!token) {
       toast.error(t("signInToPay"));
@@ -77,7 +79,13 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       return;
     }
     if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    setShowPaymentContactOverlay(true);
+    if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
+    try {
+      const response = await createFlittSubscription("starter", 20);
+      window.open(response.checkoutUrl, "_blank");
+    } catch (error) {
+      console.error("Subscription failed:", error);
+    }
   };
 
   const handleProfessionalPackage = async () => {
@@ -87,7 +95,13 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       return;
     }
     if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    setShowPaymentContactOverlay(true);
+    if (!isTestMode()) { setShowPaymentContactOverlay(true); return; }
+    try {
+      const response = await createFlittSubscription("professional", 50);
+      window.open(response.checkoutUrl, "_blank");
+    } catch (error) {
+      console.error("Subscription failed:", error);
+    }
   };
   const handleSelectPayAsYouGo = () => {
     handleSelectPackage(1); // 173 GEL for Professional package
