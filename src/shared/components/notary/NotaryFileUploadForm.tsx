@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { Upload, X, Send, Check, FileText, Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const MAX_FILES = 5;
@@ -15,6 +16,7 @@ interface Notification {
 
 export default function NotaryFileUploadForm() {
   const t = useTranslations("NotaryPage.calculator.uploadForm");
+  const router = useRouter();
 
   const [files, setFiles] = useState<File[]>([]);
   const [isDragging, setIsDragging] = useState(false);
@@ -69,15 +71,7 @@ export default function NotaryFileUploadForm() {
 
       if (!res.ok) throw new Error("Failed to send");
 
-      setNotification({ type: "success", message: t("success") });
-
-      setFiles([]);
-      setName("");
-      setEmail("");
-      setPhone("");
-      setNotarialCertification(false);
-      setSourceLanguage("ინგლისური");
-      setTargetLanguage("ქართული");
+      router.push("/notary/thank-you");
     } catch (error) {
       console.error("Submission error:", error);
       setNotification({ type: "error", message: t("error") });
