@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 
 export default function PriceTestPage() {
-  const [paymentMode, setPaymentMode] = useState<"prod" | "test">("prod");
+  const [paymentMode, setPaymentMode] = useState<"prod" | "test">("test");
 
   useEffect(() => {
     const stored = localStorage.getItem("paymentMode");

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
@@ -13,11 +13,11 @@ import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 
 
-interface PricingGridProps {
-  autoOpenContactModal?: boolean;
-}
+// interface PricingGridProps {
+//   autoOpenContactModal?: boolean;
+// }
 
-export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) {
+export function PricingGrid() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showPayAsYouGoModal, setShowPayAsYouGoModal] = useState(false);
   const [showContactPaymentModal, setShowContactPaymentModal] = useState(false);
@@ -25,11 +25,11 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
   const router = useRouter();
   const t = useTranslations("Pricing");
 
-  useEffect(() => {
-    if (autoOpenContactModal) {
-      setShowContactPaymentModal(true);
-    }
-  }, [autoOpenContactModal]);
+  // useEffect(() => {
+  //   if (autoOpenContactModal) {
+  //     setShowContactPaymentModal(true);
+  //   }
+  // }, [autoOpenContactModal]);
 
 
 
@@ -68,7 +68,7 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       }
     }
   }
-  const isTestMode = () => typeof window !== "undefined" && localStorage.getItem("paymentMode") === "test";
+  // const isTestMode = () => typeof window !== "undefined" && localStorage.getItem("paymentMode") === "test";
 
   const handleStarterPackage = async () => {
     if (!token) {
@@ -76,7 +76,7 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       router.push("/sign-in");
       return;
     }
-    if (isSulikoIo() || !isTestMode()) { setShowContactPaymentModal(true); return; }
+    if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
     try {
       const response = await createFlittPayment(20);
       window.open(response.checkoutUrl, "_blank");
@@ -98,7 +98,7 @@ export function PricingGrid({ autoOpenContactModal = false }: PricingGridProps) 
       router.push("/sign-in");
       return;
     }
-    if (isSulikoIo() || !isTestMode()) { setShowContactPaymentModal(true); return; }
+    if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
     try {
       const response = await createFlittPayment(50);
       window.open(response.checkoutUrl, "_blank");
