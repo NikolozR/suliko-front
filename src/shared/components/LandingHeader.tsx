@@ -229,10 +229,14 @@ export default function LandingHeader() {
             : "bg-slate-900/80 backdrop-blur-md"
           : isScrolled
             ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
-            : "bg-background/95 backdrop-blur-md md:bg-transparent"
+            : resolvedTheme === 'dark' ? "bg-background/95 backdrop-blur-md md:bg-transparent" : "bg-background/95 backdrop-blur-md"
       } ${
         isHeaderVisible ? "translate-y-0" : "-translate-y-full"
-      }`}
+      }
+      ${
+        resolvedTheme === 'dark' ? "" : "bg-white"
+      }
+      `}
     >
       <nav className="container z-50 relative mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
