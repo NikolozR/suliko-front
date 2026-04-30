@@ -2,7 +2,8 @@ import React from "react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { API_BASE_URL } from "@/shared/constants/api";
-import UsersTable, { User as TableUser } from "./users-table";
+import { User as TableUser } from "./users-table";
+import AdminTabsWrapper from "./AdminTabsWrapper";
 import LanguageManager from "./LanguageManager";
 import LanguageList from "./LanguageList";
 
@@ -63,6 +64,8 @@ export default async function AdminDashboardPage() {
     balance?: number;
     createdAt?: string;
     lastActivityAt?: string;
+    referralCode?: string;
+    referredByCode?: string;
   };
 
   let users: AdminUser[] = [];
@@ -157,44 +160,9 @@ export default async function AdminDashboardPage() {
         ))}
       </div>
 
-      {/* Users section */}
+      {/* Users / Referrals tabs */}
       <section style={{ marginBottom: 48 }}>
-        <h2
-          style={{
-            fontFamily: "'Syne', sans-serif",
-            fontWeight: 700,
-            fontSize: 18,
-            color: "#f8fafc",
-            letterSpacing: "-0.01em",
-            marginBottom: 16,
-            display: "flex",
-            alignItems: "center",
-            gap: 10,
-          }}
-        >
-          <svg width="18" height="18" fill="none" stroke="#fbbf24" strokeWidth={2} viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75" />
-          </svg>
-          Users
-        </h2>
-        {loadError ? (
-          <div
-            style={{
-              background: "rgba(239,68,68,0.08)",
-              border: "1px solid rgba(239,68,68,0.25)",
-              borderRadius: 10,
-              padding: "14px 18px",
-              color: "#fca5a5",
-              fontSize: 14,
-            }}
-          >
-            {loadError}
-          </div>
-        ) : (
-          <UsersTable initialUsers={users as TableUser[]} />
-        )}
+        <AdminTabsWrapper initialUsers={users as TableUser[]} loadError={loadError} />
       </section>
 
       {/* Languages section */}

@@ -15,6 +15,8 @@ export type User = {
   balance?: number;
   createdAt?: string;
   lastActivityAt?: string;
+  referralCode?: string;
+  referredByCode?: string;
 };
 
 type SaveState = "idle" | "confirm" | "saving" | "saved";
