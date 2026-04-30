@@ -482,27 +482,31 @@ const SulikoForm: React.FC = () => {
               <button
                 type="button"
                 onClick={() => !isLoginMode && toggleAuthMode()}
-                className={`cursor-pointer flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
-                  isLoginMode
-                    ? "bg-suliko-default-color text-white shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`cursor-pointer flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${isLoginMode
+                  ? "bg-suliko-default-color text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 {t("login")}
               </button>
               <button
                 type="button"
                 onClick={() => isLoginMode && toggleAuthMode()}
-                className={`cursor-pointer flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${
-                  !isLoginMode
-                    ? "bg-suliko-default-color text-white shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
-                }`}
+                className={`cursor-pointer flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${!isLoginMode
+                  ? "bg-suliko-default-color text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+                  }`}
               >
                 {t("register")}
               </button>
             </div>
-
+            {!isLoginMode && (<div className="w-full mb-5">
+              <GoogleButton
+                onSuccess={handleGoogleSuccess}
+                onError={() => setAuthError(t("ErrorAlert.ups") || "Error detected")}
+                label={t("orContinueWith") || "Continue with Google"}
+              />
+            </div>)}
             {/* Subtitle */}
             <div className="pb-5 w-full">
               <p className="text-center text-[0.85rem] lg:text-[0.95rem] text-muted-foreground">

@@ -1,7 +1,7 @@
 {
   "Authorization": {
     "title": "Autoryzacja",
-    "description": "Wprowadź swój numer telefonu i hasło",
+    "description": "Lub wprowadź swój numer telefonu i hasło",
     "phoneNumber": "Telefon",
     "password": "Hasło",
     "email": "Adres e-mail",
