@@ -1166,7 +1166,11 @@
         "swipeDown": "Swipe down to close",
         "delivery90": "About 90 minutes",
         "delivery180": "About 180 minutes",
-        "deliveryCustom": "Custom, we will contact you"
+        "deliveryCustom": "Custom, we will contact you",
+        "document": "Document",
+        "addDocument": "Add Document",
+        "removeDocument": "Remove",
+        "translationCost": "Translation cost"
       },
       "uploadForm": {
         "dragDrop": "Drag & drop files here or",

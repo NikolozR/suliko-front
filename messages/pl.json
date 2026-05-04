@@ -1153,7 +1153,11 @@
         "swipeDown": "Przesuń w dół, aby zamknąć",
         "delivery90": "Około 90 minut",
         "delivery180": "Około 180 minut",
-        "deliveryCustom": "Indywidualnie, skontaktujemy się z Tobą"
+        "deliveryCustom": "Indywidualnie, skontaktujemy się z Tobą",
+        "document": "Dokument",
+        "addDocument": "Dodaj dokument",
+        "removeDocument": "Usuń",
+        "translationCost": "Koszt tłumaczenia"
       },
       "uploadForm": {
         "dragDrop": "Przeciągnij i upuść pliki tutaj lub",
