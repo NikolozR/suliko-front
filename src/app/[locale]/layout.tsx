@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/features/ui";
 // import BetaBanner from "@/shared/components/BetaBanner";
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Toaster } from "react-hot-toast";
 import RouteTransitionProgress from "@/shared/components/RouteTransitionProgress";
 import WebVitalsMonitor from "@/shared/components/WebVitalsMonitor";
@@ -271,6 +272,7 @@ export default async function LocaleLayout({
             {children}
             <Toaster position="top-right" />
             <Analytics />
+            <SpeedInsights />
           </ThemeProvider>
         </NextIntlClientProvider>
         </GoogleOAuthProvider>
