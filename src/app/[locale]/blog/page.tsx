@@ -33,8 +33,13 @@ export async function generateMetadata({
   };
 }
 
-export default async function BlogPage() {
-  const posts = getAllPosts();
+export default async function BlogPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const posts = await getAllPosts(locale);
   const t = await getTranslations('Blog');
 
   return (

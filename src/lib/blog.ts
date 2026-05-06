@@ -1,125 +1,85 @@
-import fs from 'fs';
-import path from 'path';
-import matter from 'gray-matter';
-import readingTime from 'reading-time';
+import { supabase } from './supabase';
 import { format } from 'date-fns';
-import type { BlogPost } from './blog-types';
+import type { BlogPost, BlogPostRow } from './blog-types';
 
 export type { BlogPost } from './blog-types';
 
-// Use absolute path for better Vercel compatibility
-const contentDirectory = path.join(process.cwd(), 'content', 'blog');
-
-// Ensure content directory exists and is accessible
-function ensureContentDirectory() {
-  if (!fs.existsSync(contentDirectory)) {
-    console.error('Content directory does not exist:', contentDirectory);
-    console.error('Current working directory:', process.cwd());
-    console.error('Available directories:', fs.readdirSync(process.cwd()));
-    return false;
-  }
-  return true;
+function estimateReadingTime(content: string): string {
+  const words = content.trim().split(/\s+/).length;
+  const minutes = Math.ceil(words / 200);
+  return `${minutes} min read`;
 }
 
-export function getAllPosts(): BlogPost[] {
-  try {
-    // Check if content directory exists
-    if (!ensureContentDirectory()) {
-      return [];
-    }
+function rowToPost(row: BlogPostRow, locale: string): BlogPost {
+  const translation = row.blog_post_translations.find((t) => t.locale === locale)
+    ?? row.blog_post_translations.find((t) => t.locale === 'en')
+    ?? row.blog_post_translations[0];
 
-    const fileNames = fs.readdirSync(contentDirectory);
-    const allPostsData = fileNames
-      .filter((name) => name.endsWith('.mdx'))
-      .map((fileName) => {
-        try {
-          const slug = fileName.replace(/\.mdx$/, '');
-          const fullPath = path.join(contentDirectory, fileName);
-          
-          // Check if file exists
-          if (!fs.existsSync(fullPath)) {
-            console.error('File does not exist:', fullPath);
-            return null;
-          }
-          
-          const fileContents = fs.readFileSync(fullPath, 'utf8');
-          const { data, content } = matter(fileContents);
-          
-          const stats = readingTime(content);
-          
-          return {
-            slug,
-            title: data.title || 'Untitled',
-            date: data.date || new Date().toISOString(),
-            excerpt: data.excerpt || '',
-            coverImage: data.coverImage,
-            author: data.author || 'Unknown Author',
-            tags: data.tags || [],
-            content,
-            readingTime: stats.text,
-          };
-        } catch (fileError) {
-          console.error(`Error processing file ${fileName}:`, fileError);
-          return null;
-        }
-      })
-      .filter((post): post is NonNullable<typeof post> => post !== null)
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  return {
+    id: row.id,
+    slug: translation?.slug ?? row.id,
+    title: translation?.title ?? '',
+    date: row.published_at ?? row.created_at,
+    excerpt: translation?.excerpt ?? '',
+    coverImage: row.cover_image ?? undefined,
+    author: row.author_name,
+    tags: row.tags ?? [],
+    content: translation?.content ?? '',
+    readingTime: estimateReadingTime(translation?.content ?? ''),
+    status: row.status,
+    locale,
+  };
+}
 
-    return allPostsData as BlogPost[];
-  } catch (error) {
-    console.error('Error reading blog posts:', error);
+export async function getAllPosts(locale = 'en'): Promise<BlogPost[]> {
+  const { data, error } = await supabase
+    .from('blog_posts')
+    .select('*, blog_post_translations(*)')
+    .eq('status', 'published')
+    .order('published_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching posts:', error);
     return [];
   }
+
+  return (data as BlogPostRow[]).map((row) => rowToPost(row, locale));
 }
 
-export function getPostBySlug(slug: string): BlogPost | null {
-  try {
-    const fullPath = path.join(contentDirectory, `${slug}.mdx`);
-    
-    // Check if file exists
-    if (!fs.existsSync(fullPath)) {
-      console.error(`Post file does not exist: ${fullPath}`);
-      return null;
-    }
-    
-    const fileContents = fs.readFileSync(fullPath, 'utf8');
-    const { data, content } = matter(fileContents);
-    
-    const stats = readingTime(content);
-    
-    return {
-      slug,
-      title: data.title || 'Untitled',
-      date: data.date || new Date().toISOString(),
-      excerpt: data.excerpt || '',
-      coverImage: data.coverImage,
-      author: data.author || 'Unknown Author',
-      tags: data.tags || [],
-      content,
-      readingTime: stats.text,
-    };
-  } catch (error) {
-    console.error(`Error reading post ${slug}:`, error);
+export async function getPostBySlug(slug: string, locale = 'en'): Promise<BlogPost | null> {
+  const { data, error } = await supabase
+    .from('blog_post_translations')
+    .select('post_id, blog_posts(*, blog_post_translations(*))')
+    .eq('slug', slug)
+    .eq('locale', locale)
+    .single();
+
+  if (error || !data) {
+    console.error(`Error fetching post by slug "${slug}":`, error);
     return null;
   }
+
+  const post = (data as unknown as { blog_posts: BlogPostRow }).blog_posts;
+  if (!post || post.status !== 'published') return null;
+
+  return rowToPost(post, locale);
 }
 
-export function getAllPostSlugs(): string[] {
-  try {
-    // Check if content directory exists
-    if (!ensureContentDirectory()) {
-      return [];
-    }
-    
-    const fileNames = fs.readdirSync(contentDirectory);
-    return fileNames
-      .filter((name) => name.endsWith('.mdx'))
-      .map((fileName) => fileName.replace(/\.mdx$/, ''));
-  } catch (error) {
-    console.error('Error reading post slugs:', error);
+export async function getAllPostSlugs(): Promise<{ slug: string; locale: string }[]> {
+  const { data, error } = await supabase
+    .from('blog_post_translations')
+    .select('slug, locale, blog_posts!inner(status)')
+    .eq('blog_posts.status', 'published');
+
+  if (error) {
+    console.error('Error fetching post slugs:', error);
     return [];
   }
+
+  return (data ?? []).map((row: { slug: string; locale: string }) => ({
+    slug: row.slug,
+    locale: row.locale,
+  }));
 }
 
 export function formatDate(date: string): string {

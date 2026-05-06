@@ -7,8 +7,9 @@ const DOMAIN_PL = "https://suliko.ge"; // pl uses path prefix: /pl/
 
 const staticPages = ["", "/blog"] as const;
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const slugs = getAllPostSlugs();
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const entries = await getAllPostSlugs();
+  const enSlugs = [...new Set(entries.filter((e) => e.locale === "en").map((e) => e.slug))];
 
   const localePages: MetadataRoute.Sitemap = staticPages.map((path) => ({
     url: `${DOMAIN_KA}${path}`,
@@ -25,7 +26,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   }));
 
-  const blogPosts: MetadataRoute.Sitemap = slugs.map((slug) => ({
+  const blogPosts: MetadataRoute.Sitemap = enSlugs.map((slug) => ({
     url: `${DOMAIN_EN}/blog/${slug}`,
     lastModified: new Date(),
     changeFrequency: "monthly",

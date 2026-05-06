@@ -23,6 +23,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tabs": "^1.1.11",
     "@react-oauth/google": "^0.13.4",
+    "@supabase/supabase-js": "^2.105.3",
     "@tailwindcss/typography": "^0.5.16",
     "@tiptap/extension-color": "^3.22.4",
     "@tiptap/extension-font-family": "^3.22.4",
@@ -44,6 +45,7 @@
     "@tiptap/starter-kit": "^3.22.4",
     "@types/nodemailer": "^7.0.2",
     "@types/react-google-recaptcha": "^2.1.9",
+    "@types/ws": "^8.18.1",
     "@vercel/analytics": "^1.5.0",
     "@vercel/speed-insights": "^1.2.0",
     "class-variance-authority": "^0.7.1",
@@ -83,6 +85,7 @@
     "resend": "^6.5.2",
     "tailwind-merge": "^3.3.0",
     "tsparticles-slim": "^2.12.0",
+    "ws": "^8.20.0",
     "zod": "^3.24.4",
     "zustand": "^5.0.4"
   },
