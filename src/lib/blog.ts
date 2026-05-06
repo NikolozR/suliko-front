@@ -47,11 +47,11 @@ export async function getAllPosts(locale = 'en'): Promise<BlogPost[]> {
 }
 
 export async function getPostBySlug(slug: string, locale = 'en'): Promise<BlogPost | null> {
+  // Search by slug across all locales so posts with only one locale still resolve
   const { data, error } = await supabase
     .from('blog_post_translations')
     .select('post_id, blog_posts(*, blog_post_translations(*))')
     .eq('slug', slug)
-    .eq('locale', locale)
     .single();
 
   if (error || !data) {
@@ -62,6 +62,7 @@ export async function getPostBySlug(slug: string, locale = 'en'): Promise<BlogPo
   const post = (data as unknown as { blog_posts: BlogPostRow }).blog_posts;
   if (!post || post.status !== 'published') return null;
 
+  // rowToPost falls back to 'en' if requested locale has no translation
   return rowToPost(post, locale);
 }
 
