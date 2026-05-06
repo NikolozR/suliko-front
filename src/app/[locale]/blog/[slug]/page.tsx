@@ -9,15 +9,13 @@ export const revalidate = 3600;
 export const dynamicParams = true;
 
 interface BlogPostPageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: string; locale: string }>;
 }
 
 export async function generateStaticParams() {
   try {
-    const slugs = getAllPostSlugs();
-    return slugs.map((slug) => ({
-      slug,
-    }));
+    const entries = await getAllPostSlugs();
+    return entries.map(({ slug, locale }) => ({ slug, locale }));
   } catch (error) {
     console.error('Error in generateStaticParams:', error);
     return [];
@@ -26,8 +24,8 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
   try {
-    const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const { slug, locale } = await params;
+    const post = await getPostBySlug(slug, locale);
 
     if (!post) {
       return {
@@ -80,8 +78,8 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   try {
-    const { slug } = await params;
-    const post = getPostBySlug(slug);
+    const { slug, locale } = await params;
+    const post = await getPostBySlug(slug, locale);
 
     if (!post) {
       notFound();

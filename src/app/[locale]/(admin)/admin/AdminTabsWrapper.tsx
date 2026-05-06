@@ -1,10 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useSearchParams, useRouter, usePathname, useParams } from "next/navigation";
 import UsersTable, { User } from "./users-table";
 import ReferralsTab from "./referrals-tab";
 
-type Tab = "users" | "referrals";
+type Tab = "users" | "referrals" | "blog";
 
 const TAB_LABELS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   {
@@ -27,6 +27,16 @@ const TAB_LABELS: { id: Tab; label: string; icon: React.ReactNode }[] = [
       </svg>
     ),
   },
+  {
+    id: "blog",
+    label: "Blog",
+    icon: (
+      <svg width="15" height="15" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10l6 6v8a2 2 0 01-2 2z" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M17 4v6h-6M9 14h6M9 18h4" />
+      </svg>
+    ),
+  },
 ];
 
 export default function AdminTabsWrapper({
@@ -39,6 +49,8 @@ export default function AdminTabsWrapper({
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
+  const routeParams = useParams();
+  const locale = (routeParams?.locale as string) || "en";
 
   const paramTab = searchParams.get("tab") as Tab | null;
   const [activeTab, setActiveTab] = useState<Tab>(
@@ -52,6 +64,10 @@ export default function AdminTabsWrapper({
   }, [paramTab]);
 
   const switchTab = (tab: Tab) => {
+    if (tab === "blog") {
+      router.push(`/${locale}/admin/blog`);
+      return;
+    }
     setActiveTab(tab);
     const params = new URLSearchParams(searchParams.toString());
     if (tab === "users") {
