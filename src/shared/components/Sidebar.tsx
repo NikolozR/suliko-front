@@ -24,6 +24,7 @@ import {
   Wallet,
   ChevronDown,
   ChevronUp,
+  FileText,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
@@ -34,6 +35,12 @@ const NAV_ITEMS = [
     label: "newProject",
     href: "/text",
     icon: Plus,
+  },
+  {
+    label: "passport",
+    href: "/passport",
+    icon: FileText,
+    requiresAuth: true,
   },
   {
     label: "profile",

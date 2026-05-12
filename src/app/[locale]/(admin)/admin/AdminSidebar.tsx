@@ -112,6 +112,13 @@ export default function AdminSidebar({ isAuth }: { isAuth: boolean }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
             </svg>
           </NavLink>
+          <NavLink href="/en/admin/passport-templates" label="Passports" collapsed={collapsed}>
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+              <rect x="4" y="2" width="16" height="20" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+              <circle cx="12" cy="10" r="3" strokeLinecap="round" strokeLinejoin="round" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M8 17h8" />
+            </svg>
+          </NavLink>
         </nav>
       )}
 
