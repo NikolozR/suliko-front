@@ -58,7 +58,7 @@ export default function PassportFieldsForm({
           )}
           {judgeIterations !== undefined && judgeIterations > 0 && (
             <span className="text-[10px] text-muted-foreground">
-              reviewed {judgeIterations}×
+              {t("reviewedTimes", { count: judgeIterations })}
             </span>
           )}
         </div>

@@ -19,14 +19,6 @@ type Step = "upload" | "review" | "complete";
 
 type ProgressStage = "idle" | "ocr" | "ai" | "judge" | "done";
 
-const STAGE_LABELS: Record<ProgressStage, string> = {
-  idle: "",
-  ocr:   "Scanning document...",
-  ai:    "Extracting fields with AI...",
-  judge: "Reviewing quality...",
-  done:  "Complete",
-};
-
 const STAGE_TARGET: Record<ProgressStage, number> = {
   idle:  0,
   ocr:   60,
@@ -38,6 +30,14 @@ const STAGE_TARGET: Record<ProgressStage, number> = {
 export default function PassportPage() {
   const t = useTranslations("Passport");
   const { token } = useAuthStore();
+
+  const STAGE_LABELS: Record<ProgressStage, string> = {
+    idle:  "",
+    ocr:   t("progressOcr"),
+    ai:    t("progressAi"),
+    judge: t("progressJudge"),
+    done:  t("progressDone"),
+  };
 
   const [step, setStep] = useState<Step>("upload");
   const [file, setFile] = useState<File | null>(null);
@@ -238,7 +238,7 @@ export default function PassportPage() {
                     : "text-muted-foreground/40"
                 }`}
               >
-                {s === "ocr" ? "OCR" : s === "ai" ? "AI" : s === "judge" ? "Judge" : "Done"}
+                {s === "ocr" ? t("progressStageOcr") : s === "ai" ? t("progressStageAi") : s === "judge" ? t("progressStageJudge") : t("progressStageDone")}
               </span>
             ))}
           </div>
@@ -329,7 +329,7 @@ export default function PassportPage() {
               {/* Original uploaded document */}
               <div className="rounded-xl border bg-muted/30 overflow-hidden">
                 <div className="flex items-center justify-between px-3 py-2 border-b bg-background/60">
-                  <span className="text-xs font-medium text-muted-foreground">Original Document</span>
+                  <span className="text-xs font-medium text-muted-foreground">{t("originalDocument")}</span>
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setImgZoom((z) => Math.max(0.5, z - 0.25))}
@@ -367,7 +367,7 @@ export default function PassportPage() {
                     />
                   ) : (
                     <div className="flex items-center justify-center h-32 text-xs text-muted-foreground">
-                      No preview
+                      {t("noPreview")}
                     </div>
                   )}
                 </div>
