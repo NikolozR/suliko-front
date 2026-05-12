@@ -288,57 +288,8 @@ export default function PassportPage() {
             {t("backToUpload")}
           </button>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Col 1: original passport image */}
-            <div className="lg:col-span-1">
-              <div className="rounded-xl border bg-muted/30 overflow-hidden">
-                <div className="flex items-center justify-between px-3 py-2 border-b bg-background/60">
-                  <span className="text-xs font-medium text-muted-foreground">Original Document</span>
-                  <div className="flex items-center gap-1">
-                    <button
-                      onClick={() => setImgZoom((z) => Math.max(0.5, z - 0.25))}
-                      className="p-1 rounded hover:bg-accent transition-colors"
-                      title="Zoom out"
-                    >
-                      <ZoomOut className="h-3.5 w-3.5 text-muted-foreground" />
-                    </button>
-                    <span className="text-[10px] text-muted-foreground w-8 text-center">
-                      {Math.round(imgZoom * 100)}%
-                    </span>
-                    <button
-                      onClick={() => setImgZoom((z) => Math.min(3, z + 0.25))}
-                      className="p-1 rounded hover:bg-accent transition-colors"
-                      title="Zoom in"
-                    >
-                      <ZoomIn className="h-3.5 w-3.5 text-muted-foreground" />
-                    </button>
-                  </div>
-                </div>
-                <div className="overflow-auto max-h-[600px] p-2">
-                  {filePreviewUrl && file?.type === "application/pdf" ? (
-                    <iframe
-                      src={filePreviewUrl}
-                      className="w-full rounded"
-                      style={{ height: 500 }}
-                      title="Passport document"
-                    />
-                  ) : filePreviewUrl ? (
-                    <img
-                      src={filePreviewUrl}
-                      alt="Uploaded passport"
-                      className="w-full rounded object-contain origin-top-left transition-transform"
-                      style={{ transform: `scale(${imgZoom})`, transformOrigin: "top left" }}
-                    />
-                  ) : (
-                    <div className="flex items-center justify-center h-40 text-xs text-muted-foreground">
-                      No preview
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div>
-
-            {/* Col 2: editable fields */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Col 1: editable fields */}
             <div className="lg:col-span-1">
               <PassportFieldsForm
                 fields={selectedTemplate.fields}
@@ -373,8 +324,56 @@ export default function PassportPage() {
               </div>
             </div>
 
-            {/* Col 3: live DOCX preview */}
-            <div className="lg:col-span-1">
+            {/* Col 2: original document (top) + live DOCX preview (below) */}
+            <div className="lg:col-span-1 space-y-4">
+              {/* Original uploaded document */}
+              <div className="rounded-xl border bg-muted/30 overflow-hidden">
+                <div className="flex items-center justify-between px-3 py-2 border-b bg-background/60">
+                  <span className="text-xs font-medium text-muted-foreground">Original Document</span>
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => setImgZoom((z) => Math.max(0.5, z - 0.25))}
+                      className="p-1 rounded hover:bg-accent transition-colors"
+                      title="Zoom out"
+                    >
+                      <ZoomOut className="h-3.5 w-3.5 text-muted-foreground" />
+                    </button>
+                    <span className="text-[10px] text-muted-foreground w-8 text-center">
+                      {Math.round(imgZoom * 100)}%
+                    </span>
+                    <button
+                      onClick={() => setImgZoom((z) => Math.min(3, z + 0.25))}
+                      className="p-1 rounded hover:bg-accent transition-colors"
+                      title="Zoom in"
+                    >
+                      <ZoomIn className="h-3.5 w-3.5 text-muted-foreground" />
+                    </button>
+                  </div>
+                </div>
+                <div className="overflow-auto max-h-[340px] p-2">
+                  {filePreviewUrl && file?.type === "application/pdf" ? (
+                    <iframe
+                      src={filePreviewUrl}
+                      className="w-full rounded"
+                      style={{ height: 300 }}
+                      title="Passport document"
+                    />
+                  ) : filePreviewUrl ? (
+                    <img
+                      src={filePreviewUrl}
+                      alt="Uploaded passport"
+                      className="w-full rounded object-contain origin-top-left transition-transform"
+                      style={{ transform: `scale(${imgZoom})`, transformOrigin: "top left" }}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-32 text-xs text-muted-foreground">
+                      No preview
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Live DOCX preview */}
               <PassportPreview
                 templateId={selectedTemplate.id}
                 docxUrl={selectedTemplate.docx_file_url}
