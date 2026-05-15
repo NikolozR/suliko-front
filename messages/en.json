@@ -532,6 +532,7 @@
     "reject": "Reject",
     "editPlaceholder": "Edit suggestion text...",
     "getSuggestions": "Get Suggestions",
+    "suggestionsNotAvailable": "Suggestions are not available for this document.",
     "retrySuggestions": "Retry Suggestions",
     "previewTitle": "Suggestion Preview",
     "showPreview": "Show preview",

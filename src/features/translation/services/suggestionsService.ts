@@ -65,6 +65,8 @@ export async function getSuggestions(
   } else if (response.status === 400) {
     const data = (await response.json()) as SuggestionsResponseProcessing;
     return data;
+  } else if (response.status === 404) {
+    return { status: "not_found" } as SuggestionsResponseProcessing;
   }
 
   throw new Error("Failed to fetch suggestions");

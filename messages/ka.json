@@ -530,6 +530,7 @@
     "reject": "უარყოფა",
     "editPlaceholder": "შეცვალეთ შემოთავაზებული ტექსტი...",
     "getSuggestions": "შემოთავაზებების მიღება",
+    "suggestionsNotAvailable": "ამ დოკუმენტისთვის შემოთავაზებები მიუწვდომელია.",
     "retrySuggestions": "შემოთავაზებების თავიდან ცდა",
     "previewTitle": "წინასწარი ნახვა",
     "showPreview": "წინასწარი ნახვა",
