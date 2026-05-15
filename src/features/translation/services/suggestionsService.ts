@@ -129,3 +129,52 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
 
     throw new Error("Failed to apply suggestion");
 }
+
+export async function regenerateSuggestions(params: {
+  jobId: string;
+  chatId: string;
+  targetLanguageId: number;
+  outputLanguageId: number;
+}): Promise<void> {
+  const endpoint = `/Document/translate/suggestions/regenerate/${params.jobId}`;
+  const { token, refreshToken } = useAuthStore.getState();
+
+  const headers = new Headers();
+  if (token && typeof token === "string" && token.trim()) {
+    headers.append("Authorization", `Bearer ${token.replace(/[\r\n\t]/g, "").trim()}`);
+    headers.append("Content-Type", "application/json");
+  } else {
+    throw new Error("No valid token found");
+  }
+
+  const body = JSON.stringify({
+    chatId: params.chatId,
+    targetLanguageId: params.targetLanguageId,
+    outputLanguageId: params.outputLanguageId,
+  });
+
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, { method: "POST", headers, body });
+
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = (await reaccessToken(refreshToken)) as { token: string; refreshToken: string };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      const sanitized = newTokens.token?.replace(/[\r\n\t]/g, "").trim();
+      if (sanitized) {
+        headers.set("Authorization", `Bearer ${sanitized}`);
+        response = await fetch(`${API_BASE_URL}${endpoint}`, { method: "POST", headers, body });
+      } else {
+        throw new Error("Invalid refreshed token");
+      }
+    } catch {
+      useAuthStore.getState().reset();
+      throw new Error("Token refresh failed");
+    }
+  }
+
+  if (response.status < 200 || response.status >= 300) {
+    throw new Error("Failed to regenerate suggestions");
+  }
+}

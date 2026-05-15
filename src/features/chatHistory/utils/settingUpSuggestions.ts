@@ -14,7 +14,7 @@ function isSuggestionsResponse(
   );
 }
 
-export async function settingUpChatSuggestions(jobId: string): Promise<string> {
+export async function settingUpChatSuggestions(jobId: string, options?: { waitForNew?: boolean }): Promise<string> {
   const { setSuggestions } = useChatSuggestionsStore.getState();
   const maxAttempts = 40;
   const delayMs = 3000;
@@ -34,6 +34,12 @@ export async function settingUpChatSuggestions(jobId: string): Promise<string> {
           setSuggestions(filtered);
           return "success";
         }
+        if (!options?.waitForNew) {
+          // Server responded with 0 suggestions and we're not waiting for new ones
+          setSuggestions([]);
+          return "empty";
+        }
+        // waitForNew=true: keep polling — background generation may still be running
       } else if (suggestionsResponse.status === "not_found") {
         setSuggestions([]);
         return "not_found";

@@ -55,9 +55,26 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
       const { settingUpChatSuggestions } = await import(
         "@/features/chatHistory/utils/settingUpSuggestions"
       );
+      // First, try fetching already-stored suggestions
       const result = await settingUpChatSuggestions(jobId);
+      if (result === "success") return;
       if (result === "not_found") {
         setSuggestionsNotAvailable(true);
+        return;
+      }
+      // "empty" — no unreturned suggestions left; regenerate via backend
+      if (chatId && currentTargetLanguageId) {
+        const { regenerateSuggestions } = await import(
+          "@/features/translation/services/suggestionsService"
+        );
+        await regenerateSuggestions({
+          jobId,
+          chatId,
+          targetLanguageId: currentTargetLanguageId,
+          outputLanguageId: currentTargetLanguageId,
+        });
+        // Poll with retries — background generation needs time
+        await settingUpChatSuggestions(jobId, { waitForNew: true });
       }
     } catch {
       // suggestions remain empty — user can retry
