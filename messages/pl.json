@@ -173,7 +173,8 @@
     "processingMsg1": "Wyodrebnianie pol paszportu...",
     "processingMsg2": "Weryfikacja dokladnosci...",
     "processingMsg3": "Sprawdzanie danych...",
-    "processingMsg4": "Prawie gotowe..."
+    "processingMsg4": "Prawie gotowe...",
+    "emptyFieldsWarning": "{count, plural, one {# pole wymaga uwagi} other {# pola/pol wymaga uwagi}}"
   },
   "HelpPage": {
     "title": "Pomoc i wsparcie",

@@ -174,7 +174,8 @@
     "processingMsg1": "Extracting passport fields...",
     "processingMsg2": "Verifying accuracy...",
     "processingMsg3": "Cross-checking data...",
-    "processingMsg4": "Almost done..."
+    "processingMsg4": "Almost done...",
+    "emptyFieldsWarning": "{count, plural, one {# field needs your attention} other {# fields need your attention}}"
   },
   "HelpPage": {
     "title": "Help & Support",

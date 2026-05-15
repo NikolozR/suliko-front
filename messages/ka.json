@@ -172,7 +172,8 @@
     "processingMsg1": "პასპორტის ველების ამოღება...",
     "processingMsg2": "სიზუსტის შემოწმება...",
     "processingMsg3": "მონაცემების გადამოწმება...",
-    "processingMsg4": "თითქმის დასრულდა..."
+    "processingMsg4": "თითქმის დასრულდა...",
+    "emptyFieldsWarning": "{count} ველი საჭიროებს ყურადღებას"
   },
   "HelpPage": {
     "title": "დახმარება და მხარდაჭერა",
