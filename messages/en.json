@@ -170,14 +170,11 @@
     "originalDocument": "Original Document",
     "noPreview": "No preview",
     "reviewedTimes": "reviewed {count}×",
-    "progressOcr": "Scanning document...",
-    "progressAi": "Extracting fields with AI...",
-    "progressJudge": "Reviewing quality...",
-    "progressDone": "Complete",
-    "progressStageOcr": "OCR",
-    "progressStageAi": "AI",
-    "progressStageJudge": "Judge",
-    "progressStageDone": "Done"
+    "processingMsg0": "Reading document...",
+    "processingMsg1": "Extracting passport fields...",
+    "processingMsg2": "Verifying accuracy...",
+    "processingMsg3": "Cross-checking data...",
+    "processingMsg4": "Almost done..."
   },
   "HelpPage": {
     "title": "Help & Support",

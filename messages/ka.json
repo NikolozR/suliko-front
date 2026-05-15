@@ -168,14 +168,11 @@
     "originalDocument": "ორიგინალი დოკუმენტი",
     "noPreview": "გადახედვა მიუწვდომელია",
     "reviewedTimes": "გადამოწმდა {count}×",
-    "progressOcr": "დოკუმენტის სკანირება...",
-    "progressAi": "ველების ამოღება AI-ით...",
-    "progressJudge": "ხარისხის შემოწმება...",
-    "progressDone": "დასრულებულია",
-    "progressStageOcr": "OCR",
-    "progressStageAi": "AI",
-    "progressStageJudge": "შემოწმება",
-    "progressStageDone": "დასრულდა"
+    "processingMsg0": "დოკუმენტის წაკითხვა...",
+    "processingMsg1": "პასპორტის ველების ამოღება...",
+    "processingMsg2": "სიზუსტის შემოწმება...",
+    "processingMsg3": "მონაცემების გადამოწმება...",
+    "processingMsg4": "თითქმის დასრულდა..."
   },
   "HelpPage": {
     "title": "დახმარება და მხარდაჭერა",
