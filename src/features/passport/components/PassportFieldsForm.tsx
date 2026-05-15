@@ -16,6 +16,12 @@ interface Props {
   extracting?: boolean;
 }
 
+// Keys that contain long values and should span both grid columns
+const WIDE_PATTERNS = ["mrz", "surname", "given_names", "place_of_birth", "authority", "personal_number"];
+function isWideField(key: string) {
+  return WIDE_PATTERNS.some((p) => key.includes(p));
+}
+
 function ConfidenceBadge({ score, empty }: { score?: number; empty?: boolean }) {
   if (empty) {
     return (
@@ -41,16 +47,16 @@ function ConfidenceBadge({ score, empty }: { score?: number; empty?: boolean }) 
 }
 
 function getFieldAccent(empty: boolean, score?: number) {
-  if (empty)                                  return "border-l-amber-500/60";
-  if (score !== undefined && score < 60)      return "border-l-red-500/50";
-  if (score !== undefined && score < 80)      return "border-l-yellow-500/50";
-  if (score !== undefined && score >= 80)     return "border-l-emerald-500/40";
+  if (empty)                              return "border-l-amber-500/60";
+  if (score !== undefined && score < 60)  return "border-l-red-500/50";
+  if (score !== undefined && score < 80)  return "border-l-yellow-500/50";
+  if (score !== undefined && score >= 80) return "border-l-emerald-500/40";
   return "border-l-border";
 }
 
 function getInputStyle(empty: boolean, score?: number) {
-  if (empty)                                  return "border-amber-500/40 bg-amber-500/5 dark:bg-amber-500/[0.06]";
-  if (score !== undefined && score < 60)      return "border-red-400/60 dark:border-red-500/50";
+  if (empty)                              return "border-amber-500/40 bg-amber-500/5 dark:bg-amber-500/[0.06]";
+  if (score !== undefined && score < 60)  return "border-red-400/60 dark:border-red-500/50";
   return "";
 }
 
@@ -107,17 +113,18 @@ export default function PassportFieldsForm({
 
       <p className="text-xs text-muted-foreground">{t("reviewDescription")}</p>
 
-      {/* Fields */}
-      <div className="space-y-2">
+      {/* 2-column grid — wide fields span both columns */}
+      <div className="grid grid-cols-2 gap-x-4 gap-y-2">
         {sorted.map((field) => {
           const value = values[field.key] || "";
           const empty = !value.trim();
           const score = confidence?.[field.key];
+          const wide = isWideField(field.key);
 
           return (
             <div
               key={field.key}
-              className={`border-l-2 pl-3 py-0.5 transition-colors ${getFieldAccent(empty, score)}`}
+              className={`border-l-2 pl-3 py-0.5 transition-colors ${getFieldAccent(empty, score)} ${wide ? "col-span-2" : "col-span-1"}`}
             >
               <div className="flex items-center gap-2 mb-1">
                 <label className="text-xs font-medium">{field.label}</label>
