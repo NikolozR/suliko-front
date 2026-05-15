@@ -531,6 +531,7 @@
     "cancel": "Cancel",
     "reject": "Reject",
     "editPlaceholder": "Edit suggestion text...",
+    "getSuggestions": "Get Suggestions",
     "retrySuggestions": "Retry Suggestions",
     "previewTitle": "Suggestion Preview",
     "showPreview": "Show preview",

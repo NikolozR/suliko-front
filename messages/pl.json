@@ -527,6 +527,7 @@
     "accept": "Zaakceptuj",
     "reject": "Odrzuć",
     "editPlaceholder": "Edytuj sugerowany tekst...",
+    "getSuggestions": "Pobierz sugestie",
     "retrySuggestions": "Ponów sugestie",
     "showPreview": "Pokaż podgląd",
     "hidePreview": "Ukryj podgląd",
