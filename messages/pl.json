@@ -169,14 +169,11 @@
     "originalDocument": "Oryginalny dokument",
     "noPreview": "Brak podglądu",
     "reviewedTimes": "sprawdzono {count}×",
-    "progressOcr": "Skanowanie dokumentu...",
-    "progressAi": "Wyodrębnianie pól przez AI...",
-    "progressJudge": "Sprawdzanie jakości...",
-    "progressDone": "Ukończono",
-    "progressStageOcr": "OCR",
-    "progressStageAi": "AI",
-    "progressStageJudge": "Sprawdzanie",
-    "progressStageDone": "Gotowe"
+    "processingMsg0": "Odczytywanie dokumentu...",
+    "processingMsg1": "Wyodrebnianie pol paszportu...",
+    "processingMsg2": "Weryfikacja dokladnosci...",
+    "processingMsg3": "Sprawdzanie danych...",
+    "processingMsg4": "Prawie gotowe..."
   },
   "HelpPage": {
     "title": "Pomoc i wsparcie",

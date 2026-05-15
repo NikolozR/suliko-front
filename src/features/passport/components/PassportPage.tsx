@@ -17,27 +17,25 @@ import type { PassportTemplate, ExtractedFields } from "../types/types.Passport"
 
 type Step = "upload" | "review" | "complete";
 
-type ProgressStage = "idle" | "ocr" | "ai" | "judge" | "done";
+const MSG_COUNT = 5;
 
-const STAGE_TARGET: Record<ProgressStage, number> = {
-  idle:  0,
-  ocr:   60,
-  ai:    80,
-  judge: 95,
-  done:  100,
-};
+function formatElapsed(sec: number): string {
+  const m = Math.floor(sec / 60);
+  const s = sec % 60;
+  return `${m}:${String(s).padStart(2, "0")}`;
+}
 
 export default function PassportPage() {
   const t = useTranslations("Passport");
   const { token } = useAuthStore();
 
-  const STAGE_LABELS: Record<ProgressStage, string> = {
-    idle:  "",
-    ocr:   t("progressOcr"),
-    ai:    t("progressAi"),
-    judge: t("progressJudge"),
-    done:  t("progressDone"),
-  };
+  const PROCESSING_MESSAGES = [
+    t("processingMsg0"),
+    t("processingMsg1"),
+    t("processingMsg2"),
+    t("processingMsg3"),
+    t("processingMsg4"),
+  ];
 
   const [step, setStep] = useState<Step>("upload");
   const [file, setFile] = useState<File | null>(null);
@@ -53,9 +51,12 @@ export default function PassportPage() {
   const [imgZoom, setImgZoom] = useState(1);
 
   // Progress bar
-  const [progressStage, setProgressStage] = useState<ProgressStage>("idle");
   const [progressValue, setProgressValue] = useState(0);
+  const [msgIndex, setMsgIndex] = useState(0);
+  const [elapsedSec, setElapsedSec] = useState(0);
   const progressTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const msgTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const elapsedTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // Create/revoke object URL when file changes
   useEffect(() => {
@@ -65,34 +66,44 @@ export default function PassportPage() {
     return () => URL.revokeObjectURL(url);
   }, [file]);
 
-  const startProgressStage = useCallback((stage: ProgressStage) => {
-    if (progressTimerRef.current) clearInterval(progressTimerRef.current);
-    setProgressStage(stage);
-    const target = STAGE_TARGET[stage];
+  const startProgress = useCallback(() => {
+    setProgressValue(0);
+    setMsgIndex(0);
+    setElapsedSec(0);
 
+    // Slowly crawl toward 90% — never reaches 100 until finishProgress
     progressTimerRef.current = setInterval(() => {
       setProgressValue((prev) => {
-        if (prev >= target - 1) {
-          clearInterval(progressTimerRef.current!);
-          return target - 1; // stay just below target until stage advances
-        }
-        // slow crawl toward target
-        const step = Math.max(0.3, (target - prev) * 0.04);
-        return Math.min(prev + step, target - 1);
+        if (prev >= 90) return prev;
+        return Math.min(prev + Math.max(0.15, (90 - prev) * 0.012), 90);
       });
-    }, 300);
+    }, 500);
+
+    // Rotate message every 8 seconds
+    msgTimerRef.current = setInterval(() => {
+      setMsgIndex((prev) => (prev + 1) % MSG_COUNT);
+    }, 8000);
+
+    // Elapsed counter
+    elapsedTimerRef.current = setInterval(() => {
+      setElapsedSec((prev) => prev + 1);
+    }, 1000);
   }, []);
 
   const finishProgress = useCallback(() => {
-    if (progressTimerRef.current) clearInterval(progressTimerRef.current);
-    setProgressStage("done");
+    clearInterval(progressTimerRef.current!);
+    clearInterval(msgTimerRef.current!);
+    clearInterval(elapsedTimerRef.current!);
     setProgressValue(100);
   }, []);
 
   const resetProgress = useCallback(() => {
-    if (progressTimerRef.current) clearInterval(progressTimerRef.current);
-    setProgressStage("idle");
+    clearInterval(progressTimerRef.current!);
+    clearInterval(msgTimerRef.current!);
+    clearInterval(elapsedTimerRef.current!);
     setProgressValue(0);
+    setMsgIndex(0);
+    setElapsedSec(0);
   }, []);
 
   const handleExtract = useCallback(async () => {
@@ -100,24 +111,11 @@ export default function PassportPage() {
 
     setExtracting(true);
     setError("");
-    setProgressValue(0);
-    startProgressStage("ocr");
+    startProgress();
 
     try {
       const fieldKeys = selectedTemplate.fields.map((f) => f.key);
-
-      // OCR phase → switch to AI phase when we get the response
       const result = await extractPassportFields(file, selectedTemplate.id, fieldKeys);
-
-      // We can't intercept mid-request, so advance stages after the call returns
-      // (the judge ran server-side; we show it retrospectively)
-      startProgressStage("ai");
-      await new Promise((r) => setTimeout(r, 400));
-
-      if (result.judgeIterations > 0) {
-        startProgressStage("judge");
-        await new Promise((r) => setTimeout(r, 600));
-      }
 
       finishProgress();
 
@@ -142,7 +140,7 @@ export default function PassportPage() {
     }
 
     setExtracting(false);
-  }, [file, selectedTemplate, t, startProgressStage, finishProgress, resetProgress]);
+  }, [file, selectedTemplate, t, startProgress, finishProgress, resetProgress]);
 
   const handleGenerate = useCallback(async () => {
     if (!selectedTemplate) return;
@@ -217,30 +215,17 @@ export default function PassportPage() {
       {extracting && (
         <div className="mb-6">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-1.5">
-            <span>{STAGE_LABELS[progressStage]}</span>
-            <span>{Math.round(progressValue)}%</span>
+            <span className="flex items-center gap-1.5">
+              <Loader2 className="h-3 w-3 animate-spin shrink-0" />
+              <span className="transition-opacity duration-500">{PROCESSING_MESSAGES[msgIndex]}</span>
+            </span>
+            <span className="tabular-nums">{formatElapsed(elapsedSec)}</span>
           </div>
           <div className="w-full h-2 rounded-full bg-muted overflow-hidden">
             <div
-              className="h-full rounded-full suliko-default-bg transition-all duration-300 ease-out"
+              className="h-full rounded-full suliko-default-bg transition-all duration-500 ease-out"
               style={{ width: `${progressValue}%` }}
             />
-          </div>
-          <div className="flex justify-between mt-1.5">
-            {(["ocr", "ai", "judge", "done"] as ProgressStage[]).map((s) => (
-              <span
-                key={s}
-                className={`text-[10px] ${
-                  progressStage === s
-                    ? "text-primary font-medium"
-                    : progressValue >= STAGE_TARGET[s]
-                    ? "text-muted-foreground"
-                    : "text-muted-foreground/40"
-                }`}
-              >
-                {s === "ocr" ? t("progressStageOcr") : s === "ai" ? t("progressStageAi") : s === "judge" ? t("progressStageJudge") : t("progressStageDone")}
-              </span>
-            ))}
           </div>
         </div>
       )}
