@@ -34,7 +34,11 @@ export async function settingUpChatSuggestions(jobId: string): Promise<string> {
           setSuggestions(filtered);
           return "success";
         }
+      } else if (suggestionsResponse.status === "not_found") {
+        setSuggestions([]);
+        return "not_found";
       } else if (suggestionsResponse.status === "processing") {
+        // continue polling
       } else {
         setSuggestions([]);
         return suggestionsResponse.status;

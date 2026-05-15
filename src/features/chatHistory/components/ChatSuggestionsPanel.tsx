@@ -45,15 +45,20 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
   const [loadingSuggestionId, setLoadingSuggestionId] = useState<string | null>(null);
   const [previewSuggestionId, setPreviewSuggestionId] = useState<string | null>(null);
   const [isGettingSuggestions, setIsGettingSuggestions] = useState(false);
+  const [suggestionsNotAvailable, setSuggestionsNotAvailable] = useState(false);
 
   const handleGetSuggestions = async () => {
     if (!jobId || isGettingSuggestions) return;
     setIsGettingSuggestions(true);
+    setSuggestionsNotAvailable(false);
     try {
       const { settingUpChatSuggestions } = await import(
         "@/features/chatHistory/utils/settingUpSuggestions"
       );
-      await settingUpChatSuggestions(jobId);
+      const result = await settingUpChatSuggestions(jobId);
+      if (result === "not_found") {
+        setSuggestionsNotAvailable(true);
+      }
     } catch {
       // suggestions remain empty — user can retry
     } finally {
@@ -251,28 +256,34 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
       ) : (
         <div className="flex flex-col items-center gap-3 py-6 text-center">
           <p className="text-sm text-muted-foreground">
-            {t("SuggestionsPanel.noSuggestions", {
-              default: "No suggestions available.",
-            })}
+            {suggestionsNotAvailable
+              ? t("SuggestionsPanel.suggestionsNotAvailable", {
+                  default: "Suggestions are not available for this document.",
+                })
+              : t("SuggestionsPanel.noSuggestions", {
+                  default: "No suggestions available.",
+                })}
           </p>
-          <button
-            type="button"
-            onClick={handleGetSuggestions}
-            disabled={isGettingSuggestions}
-            className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isGettingSuggestions ? (
-              <>
-                <Loader2 className="h-4 w-4 animate-spin" />
-                {t("SuggestionsPanel.generating", { default: "Generating..." })}
-              </>
-            ) : (
-              <>
-                <Sparkles className="h-4 w-4" />
-                {t("SuggestionsPanel.getSuggestions", { default: "Get Suggestions" })}
-              </>
-            )}
-          </button>
+          {!suggestionsNotAvailable && (
+            <button
+              type="button"
+              onClick={handleGetSuggestions}
+              disabled={isGettingSuggestions}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg border hover:bg-accent transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isGettingSuggestions ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {t("SuggestionsPanel.generating", { default: "Generating..." })}
+                </>
+              ) : (
+                <>
+                  <Sparkles className="h-4 w-4" />
+                  {t("SuggestionsPanel.getSuggestions", { default: "Get Suggestions" })}
+                </>
+              )}
+            </button>
+          )}
         </div>
       )}
       <div className="mt-3" />

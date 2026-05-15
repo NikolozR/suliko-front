@@ -528,6 +528,7 @@
     "reject": "Odrzuć",
     "editPlaceholder": "Edytuj sugerowany tekst...",
     "getSuggestions": "Pobierz sugestie",
+    "suggestionsNotAvailable": "Sugestie nie sa dostepne dla tego dokumentu.",
     "retrySuggestions": "Ponów sugestie",
     "showPreview": "Pokaż podgląd",
     "hidePreview": "Ukryj podgląd",
