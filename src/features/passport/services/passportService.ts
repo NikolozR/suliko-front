@@ -3,11 +3,13 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 import { reaccessToken } from "@/features/auth/services/authorizationService";
 import type { OcrResponse, PreviewResponse } from "../types/types.Passport";
 
-// Cloudflare proxy in front of the backend has a hard 100-second timeout.
-// We abort slightly before that so the user sees a clear message instead of
-// a confusing "CORS error" (which is what the browser reports for a 524).
-const OCR_TIMEOUT_MS = 90_000;
+// Short timeout just for the initial POST (should return 202 in < 5s)
+// and for preview/generate which still run synchronously.
+const SUBMIT_TIMEOUT_MS = 15_000;
 const PREVIEW_TIMEOUT_MS = 85_000;
+// How long to poll for a background OCR job before giving up
+const POLL_MAX_MS = 5 * 60_000; // 5 minutes
+const POLL_INTERVAL_MS = 3_000;
 
 function fetchWithTimeout(
   url: string,
@@ -64,36 +66,65 @@ export async function extractPassportFields(
   templateId: string,
   fieldKeys: string[]
 ): Promise<OcrResponse> {
-  let response: Response;
+  // Step 1: submit the job (returns 202 { jobId } immediately)
+  let submitResponse: Response;
   try {
-    response = await handleTokenRefresh((headers) => {
+    submitResponse = await handleTokenRefresh((headers) => {
       const formData = new FormData();
       formData.append("File", file);
       formData.append("TemplateId", templateId);
       formData.append("FieldsJson", JSON.stringify(fieldKeys));
-
       return fetchWithTimeout(
         `${API_BASE_URL}/Passport/ocr`,
         { method: "POST", headers, body: formData },
-        OCR_TIMEOUT_MS
+        SUBMIT_TIMEOUT_MS
       );
     });
   } catch (err) {
     if (err instanceof Error && err.name === "AbortError") {
-      throw new Error("Processing timed out. The server is busy — please try again in a moment.");
+      throw new Error("Could not reach the server. Please check your connection and try again.");
     }
     throw err;
   }
 
-  if (!response.ok) {
-    if (response.status === 402) {
-      throw new Error("QUOTA_EXCEEDED");
-    }
-    const error = await response.json().catch(() => ({}));
-    throw new Error(error.message || error.errorText || "OCR extraction failed");
+  if (!submitResponse.ok) {
+    if (submitResponse.status === 402) throw new Error("QUOTA_EXCEEDED");
+    const error = await submitResponse.json().catch(() => ({}));
+    throw new Error(error.message || error.errorText || "OCR submission failed");
   }
 
-  return response.json();
+  const { jobId } = await submitResponse.json();
+
+  // Step 2: poll until completed / failed / timeout
+  const deadline = Date.now() + POLL_MAX_MS;
+  while (Date.now() < deadline) {
+    await new Promise((r) => setTimeout(r, POLL_INTERVAL_MS));
+
+    let pollResponse: Response;
+    try {
+      pollResponse = await handleTokenRefresh((headers) =>
+        fetch(`${API_BASE_URL}/Passport/ocr/${jobId}`, { headers })
+      );
+    } catch {
+      // transient network error — keep polling
+      continue;
+    }
+
+    if (!pollResponse.ok) {
+      if (pollResponse.status === 404)
+        throw new Error("Processing job expired. Please try again.");
+      continue;
+    }
+
+    const poll = await pollResponse.json();
+
+    if (poll.status === "completed") return poll.result as OcrResponse;
+    if (poll.status === "failed")
+      throw new Error(poll.error || "OCR processing failed on the server.");
+    // "queued" or "processing" — keep waiting
+  }
+
+  throw new Error("Processing timed out. The server is busy — please try again in a moment.");
 }
 
 export async function generatePassportDocx(
@@ -108,7 +139,7 @@ export async function generatePassportDocx(
       return fetchWithTimeout(
         `${API_BASE_URL}/Passport/generate`,
         { method: "POST", headers, body: JSON.stringify({ templateId, docxUrl, fields }) },
-        OCR_TIMEOUT_MS
+        PREVIEW_TIMEOUT_MS
       );
     });
   } catch (err) {
