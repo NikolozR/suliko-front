@@ -52,30 +52,35 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({
     setIsGettingSuggestions(true);
     setSuggestionsNotAvailable(false);
     try {
-      const { settingUpChatSuggestions } = await import(
-        "@/features/chatHistory/utils/settingUpSuggestions"
-      );
-      // First, try fetching already-stored suggestions
-      const result = await settingUpChatSuggestions(jobId);
-      if (result === "success") return;
-      if (result === "not_found") {
+      const [{ settingUpChatSuggestions }, { regenerateSuggestions }] = await Promise.all([
+        import("@/features/chatHistory/utils/settingUpSuggestions"),
+        import("@/features/translation/services/suggestionsService"),
+      ]);
+
+      // Try fetching already-stored, unreturned suggestions first
+      const fetchResult = await settingUpChatSuggestions(jobId);
+      if (fetchResult === "success") return;
+
+      // Nothing found (empty or job record missing) — kick off (re)generation
+      if (!chatId || !currentTargetLanguageId) {
         setSuggestionsNotAvailable(true);
         return;
       }
-      // "empty" — no unreturned suggestions left; regenerate via backend
-      if (chatId && currentTargetLanguageId) {
-        const { regenerateSuggestions } = await import(
-          "@/features/translation/services/suggestionsService"
-        );
+
+      try {
         await regenerateSuggestions({
           jobId,
           chatId,
           targetLanguageId: currentTargetLanguageId,
           outputLanguageId: currentTargetLanguageId,
         });
-        // Poll with retries — background generation needs time
-        await settingUpChatSuggestions(jobId, { waitForNew: true });
+      } catch {
+        setSuggestionsNotAvailable(true);
+        return;
       }
+
+      // Poll with retries until the background generation finishes
+      await settingUpChatSuggestions(jobId, { waitForNew: true });
     } catch {
       // suggestions remain empty — user can retry
     } finally {
