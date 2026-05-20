@@ -316,9 +316,34 @@ export default function ProjectDetailPage() {
     })();
 
     (async () => {
+      if (!chat.jobId) return;
       try {
         setIsSuggestionsLoading(true);
-        await settingUpChatSuggestions(chat.jobId);
+        const fetchResult = await settingUpChatSuggestions(chat.jobId);
+        if (fetchResult === "success") {
+          setHasGeneratedMore(true);
+          return;
+        }
+        // Suggestions not ready — trigger generation then poll
+        try {
+          const { regenerateSuggestions } = await import(
+            "@/features/translation/services/suggestionsService"
+          );
+          const { useChatEditingStore } = await import(
+            "@/features/chatHistory/store/chatEditingStore"
+          );
+          const targetLanguageId =
+            useChatEditingStore.getState().currentTargetLanguageId || 1;
+          await regenerateSuggestions({
+            jobId: chat.jobId,
+            chatId: chat.chatId,
+            targetLanguageId,
+            outputLanguageId: targetLanguageId,
+          });
+        } catch {
+          // might already be generating — continue polling
+        }
+        await settingUpChatSuggestions(chat.jobId, { waitForNew: true });
         setHasGeneratedMore(true);
       } catch {
         setSuggestions([]);
