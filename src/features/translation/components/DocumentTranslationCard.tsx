@@ -732,6 +732,7 @@ const DocumentTranslationCard = () => {
                 showShiftEnter={true}
                 formError={token ? getFormError() : null}
                 isHighlighted={isButtonHighlighted}
+                onTranslateMore={handleRemoveFile}
               />
 
               {/* Progress bar + step indicator */}

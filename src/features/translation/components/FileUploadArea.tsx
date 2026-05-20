@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, DragEvent } from "react";
+import { ChangeEvent, useState, DragEvent, useEffect } from "react";
 import { Upload } from "lucide-react";
 import { Label } from "@/features/ui/components/ui/label";
 import { Input } from "@/features/ui/components/ui/input";
@@ -13,6 +13,30 @@ interface FileUploadAreaProps {
 const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileClick, id = "file-upload" }) => {
   const t = useTranslations('DocumentTranslationCard');
   const [isDragOver, setIsDragOver] = useState(false);
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith("image/")) {
+          const blob = item.getAsFile();
+          if (!blob) continue;
+          const ext = item.type === "image/png" ? "png" : "jpg";
+          const file = new File([blob], `pasted-image.${ext}`, { type: item.type });
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          const syntheticEvent = {
+            target: { files: dt.files, value: file.name } as HTMLInputElement,
+          } as ChangeEvent<HTMLInputElement>;
+          onFileChange(syntheticEvent);
+          break;
+        }
+      }
+    };
+    document.addEventListener("paste", handlePaste);
+    return () => document.removeEventListener("paste", handlePaste);
+  }, [onFileChange]);
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -68,6 +92,9 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileCli
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
             {t('supportedFormats')}
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground/60">
+            {t('pasteFromClipboard')}
           </p>
           <Input
             type="file"
