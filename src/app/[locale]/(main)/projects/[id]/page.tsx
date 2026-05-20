@@ -468,6 +468,12 @@ export default function ProjectDetailPage() {
     );
   }
 
+  const handleRemoveFile = useCallback(() => {
+    resetChatEditingStore();
+    resetChatSuggestionsStore();
+    router.push("/document");
+  }, [resetChatEditingStore, resetChatSuggestionsStore, router]);
+
   // Completed + hydrated — show result
   if (chat.chatId === projectId && hydrated && reconstructedFile) {
     return (
@@ -487,6 +493,7 @@ export default function ProjectDetailPage() {
           currentFile={reconstructedFile}
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
+          onRemoveFile={handleRemoveFile}
           isSuggestionsLoading={isSuggestionsLoading}
           chatId={chat.chatId}
         />
