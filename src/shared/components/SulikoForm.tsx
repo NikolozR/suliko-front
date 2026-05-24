@@ -521,14 +521,6 @@ const SulikoForm: React.FC = () => {
                 {t("register")}
               </button>
             </div>
-            {switchedToLoginNote && (
-              <div className="w-full flex items-center gap-2 px-3 py-2 mb-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-                <span className="text-blue-500 text-base">ℹ️</span>
-                <p className="text-xs text-blue-700 dark:text-blue-300">
-                  {t("alreadyRegistered")}
-                </p>
-              </div>
-            )}
             {!isLoginMode && (<div className="w-full mb-5">
               <GoogleButton
                 onSuccess={handleGoogleSuccess}
@@ -588,6 +580,14 @@ const SulikoForm: React.FC = () => {
                           </div>
                         </FormControl>
                         <FormMessage />
+                        {switchedToLoginNote && (
+                          <div className="flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                            <span className="text-blue-500 shrink-0">ℹ️</span>
+                            <p className="text-xs text-blue-700 dark:text-blue-300">
+                              {t("alreadyRegistered")}
+                            </p>
+                          </div>
+                        )}
                       </FormItem>
                     )}
                   />
