@@ -66,7 +66,7 @@ const SulikoForm: React.FC = () => {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [verificationMethod, setVerificationMethod] = useState<"phone" | "email" | null>(null);
-  const [alreadyRegisteredIdentifier, setAlreadyRegisteredIdentifier] = useState<string | null>(null);
+  const [switchedToLoginNote, setSwitchedToLoginNote] = useState(false);
 
   const formSchema = useMemo(
     () =>
@@ -133,7 +133,7 @@ const SulikoForm: React.FC = () => {
   function resetRegistrationState() {
     setRegistrationStep(1);
     setAuthError(null);
-    setAlreadyRegisteredIdentifier(null);
+    setSwitchedToLoginNote(false);
     setIsCodeSent(false);
     setIsSendingCode(false);
     setResendTimer(0);
@@ -146,11 +146,13 @@ const SulikoForm: React.FC = () => {
     resetRegistrationState();
     setVerificationMethod(null);
     form.setValue("identifier", identifier);
+    setSwitchedToLoginNote(true);
   }
 
   function toggleAuthMode() {
     const newIsLoginMode = !isLoginMode;
     setIsLoginMode(newIsLoginMode);
+    setSwitchedToLoginNote(false);
     resetRegistrationState();
 
     if (!newIsLoginMode) {
@@ -196,7 +198,7 @@ const SulikoForm: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
       if (errorMessage.includes("USER_ALREADY_REGISTERED")) {
-        setAlreadyRegisteredIdentifier(mobile.trim());
+        switchToLogin(mobile.trim());
       } else {
         console.error("Send phone code error:", errorMessage);
         setAuthError(tError("ups"));
@@ -238,7 +240,7 @@ const SulikoForm: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
       if (errorMessage.includes("USER_ALREADY_REGISTERED")) {
-        setAlreadyRegisteredIdentifier(email.trim());
+        switchToLogin(email.trim());
       } else {
         console.error("Send email code error:", errorMessage);
         setAuthError(tError("ups"));
@@ -408,7 +410,7 @@ const SulikoForm: React.FC = () => {
   }
 
   const handlePhoneChange = () => {
-    setAlreadyRegisteredIdentifier(null);
+    setSwitchedToLoginNote(false);
     if (isCodeSent && verificationMethod === "phone") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
@@ -423,7 +425,7 @@ const SulikoForm: React.FC = () => {
   };
 
   const handleEmailChange = () => {
-    setAlreadyRegisteredIdentifier(null);
+    setSwitchedToLoginNote(false);
     if (isCodeSent && verificationMethod === "email") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
@@ -519,6 +521,14 @@ const SulikoForm: React.FC = () => {
                 {t("register")}
               </button>
             </div>
+            {switchedToLoginNote && (
+              <div className="w-full flex items-center gap-2 px-3 py-2 mb-2 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
+                <span className="text-blue-500 text-base">ℹ️</span>
+                <p className="text-xs text-blue-700 dark:text-blue-300">
+                  {t("alreadyRegistered")}
+                </p>
+              </div>
+            )}
             {!isLoginMode && (<div className="w-full mb-5">
               <GoogleButton
                 onSuccess={handleGoogleSuccess}
@@ -666,23 +676,6 @@ const SulikoForm: React.FC = () => {
                         isCodeVerified={isCodeVerified}
                         sentVerificationCode={sentVerificationCode}
                       />
-                      {alreadyRegisteredIdentifier && (
-                        <div className="flex items-start gap-3 p-3 rounded-xl border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20">
-                          <span className="text-amber-500 mt-0.5 shrink-0">⚠️</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
-                              {t("alreadyRegistered")}
-                            </p>
-                            <button
-                              type="button"
-                              onClick={() => switchToLogin(alreadyRegisteredIdentifier)}
-                              className="mt-1 text-sm font-semibold text-suliko-default-color hover:underline"
-                            >
-                              {t("login")} →
-                            </button>
-                          </div>
-                        </div>
-                      )}
                       {!isCodeSent && !getRequiredVerificationMethod() && (
                         <button
                           type="button"
@@ -711,23 +704,6 @@ const SulikoForm: React.FC = () => {
                         isCodeVerified={isCodeVerified}
                         sentVerificationCode={sentVerificationCode}
                       />
-                      {alreadyRegisteredIdentifier && (
-                        <div className="flex items-start gap-3 p-3 rounded-xl border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20">
-                          <span className="text-amber-500 mt-0.5 shrink-0">⚠️</span>
-                          <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
-                              {t("alreadyRegistered")}
-                            </p>
-                            <button
-                              type="button"
-                              onClick={() => switchToLogin(alreadyRegisteredIdentifier)}
-                              className="mt-1 text-sm font-semibold text-suliko-default-color hover:underline"
-                            >
-                              {t("login")} →
-                            </button>
-                          </div>
-                        </div>
-                      )}
                       {!isCodeSent && !getRequiredVerificationMethod() && (
                         <button
                           type="button"
