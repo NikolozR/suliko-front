@@ -399,6 +399,12 @@ export default function ProjectDetailPage() {
     tOverlay("stageFinalize"),
   ];
 
+  const handleRemoveFile = useCallback(() => {
+    resetChatEditingStore();
+    resetChatSuggestionsStore();
+    router.push("/document");
+  }, [resetChatEditingStore, resetChatSuggestionsStore, router]);
+
   // --- RENDER ---
 
   if (loading) {
@@ -467,12 +473,6 @@ export default function ProjectDetailPage() {
       </div>
     );
   }
-
-  const handleRemoveFile = useCallback(() => {
-    resetChatEditingStore();
-    resetChatSuggestionsStore();
-    router.push("/document");
-  }, [resetChatEditingStore, resetChatSuggestionsStore, router]);
 
   // Completed + hydrated — show result
   if (chat.chatId === projectId && hydrated && reconstructedFile) {
