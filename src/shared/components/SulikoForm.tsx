@@ -67,6 +67,7 @@ const SulikoForm: React.FC = () => {
   const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [verificationMethod, setVerificationMethod] = useState<"phone" | "email" | null>(null);
   const [switchedToLoginNote, setSwitchedToLoginNote] = useState(false);
+  const [noteVisible, setNoteVisible] = useState(false);
 
   const formSchema = useMemo(
     () =>
@@ -129,6 +130,15 @@ const SulikoForm: React.FC = () => {
       }
     }
   }, [isLoginMode, verificationMethod]);
+
+  useEffect(() => {
+    if (switchedToLoginNote) {
+      const id = setTimeout(() => setNoteVisible(true), 16);
+      return () => clearTimeout(id);
+    } else {
+      setNoteVisible(false);
+    }
+  }, [switchedToLoginNote]);
 
   function resetRegistrationState() {
     setRegistrationStep(1);
@@ -581,7 +591,9 @@ const SulikoForm: React.FC = () => {
                         </FormControl>
                         <FormMessage />
                         {switchedToLoginNote && (
-                          <div className="flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-blue-600/70 dark:bg-blue-700/60 border border-blue-500/50 backdrop-blur-sm animate-in fade-in slide-in-from-top-2 duration-300">
+                          <div
+                            className={`flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-blue-600/75 dark:bg-blue-700/65 border border-blue-500/50 backdrop-blur-sm transition-all duration-300 ease-out ${noteVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}
+                          >
                             <span className="shrink-0">ℹ️</span>
                             <p className="text-xs text-white font-medium">
                               {t("alreadyRegistered")}
