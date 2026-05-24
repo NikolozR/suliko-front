@@ -186,8 +186,12 @@ const SulikoForm: React.FC = () => {
       }, 1000);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
-      console.error("Send phone code error:", errorMessage);
-      setAuthError(tError("ups"));
+      if (errorMessage.includes("USER_ALREADY_REGISTERED")) {
+        setAuthError(t("alreadyRegistered"));
+      } else {
+        console.error("Send phone code error:", errorMessage);
+        setAuthError(tError("ups"));
+      }
     } finally {
       setIsSendingCode(false);
     }
@@ -224,8 +228,12 @@ const SulikoForm: React.FC = () => {
       }, 1000);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
-      console.error("Send email code error:", errorMessage);
-      setAuthError(tError("ups"));
+      if (errorMessage.includes("USER_ALREADY_REGISTERED")) {
+        setAuthError(t("alreadyRegistered"));
+      } else {
+        console.error("Send email code error:", errorMessage);
+        setAuthError(tError("ups"));
+      }
     } finally {
       setIsSendingCode(false);
     }

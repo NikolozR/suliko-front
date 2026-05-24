@@ -177,6 +177,20 @@ export async function sendVerificationCode(phoneNumber?: string, email?: string)
 // Export alias for convenience
 export const sendCode = sendVerificationCode;
 
+export async function checkUserExists(identifier: string): Promise<boolean> {
+  try {
+    const encoded = encodeURIComponent(identifier.trim());
+    const response = await apiClient.get(`/Auth/check-user-exists?identifier=${encoded}`);
+    if (response.ok) {
+      const data = response.data as { isRegistered?: boolean; exists?: boolean };
+      return data.isRegistered === true || data.exists === true;
+    }
+    return false;
+  } catch {
+    return false;
+  }
+}
+
 export async function recoverPassword(phoneNumber: string, newPassword: string) {
   try {
     const response = await apiClient.patch("/User/recover-password", {
