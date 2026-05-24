@@ -66,6 +66,7 @@ const SulikoForm: React.FC = () => {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [verificationMethod, setVerificationMethod] = useState<"phone" | "email" | null>(null);
+  const [alreadyRegisteredIdentifier, setAlreadyRegisteredIdentifier] = useState<string | null>(null);
 
   const formSchema = useMemo(
     () =>
@@ -132,11 +133,19 @@ const SulikoForm: React.FC = () => {
   function resetRegistrationState() {
     setRegistrationStep(1);
     setAuthError(null);
+    setAlreadyRegisteredIdentifier(null);
     setIsCodeSent(false);
     setIsSendingCode(false);
     setResendTimer(0);
     setSentVerificationCode("");
     setIsCodeVerified(false);
+  }
+
+  function switchToLogin(identifier: string) {
+    setIsLoginMode(true);
+    resetRegistrationState();
+    setVerificationMethod(null);
+    form.setValue("identifier", identifier);
   }
 
   function toggleAuthMode() {
@@ -187,7 +196,7 @@ const SulikoForm: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
       if (errorMessage.includes("USER_ALREADY_REGISTERED")) {
-        setAuthError(t("alreadyRegistered"));
+        setAlreadyRegisteredIdentifier(mobile.trim());
       } else {
         console.error("Send phone code error:", errorMessage);
         setAuthError(tError("ups"));
@@ -229,7 +238,7 @@ const SulikoForm: React.FC = () => {
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
       if (errorMessage.includes("USER_ALREADY_REGISTERED")) {
-        setAuthError(t("alreadyRegistered"));
+        setAlreadyRegisteredIdentifier(email.trim());
       } else {
         console.error("Send email code error:", errorMessage);
         setAuthError(tError("ups"));
@@ -399,6 +408,7 @@ const SulikoForm: React.FC = () => {
   }
 
   const handlePhoneChange = () => {
+    setAlreadyRegisteredIdentifier(null);
     if (isCodeSent && verificationMethod === "phone") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
@@ -413,6 +423,7 @@ const SulikoForm: React.FC = () => {
   };
 
   const handleEmailChange = () => {
+    setAlreadyRegisteredIdentifier(null);
     if (isCodeSent && verificationMethod === "email") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
@@ -655,6 +666,23 @@ const SulikoForm: React.FC = () => {
                         isCodeVerified={isCodeVerified}
                         sentVerificationCode={sentVerificationCode}
                       />
+                      {alreadyRegisteredIdentifier && (
+                        <div className="flex items-start gap-3 p-3 rounded-xl border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20">
+                          <span className="text-amber-500 mt-0.5 shrink-0">⚠️</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+                              {t("alreadyRegistered")}
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => switchToLogin(alreadyRegisteredIdentifier)}
+                              className="mt-1 text-sm font-semibold text-suliko-default-color hover:underline"
+                            >
+                              {t("login")} →
+                            </button>
+                          </div>
+                        </div>
+                      )}
                       {!isCodeSent && !getRequiredVerificationMethod() && (
                         <button
                           type="button"
@@ -683,6 +711,23 @@ const SulikoForm: React.FC = () => {
                         isCodeVerified={isCodeVerified}
                         sentVerificationCode={sentVerificationCode}
                       />
+                      {alreadyRegisteredIdentifier && (
+                        <div className="flex items-start gap-3 p-3 rounded-xl border border-amber-300 bg-amber-50 dark:border-amber-700 dark:bg-amber-900/20">
+                          <span className="text-amber-500 mt-0.5 shrink-0">⚠️</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-medium text-amber-800 dark:text-amber-300">
+                              {t("alreadyRegistered")}
+                            </p>
+                            <button
+                              type="button"
+                              onClick={() => switchToLogin(alreadyRegisteredIdentifier)}
+                              className="mt-1 text-sm font-semibold text-suliko-default-color hover:underline"
+                            >
+                              {t("login")} →
+                            </button>
+                          </div>
+                        </div>
+                      )}
                       {!isCodeSent && !getRequiredVerificationMethod() && (
                         <button
                           type="button"
