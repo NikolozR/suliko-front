@@ -1,4 +1,4 @@
-import { test as setup, expect } from '@playwright/test';
+import { test as setup } from '@playwright/test';
 import path from 'path';
 
 const authFile = path.join('playwright', '.auth', 'user.json');
@@ -16,20 +16,21 @@ setup('authenticate as test user', async ({ page }) => {
 
   await page.locator('input[name="identifier"]').fill(phone);
   await page.locator('input[name="password"]').fill(password);
+  await page.locator('button[type="submit"]').first().click();
 
-  // Wait for the API response before checking for redirect
-  const [response] = await Promise.all([
-    page.waitForResponse(res => res.url().includes('/api/') || res.url().includes('supabase'), { timeout: 15_000 }).catch(() => null),
-    page.locator('button[type="submit"]').first().click(),
-  ]);
+  // Wait for either a successful redirect or an error alert
+  await Promise.race([
+    page.waitForURL(url => !url.toString().includes('/sign-in'), { timeout: 20_000 }),
+    page.locator('[role="alert"]').waitFor({ state: 'visible', timeout: 20_000 }),
+  ]).catch(() => {});
 
-  // Surface any error message shown in the form
-  await page.waitForTimeout(2000);
-  const errorText = await page.locator('[role="alert"], .text-destructive, [class*="error"], [class*="Error"]').first().textContent().catch(() => null);
-  if (errorText) throw new Error(`Login failed with UI error: ${errorText}`);
-
-  // Wait for redirect away from sign-in (app navigates to /document on success)
-  await expect(page).not.toHaveURL(/\/sign-in/, { timeout: 20_000 });
+  if (page.url().includes('/sign-in')) {
+    const errorMsg = await page.locator('[role="alert"]').textContent().catch(() => 'unknown error');
+    throw new Error(
+      `Login failed: "${errorMsg?.trim()}". ` +
+      `Verify the test account exists on the live app with phone="${phone}" and the correct password.`
+    );
+  }
 
   await page.context().storageState({ path: authFile });
 });

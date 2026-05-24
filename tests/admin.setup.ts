@@ -1,4 +1,4 @@
-import { test as setup, expect } from '@playwright/test';
+import { test as setup } from '@playwright/test';
 import path from 'path';
 
 const adminFile = path.join('playwright', '.auth', 'admin.json');
@@ -11,14 +11,19 @@ setup('authenticate as admin', async ({ page }) => {
   await page.locator('input[type="password"]').fill('M.t.2002');
   await page.locator('button[type="submit"]').click();
 
-  // Surface any error message shown on the page
-  await page.waitForTimeout(3000);
-  const errorEl = page.locator('[style*="fca5a5"], [style*="red"], [style*="error"]').first();
-  const errorText = await errorEl.textContent().catch(() => null);
-  if (errorText?.trim()) throw new Error(`Admin login failed with UI error: ${errorText.trim()}`);
+  // Wait for either redirect to /admin or an error appearing
+  await Promise.race([
+    page.waitForURL(url => url.toString().includes('/admin') && !url.toString().includes('/admin/login'), { timeout: 20_000 }),
+    page.locator('[style*="fca5a5"]').waitFor({ state: 'visible', timeout: 20_000 }),
+  ]).catch(() => {});
 
-  // Wait for redirect to admin dashboard
-  await expect(page).toHaveURL(/\/admin(?!\/login)/, { timeout: 20_000 });
+  if (page.url().includes('/admin/login')) {
+    const errorMsg = await page.locator('[style*="fca5a5"]').textContent().catch(() => 'unknown error');
+    throw new Error(
+      `Admin login failed: "${errorMsg?.trim()}". ` +
+      `The account "579 737 737" must exist in the backend database with password "M.t.2002".`
+    );
+  }
 
   await page.context().storageState({ path: adminFile });
 });
