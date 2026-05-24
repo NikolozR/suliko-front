@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "vercel-build": "next build"
+    "vercel-build": "next build",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:debug": "playwright test --debug"
   },
   "dependencies": {
     "@cyntler/react-doc-viewer": "^1.14.1",
@@ -92,6 +95,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@types/file-saver": "^2.0.7",
     "@types/html-docx-js": "^0.3.4",
