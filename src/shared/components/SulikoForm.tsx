@@ -581,7 +581,7 @@ const SulikoForm: React.FC = () => {
                         </FormControl>
                         <FormMessage />
                         {switchedToLoginNote && (
-                          <div className="flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-blue-600 dark:bg-blue-700 border border-blue-700 dark:border-blue-600">
+                          <div className="flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-blue-600/70 dark:bg-blue-700/60 border border-blue-500/50 backdrop-blur-sm animate-in fade-in slide-in-from-top-2 duration-300">
                             <span className="shrink-0">ℹ️</span>
                             <p className="text-xs text-white font-medium">
                               {t("alreadyRegistered")}
