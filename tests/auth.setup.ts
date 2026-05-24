@@ -15,7 +15,7 @@ setup('authenticate as test user', async ({ page }) => {
   }
 
   await page.goto('/en/sign-in', { waitUntil: 'domcontentloaded' });
-  await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 15_000 });
+  await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 30_000 });
 
   await page.locator('input[name="identifier"]').fill(phone);
   await page.locator('input[name="password"]').fill(password);

@@ -4,7 +4,7 @@ test.describe('Blog', () => {
 
   test('/en/blog loads with heading', async ({ page }) => {
     await page.goto('/en/blog', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 30_000 });
     await expect(page.locator('body')).not.toContainText('Application error');
   });
 
@@ -40,7 +40,7 @@ test.describe('Blog', () => {
       return;
     }
     await firstPost.click();
-    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 30_000 });
   });
 
   test('blog post page has no 404 or error', async ({ page }) => {

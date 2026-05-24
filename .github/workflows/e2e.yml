@@ -27,7 +27,7 @@ jobs:
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          DEPLOYMENT_URL: https://suliko-front.vercel.app
+          DEPLOYMENT_URL: https://suliko-front-five.vercel.app
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           TEST_USER_PHONE: ${{ secrets.TEST_USER_PHONE }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}

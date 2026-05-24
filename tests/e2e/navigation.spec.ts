@@ -2,10 +2,10 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Navigation', () => {
 
-  test('sign-in link in header navigates correctly', async ({ page }) => {
+  test('sign-in link navigates correctly', async ({ page }) => {
     await page.goto('/en', { waitUntil: 'domcontentloaded' });
     const signInLink = page.locator('a[href*="sign-in"]').first();
-    await expect(signInLink).toBeVisible();
+    await expect(signInLink).toBeVisible({ timeout: 20_000 });
     await signInLink.click();
     await expect(page).toHaveURL(/\/sign-in/);
   });

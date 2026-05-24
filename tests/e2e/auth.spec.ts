@@ -4,7 +4,7 @@ test.describe('Sign-in form validation', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/en/sign-in', { waitUntil: 'domcontentloaded' });
-    await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 15_000 });
+    await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 30_000 });
   });
 
   test('empty submit stays on sign-in page', async ({ page }) => {

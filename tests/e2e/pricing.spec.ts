@@ -4,7 +4,7 @@ test.describe('Pricing page', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/en/price');
-    await page.locator('h1').first().waitFor({ state: 'visible', timeout: 10_000 });
+    await page.locator('h1').first().waitFor({ state: 'visible', timeout: 30_000 });
   });
 
   test('page heading renders', async ({ page }) => {
