@@ -24,45 +24,10 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
-      - name: Wait for Vercel deployment
-        id: wait
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
-          VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
-        run: |
-          echo "Polling Vercel for deployment of commit ${{ github.sha }}..."
-          for i in $(seq 1 60); do
-            RESPONSE=$(curl -sf \
-              "https://api.vercel.com/v6/deployments?projectId=${VERCEL_PROJECT_ID}&teamId=${VERCEL_ORG_ID}&limit=10" \
-              -H "Authorization: Bearer ${VERCEL_TOKEN}")
-            URL=$(echo "$RESPONSE" | python3 -c "
-          import sys, json
-          sha = '${{ github.sha }}'
-          try:
-              data = json.load(sys.stdin)
-              for d in data.get('deployments', []):
-                  if d.get('meta', {}).get('githubCommitSha') == sha and d.get('readyState') == 'READY':
-                      print('https://' + d['url'])
-                      break
-          except:
-              pass
-          ")
-            if [ -n "$URL" ]; then
-              echo "deployment_url=$URL" >> $GITHUB_OUTPUT
-              echo "Deployment ready: $URL"
-              exit 0
-            fi
-            echo "Attempt $i/60: not ready yet, retrying in 10s..."
-            sleep 10
-          done
-          echo "Timed out waiting for Vercel deployment"
-          exit 1
-
       - name: Run Playwright tests
         run: npx playwright test
         env:
-          DEPLOYMENT_URL: ${{ steps.wait.outputs.deployment_url }}
+          DEPLOYMENT_URL: https://suliko-front.vercel.app
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           TEST_USER_PHONE: ${{ secrets.TEST_USER_PHONE }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
