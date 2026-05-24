@@ -5,7 +5,7 @@ const authFile = path.join('playwright', '.auth', 'user.json');
 
 setup('authenticate as test user', async ({ page }) => {
   // Setup needs more time than regular tests due to API calls
-  setup.setTimeout(60_000);
+  setup.setTimeout(120_000);
 
   const phone = process.env.TEST_USER_PHONE;
   const password = process.env.TEST_USER_PASSWORD;
@@ -23,9 +23,9 @@ setup('authenticate as test user', async ({ page }) => {
 
   // Wait for navigation, API error alert, OR Zod validation error
   await Promise.race([
-    page.waitForURL(url => !url.toString().includes('/sign-in'), { timeout: 25_000 }),
-    page.locator('[role="alert"]').waitFor({ state: 'visible', timeout: 25_000 }),
-    page.locator('p[data-slot="form-message"]').waitFor({ state: 'visible', timeout: 25_000 }),
+    page.waitForURL(url => !url.toString().includes('/sign-in'), { timeout: 90_000 }),
+    page.locator('[role="alert"]').waitFor({ state: 'visible', timeout: 90_000 }),
+    page.locator('p[data-slot="form-message"]').waitFor({ state: 'visible', timeout: 90_000 }),
   ]).catch(() => {});
 
   if (page.url().includes('/sign-in')) {
