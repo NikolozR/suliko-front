@@ -63,8 +63,8 @@ const documentTranslationSchema = z.object({
     .refine((files) => {
       if (!files || !files.length) return false;
       const file = files[0];
-      return file && file.size <= 10 * 1024 * 1024; // 10MB limit
-    }, "File size must be less than 10MB."),
+      return file && file.size <= 50 * 1024 * 1024; // 50MB limit
+    }, "File size must be less than 50MB."),
   currentTargetLanguageId: z.number(),
   currentSourceLanguageId: z.number(),
   isSrt: z.boolean().optional(),

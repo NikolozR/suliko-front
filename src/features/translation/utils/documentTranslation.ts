@@ -1,5 +1,6 @@
-import { translateDocumentUserContent } from "../services/translationService";
+import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
 import { DocumentTranslateUserContentParams } from "../types/types.Translation";
+import { uploadFileToGemini } from "../services/geminiUploadService";
 import { useDocumentTranslationStore } from "../store/documentTranslationStore";
 import { getResult, getStatus } from "../services/jobService";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
@@ -29,15 +30,35 @@ export async function documentTranslatingWithJobId(
   if (!currentFile || currentFile.length === 0) {
     throw new Error("No file selected");
   }
-  onProgress?.(10, "Uploading document...");
-  const params: DocumentTranslateUserContentParams = {
-    File: data.currentFile[0],
-    TargetLanguageId: data.currentTargetLanguageId,
-    OutputLanguageId: outputLanguageId,
-    OutputFormat: 0,
-    model: model,
-  };
-  const result = await translateDocumentUserContent(params, data.isSrt);
+
+  const file = data.currentFile[0];
+  let result;
+
+  if (data.isSrt) {
+    // SRT files keep the original FormData path
+    onProgress?.(10, "Uploading document...");
+    const params: DocumentTranslateUserContentParams = {
+      File: file,
+      TargetLanguageId: data.currentTargetLanguageId,
+      OutputLanguageId: outputLanguageId,
+      OutputFormat: 0,
+      model: model,
+    };
+    result = await translateDocumentUserContent(params, true);
+  } else {
+    // All other documents go through Gemini Files API
+    onProgress?.(5, "Uploading to Gemini...");
+    const { fileUri, mimeType } = await uploadFileToGemini(file);
+    onProgress?.(15, "Starting translation...");
+    result = await translateDocumentWithUri({
+      fileUri,
+      mimeType,
+      TargetLanguageId: data.currentTargetLanguageId,
+      OutputLanguageId: outputLanguageId,
+      OutputFormat: 0,
+      model: model,
+    });
+  }
 
   const currentJobId = result.jobId;
   setJobId(currentJobId);
