@@ -296,7 +296,10 @@ export default function ProjectDetailPage() {
 
       try {
         const { fileData, fileName, contentType } = chat.translationResult || {};
-        if (fileData && fileName && contentType) {
+        // Only reconstruct the original document preview for binary formats (PDF, DOCX).
+        // Text/markdown is the translated output, not the original — the viewer can't render it.
+        const isBinaryPreviewable = contentType && !contentType.startsWith("text/");
+        if (fileData && fileName && contentType && isBinaryPreviewable) {
           const byteString = atob(fileData);
           const arrayBuffer = new ArrayBuffer(byteString.length);
           const uint8Array = new Uint8Array(arrayBuffer);
@@ -474,8 +477,8 @@ export default function ProjectDetailPage() {
     );
   }
 
-  // Completed + hydrated — show result
-  if (chat.chatId === projectId && hydrated && reconstructedFile) {
+  // Completed + hydrated — show result (reconstructedFile may be null for URI-based translations)
+  if (chat.chatId === projectId && hydrated && (reconstructedFile || translatedMarkdown)) {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-[1600px]">
         <div className="flex items-center gap-4 mb-8">

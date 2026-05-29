@@ -19,7 +19,7 @@ import toast from "react-hot-toast";
 
 interface ChatTranslationResultViewProps {
   chatId: string;
-  currentFile: File;
+  currentFile: File | null;
   translatedMarkdown: string;
   onFileChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onRemoveFile?: () => void;
