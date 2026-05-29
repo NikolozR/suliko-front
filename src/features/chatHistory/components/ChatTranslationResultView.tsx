@@ -199,8 +199,17 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
         try {
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+          const editorHtml = editorRef.current?.getHTML();
+          const htmlContent = editorHtml && editorHtml !== "<p></p>"
+            ? editorHtml
+            : (() => {
+                const isHtml = translatedMarkdown.trimStart().startsWith("<");
+                return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
+              })();
           const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
-          await generatePdfFromHtml(translatedMarkdown, fileName);
+          await generatePdfFromHtml(htmlContent, fileName);
         } catch (err) {
           console.error("PDF export failed:", err);
           alert("Failed to generate PDF");
