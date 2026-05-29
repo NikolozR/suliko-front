@@ -53,6 +53,7 @@ export async function documentTranslatingWithJobId(
     result = await translateDocumentWithUri({
       fileUri,
       mimeType,
+      fileName: file.name,
       TargetLanguageId: data.currentTargetLanguageId,
       OutputLanguageId: outputLanguageId,
       OutputFormat: 0,

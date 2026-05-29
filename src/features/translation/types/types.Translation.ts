@@ -89,6 +89,7 @@ export interface ApplySuggestionResponse {
 export interface DocumentTranslateWithUriParams {
   fileUri: string;
   mimeType: string;
+  fileName?: string;
   TargetLanguageId: number;
   OutputLanguageId: number;
   OutputFormat: number;

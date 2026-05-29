@@ -34,6 +34,7 @@ export async function startTranslationProject(
     result = await translateDocumentWithUri({
       fileUri,
       mimeType,
+      fileName: data.currentFile[0].name,
       TargetLanguageId: data.currentTargetLanguageId,
       OutputLanguageId: outputLanguageId,
       OutputFormat: 0,

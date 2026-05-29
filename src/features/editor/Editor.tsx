@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { marked } from "marked";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -70,10 +71,12 @@ export default function Editor({ translatedMarkdown, onChange, hoveredText }: Ed
     if (!editor) return;
     const incoming = translatedMarkdown || "";
     const current = editor.getHTML();
-    if (current !== incoming) {
+    // Convert markdown → HTML when the content doesn't look like HTML already
+    const isHtml = incoming.trimStart().startsWith("<");
+    const html = isHtml ? incoming : marked(incoming, { async: false }) as string;
+    if (current !== html) {
       isSettingDataRef.current = true;
-      console.log('[Editor] setContent length:', incoming.length, 'preview:', incoming.slice(0, 200));
-      editor.commands.setContent(incoming);
+      editor.commands.setContent(html);
       isSettingDataRef.current = false;
     }
   }, [editor, translatedMarkdown]);
