@@ -501,7 +501,7 @@ const DocumentTranslationCard = () => {
       //   setValue("currentFile", newFileList);
       // }
 
-      const { chatId } = await startTranslationProject(data);
+      const { chatId } = await startTranslationProject(data, estimatedPageCount || 1);
 
       // Persist the original file so the project detail page can show the preview
       // (URI-based translations don't store bytes on the backend)

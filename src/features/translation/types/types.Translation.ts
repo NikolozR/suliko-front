@@ -94,6 +94,7 @@ export interface DocumentTranslateWithUriParams {
   OutputLanguageId: number;
   OutputFormat: number;
   model: number;
+  pageCount?: number;
 }
 
 export interface GeminiUploadResponse {

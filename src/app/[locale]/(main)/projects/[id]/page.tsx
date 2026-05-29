@@ -251,6 +251,9 @@ export default function ProjectDetailPage() {
         }
 
         setLiveStatus(statusResult.status);
+        if (statusResult.progress > 0) {
+          setSimulatedProgress((prev) => Math.max(prev, statusResult.progress));
+        }
         if (!pollCancelledRef.current) setTimeout(poll, 3000);
       } catch {
         if (!pollCancelledRef.current) setTimeout(poll, 5000);

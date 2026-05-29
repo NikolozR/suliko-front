@@ -8,7 +8,8 @@ import { uploadFileToGemini } from "../services/geminiUploadService";
  * Submits the document and returns jobId + chatId for redirect to project detail page.
  */
 export async function startTranslationProject(
-  data: DocumentFormData
+  data: DocumentFormData,
+  pageCount?: number
 ): Promise<{ jobId: string; chatId: string }> {
   const model = 2;
   const outputLanguageId =
@@ -39,6 +40,7 @@ export async function startTranslationProject(
       OutputLanguageId: outputLanguageId,
       OutputFormat: 0,
       model,
+      pageCount: pageCount ?? 1,
     });
   }
 
