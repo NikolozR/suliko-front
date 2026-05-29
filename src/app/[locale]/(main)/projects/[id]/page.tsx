@@ -296,11 +296,7 @@ export default function ProjectDetailPage() {
 
       try {
         const { fileData, fileName, contentType } = chat.translationResult || {};
-        // Only use the translation result as the original document preview when it's a
-        // previewable binary format (PDF, DOCX). Skip markdown/text — those are the
-        // translated output, not the original document, and the viewer can't render them.
-        const isPreviewable = contentType && !contentType.includes("text/");
-        if (fileData && fileName && contentType && isPreviewable) {
+        if (fileData && fileName && contentType) {
           const byteString = atob(fileData);
           const arrayBuffer = new ArrayBuffer(byteString.length);
           const uint8Array = new Uint8Array(arrayBuffer);
