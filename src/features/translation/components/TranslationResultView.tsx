@@ -235,7 +235,30 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedMarkdown}</body></html>`;
+        // translatedMarkdown may be raw markdown (before any user edit) or HTML (after an edit).
+        // html-docx-js only understands HTML, so convert markdown → HTML the same way the editor does.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+        const isHtml = translatedMarkdown.trimStart().startsWith("<");
+        const bodyHtml = isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
+        const fullHtml = `<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body  { font-family: Calibri, sans-serif; font-size: 11pt; }
+    h1    { font-size: 16pt; }
+    h2    { font-size: 14pt; }
+    h3    { font-size: 12pt; }
+    p     { margin: 0 0 8pt 0; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border: 1pt solid #aaa; padding: 4pt 8pt; }
+  </style>
+</head>
+<body>${bodyHtml}</body>
+</html>`;
         // @ts-expect-error Type errors, nothing special
         const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
         const blob = htmlDocx.asBlob(fullHtml);
