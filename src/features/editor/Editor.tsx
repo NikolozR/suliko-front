@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
 import { useEditor, EditorContent } from "@tiptap/react";
@@ -24,13 +24,21 @@ import Superscript from "@tiptap/extension-superscript";
 import "./editor.css";
 import Toolbar from "./Toolbar";
 
+export interface EditorHandle {
+  /** Returns the editor's current content as HTML (same as what copy-paste produces). */
+  getHTML: () => string;
+}
+
 interface EditorProps {
   translatedMarkdown: string;
   onChange?: (html: string) => void;
   hoveredText?: string | null;
 }
 
-export default function Editor({ translatedMarkdown, onChange, hoveredText }: EditorProps) {
+const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
+  { translatedMarkdown, onChange, hoveredText },
+  ref
+) {
   const isSettingDataRef = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -66,6 +74,12 @@ export default function Editor({ translatedMarkdown, onChange, hoveredText }: Ed
       attributes: { class: "tiptap-editor" },
     },
   });
+
+  // Expose getHTML() to parent via ref so downloads can use the rendered HTML
+  // (same content the user would copy-paste into Word)
+  useImperativeHandle(ref, () => ({
+    getHTML: () => editor?.getHTML() ?? "",
+  }), [editor]);
 
   // Sync external content changes
   useEffect(() => {
@@ -131,4 +145,6 @@ export default function Editor({ translatedMarkdown, onChange, hoveredText }: Ed
       </div>
     </div>
   );
-}
+});
+
+export default Editor;

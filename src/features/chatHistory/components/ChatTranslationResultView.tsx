@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useRef, useEffect, useState } from "react";
+import { ChangeEvent, useRef, useEffect, useState, type RefObject } from "react";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 import DocumentPreview from "@/features/translation/components/DocumentPreview";
@@ -7,7 +7,7 @@ import FileInfoDisplay from "@/features/translation/components/FileInfoDisplay";
 import CopyButton from "@/features/translation/components/CopyButton";
 import DownloadButton from "@/features/translation/components/DownloadButton";
 import ChatSuggestionsPanel from './ChatSuggestionsPanel';
-import Editor from "@/features/editor/Editor";
+import Editor, { type EditorHandle } from "@/features/editor/Editor";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
@@ -43,6 +43,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
+  const editorRef = useRef<EditorHandle>(null) as RefObject<EditorHandle>;
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
@@ -155,12 +156,18 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        // translatedMarkdown may be raw markdown (before any user edit) or HTML (after an edit).
-        // html-docx-js only understands HTML, so convert markdown → HTML the same way the editor does.
+        // Prefer the editor's current HTML — it's the same content the user sees and
+        // what copy-paste into Word uses, so formatting is guaranteed to be correct.
+        // Fall back to converting translatedMarkdown with marked() when the ref isn't ready.
         // eslint-disable-next-line @typescript-eslint/no-require-imports
         const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
-        const isHtml = translatedMarkdown.trimStart().startsWith("<");
-        const bodyHtml = isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
+        const editorHtml = editorRef.current?.getHTML();
+        const bodyHtml = editorHtml && editorHtml !== "<p></p>"
+          ? editorHtml
+          : (() => {
+              const isHtml = translatedMarkdown.trimStart().startsWith("<");
+              return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
+            })();
         const fullHtml = `<!DOCTYPE html>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
       xmlns:w="urn:schemas-microsoft-com:office:word"
@@ -335,6 +342,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
           </div>
           <div className="min-h-[300px] h-[50vh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
             <Editor
+              ref={editorRef}
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}
               hoveredText={hoveredSuggestionOriginalText}
