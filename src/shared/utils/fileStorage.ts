@@ -203,3 +203,67 @@ export async function hasFileInStorage(): Promise<boolean> {
   return file !== null;
 }
 
+// ─── Per-chat original file storage (for URI-based translations) ──────────────
+
+const ORIGINAL_FILE_PREFIX = 'original-file-';
+
+/**
+ * Save the original source file keyed by chatId so the project detail page
+ * can reconstruct the preview even when the backend doesn't store document bytes.
+ */
+export async function saveOriginalFileForChat(chatId: string, file: File): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onerror = () => reject(request.error);
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+    request.onsuccess = () => {
+      const db = request.result;
+      file.arrayBuffer().then((buffer) => {
+        const transaction = db.transaction([STORE_NAME], 'readwrite');
+        const store = transaction.objectStore(STORE_NAME);
+        const putRequest = store.put(
+          { name: file.name, type: file.type, lastModified: file.lastModified, data: buffer },
+          ORIGINAL_FILE_PREFIX + chatId
+        );
+        putRequest.onsuccess = () => resolve();
+        putRequest.onerror = () => reject(putRequest.error);
+      }).catch(reject);
+    };
+  });
+}
+
+/**
+ * Retrieve the original source file that was saved for a given chatId.
+ * Returns null if not found.
+ */
+export async function getOriginalFileForChat(chatId: string): Promise<File | null> {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(DB_NAME, 1);
+    request.onerror = () => reject(request.error);
+    request.onupgradeneeded = (event) => {
+      const db = (event.target as IDBOpenDBRequest).result;
+      if (!db.objectStoreNames.contains(STORE_NAME)) {
+        db.createObjectStore(STORE_NAME);
+      }
+    };
+    request.onsuccess = () => {
+      const db = request.result;
+      const transaction = db.transaction([STORE_NAME], 'readonly');
+      const store = transaction.objectStore(STORE_NAME);
+      const getRequest = store.get(ORIGINAL_FILE_PREFIX + chatId);
+      getRequest.onsuccess = () => {
+        const result = getRequest.result;
+        if (!result) { resolve(null); return; }
+        const { name, type, lastModified, data } = result;
+        resolve(new File([data], name, { type, lastModified }));
+      };
+      getRequest.onerror = () => reject(getRequest.error);
+    };
+  });
+}
+

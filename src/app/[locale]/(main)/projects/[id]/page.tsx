@@ -19,6 +19,7 @@ import { Skeleton } from "@/features/ui/components/ui/skeleton";
 import { useParams } from "next/navigation";
 import { useChatEditingStore } from "@/features/chatHistory/store/chatEditingStore";
 import { useChatSuggestionsStore } from "@/features/chatHistory/store/chatSuggestionsStore";
+import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import ChatTranslationResultView from "@/features/chatHistory/components/ChatTranslationResultView";
 
 function formatElapsed(seconds: number): string {
@@ -279,6 +280,7 @@ export default function ProjectDetailPage() {
     setChatId(chat.chatId || "");
 
     (async () => {
+      // 1. Try fetching original file from backend (works for FormData-based translations)
       try {
         const blobOrFile = await getSingleChatHistoryOriginalFile(chat.chatId);
         const isFile = typeof (blobOrFile as File).name === "string";
@@ -292,8 +294,32 @@ export default function ProjectDetailPage() {
         setReconstructedFile(file);
         setHydrated(true);
         return;
+      } catch { /* 404 expected for URI-based translations — continue to fallbacks */ }
+
+      // 2. Try Zustand store (works in the same browser session, immediately after redirect)
+      try {
+        const storeState = useDocumentTranslationStore.getState();
+        if (storeState.chatId === chat.chatId && storeState.currentFile?.[0]) {
+          setReconstructedFile(storeState.currentFile[0]);
+          setHydrated(true);
+          return;
+        }
       } catch { /* ignore */ }
 
+      // 3. Try IndexedDB (persists across page refreshes)
+      try {
+        if (typeof window !== 'undefined' && 'indexedDB' in window) {
+          const { getOriginalFileForChat } = await import("@/shared/utils/fileStorage");
+          const storedFile = await getOriginalFileForChat(chat.chatId);
+          if (storedFile) {
+            setReconstructedFile(storedFile);
+            setHydrated(true);
+            return;
+          }
+        }
+      } catch { /* ignore */ }
+
+      // 4. Final fallback: use translationResult.fileData only for binary formats
       try {
         const { fileData, fileName, contentType } = chat.translationResult || {};
         // Only reconstruct the original document preview for binary formats (PDF, DOCX).

@@ -29,7 +29,7 @@ import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
-import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, type DocumentMetadata } from "@/shared/utils/fileStorage";
+import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
 import LanguageSelect from "./LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
@@ -502,6 +502,15 @@ const DocumentTranslationCard = () => {
       // }
 
       const { chatId } = await startTranslationProject(data);
+
+      // Persist the original file so the project detail page can show the preview
+      // (URI-based translations don't store bytes on the backend)
+      if (!data.isSrt && typeof window !== 'undefined' && 'indexedDB' in window) {
+        saveOriginalFileForChat(chatId, data.currentFile[0]).catch(() => {});
+      }
+      // Also update the in-memory store so the project page can use it instantly
+      useDocumentTranslationStore.getState().setChatId(chatId);
+
       setManualProgress(12, t("progress.projectStarted"));
       window.dispatchEvent(new Event("projects-updated"));
       router.push(`/projects/${chatId}`);
