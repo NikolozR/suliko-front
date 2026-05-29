@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { marked } from "marked";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
