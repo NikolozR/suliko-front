@@ -85,3 +85,20 @@ export interface ApplySuggestionResponse {
   newSuggestions: Suggestion[];
   changeDescription: string;
 }
+
+export interface DocumentTranslateWithUriParams {
+  fileUri: string;
+  mimeType: string;
+  fileName?: string;
+  TargetLanguageId: number;
+  OutputLanguageId: number;
+  OutputFormat: number;
+  model: number;
+  pageCount?: number;
+}
+
+export interface GeminiUploadResponse {
+  fileUri: string;
+  mimeType: string;
+  displayName: string;
+}

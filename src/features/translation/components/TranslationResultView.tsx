@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useRef, useEffect, useState } from "react";
+import { ChangeEvent, useRef, useEffect, useState, useCallback, type RefObject } from "react";
 // import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
@@ -7,11 +7,11 @@ import FileInfoDisplay from "./FileInfoDisplay";
 import CopyButton from "./CopyButton";
 import DownloadButton from "./DownloadButton";
 import SuggestionsPanel from './SuggestionsPanel';
-import Editor from "@/features/editor/Editor";
+import Editor, { type EditorHandle } from "@/features/editor/Editor";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff, Clock, FileDown, AlertTriangle } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff, FileDown, Pencil } from "lucide-react";
 import React from "react";
 import { toast } from "react-hot-toast";
 import DocumentPreview from "./DocumentPreview";
@@ -31,6 +31,71 @@ import DocumentPreview from "./DocumentPreview";
 //   ),
 // });
 
+/**
+ * Isolated column that only re-renders when currentFile or hide state changes.
+ * Receives currentFile as prop (no store subscription) so it does NOT re-render
+ * when translatedMarkdown changes (avoids flickering on CKEditor keystrokes).
+ */
+const DocumentPreviewColumn = React.memo(function DocumentPreviewColumn({
+  documentPreviewRef,
+  hideOriginalDocument,
+  setHideOriginalDocument,
+  onFileChange,
+  onRemoveFile,
+  currentFile,
+}: {
+  documentPreviewRef: React.RefObject<HTMLDivElement | null>;
+  hideOriginalDocument: boolean;
+  setHideOriginalDocument: (hide: boolean) => void;
+  onFileChange: (event: ChangeEvent<HTMLInputElement>) => void;
+  onRemoveFile: () => void;
+  currentFile: File | null;
+}) {
+  const t = useTranslations("DocumentTranslationCard");
+
+  if (hideOriginalDocument) return null;
+
+  return (
+    <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
+        <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+          {t("originalDocument")}
+        </div>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={() => setHideOriginalDocument(true)}
+          className="transition-all duration-200 flex-shrink-0"
+          title={t("hideOriginal")}
+          aria-label={t("hideOriginal")}
+        >
+          <EyeOff className="h-4 w-4" />
+        </Button>
+      </div>
+      <div
+        className="h-[400px] md:h-[600px] lg:h-[800px] max-h-[400px] md:max-h-[600px] lg:max-h-[800px] flex flex-col w-full"
+        ref={documentPreviewRef}
+      >
+        <div className="space-y-4 h-full flex flex-col">
+          <div className="flex-1 min-h-0">
+            {currentFile && (
+              <DocumentPreview key={currentFile.name + currentFile.size} file={currentFile} />
+            )}
+          </div>
+          {currentFile && (
+            <FileInfoDisplay
+              file={currentFile}
+              onFileChange={onFileChange}
+              onRemoveFile={onRemoveFile}
+              id="file-upload-change-split"
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  );
+});
 
 interface TranslationResultViewProps {
   currentFile: File;
@@ -58,26 +123,41 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
+  const editorRef = useRef<EditorHandle>(null) as RefObject<EditorHandle>;
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
   const [editorDeadline, setEditorDeadline] = useState<number | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
+  // const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
   const { hoveredSuggestionOriginalText } = useSuggestionsStore();
+
+  const onFileChangeRef = useRef(onFileChange);
+  const onRemoveFileRef = useRef(onRemoveFile);
+  onFileChangeRef.current = onFileChange;
+  onRemoveFileRef.current = onRemoveFile;
+  const stableOnFileChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => onFileChangeRef.current?.(e),
+    []
+  );
+  const stableOnRemoveFile = useCallback(() => onRemoveFileRef.current?.(), []);
 
   const isOriginalFileSrt = () => {
     const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
     return fileExtension === 'srt';
   };
 
+  const hasTranslatedContent = !!translatedMarkdown;
+
   useEffect(() => {
+    if (!hasTranslatedContent) return;
+
     const documentContainer =
       documentPreviewRef.current?.querySelector(".overflow-y-auto");
     const markdownContainer =
       markdownPreviewRef.current?.querySelector(".overflow-y-auto");
 
-    if (!documentContainer || !markdownContainer || !translatedMarkdown) return;
+    if (!documentContainer || !markdownContainer) return;
 
     const syncScroll = (source: Element, target: Element, event: Event) => {
       if (isScrolling.current) return;
@@ -105,7 +185,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       documentContainer.removeEventListener("scroll", handleDocumentScroll);
       markdownContainer.removeEventListener("scroll", handleMarkdownScroll);
     };
-  }, [translatedMarkdown]);
+  }, [hasTranslatedContent]);
 
   // Start 10-minute editor timer on first mount of the result view
   useEffect(() => {
@@ -116,25 +196,25 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   }, [editorDeadline]);
 
   // Tick countdown each second
-  useEffect(() => {
-    if (editorDeadline === null) return;
-    const intervalId = setInterval(() => {
-      const secondsLeft = Math.max(0, Math.floor((editorDeadline - Date.now()) / 1000));
-      setRemainingSeconds(secondsLeft);
-      if (secondsLeft <= 0) {
-        clearInterval(intervalId);
-      }
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [editorDeadline]);
+  // useEffect(() => {
+  //   if (editorDeadline === null) return;
+  //   const intervalId = setInterval(() => {
+  //     const secondsLeft = Math.max(0, Math.floor((editorDeadline - Date.now()) / 1000));
+  //     setRemainingSeconds(secondsLeft);
+  //     if (secondsLeft <= 0) {
+  //       clearInterval(intervalId);
+  //     }
+  //   }, 1000);
+  //   return () => clearInterval(intervalId);
+  // }, [editorDeadline]);
 
-  const formatTime = (totalSeconds: number) => {
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    const mm = String(minutes).padStart(2, "0");
-    const ss = String(seconds).padStart(2, "0");
-    return `${mm}:${ss}`;
-  };
+  // const formatTime = (totalSeconds: number) => {
+  //   const minutes = Math.floor(totalSeconds / 60);
+  //   const seconds = totalSeconds % 60;
+  //   const mm = String(minutes).padStart(2, "0");
+  //   const ss = String(seconds).padStart(2, "0");
+  //   return `${mm}:${ss}`;
+  // };
 
   useEffect(() => {
     if (!downloadedFormat) return;
@@ -156,7 +236,36 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedMarkdown}</body></html>`;
+        // Prefer the editor's current HTML — it's the same content the user sees and
+        // what copy-paste into Word uses, so formatting is guaranteed to be correct.
+        // Fall back to converting translatedMarkdown with marked() when the ref isn't ready.
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
+        const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+        const editorHtml = editorRef.current?.getHTML();
+        const bodyHtml = editorHtml && editorHtml !== "<p></p>"
+          ? editorHtml
+          : (() => {
+              const isHtml = translatedMarkdown.trimStart().startsWith("<");
+              return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
+            })();
+        const fullHtml = `<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body  { font-family: Calibri, sans-serif; font-size: 11pt; }
+    h1    { font-size: 16pt; }
+    h2    { font-size: 14pt; }
+    h3    { font-size: 12pt; }
+    p     { margin: 0 0 8pt 0; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border: 1pt solid #aaa; padding: 4pt 8pt; }
+  </style>
+</head>
+<body>${bodyHtml}</body>
+</html>`;
         // @ts-expect-error Type errors, nothing special
         const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
         const blob = htmlDocx.asBlob(fullHtml);
@@ -169,96 +278,21 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
-        const { jsPDF } = await import("jspdf");
-        const html2canvas = (await import("html2canvas")).default;
-
-        // --- Create isolated wrapper ---
-        const wrapper = document.createElement("div");
-        wrapper.className = "pdf-export";
-        wrapper.innerHTML = translatedMarkdown;
-
-        Object.assign(wrapper.style, {
-          position: "fixed",
-          left: "-10000px",
-          top: "0",
-          width: "794px",              // A4 @ 96dpi
-          padding: "24px",
-          backgroundColor: "#ffffff",
-          color: "#000000",            // 🔴 force readable text
-          fontFamily: "Arial, sans-serif",
-          boxSizing: "border-box",
-          lineHeight: "1.5",
-        });
-
-        document.body.appendChild(wrapper);
-
         try {
-          // --- Wait for fonts ---
-          if (document.fonts?.ready) {
-            await document.fonts.ready;
-          }
-
-          // --- Wait for images ---
-          const images = wrapper.querySelectorAll("img");
-          await Promise.all(
-            [...images].map(img =>
-              img.complete
-                ? Promise.resolve()
-                : new Promise(resolve => {
-                  img.onload = resolve;
-                  img.onerror = resolve;
-                })
-            )
-          );
-
-          // --- Let browser fully paint (CRITICAL) ---
-          await new Promise(r => requestAnimationFrame(r));
-          await new Promise(r => requestAnimationFrame(r));
-
-          // --- Render to canvas ---
-          const canvas = await html2canvas(wrapper, {
-            scale: 2,
-            backgroundColor: "#ffffff",
-            useCORS: true,
-            logging: false,
-          });
-
-          const imgData = canvas.toDataURL("image/png");
-
-          // --- Create PDF ---
-          const pdf = new jsPDF({
-            orientation: "p",
-            unit: "mm",
-            format: "a4",
-            compress: true,
-          });
-
-          const pageWidth = 210;
-          const pageHeight = 297;
-          const margin = 10;
-
-          const imgWidth = pageWidth - margin * 2;
-          const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-          let position = margin;
-          let heightLeft = imgHeight;
-
-          pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-          heightLeft -= pageHeight - margin * 2;
-
-          while (heightLeft > 0) {
-            pdf.addPage();
-            position = heightLeft - imgHeight + margin;
-            pdf.addImage(imgData, "PNG", margin, position, imgWidth, imgHeight);
-            heightLeft -= pageHeight - margin * 2;
-          }
-
-          pdf.save(fileName);
+          // eslint-disable-next-line @typescript-eslint/no-require-imports
+          const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+          const editorHtml = editorRef.current?.getHTML();
+          const htmlContent = editorHtml && editorHtml !== "<p></p>"
+            ? editorHtml
+            : (() => {
+                const isHtml = translatedMarkdown.trimStart().startsWith("<");
+                return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
+              })();
+          const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+          await generatePdfFromHtml(htmlContent, fileName);
         } catch (err) {
           console.error("PDF export failed:", err);
           toast.error("Failed to generate PDF. Please try again.");
-        } finally {
-          document.body.removeChild(wrapper);
         }
       }
 
@@ -271,55 +305,25 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   return (
     <>
       <div className={hideOriginalDocument ? "" : "flex flex-col lg:flex-row gap-4 lg:gap-8"}>
-        {!hideOriginalDocument && (
-          <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-              <div className="font-semibold text-suliko-default-color text-sm md:text-base">
-                {t('originalDocument')}
-              </div>
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setHideOriginalDocument(true)}
-                className="transition-all duration-200 flex-shrink-0"
-                title={t('hideOriginal')}
-                aria-label={t('hideOriginal')}
-              >
-                <EyeOff className="h-4 w-4" />
-              </Button>
-            </div>
-            <div
-              className="h-[400px] md:h-[600px] lg:h-[800px] max-h-[400px] md:max-h-[600px] lg:max-h-[800px] flex flex-col w-full"
-              ref={documentPreviewRef}
-            >
-              <div className="space-y-4 h-full flex flex-col">
-                <div className="flex-1 min-h-0">
-                  <DocumentPreview file={currentFile} />
-                </div>
-                {currentFile && (
-                  <FileInfoDisplay
-                    file={currentFile}
-                    onFileChange={onFileChange}
-                    onRemoveFile={onRemoveFile}
-                    id="file-upload-change-split"
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        )}
+        <DocumentPreviewColumn
+          documentPreviewRef={documentPreviewRef}
+          hideOriginalDocument={hideOriginalDocument}
+          setHideOriginalDocument={setHideOriginalDocument}
+          onFileChange={stableOnFileChange}
+          onRemoveFile={stableOnRemoveFile}
+          currentFile={currentFile}
+        />
 
         <div className={hideOriginalDocument ? "w-full" : "w-full lg:flex-1 min-w-0"}>
-          {/* Header Section - Redesigned to prevent overlapping */}
-          <div className="mb-4 space-y-3">
-            {/* Title and Timer Row */}
+          {/* Header Section */}
+          <div className="mb-4 border-b border-border pb-2">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2 flex-wrap">
+                <Pencil className="h-4 w-4 text-suliko-default-color" aria-hidden="true" />
                 <div className="font-semibold text-suliko-default-color text-sm md:text-base">
                   {t('translatedText')}
                 </div>
-                {remainingSeconds > 0 ? (
+                {/* {remainingSeconds > 0 ? (
                   <span className={`text-xs flex items-center gap-1 whitespace-nowrap px-2 py-0.5 rounded-full ${remainingSeconds <= 120
                     ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
                     : "text-muted-foreground"
@@ -332,7 +336,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                     <AlertTriangle className="h-3 w-3" />
                     {t('editorTimeExpired')}
                   </span>
-                )}
+                )} */}
               </div>
 
               {/* Action Buttons Row */}
@@ -383,6 +387,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           </div>
           <div className="h-full max-h-[400px] md:max-h-[600px] lg:max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
             <Editor
+              ref={editorRef}
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}
               hoveredText={hoveredSuggestionOriginalText}

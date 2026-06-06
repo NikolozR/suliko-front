@@ -1,3 +1,15 @@
+export interface SubscriptionInfo {
+  id: string;
+  planName: string;
+  priceGel: number;
+  monthlyPageLimit: number | null;
+  pagesUsed: number;
+  status: 'Active' | 'PastDue' | 'Canceled' | 'Expired';
+  autoRenew: boolean;
+  currentPeriodStart: string;
+  currentPeriodEnd: string;
+}
+
 export interface UpdateUserProfile {
   id: string;
   firstName: string;
@@ -12,4 +24,6 @@ export interface UpdateUserProfile {
 
 export interface UserProfile extends UpdateUserProfile {
   roleName: string;
+  referralCode?: string;
+  subscription?: SubscriptionInfo | null;
 }

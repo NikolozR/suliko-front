@@ -1,6 +1,7 @@
 import { API_BASE_URL } from "@/shared/constants/api";
 import {
   DocumentTranslateUserContentParams,
+  DocumentTranslateWithUriParams,
   DocumentTranslationResponse,
   TextTranslateUserContentParams,
   TextTranslateUserContentResponse,
@@ -114,6 +115,55 @@ export const translateDocumentUserContent = async (
         method: "POST",
         headers,
         body: formData,
+      });
+    } catch {
+      useAuthStore.getState().reset();
+      throw new Error("Token refresh failed");
+    }
+  }
+
+  if (response.status < 200 || response.status >= 300) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Translation failed");
+  } else {
+    const data = await response.json();
+    return data;
+  }
+};
+
+
+export const translateDocumentWithUri = async (
+  params: DocumentTranslateWithUriParams
+): Promise<DocumentTranslationResponse> => {
+  const endpoint = "/Document/translate-with-uri";
+
+  const { token, refreshToken } = useAuthStore.getState();
+
+  const headers = new Headers();
+  headers.append("Content-Type", "application/json");
+  if (token) {
+    headers.append("Authorization", `Bearer ${token}`);
+  } else {
+    throw new Error("No token found");
+  }
+
+  let response = await fetch(`${API_BASE_URL}${endpoint}`, {
+    method: "POST",
+    headers,
+    body: JSON.stringify(params),
+  });
+
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
+      response = await fetch(`${API_BASE_URL}${endpoint}`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(params),
       });
     } catch {
       useAuthStore.getState().reset();

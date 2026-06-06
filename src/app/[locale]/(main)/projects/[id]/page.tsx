@@ -19,6 +19,7 @@ import { Skeleton } from "@/features/ui/components/ui/skeleton";
 import { useParams } from "next/navigation";
 import { useChatEditingStore } from "@/features/chatHistory/store/chatEditingStore";
 import { useChatSuggestionsStore } from "@/features/chatHistory/store/chatSuggestionsStore";
+import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import ChatTranslationResultView from "@/features/chatHistory/components/ChatTranslationResultView";
 
 function formatElapsed(seconds: number): string {
@@ -250,6 +251,9 @@ export default function ProjectDetailPage() {
         }
 
         setLiveStatus(statusResult.status);
+        if (statusResult.progress > 0) {
+          setSimulatedProgress((prev) => Math.max(prev, statusResult.progress));
+        }
         if (!pollCancelledRef.current) setTimeout(poll, 3000);
       } catch {
         if (!pollCancelledRef.current) setTimeout(poll, 5000);
@@ -279,6 +283,7 @@ export default function ProjectDetailPage() {
     setChatId(chat.chatId || "");
 
     (async () => {
+      // 1. Try fetching original file from backend (works for FormData-based translations)
       try {
         const blobOrFile = await getSingleChatHistoryOriginalFile(chat.chatId);
         const isFile = typeof (blobOrFile as File).name === "string";
@@ -292,11 +297,38 @@ export default function ProjectDetailPage() {
         setReconstructedFile(file);
         setHydrated(true);
         return;
+      } catch { /* 404 expected for URI-based translations — continue to fallbacks */ }
+
+      // 2. Try Zustand store (works in the same browser session, immediately after redirect)
+      try {
+        const storeState = useDocumentTranslationStore.getState();
+        if (storeState.chatId === chat.chatId && storeState.currentFile?.[0]) {
+          setReconstructedFile(storeState.currentFile[0]);
+          setHydrated(true);
+          return;
+        }
       } catch { /* ignore */ }
 
+      // 3. Try IndexedDB (persists across page refreshes)
+      try {
+        if (typeof window !== 'undefined' && 'indexedDB' in window) {
+          const { getOriginalFileForChat } = await import("@/shared/utils/fileStorage");
+          const storedFile = await getOriginalFileForChat(chat.chatId);
+          if (storedFile) {
+            setReconstructedFile(storedFile);
+            setHydrated(true);
+            return;
+          }
+        }
+      } catch { /* ignore */ }
+
+      // 4. Final fallback: use translationResult.fileData only for binary formats
       try {
         const { fileData, fileName, contentType } = chat.translationResult || {};
-        if (fileData && fileName && contentType) {
+        // Only reconstruct the original document preview for binary formats (PDF, DOCX).
+        // Text/markdown is the translated output, not the original — the viewer can't render it.
+        const isBinaryPreviewable = contentType && !contentType.startsWith("text/");
+        if (fileData && fileName && contentType && isBinaryPreviewable) {
           const byteString = atob(fileData);
           const arrayBuffer = new ArrayBuffer(byteString.length);
           const uint8Array = new Uint8Array(arrayBuffer);
@@ -316,9 +348,34 @@ export default function ProjectDetailPage() {
     })();
 
     (async () => {
+      if (!chat.jobId) return;
       try {
         setIsSuggestionsLoading(true);
-        await settingUpChatSuggestions(chat.jobId);
+        const fetchResult = await settingUpChatSuggestions(chat.jobId);
+        if (fetchResult === "success") {
+          setHasGeneratedMore(true);
+          return;
+        }
+        // Suggestions not ready — trigger generation then poll
+        try {
+          const { regenerateSuggestions } = await import(
+            "@/features/translation/services/suggestionsService"
+          );
+          const { useChatEditingStore } = await import(
+            "@/features/chatHistory/store/chatEditingStore"
+          );
+          const targetLanguageId =
+            useChatEditingStore.getState().currentTargetLanguageId || 1;
+          await regenerateSuggestions({
+            jobId: chat.jobId,
+            chatId: chat.chatId,
+            targetLanguageId,
+            outputLanguageId: targetLanguageId,
+          });
+        } catch {
+          // might already be generating — continue polling
+        }
+        await settingUpChatSuggestions(chat.jobId, { waitForNew: true });
         setHasGeneratedMore(true);
       } catch {
         setSuggestions([]);
@@ -374,11 +431,17 @@ export default function ProjectDetailPage() {
     tOverlay("stageFinalize"),
   ];
 
+  const handleRemoveFile = useCallback(() => {
+    resetChatEditingStore();
+    resetChatSuggestionsStore();
+    router.push("/document");
+  }, [resetChatEditingStore, resetChatSuggestionsStore, router]);
+
   // --- RENDER ---
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <div className="flex items-center gap-4 mb-8">
           <Skeleton className="h-10 w-10" />
           <Skeleton className="h-8 w-48" />
@@ -399,7 +462,7 @@ export default function ProjectDetailPage() {
 
   if (error && liveStatus === "Failed" && chat) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
             <ArrowLeft className="h-6 w-6" />
@@ -420,7 +483,7 @@ export default function ProjectDetailPage() {
 
   if (error && !chat) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full mb-4">
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -434,7 +497,7 @@ export default function ProjectDetailPage() {
 
   if (!chat) {
     return (
-      <div className="container mx-auto p-6 max-w-4xl">
+      <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full mb-4">
           <ArrowLeft className="h-6 w-6" />
         </Button>
@@ -443,10 +506,10 @@ export default function ProjectDetailPage() {
     );
   }
 
-  // Completed + hydrated — show result
-  if (chat.chatId === projectId && hydrated && reconstructedFile) {
+  // Completed + hydrated — show result (reconstructedFile may be null for URI-based translations)
+  if (chat.chatId === projectId && hydrated && (reconstructedFile || translatedMarkdown)) {
     return (
-      <div className="container mx-auto p-6 max-w-[1600px]">
+      <div className="container mx-auto p-3 sm:p-6 max-w-[1600px]">
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
             <ArrowLeft className="h-6 w-6" />
@@ -462,6 +525,7 @@ export default function ProjectDetailPage() {
           currentFile={reconstructedFile}
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
+          onRemoveFile={handleRemoveFile}
           isSuggestionsLoading={isSuggestionsLoading}
           chatId={chat.chatId}
         />
@@ -479,7 +543,7 @@ export default function ProjectDetailPage() {
   const estMinutes = chat.estimatedTimeMinutes;
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
+    <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
       <div className="flex items-center gap-4 mb-8">
         <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
           <ArrowLeft className="h-6 w-6" />
@@ -508,7 +572,7 @@ export default function ProjectDetailPage() {
             </div>
             <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
               <div
-                className="bg-primary h-2 rounded-full transition-all duration-700 ease-out"
+                className="bg-primary h-2 rounded-full transition-[width] duration-500 ease-out"
                 style={{ width: `${simulatedProgress}%` }}
               />
             </div>

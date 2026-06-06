@@ -35,18 +35,21 @@ function ThemeToggle() {
 }
 
 // Navigation item component
-function NavItem({ children, onClick, isBlogPage }: { children: React.ReactNode; onClick: () => void; isBlogPage?: boolean }) {
+function NavItem({ children, onClick, isBlogPage, isActive }: { children: React.ReactNode; onClick: () => void; isBlogPage?: boolean; isActive?: boolean }) {
   return (
     <button
       onClick={onClick}
-      className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+      className={`relative transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
         isBlogPage
-          ? "text-white/90 hover:text-white"
-          : "text-foreground/80 hover:text-foreground"
+          ? isActive ? "text-white" : "text-white/90 hover:text-white"
+          : isActive ? "text-foreground" : "text-foreground/80 hover:text-foreground"
       }`}
       type="button"
     >
       {children}
+      {isActive && (
+        <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary rounded-full" />
+      )}
     </button>
   );
 }
@@ -80,6 +83,7 @@ export default function LandingHeader() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isBlogPage, setIsBlogPage] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
+  const [activeSection, setActiveSection] = useState<string | null>(null);
 
   // Prefetch the document page on hover
   const handleMouseEnter = () => {
@@ -126,6 +130,27 @@ export default function LandingHeader() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [lastScrollY]);
 
+  // Track active section via IntersectionObserver
+  useEffect(() => {
+    const sectionIds = ['about', 'pricing', 'contact'];
+    const observers: IntersectionObserver[] = [];
+
+    sectionIds.forEach((id) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) setActiveSection(id);
+        },
+        { rootMargin: '-30% 0px -60% 0px', threshold: 0 }
+      );
+      observer.observe(el);
+      observers.push(observer);
+    });
+
+    return () => observers.forEach((o) => o.disconnect());
+  }, [mounted]);
+
   // Close mobile menu on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
@@ -142,12 +167,16 @@ export default function LandingHeader() {
   const navItems = [
     { id: 'about', label: t("about") },
     { id: 'pricing', label: t("pricing") },
-    { id: 'testimonials', label: t("testimonials") },
+    { id: 'faq', label: t("faq") },
     { id: 'contact', label: t("contact") },
   ];
 
   // Blog navigation item (separate from scroll items)
   const blogNavItem = { id: 'blog', label: t("blog"), href: '/blog' };
+
+  // Notary navigation item
+  const notaryNavItem = { id: 'notary', label: t("notary"), href: '/notary' };
+  const isNotaryPage = pathname.includes('/notary');
 
   // Handle navigation click
   const handleNavClick = (sectionId: string) => {
@@ -200,10 +229,14 @@ export default function LandingHeader() {
             : "bg-slate-900/80 backdrop-blur-md"
           : isScrolled
             ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
-            : "bg-background/95 backdrop-blur-md md:bg-transparent"
+            : resolvedTheme === 'dark' ? "bg-background/95 backdrop-blur-md md:bg-transparent" : "bg-background/95 backdrop-blur-md"
       } ${
         isHeaderVisible ? "translate-y-0" : "-translate-y-full"
-      }`}
+      }
+      ${
+        resolvedTheme === 'dark' ? "" : "bg-white"
+      }
+      `}
     >
       <nav className="container z-50 relative mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
@@ -229,6 +262,7 @@ export default function LandingHeader() {
                   key={item.id}
                   onClick={() => handleNavClick(`#${item.id}`)}
                   isBlogPage={isBlogPage}
+                  isActive={activeSection === item.id}
                 >
                   <span className="cursor-pointer">{item.label}</span>
                 </NavItem>
@@ -240,6 +274,17 @@ export default function LandingHeader() {
                     : "text-foreground/80 hover:text-foreground"
                 }`}>
                   {blogNavItem.label}
+                </button>
+              </Link>
+              <Link href={notaryNavItem.href}>
+                <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+                  isNotaryPage
+                    ? "text-[var(--suliko-default-color)]"
+                    : isBlogPage
+                      ? "text-white/90 hover:text-white"
+                      : "text-foreground/80 hover:text-foreground"
+                }`}>
+                  {notaryNavItem.label}
                 </button>
               </Link>
             </div>
@@ -339,6 +384,17 @@ export default function LandingHeader() {
                         : "text-foreground/80 hover:text-foreground hover:bg-accent"
                     }`}>
                       {blogNavItem.label}
+                    </button>
+                  </Link>
+                  <Link href={notaryNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
+                      isNotaryPage
+                        ? "text-[var(--suliko-default-color)] bg-primary/5 border-primary/20"
+                        : isBlogPage
+                          ? "text-white/90 hover:text-white hover:bg-white/10"
+                          : "text-foreground/80 hover:text-foreground hover:bg-accent"
+                    }`}>
+                      {notaryNavItem.label}
                     </button>
                   </Link>
                 </nav>

@@ -1,11 +1,13 @@
+"use client";
 import { Button } from "@/features/ui/components/ui/button";
 import { Avatar, AvatarFallback } from "@/features/ui/components/ui/avatar";
-import { Plus } from "lucide-react";
+import { Plus, LogOut } from "lucide-react";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { useUser } from "@/features/auth/hooks/useUser";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { formatBalance } from "@/shared/utils/domainUtils";
+import { useAuthStore } from "@/features/auth/store/authStore";
 
 interface ProfileHeroProps {
   userProfile: UserProfile;
@@ -14,10 +16,17 @@ interface ProfileHeroProps {
 export const ProfileHero = ({ userProfile }: ProfileHeroProps) => {
   const { displayName, initials } = useUser();
   const t = useTranslations("Profile");
+  const reset = useAuthStore((state) => state.reset);
+  const router = useRouter();
+
+  const handleLogout = () => {
+    reset();
+    router.push("/sign-in");
+  };
 
   return (
     <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 p-6 md:p-8 mb-8 shadow-sm space-y-6">
-      {/* Row 1: Avatar, name, username */}
+      {/* Row 1: Avatar, name, username, logout */}
       <div className="flex items-center gap-6 md:gap-8">
         <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-2 border-primary/30 shrink-0">
           <AvatarFallback className="bg-primary/15 text-primary text-2xl sm:text-3xl font-semibold">
@@ -32,6 +41,15 @@ export const ProfileHero = ({ userProfile }: ProfileHeroProps) => {
             @{userProfile.userName}
           </p>
         </div>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={handleLogout}
+          className="shrink-0 border-destructive/40 text-destructive hover:bg-destructive hover:text-white hover:border-destructive gap-2 transition-colors"
+        >
+          <LogOut size={15} />
+          {t("logout")}
+        </Button>
       </div>
 
       {/* Row 2: Balance and Fill Balance */}

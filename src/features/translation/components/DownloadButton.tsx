@@ -6,7 +6,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { saveAs } from "file-saver";
 // @ts-expect-error Type errors, nothing special
 import htmlDocx from "html-docx-js/dist/html-docx";
-import { wordToPdf } from "@/features/translation/services/conversionsService";
+import { generatePdfFromHtml } from "@/features/translation/utils/html2pdf-client";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 
 
@@ -88,14 +88,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
         const blob = new Blob([text], { type: getMimeType(fileType) });
         saveAs(blob, fileName);
       } else if (fileType === "pdf") {
-        // Convert HTML to docx blob
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${content}</body></html>`;
-        const docxBlob = htmlDocx.asBlob(fullHtml);
-        // Convert blob to File
-        const docxFile = new File([docxBlob], "temp.docx", { type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document" });
-        // Use backend to convert docx to pdf
-        const pdfBlob = await wordToPdf(docxFile);
-        saveAs(pdfBlob, fileName);
+        await generatePdfFromHtml(content, fileName);
       } else if (fileType === "docx") {
         const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${content}</body></html>`;
         const blob = htmlDocx.asBlob(fullHtml);

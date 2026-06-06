@@ -2,7 +2,8 @@ import React from "react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { API_BASE_URL } from "@/shared/constants/api";
-import UsersTable, { User as TableUser } from "./users-table";
+import { User as TableUser } from "./users-table";
+import AdminTabsWrapper from "./AdminTabsWrapper";
 import LanguageManager from "./LanguageManager";
 import LanguageList from "./LanguageList";
 
@@ -10,15 +11,46 @@ export default async function AdminDashboardPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
   const adminAllowed = cookieStore.get("adminAllowed")?.value === "1";
+
   if (!token || !adminAllowed) {
     return (
-      <div className="space-y-4">
-        <h2 className="text-xl font-semibold">Admin</h2>
-        <p className="text-muted-foreground">You need to log in with authorized admin credentials to access the admin panel.</p>
-        <Link className="underline" href="/en/admin/login">Go to login</Link>
+      <div style={{ maxWidth: 480 }}>
+        <div
+          style={{
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 700,
+            fontSize: 28,
+            color: "#f8fafc",
+            letterSpacing: "-0.02em",
+            marginBottom: 12,
+          }}
+        >
+          Access Restricted
+        </div>
+        <p style={{ color: "#64748b", marginBottom: 24, lineHeight: 1.6 }}>
+          You need to log in with authorized admin credentials to access this panel.
+        </p>
+        <Link
+          href="/en/admin/login"
+          style={{
+            display: "inline-block",
+            background: "#f59e0b",
+            color: "#0f1117",
+            padding: "10px 24px",
+            borderRadius: 8,
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 700,
+            fontSize: 14,
+            textDecoration: "none",
+            letterSpacing: "0.04em",
+          }}
+        >
+          Go to Login
+        </Link>
       </div>
     );
   }
+
   type AdminUser = {
     id: string;
     userName: string;
@@ -32,10 +64,14 @@ export default async function AdminDashboardPage() {
     balance?: number;
     createdAt?: string;
     lastActivityAt?: string;
+    referralCode?: string;
+    referredByCode?: string;
   };
+
   let users: AdminUser[] = [];
   let total = 0;
   let loadError: string | null = null;
+
   try {
     const res = await fetch(`${API_BASE_URL}/User`, {
       headers: { Authorization: `Bearer ${token}` },
@@ -52,30 +88,107 @@ export default async function AdminDashboardPage() {
     loadError = e instanceof Error ? e.message : "Failed to load users";
   }
 
+  // Compute "active today"
+  const now = Date.now();
+  const oneDayMs = 24 * 60 * 60 * 1000;
+  const activeToday = users.filter((u) => {
+    if (!u.lastActivityAt) return false;
+    return now - new Date(u.lastActivityAt).getTime() < oneDayMs;
+  }).length;
+
   return (
-    <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Dashboard</h2>
-      <p className="text-muted-foreground">Welcome to the Suliko Admin Panel.</p>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="rounded-lg border p-4">
-          <div className="text-sm text-muted-foreground">Total Users</div>
-          <div className="text-2xl font-semibold">{total}</div>
-        </div>
+    <div>
+      {/* Page heading */}
+      <div style={{ marginBottom: 32 }}>
+        <h1
+          style={{
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 800,
+            fontSize: 30,
+            color: "#f8fafc",
+            letterSpacing: "-0.02em",
+            margin: 0,
+          }}
+        >
+          Dashboard
+        </h1>
+        <p style={{ color: "#64748b", marginTop: 6, fontSize: 14 }}>
+          Welcome back. Here&apos;s what&apos;s happening.
+        </p>
       </div>
 
-      {loadError ? (
-        <div className="text-red-600 text-sm">{loadError}</div>
-      ) : (
-        <UsersTable initialUsers={users as TableUser[]} />
-      )}
+      {/* Stat cards */}
+      <div
+        style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+          gap: 16,
+          marginBottom: 40,
+        }}
+      >
+        {[
+          { label: "Total Users", value: total, delay: "0ms" },
+          { label: "Active Today", value: activeToday, delay: "80ms" },
+          { label: "Avg Balance", value: users.length > 0 ? (users.reduce((s, u) => s + (u.balance ?? 0), 0) / users.length).toFixed(1) : "0", delay: "160ms" },
+        ].map((stat) => (
+          <div
+            key={stat.label}
+            style={{
+              background: "#13151f",
+              border: "1px solid #2a2d3a",
+              borderLeft: "3px solid #f59e0b",
+              borderRadius: 12,
+              padding: "20px 24px",
+              animation: `fadeUp 0.35s cubic-bezier(0.23,1,0.32,1) ${stat.delay} both`,
+            }}
+          >
+            <div style={{ fontSize: 12, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
+              {stat.label}
+            </div>
+            <div
+              style={{
+                fontFamily: "'JetBrains Mono', monospace",
+                fontWeight: 500,
+                fontSize: 32,
+                color: "#f8fafc",
+                lineHeight: 1,
+              }}
+            >
+              {stat.value}
+            </div>
+          </div>
+        ))}
+      </div>
 
-      {/* Language List */}
-      <LanguageList />
+      {/* Users / Referrals tabs */}
+      <section style={{ marginBottom: 48 }}>
+        <AdminTabsWrapper initialUsers={users as TableUser[]} loadError={loadError} />
+      </section>
 
-      {/* Language Manager */}
-      <LanguageManager />
+      {/* Languages section */}
+      <section id="languages">
+        <h2
+          style={{
+            fontFamily: "'Syne', sans-serif",
+            fontWeight: 700,
+            fontSize: 18,
+            color: "#f8fafc",
+            letterSpacing: "-0.01em",
+            marginBottom: 16,
+            display: "flex",
+            alignItems: "center",
+            gap: 10,
+          }}
+        >
+          <svg width="18" height="18" fill="none" stroke="#fbbf24" strokeWidth={2} viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+          </svg>
+          Languages
+        </h2>
+        <LanguageList />
+        <LanguageManager />
+      </section>
+
     </div>
   );
 }
-
-

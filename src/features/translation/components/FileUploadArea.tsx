@@ -1,4 +1,4 @@
-import { ChangeEvent, useState, DragEvent } from "react";
+import { ChangeEvent, useState, DragEvent, useEffect } from "react";
 import { Upload } from "lucide-react";
 import { Label } from "@/features/ui/components/ui/label";
 import { Input } from "@/features/ui/components/ui/input";
@@ -13,6 +13,30 @@ interface FileUploadAreaProps {
 const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileClick, id = "file-upload" }) => {
   const t = useTranslations('DocumentTranslationCard');
   const [isDragOver, setIsDragOver] = useState(false);
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith("image/")) {
+          const blob = item.getAsFile();
+          if (!blob) continue;
+          const ext = item.type === "image/png" ? "png" : "jpg";
+          const file = new File([blob], `pasted-image.${ext}`, { type: item.type });
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          const syntheticEvent = {
+            target: { files: dt.files, value: file.name } as HTMLInputElement,
+          } as ChangeEvent<HTMLInputElement>;
+          onFileChange(syntheticEvent);
+          break;
+        }
+      }
+    };
+    document.addEventListener("paste", handlePaste);
+    return () => document.removeEventListener("paste", handlePaste);
+  }, [onFileChange]);
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -47,10 +71,10 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileCli
 
   return (
     <Label htmlFor={id} className="w-full block h-full">
-      <div 
-        className={`w-full h-full border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer flex flex-col items-center justify-center ${
-          isDragOver 
-            ? "border-suliko-default-color bg-suliko-default-color/10" 
+      <div
+        className={`w-full h-full border-2 border-dashed rounded-lg p-4 sm:p-8 text-center cursor-pointer flex flex-col items-center justify-center transition-all duration-200 ${
+          isDragOver
+            ? "border-suliko-default-color bg-suliko-default-color/10 scale-[1.02]"
             : "border-gray-300 hover:border-suliko-default-color"
         }`}
         onDragOver={handleDragOver}
@@ -58,8 +82,8 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileCli
         onDrop={handleDrop}
       >
         <div className="cursor-pointer">
-          <Upload className={`mx-auto h-12 w-12 transition-colors ${
-            isDragOver ? "text-suliko-default-color" : "text-muted-foreground"
+          <Upload className={`mx-auto h-8 w-8 sm:h-12 sm:w-12 transition-all duration-200 ${
+            isDragOver ? "text-suliko-default-color -translate-y-1" : "text-muted-foreground"
           }`} />
           <p className={`mt-4 text-sm transition-colors ${
             isDragOver ? "text-suliko-default-color" : "text-muted-foreground"
@@ -68,6 +92,9 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileCli
           </p>
           <p className="mt-2 text-xs text-muted-foreground">
             {t('supportedFormats')}
+          </p>
+          <p className="mt-2 text-xs text-muted-foreground/60">
+            {t('pasteFromClipboard')}
           </p>
           <Input
             type="file"

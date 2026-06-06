@@ -1,16 +1,37 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+html {
+  font-size: 80%;
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.animate-marquee {
+  animation: marquee 35s linear infinite;
+}
+.pause-on-hover:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
 
 
 @font-face {
   font-family: 'Main Font';
-  src: url('../../fonts/bpg_mrgvlovani_caps_2010.ttf')
+  src: url('../../fonts/bpg_mrgvlovani_caps_2010.ttf') format('truetype');
+  font-display: swap;
+  font-weight: normal;
+  font-style: normal;
 }
 
 @font-face {
   font-family: 'Secondary Font';
-  src: url('../../fonts/bpg_arial_2009.ttf')
+  src: url('../../fonts/bpg_arial_2009.ttf') format('truetype');
+  font-display: swap;
+  font-weight: normal;
+  font-style: normal;
 }
 
 *:not(.ck):not(.ck *) {
@@ -234,7 +255,7 @@
 }
 
 .animate-fade-in-up {
-  animation: fade-in-up 0.6s ease-out forwards;
+  animation: fade-in-up 0.4s var(--ease-out-strong) forwards;
   opacity: 0;
 }
 
@@ -319,147 +340,56 @@
 }
 
 .blog-banner-stat {
-  transition: all 0.3s ease-in-out;
+  transition: transform 0.3s var(--ease-out-strong);
   position: relative;
   z-index: 1;
 }
 
-.blog-banner-stat:hover {
-  transform: translateY(-4px);
+@media (hover: hover) and (pointer: fine) {
+  .blog-banner-stat:hover {
+    transform: translateY(-4px);
+  }
 }
 
 .blog-banner-stat:hover .group-hover\:scale-110 {
   transform: scale(1.1);
 }
 
-/* Blog Stars Background - New Implementation */
-.blog-stars-background {
-  position: relative;
-  background: linear-gradient(135deg,
-      #0f172a 0%,
-      #1e293b 25%,
-      #334155 50%,
-      #475569 75%,
-      #64748b 100%);
+/* Aurora Background — blob drift animations */
+@keyframes aurora-drift-1 {
+  0%   { transform: translate(0%,   0%)   scale(1);    }
+  25%  { transform: translate(6%,   8%)   scale(1.08); }
+  50%  { transform: translate(12%,  4%)   scale(0.95); }
+  75%  { transform: translate(4%,  -6%)   scale(1.05); }
+  100% { transform: translate(0%,   0%)   scale(1);    }
+}
+@keyframes aurora-drift-2 {
+  0%   { transform: translate(0%,   0%)  scale(1);    }
+  33%  { transform: translate(-8%, 10%)  scale(1.1);  }
+  66%  { transform: translate(-4%, -8%)  scale(0.92); }
+  100% { transform: translate(0%,   0%)  scale(1);    }
+}
+@keyframes aurora-drift-3 {
+  0%   { transform: translate(0%,   0%)  scale(1);    }
+  40%  { transform: translate(5%, -10%)  scale(1.12); }
+  80%  { transform: translate(-5%,  6%)  scale(0.97); }
+  100% { transform: translate(0%,   0%)  scale(1);    }
+}
+@keyframes aurora-drift-4 {
+  0%   { transform: translate(0%,   0%)  scale(1);    }
+  50%  { transform: translate(-6%, -6%)  scale(1.15); }
+  100% { transform: translate(0%,   0%)  scale(1);    }
 }
 
-/* Stars Layer 1 - Primary Stars */
-.stars-layer-1 {
-  background-image:
-    radial-gradient(2px 2px at 20px 30px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(2px 2px at 40px 70px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(1px 1px at 90px 40px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(1px 1px at 130px 80px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(2px 2px at 160px 30px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(1px 1px at 200px 60px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(1px 1px at 240px 20px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 280px 70px, hsl(var(--foreground) / 0.4), transparent),
-    radial-gradient(1px 1px at 320px 40px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(1px 1px at 360px 80px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(2px 2px at 400px 20px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(1px 1px at 440px 60px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(1px 1px at 480px 30px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 520px 70px, hsl(var(--foreground) / 0.4), transparent),
-    radial-gradient(1px 1px at 560px 50px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(1px 1px at 600px 10px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(2px 2px at 640px 80px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(1px 1px at 680px 40px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(1px 1px at 720px 20px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 760px 60px, hsl(var(--foreground) / 0.4), transparent);
-  background-repeat: repeat;
-  background-size: 800px 100px;
-  animation: twinkle 20s linear infinite;
-}
-
-/* Stars Layer 2 - Secondary Stars */
-.stars-layer-2 {
-  background-image:
-    radial-gradient(1px 1px at 50px 20px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(1px 1px at 100px 50px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(1px 1px at 150px 10px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(1px 1px at 200px 30px, hsl(var(--primary) / 0.4), transparent),
-    radial-gradient(1px 1px at 250px 60px, hsl(var(--primary) / 0.6), transparent),
-    radial-gradient(1px 1px at 300px 15px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(1px 1px at 350px 45px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(1px 1px at 400px 25px, hsl(var(--primary) / 0.3), transparent),
-    radial-gradient(1px 1px at 450px 55px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(1px 1px at 500px 35px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(1px 1px at 550px 65px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(1px 1px at 600px 5px, hsl(var(--primary) / 0.4), transparent),
-    radial-gradient(1px 1px at 650px 40px, hsl(var(--primary) / 0.6), transparent),
-    radial-gradient(1px 1px at 700px 70px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(1px 1px at 750px 20px, hsl(var(--primary) / 0.8), transparent);
-  background-repeat: repeat;
-  background-size: 800px 100px;
-  animation: twinkle 15s linear infinite reverse;
-  opacity: 0.8;
-}
-
-/* Twinkling Animation */
-@keyframes twinkle {
-
-  0%,
-  100% {
-    opacity: 0.3;
-  }
-
-  50% {
-    opacity: 1;
-  }
-}
-
-/* Dark Theme Adjustments */
-.dark .blog-stars-background {
-  background: linear-gradient(135deg,
-      #0f172a 0%,
-      #1e293b 25%,
-      #334155 50%,
-      #475569 75%,
-      #64748b 100%);
-}
-
-.dark .stars-layer-1 {
-  background-image:
-    radial-gradient(3px 3px at 20px 30px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(3px 3px at 40px 70px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(2px 2px at 90px 40px, hsl(var(--foreground) / 1), transparent),
-    radial-gradient(2px 2px at 130px 80px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(3px 3px at 160px 30px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 200px 60px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(2px 2px at 240px 20px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(3px 3px at 280px 70px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(2px 2px at 320px 40px, hsl(var(--foreground) / 1), transparent),
-    radial-gradient(2px 2px at 360px 80px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(3px 3px at 400px 20px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 440px 60px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(2px 2px at 480px 30px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(3px 3px at 520px 70px, hsl(var(--foreground) / 0.5), transparent),
-    radial-gradient(2px 2px at 560px 50px, hsl(var(--foreground) / 1), transparent),
-    radial-gradient(2px 2px at 600px 10px, hsl(var(--foreground) / 0.8), transparent),
-    radial-gradient(3px 3px at 640px 80px, hsl(var(--foreground) / 0.6), transparent),
-    radial-gradient(2px 2px at 680px 40px, hsl(var(--foreground) / 0.9), transparent),
-    radial-gradient(2px 2px at 720px 20px, hsl(var(--foreground) / 0.7), transparent),
-    radial-gradient(3px 3px at 760px 60px, hsl(var(--foreground) / 0.5), transparent);
-}
-
-.dark .stars-layer-2 {
-  background-image:
-    radial-gradient(2px 2px at 50px 20px, hsl(var(--primary) / 0.9), transparent),
-    radial-gradient(2px 2px at 100px 50px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(2px 2px at 150px 10px, hsl(var(--primary) / 1), transparent),
-    radial-gradient(2px 2px at 200px 30px, hsl(var(--primary) / 0.6), transparent),
-    radial-gradient(2px 2px at 250px 60px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(2px 2px at 300px 15px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(2px 2px at 350px 45px, hsl(var(--primary) / 1), transparent),
-    radial-gradient(2px 2px at 400px 25px, hsl(var(--primary) / 0.5), transparent),
-    radial-gradient(2px 2px at 450px 55px, hsl(var(--primary) / 0.9), transparent),
-    radial-gradient(2px 2px at 500px 35px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(2px 2px at 550px 65px, hsl(var(--primary) / 1), transparent),
-    radial-gradient(2px 2px at 600px 5px, hsl(var(--primary) / 0.6), transparent),
-    radial-gradient(2px 2px at 650px 40px, hsl(var(--primary) / 0.8), transparent),
-    radial-gradient(2px 2px at 700px 70px, hsl(var(--primary) / 0.7), transparent),
-    radial-gradient(2px 2px at 750px 20px, hsl(var(--primary) / 1), transparent);
-}
+/* Aurora — light mode: visible; dark mode: full vibrance */
+html:not(.dark) .aurora-orb-1 { opacity: 0.70; }
+html:not(.dark) .aurora-orb-2 { opacity: 0.65; }
+html:not(.dark) .aurora-orb-3 { opacity: 0.60; }
+html:not(.dark) .aurora-orb-4 { opacity: 0.55; }
+html.dark .aurora-orb-1 { opacity: 1;    }
+html.dark .aurora-orb-2 { opacity: 1;    }
+html.dark .aurora-orb-3 { opacity: 0.9;  }
+html.dark .aurora-orb-4 { opacity: 0.85; }
 
 
 .ck-editor__editable {
@@ -613,6 +543,8 @@ body {
   --suliko-default-hover-color: #11289c;
   --suliko-main-content-bg-color: #e6e6e7;
   --radius: 0.625rem;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
 
   --background: #ffffff;
   --foreground: #0a0a0a;
@@ -823,7 +755,7 @@ html.dark .sidebar-main {
 }
 
 .animate-slideInFromTop {
-  animation: slideInFromTop 0.3s ease-out forwards;
+  animation: slideInFromTop 0.2s var(--ease-out-strong) forwards;
 }
 
 /* Star Field Animations */
@@ -976,15 +908,15 @@ html.dark .sidebar-main {
 }
 
 .animate-fadeInUp {
-  animation: fadeInUp 0.6s ease-out forwards;
+  animation: fadeInUp 0.4s var(--ease-out-strong) forwards;
 }
 
 .animate-fadeInLeft {
-  animation: fadeInLeft 0.6s ease-out forwards;
+  animation: fadeInLeft 0.4s var(--ease-out-strong) forwards;
 }
 
 .animate-fadeInRight {
-  animation: fadeInRight 0.6s ease-out forwards;
+  animation: fadeInRight 0.4s var(--ease-out-strong) forwards;
 }
 
 .animate-float {
@@ -994,8 +926,8 @@ html.dark .sidebar-main {
 /* Intersection Observer animations */
 .fade-in {
   opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  transform: translateY(20px);
+  transition: opacity 0.4s var(--ease-out-strong), transform 0.4s var(--ease-out-strong);
 }
 
 .fade-in.visible {
@@ -1187,3 +1119,34 @@ html.dark .sidebar-main {
     transition-duration: 0ms !important;
   }
 }
+
+/* Accordion animations */
+@keyframes accordion-down {
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
+}
+
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
+}
+
+.animate-accordion-down {
+  animation: accordion-down 0.2s ease-out;
+}
+
+.animate-accordion-up {
+  animation: accordion-up 0.2s ease-out;
+}
+
+/* Shared fadeUp utility — used by admin login, dashboard, etc. */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.35s var(--ease-out-strong) both;
+}
+
+/* Move Crisp chat widget to right-middle on mobile — handled via JS CRISP_READY_TRIGGER */

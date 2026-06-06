@@ -100,6 +100,41 @@ export const updateUserProfile = async (userProfile: UpdateUserProfile) => {
   }
 }
 
+export const deleteUser = async (userId: string) => {
+  const { refreshToken, token } = useAuthStore.getState();
+  if (!token) throw new Error("No token found");
+
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+
+  let response = await fetch(`${API_BASE_URL}/User/${userId}`, {
+    headers,
+    method: "DELETE",
+  });
+
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
+      response = await fetch(`${API_BASE_URL}/User/${userId}`, {
+        headers,
+        method: "DELETE",
+      });
+    } catch (error) {
+      useAuthStore.getState().reset();
+      throw new Error("Failed to refresh token " + error);
+    }
+  }
+
+  if (!response.ok && response.status !== 204) {
+    const errorData = await response.json().catch(() => ({ message: "Failed to delete user." }));
+    throw new Error(`Failed to delete user: ${response.status} ${response.statusText}. ${errorData?.message || ""}`);
+  }
+};
+
 export interface ChangePasswordRequest {
   id: string;
   currentPassword: string;

@@ -29,7 +29,7 @@ import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
-import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, type DocumentMetadata } from "@/shared/utils/fileStorage";
+import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
 import LanguageSelect from "./LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
@@ -63,8 +63,8 @@ const documentTranslationSchema = z.object({
     .refine((files) => {
       if (!files || !files.length) return false;
       const file = files[0];
-      return file && file.size <= 10 * 1024 * 1024; // 10MB limit
-    }, "File size must be less than 10MB."),
+      return file && file.size <= 50 * 1024 * 1024; // 50MB limit
+    }, "File size must be less than 50MB."),
   currentTargetLanguageId: z.number(),
   currentSourceLanguageId: z.number(),
   isSrt: z.boolean().optional(),
@@ -117,7 +117,7 @@ const DocumentTranslationCard = () => {
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
 
-  const { setManualProgress, reset } =
+  const { loadingProgress, loadingMessage, setManualProgress, reset } =
     useDocumentLoadingProgress({
       isLoading,
       t,
@@ -501,7 +501,16 @@ const DocumentTranslationCard = () => {
       //   setValue("currentFile", newFileList);
       // }
 
-      const { chatId } = await startTranslationProject(data);
+      const { chatId } = await startTranslationProject(data, estimatedPageCount || 1);
+
+      // Persist the original file so the project detail page can show the preview
+      // (URI-based translations don't store bytes on the backend)
+      if (!data.isSrt && typeof window !== 'undefined' && 'indexedDB' in window) {
+        saveOriginalFileForChat(chatId, data.currentFile[0]).catch(() => {});
+      }
+      // Also update the in-memory store so the project page can use it instantly
+      useDocumentTranslationStore.getState().setChatId(chatId);
+
       setManualProgress(12, t("progress.projectStarted"));
       window.dispatchEvent(new Event("projects-updated"));
       router.push(`/projects/${chatId}`);
@@ -732,7 +741,42 @@ const DocumentTranslationCard = () => {
                 showShiftEnter={true}
                 formError={token ? getFormError() : null}
                 isHighlighted={isButtonHighlighted}
+                onTranslateMore={handleRemoveFile}
               />
+
+              {/* Progress bar + step indicator */}
+              {isLoading && (
+                <div className="mt-4 space-y-3">
+                  {/* Step indicator */}
+                  <div className="flex items-center justify-between text-xs text-muted-foreground">
+                    {[
+                      { label: t("progress.stepUploading"), threshold: 0 },
+                      { label: t("progress.stepTranslating"), threshold: 15 },
+                      { label: t("progress.stepReady"), threshold: 90 },
+                    ].map((step, i, arr) => {
+                      const isActive = loadingProgress >= step.threshold && (i === arr.length - 1 || loadingProgress < arr[i + 1].threshold);
+                      const isDone = i < arr.length - 1 && loadingProgress >= arr[i + 1].threshold;
+                      return (
+                        <div key={step.label} className="flex items-center gap-1">
+                          <span className={`w-2 h-2 rounded-full transition-colors duration-500 ${isDone ? "bg-green-500" : isActive ? "bg-suliko-default-color animate-pulse" : "bg-border"}`} />
+                          <span className={isDone || isActive ? "text-foreground font-medium" : ""}>{step.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {/* Progress bar */}
+                  <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                    <div
+                      className="h-full rounded-full suliko-default-bg transition-all duration-500 ease-out"
+                      style={{ width: `${Math.min(100, loadingProgress)}%` }}
+                    />
+                  </div>
+                  {/* Status message */}
+                  {loadingMessage && (
+                    <p className="text-xs text-center text-muted-foreground truncate">{loadingMessage}</p>
+                  )}
+                </div>
+              )}
             </form>
           </CardContent>
         </Card>

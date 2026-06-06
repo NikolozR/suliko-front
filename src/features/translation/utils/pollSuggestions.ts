@@ -26,7 +26,11 @@ function abortableDelay(ms: number, signal?: AbortSignal): Promise<void> {
 export async function pollSuggestions(
   jobId: string,
   setSuggestions: (suggestions: Suggestion[]) => void,
-  { maxAttempts = 40, signal }: { maxAttempts?: number; signal?: AbortSignal } = {}
+  {
+    maxAttempts = 40,
+    signal,
+    waitForNew = false,
+  }: { maxAttempts?: number; signal?: AbortSignal; waitForNew?: boolean } = {}
 ): Promise<string> {
   const delayMs = 3000;
 
@@ -44,6 +48,14 @@ export async function pollSuggestions(
           setSuggestions(filtered);
           return "success";
         }
+        if (!waitForNew) {
+          setSuggestions([]);
+          return "empty";
+        }
+        // waitForNew=true: background generation still running — keep polling
+      } else if (response.status === "not_found") {
+        setSuggestions([]);
+        return "not_found";
       } else if (response.status !== "processing") {
         setSuggestions([]);
         return response.status;

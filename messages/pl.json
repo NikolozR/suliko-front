@@ -1,7 +1,7 @@
 {
   "Authorization": {
     "title": "Autoryzacja",
-    "description": "Wprowadź swój numer telefonu i hasło",
+    "description": "Lub wprowadź swój numer telefonu i hasło",
     "phoneNumber": "Telefon",
     "password": "Hasło",
     "email": "Adres e-mail",
@@ -48,6 +48,8 @@
     "iAcceptThe": "Akceptuję",
     "and": "i",
     "subscribeNewsletter": "Zapisz się do newslettera, aby otrzymywać aktualizacje i specjalne oferty",
+    "referralCode": "Kod polecający",
+    "referralCodePlaceholder": "Wprowadź kod polecający (opcjonalnie)",
     "termsAndPrivacy": "Warunki, zasady i polityka prywatności",
     "acceptTermsError": "Musisz zaakceptować warunki, zasady i politykę prywatności",
     "acceptTermsAndConditionsError": "Musisz zaakceptować warunki i zasady",
@@ -91,8 +93,23 @@
     "phoneWillBeAskedLater": "Możesz dodać i zweryfikować swój numer telefonu po rejestracji",
     "phoneVerificationDescription": "Wyślemy kod weryfikacyjny na Twój numer telefonu",
     "emailVerificationDescription": "Wyślemy kod weryfikacyjny na Twój adres e-mail",
-    "termsText": "1. Postanowienia ogólne\n\nNiniejsze warunki i zasady regulują korzystanie z usługi tłumaczenia (\"Usługa\") oferowanej przez Suliko LLC (zwane dalej - \"Firma\", \"my\"). Uzyskując dostęp do Usługi lub z niej korzystając, jako użytkownik (\"Użytkownik\") zgadzasz się na warunki niniejszego dokumentu.\n\n2. Obowiązki użytkownika\n\nKorzystając z Usługi, jesteś zobowiązany używać jej wyłącznie do celów prawnych i nie naruszać obowiązującego prawa.\n\nZabronione jest używanie Usługi do tworzenia, rozpowszechniania lub przekazywania jakiejkolwiek szkodliwej lub nielegalnej treści.\n\n3. Własność intelektualna\n\nZachowujesz własność tekstu, który przesyłasz do Usługi. Korzystając z Usługi, udzielasz Firmie ograniczonej, niewyłącznej licencji na przetwarzanie i używanie tego tekstu wyłącznie w celu wykonywania i ulepszania usługi tłumaczenia.\n\nUsługa, wszystkie jej komponenty, oprogramowanie, projekt i inne materiały stanowią własność intelektualną Firmy i są chronione prawami autorskimi.\n\n4. Ograniczenie odpowiedzialności\n\nUsługa jest świadczona \"jak jest\" bez jakiejkolwiek gwarancji. Firma nie gwarantuje, że Usługa będzie nieprzerwana, bezbłędna lub bezpieczna.\n\nFirma nie ponosi odpowiedzialności za jakiekolwiek bezpośrednie, pośrednie, przypadkowe lub inne szkody spowodowane korzystaniem z Usługi.\n\n5. Zakończenie usługi\n\nFirma ma prawo ograniczyć lub zakończyć dostęp użytkownika do Usługi w dowolnym momencie i z jakiegokolwiek powodu, jeśli użytkownik narusza niniejsze warunki i zasady.\n\n6. Zmiany\n\nFirma zastrzega sobie prawo do wprowadzania zmian w niniejszych warunkach i zasadach w dowolnym momencie. Zmiany wchodzą w życie natychmiast po opublikowaniu na stronie internetowej lub w aplikacji.",
-    "privacyText": "1. Zbieranie informacji\n\nInformacje, które podajesz: Zbieramy tekst, który przesyłasz w celu korzystania z usługi tłumaczenia.\n\nDane techniczne i dotyczące użytkowania: Możemy zbierać informacje o Twoim urządzeniu, adresie IP, typie przeglądarki i korzystaniu z usługi (np. częstotliwość tłumaczeń, używane języki) w celach analitycznych i ulepszania usługi.\n\n2. Używanie informacji\n\nZebrane informacje są używane do następujących celów:\n\nWykonywania usługi tłumaczenia.\n\nUlepszania usługi i dostosowywania jej do Twoich potrzeb.\n\nAnalizy sposobu korzystania z usługi przez użytkowników.\n\nRozwiązywania problemów technicznych i zapewnienia bezpieczeństwa.\n\n3. Bezpieczeństwo danych\n\nStosujemy rozsądne środki administracyjne, techniczne i fizyczne, aby chronić Twoje dane przed nieautoryzowanym dostępem, użyciem lub ujawnieniem. Jednak żadna metoda transmisji danych przez Internet nie jest w 100% bezpieczna.\n\n4. Twoje prawa\n\nMasz prawo żądać dostępu do, korekty lub usunięcia swoich danych. Aby skorzystać z tych praw, skontaktuj się z nami.\n\n5. Przechowywanie danych\n\nBędziemy przechowywać Twoje dane osobowe tylko tak długo, jak to konieczne do realizacji celów opisanych w niniejszej polityce."
+    "termsText": "1. Postanowienia ogólne\n\nNiniejsze warunki i zasady regulują korzystanie z usługi tłumaczenia (\"Usługa\") oferowanej przez შკს სულიკო ეი აი, kod identyfikacyjny: 400403265 (zwane dalej - \"Firma\", \"my\"). Uzyskując dostęp do Usługi lub z niej korzystając, jako użytkownik (\"Użytkownik\") zgadzasz się na warunki niniejszego dokumentu.\n\n2. Obowiązki użytkownika\n\nKorzystając z Usługi, jesteś zobowiązany używać jej wyłącznie do celów prawnych i nie naruszać obowiązującego prawa.\n\nZabronione jest używanie Usługi do tworzenia, rozpowszechniania lub przekazywania jakiejkolwiek szkodliwej lub nielegalnej treści.\n\n3. Własność intelektualna\n\nZachowujesz własność tekstu, który przesyłasz do Usługi. Korzystając z Usługi, udzielasz Firmie ograniczonej, niewyłącznej licencji na przetwarzanie i używanie tego tekstu wyłącznie w celu wykonywania i ulepszania usługi tłumaczenia.\n\nUsługa, wszystkie jej komponenty, oprogramowanie, projekt i inne materiały stanowią własność intelektualną Firmy i są chronione prawami autorskimi.\n\n4. Ograniczenie odpowiedzialności\n\nUsługa jest świadczona \"jak jest\" bez jakiejkolwiek gwarancji. Firma nie gwarantuje, że Usługa będzie nieprzerwana, bezbłędna lub bezpieczna.\n\nFirma nie ponosi odpowiedzialności za jakiekolwiek bezpośrednie, pośrednie, przypadkowe lub inne szkody spowodowane korzystaniem z Usługi.\n\n5. Zakończenie usługi\n\nFirma ma prawo ograniczyć lub zakończyć dostęp użytkownika do Usługi w dowolnym momencie i z jakiegokolwiek powodu, jeśli użytkownik narusza niniejsze warunki i zasady.\n\n6. Zmiany\n\nFirma zastrzega sobie prawo do wprowadzania zmian w niniejszych warunkach i zasadach w dowolnym momencie. Zmiany wchodzą w życie natychmiast po opublikowaniu na stronie internetowej lub w aplikacji.\n\n7. Polityka zwrotów\n\nWszystkie wnioski o zwrot są rozpatrywane indywidualnie. Jeśli uważasz, że przysługuje Ci zwrot, skontaktuj się z naszym zespołem wsparcia pod adresem info@suliko.ge, opisując swój problem. Rozpatrzymy każde zgłoszenie i odpowiemy w rozsądnym terminie.\n\n8. Informacje kontaktowe\n\nFirma: შკს სულიკო ეი აი\nKod identyfikacyjny: 400403265\nE-mail: info@suliko.ge\nTelefon: +995 591 729 911\nAdres: Gruzja, Tbilisi, Dzielnica Gldani, Mukhiani, Mikrodzielnica IVb, Budynek 37, Mieszkanie 54",
+    "orContinueWith": "Kontynuuj przez Google",
+    "orWithCredentials": "lub zaloguj się danymi",
+    "welcomeBack": "Witaj ponownie — zaloguj się",
+    "passwordHintLength": "Co najmniej 8 znaków",
+    "passwordHintDigit": "Zawiera cyfrę",
+    "passwordHintSpecial": "Zawiera znak specjalny",
+    "alreadyRegistered": "To konto jest już zarejestrowane. Spróbuj się zalogować.",
+    "accountNotFound": "Nie znaleziono konta. Sprawdź swoje dane.",
+    "registrationSuccessLoginFailed": "Rejestracja zakończona! Zaloguj się.",
+    "pleaseWait": "Proszę czekać…",
+    "continue": "Kontynuuj",
+    "back": "Wstecz",
+    "stepperVerify": "Weryfikacja",
+    "stepperInfo": "Dane",
+    "stepperPassword": "Hasło",
+    "privacyText": "1. Zbieranie informacji\n\nInformacje, które podajesz: Zbieramy tekst, który przesyłasz w celu korzystania z usługi tłumaczenia.\n\nDane techniczne i dotyczące użytkowania: Możemy zbierać informacje o Twoim urządzeniu, adresie IP, typie przeglądarki i korzystaniu z usługi (np. częstotliwość tłumaczeń, używane języki) w celach analitycznych i ulepszania usługi.\n\n2. Używanie informacji\n\nZebrane informacje są używane do następujących celów:\n\nWykonywania usługi tłumaczenia.\n\nUlepszania usługi i dostosowywania jej do Twoich potrzeb.\n\nAnalizy sposobu korzystania z usługi przez użytkowników.\n\nRozwiązywania problemów technicznych i zapewnienia bezpieczeństwa.\n\n3. Bezpieczeństwo danych\n\nStosujemy rozsądne środki administracyjne, techniczne i fizyczne, aby chronić Twoje dane przed nieautoryzowanym dostępem, użyciem lub ujawnieniem. Jednak żadna metoda transmisji danych przez Internet nie jest w 100% bezpieczna.\n\n4. Twoje prawa\n\nMasz prawo żądać dostępu do, korekty lub usunięcia swoich danych. Aby skorzystać z tych praw, skontaktuj się z nami:\nE-mail: info@suliko.ge\nTelefon: +995 591 729 911\n\n5. Przechowywanie danych\n\nBędziemy przechowywać Twoje dane osobowe tylko tak długo, jak to konieczne do realizacji celów opisanych w niniejszej polityce. Po usunięciu Twojego konta lub zaprzestaniu korzystania z Usługi usuniemy lub zaanonimizujemy Twoje dane osobowe w ciągu 30 dni, chyba że prawo wymaga ich przechowywania.\n\n6. Usunięcie danych\n\nMasz prawo żądać usunięcia Twojego konta i wszystkich powiązanych z nim danych osobowych. Aby żądać usunięcia danych, skontaktuj się z nami na adres info@suliko.ge. Rozpatrzymy Twoją prośbę i potwierdzimy usunięcie w ciągu 30 dni. Pamiętaj, że niektóre dane mogą być przechowywane ze względów prawnych, regulacyjnych lub bezpieczeństwa.\n\n7. RODO i międzynarodowa ochrona danych\n\nDla użytkowników z Unii Europejskiej i innych jurysdykcji z przepisami o ochronie danych (takimi jak RODO) zapewniamy zgodność z obowiązującymi przepisami prawa ochrony danych. Masz prawo do:\n\n- Dostępu do swoich danych osobowych\n- Poprawy niedokładnych danych\n- Żądania usunięcia swoich danych\n- Sprzeciwu wobec przetwarzania twoich danych\n- Żądania ograniczenia przetwarzania\n- Przenoszenia danych\n\nAby skorzystać z któregokolwiek z tych praw, skontaktuj się z nami na adres info@suliko.ge. Odpowiemy na wszystkie żądania zgodnie z obowiązującym prawem w wymaganych ramach czasowych."
   },
   "AuthModal": {
     "title": "Proszę zarejestrować się w systemie",
@@ -112,7 +129,52 @@
     "login": "Zaloguj się",
     "balance": "Saldo",
     "pages": "stron",
-    "completeEmail": "Uzupełnij e-mail"
+    "completeEmail": "Uzupełnij e-mail",
+    "passport": "Paszport"
+  },
+  "Passport": {
+    "title": "Tłumaczenie paszportu",
+    "description": "Prześlij paszport i otrzymaj profesjonalnie przetłumaczony dokument",
+    "uploadTitle": "Prześlij paszport",
+    "supportedFormats": "Obsługiwane formaty: JPG, PNG, PDF",
+    "maxFileSize": "Maksymalny rozmiar: 10MB",
+    "selectTemplate": "Wybierz szablon",
+    "loadingTemplates": "Ładowanie szablonów...",
+    "noTemplates": "Brak dostępnych szablonów",
+    "fields": "pól",
+    "extracting": "Wyodrębnianie danych...",
+    "extractAndReview": "Wyodrębnij i sprawdź",
+    "reviewTitle": "Sprawdź i edytuj",
+    "reviewDescription": "Zweryfikuj wyodrębnione dane i w razie potrzeby popraw",
+    "reExtract": "Ponowne wyodrębnianie",
+    "preview": "Podgląd dokumentu",
+    "generatePreview": "Generuj podgląd",
+    "generatingPreview": "Generowanie podglądu...",
+    "previewWillAppear": "Kliknij przycisk powyzej, aby wygenerowac podglad",
+    "tryAgain": "Spróbuj ponownie",
+    "generate": "Generuj i pobierz",
+    "generating": "Generowanie...",
+    "download": "Pobierz dokument",
+    "downloadAgain": "Pobierz ponownie",
+    "success": "Tłumaczenie wygenerowane!",
+    "successDescription": "Tłumaczenie paszportu zostało pobrane",
+    "translateAnother": "Przetłumacz kolejny",
+    "backToUpload": "Wróć do przesyłania",
+    "signInRequired": "Zaloguj się, aby kontynuować",
+    "errorNoFile": "Prześlij zdjęcie paszportu",
+    "errorNoTemplate": "Wybierz szablon",
+    "errorExtraction": "Nie udało się wyodrębnić danych z paszportu",
+    "errorGeneration": "Nie udało się wygenerować dokumentu",
+    "errorQuota": "Niewystarczające saldo. Doładuj konto, aby kontynuować.",
+    "originalDocument": "Oryginalny dokument",
+    "noPreview": "Brak podglądu",
+    "reviewedTimes": "sprawdzono {count}×",
+    "processingMsg0": "Odczytywanie dokumentu...",
+    "processingMsg1": "Wyodrebnianie pol paszportu...",
+    "processingMsg2": "Weryfikacja dokladnosci...",
+    "processingMsg3": "Sprawdzanie danych...",
+    "processingMsg4": "Prawie gotowe...",
+    "emptyFieldsWarning": "{count, plural, one {# pole wymaga uwagi} other {# pola/pol wymaga uwagi}}"
   },
   "HelpPage": {
     "title": "Pomoc i wsparcie",
@@ -223,6 +285,7 @@
   },
   "TranslationButton": {
     "translate": "Tłumacz",
+    "translateMore": "Przetłumacz więcej",
     "loading": "Ładowanie...",
     "download": "Pobierz",
     "copy": "Kopiuj",
@@ -242,6 +305,7 @@
     "dragAndDrop": "Przeciągnij i upuść plik lub kliknij, aby wybrać",
     "dropFiles": "Upuść pliki tutaj",
     "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, JPEG, PNG, JPG, itp.",
+    "pasteFromClipboard": "lub naciśnij Ctrl+V, aby wkleić obraz ze schowka",
     "pageCountWarning": "⚠️ Dokumenty powyżej 4 stron mogą powodować problemy z przetwarzaniem i saldem; nie wszystkie strony mogą zostać przetłumaczone. Zalecamy podzielić plik na części do 3 stron i przesyłać je osobno.",
     "warningDialog": {
       "title": "Ostrzeżenie o rozmiarze dokumentu",
@@ -333,7 +397,10 @@
       "complete": "Tłumaczenie zakończone!",
       "uploading": "Przesyłanie dokumentu...",
       "projectStarted": "Projekt uruchomiony! Przekierowanie...",
-      "unexpectedError": "Wystąpił nieoczekiwany błąd podczas tłumaczenia."
+      "unexpectedError": "Wystąpił nieoczekiwany błąd podczas tłumaczenia.",
+      "stepUploading": "Przesyłanie",
+      "stepTranslating": "Tłumaczenie",
+      "stepReady": "Gotowe"
     }
   },
   "Profile": {
@@ -371,7 +438,23 @@
     "deleteAccountWarning": "Ta akcja jest stała i nie można jej cofnąć.",
     "deleteAccountConfirm": "Czy na pewno chcesz usunąć konto?",
     "confirmDelete": "Tak, usuń",
-    "deleting": "Usuwanie..."
+    "deleting": "Usuwanie...",
+    "referral": "Program polecania",
+    "referralDescription": "Udostępnij kod znajomym. Oboje otrzymacie 50 kredytów.",
+    "copyCode": "Kopiuj kod",
+    "copyLink": "Kopiuj link",
+    "copied": "Skopiowano!",
+    "savedCards": {
+      "title": "Zapisane karty",
+      "empty": "Brak zapisanych kart",
+      "masked": "****",
+      "expires": "Wygasa",
+      "default": "Domyślna",
+      "deleteButton": "Usuń",
+      "confirmDelete": "Na pewno?",
+      "cancelDelete": "Anuluj",
+      "addCard": "Dodaj kartę"
+    }
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -446,11 +529,16 @@
     "accept": "Zaakceptuj",
     "reject": "Odrzuć",
     "editPlaceholder": "Edytuj sugerowany tekst...",
+    "getSuggestions": "Pobierz sugestie",
+    "suggestionsNotAvailable": "Sugestie nie sa dostepne dla tego dokumentu.",
     "retrySuggestions": "Ponów sugestie",
     "showPreview": "Pokaż podgląd",
     "hidePreview": "Ukryj podgląd",
     "indicatorExact": "Dokładne dopasowanie: szybkie zastosowanie",
-    "indicatorNonExact": "Niedokładne: zastosowanie na serwerze"
+    "indicatorNonExact": "Niedokładne: zastosowanie na serwerze",
+    "instant": "Natychmiastowe",
+    "review": "Do przeglądu",
+    "acceptAllInstant": "Zaakceptuj wszystkie natychmiastowe"
   },
   "Pricing": {
     "paymentModal": {
@@ -496,10 +584,10 @@
       "title": "Startowy",
       "price": "20 ₾",
       "period": "/miesiąc",
-      "documents": "100 dokumentów miesięcznie",
+      "documents": "100 stron miesięcznie",
       "description": "Idealny dla osób indywidualnych i małych projektów",
       "features": {
-        "0": "100 dokumentów miesięcznie",
+        "0": "100 stron miesięcznie",
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
@@ -509,10 +597,10 @@
       "title": "Profesjonalny",
       "price": "50 ₾",
       "period": "/miesiąc",
-      "documents": "500 dokumentów miesięcznie",
+      "documents": "500 stron miesięcznie",
       "description": "Idealny dla rozwijających się firm i zespołów",
       "features": {
-        "0": "500 dokumentów miesięcznie",
+        "0": "500 stron miesięcznie",
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
         "3": "Priorytetowe wsparcie e-mailowe i czatowe",
@@ -587,6 +675,20 @@
       "processing": "Przetwarzanie...",
       "pagesNeverExpire": "Strony nigdy nie wygasają i mogą być używane w dowolnym momencie",
       "minimumPurchase": "Minimalny zakup: {min} ₾",
+      "saveCard": "Zapisz kartę do przyszłych płatności",
+      "contactPayment": {
+        "title": "Trwają prace techniczne.",
+        "subtitle": "System płatności jest tymczasowo niedostępny.",
+        "manualTransferNotice": "W trakcie prac technicznych środki można dodać wyłącznie ręcznie przelewem bankowym.",
+        "bankAccountLabel": "Numer rachunku bankowego:",
+        "copyButton": "Kopiuj",
+        "copiedButton": "Skopiowano",
+        "receiptNotice": "Po przelewie wyślij potwierdzenie płatności na nasz e-mail",
+        "receiptNoticeSuffix": "lub na nasz WhatsApp",
+        "callButton": "Zadzwoń",
+        "whatsappButton": "Otwórz WhatsApp",
+        "close": "Zamknij"
+      },
       "errors": {
         "invalidAmount": "Proszę wprowadzić prawidłową kwotę",
         "minimumAmount": "Minimalna kwota zakupu to {min} ₾",
@@ -611,6 +713,7 @@
       },
       "cta": "Skontaktuj się ze sprzedażą"
     },
+    "billedMonthly": "Rozliczane miesięcznie · Anuluj w dowolnym momencie",
     "select": "Wybierz",
     "needCustomSolution": "Potrzebujesz niestandardowego rozwiązania? Skontaktuj się z nami"
   },
@@ -628,33 +731,39 @@
     "close": "Zamknij"
   },
   "Landing": {
-    "title": "Suliko AI Tłumacz - Przetłumacz dokument w 5 minut.",
-    "description": "Asystent tłumacza – prześlij dokument i skróć czas tłumaczenia nawet o 70%. Skoncentruj się na treści, a nie na pracy technicznej.",
+    "title": "Tłumacz dokumenty w minutach.",
+    "description": "Prześlij dokument i skróć czas tłumaczenia o 70%.",
+    "badge": "Narzędzie CAT",
     "cta": "Zacznij tłumaczyć",
-    "viewPricing": "Zobacz ceny",
+    "viewPricing": "Uzyskaj tłumaczenie notarialne",
     "trustedBy": "Zaufane przez profesjonalistów na całym świecie",
     "documentsTranslated": "Przetłumaczone dokumenty",
     "languagesSupported": "Obsługiwane języki",
     "accuracyRate": "Wskaźnik dokładności",
     "supportAvailable": "Dostępne wsparcie",
-    "loading": "Ładowanie..."
+    "loading": "Ładowanie...",
+    "videoUnavailable": "Wideo niedostępne"
   },
   "VideoSection": {
     "title": "Zobacz Suliko w akcji",
-    "description": "Obejrzyj, jak działa nasza platforma tłumaczeniowa oparta na AI i dowiedz się, dlaczego profesjonaliści na całym świecie ufają Suliko w swoich potrzebach tłumaczeniowych."
+    "description": "Obejrzyj, jak działa nasza platforma tłumaczeniowa oparta na AI i dowiedz się, dlaczego profesjonaliści na całym świecie ufają Suliko w swoich potrzebach tłumaczeniowych.",
+    "browserNotSupported": "Twoja przeglądarka nie obsługuje tagu wideo.",
+    "videoUnavailable": "Wideo niedostępne"
   },
   "LandingHeader": {
     "about": "O nas",
     "pricing": "Ceny",
     "testimonials": "Opinie",
+    "faq": "FAQ",
     "contact": "Kontakt",
     "blog": "Blog",
+    "notary": "Notarialne",
     "getStarted": "Zacznij",
     "loading": "Ładowanie..."
   },
   "AboutSection": {
     "title": "Dlaczego Suliko?",
-    "subtitle": "",
+    "subtitle": "Inteligentny asystent, który pomaga tłumaczom pracować szybciej, a firmom się rozwijać — bez utraty jakości.",
     "mission": "Nasza misja",
     "missionText": "Naszą misją jest uczynienie tłumaczenia szybszym, dokładniejszym i dostępnym dla wszystkich. Suliko łączy sztuczną inteligencję z doświadczeniem tłumaczy, aby tłumaczenie dokumentów stało się prostym procesem — sprawą minut, a nie godzin. Chcemy, aby profesjonalni tłumacze i firmy mieli zunifikowane, inteligentne narzędzie, które zachowuje format tekstu, strukturę i dokładność znaczenia w każdym języku.",
     "video": {
@@ -702,7 +811,7 @@
         "name": "თარგმნის სახლი",
         "role": "Agencja tłumaczeń",
         "company": "Translation House",
-        "content": "Suliko przekształciło nasz proces tłumaczenia. Dokładność napędzana AI w połączeniu z profesjonalną jakością pomogła nam lepiej i szybciej obsługiwać naszych klientów. Stało się to niezbędnym narzędziem dla naszej agencji."
+        "content": "Suliko całkowicie przekształciło nasz proces pracy. Dokładność i szybkość pomagają nam zapewniać lepszą obsługę klientów — niezbędne narzędzie dla naszej agencji."
       },
       "irakliVekua": {
         "name": "ირაკლი ვეკუა",
@@ -727,7 +836,7 @@
         "role": "Menedżer Produktu",
         "company": "API24",
         "email": "info@api24.ge",
-        "content": "Wchodząc na skalę międzynarodową, lokalizacja była kluczowym wyzwaniem dla API24. Suliko odegrało decydującą rolę w adaptacji naszego interfejsu i dokumentacji technicznej. Pozwoliło nam to udostępnić naszą platformę programistom na całym świecie."
+        "content": "Lokalizacja była kluczowym wyzwaniem dla API24. Suliko pomogło nam dostosować interfejs i dokumentację techniczną, czyniąc platformę dostępną dla deweloperów na całym świecie."
       }
     }
   },
@@ -775,7 +884,7 @@
       "error": "❌ Nie udało się zasubskrybować. Spróbuj ponownie."
     },
     "bottom": {
-      "copyright": "© 2025 Suliko. Wszystkie prawa zastrzeżone."
+      "copyright": "© 2026 Suliko. Wszystkie prawa zastrzeżone."
     }
   },
   "ReferralPage": {
@@ -926,5 +1035,204 @@
     "mobileOverlayText": "Ta strona została zaprojektowana z myślą o komputerach stacjonarnych. Aby uzyskać pełną funkcjonalność i najlepsze wrażenia, odwiedź ją na komputerze PC lub urządzeniu z większym ekranem.",
     "continueAnyway": "Kontynuuj mimo to",
     "usePC": "Skorzystam z komputera"
+  },
+  "FAQ": {
+    "title": "Często zadawane pytania",
+    "subtitle": "Wszystko, co musisz wiedzieć o Suliko Translation",
+    "items": {
+      "quality": {
+        "question": "Jak dokładne są tłumaczenia?",
+        "answer": "Suliko używa zaawansowanych modeli AI wytrenowanych na profesjonalnych korpusach tłumaczeniowych. Wskaźnik dokładności wynosi 98% dla obsługiwanych par językowych, a edytor pozwala przeglądać i dopracowywać każdy segment."
+      },
+      "languages": {
+        "question": "Które języki są obsługiwane?",
+        "answer": "Obecnie obsługujemy ponad 50 języków, w tym gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i wiele innych."
+      },
+      "formats": {
+        "question": "Jakie formaty plików mogę przesłać?",
+        "answer": "Możesz przesłać pliki PNG, JPG, JPEG, PDF, DOCX i TXT. Dokument jest automatycznie analizowany i wyświetlany w edytorze porównawczym."
+      },
+      "pricing": {
+        "question": "Czy jest bezpłatny plan?",
+        "answer": "Tak — każdy nowy użytkownik otrzymuje 25 bezpłatnych stron do przetłumaczenia. Następnie możesz wybrać plan miesięczny (Starter, Professional) lub opcję pay-as-you-go."
+      },
+      "security": {
+        "question": "Czy moje dane dokumentów są bezpieczne?",
+        "answer": "Twoje dokumenty są szyfrowane podczas przesyłania (TLS 1.3) i przechowywania. Nie używamy Twojej treści do trenowania modeli i możesz w dowolnym momencie zażądać trwałego usunięcia danych."
+      },
+      "georgian": {
+        "question": "Dlaczego Suliko jest szczególnie dobre dla języka gruzińskiego?",
+        "answer": "Gruziński jest morfologicznie złożonym językiem, z którym ogólne systemy AI radzą sobie słabo. Modele Suliko są dostrojone na gruzińskich tekstach prawniczych, medycznych i biznesowych."
+      },
+      "api": {
+        "question": "Czy oferujecie API lub integracje biznesowe?",
+        "answer": "Tak. Plany Business i Enterprise obejmują dostęp do API, dzięki czemu możesz zintegrować Suliko bezpośrednio z własnymi procesami. Skontaktuj się z naszym zespołem sprzedaży w sprawie cen."
+      }
+    }
+  },
+  "Blog": {
+    "backToHome": "Powrót na stronę główną",
+    "title": "Blog",
+    "subtitle": "Spostrzeżenia, wskazówki i aktualności od zespołu Suliko na temat technologii tłumaczeń AI.",
+    "banner": {
+      "articles": "Artykuły",
+      "topics": "Tematy",
+      "authors": "Autorzy",
+      "avgRead": "Śr. czas czytania"
+    },
+    "grid": {
+      "noPosts": "Brak wpisów na blogu",
+      "noPostsSubtitle": "Sprawdź ponownie później!",
+      "searchPlaceholder": "Szukaj artykułów…",
+      "noResults": "Brak wpisów pasujących do wyszukiwania.",
+      "clearFilters": "Wyczyść filtry"
+    },
+    "card": {
+      "readMore": "Czytaj więcej"
+    },
+    "newsletter": {
+      "label": "Newsletter",
+      "title": "Bądź na bieżąco",
+      "subtitle": "Otrzymuj najnowsze spostrzeżenia i aktualizacje na swoją skrzynkę.",
+      "placeholder": "Wpisz swój e-mail",
+      "subscribe": "Subskrybuj",
+      "noSpam": "Bez spamu, rezygnacja w dowolnym momencie."
+    }
+  },
+  "NotaryPromo": {
+    "heading": "Suliko tłumaczy też notarialnie",
+    "subheading": "Certyfikowane, szybkie i prawnie ważne tłumaczenia oficjalnych dokumentów.",
+    "cta": "Dowiedz się więcej"
+  },
+  "NotaryHeader": {
+    "services": "Usługi",
+    "pricing": "Ceny",
+    "faq": "FAQ",
+    "contact": "Kontakt",
+    "backToSuliko": "Suliko",
+    "loading": "Ładowanie..."
+  },
+  "NotaryPage": {
+    "hero": {
+      "badge": "Certyfikowane tłumaczenia",
+      "heading": "Profesjonalne notarialne usługi tłumaczeniowe",
+      "subheading": "Szybkie, dokładne i certyfikowane tłumaczenia wszystkich oficjalnych dokumentów. Zaufało nam tysiące klientów w Tbilisi.",
+      "cta": "Prześlij dokument",
+      "ctaSecondary": "Cennik",
+      "badge1": "Certyfikowane tłumaczenia",
+      "badge2": "Odpowiedź w 5 min",
+      "badge3": "Dostawa tego samego dnia"
+    },
+    "services": {
+      "sectionBadge": "Jak to działa",
+      "heading": "Prosty 3-etapowy proces",
+      "subheading": "Od przesłania dokumentu do certyfikowanego tłumaczenia — szybko i prosto.",
+      "step1Title": "Prześlij swój dokument",
+      "step1Desc": "Wyślij nam dokument przez formularz online lub WhatsApp.",
+      "step2Title": "Tłumaczymy i certyfikujemy",
+      "step2Desc": "Nasi certyfikowani tłumacze wykonują tłumaczenie z pieczęcią notarialną.",
+      "step3Title": "Odbierz tłumaczenie",
+      "step3Desc": "Odbierz osobiście lub przez kuriera — dostawa tego samego dnia dostępna."
+    },
+    "pricing": {
+      "sectionBadge": "Cennik",
+      "heading": "Ceny tłumaczeń",
+      "subheading": "Przejrzyste ceny dla wszystkich par językowych. Bez ukrytych opłat.",
+      "languageCol": "Język",
+      "priceCol": "Cena za stronę",
+      "notaryTitle": "Poświadczenie notarialne",
+      "notaryTier1": "1 strona",
+      "notaryTier1Price": "6 ₾ za stronę",
+      "notaryTier2": "2–10 stron",
+      "notaryTier2Price": "4 ₾ za stronę",
+      "notaryTier3": "11–50 stron",
+      "notaryTier3Price": "3 ₾ za stronę",
+      "notaryTier4": "51+ stron",
+      "notaryTier4Price": "2 ₾ za stronę",
+      "vatNote": "18% VAT + 5 ₾ opłata stała",
+      "discountTitle": "Rabaty za ilość",
+      "discount1": "10% zniżki za 50+ stron",
+      "discount2": "15% zniżki za 100+ stron"
+    },
+    "faq": {
+      "sectionBadge": "FAQ",
+      "heading": "Najczęściej zadawane pytania",
+      "subheading": "Wszystko, co musisz wiedzieć o naszych usługach tłumaczenia notarialnego.",
+      "q1": "Ile trwa tłumaczenie notarialne?",
+      "a1": "Standardowe tłumaczenia są zwykle realizowane w ciągu 1–2 dni roboczych. Ekspresowa usługa tego samego dnia jest dostępna dla pilnych dokumentów — skontaktuj się z nami.",
+      "q2": "Jakie dokumenty możecie przetłumaczyć?",
+      "a2": "Tłumaczymy wszystkie oficjalne dokumenty, w tym paszporty, akty urodzenia, akty małżeństwa, dyplomy, umowy, dokumentację medyczną, dokumenty sądowe i inne.",
+      "q3": "Ile kosztuje jedna strona?",
+      "a3": "Ceny zaczynają się od 20 ₾ za stronę dla tłumaczeń angielskiego/rosyjskiego i różnią się w zależności od języka. Poświadczenie notarialne kosztuje 2–6 ₾ za stronę.",
+      "q4": "Czy wystawiacie certyfikowane/notarialne tłumaczenia?",
+      "a4": "Tak. Wszystkie nasze tłumaczenia mogą zostać notarialnie poświadczone, co nadaje im moc prawną do użytku w Gruzji i za granicą.",
+      "q5": "Czy mogę przesłać dokument online?",
+      "a5": "Oczywiście. Prześlij dokument przez nasz formularz online lub wyślij przez WhatsApp. Sprawdzimy go i wyślemy wycenę w ciągu 5 minut.",
+      "q6": "Czy tłumaczycie na języki inne niż gruziński?",
+      "a6": "Tak — tłumaczymy ponad 20 par językowych, w tym angielski, rosyjski, niemiecki, francuski, turecki, ormiański, arabski, chiński i wiele innych."
+    },
+    "contact": {
+      "heading": "Gotowy, żeby zacząć?",
+      "subheading": "Wyślij nam dokument i otrzymaj wycenę w 5 minut.",
+      "whatsapp": "WhatsApp",
+      "email": "E-mail",
+      "address": "Tbilisi, Centrum Biznesowe Karvasla, ul. Kotne Dadiani 7"
+    },
+    "calculator": {
+      "tabs": {
+        "calculator": "Kalkulator cen",
+        "upload": "Prześlij dokument",
+        "calcTitle": "Błyskawicznie oszacuj koszt tłumaczenia",
+        "uploadTitle": "Wyślij nam dokument po bezpłatną wycenę",
+        "uploadSub": "Szybka odpowiedź ~ 5 minut"
+      },
+      "priceCalc": {
+        "sourceLanguage": "Język źródłowy",
+        "targetLanguage": "Język docelowy",
+        "pageCount": "Liczba stron",
+        "notaryApproval": "Wymagane poświadczenie notarialne",
+        "calculate": "Oblicz cenę",
+        "translationDetails": "Szczegóły tłumaczenia",
+        "pricePerPage": "Cena za stronę",
+        "discount": "Rabat ilościowy",
+        "notaryCost": "Koszt notarialny",
+        "totalPrice": "Suma",
+        "copyEmail": "Kopiuj e-mail",
+        "copyPhone": "Kopiuj numer",
+        "swipeDown": "Przesuń w dół, aby zamknąć",
+        "delivery90": "Około 90 minut",
+        "delivery180": "Około 180 minut",
+        "deliveryCustom": "Indywidualnie, skontaktujemy się z Tobą",
+        "document": "Dokument",
+        "addDocument": "Dodaj dokument",
+        "removeDocument": "Usuń",
+        "translationCost": "Koszt tłumaczenia"
+      },
+      "uploadForm": {
+        "dragDrop": "Przeciągnij i upuść pliki tutaj lub",
+        "browse": "przeglądaj",
+        "maxFiles": "Maksymalnie 5 plików (10MB każdy)",
+        "name": "Twoje imię",
+        "email": "Twój e-mail",
+        "send": "Uzyskaj bezpłatną wycenę",
+        "remove": "Usuń",
+        "success": "Pliki zostały wysłane pomyślnie!",
+        "error": "Błąd podczas wysyłania. Spróbuj ponownie.",
+        "invalidEmail": "Wpisz prawidłowy adres e-mail",
+        "tooManyFiles": "Dozwolone maksymalnie 5 plików",
+        "fileTooLarge": "Rozmiar pliku przekracza 10MB",
+        "phone": "Numer telefonu (opcjonalnie)",
+        "benefit1": "Bezpłatna wycena",
+        "benefit2": "Szybka odpowiedź w ciągu 5 minut",
+        "benefit3": "Profesjonalne usługi tłumaczeniowe",
+        "callUs": "Lub zadzwoń do nas:",
+        "sending": "Wysyłanie..."
+      }
+    }
+  },
+  "Terms": {
+    "backToHome": "Wróć do strony głównej",
+    "pageTitle": "Warunki i zasady | Suliko",
+    "pageDescription": "Przeczytaj pełne Warunki i zasady korzystania z usługi tłumaczenia AI Suliko."
   }
 }

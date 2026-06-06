@@ -6,12 +6,16 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "
 import { Button } from "@/features/ui/components/ui/button";
 import { Input } from "@/features/ui/components/ui/input";
 import { useState, useMemo, useEffect } from "react";
-import SulikoFormParticles from "./SulikoFormParticles";
+import { useSearchParams } from "next/navigation";
+import { Loader2, User } from "lucide-react";
 import {
   register,
   login,
   sendCode,
+  loginWithGoogle,
 } from "@/features/auth/services/authorizationService";
+import GoogleButton from "./GoogleButton";
+import SulikoLogo from "./SulikoLogo";
 import { updateUserProfile } from "@/features/auth/services/userService";
 import PasswordRecoveryModal from "@/features/auth/components/PasswordRecoveryModal";
 import type { RegisterParams } from "@/features/auth/services/authorizationService";
@@ -31,6 +35,7 @@ import EmailVerificationSection from "./EmailVerificationSection";
 import PasswordSection from "./PasswordSection";
 import NameSection from "./NameSection";
 import TermsSection from "./TermsSection";
+import RegistrationStepper from "./RegistrationStepper";
 import {
   createLoginFormSchema,
   createRegisterFormSchema,
@@ -38,16 +43,22 @@ import {
   RegisterFormData,
 } from "@/features/auth/types/types.Auth";
 
+type RegistrationStep = 1 | 2 | 3;
+
 const SulikoForm: React.FC = () => {
   const t = useTranslations("Authorization");
+  const tError = useTranslations("ErrorAlert");
   const locale = useLocale();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const refFromUrl = searchParams.get("ref") ?? "";
   const { setToken, setRefreshToken, triggerWelcomeModal } = useAuthStore();
   const fetchUserProfile = useUserStore((state) => state.fetchUserProfile);
   const setUserProfile = useUserStore((state) => state.setUserProfile);
-  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
   const [isLoginMode, setIsLoginMode] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [registrationStep, setRegistrationStep] = useState<RegistrationStep>(1);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
@@ -55,6 +66,8 @@ const SulikoForm: React.FC = () => {
   const [isCodeVerified, setIsCodeVerified] = useState(false);
   const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [verificationMethod, setVerificationMethod] = useState<"phone" | "email" | null>(null);
+  const [switchedToLoginNote, setSwitchedToLoginNote] = useState(false);
+  const [noteVisible, setNoteVisible] = useState(false);
 
   const formSchema = useMemo(
     () =>
@@ -84,6 +97,7 @@ const SulikoForm: React.FC = () => {
       acceptTerms: false,
       acceptPrivacyPolicy: false,
       subscribeNewsletter: false,
+      referralCode: refFromUrl,
     },
   });
 
@@ -102,7 +116,12 @@ const SulikoForm: React.FC = () => {
     }
   }, [verificationCode, sentVerificationCode, isLoginMode]);
 
-  // Automatically set verification method based on domain when switching to registration mode
+  useEffect(() => {
+    if (refFromUrl && !isLoginMode) {
+      form.setValue("referralCode", refFromUrl);
+    }
+  }, [refFromUrl, isLoginMode, form]);
+
   useEffect(() => {
     if (!isLoginMode) {
       const requiredMethod = getRequiredVerificationMethod();
@@ -112,28 +131,47 @@ const SulikoForm: React.FC = () => {
     }
   }, [isLoginMode, verificationMethod]);
 
-  function toggleAuthMode() {
-    const newIsLoginMode = !isLoginMode;
-    setIsLoginMode(newIsLoginMode);
+  useEffect(() => {
+    if (switchedToLoginNote) {
+      const id = setTimeout(() => setNoteVisible(true), 16);
+      return () => clearTimeout(id);
+    } else {
+      setNoteVisible(false);
+    }
+  }, [switchedToLoginNote]);
+
+  function resetRegistrationState() {
+    setRegistrationStep(1);
     setAuthError(null);
+    setSwitchedToLoginNote(false);
     setIsCodeSent(false);
     setIsSendingCode(false);
     setResendTimer(0);
     setSentVerificationCode("");
     setIsCodeVerified(false);
+  }
 
-    // Set verification method based on domain when switching to registration
+  function switchToLogin(identifier: string) {
+    setIsLoginMode(true);
+    resetRegistrationState();
+    setVerificationMethod(null);
+    form.setValue("identifier", identifier);
+    setSwitchedToLoginNote(true);
+  }
+
+  function toggleAuthMode() {
+    const newIsLoginMode = !isLoginMode;
+    setIsLoginMode(newIsLoginMode);
+    setSwitchedToLoginNote(false);
+    resetRegistrationState();
+
     if (!newIsLoginMode) {
       const requiredMethod = getRequiredVerificationMethod();
       setVerificationMethod(requiredMethod);
-
-      // Track when user starts registration process
       trackRegistrationStart();
-      // Also send server-side event
       trackRegistrationStartServerEvent();
     } else {
       setVerificationMethod(null);
-      // Reset identifier field when switching to login
       form.setValue("identifier", "");
     }
   }
@@ -143,7 +181,6 @@ const SulikoForm: React.FC = () => {
     const valid = await form.trigger("mobile");
     if (!valid) return;
 
-    // Ensure we have a valid phone number
     if (!mobile || !mobile.trim()) {
       setAuthError(t("phoneNumberRequiredError"));
       return;
@@ -170,8 +207,12 @@ const SulikoForm: React.FC = () => {
       }, 1000);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
-      console.error('Send phone code error:', errorMessage);
-      setAuthError(t("ErrorAlert.ups") || "Error detected");
+      if (errorMessage.includes("USER_ALREADY_REGISTERED")) {
+        switchToLogin(mobile.trim());
+      } else {
+        console.error("Send phone code error:", errorMessage);
+        setAuthError(tError("ups"));
+      }
     } finally {
       setIsSendingCode(false);
     }
@@ -182,7 +223,6 @@ const SulikoForm: React.FC = () => {
     const valid = await form.trigger("email");
     if (!valid) return;
 
-    // Ensure we have a valid email
     if (!email || !email.trim()) {
       setAuthError(t("emailRequiredError"));
       return;
@@ -209,8 +249,12 @@ const SulikoForm: React.FC = () => {
       }, 1000);
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : t("sendCodeError");
-      console.error('Send email code error:', errorMessage);
-      setAuthError(t("ErrorAlert.ups") || "Error detected");
+      if (errorMessage.includes("USER_ALREADY_REGISTERED")) {
+        switchToLogin(email.trim());
+      } else {
+        console.error("Send email code error:", errorMessage);
+        setAuthError(tError("ups"));
+      }
     } finally {
       setIsSendingCode(false);
     }
@@ -225,20 +269,31 @@ const SulikoForm: React.FC = () => {
     }
   }
 
-  // Helper function to detect if identifier is email or phone
   const isEmail = (value: string): boolean => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(value.trim());
   };
 
+  async function handleContinueStep1() {
+    if (!isCodeVerified) return;
+    setRegistrationStep(2);
+  }
+
+  async function handleContinueStep2() {
+    const fields: Array<keyof RegisterFormData> = ["firstname", "lastname"];
+    if (verificationMethod !== "email") fields.push("email");
+    const valid = await form.trigger(fields);
+    if (!valid) return;
+    setRegistrationStep(3);
+  }
+
   async function onSubmit(values: LoginFormData | RegisterFormData) {
     setAuthError(null);
+    setIsSubmitting(true);
     try {
       if (isLoginMode) {
         const loginValues = values as LoginFormData;
         const identifier = loginValues.identifier?.trim() || "";
-
-        // Determine if identifier is email or phone
         const isEmailValue = isEmail(identifier);
         const data = await login({
           phoneNumber: isEmailValue ? undefined : identifier,
@@ -248,12 +303,10 @@ const SulikoForm: React.FC = () => {
         setToken(data.token);
         setRefreshToken(data.refreshToken);
 
-        // Fetch user profile to check hasSeenRegistrationBonus
         try {
           await fetchUserProfile();
           const profileState = useUserStore.getState().userProfile;
           if (profileState && profileState.hasSeenRegistrationBonus === false) {
-            // Update the flag to true
             await updateUserProfile({
               id: profileState.id,
               firstName: profileState.firstName,
@@ -282,18 +335,14 @@ const SulikoForm: React.FC = () => {
           setAuthError(t("pleaseEnterVerificationCode"));
           return;
         }
-
         if (registerValues.verificationCode !== sentVerificationCode) {
           setAuthError(t("incorrectVerificationCode"));
           return;
         }
 
-        // Determine which field was verified
         const phoneNumber = verificationMethod === "phone" ? registerValues.mobile : undefined;
-        // Email is now required, so always use it
         const email = registerValues.email;
 
-        // At least one must be provided
         if (!phoneNumber && !email) {
           setAuthError("Either phone number or email must be verified");
           return;
@@ -307,20 +356,19 @@ const SulikoForm: React.FC = () => {
           email: email,
           verificationCode: registerValues.verificationCode,
           subscribeNewsletter: registerValues.subscribeNewsletter,
+          referralCode: registerValues.referralCode?.trim() || undefined,
         } as RegisterParams);
 
-        // Track successful registration
         trackRegistrationComplete({
           phoneNumber: phoneNumber || "",
           firstName: registerValues.firstname || generateDefaultName(),
-          lastName: registerValues.lastname || ""
+          lastName: registerValues.lastname || "",
         });
 
-        // Also send server-side event for more reliable tracking
         await trackRegistrationServerEvent({
           phone: phoneNumber || "",
           firstName: registerValues.firstname || generateDefaultName(),
-          lastName: registerValues.lastname || ""
+          lastName: registerValues.lastname || "",
         });
 
         setToken(data.token);
@@ -351,34 +399,33 @@ const SulikoForm: React.FC = () => {
           ? error.message
           : "Authentication failed, Invalid credentials";
 
-      // Log actual error to console for debugging
-      console.error('Authentication error:', errorMessage);
+      console.error("Authentication error:", errorMessage);
 
-      if (!isLoginMode && errorMessage.includes("უკვე რეგისტრირებულია")) {
-        // Set generalized error message
-        setAuthError(t("ErrorAlert.ups") || "Error detected");
+      if (!isLoginMode && errorMessage.includes("REGISTRATION_SUCCESS_LOGIN_FAILED")) {
+        // Registration succeeded but auto-login failed — switch to login view
+        resetRegistrationState();
+        setIsLoginMode(true);
+        form.setValue("identifier", "");
+        setAuthError(t("registrationSuccessLoginFailed") || "Registration complete! Please sign in.");
+      } else if (!isLoginMode && errorMessage.includes("უკვე რეგისტრირებულია")) {
+        setAuthError(t("alreadyRegistered"));
       } else if (isLoginMode && errorMessage.includes("ვერ მოიძებნა")) {
-        // Set generalized error message
-        setAuthError(t("ErrorAlert.ups") || "Error detected");
-        setTimeout(() => {
-          setIsLoginMode(false);
-          setAuthError(null);
-          form.reset();
-        }, 2000);
+        setAuthError(t("accountNotFound"));
       } else {
-        // Set generalized error message
-        setAuthError(t("ErrorAlert.ups") || "Error detected");
+        setAuthError(tError("ups"));
       }
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   const handlePhoneChange = () => {
+    setSwitchedToLoginNote(false);
     if (isCodeSent && verificationMethod === "phone") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
       setSentVerificationCode("");
       setResendTimer(0);
-      // Only reset verification method if not required by domain
       const requiredMethod = getRequiredVerificationMethod();
       if (!requiredMethod) {
         setVerificationMethod(null);
@@ -388,12 +435,12 @@ const SulikoForm: React.FC = () => {
   };
 
   const handleEmailChange = () => {
+    setSwitchedToLoginNote(false);
     if (isCodeSent && verificationMethod === "email") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
       setSentVerificationCode("");
       setResendTimer(0);
-      // Only reset verification method if not required by domain
       const requiredMethod = getRequiredVerificationMethod();
       if (!requiredMethod) {
         setVerificationMethod(null);
@@ -402,25 +449,73 @@ const SulikoForm: React.FC = () => {
     }
   };
 
+  async function handleGoogleSuccess(credentialResponse: { credential?: string }) {
+    if (!credentialResponse.credential) return;
+    setAuthError(null);
+    setIsSubmitting(true);
+    try {
+      const data = await loginWithGoogle(credentialResponse.credential);
+      setToken(data.token);
+      setRefreshToken(data.refreshToken);
+      await fetchUserProfile();
+      const profileState = useUserStore.getState().userProfile;
+      if (profileState && profileState.hasSeenRegistrationBonus === false) {
+        await updateUserProfile({
+          id: profileState.id,
+          firstName: profileState.firstName,
+          lastName: profileState.lastName,
+          phoneNUmber: profileState.phoneNUmber,
+          email: profileState.email,
+          userName: profileState.userName,
+          roleId: profileState.roleId,
+          balance: profileState.balance,
+          hasSeenRegistrationBonus: true,
+        });
+        setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
+        triggerWelcomeModal();
+      }
+      router.push("/document");
+    } catch (error) {
+      console.error("Google login error:", error);
+      setAuthError(tError("ups"));
+    } finally {
+      setIsSubmitting(false);
+    }
+  }
+
   return (
     <>
-      <SulikoFormParticles />
       {authError && (
         <ErrorAlert
           message={authError}
           onClose={() => setAuthError(null)}
         />
       )}
-      <div className="w-[85%] dark:z-[2] dark:bg-transparent bg-suliko-main-content-bg-color z-[100] pt-[100px] pb-8">
+
+      {/* Acrylic card */}
+      <div className="
+        w-[92%] sm:w-full max-w-[480px] z-[2] my-8
+        backdrop-blur-xl backdrop-saturate-150
+        bg-white/65 dark:bg-white/[0.06]
+        border border-white/60 dark:border-white/[0.12]
+        rounded-2xl shadow-2xl dark:shadow-black/40
+        py-8 px-6 sm:px-8
+      ">
         <Form {...form}>
-          <div className="flex z-10 flex-col my-[110px] sm:mt-0 sm:my-0 justify-start items-center w-full min-h-full">
-            <div className="mb-6 bg-muted rounded-xl p-1 flex w-[60%] max-w-md">
+          <div className="flex flex-col items-center">
+            {/* Logo */}
+            <div className="mb-6">
+              <SulikoLogo width={90} className="mx-auto" />
+            </div>
+
+            {/* Tab switcher */}
+            <div className="mb-6 bg-muted rounded-xl p-1 flex w-full">
               <button
                 type="button"
                 onClick={() => !isLoginMode && toggleAuthMode()}
                 className={`cursor-pointer flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${isLoginMode
-                    ? "bg-suliko-default-color text-white shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                  ? "bg-suliko-default-color text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
                   }`}
               >
                 {t("login")}
@@ -429,62 +524,119 @@ const SulikoForm: React.FC = () => {
                 type="button"
                 onClick={() => isLoginMode && toggleAuthMode()}
                 className={`cursor-pointer flex-1 py-2.5 px-4 rounded-lg text-sm font-medium transition-all ${!isLoginMode
-                    ? "bg-suliko-default-color text-white shadow-sm"
-                    : "text-muted-foreground hover:text-foreground"
+                  ? "bg-suliko-default-color text-white shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
                   }`}
               >
                 {t("register")}
               </button>
             </div>
-
-            <div className="pb-[20px] lg:pb-[40px] flex flex-col gap-5 overflow-hidden">
-              <h3 className="lg:text-4xl text-2xl text-suliko-default-color font-bold text-center dark:text-primary">
-                {isLoginMode ? t("login") : t("register")}
-              </h3>
-              <p className="text-center px-[10px] text-[0.8rem] lg:text-[1rem] dark:text-muted-foreground">
-                {t("description")}
+            {!isLoginMode && (<div className="w-full mb-5">
+              <GoogleButton
+                onSuccess={handleGoogleSuccess}
+                onError={() => setAuthError(t("ErrorAlert.ups") || "Error detected")}
+                label={t("orContinueWith") || "Continue with Google"}
+              />
+            </div>)}
+            {/* Subtitle */}
+            <div className="pb-5 w-full">
+              <p className="text-center text-[0.85rem] lg:text-[0.95rem] text-muted-foreground">
+                {isLoginMode ? t("welcomeBack") : t("description")}
               </p>
             </div>
+
+            {/* Registration stepper */}
+            {!isLoginMode && (
+              <div className="w-full mb-4">
+                <RegistrationStepper currentStep={registrationStep} />
+              </div>
+            )}
+
+            {/* Form */}
             <form
               onSubmit={(e) => {
                 e.preventDefault();
                 form.handleSubmit(
-                  (data) => {
-                    onSubmit(data);
-                  },
-                  (errors) => {
-                    console.log('Form validation failed:', errors);
-                  }
+                  (data) => { onSubmit(data); },
+                  (errors) => { console.log("Form validation failed:", errors); }
                 )(e);
               }}
-              className="flex flex-col gap-8 w-[60%]"
+              className="flex flex-col gap-6 w-full"
             >
-              {isLoginMode ? (
-                <FormField
-                  control={form.control}
-                  name="identifier"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel className="font-bold dark:text-white">
-                        {t("phoneNumberOrEmail") || "Phone Number or Email"} <span className="text-red-500">*</span>
-                      </FormLabel>
-                      <FormControl>
-                        <Input
-                          placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"}
-                          className="border-2 shadow-md dark:border-slate-600"
-                          autoComplete="username"
-                          
+              {/* LOGIN fields */}
+              {isLoginMode && (
+                <>
+                  <FormField
+                    control={form.control}
+                    name="identifier"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-bold dark:text-white">
+                          {t("phoneNumberOrEmail") || "Phone Number or Email"}{" "}
+                          <span className="text-red-500">*</span>
+                        </FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <User
+                              size={15}
+                              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                            />
+                            <Input
+                              placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"}
+                              className="border-2 shadow-md dark:border-slate-600 pl-9"
+                              autoComplete="username"
+                              {...field}
+                            />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                        {switchedToLoginNote && (
+                          <div
+                            className={`flex items-center gap-2 mt-1 px-3 py-2 rounded-lg bg-blue-600/75 dark:bg-blue-700/65 border border-blue-500/50 backdrop-blur-sm transition-all duration-300 ease-out ${noteVisible ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-1"}`}
+                          >
+                            <span className="shrink-0">ℹ️</span>
+                            <p className="text-xs text-white font-medium">
+                              {t("alreadyRegistered")}
+                            </p>
+                          </div>
+                        )}
+                      </FormItem>
+                    )}
+                  />
+                  <PasswordSection
+                    form={form}
+                    isLoginMode={isLoginMode}
+                    onForgotPassword={() => setShowPasswordRecovery(true)}
+                  />
+                  <Button
+                    className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center gap-2">
+                        <Loader2 size={16} className="animate-spin" />
+                        {t("pleaseWait") || "Please wait…"}
+                      </span>
+                    ) : (
+                      t("login")
+                    )}
+                  </Button>
+                  <div className="flex items-center gap-3">
+                    <div className="flex-1 h-px bg-border" />
+                    <span className="text-xs text-muted-foreground">{t("orWithCredentials") || "or"}</span>
+                    <div className="flex-1 h-px bg-border" />
+                  </div>
+                  <GoogleButton
+                    onSuccess={handleGoogleSuccess}
+                    onError={() => setAuthError(t("ErrorAlert.ups") || "Error detected")}
+                    label={t("orContinueWith") || "Continue with Google"}
+                  />
+                </>
+              )}
 
-
-                          
-                          {...field}
-                        />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              ) : (
+              {/* REGISTRATION step 1 — verify */}
+              {!isLoginMode && registrationStep === 1 && (
                 <>
                   {!verificationMethod && !getRequiredVerificationMethod() && (
                     <div className="flex flex-col gap-4 w-full">
@@ -495,7 +647,7 @@ const SulikoForm: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setVerificationMethod("phone")}
-                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-all duration-200 hover:shadow-md bg-card cursor-pointer"
+                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-[border-color,box-shadow] duration-200 hover:shadow-md bg-card cursor-pointer"
                         >
                           <div className="text-4xl mb-3">📱</div>
                           <div className="text-lg font-semibold text-foreground mb-1">
@@ -508,7 +660,7 @@ const SulikoForm: React.FC = () => {
                         <button
                           type="button"
                           onClick={() => setVerificationMethod("email")}
-                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-all duration-200 hover:shadow-md bg-card cursor-pointer"
+                          className="group relative flex flex-col items-center justify-center p-6 border-2 border-border rounded-xl hover:border-suliko-default-color transition-[border-color,box-shadow] duration-200 hover:shadow-md bg-card cursor-pointer"
                         >
                           <div className="text-4xl mb-3">📧</div>
                           <div className="text-lg font-semibold text-foreground mb-1">
@@ -526,7 +678,7 @@ const SulikoForm: React.FC = () => {
                     <>
                       <PhoneVerificationSection
                         form={form}
-                        isLoginMode={isLoginMode}
+                        isLoginMode={false}
                         onPhoneChange={handlePhoneChange}
                         onSendCode={handleSendPhoneCode}
                         isCodeSent={isCodeSent}
@@ -578,10 +730,20 @@ const SulikoForm: React.FC = () => {
                       )}
                     </>
                   )}
+
+                  <Button
+                    type="button"
+                    className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
+                    disabled={!isCodeVerified}
+                    onClick={handleContinueStep1}
+                  >
+                    {t("continue") || "Continue"}
+                  </Button>
                 </>
               )}
 
-              {!isLoginMode && (
+              {/* REGISTRATION step 2 — personal info */}
+              {!isLoginMode && registrationStep === 2 && (
                 <>
                   <NameSection form={form} hideEmail={verificationMethod === "email"} />
                   {verificationMethod === "email" && (
@@ -592,40 +754,81 @@ const SulikoForm: React.FC = () => {
                       </p>
                     </div>
                   )}
+                  <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => setRegistrationStep(1)}
+                    >
+                      {t("back") || "Back"}
+                    </Button>
+                    <Button
+                      type="button"
+                      className="flex-1 bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
+                      onClick={handleContinueStep2}
+                    >
+                      {t("continue") || "Continue"}
+                    </Button>
+                  </div>
                 </>
               )}
 
-              <PasswordSection
-                form={form}
-                isLoginMode={isLoginMode}
-                isPasswordVisible={isPasswordVisible}
-                setIsPasswordVisible={setIsPasswordVisible}
-              />
-
-              {!isLoginMode && <TermsSection form={form} />}
-
-              <Button
-                className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
-                type="submit"
-              >
-                {isLoginMode ? t("login") : t("register")}
-              </Button>
-
-              {isLoginMode && (
-                <div className="text-center">
-                  <button
-                    type="button"
-                    onClick={() => setShowPasswordRecovery(true)}
-                    className="text-sm text-suliko-default-color hover:underline cursor-pointer"
-                  >
-                    {t("forgotPassword")}
-                  </button>
-                </div>
+              {/* REGISTRATION step 3 — password + terms + submit */}
+              {!isLoginMode && registrationStep === 3 && (
+                <>
+                  <PasswordSection form={form} isLoginMode={false} />
+                  <TermsSection form={form} />
+                  <FormField
+                    control={form.control}
+                    name="referralCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="font-bold dark:text-white">
+                          {t("referralCode")} <span className="text-muted-foreground text-xs ml-1">({t("optional")})</span>
+                        </FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder={t("referralCodePlaceholder")}
+                            className="border-2 shadow-md dark:border-slate-600"
+                            autoComplete="off"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <div className="flex gap-3">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => setRegistrationStep(2)}
+                    >
+                      {t("back") || "Back"}
+                    </Button>
+                    <Button
+                      className="flex-1 bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center gap-2">
+                          <Loader2 size={16} className="animate-spin" />
+                          {t("pleaseWait") || "Please wait…"}
+                        </span>
+                      ) : (
+                        t("register")
+                      )}
+                    </Button>
+                  </div>
+                </>
               )}
             </form>
           </div>
         </Form>
-      </div>
+      </div>{/* end acrylic card */}
 
       <PasswordRecoveryModal
         isOpen={showPasswordRecovery}

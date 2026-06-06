@@ -95,7 +95,9 @@ export function useDocumentLoadingProgress(
       return;
     }
 
-    const estimatedDurationMs = 4 * 60 * 1000;
+    const estimatedDurationMs = estimatedPageCount > 0
+      ? Math.max(60_000, estimatedPageCount * 30_000)
+      : 4 * 60 * 1000;
     const anchorPoints = createAnchorPoints(estimatedDurationMs);
     const finalProgress = Math.floor(Math.random() * 3) + 97;
 
