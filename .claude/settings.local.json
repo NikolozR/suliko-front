@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Bash(find /c/Users/User/Documents/GitHub/suliko-front/.claude/worktrees/adoring-jang/src/app/api -type f -name *.ts -o -name *.tsx)",
-      "mcp__Claude_Preview__preview_start"
-    ]
-  }
-}
