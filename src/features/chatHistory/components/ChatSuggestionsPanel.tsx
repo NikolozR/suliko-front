@@ -1,4 +1,4 @@
-import { Check, X, Copy, Sparkles, Loader2 } from "lucide-react";
+import { Check, X, Sparkles, Loader2 } from "lucide-react";
 import { useState } from "react";
 import { Suggestion } from "@/features/translation";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";

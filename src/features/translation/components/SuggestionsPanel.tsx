@@ -1,4 +1,4 @@
-import { Check, X, Copy } from "lucide-react";
+import { Check, X } from "lucide-react";
 import { useState } from "react";
 import { Suggestion } from "../types/types.Translation";
 import { useSuggestionsStore } from "../store/suggestionsStore";
