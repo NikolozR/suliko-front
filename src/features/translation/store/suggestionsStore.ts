@@ -21,7 +21,7 @@ interface SuggestionsState {
   reset: () => void;
 }
 
-export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
+export const useSuggestionsStore = create<SuggestionsState>()((set, get) => ({
   suggestions: [],
   suggestionsLoading: false,
   hasGeneratedMore: false,
@@ -35,14 +35,12 @@ export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
     const combined = [...state.suggestions, ...uniqueNewSuggestions];
     return { suggestions: combined.slice(0, 10) };
   }),
-  removeSuggestion: (id) => set((state) => ({ 
-    suggestions: state.suggestions.filter((s) => s.id !== id) 
+  removeSuggestion: (id) => set((state) => ({
+    suggestions: state.suggestions.filter((s) => s.id !== id)
   })),
-  acceptSuggestion: (id) => set((state) => ({ 
-    suggestions: state.suggestions.filter((s) => s.id !== id) 
-  })),
+  acceptSuggestion: (id) => get().removeSuggestion(id),
   updateSuggestionText: (id, newText) => set((state) => ({
-    suggestions: state.suggestions.map((s) => 
+    suggestions: state.suggestions.map((s) =>
       s.id === id ? { ...s, suggestedText: newText } : s
     )
   })),
@@ -51,10 +49,12 @@ export const useSuggestionsStore = create<SuggestionsState>()((set) => ({
   setSuggestionAccepted: (value) => set({ suggestionAccepted: value }),
   setSuggestionsLoading: (value) => set({ suggestionsLoading: value }),
   setHoveredSuggestionOriginalText: (text) => set({ hoveredSuggestionOriginalText: text }),
-  reset: () => set({ 
+  reset: () => set({
     suggestions: [],
+    suggestionsLoading: false,
     hasGeneratedMore: false,
     suggestionAccepted: false,
+    focusedSuggestionId: null,
     hoveredSuggestionOriginalText: null,
   }),
-})); 
+}));

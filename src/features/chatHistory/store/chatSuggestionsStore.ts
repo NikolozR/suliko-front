@@ -21,13 +21,13 @@ interface ChatSuggestionsState {
   reset: () => void;
 }
 
-export const useChatSuggestionsStore = create<ChatSuggestionsState>()((set) => ({
+export const useChatSuggestionsStore = create<ChatSuggestionsState>()((set, get) => ({
   suggestions: [],
   suggestionsLoading: false,
   hasGeneratedMore: false,
   suggestionAccepted: false,
   focusedSuggestionId: null,
-   hoveredSuggestionOriginalText: null,
+  hoveredSuggestionOriginalText: null,
   setSuggestions: (suggestions) => set({ suggestions }),
   addSuggestions: (newSuggestions) => set((state) => {
     const existingIds = new Set(state.suggestions.map(s => s.id));
@@ -35,12 +35,10 @@ export const useChatSuggestionsStore = create<ChatSuggestionsState>()((set) => (
     const combined = [...state.suggestions, ...uniqueNewSuggestions];
     return { suggestions: combined.slice(0, 10) };
   }),
-  removeSuggestion: (id) => set((state) => ({ 
-    suggestions: state.suggestions.filter((s) => s.id !== id) 
+  removeSuggestion: (id) => set((state) => ({
+    suggestions: state.suggestions.filter((s) => s.id !== id)
   })),
-  acceptSuggestion: (id) => set((state) => ({ 
-    suggestions: state.suggestions.filter((s) => s.id !== id) 
-  })),
+  acceptSuggestion: (id) => get().removeSuggestion(id),
   updateSuggestionText: (id, newText) => set((state) => ({
     suggestions: state.suggestions.map((s) => 
       s.id === id ? { ...s, suggestedText: newText } : s

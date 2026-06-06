@@ -76,8 +76,9 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
     const {token, refreshToken} = useAuthStore.getState();
     const headers = new Headers();
     if (token && typeof token === 'string' && token.trim()) {
-        if (token) {
-            headers.append("Authorization", `Bearer ${token}`);
+        const sanitizedToken = token.replace(/[\r\n\t]/g, '').trim();
+        if (sanitizedToken) {
+            headers.append("Authorization", `Bearer ${sanitizedToken}`);
             headers.append("Content-Type", "application/json");
         } else {
             throw new Error("Invalid token format");
@@ -119,10 +120,7 @@ export async function applySuggestion(params: ApplySuggestionParams): Promise<Ap
 
 
     if (response.status >= 200 && response.status < 300) {
-      const data = await response.json();
-      console.log(data,  "FROM THE RESPONSE OF APPLY SUGGESTION");
-      return data;
-
+      return response.json();
     }
 
     throw new Error("Failed to apply suggestion");
