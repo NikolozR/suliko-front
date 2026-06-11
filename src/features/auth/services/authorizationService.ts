@@ -181,23 +181,46 @@ export async function checkUserExists(identifier: string): Promise<boolean> {
   try {
     const encoded = encodeURIComponent(identifier.trim());
     const response = await apiClient.get(`/Auth/check-user-exists?identifier=${encoded}`);
+
     if (response.ok) {
       const data = response.data as { isRegistered?: boolean; exists?: boolean };
       return data.isRegistered === true || data.exists === true;
     }
-    return false;
-  } catch {
-    return false;
+
+    if (response.status === 404) {
+      return false;
+    }
+
+    throw new Error("Failed to check if user exists");
+  } catch (error) {
+    const errorMessage = ApiClient.handleApiError(error);
+    throw new Error(errorMessage);
   }
 }
 
-export async function recoverPassword(phoneNumber: string, newPassword: string) {
+export async function recoverPassword(identifier: string, newPassword: string) {
   try {
     const response = await apiClient.patch("/User/recover-password", {
-      phoneNumber,
+      phoneNumber: identifier,
       newPassword,
     });
-    return response.data;
+
+    // Check if the API returned an error in the response data
+    if (response.data && typeof response.data === 'object' && 'isSuccess' in response.data) {
+      const apiResponse = response.data as { isSuccess: boolean; message?: string };
+      if (!apiResponse.isSuccess) {
+        throw new Error(apiResponse.message || "Password recovery failed");
+      }
+    }
+
+    if (response.ok) {
+      return response.data;
+    }
+
+    const errorMessage = response.data && typeof response.data === 'object' && 'message' in response.data
+      ? (response.data as { message: string }).message
+      : "Password recovery failed";
+    throw new Error(errorMessage);
   } catch (error) {
     // Handle CORS and other errors
     const errorMessage = ApiClient.handleApiError(error);
@@ -206,6 +229,13 @@ export async function recoverPassword(phoneNumber: string, newPassword: string) 
 }
 
 
+// NOTE: resetPassword is currently UNUSED. It implements step 3 of the secure recovery flow
+// described in types.Auth.ts (ValidateRecoveryCodeResponse.token -> ResetPasswordRequest.token).
+// The currently-active flow uses recoverPassword() above instead, which does not require a
+// server-issued token because verification is done client-side (see CRITICAL note in
+// PasswordRecoveryModal.tsx handleVerificationSubmit). Once the backend exposes a verify-code
+// endpoint that returns a token, this function (or one like it) should replace recoverPassword()
+// in the 'password' step.
 export async function resetPassword(phoneNumber: string, newPassword: string, token: string) {
   try {
     const response = await apiClient.post("/User/reset-password", {

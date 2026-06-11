@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/features/ui/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/components/ui/form";
-import { sendVerificationCode, recoverPassword } from "@/features/auth/services/authorizationService";
+import { sendVerificationCode, recoverPassword, checkUserExists } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { Eye, EyeOff, CheckCircle, Shield, Key } from "lucide-react";
 
@@ -25,12 +25,19 @@ interface PasswordRecoveryModalProps {
 
 type RecoveryStep = 'phone' | 'verification' | 'password' | 'success';
 
-const createPhoneSchema = (t: (key: string) => string, locale?: string) => z.object({
-  phoneNumber: z.string()
-    .min(1, t("phoneNumberRequiredError"))
-    .regex(
-      locale === 'pl' ? /^(\+48)?[1-9]\d{8}$/ : /^5\d{8}$/,
-      t("phoneNumberFormatError")
+const createIdentifierSchema = (t: (key: string) => string, locale?: string) => z.object({
+  identifier: z.string()
+    .min(1, t("phoneNumberOrEmailRequired"))
+    .refine(
+      (val) => {
+        const trimmed = val.trim();
+        const isEmailValue = z.string().email().safeParse(trimmed).success;
+        const isPhoneValue = locale === 'pl'
+          ? /^(\+48)?[1-9]\d{8}$/.test(trimmed.replace(/\s+/g, ''))
+          : /^5\d{8}$/.test(trimmed.replace(/\s+/g, ''));
+        return isEmailValue || isPhoneValue;
+      },
+      { message: t("phoneNumberOrEmailFormatError") }
     ),
 });
 
@@ -111,7 +118,7 @@ const VerificationCodeInput: React.FC<{
   );
 };
 
-type PhoneFormData = z.infer<ReturnType<typeof createPhoneSchema>>;
+type IdentifierFormData = z.infer<ReturnType<typeof createIdentifierSchema>>;
 type VerificationFormData = z.infer<ReturnType<typeof createVerificationSchema>>;
 type PasswordFormData = z.infer<ReturnType<typeof createPasswordSchema>>;
 
@@ -119,18 +126,19 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
   const t = useTranslations("Authorization");
   const locale = useLocale();
   const [currentStep, setCurrentStep] = useState<RecoveryStep>('phone');
-  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [identifier, setIdentifier] = useState<string>("");
   const [sentVerificationCode, setSentVerificationCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
 
-  // Phone form
-  const phoneSchema = createPhoneSchema(t, locale);
-  const phoneForm = useForm<PhoneFormData>({
-    resolver: zodResolver(phoneSchema),
-    defaultValues: { phoneNumber: "" },
+  // Identifier form (phone or email)
+  const identifierSchema = createIdentifierSchema(t, locale);
+  const identifierForm = useForm<IdentifierFormData>({
+    resolver: zodResolver(identifierSchema),
+    defaultValues: { identifier: "" },
   });
 
   // Verification form
@@ -147,29 +155,91 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     defaultValues: { newPassword: "", confirmPassword: "" },
   });
 
-  const handlePhoneSubmit = async (data: PhoneFormData) => {
+  const isEmail = (value: string): boolean => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value.trim());
+  };
+
+  const startResendTimer = () => {
+    setResendTimer(30);
+    const interval = setInterval(() => {
+      setResendTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(interval);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  };
+
+  const sendCodeFor = async (value: string) => {
+    const trimmed = value.trim();
+    const response = await sendVerificationCode(
+      isEmail(trimmed) ? undefined : trimmed,
+      isEmail(trimmed) ? trimmed : undefined
+    ) as { code: string | number };
+    setSentVerificationCode(response.code?.toString() || "");
+    startResendTimer();
+  };
+
+  const handleIdentifierSubmit = async (data: IdentifierFormData) => {
     setError(null);
     setIsLoading(true);
-    
+
     try {
-      const response = await sendVerificationCode(data.phoneNumber, undefined) as { code: string | number };
-      setPhoneNumber(data.phoneNumber);
-      // Store the verification code from the API response
-      setSentVerificationCode(response.code?.toString() || "");
+      const trimmedIdentifier = data.identifier.trim();
+
+      const exists = await checkUserExists(trimmedIdentifier);
+      if (!exists) {
+        setError(t("accountNotFound"));
+        return;
+      }
+
+      await sendCodeFor(trimmedIdentifier);
+      setIdentifier(trimmedIdentifier);
       setCurrentStep('verification');
     } catch (err) {
       let message = err instanceof Error ? err.message : t("sendCodeError");
-      
+
       if (message.includes('CORS') || message.includes('cross-origin') || message.includes('Network Error')) {
         message = t("corsErrorMessage");
       }
-      
+
       setError(message);
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleResendCode = async () => {
+    if (resendTimer > 0 || isLoading) return;
+    setError(null);
+    setIsLoading(true);
+
+    try {
+      await sendCodeFor(identifier);
+    } catch (err) {
+      let message = err instanceof Error ? err.message : t("sendCodeError");
+
+      if (message.includes('CORS') || message.includes('cross-origin') || message.includes('Network Error')) {
+        message = t("corsErrorMessage");
+      }
+
+      setError(message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // CRITICAL (backend follow-up required, not fixed here):
+  // The verification code is returned to the client by sendVerificationCode (response.code) and
+  // compared client-side below. This means the OTP can be read directly from the network
+  // response, bypassing SMS/email possession entirely. A proper fix requires a backend endpoint
+  // that verifies { identifier, code } server-side without returning the code to clients, and
+  // returns a short-lived token (see ValidateRecoveryCodeResponse in types.Auth.ts) for the final
+  // recoverPassword/resetPassword call. Do not remove this client-side check without a backend
+  // replacement - doing so would break the currently-working (if insecure) flow entirely.
   const handleVerificationSubmit = async (data: VerificationFormData) => {
     setError(null);
     setIsLoading(true);
@@ -194,7 +264,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     setIsLoading(true);
     
     try {
-      await recoverPassword(phoneNumber, data.newPassword);
+      await recoverPassword(identifier, data.newPassword);
       setCurrentStep('success');
     } catch (err) {
       let message = err instanceof Error ? err.message : t("passwordRecoveryError");
@@ -211,10 +281,11 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
 
   const handleClose = () => {
     setCurrentStep('phone');
-    setPhoneNumber("");
+    setIdentifier("");
     setSentVerificationCode("");
+    setResendTimer(0);
     setError(null);
-    phoneForm.reset();
+    identifierForm.reset();
     verificationForm.reset();
     passwordForm.reset();
     onClose();
@@ -263,8 +334,8 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
         {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
 
         {currentStep === 'phone' && (
-          <Form {...phoneForm}>
-            <form onSubmit={phoneForm.handleSubmit(handlePhoneSubmit)} className="space-y-6">
+          <Form {...identifierForm}>
+            <form onSubmit={identifierForm.handleSubmit(handleIdentifierSubmit)} className="space-y-6">
               <div className="text-center mb-6">
                 <div className="mx-auto w-12 h-12 bg-blue-100 dark:bg-blue-900 rounded-full flex items-center justify-center mb-3">
                   <Shield className="w-6 h-6 text-blue-600 dark:text-blue-400" />
@@ -276,18 +347,18 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
                   {t("enterPhoneForRecovery")}
                 </p>
               </div>
-              
+
               <FormField
-                control={phoneForm.control}
-                name="phoneNumber"
+                control={identifierForm.control}
+                name="identifier"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-sm font-medium text-gray-700 dark:text-gray-300">
-                      {t("phoneNumber")}
+                      {t("phoneNumberOrEmail")}
                     </FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="5XX XXX XXX"
+                        placeholder={t("phoneNumberOrEmailPlaceholder")}
                         className="border-2 border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200"
                         {...field}
                         disabled={isLoading}
@@ -354,7 +425,22 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
                   </FormItem>
                 )}
               />
-              
+
+              <div className="flex justify-between items-center w-full -mt-2">
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  {t("codeNotReceived")}
+                </p>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="text-sm p-0 h-auto"
+                  onClick={handleResendCode}
+                  disabled={resendTimer > 0 || isLoading}
+                >
+                  {resendTimer > 0 ? `${t("resendIn")} ${resendTimer}s` : t("resendCode")}
+                </Button>
+              </div>
+
                <div className="flex justify-between gap-2">
                  <Button
                    type="button"

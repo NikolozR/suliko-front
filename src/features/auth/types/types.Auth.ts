@@ -60,6 +60,16 @@ export interface LoginResponse {
   refreshToken: string;
 }
 
+// NOTE: The types below (PasswordRecoveryRequest/Response, ValidateRecoveryCodeRequest/Response,
+// ResetPasswordRequest/Response) are currently UNUSED by the implemented password recovery flow.
+// They describe the TARGET shape of a secure, server-verified recovery flow:
+//   1. PasswordRecoveryRequest -> request a code (current: sendVerificationCode)
+//   2. ValidateRecoveryCodeRequest -> server verifies the code and returns a short-lived `token`
+//   3. ResetPasswordRequest (with that `token`) -> apply the new password (see resetPassword
+//      in authorizationService.ts)
+// The CURRENT implementation instead returns the verification code directly to the client and
+// compares it client-side (see handleVerificationSubmit in PasswordRecoveryModal.tsx), which is
+// insecure. Do not remove these types - they document the target contract for backend follow-up.
 export interface PasswordRecoveryRequest {
   phoneNumber: string;
 }

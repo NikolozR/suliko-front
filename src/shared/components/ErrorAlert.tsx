@@ -53,6 +53,9 @@ const ErrorAlert: FC<ErrorAlertProps> = ({
               {upsText}
             </h4>
           </div>
+          <p className="text-gray-700 dark:text-gray-300 text-sm mt-0.5 break-words">
+            {message}
+          </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
           {onRetry && (
