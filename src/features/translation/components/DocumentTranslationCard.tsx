@@ -28,7 +28,7 @@ import { useSearchParams } from "next/navigation";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
-import { moveChatToProject } from "@/features/chatHistory";
+import { moveChatToProject, uploadOriginalForChat } from "@/features/chatHistory";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
@@ -508,10 +508,16 @@ const DocumentTranslationCard = () => {
 
       const { chatId } = await startTranslationProject(data, estimatedPageCount || 1);
 
-      // Persist the original file so the translation detail page can show the preview
-      // (URI-based translations don't store bytes on the backend)
-      if (!data.isSrt && typeof window !== 'undefined' && 'indexedDB' in window) {
-        saveOriginalFileForChat(chatId, data.currentFile[0]).catch(() => {});
+      // Persist the original file so the translation detail page can show the preview.
+      // URI-based (Gemini) translations don't store bytes on the backend during translation,
+      // so we persist them in two places:
+      if (!data.isSrt) {
+        // 1. Server-side copy — visible on any device for ~1 month (primary preview source).
+        uploadOriginalForChat(chatId, data.currentFile[0]).catch(() => {});
+        // 2. Browser-local copy — instant preview in this browser until cache is cleared.
+        if (typeof window !== 'undefined' && 'indexedDB' in window) {
+          saveOriginalFileForChat(chatId, data.currentFile[0]).catch(() => {});
+        }
       }
       // Also update the in-memory store so the translation page can use it instantly
       useDocumentTranslationStore.getState().setChatId(chatId);

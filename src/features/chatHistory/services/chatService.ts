@@ -288,6 +288,34 @@ export const getSingleChatHistoryOriginalFile = async (
 };
 
 /**
+ * Upload the original source file for a chat so it can be previewed later on any device.
+ * URI-based (Gemini Files API) translations don't send the file bytes to the backend during
+ * translation, so we store them separately here. The backend keeps them for ~1 month.
+ */
+export const uploadOriginalForChat = async (
+  chatId: string,
+  file: File
+): Promise<void> => {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await fetchWithAuth(
+    `/document-translation/chat/${chatId}/file`,
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(
+      errorData.Message || errorData.message || "Failed to store original document"
+    );
+  }
+};
+
+/**
  * Update chat document content
  */
 export const updateChatDocumentContent = async (
