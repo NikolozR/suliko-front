@@ -13,6 +13,7 @@ export interface Chat {
     lastActivityAt: string;
     hasResult: boolean;
     hasError: boolean;
+    projectId?: string | null;
 }
 
 export interface ChatDetailed {
@@ -31,6 +32,7 @@ export interface ChatDetailed {
     pageCount?: number;
     estimatedWordCount?: number;
     estimatedTimeMinutes?: number;
+    projectId?: string | null;
 }
 
 export interface ChatTrnalsationResult {
@@ -67,4 +69,6 @@ export interface SingleChatHistoryResponse {
 export interface ChatHistoryPaginationParams {
     pageSize?: number;
     pageNumber?: number;
-} 
+    projectId?: string;
+    unfiledOnly?: boolean;
+}

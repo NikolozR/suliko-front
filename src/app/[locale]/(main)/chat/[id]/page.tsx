@@ -7,5 +7,5 @@ export default async function ChatPageRedirect({
   params: Promise<{ id: string }>;
 }) {
   const [locale, { id }] = await Promise.all([getLocale(), params]);
-  redirect({ href: id ? `/projects/${id}` : "/projects", locale });
+  redirect({ href: id ? `/translations/${id}` : "/projects", locale });
 }

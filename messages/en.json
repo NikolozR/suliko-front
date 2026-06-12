@@ -1,4 +1,13 @@
 {
+  "Common": {
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Saving...",
+    "create": "Create",
+    "creating": "Creating...",
+    "delete": "Delete",
+    "deleting": "Deleting..."
+  },
   "Authorization": {
     "title": "Authorization",
     "description": "Or enter your phone number and password",
@@ -120,7 +129,7 @@
     "close": "Close"
   },
   "Sidebar": {
-    "newProject": "New Project",
+    "newTranslation": "New Translation",
     "history": "History",
     "projects": "Projects",
     "profile": "Profile",
@@ -285,6 +294,7 @@
   "DocumentTranslationCard": {
     "title": "Upload document",
     "description": "Upload document for translation",
+    "addingToProject": "Adding to project: {name}",
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
     "supportedFormats": "Supported file types: PDF, DOCX, TXT, JPEG, PNG, JPG, etc.",
@@ -380,7 +390,7 @@
       "thankYou": "Thank you for your patience",
       "complete": "Translation complete!",
       "uploading": "Uploading document...",
-      "projectStarted": "Project started! Redirecting...",
+      "translationStarted": "Translation started! Redirecting...",
       "unexpectedError": "An unexpected error occurred during translation.",
       "stepUploading": "Uploading",
       "stepTranslating": "Translating",
@@ -472,10 +482,27 @@
     "loading": "Loading history"
   },
   "Projects": {
-    "title": "Translation Projects",
-    "noProjects": "No projects yet. Upload a document and click Translate to get started.",
+    "title": "Projects",
+    "noProjects": "No folders yet. Create a project to organize your translations.",
+    "noTranslations": "No translations yet. Upload a document and click Translate to get started.",
     "loading": "Loading projects...",
     "viewAll": "View all projects",
+    "folders": "Folders",
+    "unfiled": "Unfiled",
+    "newProject": "New Project",
+    "createProject": "Create Project",
+    "projectNamePlaceholder": "Project name",
+    "rename": "Rename",
+    "renameProject": "Rename Project",
+    "deleteProject": "Delete Project",
+    "deleteProjectWarning": "This will permanently delete this project and {count} translation(s) inside it. This action cannot be undone.",
+    "deleteTranslation": "Delete Translation",
+    "deleteTranslationWarning": "This will permanently delete this translation. This action cannot be undone.",
+    "noTranslationsInProject": "No translations in this project yet.",
+    "moveToProject": "Move to project",
+    "moveToRoot": "Move to root",
+    "backToProjects": "All Projects",
+    "addTranslation": "Add Translation",
     "status": {
       "Completed": "Completed",
       "InProgress": "Processing",
@@ -484,8 +511,8 @@
       "Processing": "Processing"
     }
   },
-  "Project": {
-    "notFound": "Project not found",
+  "Translation": {
+    "notFound": "Translation not found",
     "elapsed": "Elapsed",
     "processing": "Your document is being translated. You can leave this page and come back later.",
     "processingInfo": {

@@ -231,6 +231,13 @@ export const getChatHistory = async (
     pageNumber: (params?.pageNumber || 1).toString(),
   });
 
+  if (params?.projectId) {
+    queryParams.set("projectId", params.projectId);
+  }
+  if (params?.unfiledOnly) {
+    queryParams.set("unfiledOnly", "true");
+  }
+
   const response = await fetchWithAuth(
     `/document-translation/chat/user?${queryParams.toString()}`
   );
@@ -301,6 +308,50 @@ export const updateChatDocumentContent = async (
   if (!response.ok) {
     const errorData = await response.json();
     throw new Error(errorData.message || "Failed to update document content");
+  }
+
+  return response.json();
+};
+
+/**
+ * Delete a chat (translation)
+ */
+export const deleteChat = async (
+  chatId: string
+): Promise<{ success: boolean; message: string }> => {
+  const response = await fetchWithAuth(`/document-translation/chat/${chatId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to delete chat");
+  }
+
+  return response.json();
+};
+
+/**
+ * Move a chat (translation) into a project folder, or unfile it (projectId = null)
+ */
+export const moveChatToProject = async (
+  chatId: string,
+  projectId: string | null
+): Promise<{ success: boolean; message: string }> => {
+  const response = await fetchWithAuth(
+    `/document-translation/chat/${chatId}/project`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ projectId }),
+    }
+  );
+
+  if (!response.ok) {
+    const errorData = await response.json();
+    throw new Error(errorData.message || "Failed to move chat");
   }
 
   return response.json();

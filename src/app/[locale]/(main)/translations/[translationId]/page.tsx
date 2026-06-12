@@ -63,7 +63,7 @@ const TIP_KEYS = ["tip1", "tip2", "tip3", "tip4", "tip5", "tip6"] as const;
 
 const STAGE_LABELS_EN = ["Uploading", "Queued", "Analyzing", "Translating", "Finalizing"];
 
-export default function ProjectDetailPage() {
+export default function TranslationDetailPage() {
   const {
     translatedMarkdown,
     setTranslatedMarkdownWithoutZoomReset,
@@ -84,13 +84,13 @@ export default function ProjectDetailPage() {
   const [tipIndex, setTipIndex] = useState(0);
   const [liveStatus, setLiveStatus] = useState<string>("");
   const [simulatedProgress, setSimulatedProgress] = useState(0);
-  const t = useTranslations("Project");
+  const t = useTranslations("Translation");
   const tProgress = useTranslations("DocumentTranslationCard.progress");
   const tOverlay = useTranslations("TranslationLoadingOverlay");
   const router = useRouter();
   const params = useParams();
 
-  const projectId = Array.isArray(params.id) ? params.id[0] : params.id;
+  const translationId = Array.isArray(params.translationId) ? params.translationId[0] : params.translationId;
 
   const chatRef = useRef<ChatDetailed | null>(null);
   chatRef.current = chat;
@@ -99,9 +99,9 @@ export default function ProjectDetailPage() {
   const isTerminalRef = useRef(false);
   const hasHydratedRef = useRef(false);
 
-  // Reset stores when switching projects
+  // Reset stores when switching translations
   useEffect(() => {
-    if (!projectId) return;
+    if (!translationId) return;
     setChat(null);
     setReconstructedFile(null);
     setElapsedSeconds(0);
@@ -115,18 +115,18 @@ export default function ProjectDetailPage() {
     hasHydratedRef.current = false;
     resetChatEditingStore();
     resetChatSuggestionsStore();
-  }, [projectId, resetChatEditingStore, resetChatSuggestionsStore]);
+  }, [translationId, resetChatEditingStore, resetChatSuggestionsStore]);
 
   // Fetch chat with retry (backend may not have the record ready yet)
   useEffect(() => {
-    if (!projectId) return;
+    if (!translationId) return;
     let cancelled = false;
     let retries = 0;
 
     const fetchWithRetry = async () => {
       while (!cancelled && retries < 10) {
         try {
-          const response = await getChatById(projectId);
+          const response = await getChatById(translationId);
           if (cancelled) return;
           const data = response.data;
           setChat(data);
@@ -146,7 +146,7 @@ export default function ProjectDetailPage() {
           retries++;
           if (retries >= 10) {
             if (!cancelled) {
-              setError(err instanceof Error ? err.message : "Failed to load project");
+              setError(err instanceof Error ? err.message : "Failed to load translation");
               setLoading(false);
             }
             return;
@@ -158,31 +158,31 @@ export default function ProjectDetailPage() {
 
     fetchWithRetry();
     return () => { cancelled = true; };
-  }, [projectId]);
+  }, [translationId]);
 
   // Timer: increments every second, initial value set from createdAt in fetch
   useEffect(() => {
-    if (!projectId) return;
+    if (!translationId) return;
     const id = setInterval(() => {
       if (isTerminalRef.current) return;
       setElapsedSeconds((prev) => prev + 1);
     }, 1000);
     return () => clearInterval(id);
-  }, [projectId]);
+  }, [translationId]);
 
   // Tip rotation: every 10s
   useEffect(() => {
-    if (!projectId) return;
+    if (!translationId) return;
     const id = setInterval(() => {
       if (isTerminalRef.current) return;
       setTipIndex((prev) => (prev + 1) % TIP_KEYS.length);
     }, 10000);
     return () => clearInterval(id);
-  }, [projectId]);
+  }, [translationId]);
 
   // Simulated progress bar: smoothly climbs, decoupled from backend
   useEffect(() => {
-    if (!projectId) return;
+    if (!translationId) return;
     const id = setInterval(() => {
       if (isTerminalRef.current) return;
       setSimulatedProgress((prev) => {
@@ -192,7 +192,7 @@ export default function ProjectDetailPage() {
       });
     }, 500);
     return () => clearInterval(id);
-  }, [projectId]);
+  }, [translationId]);
 
   // Completion handler
   const handleCompleted = useCallback(async (jobId: string, chatId: string) => {
@@ -219,7 +219,7 @@ export default function ProjectDetailPage() {
 
   // Polling: uses refs to avoid dependency loops
   useEffect(() => {
-    if (!projectId) return;
+    if (!translationId) return;
     pollCancelledRef.current = false;
 
     const poll = async () => {
@@ -265,11 +265,11 @@ export default function ProjectDetailPage() {
       pollCancelledRef.current = true;
       clearTimeout(initialDelay);
     };
-  }, [projectId, handleCompleted]);
+  }, [translationId, handleCompleted]);
 
   // Hydrate when we have translation result
   useEffect(() => {
-    if (!chat || chat.chatId !== projectId) return;
+    if (!chat || chat.chatId !== translationId) return;
     if (hasHydratedRef.current) return;
     const hasContent = translatedMarkdown || chat.translationResult?.translatedContent;
     if (!hasContent) return;
@@ -384,7 +384,7 @@ export default function ProjectDetailPage() {
       }
     })();
   }, [
-    projectId, chat, translatedMarkdown,
+    translationId, chat, translatedMarkdown,
     resetChatEditingStore, resetChatSuggestionsStore,
     setChatId, setHasGeneratedMore, setJobId, setSuggestions,
     setTranslatedMarkdownWithoutZoomReset,
@@ -507,7 +507,7 @@ export default function ProjectDetailPage() {
   }
 
   // Completed + hydrated — show result (reconstructedFile may be null for URI-based translations)
-  if (chat.chatId === projectId && hydrated && (reconstructedFile || translatedMarkdown)) {
+  if (chat.chatId === translationId && hydrated && (reconstructedFile || translatedMarkdown)) {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-[1600px]">
         <div className="flex items-center gap-4 mb-8">

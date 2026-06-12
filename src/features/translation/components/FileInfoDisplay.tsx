@@ -52,6 +52,7 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
         </div>
       </div>
       <div className="flex items-center gap-2">
+        <p className="hidden sm:block text-xs text-muted-foreground/50">Ctrl+V</p>
         <Label htmlFor={id} className="cursor-pointer">
           <Button
             type="button"

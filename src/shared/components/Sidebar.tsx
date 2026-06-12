@@ -32,7 +32,7 @@ import { useTranslations } from "next-intl";
 
 const NAV_ITEMS = [
   {
-    label: "newProject",
+    label: "newTranslation",
     href: "/text",
     icon: Plus,
   },
@@ -201,11 +201,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               <Link
                 key={href}
                 href={href}
-                onClick={label === "newProject" ? () => {
+                onClick={label === "newTranslation" ? () => {
                   resetTextTranslation();
                   resetDocumentTranslation();
                 } : undefined}
-                className={label === "newProject"
+                className={label === "newTranslation"
                   ? `group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center" : ""}`
                   : `sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
                     ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
@@ -248,11 +248,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               <div className="flex items-center">
                 <Link
                   href="/projects"
-                  className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/")
+                  className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/")
                     ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
                     : ""
                     } ${effectiveIsCollapsed ? "justify-center" : ""}`}
-                  aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") ? "page" : undefined}
+                  aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/") ? "page" : undefined}
                 >
                   <Clock className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
                     } group-hover:scale-105`} />

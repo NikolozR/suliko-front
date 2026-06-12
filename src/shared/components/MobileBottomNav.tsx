@@ -22,7 +22,7 @@ export default function MobileBottomNav() {
 
   const navItems = [
     {
-      label: t("newProject"),
+      label: t("newTranslation"),
       href: "/text" as const,
       icon: Plus,
       onClick: () => {

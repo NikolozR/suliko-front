@@ -1,71 +1,105 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getChatHistory } from "@/features/chatHistory";
+import { useCallback, useEffect, useState } from "react";
+import {
+  DndContext,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import { getChatHistory, deleteChat, moveChatToProject } from "@/features/chatHistory";
 import type { Chat } from "@/features/chatHistory";
+import { getProjects, createProject, renameProject, deleteProject } from "@/features/projects";
+import type { Project } from "@/features/projects";
 import { Card } from "@/features/ui/components/ui/card";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
-import { useTranslations, useLocale } from "next-intl";
-import { FileText, Image, FileSpreadsheet, FileIcon, Clock, Plus, ArrowRight, AlertCircle } from "lucide-react";
+import { Button } from "@/features/ui/components/ui/button";
+import { useTranslations } from "next-intl";
+import { Plus, ArrowRight, AlertCircle, FolderPlus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
-
-const FILE_TYPE_CONFIG: Record<string, { icon: typeof FileIcon; color: string; bg: string }> = {
-  pdf: { icon: FileText, color: "text-red-600 dark:text-red-400", bg: "bg-red-50 dark:bg-red-950/40" },
-  docx: { icon: FileText, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-950/40" },
-  doc: { icon: FileText, color: "text-blue-600 dark:text-blue-400", bg: "bg-blue-50 dark:bg-blue-950/40" },
-  txt: { icon: FileText, color: "text-gray-600 dark:text-gray-400", bg: "bg-gray-50 dark:bg-gray-800/40" },
-  xlsx: { icon: FileSpreadsheet, color: "text-green-600 dark:text-green-400", bg: "bg-green-50 dark:bg-green-950/40" },
-  xls: { icon: FileSpreadsheet, color: "text-green-600 dark:text-green-400", bg: "bg-green-50 dark:bg-green-950/40" },
-  png: { icon: Image, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-950/40" },
-  jpg: { icon: Image, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-950/40" },
-  jpeg: { icon: Image, color: "text-purple-600 dark:text-purple-400", bg: "bg-purple-50 dark:bg-purple-950/40" },
-};
-
-function getFileConfig(fileType: string) {
-  return FILE_TYPE_CONFIG[fileType?.toLowerCase()] ?? { icon: FileIcon, color: "text-muted-foreground", bg: "bg-muted" };
-}
-
-function getStatusStyle(status: string, hasError: boolean) {
-  if (status === "Completed") return "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-400 border border-emerald-200/60 dark:border-emerald-800/40";
-  if (hasError || status === "Failed") return "bg-red-50 text-red-700 dark:bg-red-950/50 dark:text-red-400 border border-red-200/60 dark:border-red-800/40";
-  return "bg-blue-50 text-blue-700 dark:bg-blue-950/50 dark:text-blue-400 border border-blue-200/60 dark:border-blue-800/40";
-}
+import { TranslationCard } from "@/features/projects/components/TranslationCard";
+import { ProjectFolderCard } from "@/features/projects/components/ProjectFolderCard";
+import { CreateProjectDialog } from "@/features/projects/components/CreateProjectDialog";
 
 export default function ProjectsPage() {
+  const [projects, setProjects] = useState<Project[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [showCreateProject, setShowCreateProject] = useState(false);
   const t = useTranslations("Projects");
-  const locale = useLocale();
+
+  const fetchData = useCallback(async () => {
+    try {
+      const [projectsRes, chatsRes] = await Promise.all([
+        getProjects(),
+        getChatHistory({ pageSize: 50, pageNumber: 1, unfiledOnly: true }),
+      ]);
+      setProjects(projectsRes.data);
+      setChats(chatsRes.data.chats);
+      setError(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load projects");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    let cancelled = false;
+    fetchData();
 
-    const fetchProjects = async () => {
-      try {
-        const response = await getChatHistory({ pageSize: 20, pageNumber: 1 });
-        if (cancelled) return;
-        setChats(response.data.chats);
-        setError(null);
-      } catch (err) {
-        if (cancelled) return;
-        setError(err instanceof Error ? err.message : "Failed to load projects");
-      } finally {
-        if (!cancelled) setLoading(false);
-      }
-    };
-
-    fetchProjects();
-    const intervalId = setInterval(fetchProjects, 5000);
-    const onWindowFocus = () => fetchProjects();
-    window.addEventListener("focus", onWindowFocus);
+    const intervalId = setInterval(fetchData, 5000);
+    const onRefresh = () => fetchData();
+    window.addEventListener("focus", onRefresh);
+    window.addEventListener("translations-updated", onRefresh);
 
     return () => {
-      cancelled = true;
       clearInterval(intervalId);
-      window.removeEventListener("focus", onWindowFocus);
+      window.removeEventListener("focus", onRefresh);
+      window.removeEventListener("translations-updated", onRefresh);
     };
-  }, []);
+  }, [fetchData]);
+
+  const handleCreateProject = async (name: string) => {
+    const res = await createProject(name);
+    setProjects((prev) => [...prev, res.data]);
+  };
+
+  const handleRenameProject = async (id: string, name: string) => {
+    await renameProject(id, name);
+    setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, name } : p)));
+  };
+
+  const handleDeleteProject = async (id: string) => {
+    await deleteProject(id);
+    setProjects((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const handleDeleteChat = async (chatId: string) => {
+    await deleteChat(chatId);
+    setChats((prev) => prev.filter((c) => c.chatId !== chatId));
+  };
+
+  const handleMoveChat = async (chatId: string, projectId: string | null) => {
+    await moveChatToProject(chatId, projectId);
+    if (projectId) {
+      setChats((prev) => prev.filter((c) => c.chatId !== chatId));
+      setProjects((prev) =>
+        prev.map((p) => (p.id === projectId ? { ...p, translationCount: p.translationCount + 1 } : p))
+      );
+    }
+  };
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    handleMoveChat(String(active.id), String(over.id));
+  };
 
   if (loading) {
     return (
@@ -100,16 +134,24 @@ export default function ProjectsPage() {
     );
   }
 
+  const isEmpty = projects.length === 0 && chats.length === 0;
+
   return (
     <div className="container mx-auto p-6 max-w-3xl">
-      <h1 className="text-2xl font-semibold tracking-tight mb-8">{t("title")}</h1>
+      <div className="flex items-center justify-between mb-8 gap-4">
+        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
+        <Button onClick={() => setShowCreateProject(true)} size="sm" className="gap-2 shrink-0">
+          <FolderPlus className="h-4 w-4" />
+          {t("newProject")}
+        </Button>
+      </div>
 
-      {chats.length === 0 ? (
+      {isEmpty ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">
           <div className="p-4 rounded-2xl bg-muted/50 mb-6">
             <Plus className="h-10 w-10 text-muted-foreground" />
           </div>
-          <p className="text-muted-foreground mb-4 max-w-sm">{t("noProjects")}</p>
+          <p className="text-muted-foreground mb-4 max-w-sm">{t("noTranslations")}</p>
           <Link
             href="/document"
             className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:underline"
@@ -118,42 +160,51 @@ export default function ProjectsPage() {
           </Link>
         </div>
       ) : (
-        <div className="space-y-3">
-          {chats.map((chat) => {
-            const config = getFileConfig(chat.fileType);
-            const Icon = config.icon;
-            return (
-              <Link key={chat.chatId} href={`/projects/${chat.chatId}`}>
-                <Card className="p-4 border border-border/60 hover:border-primary/30 hover:shadow-sm transition-[border-color,box-shadow] cursor-pointer group">
-                  <div className="flex items-center gap-4">
-                    <div className={`p-2.5 rounded-lg shrink-0 ${config.bg}`}>
-                      <Icon className={`h-5 w-5 ${config.color}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-medium truncate text-foreground group-hover:text-primary transition-colors">
-                        {chat.originalFileName || chat.title}
-                      </h3>
-                      <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                        <span className="flex items-center gap-1">
-                          <Clock className="h-3 w-3" />
-                          {new Date(chat.lastActivityAt).toLocaleDateString(locale)}
-                        </span>
-                        <span className="text-border">|</span>
-                        <span className="uppercase font-medium tracking-wider">
-                          {chat.fileType}
-                        </span>
-                      </div>
-                    </div>
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium shrink-0 ${getStatusStyle(chat.status, chat.hasError)}`}>
-                      {t(`status.${chat.status}`)}
-                    </span>
-                  </div>
-                </Card>
-              </Link>
-            );
-          })}
-        </div>
+        <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
+          <div className="space-y-8">
+            {projects.length > 0 && (
+              <section>
+                <h2 className="text-sm font-medium text-muted-foreground mb-3">{t("folders")}</h2>
+                <div className="space-y-3">
+                  {projects.map((project) => (
+                    <ProjectFolderCard
+                      key={project.id}
+                      project={project}
+                      onRename={handleRenameProject}
+                      onDelete={handleDeleteProject}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+
+            {chats.length > 0 && (
+              <section>
+                {projects.length > 0 && (
+                  <h2 className="text-sm font-medium text-muted-foreground mb-3">{t("unfiled")}</h2>
+                )}
+                <div className="space-y-3">
+                  {chats.map((chat) => (
+                    <TranslationCard
+                      key={chat.chatId}
+                      chat={chat}
+                      projects={projects}
+                      onDelete={handleDeleteChat}
+                      onMove={handleMoveChat}
+                    />
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+        </DndContext>
       )}
+
+      <CreateProjectDialog
+        open={showCreateProject}
+        onOpenChange={setShowCreateProject}
+        onCreate={handleCreateProject}
+      />
     </div>
   );
 }

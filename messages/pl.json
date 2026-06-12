@@ -1,4 +1,13 @@
 {
+  "Common": {
+    "cancel": "Anuluj",
+    "save": "Zapisz",
+    "saving": "Zapisywanie...",
+    "create": "Utwórz",
+    "creating": "Tworzenie...",
+    "delete": "Usuń",
+    "deleting": "Usuwanie..."
+  },
   "Authorization": {
     "title": "Autoryzacja",
     "description": "Lub wprowadź swój numer telefonu i hasło",
@@ -118,7 +127,7 @@
     "close": "Zamknij"
   },
   "Sidebar": {
-    "newProject": "Nowy projekt",
+    "newTranslation": "Nowe tłumaczenie",
     "history": "Historia",
     "projects": "Projekty",
     "profile": "Profil",
@@ -302,6 +311,7 @@
   "DocumentTranslationCard": {
     "title": "Prześlij dokument",
     "description": "Prześlij dokument do tłumaczenia",
+    "addingToProject": "Dodawanie do projektu: {name}",
     "dragAndDrop": "Przeciągnij i upuść plik lub kliknij, aby wybrać",
     "dropFiles": "Upuść pliki tutaj",
     "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, JPEG, PNG, JPG, itp.",
@@ -396,7 +406,7 @@
       "thankYou": "Dziękujemy za cierpliwość",
       "complete": "Tłumaczenie zakończone!",
       "uploading": "Przesyłanie dokumentu...",
-      "projectStarted": "Projekt uruchomiony! Przekierowanie...",
+      "translationStarted": "Tłumaczenie uruchomione! Przekierowanie...",
       "unexpectedError": "Wystąpił nieoczekiwany błąd podczas tłumaczenia.",
       "stepUploading": "Przesyłanie",
       "stepTranslating": "Tłumaczenie",
@@ -468,10 +478,27 @@
     "loading": "Ładowanie historii"
   },
   "Projects": {
-    "title": "Projekty tłumaczeń",
-    "noProjects": "Brak projektów. Prześlij dokument i kliknij Tłumacz, aby rozpocząć.",
+    "title": "Projekty",
+    "noProjects": "Brak folderów. Utwórz projekt, aby uporządkować swoje tłumaczenia.",
+    "noTranslations": "Brak tłumaczeń. Prześlij dokument i kliknij Tłumacz, aby rozpocząć.",
     "loading": "Ładowanie projektów...",
     "viewAll": "Zobacz wszystkie projekty",
+    "folders": "Foldery",
+    "unfiled": "Bez folderu",
+    "newProject": "Nowy projekt",
+    "createProject": "Utwórz projekt",
+    "projectNamePlaceholder": "Nazwa projektu",
+    "rename": "Zmień nazwę",
+    "renameProject": "Zmień nazwę projektu",
+    "deleteProject": "Usuń projekt",
+    "deleteProjectWarning": "Spowoduje to trwałe usunięcie tego projektu oraz {count} zawartych w nim tłumaczeń. Tej operacji nie można cofnąć.",
+    "deleteTranslation": "Usuń tłumaczenie",
+    "deleteTranslationWarning": "Spowoduje to trwałe usunięcie tego tłumaczenia. Tej operacji nie można cofnąć.",
+    "noTranslationsInProject": "W tym projekcie nie ma jeszcze tłumaczeń.",
+    "moveToProject": "Przenieś do projektu",
+    "moveToRoot": "Przenieś do głównego widoku",
+    "backToProjects": "Wszystkie projekty",
+    "addTranslation": "Dodaj tłumaczenie",
     "status": {
       "Completed": "Zakończone",
       "InProgress": "Przetwarzanie",
@@ -480,8 +507,8 @@
       "Processing": "Przetwarzanie"
     }
   },
-  "Project": {
-    "notFound": "Nie znaleziono projektu",
+  "Translation": {
+    "notFound": "Nie znaleziono tłumaczenia",
     "elapsed": "Upłynęło",
     "processing": "Twój dokument jest tłumaczony. Możesz opuścić tę stronę i wrócić później.",
     "processingInfo": {

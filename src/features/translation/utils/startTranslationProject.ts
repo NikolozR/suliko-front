@@ -5,7 +5,7 @@ import { uploadFileToGemini } from "../services/geminiUploadService";
 
 /**
  * Starts a new translation project without waiting for completion.
- * Submits the document and returns jobId + chatId for redirect to project detail page.
+ * Submits the document and returns jobId + chatId for redirect to translation detail page.
  */
 export async function startTranslationProject(
   data: DocumentFormData,

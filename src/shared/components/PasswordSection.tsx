@@ -41,7 +41,7 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
                 <button
                   type="button"
                   onClick={onForgotPassword}
-                  className="text-xs text-suliko-default-color hover:underline cursor-pointer"
+                  className="text-xs font-medium text-suliko-default-color dark:text-blue-300 hover:underline cursor-pointer"
                 >
                   {t("forgotPassword")}
                 </button>
