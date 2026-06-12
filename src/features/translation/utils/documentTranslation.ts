@@ -74,14 +74,18 @@ export async function documentTranslatingWithJobId(
         onProgress?.(60, "Translation completed!");
         break;
       } else if (result.status === "Failed") {
+        // Log full technical detail to the console for debugging; users see a friendly message.
+        console.error("[Translation] job failed", {
+          jobId: currentJobId,
+          status: result.status,
+          message: result.message,
+        });
         if (result.message && result.message.includes("არასაკმარისი")) {
           setError(
             "Insufficient balance. Please top up your account to continue translation."
           );
         } else {
-          const errorMessage =
-            result.message || "Translation failed. Please try again.";
-          setError(`Translation failed: ${errorMessage}`);
+          setError(result.message || "Translation failed. Please try again.");
         }
         fetchUserProfileWithRetry();
         setIsTranslating(false);
