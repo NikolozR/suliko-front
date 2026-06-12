@@ -86,6 +86,14 @@ export interface ApplySuggestionResponse {
   changeDescription: string;
 }
 
+export type NameTranslationType = "Person" | "Organization";
+
+export interface NameTranslationItem {
+  original: string;
+  translation: string;
+  type: NameTranslationType;
+}
+
 export interface DocumentTranslateWithUriParams {
   fileUri: string;
   mimeType: string;
@@ -95,6 +103,7 @@ export interface DocumentTranslateWithUriParams {
   OutputFormat: number;
   model: number;
   pageCount?: number;
+  nameTranslations?: NameTranslationItem[];
 }
 
 export interface GeminiUploadResponse {

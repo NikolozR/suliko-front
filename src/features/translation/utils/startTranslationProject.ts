@@ -1,15 +1,17 @@
 import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
-import { DocumentTranslateUserContentParams } from "../types/types.Translation";
+import { DocumentTranslateUserContentParams, NameTranslationItem } from "../types/types.Translation";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
 import { uploadFileToGemini } from "../services/geminiUploadService";
 
 /**
  * Starts a new translation project without waiting for completion.
  * Submits the document and returns jobId + chatId for redirect to translation detail page.
+ * `confirmedNames` (non-SRT only) are user-approved name renderings injected into the prompt.
  */
 export async function startTranslationProject(
   data: DocumentFormData,
-  pageCount?: number
+  pageCount?: number,
+  confirmedNames?: NameTranslationItem[]
 ): Promise<{ jobId: string; chatId: string }> {
   const model = 2;
   const outputLanguageId =
@@ -41,6 +43,7 @@ export async function startTranslationProject(
       OutputFormat: 0,
       model,
       pageCount: pageCount ?? 1,
+      nameTranslations: confirmedNames && confirmedNames.length > 0 ? confirmedNames : undefined,
     });
   }
 

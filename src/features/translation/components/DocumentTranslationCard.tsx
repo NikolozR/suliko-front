@@ -28,6 +28,9 @@ import { useSearchParams } from "next/navigation";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
+import { suggestNameTranslations } from "../services/nameTranslationService";
+import NameReviewModal from "./NameReviewModal";
+import { NameTranslationItem } from "../types/types.Translation";
 import { moveChatToProject, uploadOriginalForChat } from "@/features/chatHistory";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
@@ -118,6 +121,10 @@ const DocumentTranslationCard = () => {
   } = useDocumentTranslationStore();
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
   const [isOcrOnly, setIsOcrOnly] = useState(false);
+  const [isDetectingNames, setIsDetectingNames] = useState(false);
+  const [showNameModal, setShowNameModal] = useState(false);
+  const [detectedNames, setDetectedNames] = useState<NameTranslationItem[]>([]);
+  const [pendingTranslationData, setPendingTranslationData] = useState<DocumentFormData | null>(null);
 
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
@@ -376,7 +383,10 @@ const DocumentTranslationCard = () => {
   setCurrentFile(null);
 };
 
-  const onSubmit = async (data: DocumentFormData) => {
+  const onSubmit = async (
+    data: DocumentFormData,
+    confirmedNames?: NameTranslationItem[] | React.BaseSyntheticEvent
+  ) => {
     if (!token) {
       // Save file to storage before showing auth modal
       await handleSaveFileBeforeAuth();
@@ -427,6 +437,31 @@ const DocumentTranslationCard = () => {
       if (pagesNeeded > userPages) {
         setError(t('pageCount.insufficientPages', { needed: pagesNeeded, available: userPages }));
         return;
+      }
+    }
+
+    // Pre-translation name review (normal document translation only — not SRT or OCR-only).
+    // `confirmedNames` is an array only when re-invoked from the review modal; the initial
+    // react-hook-form submit passes its event object here, so we discriminate with Array.isArray.
+    const reviewedNames: NameTranslationItem[] = Array.isArray(confirmedNames) ? confirmedNames : [];
+    if (!Array.isArray(confirmedNames) && !isOcrOnly && !data.isSrt) {
+      try {
+        setIsDetectingNames(true);
+        const names = await suggestNameTranslations(
+          data.currentFile[0],
+          data.currentSourceLanguageId,
+          data.currentTargetLanguageId
+        );
+        if (names.length > 0) {
+          setDetectedNames(names);
+          setPendingTranslationData(data);
+          setShowNameModal(true);
+          return; // flow resumes from the modal's confirm/skip handlers
+        }
+      } catch (err) {
+        console.error("Name detection failed; proceeding without name review:", err);
+      } finally {
+        setIsDetectingNames(false);
       }
     }
 
@@ -506,7 +541,7 @@ const DocumentTranslationCard = () => {
       //   setValue("currentFile", newFileList);
       // }
 
-      const { chatId } = await startTranslationProject(data, estimatedPageCount || 1);
+      const { chatId } = await startTranslationProject(data, estimatedPageCount || 1, reviewedNames);
 
       // Persist the original file so the translation detail page can show the preview.
       // URI-based (Gemini) translations don't store bytes on the backend during translation,
@@ -606,6 +641,33 @@ const DocumentTranslationCard = () => {
     console.log("User profile for email check:", profile);
 
     handleSubmit(onSubmit, handleFormError)();
+  };
+
+  const handleNameConfirm = (editedItems: NameTranslationItem[]) => {
+    setShowNameModal(false);
+    const data = pendingTranslationData;
+    setPendingTranslationData(null);
+    if (data) {
+      onSubmit(data, editedItems);
+    }
+  };
+
+  const handleNameSkip = () => {
+    setShowNameModal(false);
+    const data = pendingTranslationData;
+    setPendingTranslationData(null);
+    if (data) {
+      onSubmit(data, []);
+    }
+  };
+
+  // Dismissing the modal (X / overlay / Esc) cancels without translating; the file stays loaded.
+  const handleNameModalOpenChange = (open: boolean) => {
+    if (isLoading) return;
+    setShowNameModal(open);
+    if (!open) {
+      setPendingTranslationData(null);
+    }
   };
 
   return (
@@ -755,9 +817,9 @@ const DocumentTranslationCard = () => {
               )}
 
               <TranslationSubmitButton
-                isLoading={isLoading}
+                isLoading={isLoading || isDetectingNames}
                 hasResult={!!translatedMarkdown}
-                disabled={isLoading || (!token ? false : !hasFile)}
+                disabled={isLoading || isDetectingNames || (!token ? false : !hasFile)}
                 showShiftEnter={true}
                 formError={token ? getFormError() : null}
                 isHighlighted={isButtonHighlighted}
@@ -804,6 +866,14 @@ const DocumentTranslationCard = () => {
       <AuthModal
         isOpen={showAuthModal}
         onClose={() => setShowAuthModal(false)}
+      />
+      <NameReviewModal
+        open={showNameModal}
+        items={detectedNames}
+        isSubmitting={isLoading}
+        onOpenChange={handleNameModalOpenChange}
+        onConfirm={handleNameConfirm}
+        onSkip={handleNameSkip}
       />
       {/* DISABLED: PageWarningModal - Splitting functionality is kept in repository but not used */}
       {/* <PageWarningModal

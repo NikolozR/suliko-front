@@ -275,6 +275,18 @@
     "selectLanguagePlaceholder": "Select Language",
     "automaticDetection": "Automatic Detection"
   },
+  "NameReviewModal": {
+    "title": "Confirm name translations",
+    "description": "We detected these names in your document and suggested how to render them. Edit any that look wrong, remove ones you don't want locked, then continue.",
+    "person": "Person",
+    "organization": "Organization",
+    "translationPlaceholder": "Translation",
+    "remove": "Remove",
+    "skip": "Skip",
+    "confirm": "Confirm & Translate",
+    "translating": "Translating…",
+    "emptyState": "No names to review. Continue to translate."
+  },
   "TranslationButton": {
     "translate": "Translate",
     "translateMore": "Translate More",

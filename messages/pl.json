@@ -292,6 +292,18 @@
     "stageTranslate": "Tłumaczenie",
     "stageFinalize": "Finalizacja"
   },
+  "NameReviewModal": {
+    "title": "Potwierdź tłumaczenia nazw",
+    "description": "Wykryliśmy te nazwy w dokumencie i zaproponowaliśmy ich zapis. Popraw błędne, usuń te, których nie chcesz blokować, a następnie kontynuuj.",
+    "person": "Osoba",
+    "organization": "Organizacja",
+    "translationPlaceholder": "Tłumaczenie",
+    "remove": "Usuń",
+    "skip": "Pomiń",
+    "confirm": "Potwierdź i przetłumacz",
+    "translating": "Tłumaczenie…",
+    "emptyState": "Brak nazw do przejrzenia. Kontynuuj tłumaczenie."
+  },
   "TranslationButton": {
     "translate": "Tłumacz",
     "translateMore": "Przetłumacz więcej",
