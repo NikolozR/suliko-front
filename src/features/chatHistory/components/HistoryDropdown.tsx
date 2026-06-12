@@ -39,15 +39,15 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
       fetchHistory();
     }
 
-    const handleProjectsUpdated = () => {
+    const handleTranslationsUpdated = () => {
       if (isOpen) {
         fetchHistory();
       }
     };
 
-    window.addEventListener("projects-updated", handleProjectsUpdated);
+    window.addEventListener("translations-updated", handleTranslationsUpdated);
     return () => {
-      window.removeEventListener("projects-updated", handleProjectsUpdated);
+      window.removeEventListener("translations-updated", handleTranslationsUpdated);
     };
   }, [isOpen]);
 
@@ -73,7 +73,7 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
     return (
       <div className="px-3 py-4 text-center">
         <FileIcon className="h-6 w-6 text-muted-foreground/40 mx-auto mb-2" />
-        <p className="text-xs text-muted-foreground">{t("noProjects")}</p>
+        <p className="text-xs text-muted-foreground">{t("noTranslations")}</p>
       </div>
     );
   }
@@ -87,7 +87,7 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
         {chats.map((chat) => (
           <button
             key={chat.chatId}
-            onClick={() => router.push(`/projects/${chat.chatId}`)}
+            onClick={() => router.push(`/translations/${chat.chatId}`)}
             className="w-full text-left px-2 py-2 rounded-lg hover:bg-muted/50 transition-colors group"
           >
             <div className="flex items-center gap-2">

@@ -24,9 +24,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { useSearchParams } from "next/navigation";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
+import { moveChatToProject } from "@/features/chatHistory";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
@@ -92,6 +94,9 @@ const DocumentTranslationCard = () => {
   const { token } = useAuthStore();
   const { userProfile, fetchUserProfile } = useUserStore();
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const projectId = searchParams.get("projectId");
+  const projectName = searchParams.get("projectName");
   const {
     realPageCount,
     currentFile,
@@ -503,17 +508,21 @@ const DocumentTranslationCard = () => {
 
       const { chatId } = await startTranslationProject(data, estimatedPageCount || 1);
 
-      // Persist the original file so the project detail page can show the preview
+      // Persist the original file so the translation detail page can show the preview
       // (URI-based translations don't store bytes on the backend)
       if (!data.isSrt && typeof window !== 'undefined' && 'indexedDB' in window) {
         saveOriginalFileForChat(chatId, data.currentFile[0]).catch(() => {});
       }
-      // Also update the in-memory store so the project page can use it instantly
+      // Also update the in-memory store so the translation page can use it instantly
       useDocumentTranslationStore.getState().setChatId(chatId);
 
-      setManualProgress(12, t("progress.projectStarted"));
-      window.dispatchEvent(new Event("projects-updated"));
-      router.push(`/projects/${chatId}`);
+      if (projectId) {
+        moveChatToProject(chatId, projectId).catch(() => {});
+      }
+
+      setManualProgress(12, t("progress.translationStarted"));
+      window.dispatchEvent(new Event("translations-updated"));
+      router.push(`/translations/${chatId}`);
     } catch (err) {
       let message = t("progress.unexpectedError");
       if (err instanceof Error) {
@@ -630,6 +639,11 @@ const DocumentTranslationCard = () => {
                 <CardDescription className="text-muted-foreground">
                   {t("description")}
                 </CardDescription>
+                {projectId && projectName && !translatedMarkdown && (
+                  <p className="text-sm text-suliko-default-color font-medium mt-1">
+                    {t("addingToProject", { name: projectName })}
+                  </p>
+                )}
               </div>
               {/* OCR Only Toggle - waishala */}
               {/* <div className="flex items-center gap-2">

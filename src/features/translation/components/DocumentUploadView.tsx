@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent } from "react";
+import { ChangeEvent, useEffect } from "react";
 import dynamic from "next/dynamic";
 import FileUploadArea from "./FileUploadArea";
 import FileInfoDisplay from "./FileInfoDisplay";
@@ -29,6 +29,30 @@ const DocumentUploadView: React.FC<DocumentUploadViewProps> = ({
   onRemoveFile,
 }) => {
   const hasFile = currentFile !== null;
+
+  useEffect(() => {
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+      for (const item of Array.from(items)) {
+        if (item.type.startsWith("image/")) {
+          const blob = item.getAsFile();
+          if (!blob) continue;
+          const ext = item.type === "image/png" ? "png" : "jpg";
+          const file = new File([blob], `pasted-image.${ext}`, { type: item.type });
+          const dt = new DataTransfer();
+          dt.items.add(file);
+          const syntheticEvent = {
+            target: { files: dt.files, value: file.name } as HTMLInputElement,
+          } as ChangeEvent<HTMLInputElement>;
+          onFileChange(syntheticEvent);
+          break;
+        }
+      }
+    };
+    document.addEventListener("paste", handlePaste);
+    return () => document.removeEventListener("paste", handlePaste);
+  }, [onFileChange]);
 
   return (
     <div

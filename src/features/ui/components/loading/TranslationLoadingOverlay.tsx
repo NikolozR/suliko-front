@@ -28,20 +28,20 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
   estimatedMinutes,
 }) => {
   const t = useTranslations("TranslationLoadingOverlay");
-  const tProjectTips = useTranslations("Project.processingTips");
-  const tProjectInfo = useTranslations("Project.processingInfo");
+  const tTranslationTips = useTranslations("Translation.processingTips");
+  const tTranslationInfo = useTranslations("Translation.processingInfo");
   const [tipIndex, setTipIndex] = useState(0);
 
   const tips = useMemo(
     () => [
-      tProjectTips("tip1"),
-      tProjectTips("tip2"),
-      tProjectTips("tip3"),
-      tProjectTips("tip4"),
-      tProjectTips("tip5"),
-      tProjectTips("tip6"),
+      tTranslationTips("tip1"),
+      tTranslationTips("tip2"),
+      tTranslationTips("tip3"),
+      tTranslationTips("tip4"),
+      tTranslationTips("tip5"),
+      tTranslationTips("tip6"),
     ],
-    [tProjectTips]
+    [tTranslationTips]
   );
 
   useEffect(() => {
@@ -161,7 +161,7 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
           </div>
 
           <div className="rounded-lg border border-border/70 bg-muted/30 px-3 py-2 text-center">
-            <p className="text-xs font-medium text-foreground">{tProjectTips("title")}</p>
+            <p className="text-xs font-medium text-foreground">{tTranslationTips("title")}</p>
             <p className="text-xs text-muted-foreground mt-1">{tips[tipIndex]}</p>
           </div>
 
@@ -179,7 +179,7 @@ const TranslationLoadingOverlay: React.FC<TranslationLoadingOverlayProps> = ({
               ? t("estimatedTimeWithValue", { minutes: estimatedMinutes })
               : t("estimatedTime")}
             {" · "}
-            {tProjectInfo("leaveAndReturn")}
+            {tTranslationInfo("leaveAndReturn")}
           </p>
         </div>
       )}

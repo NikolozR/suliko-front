@@ -1,6 +1,6 @@
 import { EditorSkeleton, PageHeaderSkeleton, SplitPanelSkeleton } from "@/features/ui/components/loading";
 
-export default function ProjectDetailsLoading() {
+export default function TranslationDetailLoading() {
   return (
     <div className="min-h-screen bg-suliko-main-content-bg-color p-4 md:p-8">
       <div className="mx-auto space-y-6">
