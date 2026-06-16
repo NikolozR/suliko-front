@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useRouter } from "@/i18n/navigation";
 import { CheckCircle, MessageCircle, ArrowLeft } from "lucide-react";
+import { NOTARY_WHATSAPP } from "@/shared/constants/notary";
 
 export default function NotaryThankYouPage() {
   const router = useRouter();
@@ -43,7 +44,7 @@ export default function NotaryThankYouPage() {
         <p className="text-sm text-gray-500 dark:text-slate-400">
           In case of any questions{" "}
           <a
-            href="https://wa.me/995591729911"
+            href={`https://wa.me/${NOTARY_WHATSAPP}`}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1 text-green-600 hover:text-green-700 dark:text-green-400 dark:hover:text-green-300 font-medium transition-colors"

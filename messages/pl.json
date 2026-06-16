@@ -1160,7 +1160,8 @@
       "ctaSecondary": "Cennik",
       "badge1": "Certyfikowane tłumaczenia",
       "badge2": "Odpowiedź w 5 min",
-      "badge3": "Dostawa tego samego dnia"
+      "badge3": "Dostawa tego samego dnia",
+      "priceBadge": "od 20₾/strona"
     },
     "services": {
       "sectionBadge": "Jak to działa",
@@ -1267,6 +1268,61 @@
         "callUs": "Lub zadzwoń do nas:",
         "sending": "Wysyłanie..."
       }
+    },
+    "testimonials": {
+      "sectionBadge": "Opinie Klientów",
+      "heading": "Co Mówią Nasi Klienci",
+      "subheading": "Tysiące zadowolonych klientów ufa Suliko w zakresie certyfikowanych tłumaczeń.",
+      "t1name": "Nino Beridze",
+      "t1role": "Prawnik, Tbilisi Legal Group",
+      "t1text": "Suliko przetłumaczyło nasze dokumenty sądowe z wyjątkową dokładnością i szybkością. Uwierzytelnienie notarialne zostało wykonane tego samego dnia.",
+      "t2name": "Giorgi Mikhelidze",
+      "t2role": "Menedżer HR, TBC Bank",
+      "t2text": "Regularnie korzystamy z Suliko przy dokumentach wizowych pracowników. Zespół jest profesjonalny, szybki, a jakość jest zawsze doskonała.",
+      "t3name": "Anna Kopaliani",
+      "t3role": "Klient Prywatny",
+      "t3text": "Potrzebowałam tłumaczenia i uwierzytelnienia dyplomu w ciągu 24 godzin na potrzeby wniosku za granicą. Suliko wykonało to perfekcyjnie.",
+      "t4name": "David Tsiklauri",
+      "t4role": "CEO, Karvi Logistics",
+      "t4text": "Nasza firma przetwarza dziesiątki umów w wielu językach. Suliko to nasz główny partner tłumaczeniowy — niezawodny, precyzyjny i zawsze terminowy."
+    },
+    "about": {
+      "sectionBadge": "O Suliko",
+      "heading": "Twój Zaufany Partner Tłumaczeniowy w Gruzji",
+      "subheading": "Ponad 10 lat doświadczenia w dostarczaniu certyfikowanych tłumaczeń dla osób prywatnych, kancelarii prawnych, banków i korporacji w całej Gruzji.",
+      "f1title": "Certyfikowani Tłumacze",
+      "f1desc": "Wszyscy nasi tłumacze posiadają certyfikaty państwowe z doświadczeniem w dokumentach prawnych, medycznych, finansowych i technicznych.",
+      "f2title": "Usługa Tego Samego Dnia",
+      "f2desc": "Oferujemy ekspresowe terminy realizacji pilnych dokumentów — otrzymaj certyfikowane tłumaczenie w godzinach, a nie dniach.",
+      "f3title": "Partnerstwo Notarialne",
+      "f3desc": "Współpracujemy bezpośrednio z licencjonowanymi notariuszami, aby opieczętować i poświadczyć Twoje dokumenty, czyniąc je prawnie ważnymi w Gruzji i za granicą.",
+      "stat1Label": "Lat Doświadczenia",
+      "stat2Label": "Przetłumaczonych Dokumentów",
+      "stat3Label": "Par Językowych"
+    },
+    "survey": {
+      "title": "Bezpłatna Wycena w 1 Minutę",
+      "subtitle": "Powiedz nam o swoim dokumencie, a wyślemy cenę natychmiast.",
+      "step1heading": "W jakim języku jest Twój dokument?",
+      "step2heading": "Na jaki język potrzebujesz tłumaczenia?",
+      "step3heading": "Czy potrzebujesz uwierzytelnienia notarialnego?",
+      "step4heading": "Jak mamy się z Tobą skontaktować?",
+      "notaryYes": "Tak, potrzebuję uwierzytelnienia",
+      "notaryNo": "Nie, tylko tłumaczenie",
+      "whatsapp": "WhatsApp",
+      "call": "Zadzwoń",
+      "email": "E-mail",
+      "callback": "Prośba o Oddzwonienie",
+      "callbackPhone": "Twój numer telefonu",
+      "callbackSend": "Poproś o Oddzwonienie",
+      "callbackSuccess": "Zadzwonimy wkrótce!",
+      "callbackError": "Coś poszło nie tak. Spróbuj ponownie.",
+      "next": "Dalej",
+      "back": "Wstecz",
+      "close": "Zamknij",
+      "skip": "Nie teraz",
+      "priceBadge": "od 20₾/strona",
+      "stepOf": "Krok {current} z {total}"
     }
   },
   "Terms": {

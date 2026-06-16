@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { MessageCircle, Mail, MapPin } from "lucide-react";
+import { NOTARY_WHATSAPP } from "@/shared/constants/notary";
 
 export default function NotaryContactSection() {
   const t = useTranslations("NotaryPage.contact");
@@ -20,7 +21,7 @@ export default function NotaryContactSection() {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-xl mx-auto">
           <a
-            href="https://wa.me/995591729911"
+            href={`https://wa.me/${NOTARY_WHATSAPP}`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-lg bg-[#25D366] px-6 py-3 text-base font-semibold text-white shadow-lg hover:bg-[#1ebe5d] transition-colors duration-200"

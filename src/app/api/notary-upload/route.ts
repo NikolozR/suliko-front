@@ -1,5 +1,6 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
+import { NOTARY_WHATSAPP } from '@/shared/constants/notary';
 
 const INBOX = 'info@th.com.ge';
 const FROM = 'Suliko <noreply@th.com.ge>';
@@ -44,7 +45,7 @@ export async function POST(request: NextRequest) {
       from: FROM,
       to: INBOX,
       replyTo: email,
-      subject: `New Notary Submission from ${name}`,
+      subject: `[Suliko] New Notary Submission from ${name}`,
       html: `
         <h2>New Notary File Submission</h2>
         <h3>www.suliko.ge</h3>
@@ -120,14 +121,14 @@ function confirmationTemplate({
               </td></tr>
             </table>
             <p style="margin:0 0 8px;color:#6b7280;font-size:14px">Need immediate help? Message us on WhatsApp:</p>
-            <a href="https://wa.me/995591729911" style="display:inline-block;background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600">
+            <a href="https://wa.me/${NOTARY_WHATSAPP}" style="display:inline-block;background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600">
               Message on WhatsApp
             </a>
           </td>
         </tr>
         <tr>
           <td style="background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb">
-            <p style="margin:0;color:#9ca3af;font-size:12px">Suliko · info@suliko.ge</p>
+            <p style="margin:0;color:#9ca3af;font-size:12px">Suliko · info@th.com.ge</p>
           </td>
         </tr>
       </table>

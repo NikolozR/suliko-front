@@ -7,6 +7,7 @@ import { Mail, Phone, Facebook, Linkedin } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/features/ui";
+import { NOTARY_PHONE_DISPLAY } from "@/shared/constants/notary";
 
 export default function LandingFooter() {
   const t = useTranslations("LandingFooter");
@@ -120,7 +121,7 @@ export default function LandingFooter() {
               <li>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Phone className="h-4 w-4 shrink-0" />
-                  <span className="whitespace-nowrap">{t("phone")}</span>
+                  <span className="whitespace-nowrap">{NOTARY_PHONE_DISPLAY}</span>
                 </div>
               </li>
             </ul>

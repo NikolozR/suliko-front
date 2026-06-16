@@ -8,6 +8,7 @@ import { Button } from "@/features/ui";
 import { Check, Star, Zap, Building2, Users, Sparkles, Clock, Mail, Phone, MessageCircle, X, CreditCard } from "lucide-react";
 import { PayAsYouGoModal } from "@/features/pricing/components/PayAsYouGoModal";
 import { formatPriceFromString } from "@/shared/utils/domainUtils";
+import { NOTARY_PHONE, NOTARY_WHATSAPP } from "@/shared/constants/notary";
 
 interface Plan {
   name: string;
@@ -358,7 +359,7 @@ export default function PricingSection() {
               </a>
 
               <a
-                href="tel:+995591729911"
+                href={`tel:${NOTARY_PHONE}`}
                 className="flex items-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
               >
                 <div className="p-2 bg-primary/10 rounded-full mr-4 group-hover:bg-primary/20 transition-colors">
@@ -366,12 +367,12 @@ export default function PricingSection() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">{t("contactModal.phone")}</p>
-                  <p className="text-sm text-muted-foreground">+995 591 729 911</p>
+                  <p className="text-sm text-muted-foreground">{NOTARY_PHONE}</p>
                 </div>
               </a>
 
               <a
-                href="https://wa.me/995591729911"
+                href={`https://wa.me/${NOTARY_WHATSAPP}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center p-4 border border-border rounded-lg hover:bg-muted/50 transition-colors group"
@@ -381,7 +382,7 @@ export default function PricingSection() {
                 </div>
                 <div>
                   <p className="font-medium text-foreground">{t("contactModal.whatsapp")}</p>
-                  <p className="text-sm text-muted-foreground">+995 591 729 911</p>
+                  <p className="text-sm text-muted-foreground">{NOTARY_PHONE}</p>
                 </div>
               </a>
             </div>

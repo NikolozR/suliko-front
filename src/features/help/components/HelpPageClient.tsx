@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui/components/ui/card";
 import { Button } from "@/features/ui/components/ui/button";
 import { Mail, Phone, MessageSquare } from "lucide-react";
+import { NOTARY_PHONE } from "@/shared/constants/notary";
 import { useRef, useState, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
 
@@ -255,10 +256,10 @@ export default function HelpPageClient() {
                 <div>
                   <p className="text-sm font-medium">{t("contact.phone")}</p>
                   <a
-                    href="tel:+995591729911"
+                    href={`tel:${NOTARY_PHONE}`}
                     className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                   >
-                    +995 591 729 911
+                    {NOTARY_PHONE}
                   </a>
                 </div>
               </div>

@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { Button } from '@/features/ui/components/ui/button';
 import { Phone, MessageCircle, Copy, Check } from "lucide-react";
+import { NOTARY_PHONE, NOTARY_WHATSAPP } from "@/shared/constants/notary";
 
 interface ContactPaymentModalProps {
   isOpen: boolean;
@@ -14,9 +15,9 @@ interface ContactPaymentModalProps {
 export function ContactPaymentModal({ isOpen, onClose }: ContactPaymentModalProps) {
   const t = useTranslations("Pricing");
   const [isCopied, setIsCopied] = useState(false);
-  const contactPhone = "591 729 911";
-  const contactPhoneHref = "+995591729911";
-  const whatsappHref = "https://wa.me/995591729911";
+  const contactPhone = NOTARY_PHONE;
+  const contactPhoneHref = NOTARY_PHONE;
+  const whatsappHref = `https://wa.me/${NOTARY_WHATSAPP}`;
   const contactEmail = "info@suliko.io";
   const bankAccount = "GE42BG0000000607709128";
 

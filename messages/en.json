@@ -1174,7 +1174,8 @@
       "ctaSecondary": "View Prices",
       "badge1": "Certified Translations",
       "badge2": "5-min Response",
-      "badge3": "Same Day Delivery"
+      "badge3": "Same Day Delivery",
+      "priceBadge": "from 20₾/page"
     },
     "services": {
       "sectionBadge": "How It Works",
@@ -1281,6 +1282,61 @@
         "callUs": "Or call us directly:",
         "sending": "Sending..."
       }
+    },
+    "testimonials": {
+      "sectionBadge": "Client Reviews",
+      "heading": "What Our Clients Say",
+      "subheading": "Thousands of satisfied clients trust Suliko for their certified translation needs.",
+      "t1name": "Nino Beridze",
+      "t1role": "Attorney, Tbilisi Legal Group",
+      "t1text": "Suliko handled our court document translations with exceptional accuracy and speed. Notary certification was done same day.",
+      "t2name": "Giorgi Mikhelidze",
+      "t2role": "HR Manager, TBC Bank",
+      "t2text": "We regularly use Suliko for employee visa documents. The team is professional, fast, and the quality is consistently excellent.",
+      "t3name": "Anna Kopaliani",
+      "t3role": "Private Client",
+      "t3text": "I needed my diploma translated and certified within 24 hours for an overseas application. Suliko delivered perfectly — would highly recommend.",
+      "t4name": "David Tsiklauri",
+      "t4role": "CEO, Karvi Logistics",
+      "t4text": "Our company processes dozens of contracts in multiple languages. Suliko is our go-to translation partner — reliable, accurate, and always on time."
+    },
+    "about": {
+      "sectionBadge": "About Suliko",
+      "heading": "Your Trusted Translation Partner in Georgia",
+      "subheading": "Over 10 years of experience delivering certified translations for individuals, law firms, banks, and corporations across Georgia.",
+      "f1title": "Certified Translators",
+      "f1desc": "All our translators are state-certified with expertise in legal, medical, financial, and technical documents.",
+      "f2title": "Same-Day Service",
+      "f2desc": "We offer express turnaround for urgent documents — receive your certified translation within hours, not days.",
+      "f3title": "Notary Partnership",
+      "f3desc": "We work directly with licensed notaries to stamp and certify your documents, making them legally valid in Georgia and internationally.",
+      "stat1Label": "Years Experience",
+      "stat2Label": "Documents Translated",
+      "stat3Label": "Language Pairs"
+    },
+    "survey": {
+      "title": "Get a Free Quote in 1 Minute",
+      "subtitle": "Tell us about your document and we'll send you a price instantly.",
+      "step1heading": "What language is your document in?",
+      "step2heading": "Which language do you need?",
+      "step3heading": "Do you need notary certification?",
+      "step4heading": "How would you like us to contact you?",
+      "notaryYes": "Yes, please certify it",
+      "notaryNo": "No, translation only",
+      "whatsapp": "Message on WhatsApp",
+      "call": "Call Us Now",
+      "email": "Send via Email",
+      "callback": "Request a Callback",
+      "callbackPhone": "Your phone number",
+      "callbackSend": "Request Callback",
+      "callbackSuccess": "We'll call you shortly!",
+      "callbackError": "Something went wrong. Please try again.",
+      "next": "Next",
+      "back": "Back",
+      "close": "Close",
+      "skip": "Not now",
+      "priceBadge": "from 20₾/page",
+      "stepOf": "Step {current} of {total}"
     }
   },
   "Terms": {

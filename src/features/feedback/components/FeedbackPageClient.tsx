@@ -10,6 +10,7 @@ import { Label } from "@/features/ui/components/ui/label";
 import { Textarea } from "@/features/ui/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/features/ui/components/ui/select";
 import { Mail, Phone, CheckCircle2, AlertCircle } from "lucide-react";
+import { NOTARY_PHONE } from "@/shared/constants/notary";
 
 export default function FeedbackPageClient() {
   const t = useTranslations("FeedbackPage");
@@ -235,10 +236,10 @@ export default function FeedbackPageClient() {
                   <div>
                     <p className="text-sm font-medium">{t("contact.phone")}</p>
                     <a
-                      href="tel:+995591729911"
+                      href={`tel:${NOTARY_PHONE}`}
                       className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                     >
-                      +995 591 729 911
+                      {NOTARY_PHONE}
                     </a>
                   </div>
                 </div>

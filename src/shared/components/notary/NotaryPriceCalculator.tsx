@@ -6,6 +6,7 @@ import { Calculator, X, Clock, Mail, Phone, ChevronDown, Plus, Trash2 } from "lu
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { languageTranslations, languages, languagePrices, type Language } from "@/shared/utils/notaryHelpers";
+import { NOTARY_PHONE } from "@/shared/constants/notary";
 
 const PRICE_BREAKS = {
   LARGE_ORDER: 100,
@@ -134,7 +135,7 @@ export default function NotaryPriceCalculator() {
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-4 md:p-6 lg:p-8">
+    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg px-3 py-4 sm:px-4 sm:py-5 md:px-6 md:py-8">
       <form onSubmit={calculatePrice} className="space-y-4">
 
         {/* Document cards */}
@@ -184,7 +185,7 @@ export default function NotaryPriceCalculator() {
                           </option>
                         ))}
                       </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
+                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 pointer-events-none" />
                     </div>
                   </div>
                 ))}
@@ -237,8 +238,8 @@ export default function NotaryPriceCalculator() {
           type="submit"
           className="w-full bg-gradient-to-r from-blue-500 to-indigo-500 text-white py-4 px-6 rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-3 font-medium shadow-lg"
         >
-          <Calculator className="w-5 h-5" />
-          <span>{t("calculate")}</span>
+          <Calculator className="w-4 h-4 sm:w-5 sm:h-5" />
+          <span className="text-sm sm:text-base">{t("calculate")}</span>
         </button>
       </form>
 
@@ -263,8 +264,8 @@ export default function NotaryPriceCalculator() {
               onTouchEnd={handleTouchEnd}
             >
               {/* Header */}
-              <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-slate-700 shrink-0">
-                <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{t("translationDetails")}</h3>
+              <div className="flex justify-between items-center px-4 py-4 sm:p-6 border-b border-gray-200 dark:border-slate-700 shrink-0">
+                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t("translationDetails")}</h3>
                 <button
                   onClick={() => setIsOpen(false)}
                   className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"
@@ -274,7 +275,7 @@ export default function NotaryPriceCalculator() {
               </div>
 
               {/* Scrollable body */}
-              <div className="p-6 space-y-4 overflow-y-auto">
+              <div className="p-4 sm:p-6 space-y-4 overflow-y-auto">
 
                 {/* Per-document breakdown */}
                 {breakdown.map((doc) => (
@@ -328,7 +329,7 @@ export default function NotaryPriceCalculator() {
                     <span>{t("copyEmail")}</span>
                   </button>
                   <button
-                    onClick={() => copyToClipboard("+995591729911")}
+                    onClick={() => copyToClipboard(NOTARY_PHONE)}
                     className="w-full bg-green-600 text-white py-4 rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center space-x-3"
                   >
                     <Phone className="w-5 h-5" />

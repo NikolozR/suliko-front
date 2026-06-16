@@ -5,6 +5,7 @@ import { Upload, X, Send, Check, FileText, Phone } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
+import { NOTARY_PHONE } from "@/shared/constants/notary";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const MAX_FILES = 5;
@@ -277,9 +278,9 @@ export default function NotaryFileUploadForm() {
         <div className="text-center text-sm text-gray-600 dark:text-slate-400">
           <p className="flex items-center justify-center gap-2">
             <span>{t("callUs")}</span>
-            <a href="tel:+995591729911" className="text-blue-600 hover:text-blue-700 font-medium flex items-center">
+            <a href={`tel:${NOTARY_PHONE}`} className="text-blue-600 hover:text-blue-700 font-medium flex items-center">
               <Phone className="w-4 h-4 mr-1" />
-              +995 591 729 911
+              {NOTARY_PHONE}
             </a>
           </p>
         </div>
