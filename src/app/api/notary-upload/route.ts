@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     const confirmResult = await resend.emails.send({
       from: FROM,
       to: email,
-      subject: 'We received your documents – Suliko',
+      subject: 'თქვენი დოკუმენტები წარმატებით გამოიგზავნა! / Your Documents Have Been Successfully Received!',
       html: confirmationTemplate({ name, email, phone, fileList, sourceLanguage, targetLanguage, notarialCertification }),
     });
 
@@ -91,8 +91,9 @@ function confirmationTemplate({
   name: string; email: string; phone: string; fileList: string;
   sourceLanguage: string; targetLanguage: string; notarialCertification: string;
 }) {
+  void name; void email; void phone; void fileList; void sourceLanguage; void targetLanguage; void notarialCertification;
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="ka">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background:#f5f5f5;font-family:Arial,sans-serif">
   <table width="100%" cellpadding="0" cellspacing="0" style="background:#f5f5f5;padding:40px 0">
@@ -100,35 +101,65 @@ function confirmationTemplate({
       <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08)">
         <tr>
           <td style="background:linear-gradient(135deg,#1d4ed8,#7c3aed);padding:32px 40px;text-align:center">
-            <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:700">Suliko</h1>
-            <p style="margin:8px 0 0;color:#bfdbfe;font-size:14px">Professional Notary Translation Services</p>
+            <h1 style="margin:0;color:#ffffff;font-size:24px;font-weight:700">Translation House · თარგმნის სახლი</h1>
+            <p style="margin:8px 0 0;color:#bfdbfe;font-size:14px">Professional Translation &amp; Notary Services | პროფესიონალური თარგმნა და სანოტარო მომსახურება</p>
           </td>
         </tr>
         <tr>
           <td style="padding:40px">
-            <h2 style="margin:0 0 16px;color:#111827;font-size:20px">We received your documents, ${name}!</h2>
-            <p style="margin:0 0 24px;color:#6b7280;font-size:15px;line-height:1.6">
-              Our team will review your files and send you a free quote within <strong>5 minutes</strong>.
+            <h2 style="margin:0 0 16px;color:#111827;font-size:20px">თქვენი დოკუმენტები წარმატებით გამოიგზავნა!</h2>
+            <p style="margin:0 0 8px;color:#374151;font-size:15px;line-height:1.6">გამარჯობა,</p>
+            <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6">
+              მადლობას გიხდით ჩვენი ვებ-გვერდით სარგებლობისთვის. გიდასტურებთ, რომ თქვენი ფაილები მიღებულია.
             </p>
-            <table width="100%" cellpadding="0" cellspacing="0" style="background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:24px">
-              <tr><td style="padding:20px">
-                <p style="margin:0 0 8px;color:#374151;font-size:14px"><strong>Email:</strong> ${email}</p>
-                <p style="margin:0 0 8px;color:#374151;font-size:14px"><strong>Phone:</strong> ${phone}</p>
-                <p style="margin:0 0 8px;color:#374151;font-size:14px"><strong>Source Language:</strong> ${sourceLanguage}</p>
-                <p style="margin:0 0 8px;color:#374151;font-size:14px"><strong>Target Language:</strong> ${targetLanguage}</p>
-                <p style="margin:0 0 8px;color:#374151;font-size:14px"><strong>Notarial Certification:</strong> ${notarialCertification}</p>
-                <p style="margin:0;color:#374151;font-size:14px"><strong>Files:</strong> ${fileList}</p>
-              </td></tr>
-            </table>
-            <p style="margin:0 0 8px;color:#6b7280;font-size:14px">Need immediate help? Message us on WhatsApp:</p>
-            <a href="https://wa.me/${NOTARY_WHATSAPP}" style="display:inline-block;background:linear-gradient(135deg,#1d4ed8,#7c3aed);color:#ffffff;text-decoration:none;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600">
-              Message on WhatsApp
-            </a>
+            <p style="margin:0 0 12px;color:#374151;font-size:15px;line-height:1.6">
+              ზუსტი საფასურისა და ვადების დასადგენად, გთხოვთ, მოგვწეროთ შემდეგი დეტალები:
+            </p>
+            <ul style="margin:0 0 16px;padding-left:20px;color:#374151;font-size:15px;line-height:1.8">
+              <li><strong>ენობრივი წყვილი</strong> – რომელი ენიდან რომელ ენაზე გსურთ თარგმნა?</li>
+              <li><strong>თარგმანის ტიპი</strong> – გესაჭიროებათ სტანდარტული თარგმანი თუ სანოტარო დამოწმებით?</li>
+              <li><strong>დამატებითი მოთხოვნები</strong> – გაქვთ თუ არა კონკრეტული დედლაინი (ბოლო ვადა) ან სხვა სპეციალური პირობა?</li>
+            </ul>
+            <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6">
+              როგორც კი მოგვაწვდით ამ ინფორმაციას, ჩვენი გუნდი მალევე დაგიბრუნდებათ ოფიციალური საფასო შეთავაზებითა და შესრულების ზუსტი დროით.
+            </p>
+            <p style="margin:0 0 32px;color:#374151;font-size:15px;line-height:1.6">
+              კითხვების შემთხვევაში, შეგიძლიათ პირდაპირ უპასუხოთ ამ მეილს.
+            </p>
+
+            <hr style="border:none;border-top:2px solid #e5e7eb;margin:0 0 32px" />
+            <p style="margin:0 0 4px;color:#6b7280;font-size:13px;text-align:center">🇬🇧 For English, please scroll down</p>
+            <hr style="border:none;border-top:2px solid #e5e7eb;margin:0 0 32px" />
+
+            <h2 style="margin:0 0 16px;color:#111827;font-size:20px">Your Documents Have Been Successfully Received!</h2>
+            <p style="margin:0 0 8px;color:#374151;font-size:15px;line-height:1.6">Hello,</p>
+            <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6">
+              Thank you for submitting your documents through our website. We are pleased to confirm that we have successfully received them.
+            </p>
+            <p style="margin:0 0 12px;color:#374151;font-size:15px;line-height:1.6">
+              In order to provide you with a formal quote and timeline, please reply to this email with the following details:
+            </p>
+            <ul style="margin:0 0 16px;padding-left:20px;color:#374151;font-size:15px;line-height:1.8">
+              <li><strong>Language pair</strong> – Please specify the source language and the target language.</li>
+              <li><strong>Type of translation</strong> – Do you require a standard translation or a notarized (certified) translation?</li>
+              <li><strong>Additional requirements</strong> – Do you have a specific deadline, or any other special instructions for this order?</li>
+            </ul>
+            <p style="margin:0 0 16px;color:#374151;font-size:15px;line-height:1.6">
+              Once we receive your response, we will review your documents and follow up shortly with a quote. If you have any questions in the meantime, feel free to contact us.
+            </p>
+            <p style="margin:0 0 32px;color:#374151;font-size:15px;line-height:1.6">
+              Best wishes | საუკეთესო სურვილებით,
+            </p>
           </td>
         </tr>
         <tr>
-          <td style="background:#f9fafb;padding:20px 40px;text-align:center;border-top:1px solid #e5e7eb">
-            <p style="margin:0;color:#9ca3af;font-size:12px">Suliko · info@th.com.ge</p>
+          <td style="background:#f9fafb;padding:24px 40px;border-top:1px solid #e5e7eb">
+            <p style="margin:0 0 4px;color:#374151;font-size:14px;font-weight:700;text-align:center">Translation House · თარგმნის სახლი</p>
+            <p style="margin:0 0 12px;color:#6b7280;font-size:13px;text-align:center">Professional Translation &amp; Notary Services | პროფესიონალური თარგმნა და სანოტარო მომსახურება</p>
+            <p style="margin:0 0 4px;color:#6b7280;font-size:13px;text-align:center">📱 WhatsApp: <a href="https://wa.me/${NOTARY_WHATSAPP}" style="color:#1d4ed8;text-decoration:none">+995 591 729 911</a></p>
+            <p style="margin:0 0 4px;color:#6b7280;font-size:13px;text-align:center">✉️ <a href="mailto:info@th.com.ge" style="color:#1d4ed8;text-decoration:none">info@th.com.ge</a></p>
+            <p style="margin:0 0 4px;color:#6b7280;font-size:13px;text-align:center">🌐 <a href="https://notarytranslation.ge" style="color:#1d4ed8;text-decoration:none">notarytranslation.ge</a></p>
+            <p style="margin:0;color:#6b7280;font-size:13px;text-align:center">📍 Tbilisi, Karvasla, Tsotne Dadiani St. 7, A316</p>
           </td>
         </tr>
       </table>
