@@ -34,8 +34,20 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
 
   const displayNames = languageTranslations[locale] ?? languageTranslations.en;
 
-  const POPULAR_LANGUAGES: Language[] = ["english", "russian", "german", "georgian", "french", "spanish"];
-
+  const POPULAR_LANGUAGES: Language[] = [
+    "english",
+    "russian",
+    "german",
+    "georgian",
+    "french",
+    "spanish",
+    "turkish",
+    "azerbaijani",
+    "arabic",
+    "chinese",
+    "japanese",
+    "korean",
+  ];
   const resetAndClose = () => {
     onClose();
     // Reset after modal closes
@@ -170,11 +182,10 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                       key={lang}
                       type="button"
                       onClick={() => setFromLang(lang)}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${
-                        fromLang === lang
-                          ? "bg-[var(--suliko-default-color)] text-white border-[var(--suliko-default-color)]"
-                          : "border-border text-foreground hover:border-[var(--suliko-default-color)] hover:text-[var(--suliko-default-color)]"
-                      }`}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${fromLang === lang
+                        ? "bg-[var(--suliko-default-color)] text-white border-[var(--suliko-default-color)]"
+                        : "border-border text-foreground hover:border-[var(--suliko-default-color)] hover:text-[var(--suliko-default-color)]"
+                        }`}
                     >
                       {displayNames[lang]}
                     </button>
@@ -196,15 +207,15 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                 <h3 className="text-sm font-semibold text-foreground mb-3">{t("step2heading")}</h3>
                 <div className="flex flex-wrap gap-2">
                   {POPULAR_LANGUAGES.map((lang) => (
+                    lang !== fromLang &&
                     <button
                       key={lang}
                       type="button"
                       onClick={() => setToLang(lang)}
-                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${
-                        toLang === lang
-                          ? "bg-[var(--suliko-default-color)] text-white border-[var(--suliko-default-color)]"
-                          : "border-border text-foreground hover:border-[var(--suliko-default-color)] hover:text-[var(--suliko-default-color)]"
-                      }`}
+                      className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${toLang === lang
+                        ? "bg-[var(--suliko-default-color)] text-white border-[var(--suliko-default-color)]"
+                        : "border-border text-foreground hover:border-[var(--suliko-default-color)] hover:text-[var(--suliko-default-color)]"
+                        }`}
                     >
                       {displayNames[lang]}
                     </button>
@@ -228,11 +239,10 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                   <button
                     type="button"
                     onClick={() => { setNotary(true); goNext(); }}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border text-sm font-medium transition-all duration-150 text-left ${
-                      notary === true
-                        ? "bg-[var(--suliko-default-color)]/10 border-[var(--suliko-default-color)] text-[var(--suliko-default-color)]"
-                        : "border-border text-foreground hover:border-[var(--suliko-default-color)]"
-                    }`}
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border text-sm font-medium transition-all duration-150 text-left ${notary === true
+                      ? "bg-[var(--suliko-default-color)]/10 border-[var(--suliko-default-color)] text-[var(--suliko-default-color)]"
+                      : "border-border text-foreground hover:border-[var(--suliko-default-color)]"
+                      }`}
                   >
                     <span className="h-8 w-8 rounded-full bg-[var(--suliko-default-color)]/10 flex items-center justify-center text-base shrink-0">✅</span>
                     {t("notaryYes")}
@@ -240,11 +250,10 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                   <button
                     type="button"
                     onClick={() => { setNotary(false); goNext(); }}
-                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border text-sm font-medium transition-all duration-150 text-left ${
-                      notary === false
-                        ? "bg-primary/10 border-primary text-primary"
-                        : "border-border text-foreground hover:border-primary"
-                    }`}
+                    className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border text-sm font-medium transition-all duration-150 text-left ${notary === false
+                      ? "bg-primary/10 border-primary text-primary"
+                      : "border-border text-foreground hover:border-primary"
+                      }`}
                   >
                     <span className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-base shrink-0">📄</span>
                     {t("notaryNo")}
