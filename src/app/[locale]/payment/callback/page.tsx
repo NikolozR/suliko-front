@@ -14,7 +14,7 @@ export default function PaymentTestPage() {
         const queryString = searchParams.toString();
         console.log(queryString)
         const res = await fetch(
-          `https://test_env.suliko.ge/api/Payment/callback?${queryString}`,
+          `https://content.api24.ge/api/Payment/callback?${queryString}`,
           { method: 'GET' }
         );
 
