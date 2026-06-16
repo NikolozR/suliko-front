@@ -41,7 +41,7 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
   return (
     <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border/50">
       <div className="flex items-center gap-3 min-w-0">
-        <div className="flex-shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-background border border-border/60">
+        <div className="shrink-0 flex items-center justify-center w-9 h-9 rounded-lg bg-background border border-border/60">
           <IconComponent className={`h-5 w-5 ${iconClass}`} />
         </div>
         <div className="min-w-0">

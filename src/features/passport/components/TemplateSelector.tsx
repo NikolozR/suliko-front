@@ -76,7 +76,7 @@ export default function TemplateSelector({
                   } ${disabled ? "opacity-50 pointer-events-none" : ""}`}
                 >
                   <FileText
-                    className={`h-5 w-5 flex-shrink-0 ${
+                    className={`h-5 w-5 shrink-0 ${
                       selectedTemplate?.id === tmpl.id
                         ? "text-primary"
                         : "text-muted-foreground"

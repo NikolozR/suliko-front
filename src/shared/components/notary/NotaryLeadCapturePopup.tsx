@@ -130,7 +130,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
     <Dialog open={isOpen} onOpenChange={resetAndClose}>
       <DialogContent className="max-w-sm mx-auto p-0 overflow-y-auto max-h-[90vh] border-border gap-0 [&>button]:hidden">
         {/* Header */}
-        <div className="bg-gradient-to-br from-[var(--suliko-default-color)] to-indigo-600 px-5 pt-5 pb-4 text-white">
+        <div className="bg-linear-to-br from-suliko-default-color to-indigo-600 px-5 pt-5 pb-4 text-white">
           <div className="flex items-start justify-between mb-3">
             <div>
               <span className="text-xs font-medium bg-white/20 rounded-full px-2 py-0.5">
@@ -183,8 +183,8 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                       type="button"
                       onClick={() => setFromLang(lang)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${fromLang === lang
-                        ? "bg-[var(--suliko-default-color)] text-white border-[var(--suliko-default-color)]"
-                        : "border-border text-foreground hover:border-[var(--suliko-default-color)] hover:text-[var(--suliko-default-color)]"
+                        ? "bg-suliko-default-color text-white border-suliko-default-color"
+                        : "border-border text-foreground hover:border-suliko-default-color hover:text-suliko-default-color"
                         }`}
                     >
                       {displayNames[lang]}
@@ -213,8 +213,8 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                       type="button"
                       onClick={() => setToLang(lang)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${toLang === lang
-                        ? "bg-[var(--suliko-default-color)] text-white border-[var(--suliko-default-color)]"
-                        : "border-border text-foreground hover:border-[var(--suliko-default-color)] hover:text-[var(--suliko-default-color)]"
+                        ? "bg-suliko-default-color text-white border-suliko-default-color"
+                        : "border-border text-foreground hover:border-suliko-default-color hover:text-suliko-default-color"
                         }`}
                     >
                       {displayNames[lang]}
@@ -240,11 +240,11 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                     type="button"
                     onClick={() => { setNotary(true); goNext(); }}
                     className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border text-sm font-medium transition-all duration-150 text-left ${notary === true
-                      ? "bg-[var(--suliko-default-color)]/10 border-[var(--suliko-default-color)] text-[var(--suliko-default-color)]"
-                      : "border-border text-foreground hover:border-[var(--suliko-default-color)]"
+                      ? "bg-suliko-default-color/10 border-suliko-default-color text-suliko-default-color"
+                      : "border-border text-foreground hover:border-suliko-default-color"
                       }`}
                   >
-                    <span className="h-8 w-8 rounded-full bg-[var(--suliko-default-color)]/10 flex items-center justify-center text-base shrink-0">✅</span>
+                    <span className="h-8 w-8 rounded-full bg-suliko-default-color/10 flex items-center justify-center text-base shrink-0">✅</span>
                     {t("notaryYes")}
                   </button>
                   <button
@@ -286,7 +286,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                       <span>{displayNames[fromLang]}</span>
                       <span>→</span>
                       <span>{displayNames[toLang]}</span>
-                      {notary && <span className="ml-1 text-[var(--suliko-default-color)]">• Notary</span>}
+                      {notary && <span className="ml-1 text-suliko-default-color">• Notary</span>}
                     </div>
 
                     {contactMethod === "callback" ? (
@@ -297,7 +297,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
                           placeholder={t("callbackPhone")}
-                          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-[var(--suliko-default-color)]/40"
+                          className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-suliko-default-color/40"
                         />
                         {error && (
                           <p className="text-xs text-destructive">{t("callbackError")}</p>
@@ -306,7 +306,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                           type="button"
                           onClick={handleCallbackSubmit}
                           disabled={!phone.trim() || submitting}
-                          className="flex items-center justify-center gap-2 rounded-lg bg-[var(--suliko-default-color)] px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50 hover:bg-[var(--suliko-default-hover-color)] transition-colors"
+                          className="flex items-center justify-center gap-2 rounded-lg bg-suliko-default-color px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50 hover:bg-suliko-default-color] transition-colors"
                         >
                           {submitting ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -391,7 +391,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
             <button
               type="button"
               onClick={goNext}
-              className="flex items-center gap-1 rounded-lg bg-[var(--suliko-default-color)] px-4 py-2 text-sm font-semibold text-white hover:bg-[var(--suliko-default-hover-color)] transition-colors"
+              className="flex items-center gap-1 rounded-lg bg-suliko-default-color px-4 py-2 text-sm font-semibold text-white hover:bg-suliko-default-color] transition-colors"
             >
               {t("next")}
               <ChevronRight className="h-4 w-4" />

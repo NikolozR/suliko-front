@@ -66,7 +66,7 @@ const DocumentPreviewColumn = React.memo(function DocumentPreviewColumn({
           variant="outline"
           size="sm"
           onClick={() => setHideOriginalDocument(true)}
-          className="transition-all duration-200 flex-shrink-0"
+          className="transition-all duration-200 shrink-0"
           title={t("hideOriginal")}
           aria-label={t("hideOriginal")}
         >
@@ -340,7 +340,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
               </div>
 
               {/* Action Buttons Row */}
-              <div className="flex items-center gap-2 flex-shrink-0">
+              <div className="flex items-center gap-2 shrink-0">
                 {hideOriginalDocument && (
                   <Button
                     type="button"

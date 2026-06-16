@@ -124,7 +124,7 @@ export default function HelpPageClient() {
                 </video>
 
                 {/* Custom Controls */}
-                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+                <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/80 to-transparent p-4">
                   {/* Progress Bar */}
                   <div className="mb-3">
                     <input

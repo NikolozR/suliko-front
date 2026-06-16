@@ -32,7 +32,7 @@ export default function NotaryTabbedCalculator() {
       transition={{ duration: 0.6 }}
     >
       {/* Tab bar */}
-      <div className="flex border-b border-gray-200 dark:border-slate-700 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800">
+      <div className="flex border-b border-gray-200 dark:border-slate-700 bg-linear-to-r from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800">
         <button onClick={() => setActiveTab("calculator")} className={tabClass("calculator")}>
           <div className="flex items-center justify-center gap-1.5 sm:gap-2">
             <Calculator className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
@@ -81,7 +81,7 @@ export default function NotaryTabbedCalculator() {
                   ⚡ {t("uploadSub")}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800 rounded-xl p-4 md:p-6 border border-blue-100 dark:border-slate-700">
+              <div className="bg-linear-to-br from-blue-50 to-indigo-50 dark:from-slate-800 dark:to-slate-800 rounded-xl p-4 md:p-6 border border-blue-100 dark:border-slate-700">
                 <NotaryFileUploadForm />
               </div>
             </motion.div>

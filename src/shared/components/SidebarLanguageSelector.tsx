@@ -37,11 +37,11 @@ export function SidebarLanguageSelector({ isCollapsed }: SidebarLanguageSelector
   const getFlagIcon = (locale: string) => {
     switch (locale) {
       case 'en':
-        return <UKFlag className="h-5 w-5 flex-shrink-0" />;
+        return <UKFlag className="h-5 w-5 shrink-0" />;
       case 'ka':
-        return <GeorgianFlag className="h-5 w-5 flex-shrink-0" />;
+        return <GeorgianFlag className="h-5 w-5 shrink-0" />;
       case 'pl':
-        return <PolishFlag className="h-5 w-5 flex-shrink-0" />;
+        return <PolishFlag className="h-5 w-5 shrink-0" />;
       default:
         return null;
     }

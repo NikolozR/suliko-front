@@ -23,7 +23,7 @@ export default function BlogBanner({ postCount }: BlogBannerProps) {
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
           {stats.map(({ icon: Icon, value, label }) => (
             <div key={label} className="flex items-center gap-3">
-              <div className="flex-shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
+              <div className="shrink-0 inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10">
                 <Icon className="w-5 h-5 text-primary" />
               </div>
               <div>

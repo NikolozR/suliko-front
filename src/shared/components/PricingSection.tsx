@@ -140,7 +140,7 @@ export default function PricingSection() {
 
   const getColorClasses = (color: string, popular: boolean) => {
     const baseClasses = "relative transition-all duration-300 hover:shadow-lg";
-    const popularClasses = "ring-2 ring-primary shadow-xl scale-105 bg-gradient-to-br from-background to-muted/20 before:absolute before:inset-0 before:rounded-lg before:bg-gradient-to-r before:from-primary/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none";
+    const popularClasses = "ring-2 ring-primary shadow-xl scale-105 bg-linear-to-br from-background to-muted/20 before:absolute before:inset-0 before:rounded-lg before:bg-linear-to-r before:from-primary/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none";
 
     switch (color) {
       case "blue":
@@ -216,7 +216,7 @@ export default function PricingSection() {
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 z-10">
-                  <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg flex items-center gap-1">
+                  <div className="bg-linear-to-r from-orange-500 to-red-500 text-white px-4 py-1 rounded-full text-sm font-bold shadow-lg flex items-center gap-1">
                     <Sparkles className="h-3 w-3" />
                     {t("mostPopular")}
                   </div>
@@ -225,7 +225,7 @@ export default function PricingSection() {
 
               {plan.discount && (
                 <div className="absolute -top-2 -right-2 z-20 animate-pulse">
-                  <div className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg transform rotate-12 flex items-center gap-1 border-2 border-white">
+                  <div className="bg-linear-to-r from-green-500 to-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg transform rotate-12 flex items-center gap-1 border-2 border-white">
                     <Clock className="h-2 w-2" />
                     {t("discount")}
                   </div>
@@ -277,11 +277,11 @@ export default function PricingSection() {
                 </p>
               </CardHeader>
 
-              <CardContent className="pt-0 flex flex-col flex-grow">
-                <ul className="space-y-3 mb-8 flex-grow">
+              <CardContent className="pt-0 flex flex-col grow">
+                <ul className="space-y-3 mb-8 grow">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start">
-                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 shrink-0" />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}

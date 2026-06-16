@@ -25,7 +25,7 @@ export const ProfileHero = ({ userProfile }: ProfileHeroProps) => {
   };
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-gradient-to-br from-card via-card to-primary/5 p-6 md:p-8 mb-8 shadow-sm space-y-6">
+    <div className="rounded-2xl border border-primary/20 bg-linear-to-br from-card via-card to-primary/5 p-6 md:p-8 mb-8 shadow-sm space-y-6">
       {/* Row 1: Avatar, name, username, logout */}
       <div className="flex items-center gap-6 md:gap-8">
         <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-2 border-primary/30 shrink-0">

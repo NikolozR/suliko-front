@@ -68,7 +68,7 @@ export default function PassportUpload({ file, onFileSelect, disabled }: Props) 
         </div>
       ) : (
         <div className="flex items-center gap-3 p-4 rounded-xl border bg-card">
-          <FileImage className="h-8 w-8 text-primary flex-shrink-0" />
+          <FileImage className="h-8 w-8 text-primary shrink-0" />
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium truncate">{file.name}</p>
             <p className="text-xs text-muted-foreground">

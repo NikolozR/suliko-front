@@ -270,7 +270,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">{t('zoom')}</span>
           <Button
@@ -514,7 +514,7 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
         </PdfDocument>
       </div>
 
-      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">{t('zoom')}</span>
           <Button
@@ -657,7 +657,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg flex-shrink-0">
+      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg shrink-0">
         <div className="flex items-center gap-2">
           <span className="text-sm font-medium">{t('zoom')}</span>
           <Button

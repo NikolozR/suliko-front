@@ -15,7 +15,7 @@ export default function NotaryThankYouPage() {
   }, []);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-16 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
+    <div className="min-h-screen flex items-center justify-center px-4 py-16 bg-linear-to-br from-blue-50 to-indigo-50 dark:from-slate-900 dark:to-slate-800">
       <div className="max-w-md w-full text-center space-y-8">
 
         <div className="flex justify-center">
@@ -35,7 +35,7 @@ export default function NotaryThankYouPage() {
 
         <button
           onClick={() => router.push("/")}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium px-6 py-3 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
+          className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium px-6 py-3 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
         >
           <ArrowLeft className="w-4 h-4" />
           Back to the page

@@ -184,7 +184,7 @@ export default function NotaryHeader() {
             <Link href="/">
               <button
                 type="button"
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold border border-[var(--suliko-default-color)] text-[var(--suliko-default-color)] hover:bg-[var(--suliko-default-color)] hover:text-white transition-colors duration-200"
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold border border-suliko-default-color text-suliko-default-color hover:bg-suliko-default-color hover:text-white transition-colors duration-200"
               >
                 ← {t("backToSuliko")}
               </button>
@@ -256,7 +256,7 @@ export default function NotaryHeader() {
                   >
                     <button
                       type="button"
-                      className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold border border-[var(--suliko-default-color)] text-[var(--suliko-default-color)] hover:bg-[var(--suliko-default-color)] hover:text-white transition-colors duration-200"
+                      className="w-full inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold border border-suliko-default-color text-suliko-default-color hover:bg-suliko-default-color hover:text-white transition-colors duration-200"
                     >
                       ← {t("backToSuliko")}
                     </button>

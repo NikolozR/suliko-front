@@ -31,7 +31,7 @@ export default function NotaryHowItWorksSection() {
           {STEPS.map(({ icon: Icon, titleKey, descKey }, index) => (
             <div key={titleKey} className="relative flex flex-col items-center text-center p-8 rounded-2xl border border-border bg-card hover:border-primary/30 transition-colors duration-200">
               {/* Step number */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-[var(--suliko-default-color)] text-white text-sm font-bold flex items-center justify-center shadow-md">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-suliko-default-color text-white text-sm font-bold flex items-center justify-center shadow-md">
                 {index + 1}
               </div>
 

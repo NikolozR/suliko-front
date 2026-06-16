@@ -34,7 +34,7 @@ export function ContactPaymentModal({ isOpen, onClose }: ContactPaymentModalProp
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto p-0 overflow-hidden border-primary/20">
-        <div className="bg-gradient-to-b from-primary/10 via-background to-background p-6">
+        <div className="bg-linear-to-b from-primary/10 via-background to-background p-6">
         <DialogHeader>
           <DialogTitle className="text-xl font-bold text-center text-suliko-default-color mb-4">
             {t("payAsYouGoModal.contactPayment.title")}

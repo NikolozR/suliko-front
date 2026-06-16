@@ -18,7 +18,7 @@ export default function BlogCard({ post }: BlogCardProps) {
     <article className="group flex flex-col bg-card/80 backdrop-blur-sm rounded-xl border border-border/50 overflow-hidden hover:shadow-lg transition-[transform,box-shadow,border-color,background-color] duration-300 hover:border-primary/20 hover:bg-card [@media(hover:hover)]:hover:-translate-y-0.5">
       <Link href={`/blog/${post.slug}`} className="flex flex-col flex-1">
         {/* Image / fallback */}
-        <div className="relative h-52 w-full overflow-hidden bg-gradient-to-br from-primary/10 to-primary/5 flex-shrink-0">
+        <div className="relative h-52 w-full overflow-hidden bg-linear-to-br from-primary/10 to-primary/5 shrink-0">
           {post.coverImage ? (
             <Image
               src={post.coverImage}

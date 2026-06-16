@@ -161,7 +161,7 @@ export default function FeedbackPageClient() {
                   {/* Success Message */}
                   {showSuccess && (
                     <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-md flex items-start gap-3">
-                      <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 flex-shrink-0 mt-0.5" />
+                      <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 shrink-0 mt-0.5" />
                       <div>
                         <p className="text-sm font-medium text-green-800 dark:text-green-200">
                           {t("success.title")}
@@ -176,7 +176,7 @@ export default function FeedbackPageClient() {
                   {/* Error Message */}
                   {error && (
                     <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-md flex items-start gap-3">
-                      <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" />
+                      <AlertCircle className="h-5 w-5 text-red-600 dark:text-red-400 shrink-0 mt-0.5" />
                       <div>
                         <p className="text-sm font-medium text-red-800 dark:text-red-200">
                           {t("error.title")}

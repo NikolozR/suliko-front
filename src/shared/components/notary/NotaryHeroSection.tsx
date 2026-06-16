@@ -73,7 +73,7 @@ const NotaryHeroSection = forwardRef<HTMLElement>(function NotaryHeroSection(_, 
               <button
                 onClick={scrollToContact}
                 type="button"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--suliko-default-color)] px-6 py-3.5 text-sm sm:text-base font-semibold text-white shadow-lg hover:bg-[var(--suliko-default-hover-color)] transition-colors duration-200 w-full sm:w-auto flex-shrink-0 whitespace-normal text-center"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-suliko-default-color px-6 py-3.5 text-sm sm:text-base font-semibold text-white shadow-lg hover:bg-suliko-default-color] transition-colors duration-200 w-full sm:w-auto shrink-0 whitespace-normal text-center"
               >
                 <Upload className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
                 {t("cta")}
@@ -81,7 +81,7 @@ const NotaryHeroSection = forwardRef<HTMLElement>(function NotaryHeroSection(_, 
               <button
                 onClick={scrollToPricing}
                 type="button"
-                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-600 bg-slate-800/60 px-6 py-3.5 text-sm sm:text-base font-semibold text-slate-200 hover:bg-slate-700 hover:border-slate-500 transition-colors duration-200 w-full sm:w-auto flex-shrink-0 whitespace-normal text-center"
+                className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-600 bg-slate-800/60 px-6 py-3.5 text-sm sm:text-base font-semibold text-slate-200 hover:bg-slate-700 hover:border-slate-500 transition-colors duration-200 w-full sm:w-auto shrink-0 whitespace-normal text-center"
               >
                 {t("ctaSecondary")}
               </button>

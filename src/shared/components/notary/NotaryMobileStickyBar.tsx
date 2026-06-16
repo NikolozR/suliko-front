@@ -46,7 +46,7 @@ export default function NotaryMobileStickyBar({ heroRef }: Props) {
         <button
           type="button"
           onClick={scrollToUpload}
-          className="flex-1 min-w-0 flex items-center justify-center gap-2 rounded-lg bg-[var(--suliko-default-color)] py-3 text-xs font-semibold text-white shadow-sm active:opacity-90 transition-opacity"
+          className="flex-1 min-w-0 flex items-center justify-center gap-2 rounded-lg bg-suliko-default-color py-3 text-xs font-semibold text-white shadow-sm active:opacity-90 transition-opacity"
         >
           <Upload className="h-4 w-4 shrink-0" />
           <span className="whitespace-normal text-center leading-tight">{t("cta")}</span>

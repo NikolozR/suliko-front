@@ -234,7 +234,7 @@ export default function NotaryFileUploadForm() {
                   className="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800 rounded-lg border border-gray-100 dark:border-slate-700"
                 >
                   <span className="flex items-center">
-                    <FileText className="w-5 h-5 text-blue-500 mr-2 flex-shrink-0" />
+                    <FileText className="w-5 h-5 text-blue-500 mr-2 shrink-0" />
                     <span className="truncate max-w-xs text-sm text-gray-700 dark:text-slate-300">{file.name}</span>
                   </span>
                   <button
@@ -258,7 +258,7 @@ export default function NotaryFileUploadForm() {
             justify-center space-x-2 text-sm transition-all duration-300
             ${files.length === 0 || isSending
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-lg transform hover:scale-[1.01]"
+              : "bg-linear-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-lg transform hover:scale-[1.01]"
             }`}
         >
           {isSending ? (

@@ -174,7 +174,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
             <ThemeToggle />
             <button
               onClick={handleCollapseToggle}
-              className={`sidebar-button flex-shrink-0 p-1.5 h-9 w-9  rounded-lg cursor-pointer transition-colors ${isMobile ? "hidden" : "block"}`}
+              className={`sidebar-button shrink-0 p-1.5 h-9 w-9  rounded-lg cursor-pointer transition-colors ${isMobile ? "hidden" : "block"}`}
               aria-label={effectiveIsCollapsed ? "Expand sidebar" : "Collapse sidebar"}
             >
               {effectiveIsCollapsed ? <ChevronRight className="h-6 w-6" /> : <ChevronLeft className="h-6 w-6" />}
@@ -229,7 +229,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                       {t(label)}
                     </span>
                     {needsEmailReminder && label === "profile" && (
-                      <span className="ml-auto text-[11px] font-medium text-amber-700 bg-amber-100 py-0.5 px-2 rounded-full flex-shrink-0 animate-flicker">
+                      <span className="ml-auto text-[11px] font-medium text-amber-700 bg-amber-100 py-0.5 px-2 rounded-full shrink-0 animate-flicker">
                         {t("completeEmail")}
                       </span>
                     )}
@@ -282,7 +282,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 <div className={`flex items-center gap-3 p-3 rounded-lg mb-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 ${effectiveIsCollapsed ? "justify-center" : ""
                   }`}>
                   <Link href='/price'>
-                    <Wallet className="h-5 w-5 cursor-pointer text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
+                    <Wallet className="h-5 w-5 cursor-pointer text-emerald-600 dark:text-emerald-400 shrink-0" />
                   </Link>
                   {!effectiveIsCollapsed && (
                     <Link href="/price" className="flex flex-col min-w-0 w-full hover:opacity-80 transition-opacity">

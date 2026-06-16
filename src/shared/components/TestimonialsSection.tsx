@@ -131,8 +131,8 @@ export default function TestimonialsSection() {
         {/* Marquee */}
         <div className="relative pause-on-hover">
           {/* Fade edges */}
-          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-r from-muted/30 to-transparent" />
-          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-gradient-to-l from-muted/30 to-transparent" />
+          <div className="pointer-events-none absolute left-0 top-0 bottom-0 w-24 z-10 bg-linear-to-r from-muted/30 to-transparent" />
+          <div className="pointer-events-none absolute right-0 top-0 bottom-0 w-24 z-10 bg-linear-to-l from-muted/30 to-transparent" />
 
           <div className="overflow-hidden">
             <div className="animate-marquee flex gap-5 w-max">
@@ -176,7 +176,7 @@ export default function TestimonialsSection() {
 
         {/* Newsletter Subscription */}
         <div className="mt-16 relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 rounded-2xl blur-xl" />
+          <div className="absolute inset-0 bg-linear-to-r from-primary/10 via-primary/5 to-primary/10 rounded-2xl blur-xl" />
           <div className="relative bg-card/80 backdrop-blur-md border border-border/60 rounded-2xl py-16 px-8 text-center">
             <div className="max-w-2xl mx-auto">
               <h3 className="text-3xl font-bold text-foreground mb-4">

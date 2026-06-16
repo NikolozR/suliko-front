@@ -61,7 +61,7 @@ export default function ThankYouPage() {
   return (
     <div className="min-h-screen relative">
       {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900" />
       
       {/* Star Field Background */}
       <div className="absolute inset-0 overflow-hidden">
@@ -120,7 +120,7 @@ export default function ThankYouPage() {
           {starData.shootingStars.map((star) => (
             <div
               key={`shooting-${star.id}`}
-              className={`absolute w-24 h-px bg-gradient-to-r ${shootingStarColor} to-transparent animate-shooting-star`}
+              className={`absolute w-24 h-px bg-linear-to-r ${shootingStarColor} to-transparent animate-shooting-star`}
               style={{
                 left: `${star.left}%`,
                 top: `${star.top}%`,
@@ -179,7 +179,7 @@ export default function ThankYouPage() {
                 {/* Additional Info */}
                 <div className="mt-8 p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
                   <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 bg-blue-100 dark:bg-blue-800 rounded-full flex items-center justify-center shrink-0 mt-0.5">
                       <svg className="w-4 h-4 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                       </svg>

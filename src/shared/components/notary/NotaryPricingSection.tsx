@@ -47,7 +47,7 @@ export default function NotaryPricingSection() {
               {LANGUAGE_PRICES.map(({ name, price }) => (
                 <div key={name} className="flex items-center justify-between px-6 py-3 hover:bg-muted/30 transition-colors">
                   <span className="text-sm text-foreground">{name}</span>
-                  <span className="text-sm font-semibold text-[var(--suliko-default-color)]">
+                  <span className="text-sm font-semibold text-suliko-default-color">
                     {price} ₾
                   </span>
                 </div>
@@ -61,7 +61,7 @@ export default function NotaryPricingSection() {
             {/* Notary approval */}
             <div className="rounded-2xl border border-border bg-card p-6">
               <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
-                <span className="h-5 w-5 rounded-full bg-[var(--suliko-default-color)] flex items-center justify-center">
+                <span className="h-5 w-5 rounded-full bg-suliko-default-color flex items-center justify-center">
                   <span className="text-[10px] text-white font-bold">N</span>
                 </span>
                 {t("notaryTitle")}
@@ -89,7 +89,7 @@ export default function NotaryPricingSection() {
             {/* Discounts */}
             <div className="rounded-2xl border border-border bg-card p-6">
               <h3 className="text-base font-semibold text-foreground mb-4 flex items-center gap-2">
-                <Percent className="h-4 w-4 text-[var(--suliko-default-color)]" />
+                <Percent className="h-4 w-4 text-suliko-default-color" />
                 {t("discountTitle")}
               </h3>
               <div className="space-y-3">

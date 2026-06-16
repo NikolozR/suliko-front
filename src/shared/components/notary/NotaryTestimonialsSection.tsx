@@ -45,7 +45,7 @@ export default function NotaryTestimonialsSection() {
                 &ldquo;{t(textKey)}&rdquo;
               </p>
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--suliko-default-color)] text-white text-sm font-bold shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-suliko-default-color text-white text-sm font-bold shrink-0">
                   {initials}
                 </div>
                 <div>

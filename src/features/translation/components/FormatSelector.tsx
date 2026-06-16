@@ -80,7 +80,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                   selectedFormat.value === format.value && "bg-muted text-suliko-default-color"
                 )}
               >
-                <div className="flex-shrink-0">
+                <div className="shrink-0">
                   {format.icon}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -92,7 +92,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                   </div>
                 </div>
                 {selectedFormat.value === format.value && (
-                  <div className="w-2 h-2 bg-suliko-default-color rounded-full flex-shrink-0" />
+                  <div className="w-2 h-2 bg-suliko-default-color rounded-full shrink-0" />
                 )}
               </button>
             ))}

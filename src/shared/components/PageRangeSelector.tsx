@@ -140,7 +140,7 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
                         </p>
                       </div>
                       {isSelected && (
-                        <div className="ml-3 flex-shrink-0">
+                        <div className="ml-3 shrink-0">
                           <div className="h-8 w-8 rounded-full bg-primary flex items-center justify-center">
                             <Check className="h-5 w-5 text-primary-foreground" />
                           </div>
@@ -155,7 +155,7 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
                         return (
                           <div
                             key={pageNum}
-                            className={`h-8 w-8 min-w-8 flex-shrink-0 rounded text-xs font-medium transition-colors flex items-center justify-center ${isInRange
+                            className={`h-8 w-8 min-w-8 shrink-0 rounded text-xs font-medium transition-colors flex items-center justify-center ${isInRange
                               ? "bg-primary text-primary-foreground"
                               : "bg-muted text-muted-foreground opacity-50"
                               }`}

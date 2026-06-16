@@ -178,7 +178,7 @@ export default function ReferralPage() {
   return (
     <div className="min-h-screen relative">
       {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900" />
+      <div className="absolute inset-0 bg-linear-to-br from-blue-50 via-white to-purple-50 dark:from-gray-900 dark:via-gray-800 dark:to-blue-900" />
       
       {/* Star Field Background */}
       <div className="absolute inset-0 overflow-hidden">
@@ -237,7 +237,7 @@ export default function ReferralPage() {
           {starData.shootingStars.map((star) => (
             <div
               key={`shooting-${star.id}`}
-              className={`absolute w-24 h-px bg-gradient-to-r ${shootingStarColor} to-transparent animate-shooting-star`}
+              className={`absolute w-24 h-px bg-linear-to-r ${shootingStarColor} to-transparent animate-shooting-star`}
               style={{
                 left: `${star.left}%`,
                 top: `${star.top}%`,

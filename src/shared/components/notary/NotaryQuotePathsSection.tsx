@@ -78,7 +78,7 @@ export default function NotaryQuotePathsSection() {
             >
               {/* Icon box */}
               <div
-                className={`flex-shrink-0 flex h-12 w-12 items-center justify-center rounded-xl ${iconBg}`}
+                className={`shrink-0 flex h-12 w-12 items-center justify-center rounded-xl ${iconBg}`}
               >
                 <Icon className={`h-6 w-6 ${iconColor}`} />
               </div>
@@ -99,7 +99,7 @@ export default function NotaryQuotePathsSection() {
               </div>
 
               {/* Chevron */}
-              <ChevronRight className="flex-shrink-0 h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-200" />
+              <ChevronRight className="shrink-0 h-5 w-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all duration-200" />
             </button>
           ))}
         </div>

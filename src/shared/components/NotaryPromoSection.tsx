@@ -10,7 +10,7 @@ export default function NotaryPromoSection() {
   return (
     <section className="py-16 relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[var(--suliko-default-color)] via-blue-600 to-indigo-700" />
+      <div className="absolute inset-0 bg-linear-to-br from-suliko-default-color via-blue-600 to-indigo-700" />
       <div
         aria-hidden="true"
         className="absolute inset-0 opacity-20"
@@ -45,7 +45,7 @@ export default function NotaryPromoSection() {
           <Link href="/notary" className="shrink-0">
             <button
               type="button"
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-base font-semibold text-[var(--suliko-default-color)] shadow-lg hover:bg-blue-50 transition-colors duration-200"
+              className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 text-base font-semibold text-suliko-default-color shadow-lg hover:bg-blue-50 transition-colors duration-200"
             >
               {t("cta")}
               <ArrowRight className="h-4 w-4" />

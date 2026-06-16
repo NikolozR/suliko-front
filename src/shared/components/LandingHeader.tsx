@@ -279,7 +279,7 @@ export default function LandingHeader() {
               <Link href={notaryNavItem.href}>
                 <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
                   isNotaryPage
-                    ? "text-[var(--suliko-default-color)]"
+                    ? "text-suliko-default-color"
                     : isBlogPage
                       ? "text-white/90 hover:text-white"
                       : "text-foreground/80 hover:text-foreground"
@@ -389,7 +389,7 @@ export default function LandingHeader() {
                   <Link href={notaryNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
                     <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
                       isNotaryPage
-                        ? "text-[var(--suliko-default-color)] bg-primary/5 border-primary/20"
+                        ? "text-suliko-default-color bg-primary/5 border-primary/20"
                         : isBlogPage
                           ? "text-white/90 hover:text-white hover:bg-white/10"
                           : "text-foreground/80 hover:text-foreground hover:bg-accent"

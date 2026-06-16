@@ -470,7 +470,7 @@ def enhance_translation(user_input, translate_output, target_language_id, unique
       </Card>
 
       {/* Get Started CTA */}
-      <Card className="bg-gradient-to-r from-suliko-default-color to-suliko-default-hover-color text-white">
+      <Card className="bg-linear-to-r from-suliko-default-color to-suliko-default-hover-color text-white">
         <CardContent className="pt-6">
           <div className="text-center">
             <Mail className="h-12 w-12 mx-auto mb-4" />

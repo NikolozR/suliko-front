@@ -57,7 +57,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
               length: type === 'payAsYouGo' ? 4 : 3
             }, (_, i) => (
               <li key={i} className="flex items-center text-sm">
-                <Check className="h-4 w-4 text-green-500 mr-2 flex-shrink-0" />
+                <Check className="h-4 w-4 text-green-500 mr-2 shrink-0" />
                 <span className="text-muted-foreground">
                   {t(`${type}.features.${i}`)}
                 </span>
