@@ -267,7 +267,8 @@
     "result": "Translated text",
     "yourText": "Your text",
     "orPress": "or press",
-    "insufficientPages": "Insufficient page balance. You need {needed} pages but only have {available} pages. Please purchase more pages to continue."
+    "insufficientPages": "Insufficient page balance. You need {needed} pages but only have {available} pages. Please purchase more pages to continue.",
+    "unexpectedError": "An unexpected error occurred. Please try again."
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "What language do you want to translate to",

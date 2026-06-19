@@ -304,6 +304,16 @@ const DocumentTranslationCard = () => {
     if (!event.target.files || event.target.files.length === 0) return;
 
     const file = event.target.files[0];
+
+    if (file.size > 10 * 1024 * 1024) {
+      toaster.error(
+        `"${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum file size is 10 MB.`,
+        { duration: 6000 }
+      );
+      event.target.value = "";
+      return;
+    }
+
     const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
     const isSrtFile = fileExtension === "srt";
 
@@ -565,11 +575,8 @@ const DocumentTranslationCard = () => {
       window.dispatchEvent(new Event("translations-updated"));
       router.push(`/translations/${chatId}`);
     } catch (err) {
-      let message = t("progress.unexpectedError");
-      if (err instanceof Error) {
-        message = err.message || message;
-      }
-      setError(message);
+      console.error("Translation failed:", err);
+      setError(t("progress.unexpectedError"));
     } finally {
       setIsLoading(false);
       reset();

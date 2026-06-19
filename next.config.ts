@@ -10,6 +10,9 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     mdxRs: false, // Disable MDX RS to avoid build issues
+    serverActions: {
+      bodySizeLimit: "11mb",
+    },
   },
   async headers() {
     return [

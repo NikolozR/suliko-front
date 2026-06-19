@@ -340,12 +340,8 @@ const TextTranslationCard = () => {
       // Use retry mechanism to ensure balance is properly updated
       await fetchUserProfileWithRetry(3, 1000);
     } catch (err) {
-      let message = "An unexpected error occurred during translation.";
-      if (err instanceof Error) {
-        message = err.message || message;
-      }
-      setError(message);
       console.error("Translation failed:", err);
+      setError(t("unexpectedError"));
     } finally {
       setTextLoading(false);
     }

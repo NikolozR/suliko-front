@@ -85,7 +85,7 @@ export async function documentTranslatingWithJobId(
             "Insufficient balance. Please top up your account to continue translation."
           );
         } else {
-          setError(result.message || "Translation failed. Please try again.");
+          setError("Translation failed. Please try again.");
         }
         fetchUserProfileWithRetry();
         setIsTranslating(false);
