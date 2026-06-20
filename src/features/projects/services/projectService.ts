@@ -1,7 +1,10 @@
 import { reaccessToken, useAuthStore } from "@/features/auth";
 import { API_BASE_URL } from "@/shared/constants/api";
+import { NameTranslationItem } from "@/features/translation/types/types.Translation";
 import {
   ProjectDetailedResponse,
+  ProjectNamesResponse,
+  ProjectNameTranslation,
   ProjectResponse,
   ProjectsResponse,
 } from "../types/types.Project";
@@ -150,4 +153,63 @@ export const deleteProject = async (
   }
 
   return response.json();
+};
+
+/**
+ * Get a project's consolidated name glossary (saved name-rendering pairs).
+ */
+export const getProjectNames = async (
+  id: string
+): Promise<ProjectNameTranslation[]> => {
+  const response = await fetchWithAuth(`/projects/${id}/names`);
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to fetch project names");
+  }
+
+  const json: ProjectNamesResponse = await response.json();
+  return json.data ?? [];
+};
+
+/**
+ * Add or update name pairs in a project's glossary (batch upsert, deduped by original).
+ * Returns the full updated glossary.
+ */
+export const saveProjectNames = async (
+  id: string,
+  names: NameTranslationItem[]
+): Promise<ProjectNameTranslation[]> => {
+  const response = await fetchWithAuth(`/projects/${id}/names`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ names }),
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to save project names");
+  }
+
+  const json: ProjectNamesResponse = await response.json();
+  return json.data ?? [];
+};
+
+/**
+ * Remove a single name pair from a project's glossary.
+ */
+export const deleteProjectName = async (
+  id: string,
+  nameId: string
+): Promise<void> => {
+  const response = await fetchWithAuth(`/projects/${id}/names/${nameId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.message || "Failed to delete project name");
+  }
 };

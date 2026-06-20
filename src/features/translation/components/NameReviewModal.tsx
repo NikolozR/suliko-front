@@ -20,6 +20,8 @@ interface NameReviewModalProps {
   open: boolean;
   items: NameTranslationItem[];
   isSubmitting?: boolean;
+  /** When true, copy reflects "new names being added to the project glossary". */
+  isProjectContext?: boolean;
   onOpenChange: (open: boolean) => void;
   onConfirm: (editedItems: NameTranslationItem[]) => void;
   onSkip: () => void;
@@ -29,11 +31,17 @@ const NameReviewModal: React.FC<NameReviewModalProps> = ({
   open,
   items,
   isSubmitting = false,
+  isProjectContext = false,
   onOpenChange,
   onConfirm,
   onSkip,
 }) => {
   const t = useTranslations("NameReviewModal");
+
+  const title = isProjectContext ? t("projectTitle") : t("title");
+  const description = isProjectContext ? t("projectDescription") : t("description");
+  const skipLabel = isProjectContext ? t("projectSkip") : t("skip");
+  const confirmLabel = isProjectContext ? t("projectConfirm") : t("confirm");
 
   const [rows, setRows] = useState<NameTranslationItem[]>(items);
 
@@ -67,8 +75,8 @@ const NameReviewModal: React.FC<NameReviewModalProps> = ({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="mx-4 flex max-h-[90vh] w-full flex-col overflow-hidden sm:max-w-3xl">
         <DialogHeader>
-          <DialogTitle>{t("title")}</DialogTitle>
-          <DialogDescription>{t("description")}</DialogDescription>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
 
         {rows.length === 0 ? (
@@ -162,7 +170,7 @@ const NameReviewModal: React.FC<NameReviewModalProps> = ({
             onClick={onSkip}
             disabled={isSubmitting}
           >
-            {t("skip")}
+            {skipLabel}
           </Button>
 
           <Button
@@ -172,7 +180,7 @@ const NameReviewModal: React.FC<NameReviewModalProps> = ({
           >
             {isSubmitting
               ? t("translating")
-              : t("confirm")}
+              : confirmLabel}
           </Button>
         </DialogFooter>
       </DialogContent>
