@@ -2,6 +2,14 @@ import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
+  if (!process.env.BLOB_READ_WRITE_TOKEN) {
+    console.error("[blob-upload-token] BLOB_READ_WRITE_TOKEN is not set");
+    return NextResponse.json(
+      { error: "Blob storage not configured (missing BLOB_READ_WRITE_TOKEN)" },
+      { status: 500 }
+    );
+  }
+
   const body = (await request.json()) as HandleUploadBody;
 
   try {
@@ -29,9 +37,8 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
 
     return NextResponse.json(jsonResponse);
   } catch (error) {
-    return NextResponse.json(
-      { error: (error as Error).message },
-      { status: 400 }
-    );
+    const message = (error as Error).message;
+    console.error("[blob-upload-token] handleUpload failed:", message);
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }
