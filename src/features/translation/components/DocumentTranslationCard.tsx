@@ -32,6 +32,7 @@ import { suggestNameTranslations } from "../services/nameTranslationService";
 import NameReviewModal from "./NameReviewModal";
 import { NameTranslationItem } from "../types/types.Translation";
 import { moveChatToProject, uploadOriginalForChat } from "@/features/chatHistory";
+import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "@/features/projects";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
@@ -76,6 +77,37 @@ const documentTranslationSchema = z.object({
 });
 
 export type DocumentFormData = z.infer<typeof documentTranslationSchema>;
+
+const NAME_DETECTION_STORAGE_KEY = "suliko:nameDetectionEnabled";
+
+const nameKey = (original: string) => original.trim().toLowerCase();
+
+const stripId = ({ original, translation, type }: ProjectNameTranslation): NameTranslationItem => ({
+  original,
+  translation,
+  type,
+});
+
+/** Merge a saved project glossary with extra confirmed pairs, deduped by original (extras win). */
+const mergeNames = (
+  saved: ProjectNameTranslation[],
+  extra: NameTranslationItem[]
+): NameTranslationItem[] => {
+  const byKey = new Map<string, NameTranslationItem>();
+  for (const p of saved) {
+    if (p.original?.trim()) byKey.set(nameKey(p.original), stripId(p));
+  }
+  for (const e of extra) {
+    if (e.original?.trim()) {
+      byKey.set(nameKey(e.original), {
+        original: e.original.trim(),
+        translation: e.translation,
+        type: e.type,
+      });
+    }
+  }
+  return Array.from(byKey.values());
+};
 
 
 const DocumentTranslationCard = () => {
@@ -125,6 +157,25 @@ const DocumentTranslationCard = () => {
   const [showNameModal, setShowNameModal] = useState(false);
   const [detectedNames, setDetectedNames] = useState<NameTranslationItem[]>([]);
   const [pendingTranslationData, setPendingTranslationData] = useState<DocumentFormData | null>(null);
+  // Saved project glossary carried across the review modal (project flow only).
+  const [pendingSavedNames, setPendingSavedNames] = useState<ProjectNameTranslation[]>([]);
+  // Standalone-only opt-in for name detection; remembered per browser. Default OFF.
+  const [nameDetectionEnabled, setNameDetectionEnabled] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    setNameDetectionEnabled(window.localStorage.getItem(NAME_DETECTION_STORAGE_KEY) === "1");
+  }, []);
+
+  const toggleNameDetection = () => {
+    setNameDetectionEnabled((prev) => {
+      const next = !prev;
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem(NAME_DETECTION_STORAGE_KEY, next ? "1" : "0");
+      }
+      return next;
+    });
+  };
 
   const hasFile = currentFile && currentFile.length > 0;
   const currentFileObj = hasFile ? currentFile[0] : null;
@@ -450,28 +501,61 @@ const DocumentTranslationCard = () => {
       }
     }
 
-    // Pre-translation name review (normal document translation only — not SRT or OCR-only).
+    // Pre-translation name handling (normal document translation only — not SRT or OCR-only).
     // `confirmedNames` is an array only when re-invoked from the review modal; the initial
     // react-hook-form submit passes its event object here, so we discriminate with Array.isArray.
-    const reviewedNames: NameTranslationItem[] = Array.isArray(confirmedNames) ? confirmedNames : [];
+    let reviewedNames: NameTranslationItem[] = Array.isArray(confirmedNames) ? confirmedNames : [];
     if (!Array.isArray(confirmedNames) && !isOcrOnly && !data.isSrt) {
-      try {
-        setIsDetectingNames(true);
-        const names = await suggestNameTranslations(
-          data.currentFile[0],
-          data.currentSourceLanguageId,
-          data.currentTargetLanguageId
-        );
-        if (names.length > 0) {
-          setDetectedNames(names);
-          setPendingTranslationData(data);
-          setShowNameModal(true);
-          return; // flow resumes from the modal's confirm/skip handlers
+      if (projectId) {
+        // Project flow: auto-apply the saved glossary, review only names not already saved.
+        try {
+          setIsDetectingNames(true);
+          // Detection is resilient: a failure here still applies the saved glossary.
+          const [savedPairs, detected] = await Promise.all([
+            getProjectNames(projectId).catch(() => [] as ProjectNameTranslation[]),
+            suggestNameTranslations(
+              data.currentFile[0],
+              data.currentSourceLanguageId,
+              data.currentTargetLanguageId
+            ).catch(() => [] as NameTranslationItem[]),
+          ]);
+          const savedKeys = new Set(savedPairs.map((p) => nameKey(p.original)));
+          const newOnes = detected.filter((d) => !savedKeys.has(nameKey(d.original)));
+          if (newOnes.length > 0) {
+            setPendingSavedNames(savedPairs);
+            setDetectedNames(newOnes);
+            setPendingTranslationData(data);
+            setShowNameModal(true);
+            return; // resumes from the modal's confirm/skip handlers
+          }
+          // No new names — translate with the existing glossary, no review needed.
+          reviewedNames = savedPairs.map(stripId);
+        } catch (err) {
+          console.error("Project name detection failed; proceeding without name review:", err);
+        } finally {
+          setIsDetectingNames(false);
         }
-      } catch (err) {
-        console.error("Name detection failed; proceeding without name review:", err);
-      } finally {
-        setIsDetectingNames(false);
+      } else if (nameDetectionEnabled) {
+        // Standalone flow: only when the user has opted in via the toggle.
+        try {
+          setIsDetectingNames(true);
+          const names = await suggestNameTranslations(
+            data.currentFile[0],
+            data.currentSourceLanguageId,
+            data.currentTargetLanguageId
+          );
+          if (names.length > 0) {
+            setPendingSavedNames([]);
+            setDetectedNames(names);
+            setPendingTranslationData(data);
+            setShowNameModal(true);
+            return; // flow resumes from the modal's confirm/skip handlers
+          }
+        } catch (err) {
+          console.error("Name detection failed; proceeding without name review:", err);
+        } finally {
+          setIsDetectingNames(false);
+        }
       }
     }
 
@@ -654,7 +738,20 @@ const DocumentTranslationCard = () => {
     setShowNameModal(false);
     const data = pendingTranslationData;
     setPendingTranslationData(null);
-    if (data) {
+    if (!data) return;
+
+    if (projectId) {
+      const saved = pendingSavedNames;
+      setPendingSavedNames([]);
+      // Persist the newly confirmed names into the project glossary (non-blocking).
+      if (editedItems.length > 0) {
+        saveProjectNames(projectId, editedItems).catch((err) =>
+          console.error("Failed to save project names:", err)
+        );
+      }
+      // Translate with the full glossary: existing saved ∪ confirmed new.
+      onSubmit(data, mergeNames(saved, editedItems));
+    } else {
       onSubmit(data, editedItems);
     }
   };
@@ -663,7 +760,14 @@ const DocumentTranslationCard = () => {
     setShowNameModal(false);
     const data = pendingTranslationData;
     setPendingTranslationData(null);
-    if (data) {
+    if (!data) return;
+
+    if (projectId) {
+      const saved = pendingSavedNames;
+      setPendingSavedNames([]);
+      // Skip adding the new names, but still apply the existing glossary.
+      onSubmit(data, saved.map(stripId));
+    } else {
       onSubmit(data, []);
     }
   };
@@ -674,6 +778,7 @@ const DocumentTranslationCard = () => {
     setShowNameModal(open);
     if (!open) {
       setPendingTranslationData(null);
+      setPendingSavedNames([]);
     }
   };
 
@@ -720,6 +825,35 @@ const DocumentTranslationCard = () => {
                   </p>
                 )}
               </div>
+              {!projectId && !translatedMarkdown && !isOcrOnly && (
+                <div
+                  className="flex items-center gap-2 shrink-0"
+                  title={t("nameDetection.tooltip")}
+                >
+                  <span className="text-sm font-medium text-muted-foreground">
+                    {t("nameDetection.label")}
+                  </span>
+                  <button
+                    type="button"
+                    role="switch"
+                    aria-checked={nameDetectionEnabled}
+                    aria-label={t("nameDetection.label")}
+                    onClick={toggleNameDetection}
+                    className={`
+                      relative inline-flex h-7 w-12 items-center rounded-full transition-colors
+                      focus:outline-none focus:ring-2 focus:ring-suliko-default-color focus:ring-offset-2
+                      ${nameDetectionEnabled ? 'bg-suliko-default-color' : 'bg-gray-300 dark:bg-gray-600'}
+                    `}
+                  >
+                    <span
+                      className={`
+                        inline-block h-5 w-5 transform rounded-full bg-white transition-transform
+                        ${nameDetectionEnabled ? 'translate-x-6' : 'translate-x-1'}
+                      `}
+                    />
+                  </button>
+                </div>
+              )}
               {/* OCR Only Toggle - waishala */}
               {/* <div className="flex items-center gap-2">
                 <Label
@@ -878,6 +1012,7 @@ const DocumentTranslationCard = () => {
         open={showNameModal}
         items={detectedNames}
         isSubmitting={isLoading}
+        isProjectContext={!!projectId}
         onOpenChange={handleNameModalOpenChange}
         onConfirm={handleNameConfirm}
         onSkip={handleNameSkip}

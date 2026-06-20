@@ -11,7 +11,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import { ChevronLeft, AlertCircle, Folder, Pencil, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, AlertCircle, BookText, Folder, Pencil, Plus, Trash2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui/components/ui/button";
 import { Card } from "@/features/ui/components/ui/card";
@@ -30,6 +30,7 @@ import type { Chat } from "@/features/chatHistory";
 import { TranslationCard } from "@/features/projects/components/TranslationCard";
 import { RenameProjectDialog } from "@/features/projects/components/RenameProjectDialog";
 import { CardMenu } from "@/features/projects/components/CardMenu";
+import { ProjectNamesDialog } from "@/features/projects/components/ProjectNamesDialog";
 
 export default function ProjectDetailPage() {
   const params = useParams();
@@ -43,6 +44,7 @@ export default function ProjectDetailPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showRename, setShowRename] = useState(false);
+  const [showNames, setShowNames] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
 
@@ -186,6 +188,11 @@ export default function ProjectDetailPage() {
             <CardMenu
               items={[
                 {
+                  label: t("manageNames"),
+                  icon: BookText,
+                  onClick: () => setShowNames(true),
+                },
+                {
                   label: t("rename"),
                   icon: Pencil,
                   onClick: () => setShowRename(true),
@@ -237,6 +244,14 @@ export default function ProjectDetailPage() {
         currentName={project.name}
         onRename={handleRename}
       />
+
+      {projectId && (
+        <ProjectNamesDialog
+          open={showNames}
+          onOpenChange={setShowNames}
+          projectId={projectId}
+        />
+      )}
 
       <ConfirmDialog
         open={showDeleteConfirm}

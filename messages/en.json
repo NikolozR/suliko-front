@@ -286,7 +286,21 @@
     "skip": "Skip",
     "confirm": "Confirm & Translate",
     "translating": "Translating…",
-    "emptyState": "No names to review. Continue to translate."
+    "emptyState": "No names to review. Continue to translate.",
+    "projectTitle": "New names for this project",
+    "projectDescription": "These names aren't in your project glossary yet. Confirm to add them — they'll be saved and reused automatically in this project's future translations.",
+    "projectSkip": "Skip (use saved only)",
+    "projectConfirm": "Add & Translate"
+  },
+  "ProjectNames": {
+    "title": "Project names",
+    "description": "These name renderings are applied automatically to every translation in this project. Add new pairs or edit existing ones.",
+    "originalPlaceholder": "Original name",
+    "translationPlaceholder": "Translation",
+    "add": "Add",
+    "empty": "No saved names yet. Add a pair above to start your project glossary.",
+    "person": "Person",
+    "organization": "Organization"
   },
   "TranslationButton": {
     "translate": "Translate",
@@ -308,6 +322,10 @@
     "title": "Upload document",
     "description": "Upload document for translation",
     "addingToProject": "Adding to project: {name}",
+    "nameDetection": {
+      "label": "Detect names",
+      "tooltip": "Detect proper names and review their translations before translating, so they render consistently."
+    },
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
     "supportedFormats": "Supported file types: PDF, DOCX, TXT, JPEG, PNG, JPG, etc.",
@@ -507,6 +525,7 @@
     "projectNamePlaceholder": "Project name",
     "rename": "Rename",
     "renameProject": "Rename Project",
+    "manageNames": "Manage names",
     "deleteProject": "Delete Project",
     "deleteProjectWarning": "This will permanently delete this project and {count} translation(s) inside it. This action cannot be undone.",
     "deleteTranslation": "Delete Translation",

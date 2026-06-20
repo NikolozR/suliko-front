@@ -302,7 +302,21 @@
     "skip": "Pomiń",
     "confirm": "Potwierdź i przetłumacz",
     "translating": "Tłumaczenie…",
-    "emptyState": "Brak nazw do przejrzenia. Kontynuuj tłumaczenie."
+    "emptyState": "Brak nazw do przejrzenia. Kontynuuj tłumaczenie.",
+    "projectTitle": "Nowe nazwy dla tego projektu",
+    "projectDescription": "Tych nazw nie ma jeszcze w słowniku projektu. Potwierdź, aby je dodać — zostaną zapisane i automatycznie użyte w przyszłych tłumaczeniach tego projektu.",
+    "projectSkip": "Pomiń (użyj tylko zapisanych)",
+    "projectConfirm": "Dodaj i przetłumacz"
+  },
+  "ProjectNames": {
+    "title": "Nazwy projektu",
+    "description": "Te tłumaczenia nazw są automatycznie stosowane do każdego tłumaczenia w tym projekcie. Dodaj nowe pary lub edytuj istniejące.",
+    "originalPlaceholder": "Oryginalna nazwa",
+    "translationPlaceholder": "Tłumaczenie",
+    "add": "Dodaj",
+    "empty": "Brak zapisanych nazw. Dodaj parę powyżej, aby rozpocząć słownik projektu.",
+    "person": "Osoba",
+    "organization": "Organizacja"
   },
   "TranslationButton": {
     "translate": "Tłumacz",
@@ -324,6 +338,10 @@
     "title": "Prześlij dokument",
     "description": "Prześlij dokument do tłumaczenia",
     "addingToProject": "Dodawanie do projektu: {name}",
+    "nameDetection": {
+      "label": "Wykryj nazwy",
+      "tooltip": "Wykryj nazwy własne i sprawdź ich tłumaczenia przed tłumaczeniem, aby były spójnie oddane."
+    },
     "dragAndDrop": "Przeciągnij i upuść plik lub kliknij, aby wybrać",
     "dropFiles": "Upuść pliki tutaj",
     "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, JPEG, PNG, JPG, itp.",
@@ -502,6 +520,7 @@
     "projectNamePlaceholder": "Nazwa projektu",
     "rename": "Zmień nazwę",
     "renameProject": "Zmień nazwę projektu",
+    "manageNames": "Zarządzaj nazwami",
     "deleteProject": "Usuń projekt",
     "deleteProjectWarning": "Spowoduje to trwałe usunięcie tego projektu oraz {count} zawartych w nim tłumaczeń. Tej operacji nie można cofnąć.",
     "deleteTranslation": "Usuń tłumaczenie",
