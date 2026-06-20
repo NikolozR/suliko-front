@@ -1,12 +1,9 @@
-import { del } from "@vercel/blob";
 import { NextRequest, NextResponse } from "next/server";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const GEMINI_UPLOAD_URL =
   "https://generativelanguage.googleapis.com/upload/v1beta/files";
 
-// Receives a Vercel Blob URL, downloads the file (no incoming size limit on
-// outgoing fetches from the server), then uploads to Gemini in one shot.
 export async function POST(request: NextRequest) {
   if (!GEMINI_API_KEY) {
     return NextResponse.json(
@@ -15,35 +12,23 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let body: { blobUrl: string; fileName: string; mimeType: string };
+  let formData: FormData;
   try {
-    body = await request.json();
+    formData = await request.formData();
   } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
+    return NextResponse.json({ error: "Invalid form data" }, { status: 400 });
   }
 
-  const { blobUrl, fileName, mimeType } = body;
-  if (!blobUrl || !fileName || !mimeType) {
-    return NextResponse.json(
-      { error: "Missing required fields: blobUrl, fileName, mimeType" },
-      { status: 400 }
-    );
+  const file = formData.get("file") as File | null;
+  if (!file) {
+    return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  // Fetch the file from Vercel Blob — outgoing request, no Vercel body limit.
-  const blobResponse = await fetch(blobUrl);
-  if (!blobResponse.ok) {
-    return NextResponse.json(
-      { error: "Failed to fetch file from Blob storage" },
-      { status: 502 }
-    );
-  }
-  const fileBuffer = await blobResponse.arrayBuffer();
+  const mimeType = file.type || "application/octet-stream";
+  const displayName = file.name;
+  const fileBuffer = await file.arrayBuffer();
 
-  // Delete the blob immediately — it's only needed for this transfer.
-  del(blobUrl).catch(() => {});
-
-  // Init resumable upload session with Gemini.
+  // Start resumable upload session
   const initResponse = await fetch(
     `${GEMINI_UPLOAD_URL}?uploadType=resumable&key=${GEMINI_API_KEY}`,
     {
@@ -55,7 +40,7 @@ export async function POST(request: NextRequest) {
         "X-Goog-Upload-Header-Content-Type": mimeType,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ file: { display_name: fileName } }),
+      body: JSON.stringify({ file: { display_name: displayName } }),
     }
   );
 
@@ -76,7 +61,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Upload all bytes in one request — outgoing from server, no size limit.
+  // Upload the file bytes
   const uploadResponse = await fetch(uploadUrl, {
     method: "POST",
     headers: {
@@ -107,5 +92,5 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  return NextResponse.json({ fileUri, mimeType, displayName: fileName });
+  return NextResponse.json({ fileUri, mimeType, displayName });
 }

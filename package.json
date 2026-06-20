@@ -52,7 +52,6 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/ws": "^8.18.1",
     "@vercel/analytics": "^1.5.0",
-    "@vercel/blob": "^2.4.1",
     "@vercel/speed-insights": "^1.2.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
