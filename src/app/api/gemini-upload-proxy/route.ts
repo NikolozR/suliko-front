@@ -25,12 +25,14 @@ export async function POST(request: NextRequest) {
     headers["Content-Length"] = contentLength;
   }
 
-  const uploadResponse = await fetch(uploadUrl, {
+  const fetchInit = {
     method: "POST",
     headers,
     body: request.body,
     duplex: "half",
-  });
+  } as unknown as RequestInit;
+
+  const uploadResponse = await fetch(uploadUrl, fetchInit);
 
   if (!uploadResponse.ok) {
     const errorText = await uploadResponse.text();
