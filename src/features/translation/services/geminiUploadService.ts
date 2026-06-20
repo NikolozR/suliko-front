@@ -5,8 +5,7 @@ export async function uploadFileToGemini(
 ): Promise<GeminiUploadResponse> {
   const mimeType = file.type || "application/octet-stream";
 
-  // Step 1: Get a resumable upload URL from our server (tiny JSON request —
-  // avoids routing the large file payload through Next.js).
+  // Step 1: Init a resumable Gemini session (tiny JSON → returns upload URL).
   const initResponse = await fetch("/api/gemini-upload", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -20,31 +19,35 @@ export async function uploadFileToGemini(
   if (!initResponse.ok) {
     const errorData = await initResponse.json().catch(() => ({}));
     throw new Error(
-      errorData.error || `Gemini upload init failed with status ${initResponse.status}`
+      errorData.error ||
+        `Gemini upload init failed with status ${initResponse.status}`
     );
   }
 
   const { uploadUrl, displayName } = await initResponse.json();
 
-  // Step 2: Upload the file directly to Gemini using the authenticated URL.
-  const uploadResponse = await fetch(uploadUrl, {
+  // Step 2: Stream raw bytes through our proxy to Gemini.
+  // Sending raw binary (not multipart form) bypasses Next.js body-parser
+  // limits, and the proxy avoids CORS issues with direct browser uploads.
+  const proxyResponse = await fetch("/api/gemini-upload-proxy", {
     method: "POST",
     headers: {
-      "X-Goog-Upload-Offset": "0",
-      "X-Goog-Upload-Command": "upload, finalize",
       "Content-Type": mimeType,
+      "x-goog-upload-url": uploadUrl,
+      "x-file-mime-type": mimeType,
     },
     body: file,
   });
 
-  if (!uploadResponse.ok) {
-    const errorText = await uploadResponse.text();
-    console.error("[gemini-upload] Direct upload failed:", errorText);
-    throw new Error(`Failed to upload file to Gemini: ${uploadResponse.status}`);
+  if (!proxyResponse.ok) {
+    const errorData = await proxyResponse.json().catch(() => ({}));
+    throw new Error(
+      errorData.error ||
+        `Gemini upload failed with status ${proxyResponse.status}`
+    );
   }
 
-  const uploadResult = await uploadResponse.json();
-  const fileUri: string = uploadResult?.file?.uri;
+  const { fileUri } = await proxyResponse.json();
 
   if (!fileUri) {
     throw new Error("Gemini did not return a file URI");
