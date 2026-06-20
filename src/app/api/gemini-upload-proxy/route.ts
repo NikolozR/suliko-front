@@ -28,8 +28,6 @@ export async function POST(request: NextRequest) {
   const uploadResponse = await fetch(uploadUrl, {
     method: "POST",
     headers,
-    // Stream the body directly — no buffering on our side.
-    // @ts-expect-error: duplex is required when body is a ReadableStream in Node.js fetch
     body: request.body,
     duplex: "half",
   });
