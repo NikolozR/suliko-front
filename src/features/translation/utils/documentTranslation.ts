@@ -1,5 +1,5 @@
 import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
-import { DocumentTranslateUserContentParams } from "../types/types.Translation";
+import { DocumentTranslateUserContentParams, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
 import { uploadFileToGemini } from "../services/geminiUploadService";
 import { useDocumentTranslationStore } from "../store/documentTranslationStore";
 import { getResult, getStatus } from "../services/jobService";
@@ -56,7 +56,7 @@ export async function documentTranslatingWithJobId(
       fileName: file.name,
       TargetLanguageId: data.currentTargetLanguageId,
       OutputLanguageId: outputLanguageId,
-      OutputFormat: 0,
+      OutputFormat: DEFAULT_DOCUMENT_OUTPUT_FORMAT,
       model: model,
     });
   }

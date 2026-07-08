@@ -1,5 +1,8 @@
 export type TranslationResult = string | null;
 
+/** DocumentFormat.Html — forced so the editor exercises the HTML render path. Set back to 0 to revert. */
+export const DEFAULT_DOCUMENT_OUTPUT_FORMAT = 5;
+
 export interface TextTranslateUserContentParams {
   UserText: string;
   LanguageId: number;

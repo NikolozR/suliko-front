@@ -1,5 +1,5 @@
 import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
-import { DocumentTranslateUserContentParams, NameTranslationItem } from "../types/types.Translation";
+import { DocumentTranslateUserContentParams, NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
 import { uploadFileToGemini } from "../services/geminiUploadService";
 
@@ -40,7 +40,7 @@ export async function startTranslationProject(
       fileName: data.currentFile[0].name,
       TargetLanguageId: data.currentTargetLanguageId,
       OutputLanguageId: outputLanguageId,
-      OutputFormat: 0,
+      OutputFormat: DEFAULT_DOCUMENT_OUTPUT_FORMAT,
       model,
       pageCount: pageCount ?? 1,
       nameTranslations: confirmedNames && confirmedNames.length > 0 ? confirmedNames : undefined,
