@@ -20,28 +20,45 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   projects: [
-    // Setup projects — run first, write auth state to disk
+    // Setup projects — run first (as dependencies), write auth state to disk
     { name: 'setup-user',  testMatch: /auth\.setup\.ts/,  testDir: './tests' },
     { name: 'setup-admin', testMatch: /admin\.setup\.ts/, testDir: './tests' },
 
-    // Public + API tests (no auth required)
+    // Public frontend smoke tests — no auth, no Supabase needed to pass.
+    // This is the reliable "is the app healthy" signal and runs as its own CI job.
     {
-      name: 'chromium',
+      name: 'public',
       use: { ...devices['Desktop Chrome'] },
-      testIgnore: [/authenticated\.spec\.ts/, /admin\.spec\.ts/],
+      testMatch: [
+        /smoke\.spec\.ts/,
+        /public-pages\.spec\.ts/,
+        /navigation\.spec\.ts/,
+        /pricing\.spec\.ts/,
+        /referral\.spec\.ts/,
+        /blog\.spec\.ts/,
+        /auth\.spec\.ts/,
+      ],
     },
 
-    // Authenticated user pages
+    // Supabase-backed API routes — isolated so a Supabase outage on the
+    // deployment doesn't take down the public suite.
     {
-      name: 'chromium-auth',
+      name: 'api',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /api\.spec\.ts/,
+    },
+
+    // Authenticated user pages — needs the auth backend + a valid test account.
+    {
+      name: 'authenticated',
       use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/user.json' },
       testMatch: /authenticated\.spec\.ts/,
       dependencies: ['setup-user'],
     },
 
-    // Admin panel
+    // Admin panel — needs the auth backend + a valid admin account.
     {
-      name: 'chromium-admin',
+      name: 'admin',
       use: { ...devices['Desktop Chrome'], storageState: 'playwright/.auth/admin.json' },
       testMatch: /admin\.spec\.ts/,
       dependencies: ['setup-admin'],

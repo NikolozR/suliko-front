@@ -3,9 +3,15 @@ import path from 'path';
 
 const authFile = path.join('playwright', '.auth', 'user.json');
 
+// Login succeeds the moment the auth token lands in the `token` cookie
+// (authStore.setToken sets it synchronously). Detecting that — rather than the
+// /document redirect — means we don't hang when the post-login profile fetch is
+// slow: SulikoForm awaits fetchUserProfile() before router.push(), and the app's
+// fetch client has no timeout, so a slow backend used to eat the full 120s.
+const tokenPresent = () => /(?:^|;\s*)token=[^;]+/.test(document.cookie);
+
 setup('authenticate as test user', async ({ page }) => {
-  // Setup needs more time than regular tests due to API calls
-  setup.setTimeout(120_000);
+  setup.setTimeout(90_000);
 
   const phone = process.env.TEST_USER_PHONE;
   const password = process.env.TEST_USER_PASSWORD;
@@ -15,21 +21,25 @@ setup('authenticate as test user', async ({ page }) => {
   }
 
   await page.goto('/en/sign-in', { waitUntil: 'domcontentloaded' });
-  await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 30_000 });
+  await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 20_000 });
 
   await page.locator('input[name="identifier"]').fill(phone);
   await page.locator('input[name="password"]').fill(password);
   await page.locator('button[type="submit"]').first().click();
 
-  // Wait for navigation, API error alert, OR Zod validation error
+  // Whichever resolves first ends the wait: token cookie (success), a redirect
+  // away from /sign-in (success), an API error alert, or a Zod validation error.
   await Promise.race([
-    page.waitForURL(url => !url.toString().includes('/sign-in'), { timeout: 90_000 }),
-    page.locator('[role="alert"]').waitFor({ state: 'visible', timeout: 90_000 }),
-    page.locator('p[data-slot="form-message"]').waitFor({ state: 'visible', timeout: 90_000 }),
+    page.waitForFunction(tokenPresent, undefined, { timeout: 45_000 }),
+    page.waitForURL(url => !url.toString().includes('/sign-in'), { timeout: 45_000 }),
+    page.locator('[role="alert"]').waitFor({ state: 'visible', timeout: 45_000 }),
+    page.locator('p[data-slot="form-message"]').waitFor({ state: 'visible', timeout: 45_000 }),
   ]).catch(() => {});
 
-  if (page.url().includes('/sign-in')) {
-    const apiError = await page.locator('[role="alert"]').textContent().catch(() => null);
+  // Decide from the token cookie, not the URL (the redirect may still be pending).
+  const loggedIn = await page.evaluate(tokenPresent);
+
+  if (!loggedIn) {
     const validationError = await page.locator('p[data-slot="form-message"]').first().textContent().catch(() => null);
     if (validationError) {
       throw new Error(
@@ -37,9 +47,10 @@ setup('authenticate as test user', async ({ page }) => {
         `TEST_USER_PHONE must be exactly 9 digits starting with 5, no spaces (e.g. "591234567").`
       );
     }
+    const apiError = await page.locator('[role="alert"]').textContent().catch(() => null);
     throw new Error(
-      `Login failed: "${apiError ?? 'no error message shown'}". ` +
-      `Verify the test account exists on the live app with phone="${phone}" and the correct password.`
+      `Login failed: "${apiError ?? 'no error shown — the auth backend is likely slow/unreachable or the test account is invalid'}". ` +
+      `Verify the test account exists on the live backend with phone="${phone}" and the correct password.`
     );
   }
 
