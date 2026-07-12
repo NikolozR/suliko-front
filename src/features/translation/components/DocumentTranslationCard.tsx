@@ -30,7 +30,7 @@ import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
 import { suggestNameTranslations } from "../services/nameTranslationService";
 import NameReviewModal from "./NameReviewModal";
-import { NameTranslationItem } from "../types/types.Translation";
+import { NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
 import { moveChatToProject, uploadOriginalForChat } from "@/features/chatHistory";
 import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "@/features/projects";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
@@ -38,6 +38,7 @@ import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
 import LanguageSelect from "./LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/features/ui/components/ui/select";
 import { ArrowRightLeft } from "lucide-react";
 import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
@@ -153,6 +154,8 @@ const DocumentTranslationCard = () => {
   } = useDocumentTranslationStore();
   const [isButtonHighlighted, setIsButtonHighlighted] = useState(false);
   const [isOcrOnly, setIsOcrOnly] = useState(false);
+  // Output format for document (non-SRT) translations. Defaults to the standard HTML output.
+  const [outputFormat, setOutputFormat] = useState<number>(DEFAULT_DOCUMENT_OUTPUT_FORMAT);
   const [isDetectingNames, setIsDetectingNames] = useState(false);
   const [showNameModal, setShowNameModal] = useState(false);
   const [detectedNames, setDetectedNames] = useState<NameTranslationItem[]>([]);
@@ -218,6 +221,7 @@ const DocumentTranslationCard = () => {
     formState: { errors },
     setValue,
     clearErrors,
+    watch,
   } = useForm<DocumentFormData>({
     resolver: zodResolver(documentTranslationSchema),
     defaultValues: {
@@ -635,7 +639,7 @@ const DocumentTranslationCard = () => {
       //   setValue("currentFile", newFileList);
       // }
 
-      const { chatId } = await startTranslationProject(data, estimatedPageCount || 1, reviewedNames);
+      const { chatId } = await startTranslationProject(data, estimatedPageCount || 1, reviewedNames, outputFormat);
 
       // Persist the original file so the translation detail page can show the preview.
       // URI-based (Gemini) translations don't store bytes on the backend during translation,
@@ -926,6 +930,22 @@ const DocumentTranslationCard = () => {
                       onChange={setCurrentTargetLanguageId}
                     />
                   </div>
+                </div>
+              )}
+              {/* Output format (document / non-SRT translations) */}
+              {!isOcrOnly && !watch("isSrt") && (
+                <div className="mb-4 sm:max-w-xs">
+                  <span className="block text-xs text-muted-foreground mb-1">{t("outputFormat")}</span>
+                  <Select value={String(outputFormat)} onValueChange={(v) => setOutputFormat(Number(v))}>
+                    <SelectTrigger className="h-10">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="5">{t("outputFormatHtml")}</SelectItem>
+                      <SelectItem value="6">{t("outputFormatRichPdf")}</SelectItem>
+                      <SelectItem value="2">{t("outputFormatMarkdown")}</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
               {translatedMarkdown ? (

@@ -417,6 +417,10 @@
     "translatedText": "თარგმნილი ტექსტი",
     "sourceLanguage": "საწყისი ენა",
     "targetLanguage": "სამიზნე ენა",
+    "outputFormat": "გამომავალი ფორმატი",
+    "outputFormatHtml": "HTML",
+    "outputFormatRichPdf": "Rich PDF",
+    "outputFormatMarkdown": "Markdown",
     "ocrOnly": "მხოლოდ OCR",
     "progress": {
       "longerThanUsual": "სჭირდება იმაზე მეტი დრო, ვიდრე ველოდით",

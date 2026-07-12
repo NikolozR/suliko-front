@@ -11,7 +11,8 @@ import { uploadFileToGemini } from "../services/geminiUploadService";
 export async function startTranslationProject(
   data: DocumentFormData,
   pageCount?: number,
-  confirmedNames?: NameTranslationItem[]
+  confirmedNames?: NameTranslationItem[],
+  outputFormat: number = DEFAULT_DOCUMENT_OUTPUT_FORMAT
 ): Promise<{ jobId: string; chatId: string }> {
   const model = 2;
   const outputLanguageId =
@@ -40,7 +41,7 @@ export async function startTranslationProject(
       fileName: data.currentFile[0].name,
       TargetLanguageId: data.currentTargetLanguageId,
       OutputLanguageId: outputLanguageId,
-      OutputFormat: DEFAULT_DOCUMENT_OUTPUT_FORMAT,
+      OutputFormat: outputFormat,
       model,
       pageCount: pageCount ?? 1,
       nameTranslations: confirmedNames && confirmedNames.length > 0 ? confirmedNames : undefined,
