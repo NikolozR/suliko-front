@@ -415,6 +415,10 @@
     "translatedText": "Przetłumaczony tekst",
     "sourceLanguage": "Język źródłowy",
     "targetLanguage": "Język docelowy",
+    "outputFormat": "Format wyjściowy",
+    "outputFormatHtml": "HTML",
+    "outputFormatRichPdf": "Rich PDF",
+    "outputFormatMarkdown": "Markdown",
     "progress": {
       "longerThanUsual": "Trwa to dłużej niż zwykle",
       "starting": "Rozpoczynanie tłumaczenia...",
