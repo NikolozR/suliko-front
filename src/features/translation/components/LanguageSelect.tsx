@@ -24,6 +24,29 @@ interface LanguageSelectProps {
   languages?: CustomLanguage[];
 }
 
+const getLanguageSortRank = (name: string): number => {
+  const normalized = name.toLowerCase();
+  if (normalized.includes("georgian")) return 0;
+  if (normalized === "english") return 1;
+  return 2;
+};
+
+const sortLanguages = <T extends Language | CustomLanguage>(langs: T[]): T[] => {
+  const getName = (lang: Language | CustomLanguage) =>
+    "name" in lang ? lang.name : lang.label;
+
+  return [...langs].sort((a, b) => {
+    const nameA = getName(a);
+    const nameB = getName(b);
+    const rankA = getLanguageSortRank(nameA);
+    const rankB = getLanguageSortRank(nameB);
+
+    if (rankA !== rankB) return rankA - rankB;
+    if (rankA === 2) return nameA.localeCompare(nameB, "en");
+    return 0;
+  });
+};
+
 const LanguageSelect: React.FC<LanguageSelectProps> = ({
   value,
   onChange,
@@ -38,7 +61,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   const locale = useLocale();
   useEffect(() => {
     if (customLanguages) {
-      setLanguages(customLanguages);
+      setLanguages(sortLanguages(customLanguages));
       setLoading(false);
       return;
     }
@@ -46,7 +69,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
       try {
         setLoading(true);
         const data = await getAllLanguages();
-        setLanguages(data);
+        setLanguages(sortLanguages(data));
       } catch {
         setLanguages([]);
       } finally {
