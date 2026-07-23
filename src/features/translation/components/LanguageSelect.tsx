@@ -41,15 +41,6 @@ const getId = (lang: AnyLanguage): number =>
 
 const isPinned = (lang: AnyLanguage): boolean => getLanguageSortRank(getRawName(lang)) < 2;
 
-const GEORGIAN_ENGLISH_REST = (langs: AnyLanguage[]): AnyLanguage[] =>
-  [...langs].sort((a, b) => {
-    const rankA = getLanguageSortRank(getRawName(a));
-    const rankB = getLanguageSortRank(getRawName(b));
-    if (rankA !== rankB) return rankA - rankB;
-    if (rankA === 2) return getRawName(a).localeCompare(getRawName(b), "en");
-    return 0;
-  });
-
 const LanguageSelect: React.FC<LanguageSelectProps> = ({
   value,
   onChange,
@@ -72,7 +63,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
 
   useEffect(() => {
     if (customLanguages) {
-      setLanguages(GEORGIAN_ENGLISH_REST(customLanguages));
+      setLanguages(customLanguages);
       setLoading(false);
       return;
     }
@@ -80,7 +71,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
       try {
         setLoading(true);
         const data = await getAllLanguages();
-        setLanguages(GEORGIAN_ENGLISH_REST(data));
+        setLanguages(data);
       } catch {
         setLanguages([]);
       } finally {
@@ -105,12 +96,28 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
 
   const normalizedQuery = query.trim().toLowerCase();
 
+  // Pin English then Georgian, then sort the rest alphabetically by the
+  // *displayed* label using the active locale's collation — so the Georgian
+  // UI orders by the Georgian alphabet, not by the English name.
+  const sortedLanguages = useMemo(() => {
+    const collator = new Intl.Collator(locale, { sensitivity: "base", numeric: true });
+    return [...languages].sort((a, b) => {
+      const rankA = getLanguageSortRank(getRawName(a));
+      const rankB = getLanguageSortRank(getRawName(b));
+      if (rankA !== rankB) return rankA - rankB;
+      if (rankA === 2) return collator.compare(getDisplayLabel(a), getDisplayLabel(b));
+      return 0;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [languages, locale]);
+
   const filtered = useMemo(
     () =>
       normalizedQuery
-        ? languages.filter((lang) => getSearchText(lang).includes(normalizedQuery))
-        : languages,
-    [languages, normalizedQuery]
+        ? sortedLanguages.filter((lang) => getSearchText(lang).includes(normalizedQuery))
+        : sortedLanguages,
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [sortedLanguages, normalizedQuery]
   );
 
   const pinned = normalizedQuery ? [] : filtered.filter(isPinned);
