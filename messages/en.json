@@ -284,7 +284,9 @@
     "targetLanguageQuestion": "What language do you want to translate to",
     "sourceLanguageQuestion": "What language is the text in",
     "selectLanguagePlaceholder": "Select Language",
-    "automaticDetection": "Automatic Detection"
+    "automaticDetection": "Automatic Detection",
+    "searchPlaceholder": "Search language…",
+    "noResults": "No languages found"
   },
   "NameReviewModal": {
     "title": "Confirm name translations",

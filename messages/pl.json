@@ -281,7 +281,9 @@
     "targetLanguageQuestion": "Na jaki język chcesz przetłumaczyć",
     "sourceLanguageQuestion": "W jakim języku jest tekst",
     "selectLanguagePlaceholder": "Wybierz język",
-    "automaticDetection": "Automatyczne wykrywanie"
+    "automaticDetection": "Automatyczne wykrywanie",
+    "searchPlaceholder": "Szukaj języka…",
+    "noResults": "Nie znaleziono języków"
   },
   "TranslationLoadingOverlay": {
     "progress": "Postęp",
