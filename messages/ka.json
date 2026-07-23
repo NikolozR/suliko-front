@@ -282,7 +282,9 @@
     "targetLanguageQuestion": "რა ენაზე გსურთ თარგმნა",
     "sourceLanguageQuestion": "რა ენაზეა ტექსტი",
     "selectLanguagePlaceholder": "აირჩიეთ ენა",
-    "automaticDetection": "ავტომატური ამოცნობა"
+    "automaticDetection": "ავტომატური ამოცნობა",
+    "searchPlaceholder": "ენის ძებნა…",
+    "noResults": "ენა ვერ მოიძებნა"
   },
   "TranslationLoadingOverlay": {
     "progress": "პროგრესი",
