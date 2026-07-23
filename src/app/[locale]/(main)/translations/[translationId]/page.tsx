@@ -17,6 +17,7 @@ import { useRouter } from "@/i18n/navigation";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
 
 import { useParams } from "next/navigation";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useChatEditingStore } from "@/features/chatHistory/store/chatEditingStore";
 import { useChatSuggestionsStore } from "@/features/chatHistory/store/chatSuggestionsStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
@@ -436,6 +437,19 @@ export default function TranslationDetailPage() {
     resetChatSuggestionsStore();
     router.push("/document");
   }, [resetChatEditingStore, resetChatSuggestionsStore, router]);
+
+  // Reflect translation progress/status in the browser tab, so users who
+  // switch tabs during a long translation can watch it from the tab itself.
+  const tabStatus = liveStatus || chat?.status;
+  const tabFileName = chat?.originalFileName;
+  const tabTitle = !tabFileName
+    ? undefined
+    : tabStatus === "Completed"
+      ? `✅ ${tabFileName}`
+      : tabStatus === "Failed"
+        ? `⚠️ ${tabFileName}`
+        : `⏳ ${Math.round(simulatedProgress)}% · ${tabFileName}`;
+  useDocumentTitle(tabTitle);
 
   // --- RENDER ---
 

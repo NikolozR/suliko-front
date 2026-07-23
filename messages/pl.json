@@ -1,4 +1,14 @@
 {
+  "PageTitles": {
+    "document": "Tłumaczenie dokumentu",
+    "text": "Tłumaczenie tekstu",
+    "projects": "Projekty",
+    "passport": "Paszport",
+    "profile": "Profil",
+    "pricing": "Cennik",
+    "feedback": "Opinie",
+    "help": "Pomoc"
+  },
   "Common": {
     "cancel": "Anuluj",
     "save": "Zapisz",

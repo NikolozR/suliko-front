@@ -31,12 +31,14 @@ import { TranslationCard } from "@/features/projects/components/TranslationCard"
 import { RenameProjectDialog } from "@/features/projects/components/RenameProjectDialog";
 import { CardMenu } from "@/features/projects/components/CardMenu";
 import { ProjectNamesDialog } from "@/features/projects/components/ProjectNamesDialog";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function ProjectDetailPage() {
   const params = useParams();
   const projectId = Array.isArray(params.projectId) ? params.projectId[0] : params.projectId;
   const router = useRouter();
   const t = useTranslations("Projects");
+  const tTitles = useTranslations("PageTitles");
 
   const [project, setProject] = useState<ProjectDetailed | null>(null);
   const [translations, setTranslations] = useState<Chat[]>([]);
@@ -47,6 +49,8 @@ export default function ProjectDetailPage() {
   const [showNames, setShowNames] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleting, setDeleting] = useState(false);
+
+  useDocumentTitle(project?.name || tTitles("projects"));
 
   const fetchData = useCallback(async () => {
     if (!projectId) return;
