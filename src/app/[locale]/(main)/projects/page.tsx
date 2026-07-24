@@ -21,6 +21,7 @@ import { Link } from "@/i18n/navigation";
 import { TranslationCard } from "@/features/projects/components/TranslationCard";
 import { ProjectFolderCard } from "@/features/projects/components/ProjectFolderCard";
 import { CreateProjectDialog } from "@/features/projects/components/CreateProjectDialog";
+import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
@@ -29,6 +30,8 @@ export default function ProjectsPage() {
   const [error, setError] = useState<string | null>(null);
   const [showCreateProject, setShowCreateProject] = useState(false);
   const t = useTranslations("Projects");
+  const tTitles = useTranslations("PageTitles");
+  useDocumentTitle(tTitles("projects"));
 
   const fetchData = useCallback(async () => {
     try {

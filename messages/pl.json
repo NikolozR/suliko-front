@@ -1,4 +1,14 @@
 {
+  "PageTitles": {
+    "document": "Tłumaczenie dokumentu",
+    "text": "Tłumaczenie tekstu",
+    "projects": "Projekty",
+    "passport": "Paszport",
+    "profile": "Profil",
+    "pricing": "Cennik",
+    "feedback": "Opinie",
+    "help": "Pomoc"
+  },
   "Common": {
     "cancel": "Anuluj",
     "save": "Zapisz",
@@ -271,7 +281,9 @@
     "targetLanguageQuestion": "Na jaki język chcesz przetłumaczyć",
     "sourceLanguageQuestion": "W jakim języku jest tekst",
     "selectLanguagePlaceholder": "Wybierz język",
-    "automaticDetection": "Automatyczne wykrywanie"
+    "automaticDetection": "Automatyczne wykrywanie",
+    "searchPlaceholder": "Szukaj języka…",
+    "noResults": "Nie znaleziono języków"
   },
   "TranslationLoadingOverlay": {
     "progress": "Postęp",
