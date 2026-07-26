@@ -549,6 +549,7 @@
     "moveToRoot": "მთავარში გადატანა",
     "backToProjects": "ყველა პროექტი",
     "addTranslation": "თარგმანის დამატება",
+    "bulkTranslate": "მასობრივი თარგმნა",
     "status": {
       "Completed": "დასრულებული",
       "InProgress": "მუშავდება",

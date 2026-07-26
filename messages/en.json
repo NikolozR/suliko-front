@@ -551,6 +551,7 @@
     "moveToRoot": "Move to root",
     "backToProjects": "All Projects",
     "addTranslation": "Add Translation",
+    "bulkTranslate": "Bulk translate",
     "status": {
       "Completed": "Completed",
       "InProgress": "Processing",
