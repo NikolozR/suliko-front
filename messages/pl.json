@@ -546,6 +546,7 @@
     "moveToRoot": "Przenieś do głównego widoku",
     "backToProjects": "Wszystkie projekty",
     "addTranslation": "Dodaj tłumaczenie",
+    "bulkTranslate": "Tłumaczenie zbiorcze",
     "status": {
       "Completed": "Zakończone",
       "InProgress": "Przetwarzanie",

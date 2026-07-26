@@ -11,7 +11,7 @@ import {
   useSensors,
   type DragEndEvent,
 } from "@dnd-kit/core";
-import { ChevronLeft, AlertCircle, BookText, Folder, Pencil, Plus, Trash2 } from "lucide-react";
+import { ChevronLeft, AlertCircle, BookText, Folder, Layers, Pencil, Plus, Trash2 } from "lucide-react";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui/components/ui/button";
 import { Card } from "@/features/ui/components/ui/card";
@@ -178,6 +178,12 @@ export default function ProjectDetailPage() {
             <h1 className="text-2xl font-semibold tracking-tight truncate">{project.name}</h1>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <Button asChild size="sm" variant="outline" className="gap-2">
+              <Link href={`/projects/${project.id}/bulk`}>
+                <Layers className="h-4 w-4" />
+                {t("bulkTranslate")}
+              </Link>
+            </Button>
             <Button asChild size="sm" className="gap-2">
               <Link
                 href={{
