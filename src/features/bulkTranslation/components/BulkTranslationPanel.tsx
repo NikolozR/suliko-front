@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { AlertTriangle, Loader2, Play } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
@@ -36,11 +37,12 @@ interface BulkTranslationPanelProps {
   projectName: string;
 }
 
-const REJECTION_LABELS: Record<RejectionReason, string> = {
-  unsupported: "unsupported file type",
-  subtitles: "subtitle files need the dedicated SRT translator",
-  "too-large": "larger than 50MB",
-  empty: "empty file",
+/** Message keys for why a file was left out, resolved through next-intl at render time. */
+const REJECTION_KEYS: Record<RejectionReason, string> = {
+  unsupported: "reasonUnsupported",
+  subtitles: "reasonSubtitles",
+  "too-large": "reasonTooLarge",
+  empty: "reasonEmpty",
 };
 
 /** Gemini's default; the model is not exposed per document, only the language pair is. */
@@ -67,6 +69,7 @@ export function BulkTranslationPanel({
   const [glossary, setGlossary] = useState<NameTranslationItem[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [batch, setBatch] = useState<Batch | null>(null);
+  const t = useTranslations("BulkTranslation");
 
   // Seed every document from the project's saved glossary so names stay consistent with
   // translations already filed in this project, without the user re-entering them.
@@ -89,7 +92,7 @@ export function BulkTranslationPanel({
 
     if (result.accepted.length === 0) {
       if (result.rejected.length > 0) {
-        toast.error("None of those files can be translated.");
+        toast.error(t("noneTranslatable"));
       }
       return;
     }
@@ -171,9 +174,7 @@ export function BulkTranslationPanel({
 
   const handleSubmit = async () => {
     if (missingTargetLanguage.length > 0) {
-      toast.error(
-        `${missingTargetLanguage.length} document${missingTargetLanguage.length === 1 ? " still needs" : "s still need"} a target language.`
-      );
+      toast.error(t("needsTargetLanguage", { count: missingTargetLanguage.length }));
       return;
     }
 
@@ -186,13 +187,13 @@ export function BulkTranslationPanel({
       const usable = uploaded.filter((doc) => doc.upload.fileUri);
 
       if (usable.length === 0) {
-        toast.error("No files could be uploaded. Please try again.");
+        toast.error(t("noUploads"));
         return;
       }
 
       if (usable.length < uploaded.length) {
         toast.error(
-          `${uploaded.length - usable.length} file${uploaded.length - usable.length === 1 ? "" : "s"} could not be uploaded and will be skipped.`,
+          t("someUploadsFailed", { count: uploaded.length - usable.length }),
           { duration: 5000 }
         );
       }
@@ -227,11 +228,9 @@ export function BulkTranslationPanel({
       setBatch(response.data);
       setDocuments([]);
       setSelectedIds(new Set());
-      toast.success(`Queued ${items.length} documents for translation.`);
+      toast.success(t("queuedToast", { count: items.length }));
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Could not queue the batch"
-      );
+      toast.error(error instanceof Error ? error.message : t("queueFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -317,7 +316,7 @@ export function BulkTranslationPanel({
           onChanged={refreshBatch}
         />
         <Button variant="outline" onClick={() => setBatch(null)}>
-          Translate another folder
+          {t("translateAnother")}
         </Button>
       </div>
     );
@@ -334,15 +333,17 @@ export function BulkTranslationPanel({
           <AlertTriangle className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
           <div className="space-y-1">
             <p className="font-medium text-amber-800 dark:text-amber-300">
-              {rejected.length} file{rejected.length === 1 ? "" : "s"} skipped
+              {t("filesSkipped", { count: rejected.length })}
             </p>
             <ul className="space-y-0.5 text-amber-700 dark:text-amber-400">
               {rejected.slice(0, 5).map((file) => (
                 <li key={file.relativePath}>
-                  {file.name} — {REJECTION_LABELS[file.reason]}
+                  {file.name} — {t(REJECTION_KEYS[file.reason])}
                 </li>
               ))}
-              {rejected.length > 5 && <li>…and {rejected.length - 5} more</li>}
+              {rejected.length > 5 && (
+                <li>{t("andMore", { count: rejected.length - 5 })}</li>
+              )}
             </ul>
           </div>
         </div>
@@ -371,8 +372,11 @@ export function BulkTranslationPanel({
           <div className="flex flex-wrap items-center justify-between gap-3">
             <p className="text-xs text-muted-foreground">
               {missingTargetLanguage.length > 0
-                ? `${missingTargetLanguage.length} document${missingTargetLanguage.length === 1 ? "" : "s"} still need a target language.`
-                : `${documents.length} document${documents.length === 1 ? "" : "s"} ready · ${totalPages(documents)} pages total`}
+                ? t("needsTargetLanguage", { count: missingTargetLanguage.length })
+                : t("readySummary", {
+                    count: documents.length,
+                    pages: totalPages(documents),
+                  })}
             </p>
 
             <div className="flex gap-2">
@@ -385,7 +389,7 @@ export function BulkTranslationPanel({
                 }}
                 disabled={submitting}
               >
-                Clear
+                {t("clear")}
               </Button>
               <Button
                 onClick={handleSubmit}
@@ -397,7 +401,9 @@ export function BulkTranslationPanel({
                 ) : (
                   <Play className="h-4 w-4" />
                 )}
-                {submitting ? "Uploading…" : `Translate ${documents.length}`}
+                {submitting
+                  ? t("uploading")
+                  : t("translateCount", { count: documents.length })}
               </Button>
             </div>
           </div>

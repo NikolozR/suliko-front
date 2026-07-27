@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 import { ChevronLeft, Layers } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
@@ -15,10 +16,13 @@ export default function BulkTranslationPage() {
     ? params.projectId[0]
     : params.projectId;
 
+  const t = useTranslations("BulkTranslation");
   const [projectName, setProjectName] = useState<string>("");
   const [loading, setLoading] = useState(true);
 
-  useDocumentTitle(projectName ? `Bulk translation — ${projectName}` : "Bulk translation");
+  useDocumentTitle(
+    projectName ? `${t("pageTitle")} — ${projectName}` : t("pageTitle")
+  );
 
   useEffect(() => {
     if (!projectId) return;
@@ -38,7 +42,7 @@ export default function BulkTranslationPage() {
         className="-mx-1 mb-4 inline-flex items-center gap-1.5 rounded px-1 py-0.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
       >
         <ChevronLeft className="h-4 w-4" />
-        Back to project
+        {t("backToProject")}
       </Link>
 
       <div className="mb-8 flex items-center gap-3">
@@ -47,7 +51,7 @@ export default function BulkTranslationPage() {
         </div>
         <div className="min-w-0">
           <h1 className="truncate text-2xl font-semibold tracking-tight">
-            Bulk translation
+            {t("title")}
           </h1>
           {loading ? (
             <Skeleton className="mt-1 h-4 w-32" />
