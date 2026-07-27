@@ -1,3 +1,4 @@
+import { saveAs } from "file-saver";
 import { getChatById } from "@/features/chatHistory";
 import { BatchItem } from "../types/types.Bulk";
 
@@ -219,7 +220,13 @@ export const downloadBatchAsZip = async (
   }
 
   const blob = await zip.generateAsync({ type: "blob" });
-  const { saveAs } = await import("file-saver");
+
+  // Statically imported, unlike the other libraries here. file-saver is CommonJS, and
+  // `await import("file-saver")` puts the function on `.default` while leaving `.saveAs`
+  // undefined — so destructuring it dynamically silently yields undefined and the call
+  // fails at the very end, after every document has already been converted. The static
+  // form goes through webpack's named-export interop and is what the rest of the codebase
+  // uses.
   saveAs(blob, `${zipName}.zip`);
 
   return { succeeded, failed };
