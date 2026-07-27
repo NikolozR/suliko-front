@@ -31,6 +31,8 @@ import { TranslationCard } from "@/features/projects/components/TranslationCard"
 import { RenameProjectDialog } from "@/features/projects/components/RenameProjectDialog";
 import { CardMenu } from "@/features/projects/components/CardMenu";
 import { ProjectNamesDialog } from "@/features/projects/components/ProjectNamesDialog";
+import { DownloadAllButton } from "@/features/bulkTranslation";
+import type { DownloadableDocument } from "@/features/bulkTranslation";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 
 export default function ProjectDetailPage() {
@@ -39,6 +41,7 @@ export default function ProjectDetailPage() {
   const router = useRouter();
   const t = useTranslations("Projects");
   const tTitles = useTranslations("PageTitles");
+  const tBulk = useTranslations("BulkTranslation");
 
   const [project, setProject] = useState<ProjectDetailed | null>(null);
   const [translations, setTranslations] = useState<Chat[]>([]);
@@ -112,6 +115,18 @@ export default function ProjectDetailPage() {
     await moveChatToProject(chatId, targetProjectId);
     setTranslations((prev) => prev.filter((c) => c.chatId !== chatId));
   };
+
+  // Only translations that actually finished can go into a zip. A chat still processing
+  // or one that failed has no content to convert.
+  const downloadableTranslations: DownloadableDocument[] = translations
+    .filter((chat) => chat.hasResult && !chat.hasError)
+    .map((chat) => ({
+      chatId: chat.chatId,
+      fileName: chat.originalFileName || chat.title || chat.chatId,
+      // Chats carry no folder path, so the project zip is flat even when the documents
+      // originally arrived through a bulk folder upload.
+      relativePath: null,
+    }));
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } })
@@ -234,17 +249,33 @@ export default function ProjectDetailPage() {
             </Button>
           </div>
         ) : (
-          <div className="space-y-3">
-            {translations.map((chat) => (
-              <TranslationCard
-                key={chat.chatId}
-                chat={chat}
-                projects={allProjects}
-                onDelete={handleDeleteChat}
-                onMove={handleMoveChat}
-              />
-            ))}
-          </div>
+          <>
+            {downloadableTranslations.length > 0 && (
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border/70 bg-muted/20 p-4">
+                <p className="text-xs text-muted-foreground">
+                  {tBulk("documentCount", {
+                    count: downloadableTranslations.length,
+                  })}
+                </p>
+                <DownloadAllButton
+                  documents={downloadableTranslations}
+                  zipName={project.name}
+                />
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {translations.map((chat) => (
+                <TranslationCard
+                  key={chat.chatId}
+                  chat={chat}
+                  projects={allProjects}
+                  onDelete={handleDeleteChat}
+                  onMove={handleMoveChat}
+                />
+              ))}
+            </div>
+          </>
         )}
       </DndContext>
 

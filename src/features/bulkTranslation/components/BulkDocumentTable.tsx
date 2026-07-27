@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   AlertCircle,
   ChevronDown,
@@ -37,6 +38,7 @@ export function BulkDocumentTable({
   onRemove,
   disabled,
 }: BulkDocumentTableProps) {
+  const t = useTranslations("BulkTranslation");
   const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const allSelected =
@@ -54,12 +56,15 @@ export function BulkDocumentTable({
           checked={someSelected ? "indeterminate" : allSelected}
           onCheckedChange={onToggleAll}
           disabled={disabled}
-          aria-label="Select all documents"
+          aria-label={t("selectAllAria")}
         />
         <span className="text-xs font-medium text-muted-foreground">
           {selectedIds.size > 0
-            ? `${selectedIds.size} of ${documents.length} selected`
-            : `${documents.length} document${documents.length === 1 ? "" : "s"}`}
+            ? t("selectedCount", {
+                selected: selectedIds.size,
+                total: documents.length,
+              })
+            : t("documentCount", { count: documents.length })}
         </span>
       </div>
 
@@ -105,6 +110,8 @@ function DocumentRow({
   onRemove,
   disabled,
 }: DocumentRowProps) {
+  const t = useTranslations("BulkTranslation");
+
   // The folder path is what distinguishes two files with the same name in different
   // subfolders, so it is shown whenever it adds information beyond the name alone.
   const folder = doc.relativePath.includes("/")
@@ -121,7 +128,7 @@ function DocumentRow({
           checked={selected}
           onCheckedChange={onToggleSelected}
           disabled={disabled}
-          aria-label={`Select ${doc.file.name}`}
+          aria-label={t("selectAria", { name: doc.file.name })}
         />
 
         <FileText className="h-4 w-4 shrink-0 text-muted-foreground" />
@@ -138,11 +145,13 @@ function DocumentRow({
               {formatFileSize(doc.file.size)}
               {doc.pageCount !== null && (
                 <span className="ml-2">
-                  · {doc.pageCount} page{doc.pageCount === 1 ? "" : "s"}
+                  · {t("pageCount", { count: doc.pageCount })}
                 </span>
               )}
-              {hasInstructions && <span className="ml-2">· has notes</span>}
-              {nameCount > 0 && <span className="ml-2">· {nameCount} names</span>}
+              {hasInstructions && <span className="ml-2">· {t("hasNotes")}</span>}
+              {nameCount > 0 && (
+                <span className="ml-2">· {t("nameCount", { count: nameCount })}</span>
+              )}
             </p>
           </div>
 
@@ -162,7 +171,7 @@ function DocumentRow({
           className="h-8 w-8 shrink-0 p-0"
           onClick={onRemove}
           disabled={disabled}
-          aria-label={`Remove ${doc.file.name}`}
+          aria-label={t("removeAria", { name: doc.file.name })}
         >
           <Trash2 className="h-3.5 w-3.5" />
         </Button>
@@ -173,18 +182,18 @@ function DocumentRow({
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-muted-foreground">
-                Translate from
+                {t("translateFrom")}
               </label>
               <LanguageSelect
                 value={doc.settings.sourceLanguageId}
                 onChange={(value) => onUpdateSettings({ sourceLanguageId: value })}
-                detectOption="Detect automatically"
+                detectOption={t("detectAutomatically")}
               />
             </div>
 
             <div className="space-y-1.5">
               <label className="text-xs font-medium text-muted-foreground">
-                Translate into
+                {t("translateInto")}
               </label>
               <LanguageSelect
                 value={doc.settings.targetLanguageId}
@@ -195,12 +204,12 @@ function DocumentRow({
 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">
-              Notes and instructions
+              {t("notesLabel")}
             </label>
             <Textarea
               value={doc.settings.instructions}
               onChange={(e) => onUpdateSettings({ instructions: e.target.value })}
-              placeholder="e.g. keep company names in English, use formal register"
+              placeholder={t("notesPlaceholder")}
               rows={3}
               className="text-sm"
             />
@@ -208,7 +217,7 @@ function DocumentRow({
 
           <div className="space-y-1.5">
             <label className="text-xs font-medium text-muted-foreground">
-              Name spellings
+              {t("nameSpellings")}
             </label>
             <NameGlossaryEditor
               names={doc.settings.nameTranslations}
@@ -222,6 +231,8 @@ function DocumentRow({
 }
 
 function UploadIndicator({ document: doc }: { document: StagedDocument }) {
+  const t = useTranslations("BulkTranslation");
+
   if (doc.upload.status === "uploading") {
     return (
       <span className="flex shrink-0 items-center gap-1.5 text-xs text-muted-foreground">
@@ -238,7 +249,7 @@ function UploadIndicator({ document: doc }: { document: StagedDocument }) {
         title={doc.upload.error}
       >
         <AlertCircle className="h-3.5 w-3.5" />
-        Failed
+        {t("uploadFailed")}
       </span>
     );
   }

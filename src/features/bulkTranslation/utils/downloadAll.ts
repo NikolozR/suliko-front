@@ -129,19 +129,32 @@ const makeUnique = (path: string, taken: Set<string>): string => {
 };
 
 /**
- * Fetches every completed translation in a batch, converts it to the chosen format, and
- * saves them as one zip that mirrors the uploaded folder structure.
+ * A finished translation that can go into a zip.
+ *
+ * Deliberately not tied to a batch: the same download works for a project's translations,
+ * which arrive as chats and have no batch, no ordering and no folder structure.
  */
-export const downloadBatchAsZip = async (
-  items: BatchItem[],
+export interface DownloadableDocument {
+  /** The chat holding the translated content. */
+  chatId: string;
+  /** Name to base the output filename on, normally the original upload's name. */
+  fileName: string;
+  /** Folder path to mirror in the zip. Absent for documents not uploaded as a folder. */
+  relativePath?: string | null;
+}
+
+/**
+ * Fetches each translation, converts it to the chosen format, and saves them as one zip,
+ * mirroring folder structure where the documents have any.
+ */
+export const downloadDocumentsAsZip = async (
+  documents: DownloadableDocument[],
   format: BulkDownloadFormat,
   zipName: string,
   translatedSuffix: string,
   onProgress?: (progress: BulkDownloadProgress) => void
 ): Promise<BulkDownloadResult> => {
-  const completed = items.filter(
-    (item) => item.status === "Completed" && item.chatId
-  );
+  const completed = documents;
 
   if (completed.length === 0) {
     return { succeeded: 0, failed: [] };
@@ -164,7 +177,7 @@ export const downloadBatchAsZip = async (
     });
 
     try {
-      const chat = await getChatById(item.chatId!);
+      const chat = await getChatById(item.chatId);
       const content = chat.data?.translationResult?.translatedContent;
 
       if (!content) {
@@ -230,4 +243,29 @@ export const downloadBatchAsZip = async (
   saveAs(blob, `${zipName}.zip`);
 
   return { succeeded, failed };
+};
+
+/** Downloads the finished translations in a batch, keeping the uploaded folder structure. */
+export const downloadBatchAsZip = async (
+  items: BatchItem[],
+  format: BulkDownloadFormat,
+  zipName: string,
+  translatedSuffix: string,
+  onProgress?: (progress: BulkDownloadProgress) => void
+): Promise<BulkDownloadResult> => {
+  const documents: DownloadableDocument[] = items
+    .filter((item) => item.status === "Completed" && item.chatId)
+    .map((item) => ({
+      chatId: item.chatId!,
+      fileName: item.fileName,
+      relativePath: item.relativePath,
+    }));
+
+  return downloadDocumentsAsZip(
+    documents,
+    format,
+    zipName,
+    translatedSuffix,
+    onProgress
+  );
 };

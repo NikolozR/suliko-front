@@ -1,6 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
+import { useTranslations } from "next-intl";
 import { FolderUp, Loader2 } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import { cn } from "@/shared/lib/utils";
@@ -23,6 +24,7 @@ interface FolderDropZoneProps {
  * for first when they already have the folder open.
  */
 export function FolderDropZone({ onFilesSelected, disabled }: FolderDropZoneProps) {
+  const t = useTranslations("BulkTranslation");
   const [isDragging, setIsDragging] = useState(false);
   const [scanning, setScanning] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -89,11 +91,9 @@ export function FolderDropZone({ onFilesSelected, disabled }: FolderDropZoneProp
 
         <div className="space-y-1">
           <p className="text-sm font-medium">
-            {scanning ? "Reading folder…" : "Drop a folder here"}
+            {scanning ? t("readingFolder") : t("dropFolder")}
           </p>
-          <p className="text-xs text-muted-foreground">
-            PDF, Word, text and image files are picked up. Subfolders are kept.
-          </p>
+          <p className="text-xs text-muted-foreground">{t("supportedHint")}</p>
         </div>
 
         <Button
@@ -103,7 +103,7 @@ export function FolderDropZone({ onFilesSelected, disabled }: FolderDropZoneProp
           disabled={disabled || scanning}
           onClick={() => inputRef.current?.click()}
         >
-          Choose folder
+          {t("chooseFolder")}
         </Button>
       </div>
 

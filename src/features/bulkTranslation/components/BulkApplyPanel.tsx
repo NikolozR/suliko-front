@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import { Check, Wand2 } from "lucide-react";
 import LanguageSelect from "@/features/translation/components/LanguageSelect";
 import { Button } from "@/features/ui/components/ui/button";
@@ -33,6 +34,7 @@ export function BulkApplyPanel({
   const [instructions, setInstructions] = useState("");
   const [names, setNames] = useState<NameTranslationItem[]>([]);
   const [justApplied, setJustApplied] = useState<string | null>(null);
+  const t = useTranslations("BulkTranslation");
 
   const apply = (field: string, patch: Partial<DocumentSettings>) => {
     onApply(patch);
@@ -40,26 +42,26 @@ export function BulkApplyPanel({
     window.setTimeout(() => setJustApplied(null), 1500);
   };
 
-  const label = `${selectedCount} document${selectedCount === 1 ? "" : "s"}`;
-
   return (
     <div className="space-y-4 rounded-lg border border-suliko-default-color/30 bg-suliko-default-color/5 p-4">
       <div className="flex items-center gap-2">
         <Wand2 className="h-4 w-4 text-suliko-default-color" />
-        <p className="text-sm font-medium">Apply to {label}</p>
+        <p className="text-sm font-medium">
+          {t("applyToDocuments", { count: selectedCount })}
+        </p>
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-muted-foreground">
-            Translate from
+            {t("translateFrom")}
           </label>
           <div className="flex gap-2">
             <div className="flex-1">
               <LanguageSelect
                 value={sourceLanguageId}
                 onChange={setSourceLanguageId}
-                detectOption="Detect automatically"
+                detectOption={t("detectAutomatically")}
               />
             </div>
             <ApplyButton
@@ -72,7 +74,7 @@ export function BulkApplyPanel({
 
         <div className="space-y-1.5">
           <label className="text-xs font-medium text-muted-foreground">
-            Translate into
+            {t("translateInto")}
           </label>
           <div className="flex gap-2">
             <div className="flex-1">
@@ -93,12 +95,12 @@ export function BulkApplyPanel({
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-muted-foreground">
-          Notes and instructions
+          {t("notesLabel")}
         </label>
         <Textarea
           value={instructions}
           onChange={(e) => setInstructions(e.target.value)}
-          placeholder="e.g. keep company names in English, use formal register"
+          placeholder={t("notesPlaceholder")}
           rows={2}
           className="text-sm"
         />
@@ -114,7 +116,7 @@ export function BulkApplyPanel({
 
       <div className="space-y-1.5">
         <label className="text-xs font-medium text-muted-foreground">
-          Name spellings
+          {t("nameSpellings")}
         </label>
         <NameGlossaryEditor names={names} onChange={setNames} />
         <div className="flex justify-end">
@@ -147,6 +149,8 @@ function ApplyButton({
   onClick: () => void;
   wide?: boolean;
 }) {
+  const t = useTranslations("BulkTranslation");
+
   return (
     <Button
       type="button"
@@ -159,10 +163,10 @@ function ApplyButton({
       {applied ? (
         <>
           <Check className="h-3.5 w-3.5" />
-          Applied
+          {t("applied")}
         </>
       ) : (
-        "Apply"
+        t("apply")
       )}
     </Button>
   );
