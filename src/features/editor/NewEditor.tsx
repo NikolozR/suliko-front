@@ -24,20 +24,20 @@ import "./editor.css";
 import "./editor-pro.css";
 import ToolbarPro from "./ToolbarPro";
 
-export interface EditorProHandle {
+export interface NewEditorHandle {
   /** Returns the editor's current content as HTML (same as what copy-paste produces). */
   getHTML: () => string;
 }
 
-interface EditorProProps {
-  /** Backend content — markdown or HTML (auto-detected), identical to the current editor. */
+interface NewEditorProps {
+  /** Backend content — markdown or HTML (auto-detected), identical to the previous editor. */
   translatedMarkdown: string;
-  /** Fired on every edit with the current HTML — identical to the current editor. */
+  /** Fired on every edit with the current HTML — identical to the previous editor. */
   onChange?: (html: string) => void;
   hoveredText?: string | null;
 }
 
-const EditorPro = forwardRef<EditorProHandle, EditorProProps>(function EditorPro(
+const NewEditor = forwardRef<NewEditorHandle, NewEditorProps>(function NewEditor(
   { translatedMarkdown, onChange, hoveredText },
   ref
 ) {
@@ -102,7 +102,7 @@ const EditorPro = forwardRef<EditorProHandle, EditorProProps>(function EditorPro
     }
   }, [editor, translatedMarkdown]);
 
-  // Highlight hovered text via native selection (kept identical to the current editor)
+  // Highlight hovered text via native selection (kept identical to the previous editor)
   useEffect(() => {
     const editorEl = containerRef.current?.querySelector(".tiptap-editor");
     if (!editorEl) return;
@@ -153,4 +153,4 @@ const EditorPro = forwardRef<EditorProHandle, EditorProProps>(function EditorPro
   );
 });
 
-export default EditorPro;
+export default NewEditor;

@@ -7,7 +7,7 @@ import FileInfoDisplay from "./FileInfoDisplay";
 import CopyButton from "./CopyButton";
 import DownloadButton from "./DownloadButton";
 import SuggestionsPanel from './SuggestionsPanel';
-import Editor, { type EditorHandle } from "@/features/editor/Editor";
+import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
@@ -123,7 +123,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
-  const editorRef = useRef<EditorHandle>(null) as RefObject<EditorHandle>;
+  const editorRef = useRef<NewEditorHandle>(null) as RefObject<NewEditorHandle>;
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
@@ -386,7 +386,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
             </div>
           </div>
           <div className="h-full max-h-[400px] md:max-h-[600px] lg:max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
-            <Editor
+            <NewEditor
               ref={editorRef}
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}

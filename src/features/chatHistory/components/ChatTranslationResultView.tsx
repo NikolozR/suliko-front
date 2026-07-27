@@ -7,7 +7,7 @@ import FileInfoDisplay from "@/features/translation/components/FileInfoDisplay";
 import CopyButton from "@/features/translation/components/CopyButton";
 import DownloadButton from "@/features/translation/components/DownloadButton";
 import ChatSuggestionsPanel from './ChatSuggestionsPanel';
-import Editor, { type EditorHandle } from "@/features/editor/Editor";
+import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
@@ -43,7 +43,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
-  const editorRef = useRef<EditorHandle>(null) as RefObject<EditorHandle>;
+  const editorRef = useRef<NewEditorHandle>(null) as RefObject<NewEditorHandle>;
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
@@ -350,7 +350,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
             </div>
           </div>
           <div className="min-h-[300px] h-[50vh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
-            <Editor
+            <NewEditor
               ref={editorRef}
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import EditorPro, { type EditorProHandle } from "@/features/editor/EditorPro";
+import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
 
 /**
  * Sample "backend" payloads. The real editor accepts EITHER markdown OR HTML
@@ -50,7 +50,7 @@ const SAMPLE_HTML = `<h1>Translation Result</h1>
 <ul><li>Bullet one</li><li>Bullet two</li></ul>`;
 
 export default function EditorTestClient() {
-  const editorRef = useRef<EditorProHandle>(null);
+  const editorRef = useRef<NewEditorHandle>(null);
   const [inputFormat, setInputFormat] = useState<"markdown" | "html">("markdown");
   const [source, setSource] = useState<string>(SAMPLE_MARKDOWN);
   const [output, setOutput] = useState<string>("");
@@ -107,7 +107,7 @@ export default function EditorTestClient() {
       {/* Editor */}
       <div className="border border-border rounded-lg overflow-hidden mb-6">
         <div className="max-h-[75vh] overflow-y-auto bg-white">
-          <EditorPro
+          <NewEditor
             ref={editorRef}
             translatedMarkdown={source}
             onChange={(html) => setOutput(html)}
