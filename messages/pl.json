@@ -795,7 +795,7 @@
   "WelcomeModal": {
     "title": "Cześć!",
     "thankYou": "Dziękujemy za korzystanie z Suliko.",
-    "freePages": "🎉 Witamy! Otrzymujesz 25 stron do bezpłatnego tłumaczenia jako nowy użytkownik.",
+    "freePages": "🎉 Witamy! Otrzymujesz 10 stron do bezpłatnego tłumaczenia jako nowy użytkownik.",
     "betaNotice": "Proszę pamiętać, że strona internetowa działa w trybie beta, więc mogą wystąpić pewne problemy.",
     "workingOnIssues": "Codziennie pracujemy nad naprawianiem tych problemów, a Twoja opinia jest bardzo ważna!",
     "reportIssues": "Proszę, jeśli odkryjesz jakikolwiek rodzaj problemu (czy to w tłumaczeniu, czy techniczny), napisz do nas tutaj:",
@@ -877,7 +877,7 @@
     },
     "cta": {
       "title": "Gotowy, aby do nich dołączyć?",
-      "subtitle": "Zarejestruj się i przetłumacz za darmo 25 dokumentów.",
+      "subtitle": "Zarejestruj się i przetłumacz za darmo 10 dokumentów.",
       "startTrial": "Rozpocznij bezpłatny okres próbny",
       "contactSales": "Skontaktuj się ze sprzedażą"
     },
@@ -1129,7 +1129,7 @@
       },
       "pricing": {
         "question": "Czy jest bezpłatny plan?",
-        "answer": "Tak — każdy nowy użytkownik otrzymuje 25 bezpłatnych stron do przetłumaczenia. Następnie możesz wybrać plan miesięczny (Starter, Professional) lub opcję pay-as-you-go."
+        "answer": "Tak — każdy nowy użytkownik otrzymuje 10 bezpłatnych stron do przetłumaczenia. Następnie możesz wybrać plan miesięczny (Starter, Professional) lub opcję pay-as-you-go."
       },
       "security": {
         "question": "Czy moje dane dokumentów są bezpieczne?",
