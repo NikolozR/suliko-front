@@ -19,7 +19,7 @@ type DocItem = {
   id: number;
   fromLang: Language;
   toLang: Language;
-  pageCount: number;
+  pageCount: number | "";
   notaryApproval: boolean;
 };
 
@@ -102,13 +102,14 @@ export default function NotaryPriceCalculator() {
     let totalPages = 0;
 
     documents.forEach((doc, index) => {
+      const pages = doc.pageCount || 1;
       const basePrice = getLanguagePairPrice(doc.fromLang, doc.toLang);
-      const { translationCost, discount } = calculateTranslationPrice(basePrice, doc.pageCount);
-      const notaryCost = doc.notaryApproval ? calculateNotaryPrice(doc.pageCount) : 0;
+      const { translationCost, discount } = calculateTranslationPrice(basePrice, pages);
+      const notaryCost = doc.notaryApproval ? calculateNotaryPrice(pages) : 0;
       const subtotal = translationCost + notaryCost;
       grand += subtotal;
-      totalPages += doc.pageCount;
-      results.push({ id: doc.id, number: index + 1, pageCount: doc.pageCount, translationCost, discount, notaryCost, subtotal });
+      totalPages += pages;
+      results.push({ id: doc.id, number: index + 1, pageCount: pages, translationCost, discount, notaryCost, subtotal });
     });
 
     setBreakdown(results);
@@ -198,7 +199,18 @@ export default function NotaryPriceCalculator() {
                   type="number"
                   min="1"
                   value={doc.pageCount}
-                  onChange={(e) => updateDoc(doc.id, { pageCount: Math.max(1, parseInt(e.target.value) || 1) })}
+                  onChange={(e) => {
+                    const raw = e.target.value;
+                    if (raw === "") {
+                      updateDoc(doc.id, { pageCount: "" });
+                      return;
+                    }
+                    const parsed = parseInt(raw, 10);
+                    if (!Number.isNaN(parsed)) updateDoc(doc.id, { pageCount: Math.max(1, parsed) });
+                  }}
+                  onBlur={() => {
+                    if (doc.pageCount === "") updateDoc(doc.id, { pageCount: 1 });
+                  }}
                   className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors text-sm"
                 />
               </div>
