@@ -7,6 +7,7 @@ import FileInfoDisplay from "@/features/translation/components/FileInfoDisplay";
 import CopyButton from "@/features/translation/components/CopyButton";
 import DownloadButton from "@/features/translation/components/DownloadButton";
 import ChatSuggestionsPanel from './ChatSuggestionsPanel';
+import SuggestionsJumpButton from "@/features/translation/components/SuggestionsJumpButton";
 import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
@@ -50,7 +51,8 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
   const [editorDeadline, setEditorDeadline] = useState<number | null>(null);
   const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
-  const { hoveredSuggestionOriginalText } = useChatSuggestionsStore();
+  const { hoveredSuggestionOriginalText, suggestions } = useChatSuggestionsStore();
+  const suggestionsPanelRef = useRef<HTMLDivElement>(null);
 
   const isOriginalFileSrt = () => {
     const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
@@ -241,7 +243,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
 
   return (
     <>
-      <div className={hideOriginalDocument ? "" : "md:flex gap-4 lg:gap-6 xl:gap-8"}>
+      <div className={hideOriginalDocument ? "relative" : "relative md:flex gap-4 lg:gap-6 xl:gap-8"}>
         {!hideOriginalDocument && (
           <div className="w-full mb-6 md:mb-0 md:flex-[0.95] min-w-0">
             <div className="flex items-center justify-between mb-3 pb-2 border-b border-border/40">
@@ -280,6 +282,12 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
             </div>
           </div>
         )}
+
+        <SuggestionsJumpButton
+          count={suggestions.length}
+          targetRef={suggestionsPanelRef}
+          sideBySideAt={hideOriginalDocument ? null : "md"}
+        />
 
         <div className={hideOriginalDocument ? "w-full" : "w-full md:flex-[1.05] min-w-0"}>
           <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-border/40 flex-wrap">
@@ -359,7 +367,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
           </div>
         </div>
       </div>
-      <div className="mt-6 pt-4 border-t border-border/40">
+      <div className="mt-6 pt-4 border-t border-border/40" ref={suggestionsPanelRef}>
         <ChatSuggestionsPanel isSuggestionsLoading={isSuggestionsLoading} />
       </div>
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>

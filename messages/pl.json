@@ -613,7 +613,8 @@
     "indicatorNonExact": "Niedokładne: zastosowanie na serwerze",
     "instant": "Natychmiastowe",
     "review": "Do przeglądu",
-    "acceptAllInstant": "Zaakceptuj wszystkie natychmiastowe"
+    "acceptAllInstant": "Zaakceptuj wszystkie natychmiastowe",
+    "jumpToSuggestions": "Przejdź do sugestii poniżej"
   },
   "Pricing": {
     "paymentModal": {

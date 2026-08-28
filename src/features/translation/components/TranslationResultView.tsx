@@ -7,6 +7,7 @@ import FileInfoDisplay from "./FileInfoDisplay";
 import CopyButton from "./CopyButton";
 import DownloadButton from "./DownloadButton";
 import SuggestionsPanel from './SuggestionsPanel';
+import SuggestionsJumpButton from './SuggestionsJumpButton';
 import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
@@ -130,7 +131,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
   const [editorDeadline, setEditorDeadline] = useState<number | null>(null);
   // const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
-  const { hoveredSuggestionOriginalText } = useSuggestionsStore();
+  const { hoveredSuggestionOriginalText, suggestions } = useSuggestionsStore();
+  const suggestionsPanelRef = useRef<HTMLDivElement>(null);
 
   const onFileChangeRef = useRef(onFileChange);
   const onRemoveFileRef = useRef(onRemoveFile);
@@ -304,7 +306,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   
   return (
     <>
-      <div className={hideOriginalDocument ? "" : "flex flex-col lg:flex-row gap-4 lg:gap-8"}>
+      <div className={hideOriginalDocument ? "relative" : "relative flex flex-col lg:flex-row gap-4 lg:gap-8"}>
         <DocumentPreviewColumn
           documentPreviewRef={documentPreviewRef}
           hideOriginalDocument={hideOriginalDocument}
@@ -312,6 +314,12 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           onFileChange={stableOnFileChange}
           onRemoveFile={stableOnRemoveFile}
           currentFile={currentFile}
+        />
+
+        <SuggestionsJumpButton
+          count={suggestions.length}
+          targetRef={suggestionsPanelRef}
+          sideBySideAt={hideOriginalDocument ? null : "lg"}
         />
 
         <div className={hideOriginalDocument ? "w-full" : "w-full lg:flex-1 min-w-0"}>
@@ -395,7 +403,9 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           </div>
         </div>
       </div>
-      <SuggestionsPanel isSuggestionsLoading={isSuggestionsLoading} />
+      <div ref={suggestionsPanelRef}>
+        <SuggestionsPanel isSuggestionsLoading={isSuggestionsLoading} />
+      </div>
       <Dialog open={showDownloadModal} onOpenChange={setShowDownloadModal}>
         <DialogContent className="max-w-xs mx-4 rounded-2xl">
           <DialogHeader>

@@ -858,6 +858,29 @@ html.dark .sidebar-main {
   }
 }
 
+/* Bouncing hint arrow pointing at the suggestions panel below the editor */
+.animate-jumpDown {
+  animation: jumpDown 1.8s ease-in-out infinite;
+}
+
+@keyframes jumpDown {
+
+  0%,
+  22%,
+  55%,
+  100% {
+    transform: translateY(0);
+  }
+
+  38% {
+    transform: translateY(5px);
+  }
+
+  47% {
+    transform: translateY(2px);
+  }
+}
+
 /* Landing Page Animations */
 @keyframes fadeInUp {
   from {

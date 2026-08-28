@@ -618,7 +618,8 @@
     "indicatorNonExact": "არაზუსტი: სერვერზე გამოყენება",
     "instant": "მყისიერი",
     "review": "განხილვა",
-    "acceptAllInstant": "ყველა მყისიერის მიღება"
+    "acceptAllInstant": "ყველა მყისიერის მიღება",
+    "jumpToSuggestions": "იხილეთ შემოთავაზებები ქვემოთ"
   },
   "Pricing": {
     "paymentModal": {

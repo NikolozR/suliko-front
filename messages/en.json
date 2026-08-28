@@ -620,7 +620,8 @@
     "indicatorNonExact": "Non-exact: server apply",
     "instant": "Instant",
     "review": "Review",
-    "acceptAllInstant": "Accept all Instant"
+    "acceptAllInstant": "Accept all Instant",
+    "jumpToSuggestions": "Jump to the suggestions below"
   },
   "Pricing": {
     "paymentModal": {
