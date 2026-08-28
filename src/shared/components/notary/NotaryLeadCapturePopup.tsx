@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { X, ChevronRight, ChevronLeft, MessageCircle, Phone, Mail, PhoneCall, CheckCircle, Loader2 } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import { Dialog, DialogContent } from "@/features/ui/components/ui/dialog";
-import { languageTranslations, type Language } from "@/shared/utils/notaryHelpers";
+import { Dialog, DialogContent, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { NOTARY_PHONE, NOTARY_WHATSAPP } from "@/shared/constants/notary";
+import { SUPPORT_EMAIL } from "@/shared/utils/notaryOrderConfig";
+import { displayLanguageName, targetsFor } from "@/shared/utils/notaryReferenceData";
+import { useNotaryReference } from "@/shared/utils/useNotaryReference";
+import { trackCta } from "@/shared/utils/notaryTracking";
 
 type Step = 1 | 2 | 3 | 4;
 type ContactMethod = "whatsapp" | "call" | "email" | "callback";
@@ -23,44 +26,45 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
   const locale = useLocale();
 
   const [step, setStep] = useState<Step>(1);
-  const [fromLang, setFromLang] = useState<Language>("english");
-  const [toLang, setToLang] = useState<Language>("georgian");
+  const [fromLang, setFromLang] = useState("en");
+  const [toLang, setToLang] = useState("ka");
   const [notary, setNotary] = useState<boolean | null>(null);
   const [contactMethod, setContactMethod] = useState<ContactMethod | null>(null);
   const [phone, setPhone] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState(false);
 
-  const displayNames = languageTranslations[locale] ?? languageTranslations.en;
+  const { reference, languages } = useNotaryReference();
 
-  const POPULAR_LANGUAGES: Language[] = [
-    "english",
-    "russian",
-    "german",
-    "georgian",
-    "french",
-    "spanish",
-    "turkish",
-    "azerbaijani",
-    "arabic",
-    "chinese",
-    "japanese",
-    "korean",
-  ];
+  const nameOf = (code: string) =>
+    displayLanguageName(
+      reference?.languages.find((l) => l.language_code === code),
+      locale
+    );
+
+  /**
+   * Only languages we can actually quote. Offering one the partner publishes no
+   * pair for turns a captured lead into a dead end at the order step.
+   */
+  const SOURCE_LANGUAGES = languages.map((lang) => lang.language_code);
+
+  /** Targets narrow to the pairs published for the chosen source. */
+  const TARGET_LANGUAGES = reference
+    ? targetsFor(reference, fromLang).map((lang) => lang.language_code)
+    : [];
+
   const resetAndClose = () => {
     onClose();
     // Reset after modal closes
     setTimeout(() => {
       setStep(1);
-      setFromLang("english");
-      setToLang("georgian");
+      setFromLang("en");
+      setToLang("ka");
       setNotary(null);
       setContactMethod(null);
       setPhone("");
       setSubmitting(false);
       setSubmitted(false);
-      setError(false);
     }, 300);
   };
 
@@ -76,52 +80,70 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
     setContactMethod(method);
 
     if (method === "whatsapp") {
+      trackCta("whatsapp", "popup");
       const msg = encodeURIComponent(
-        `Hi! I need a ${notary ? "certified " : ""}translation from ${displayNames[fromLang]} to ${displayNames[toLang]}.`
+        `Hi! I need a ${notary ? "certified " : ""}translation from ${nameOf(fromLang)} to ${nameOf(toLang)}.`
       );
-      window.open(`https://wa.me/${NOTARY_WHATSAPP}?text=${msg}`, "_blank");
+      window.open(`https://wa.me/${NOTARY_WHATSAPP}?text=${msg}`, "_blank", "noopener");
       resetAndClose();
       return;
     }
     if (method === "call") {
+      trackCta("phone", "popup");
       window.open(`tel:${NOTARY_PHONE}`, "_self");
       resetAndClose();
       return;
     }
     if (method === "email") {
-      const subject = encodeURIComponent(`Translation Request: ${displayNames[fromLang]} → ${displayNames[toLang]}`);
-      const body = encodeURIComponent(`Hello,\n\nI need a ${notary ? "certified " : ""}translation from ${displayNames[fromLang]} to ${displayNames[toLang]}.\n\nPlease send me a quote.\n\nThank you.`);
-      window.open(`mailto:info@th.com.ge?subject=${subject}&body=${body}`, "_self");
+      trackCta("email", "popup");
+      const subject = encodeURIComponent(`Translation Request: ${nameOf(fromLang)} → ${nameOf(toLang)}`);
+      const body = encodeURIComponent(
+        `Hello,\n\nI need a ${notary ? "certified " : ""}translation from ${nameOf(fromLang)} to ${nameOf(toLang)}.\n\nPlease send me a quote.\n\nThank you.`
+      );
+      window.open(`mailto:${SUPPORT_EMAIL}?subject=${subject}&body=${body}`, "_self");
       resetAndClose();
       return;
     }
-    // callback — stay on step 4, show phone input
+    // callback — stay on step 4 and show the free-text contact field
   };
 
+  /**
+   * Best-effort send (§9). The success state is shown either way: a failed send
+   * must never make a visitor who just handed over their number think it did not
+   * go through.
+   *
+   * The consequence is that a broken mail key loses leads silently — the only
+   * signal is the server log, so alert on it (or persist the lead before mailing
+   * it) rather than relying on this screen.
+   */
   const handleCallbackSubmit = async () => {
     if (!phone.trim()) return;
     setSubmitting(true);
-    setError(false);
+    trackCta("callback", "popup", { notarised: notary === true });
 
     try {
-      const res = await fetch("/api/contact", {
+      await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: "callback@suliko.ge",
-          subject: `Callback Request — ${displayNames[fromLang]} → ${displayNames[toLang]}${notary ? " (Notary)" : ""}`,
-          message: `Phone: ${phone}\nFrom: ${displayNames[fromLang]}\nTo: ${displayNames[toLang]}\nNotary: ${notary ? "Yes" : "No"}`,
+          subject: `Callback Request — ${nameOf(fromLang)} → ${nameOf(toLang)}${notary ? " (Notary)" : ""}`,
+          message: [
+            `Contact: ${phone.trim()}`,
+            `From: ${nameOf(fromLang)}`,
+            `To: ${nameOf(toLang)}`,
+            `Notary: ${notary ? "Yes" : "No"}`,
+            `Time (Tbilisi): ${new Date().toLocaleString("en-GB", { timeZone: "Asia/Tbilisi" })}`,
+          ].join("\n"),
         }),
       });
-
-      if (!res.ok) throw new Error("failed");
-      setSubmitted(true);
-      setTimeout(() => resetAndClose(), 2500);
     } catch {
-      setError(true);
-    } finally {
-      setSubmitting(false);
+      /* swallowed on purpose — see the note above */
     }
+
+    setSubmitted(true);
+    setSubmitting(false);
+    setTimeout(() => resetAndClose(), 2500);
   };
 
   const progressPct = ((step - 1) / (TOTAL_STEPS - 1)) * 100;
@@ -136,7 +158,9 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
               <span className="text-xs font-medium bg-white/20 rounded-full px-2 py-0.5">
                 {t("priceBadge")}
               </span>
-              <h2 className="text-base font-bold mt-2 leading-snug">{t("title")}</h2>
+              <DialogTitle className="text-base font-bold mt-2 leading-snug">
+                {t("title")}
+              </DialogTitle>
               <p className="text-xs text-blue-100 mt-0.5">{t("subtitle")}</p>
             </div>
             <button
@@ -163,31 +187,38 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
         </div>
 
         {/* Step body */}
+        {/* Enter-only animation, no AnimatePresence `exit`: an exit that never
+            settles under `mode="wait"` would freeze the popup on one step. */}
         <div className="px-5 py-5 min-h-[220px] flex flex-col">
-          <AnimatePresence mode="wait">
+          <div className="flex-1 flex flex-col">
             {/* STEP 1 — Source language */}
             {step === 1 && (
               <motion.div
                 key="step1"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2 }}
                 className="flex-1 flex flex-col"
               >
                 <h3 className="text-sm font-semibold text-foreground mb-3">{t("step1heading")}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {POPULAR_LANGUAGES.map((lang) => (
+                  {SOURCE_LANGUAGES.map((lang) => (
                     <button
                       key={lang}
                       type="button"
-                      onClick={() => setFromLang(lang)}
+                      onClick={() => {
+                        setFromLang(lang);
+                        // Drop a target the new source has no published pair with.
+                        if (reference && !targetsFor(reference, lang).some((l) => l.language_code === toLang)) {
+                          setToLang(targetsFor(reference, lang)[0]?.language_code ?? "");
+                        }
+                      }}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${fromLang === lang
                         ? "bg-suliko-default-color text-white border-suliko-default-color"
                         : "border-border text-foreground hover:border-suliko-default-color hover:text-suliko-default-color"
                         }`}
                     >
-                      {displayNames[lang]}
+                      {nameOf(lang)}
                     </button>
                   ))}
                 </div>
@@ -200,14 +231,12 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                 key="step2"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2 }}
                 className="flex-1 flex flex-col"
               >
                 <h3 className="text-sm font-semibold text-foreground mb-3">{t("step2heading")}</h3>
                 <div className="flex flex-wrap gap-2">
-                  {POPULAR_LANGUAGES.map((lang) => (
-                    lang !== fromLang &&
+                  {TARGET_LANGUAGES.map((lang) => (
                     <button
                       key={lang}
                       type="button"
@@ -217,7 +246,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                         : "border-border text-foreground hover:border-suliko-default-color hover:text-suliko-default-color"
                         }`}
                     >
-                      {displayNames[lang]}
+                      {nameOf(lang)}
                     </button>
                   ))}
                 </div>
@@ -230,7 +259,6 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                 key="step3"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2 }}
                 className="flex-1 flex flex-col"
               >
@@ -268,7 +296,6 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                 key="step4"
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.2 }}
                 className="flex-1 flex flex-col"
               >
@@ -283,9 +310,9 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
 
                     {/* Summary chip */}
                     <div className="mb-4 inline-flex items-center gap-1.5 text-xs text-muted-foreground bg-muted rounded-full px-3 py-1 self-start">
-                      <span>{displayNames[fromLang]}</span>
+                      <span>{nameOf(fromLang)}</span>
                       <span>→</span>
-                      <span>{displayNames[toLang]}</span>
+                      <span>{nameOf(toLang)}</span>
                       {notary && <span className="ml-1 text-suliko-default-color">• Notary</span>}
                     </div>
 
@@ -293,20 +320,19 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                       /* Callback phone input */
                       <div className="flex flex-col gap-3">
                         <input
-                          type="tel"
+                          type="text"
+                          inputMode="text"
+                          autoComplete="tel"
                           value={phone}
                           onChange={(e) => setPhone(e.target.value)}
-                          placeholder={t("callbackPhone")}
+                          placeholder={t("callbackContact")}
                           className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-suliko-default-color/40"
                         />
-                        {error && (
-                          <p className="text-xs text-destructive">{t("callbackError")}</p>
-                        )}
                         <button
                           type="button"
                           onClick={handleCallbackSubmit}
                           disabled={!phone.trim() || submitting}
-                          className="flex items-center justify-center gap-2 rounded-lg bg-suliko-default-color px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50 hover:bg-suliko-default-color] transition-colors"
+                          className="flex items-center justify-center gap-2 rounded-lg bg-suliko-default-color px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50 hover:bg-suliko-default-hover-color transition-colors"
                         >
                           {submitting ? (
                             <Loader2 className="h-4 w-4 animate-spin" />
@@ -364,7 +390,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                 )}
               </motion.div>
             )}
-          </AnimatePresence>
+          </div>
         </div>
 
         {/* Footer nav (steps 1–2 need Next; step 3–4 auto-advance or have their own buttons) */}
@@ -391,7 +417,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
             <button
               type="button"
               onClick={goNext}
-              className="flex items-center gap-1 rounded-lg bg-suliko-default-color px-4 py-2 text-sm font-semibold text-white hover:bg-suliko-default-color] transition-colors"
+              className="flex items-center gap-1 rounded-lg bg-suliko-default-color px-4 py-2 text-sm font-semibold text-white hover:bg-suliko-default-hover-color transition-colors"
             >
               {t("next")}
               <ChevronRight className="h-4 w-4" />

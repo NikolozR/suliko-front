@@ -22,12 +22,15 @@ export async function POST(request: NextRequest) {
     const sourceLanguage = (formData.get('source_language') as string) || '-';
     const targetLanguage = (formData.get('target_language') as string) || '-';
     const notarialCertification = (formData.get('notarial_certification') as string) || 'No';
+    // Set by the order wizard's email fallback: a full order description that
+    // stands on its own, so those submissions do not need an attachment.
+    const orderSummary = (formData.get('order_summary') as string) || '';
     const fileEntries = formData.getAll('files') as File[];
 
     if (!name || !email) {
       return NextResponse.json({ error: 'Missing required fields: name, email' }, { status: 400 });
     }
-    if (fileEntries.length === 0) {
+    if (fileEntries.length === 0 && !orderSummary) {
       return NextResponse.json({ error: 'At least one file is required' }, { status: 400 });
     }
 
@@ -38,7 +41,7 @@ export async function POST(request: NextRequest) {
       }))
     );
 
-    const fileList = fileEntries.map((f) => f.name).join(', ');
+    const fileList = fileEntries.map((f) => f.name).join(', ') || 'None';
 
     // 1. Forward to inbox with all details + attachments
     const inboxResult = await resend.emails.send({
@@ -56,6 +59,11 @@ export async function POST(request: NextRequest) {
         <p><strong>Target Language:</strong> ${targetLanguage}</p>
         <p><strong>Notarial Certification:</strong> ${notarialCertification}</p>
         <p><strong>Files:</strong> ${fileList}</p>
+        ${
+          orderSummary
+            ? `<h3>Order details</h3><pre style="font-family:monospace;white-space:pre-wrap">${orderSummary}</pre>`
+            : ''
+        }
       `,
       attachments,
     });

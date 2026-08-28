@@ -1,8 +1,10 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Shield, Clock, Zap, Upload, ChevronDown } from "lucide-react";
+import { Shield, Clock, Zap, ClipboardList, ChevronDown } from "lucide-react";
 import { forwardRef } from "react";
+import { DEFAULT_PRICING, fillPricingTokens } from "@/shared/utils/notaryPricing";
+import { scrollToPanelTab, scrollToSection } from "@/shared/utils/notaryScroll";
 
 const TRUST_BADGES = [
   { icon: Shield, key: "badge1" as const },
@@ -13,13 +15,14 @@ const TRUST_BADGES = [
 const NotaryHeroSection = forwardRef<HTMLElement>(function NotaryHeroSection(_, ref) {
   const t = useTranslations("NotaryPage.hero");
 
-  const scrollToPricing = () => {
-    document.getElementById("pricing")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  /** Marketing copy reads from the pricing config, so it cannot drift from it. */
+  const priced = (key: "heading" | "subheading" | "priceBadge") =>
+    fillPricingTokens(t(key), DEFAULT_PRICING);
 
-  const scrollToContact = () => {
-    document.getElementById("calculator")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const scrollToPricing = () => scrollToSection("pricing");
+
+  /** Scrolls to the panel, then opens the order tab — the main conversion path. */
+  const startOrder = () => scrollToPanelTab("order");
 
   return (
     <section ref={ref} id="notary-hero" className="relative flex min-h-[93.5vh] items-center overflow-hidden bg-slate-950">
@@ -53,29 +56,29 @@ const NotaryHeroSection = forwardRef<HTMLElement>(function NotaryHeroSection(_, 
                 {t("badge")}
               </div>
               <div className="inline-flex items-center gap-1.5 rounded-full border border-green-500/40 bg-green-500/10 px-4 py-1.5 text-sm font-semibold text-green-300 backdrop-blur-sm">
-                <span className="text-green-400">₾</span>
-                {t("priceBadge")}
+                <span className="text-green-400">{DEFAULT_PRICING.currency}</span>
+                {priced("priceBadge")}
               </div>
             </div>
 
             {/* Heading */}
             <h1 className="mb-6 text-3xl font-extrabold leading-tight tracking-tight text-white sm:text-4xl md:text-5xl lg:text-6xl">
-              {t("heading")}
+              {priced("heading")}
             </h1>
 
             {/* Subheading */}
             <p className="mb-10 text-base leading-relaxed text-slate-300 sm:text-lg md:text-xl">
-              {t("subheading")}
+              {priced("subheading")}
             </p>
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row sm:flex-wrap gap-4 w-full">
               <button
-                onClick={scrollToContact}
+                onClick={startOrder}
                 type="button"
-                className="inline-flex items-center justify-center gap-2 rounded-lg bg-suliko-default-color px-6 py-3.5 text-sm sm:text-base font-semibold text-white shadow-lg hover:bg-suliko-default-color] transition-colors duration-200 w-full sm:w-auto shrink-0 whitespace-normal text-center"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-suliko-default-color px-6 py-3.5 text-sm sm:text-base font-semibold text-white shadow-lg hover:bg-suliko-default-hover-color transition-colors duration-200 w-full sm:w-auto shrink-0 whitespace-normal text-center"
               >
-                <Upload className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
+                <ClipboardList className="h-4 w-4 sm:h-5 sm:w-5 shrink-0" />
                 {t("cta")}
               </button>
               <button

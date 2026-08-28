@@ -1,360 +1,599 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Calculator, X, Clock, Mail, Phone, ChevronDown, Plus, Trash2 } from "lucide-react";
-import { useTranslations } from "next-intl";
-import { useLocale } from "next-intl";
-import { languageTranslations, languages, languagePrices, type Language } from "@/shared/utils/notaryHelpers";
-import { NOTARY_PHONE } from "@/shared/constants/notary";
+import { useCallback, useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  Calculator,
+  Check,
+  ChevronDown,
+  Copy,
+  Info,
+  Loader2,
+  MessageCircle,
+  Plus,
+  Trash2,
+  X,
+} from "lucide-react";
+import { NOTARY_PHONE, NOTARY_WHATSAPP } from "@/shared/constants/notary";
+import { SUPPORT_EMAIL } from "@/shared/utils/notaryOrderConfig";
+import type { OrderReference } from "@/shared/utils/notaryOrderApi";
+import {
+  copyTypesFor,
+  displayLanguageName,
+  loadReference,
+  sourcesFor,
+  targetsFor,
+} from "@/shared/utils/notaryReferenceData";
+import { estimateOrder, formatMoney, type Estimate } from "@/shared/utils/notaryEstimate";
+import { scrollToPanelTab } from "@/shared/utils/notaryScroll";
+import {
+  trackCta,
+  trackPixelEvent,
+  triggerHotjarEvent,
+} from "@/shared/utils/notaryTracking";
 
-const PRICE_BREAKS = {
-  LARGE_ORDER: 100,
-  MEDIUM_ORDER: 50,
-  DISCOUNT_LARGE: 0.15,
-  DISCOUNT_MEDIUM: 0.10,
-} as const;
-
-type DocItem = {
+interface CalcDocument {
   id: number;
-  fromLang: Language;
-  toLang: Language;
-  pageCount: number | "";
-  notaryApproval: boolean;
-};
+  from: string;
+  to: string;
+  documentType: number | "";
+  pages: number | "";
+  notary: boolean;
+  copyType: string;
+}
 
-type DocResult = {
-  id: number;
-  number: number;
-  pageCount: number;
-  translationCost: number;
-  discount: number;
-  notaryCost: number;
-  subtotal: number;
-};
+let nextId = 2;
 
+/**
+ * Instant quote — handoff §6, priced entirely from the partner catalogue.
+ *
+ * It runs the same `estimateOrder` the wizard's review step runs, on the same
+ * `reference.php` data, so a quote and an order describe the same job at the
+ * same price. It quotes only pairs the partner actually publishes; there is no
+ * local rate card to drift from.
+ */
 export default function NotaryPriceCalculator() {
   const t = useTranslations("NotaryPage.calculator.priceCalc");
   const locale = useLocale();
 
-  const [isOpen, setIsOpen] = useState(false);
-  const [documents, setDocuments] = useState<DocItem[]>([
-    { id: 1, fromLang: "english", toLang: "georgian", pageCount: 1, notaryApproval: false },
+  const [reference, setReference] = useState<OrderReference | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [documents, setDocuments] = useState<CalcDocument[]>([
+    { id: 1, from: "", to: "", documentType: "", pages: 1, notary: false, copyType: "" },
   ]);
-  const [totalPrice, setTotalPrice] = useState(0);
-  const [deliveryTime, setDeliveryTime] = useState("");
-  const [breakdown, setBreakdown] = useState<DocResult[]>([]);
+  const [urgency, setUrgency] = useState("standard");
+  const [result, setResult] = useState<Estimate | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [copied, setCopied] = useState<"email" | "phone" | null>(null);
   const [touchStart, setTouchStart] = useState<number | null>(null);
   const [touchEnd, setTouchEnd] = useState<number | null>(null);
 
-  const displayNames = languageTranslations[locale] ?? languageTranslations.en;
+  useEffect(() => {
+    let mounted = true;
+    loadReference().then(({ reference: ref }) => {
+      if (!mounted) return;
+      setReference(ref);
+      setLoading(false);
 
-  const calculateDeliveryTime = (totalPages: number) => {
-    if (totalPages <= 10) return t("delivery90");
-    if (totalPages <= 40) return t("delivery180");
-    return t("deliveryCustom");
+      // Seed the first row with the cheapest published pair, so the panel opens
+      // on a real, quotable combination rather than an empty form.
+      const cheapest = [...ref.language_pairs].sort(
+        (a, b) => a.price_per_page - b.price_per_page
+      )[0];
+      const defaultType =
+        ref.document_types.find((d) => d.price_multiplier === 1) ?? ref.document_types[0];
+      const defaultCopy = copyTypesFor(ref, "regular")[0]?.value ?? "";
+
+      if (cheapest) {
+        setDocuments([
+          {
+            id: 1,
+            from: cheapest.source_language,
+            to: cheapest.target_language,
+            documentType: defaultType?.type_id ?? "",
+            pages: 1,
+            notary: false,
+            copyType: defaultCopy,
+          },
+        ]);
+      }
+      setUrgency(ref.urgency_levels[0]?.value ?? "standard");
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const patch = useCallback((id: number, update: Partial<CalcDocument>) => {
+    setDocuments((prev) => prev.map((doc) => (doc.id === id ? { ...doc, ...update } : doc)));
+  }, []);
+
+  /** Changing the source drops a target the catalogue no longer pairs with it. */
+  const changeSource = (doc: CalcDocument, from: string) => {
+    if (!reference) return;
+    const targets = targetsFor(reference, from);
+    const keep = targets.some((l) => l.language_code === doc.to);
+    patch(doc.id, { from, to: keep ? doc.to : (targets[0]?.language_code ?? "") });
   };
 
-  const calculateNotaryPrice = (pages: number) => {
-    let pricePerPage: number;
-    if (pages === 1) pricePerPage = 6;
-    else if (pages <= 10) pricePerPage = 4;
-    else if (pages <= 50) pricePerPage = 3;
-    else pricePerPage = 2;
-    return pricePerPage * pages * 1.18 + 5;
-  };
-
-  const getLanguagePairPrice = (from: Language, to: Language) => {
-    if (from === "georgian") return languagePrices[to];
-    if (to === "georgian") return languagePrices[from];
-    return Math.max(languagePrices[from], languagePrices[to]);
-  };
-
-  const calculateTranslationPrice = (basePrice: number, pages: number) => {
-    const cost = basePrice * pages;
-    let discount = 0;
-    if (pages >= PRICE_BREAKS.LARGE_ORDER) discount = cost * PRICE_BREAKS.DISCOUNT_LARGE;
-    else if (pages >= PRICE_BREAKS.MEDIUM_ORDER) discount = cost * PRICE_BREAKS.DISCOUNT_MEDIUM;
-    return { translationCost: cost - discount, discount };
+  const toggleNotary = (doc: CalcDocument) => {
+    if (!reference) return;
+    const notary = !doc.notary;
+    patch(doc.id, {
+      notary,
+      copyType: copyTypesFor(reference, notary ? "notary" : "regular")[0]?.value ?? "",
+    });
   };
 
   const addDocument = () => {
-    const newId = Math.max(...documents.map((d) => d.id)) + 1;
-    const first = documents[0];
-    setDocuments([
-      ...documents,
-      { id: newId, fromLang: first.fromLang, toLang: first.toLang, pageCount: 1, notaryApproval: first.notaryApproval },
-    ]);
+    const last = documents[documents.length - 1];
+    setDocuments((prev) => [...prev, { ...last, id: nextId++, pages: 1 }]);
   };
 
   const removeDocument = (id: number) => {
-    if (documents.length > 1) setDocuments(documents.filter((d) => d.id !== id));
+    if (documents.length > 1) setDocuments((prev) => prev.filter((doc) => doc.id !== id));
   };
 
-  const updateDoc = (id: number, patch: Partial<DocItem>) => {
-    setDocuments(documents.map((d) => (d.id === id ? { ...d, ...patch } : d)));
-  };
+  const handleCalculate = (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!reference) return;
 
-  const calculatePrice = (e: React.FormEvent) => {
-    e.preventDefault();
-    const results: DocResult[] = [];
-    let grand = 0;
-    let totalPages = 0;
+    const breakdown = estimateOrder(
+      reference,
+      documents.map((doc) => ({
+        fromLang: doc.from,
+        toLang: doc.to,
+        documentType: doc.documentType,
+        pages: typeof doc.pages === "number" ? doc.pages : 1,
+        copyType: doc.copyType,
+      })),
+      urgency
+    );
 
-    documents.forEach((doc, index) => {
-      const pages = doc.pageCount || 1;
-      const basePrice = getLanguagePairPrice(doc.fromLang, doc.toLang);
-      const { translationCost, discount } = calculateTranslationPrice(basePrice, pages);
-      const notaryCost = doc.notaryApproval ? calculateNotaryPrice(pages) : 0;
-      const subtotal = translationCost + notaryCost;
-      grand += subtotal;
-      totalPages += pages;
-      results.push({ id: doc.id, number: index + 1, pageCount: pages, translationCost, discount, notaryCost, subtotal });
-    });
-
-    setBreakdown(results);
-    setTotalPrice(grand);
-    setDeliveryTime(calculateDeliveryTime(totalPages));
+    setResult(breakdown);
     setIsOpen(true);
+
+    // Fires after the quote is produced, not at the top of the handler.
+    trackCta("calculator", "calculator", {
+      documents: documents.length,
+      pages: breakdown.lines.reduce((sum, l) => sum + l.pages, 0),
+      quoted_total: Number(breakdown.total.toFixed(2)),
+    });
+    triggerHotjarEvent("price_calculated");
+    trackPixelEvent("CalculatePrice", { value: Number(breakdown.total.toFixed(2)) });
   };
 
-  const copyToClipboard = async (text: string) => {
+  const copy = async (value: string, which: "email" | "phone") => {
     try {
-      await navigator.clipboard.writeText(text);
-    } catch (err) {
-      console.error("Failed to copy:", err);
+      await navigator.clipboard.writeText(value);
+      setCopied(which);
+      setTimeout(() => setCopied(null), 2000);
+      trackCta(which === "email" ? "email" : "phone", "calculator");
+      trackPixelEvent("CopyContact", { channel: which });
+    } catch {
+      /* clipboard permission denied — nothing useful to show */
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => setTouchStart(e.touches[0].clientY);
-  const handleTouchMove = (e: React.TouchEvent) => setTouchEnd(e.touches[0].clientY);
+  const nameOf = useCallback(
+    (code: string) =>
+      displayLanguageName(
+        reference?.languages.find((l) => l.language_code === code),
+        locale
+      ),
+    [reference, locale]
+  );
+
+  const whatsappLink = () => {
+    if (!result || !reference) return `https://wa.me/${NOTARY_WHATSAPP}`;
+    const lines = documents.map((doc, index) => {
+      const line = result.lines[index];
+      return `${index + 1}. ${nameOf(doc.from)} → ${nameOf(doc.to)}, ${line.pages} ${t(
+        "pagesShort"
+      )}${doc.notary ? ` (${t("notaryApproval")})` : ""}`;
+    });
+    const message = [
+      t("whatsappIntro"),
+      ...lines,
+      `${t("totalPrice")}: ${formatMoney(result.total, result.currency)}`,
+    ].join("\n");
+    return `https://wa.me/${NOTARY_WHATSAPP}?text=${encodeURIComponent(message)}`;
+  };
+
+  const money = (amount: number) =>
+    formatMoney(amount, result?.currency ?? reference?.currency ?? "GEL");
+
   const handleTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
-    if (touchStart - touchEnd < -100) setIsOpen(false);
+    if (touchStart !== null && touchEnd !== null && touchEnd - touchStart > 100) {
+      setIsOpen(false);
+    }
     setTouchStart(null);
     setTouchEnd(null);
   };
 
-  return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg px-3 py-4 sm:px-4 sm:py-5 md:px-6 md:py-8">
-      <form onSubmit={calculatePrice} className="space-y-4">
+  const selectClass =
+    "w-full appearance-none rounded-lg border border-border bg-card px-3 py-2 pr-9 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/25 disabled:opacity-50";
 
-        {/* Document cards */}
-        <div className="space-y-3">
-          {documents.map((doc, index) => (
+  if (loading || !reference) {
+    return (
+      <div className="flex items-center justify-center gap-3 py-12 text-muted-foreground">
+        <Loader2 className="h-5 w-5 animate-spin" />
+        <span className="text-sm">{t("loadingRates")}</span>
+      </div>
+    );
+  }
+
+  const sourceOptions = sourcesFor(reference);
+
+  return (
+    <div>
+      <form onSubmit={handleCalculate} className="space-y-4">
+        {documents.map((doc, index) => {
+          const targets = doc.from ? targetsFor(reference, doc.from) : [];
+          const notaryForms = copyTypesFor(reference, "notary");
+
+          return (
             <div
               key={doc.id}
-              className="bg-gray-50 dark:bg-slate-800 p-4 rounded-xl border-2 border-gray-200 dark:border-slate-700 space-y-4"
+              className="space-y-4 rounded-2xl border border-border bg-muted/30 p-4"
             >
-              {/* Card header */}
-              <div className="flex justify-between items-center">
-                <span className="font-medium text-gray-900 dark:text-white text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-semibold text-foreground">
                   {t("document")} #{index + 1}
                 </span>
                 {documents.length > 1 && (
                   <button
                     type="button"
                     onClick={() => removeDocument(doc.id)}
-                    className="flex items-center text-red-500 hover:text-red-700 transition-colors text-xs"
+                    className="flex items-center gap-1 text-xs text-red-500 transition-colors hover:text-red-600"
                   >
-                    <Trash2 className="w-3.5 h-3.5 mr-1" />
+                    <Trash2 className="h-3.5 w-3.5" />
                     {t("removeDocument")}
                   </button>
                 )}
               </div>
 
-              {/* Language selects */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {(
-                  [
-                    { label: t("sourceLanguage"), value: doc.fromLang, key: "fromLang" as const },
-                    { label: t("targetLanguage"), value: doc.toLang, key: "toLang" as const },
-                  ] as const
-                ).map(({ label, value, key }) => (
-                  <div key={key} className="space-y-1">
-                    <label className="block text-xs font-medium text-gray-600 dark:text-slate-400">{label}</label>
-                    <div className="relative">
-                      <select
-                        value={value}
-                        onChange={(e) => updateDoc(doc.id, { [key]: e.target.value as Language })}
-                        style={{ backgroundImage: "none" }}
-                        className="w-full appearance-none bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors text-sm"
-                      >
-                        {languages.map((lang) => (
-                          <option key={lang} value={lang}>
-                            {displayNames[lang] ?? lang}
-                          </option>
-                        ))}
-                      </select>
-                      <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400 pointer-events-none" />
-                    </div>
+              {/* Languages — only pairs the catalogue publishes */}
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                    {t("sourceLanguage")}
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={doc.from}
+                      onChange={(e) => changeSource(doc, e.target.value)}
+                      style={{ backgroundImage: "none" }}
+                      className={selectClass}
+                    >
+                      {sourceOptions.map((lang) => (
+                        <option key={lang.language_code} value={lang.language_code}>
+                          {displayLanguageName(lang, locale)}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                   </div>
-                ))}
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                    {t("targetLanguage")}
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={doc.to}
+                      onChange={(e) => patch(doc.id, { to: e.target.value })}
+                      style={{ backgroundImage: "none" }}
+                      className={selectClass}
+                    >
+                      {targets.map((lang) => (
+                        <option key={lang.language_code} value={lang.language_code}>
+                          {displayLanguageName(lang, locale)}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  </div>
+                </div>
               </div>
 
-              {/* Page count */}
-              <div className="space-y-1">
-                <label className="block text-xs font-medium text-gray-600 dark:text-slate-400">{t("pageCount")}</label>
-                <input
-                  type="number"
-                  min="1"
-                  value={doc.pageCount}
-                  onChange={(e) => {
-                    const raw = e.target.value;
-                    if (raw === "") {
-                      updateDoc(doc.id, { pageCount: "" });
-                      return;
-                    }
-                    const parsed = parseInt(raw, 10);
-                    if (!Number.isNaN(parsed)) updateDoc(doc.id, { pageCount: Math.max(1, parsed) });
-                  }}
-                  onBlur={() => {
-                    if (doc.pageCount === "") updateDoc(doc.id, { pageCount: 1 });
-                  }}
-                  className="w-full px-3 py-2 rounded-lg border border-gray-200 dark:border-slate-600 bg-white dark:bg-slate-900 text-gray-900 dark:text-slate-100 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-colors text-sm"
-                />
+              {/* Document type + pages */}
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                    {t("documentType")}
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={doc.documentType === "" ? "" : String(doc.documentType)}
+                      onChange={(e) =>
+                        patch(doc.id, {
+                          documentType: e.target.value === "" ? "" : Number(e.target.value),
+                        })
+                      }
+                      style={{ backgroundImage: "none" }}
+                      className={selectClass}
+                    >
+                      {reference.document_types.map((type) => (
+                        <option key={type.type_id} value={type.type_id}>
+                          {locale === "ka" && type.type_name_georgian
+                            ? type.type_name_georgian
+                            : type.type_name}
+                        </option>
+                      ))}
+                    </select>
+                    <ChevronDown className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                    {t("pageCount")}
+                  </label>
+                  <input
+                    type="number"
+                    min={1}
+                    inputMode="numeric"
+                    value={doc.pages}
+                    onChange={(e) => {
+                      const raw = e.target.value;
+                      if (raw === "") {
+                        patch(doc.id, { pages: "" });
+                        return;
+                      }
+                      const parsed = parseInt(raw, 10);
+                      if (!Number.isNaN(parsed)) patch(doc.id, { pages: Math.max(1, parsed) });
+                    }}
+                    onBlur={() => {
+                      if (doc.pages === "") patch(doc.id, { pages: 1 });
+                    }}
+                    className="w-full rounded-lg border border-border bg-card px-3 py-2 text-sm text-foreground outline-none transition-colors focus:border-primary focus:ring-2 focus:ring-primary/25"
+                  />
+                </div>
               </div>
 
-              {/* Notary checkbox */}
-              <div
-                onClick={() => updateDoc(doc.id, { notaryApproval: !doc.notaryApproval })}
-                className="flex items-center bg-white dark:bg-slate-900 p-3 rounded-lg border border-gray-200 dark:border-slate-600 hover:border-blue-200 transition-colors cursor-pointer"
+              {/* Notary toggle */}
+              <button
+                type="button"
+                onClick={() => toggleNotary(doc)}
+                role="checkbox"
+                aria-checked={doc.notary}
+                className={`flex w-full items-center gap-3 rounded-lg border px-3 py-3 text-left transition-colors ${
+                  doc.notary
+                    ? "border-suliko-default-color bg-suliko-default-color/10"
+                    : "border-border bg-card hover:border-suliko-default-color/40"
+                }`}
               >
-                <input
-                  type="checkbox"
-                  checked={doc.notaryApproval}
-                  onChange={(e) => updateDoc(doc.id, { notaryApproval: e.target.checked })}
-                  onClick={(e) => e.stopPropagation()}
-                  className="w-4 h-4 text-blue-600 border-2 border-gray-300 rounded focus:ring-blue-500 cursor-pointer"
-                />
-                <label className="ml-2 text-gray-700 dark:text-slate-300 cursor-pointer select-none text-sm">
-                  {t("notaryApproval")}
-                </label>
-              </div>
-            </div>
-          ))}
-        </div>
+                <span
+                  className={`flex h-4 w-4 shrink-0 items-center justify-center rounded border-2 transition-colors ${
+                    doc.notary
+                      ? "border-suliko-default-color bg-suliko-default-color"
+                      : "border-muted-foreground/40"
+                  }`}
+                >
+                  {doc.notary && <Check className="h-3 w-3 text-white" />}
+                </span>
+                <span className="text-sm text-foreground">{t("notaryApproval")}</span>
+              </button>
 
-        {/* Add Document button */}
+              {/* Notary forms — the partner's own copy_type codes */}
+              {doc.notary && (
+                <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  {notaryForms.map((form) => (
+                    <button
+                      key={form.value}
+                      type="button"
+                      onClick={() => patch(doc.id, { copyType: form.value })}
+                      aria-pressed={doc.copyType === form.value}
+                      className={`rounded-lg border px-3 py-2 text-left text-xs font-medium transition-colors ${
+                        doc.copyType === form.value
+                          ? "border-suliko-default-color bg-suliko-default-color/10 text-suliko-default-color"
+                          : "border-border bg-card text-foreground hover:border-suliko-default-color/40"
+                      }`}
+                    >
+                      {form.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          );
+        })}
+
         <button
           type="button"
           onClick={addDocument}
-          className="w-full flex items-center justify-center space-x-2 py-3 border-2 border-dashed border-gray-300 dark:border-slate-600 rounded-xl text-gray-500 dark:text-slate-400 hover:border-blue-400 hover:text-blue-500 transition-colors"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-suliko-default-color/50 hover:text-suliko-default-color"
         >
-          <Plus className="w-4 h-4" />
-          <span className="text-sm font-medium">{t("addDocument")}</span>
+          <Plus className="h-4 w-4" />
+          {t("addDocument")}
         </button>
 
-        {/* Calculate button */}
+        {/* Delivery speed */}
+        <div>
+          <label className="mb-2 block text-xs font-medium text-muted-foreground">
+            {t("urgency")}
+          </label>
+          <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+            {reference.urgency_levels.map((level) => {
+              const surcharge = Math.round((level.multiplier - 1) * 100);
+              return (
+                <button
+                  key={level.value}
+                  type="button"
+                  onClick={() => setUrgency(level.value)}
+                  aria-pressed={urgency === level.value}
+                  className={`rounded-lg border px-3 py-2 text-left text-xs font-medium transition-colors ${
+                    urgency === level.value
+                      ? "border-suliko-default-color bg-suliko-default-color/10 text-suliko-default-color"
+                      : "border-border bg-card text-foreground hover:border-suliko-default-color/40"
+                  }`}
+                >
+                  {level.label}
+                  {surcharge > 0 && <span className="ml-1 font-bold">+{surcharge}%</span>}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         <button
           type="submit"
-          className="w-full bg-linear-to-r from-blue-500 to-indigo-500 text-white py-4 px-6 rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-3 font-medium shadow-lg"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-suliko-default-color px-6 py-4 font-semibold text-white shadow-sm transition-colors hover:bg-suliko-default-hover-color"
         >
-          <Calculator className="w-4 h-4 sm:w-5 sm:h-5" />
+          <Calculator className="h-5 w-5" />
           <span className="text-sm sm:text-base">{t("calculate")}</span>
         </button>
       </form>
 
-      {/* Results modal */}
-      <AnimatePresence>
-        {isOpen && (
+      {/* Results — bottom sheet on mobile, dialog on desktop */}
+      {isOpen && result && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-0 backdrop-blur-sm md:items-center md:p-4"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setIsOpen(false);
+          }}
+        >
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-end md:items-center justify-center p-4"
-            onClick={(e) => { if (e.target === e.currentTarget) setIsOpen(false); }}
+            initial={{ y: "100%" }}
+            animate={{ y: 0 }}
+            transition={{ type: "spring", damping: 26, stiffness: 220 }}
+            className="flex max-h-[88vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl bg-card shadow-2xl md:rounded-2xl"
+            onTouchStart={(e) => setTouchStart(e.touches[0].clientY)}
+            onTouchMove={(e) => setTouchEnd(e.touches[0].clientY)}
+            onTouchEnd={handleTouchEnd}
           >
-            <motion.div
-              initial={{ y: "100%" }}
-              animate={{ y: 0 }}
-              exit={{ y: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="bg-white dark:bg-slate-900 w-full max-w-md rounded-t-2xl md:rounded-2xl shadow-2xl overflow-hidden max-h-[85vh] flex flex-col"
-              onTouchStart={handleTouchStart}
-              onTouchMove={handleTouchMove}
-              onTouchEnd={handleTouchEnd}
-            >
-              {/* Header */}
-              <div className="flex justify-between items-center px-4 py-4 sm:p-6 border-b border-gray-200 dark:border-slate-700 shrink-0">
-                <h3 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white">{t("translationDetails")}</h3>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-full transition-colors"
-                >
-                  <X className="w-6 h-6 text-gray-500" />
-                </button>
-              </div>
+            <div className="flex justify-center pt-2 md:hidden">
+              <span className="h-1 w-10 rounded-full bg-muted-foreground/30" />
+            </div>
 
-              {/* Scrollable body */}
-              <div className="p-4 sm:p-6 space-y-4 overflow-y-auto">
+            <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-4 sm:px-6">
+              <h3 className="text-lg font-bold text-foreground sm:text-xl">
+                {t("translationDetails")}
+              </h3>
+              <button
+                type="button"
+                onClick={() => setIsOpen(false)}
+                aria-label={t("close")}
+                className="rounded-full p-2 transition-colors hover:bg-muted"
+              >
+                <X className="h-5 w-5 text-muted-foreground" />
+              </button>
+            </div>
 
-                {/* Per-document breakdown */}
-                {breakdown.map((doc) => (
-                  <div key={doc.id} className="bg-gray-50 dark:bg-slate-800 p-4 rounded-xl space-y-2">
-                    <div className="flex justify-between items-center border-b border-gray-200 dark:border-slate-700 pb-2">
-                      <span className="font-semibold text-gray-900 dark:text-white text-sm">
-                        {t("document")} #{doc.number} &mdash; {doc.pageCount} {t("pageCount").toLowerCase()}
+            <div className="space-y-4 overflow-y-auto p-4 sm:p-6">
+              {result.lines.map((line, index) => {
+                const doc = documents[index];
+                return (
+                  <div key={doc.id} className="space-y-2 rounded-xl bg-muted/40 p-4">
+                    <div className="flex items-center justify-between border-b border-border pb-2">
+                      <span className="text-sm font-semibold text-foreground">
+                        {t("document")} #{index + 1} — {line.pages} {t("pagesShort")}
                       </span>
-                      <span className="font-bold text-blue-600 text-sm">{doc.subtotal.toFixed(2)} ₾</span>
+                      <span className="text-sm font-bold text-suliko-default-color">
+                        {money(line.subtotal)}
+                      </span>
                     </div>
-                    <div className="space-y-1 text-sm">
-                      <div className="flex justify-between">
-                        <span className="text-gray-500 dark:text-slate-400">{t("translationCost")}</span>
-                        <span className="dark:text-white">{doc.translationCost.toFixed(2)} ₾</span>
-                      </div>
-                      {doc.discount > 0 && (
-                        <div className="flex justify-between text-green-600">
-                          <span>{t("discount")}</span>
-                          <span>-{doc.discount.toFixed(2)} ₾</span>
-                        </div>
-                      )}
-                      {doc.notaryCost > 0 && (
-                        <div className="flex justify-between">
-                          <span className="text-gray-500 dark:text-slate-400">{t("notaryCost")}</span>
-                          <span className="dark:text-white">{doc.notaryCost.toFixed(2)} ₾</span>
-                        </div>
-                      )}
-                    </div>
+                    <p className="text-xs text-muted-foreground">
+                      {nameOf(doc.from)} → {nameOf(doc.to)} · {money(line.pricePerPage)}/
+                      {t("pageSingular")}
+                      {line.multiplier !== 1 && ` × ${line.multiplier}`}
+                    </p>
                   </div>
-                ))}
+                );
+              })}
 
-                {/* Grand total */}
-                <div className="flex justify-between text-xl font-bold text-blue-600 pt-2 border-t border-gray-200 dark:border-slate-700">
-                  <span>{t("totalPrice")}</span>
-                  <span>{totalPrice.toFixed(2)} ₾</span>
+              {result.urgencyCharge > 0 && (
+                <div className="flex justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {t("urgencySurcharge")} (+{result.urgencyPercent}%)
+                  </span>
+                  <span className="text-foreground">{money(result.urgencyCharge)}</span>
                 </div>
+              )}
 
-                {/* Delivery time */}
-                <div className="flex items-center text-gray-600 dark:text-slate-400 bg-gray-50 dark:bg-slate-800 p-4 rounded-xl">
-                  <Clock className="w-5 h-5 mr-2 shrink-0" />
-                  <span>{deliveryTime}</span>
-                </div>
-
-                {/* CTA buttons */}
-                <div className="grid gap-4">
-                  <button
-                    onClick={() => copyToClipboard("info@th.com.ge")}
-                    className="w-full bg-linear-to-r from-blue-500 to-indigo-500 text-white py-4 rounded-xl hover:from-blue-600 hover:to-indigo-600 transition-all flex items-center justify-center space-x-3"
-                  >
-                    <Mail className="w-5 h-5" />
-                    <span>{t("copyEmail")}</span>
-                  </button>
-                  <button
-                    onClick={() => copyToClipboard(NOTARY_PHONE)}
-                    className="w-full bg-green-600 text-white py-4 rounded-xl hover:bg-green-700 transition-colors flex items-center justify-center space-x-3"
-                  >
-                    <Phone className="w-5 h-5" />
-                    <span>{t("copyPhone")}</span>
-                  </button>
-                </div>
-
-                <div className="md:hidden text-center text-sm text-gray-500">{t("swipeDown")}</div>
+              <div className="flex justify-between border-t border-border pt-3 text-xl font-bold">
+                <span className="text-foreground">{t("totalPrice")}</span>
+                <span className="text-suliko-default-color">{money(result.total)}</span>
               </div>
-            </motion.div>
+
+              {/*
+                Notarisation is priced by the partner from the copy_type and the
+                formula is not published, so it is never guessed at here.
+              */}
+              {result.hasNotarized && (
+                <div className="flex items-start gap-3 rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3">
+                  <Info className="mt-0.5 h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" />
+                  <p className="text-xs leading-relaxed text-amber-800 dark:text-amber-200">
+                    {t("notarySeparate")}
+                  </p>
+                </div>
+              )}
+
+              <p className="text-xs leading-relaxed text-muted-foreground">
+                {t("estimateNote")}
+              </p>
+
+              <div className="grid gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setIsOpen(false);
+                    scrollToPanelTab("order");
+                  }}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-suliko-default-color py-3.5 font-semibold text-white transition-colors hover:bg-suliko-default-hover-color"
+                >
+                  {t("orderThis")}
+                </button>
+                <a
+                  href={whatsappLink()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => trackCta("whatsapp", "calculator")}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl bg-green-600 py-3.5 font-semibold text-white transition-colors hover:bg-green-700"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  {t("sendOnWhatsapp")}
+                </a>
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => copy(SUPPORT_EMAIL, "email")}
+                    className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                  >
+                    {copied === "email" ? (
+                      <Check className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                    {copied === "email" ? t("copied") : t("copyEmail")}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => copy(NOTARY_PHONE, "phone")}
+                    className="flex items-center justify-center gap-2 rounded-xl border border-border bg-card py-3 text-sm font-medium text-foreground transition-colors hover:bg-muted"
+                  >
+                    {copied === "phone" ? (
+                      <Check className="h-4 w-4 text-green-600" />
+                    ) : (
+                      <Copy className="h-4 w-4" />
+                    )}
+                    {copied === "phone" ? t("copied") : t("copyPhone")}
+                  </button>
+                </div>
+              </div>
+
+              <p className="text-center text-xs text-muted-foreground md:hidden">
+                {t("swipeDown")}
+              </p>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </motion.div>
+      )}
     </div>
   );
 }
