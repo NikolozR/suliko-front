@@ -38,6 +38,53 @@ html {
   font-family: 'Main Font', sans-serif;
 }
 
+/* ---------------------------------------------------------------------------
+   Georgian (Mkhedruli) line metrics.
+
+   'Main Font' (bpg_mrgvlovani_caps) needs a 1.38 line-height — measured, and
+   consistent from 24px to 60px. Tailwind's leading-none/tight/snug are all
+   below that, so the glyph ink overflows its line box and any ancestor with
+   `overflow: hidden` (the notary hero, for one) slices the descenders off.
+
+   It shows up intermittently in Safari because `font-display: swap` means the
+   line box is first computed against the fallback sans-serif, which does fit
+   1.25 — the clipping only appears once the Georgian face swaps in, so whether
+   you see it depends on the font cache.
+
+   Scoped to `lang="ka"`, and only to the leadings that are actually too tight,
+   so Latin locales and looser leadings are untouched. Specificity beats the
+   bare utility class, so no !important is needed.
+   --------------------------------------------------------------------------- */
+html[lang='ka'] .leading-none,
+html[lang='ka'] .leading-tight,
+html[lang='ka'] .leading-snug {
+  line-height: 1.45;
+}
+
+/* Tailwind's font-size utilities carry their own line-height (`text-2xl` is
+   1.2), so headings need covering by element too — not just the leading-*
+   classes. The element selector outranks the utility class, and 1.45 leaves
+   headroom over the 1.38–1.40 the face actually needs at every size. */
+html[lang='ka'] :is(h1, h2, h3, h4) {
+  line-height: 1.45;
+}
+
+/* Negative tracking crowds Mkhedruli, which has no capital/lowercase contrast
+   to absorb it. */
+html[lang='ka'] .tracking-tight,
+html[lang='ka'] .tracking-tighter {
+  letter-spacing: normal;
+}
+
+/* Georgian words run long and have no hyphenation rules here, so an
+   unbreakable word spills out of its column instead of wrapping. */
+html[lang='ka'] h1,
+html[lang='ka'] h2,
+html[lang='ka'] h3,
+html[lang='ka'] h4 {
+  overflow-wrap: break-word;
+}
+
 .ck *{
   font-family: 'Secondary Font', sans-serif;
 }

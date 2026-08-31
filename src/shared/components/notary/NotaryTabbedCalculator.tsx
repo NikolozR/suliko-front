@@ -103,12 +103,8 @@ export default function NotaryTabbedCalculator() {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.25 }}
             >
-              <div className="mb-5 text-center">
-                <h3 className="text-xl font-bold text-foreground sm:text-2xl">
-                  {t("orderTitle")}
-                </h3>
-                <p className="mt-1 text-sm text-muted-foreground">{t("orderSub")}</p>
-              </div>
+              {/* No heading here: the wizard renders its own full-bleed step
+                  header, which would collide with one stacked above it. */}
               <NotaryOrderWizard />
             </motion.div>
           )}

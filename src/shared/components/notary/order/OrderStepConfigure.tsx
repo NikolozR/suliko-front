@@ -1,7 +1,21 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { useLocale, useTranslations } from "next-intl";
-import { FileText, Plus, Trash2, Truck, Zap } from "lucide-react";
+import {
+  BadgeCheck,
+  CalendarDays,
+  Clock,
+  Copy,
+  FileStack,
+  FileText,
+  Languages,
+  Plus,
+  Stamp,
+  Trash2,
+  Truck,
+  Zap,
+} from "lucide-react";
 import type { OrderReference } from "@/shared/utils/notaryOrderApi";
 import {
   copyTypesFor,
@@ -14,12 +28,15 @@ import { currencySymbol } from "@/shared/utils/notaryEstimate";
 import type { OrderDocument, OrderState, ServiceType, StepErrors } from "./orderState";
 import { firstCopyTypeFor } from "./orderState";
 import {
-  CheckTile,
+  CheckRow,
   FieldError,
+  IconHeading,
+  IconTile,
   NumberField,
-  SectionTitle,
   SelectField,
-  Tile,
+  ToggleRow,
+  splitLabel,
+  type BadgeTone,
 } from "./orderUi";
 
 interface Props {
@@ -33,6 +50,21 @@ interface Props {
   onToggleHandover: (value: string) => void;
 }
 
+/** Icons keyed on the partner's own `copy_type` codes, with a safe default. */
+const COPY_TYPE_ICONS: Record<string, ReactNode> = {
+  original: <FileText className="h-5 w-5 text-suliko-default-color" />,
+  plain: <Copy className="h-5 w-5 text-teal-500" />,
+  notary_original: <Stamp className="h-5 w-5 text-amber-500" />,
+  notary_copy: <FileStack className="h-5 w-5 text-amber-500" />,
+  notary_certified: <BadgeCheck className="h-5 w-5 text-emerald-500" />,
+};
+
+const URGENCY_ICONS: Record<string, ReactNode> = {
+  standard: <CalendarDays className="h-5 w-5 text-suliko-default-color" />,
+  express: <Truck className="h-5 w-5 text-amber-500" />,
+  urgent: <Zap className="h-5 w-5 text-red-500" />,
+};
+
 export default function OrderStepConfigure({
   state,
   reference,
@@ -45,6 +77,7 @@ export default function OrderStepConfigure({
 }: Props) {
   const t = useTranslations("NotaryPage.order");
   const locale = useLocale();
+  const symbol = currencySymbol(reference.currency);
 
   // Only languages the catalogue actually publishes a pair for.
   const sourceOptions = sourcesFor(reference).map((lang) => ({
@@ -70,6 +103,16 @@ export default function OrderStepConfigure({
     });
   };
 
+  /** Free is reassuring, a small uplift is a nudge, a big one is a warning. */
+  const badgeFor = (multiplier: number): { text: string; tone: BadgeTone } => {
+    const surcharge = Math.round((multiplier - 1) * 100);
+    if (surcharge <= 0) return { text: t("basePrice"), tone: "green" };
+    return {
+      text: t("surchargeBadge", { percent: surcharge }),
+      tone: surcharge > 50 ? "red" : "amber",
+    };
+  };
+
   return (
     <div className="space-y-6">
       {state.documents.map((doc, index) => {
@@ -78,43 +121,38 @@ export default function OrderStepConfigure({
         const copyTypes = copyTypesFor(reference, doc.serviceType);
 
         return (
-          <div
-            key={doc.id}
-            className="rounded-2xl border border-border bg-muted/30 p-4 space-y-4"
-          >
+          <div key={doc.id} className="rounded-2xl border border-border bg-card p-4 sm:p-5">
             {/* Card header */}
-            <div className="flex items-center justify-between">
+            <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
               <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
                 <FileText className="h-4 w-4 text-suliko-default-color" />
-                {t("document")} #{index + 1}
+                {t("document")} {index + 1}
               </span>
               {state.documents.length > 1 && (
                 <button
                   type="button"
                   onClick={() => onRemoveDocument(doc.id)}
-                  className="flex items-center gap-1 text-xs text-red-500 transition-colors hover:text-red-600"
+                  aria-label={t("remove")}
+                  className="rounded-lg border border-red-200 bg-red-50 p-1.5 text-red-500 transition-colors hover:bg-red-100 dark:border-red-900 dark:bg-red-950/40 dark:hover:bg-red-950"
                 >
-                  <Trash2 className="h-3.5 w-3.5" />
-                  {t("remove")}
+                  <Trash2 className="h-4 w-4" />
                 </button>
               )}
             </div>
 
-            {/* Languages */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {/* From · To · Document type · Pages — one row on wide screens */}
+            <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
               <SelectField
-                required
                 label={t("fromLanguage")}
-                placeholder={t("selectLanguage")}
+                placeholder={t("fromPlaceholder")}
                 value={doc.fromLang}
                 options={sourceOptions}
                 error={errors[`${prefix}.fromLang`]}
                 onChange={(value) => handleSourceChange(doc, value)}
               />
               <SelectField
-                required
                 label={t("toLanguage")}
-                placeholder={doc.fromLang ? t("selectLanguage") : t("selectSourceFirst")}
+                placeholder={doc.fromLang ? t("toPlaceholder") : t("selectSourceFirst")}
                 value={doc.toLang}
                 disabled={!doc.fromLang}
                 options={targets.map((lang) => ({
@@ -124,12 +162,7 @@ export default function OrderStepConfigure({
                 error={errors[`${prefix}.toLang`]}
                 onChange={(value) => onPatchDocument(doc.id, { toLang: value })}
               />
-            </div>
-
-            {/* Document type + pages */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <SelectField
-                required
                 label={t("documentType")}
                 placeholder={t("selectType")}
                 value={doc.documentType === "" ? "" : String(doc.documentType)}
@@ -148,7 +181,6 @@ export default function OrderStepConfigure({
                 }
               />
               <NumberField
-                required
                 label={t("pages")}
                 min={MIN_PAGES}
                 max={MAX_PAGES}
@@ -159,35 +191,44 @@ export default function OrderStepConfigure({
             </div>
 
             {/* Service type — the UI split of copy_type */}
-            <div>
-              <SectionTitle>{t("serviceType")}</SectionTitle>
-              <div className="grid grid-cols-2 gap-2">
-                <Tile
+            <div className="mb-5">
+              <p className="mb-2 text-sm font-medium text-foreground">{t("serviceType")}</p>
+              <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                <IconTile
                   selected={doc.serviceType === "regular"}
                   onClick={() => handleServiceTypeChange(doc, "regular")}
+                  icon={<Languages className="h-5 w-5 text-suliko-default-color" />}
                   title={t("serviceRegular")}
-                  subtitle={t("serviceRegularHint")}
+                  caption={t("serviceRegularHint")}
                 />
-                <Tile
+                <IconTile
                   selected={doc.serviceType === "notary"}
                   onClick={() => handleServiceTypeChange(doc, "notary")}
+                  icon={<Stamp className="h-5 w-5 text-amber-500" />}
                   title={t("serviceNotary")}
-                  subtitle={t("serviceNotaryHint")}
+                  caption={t("serviceNotaryHint")}
                 />
               </div>
             </div>
 
             {/* Copy type */}
-            <div>
-              <SectionTitle>{t("copyType")}</SectionTitle>
+            <div className="border-t border-border pt-4">
+              <p className="mb-2 text-sm font-medium text-foreground">{t("copyType")}</p>
               <div
-                className={`grid gap-2 ${GRID_COLS[Math.min(copyTypes.length, 3)] ?? GRID_COLS[1]}`}
+                className={`grid gap-3 ${
+                  GRID_COLS[Math.min(copyTypes.length, 3)] ?? GRID_COLS[1]
+                }`}
               >
                 {copyTypes.map((copyType) => (
-                  <Tile
+                  <IconTile
                     key={copyType.value}
                     selected={doc.copyType === copyType.value}
                     onClick={() => onPatchDocument(doc.id, { copyType: copyType.value })}
+                    icon={
+                      COPY_TYPE_ICONS[copyType.value] ?? (
+                        <FileText className="h-5 w-5 text-suliko-default-color" />
+                      )
+                    }
                     title={copyType.label}
                   />
                 ))}
@@ -199,65 +240,82 @@ export default function OrderStepConfigure({
       })}
 
       {/* Add document */}
-      <button
-        type="button"
-        onClick={onAddDocument}
-        className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-suliko-default-color/50 hover:text-suliko-default-color"
-      >
-        <Plus className="h-4 w-4" />
-        {t("addDocument")}
-      </button>
+      <div className="text-center">
+        <button
+          type="button"
+          onClick={onAddDocument}
+          className="inline-flex items-center gap-2 rounded-full border border-suliko-default-color/50 bg-card px-5 py-2 text-sm font-semibold text-suliko-default-color transition-colors hover:bg-suliko-default-color/10"
+        >
+          <Plus className="h-4 w-4" />
+          {t("addDocument")}
+        </button>
+        <p className="mt-2 text-xs text-muted-foreground">{t("addDocumentHint")}</p>
+      </div>
 
       {/* Delivery speed */}
-      <div>
-        <SectionTitle hint={t("urgencyHint")}>
-          <span className="flex items-center gap-1.5">
-            <Zap className="h-4 w-4 text-suliko-default-color" />
-            {t("urgency")}
-          </span>
-        </SectionTitle>
+      <div className="border-t border-border pt-6">
+        <IconHeading icon={<Clock className="h-5 w-5 text-suliko-default-color" />}>
+          {t("urgency")}
+        </IconHeading>
         <div
-          className={`grid gap-2 ${
+          className={`grid gap-3 ${
             GRID_COLS[Math.min(reference.urgency_levels.length, 3)] ?? GRID_COLS[1]
           }`}
         >
           {reference.urgency_levels.map((level) => {
-            const surcharge = Math.round((level.multiplier - 1) * 100);
+            const { title, detail } = splitLabel(level.label);
+            const badge = badgeFor(level.multiplier);
             return (
-              <Tile
+              <IconTile
                 key={level.value}
                 selected={state.urgency === level.value}
                 onClick={() => onSetUrgency(level.value)}
-                title={level.label}
-                badge={surcharge > 0 ? `+${surcharge}%` : undefined}
+                icon={
+                  URGENCY_ICONS[level.value] ?? (
+                    <Clock className="h-5 w-5 text-suliko-default-color" />
+                  )
+                }
+                title={title}
+                caption={detail}
+                badge={badge.text}
+                badgeTone={badge.tone}
               />
             );
           })}
         </div>
       </div>
 
-      {/* Handover */}
-      <div>
-        <SectionTitle hint={t("handoverHint")}>
-          <span className="flex items-center gap-1.5">
-            <Truck className="h-4 w-4 text-suliko-default-color" />
-            {t("handover")}
-          </span>
-        </SectionTitle>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {reference.handover_methods.map((method) => (
-            <CheckTile
-              key={method.value}
-              checked={state.handover.includes(method.value)}
-              onToggle={() => onToggleHandover(method.value)}
-              title={method.label}
-              badge={
-                method.extra_cost > 0
-                  ? `+${method.extra_cost} ${currencySymbol(reference.currency)}`
-                  : undefined
-              }
-            />
-          ))}
+      {/* Delivery service */}
+      <div className="border-t border-border pt-6">
+        <IconHeading icon={<Truck className="h-5 w-5 text-suliko-default-color" />}>
+          {t("handover")}
+        </IconHeading>
+        <div className="space-y-0.5">
+          {reference.handover_methods.map((method) => {
+            const checked = state.handover.includes(method.value);
+            const label =
+              method.extra_cost > 0
+                ? `${method.label} (+${symbol}${method.extra_cost})`
+                : method.label;
+
+            // A method that adds a charge gets a switch rather than a tick box,
+            // so it never reads as a free default.
+            return method.extra_cost > 0 ? (
+              <ToggleRow
+                key={method.value}
+                checked={checked}
+                onToggle={() => onToggleHandover(method.value)}
+                label={label}
+              />
+            ) : (
+              <CheckRow
+                key={method.value}
+                checked={checked}
+                onToggle={() => onToggleHandover(method.value)}
+                label={label}
+              />
+            );
+          })}
         </div>
         <FieldError message={errors.handover} />
       </div>
