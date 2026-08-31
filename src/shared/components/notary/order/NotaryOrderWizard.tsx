@@ -3,7 +3,17 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
-import { AlertTriangle, ArrowLeft, ArrowRight, Loader2, Send } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  FileText,
+  Loader2,
+  Receipt,
+  Send,
+  Upload,
+  UserRound,
+} from "lucide-react";
 import {
   OrderApiError,
   buildUploadQueue,
@@ -513,23 +523,32 @@ export default function NotaryOrderWizard() {
   }
 
   const stepTitles = [t("step1"), t("step2"), t("step3"), t("step4")];
+  const stepSubtitles = [t("step1Sub"), t("step2Sub"), t("step3Sub"), t("step4Sub")];
+  const StepIcon = [FileText, Upload, Receipt, UserRound][step - 1] ?? FileText;
 
   return (
     <div className="space-y-5">
-      {/* Progress */}
-      <div>
-        <div className="mb-2 flex items-center justify-between">
-          <p className="text-sm font-semibold text-foreground">{stepTitles[step - 1]}</p>
-          <p className="text-xs text-muted-foreground">
+      {/* Step header — title, what this step is for, and where you are. */}
+      <div className="-mx-3 -mt-4 mb-1 bg-linear-to-r from-suliko-default-color to-indigo-600 px-5 py-4 text-white sm:-mx-5 sm:-mt-6 md:-mx-6 md:-mt-8">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-start gap-2.5">
+            <StepIcon className="mt-0.5 h-6 w-6 shrink-0" />
+            <div className="min-w-0">
+              <h4 className="text-lg font-bold leading-tight">{stepTitles[step - 1]}</h4>
+              <p className="mt-0.5 text-xs text-white/80">{stepSubtitles[step - 1]}</p>
+            </div>
+          </div>
+          <span className="shrink-0 rounded-md bg-white px-2.5 py-1 text-xs font-semibold text-suliko-default-color">
             {t("stepOf", { current: step, total: STEP_COUNT })}
-          </p>
+          </span>
         </div>
-        <div className="flex gap-1.5">
+
+        <div className="mt-3 flex gap-1.5">
           {Array.from({ length: STEP_COUNT }).map((_, index) => (
             <span
               key={index}
-              className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${
-                index < step ? "bg-suliko-default-color" : "bg-muted"
+              className={`h-1 flex-1 rounded-full transition-colors duration-300 ${
+                index < step ? "bg-white" : "bg-white/30"
               }`}
             />
           ))}

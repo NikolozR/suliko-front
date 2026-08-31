@@ -280,3 +280,161 @@ export function SectionTitle({
     </div>
   );
 }
+
+/**
+ * The catalogue ships one string per option ("Standard (3-5 business days)").
+ * The tile design wants it as a title with a caption underneath, so split on
+ * the trailing parenthetical and fall back to the whole label when there
+ * isn't one — labels are partner-authored and won't always follow the shape.
+ */
+export function splitLabel(label: string): { title: string; detail?: string } {
+  const match = label.match(/^(.*?)\s*\((.*)\)\s*$/);
+  return match ? { title: match[1].trim(), detail: match[2].trim() } : { title: label };
+}
+
+export type BadgeTone = "green" | "amber" | "red" | "muted";
+
+const BADGE_TONES: Record<BadgeTone, string> = {
+  green: "bg-green-100 text-green-700 dark:bg-green-950 dark:text-green-300",
+  amber: "bg-amber-100 text-amber-700 dark:bg-amber-950 dark:text-amber-300",
+  red: "bg-red-100 text-red-700 dark:bg-red-950 dark:text-red-300",
+  muted: "bg-muted text-muted-foreground",
+};
+
+/**
+ * Centred tile: icon above a title, optional caption, optional badge.
+ * Used for service type, copy type and delivery speed.
+ */
+export function IconTile({
+  selected,
+  onClick,
+  icon,
+  title,
+  caption,
+  badge,
+  badgeTone = "muted",
+}: {
+  selected: boolean;
+  onClick: () => void;
+  icon: ReactNode;
+  title: string;
+  caption?: string;
+  badge?: string;
+  badgeTone?: BadgeTone;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={selected}
+      className={`flex flex-col items-center gap-1 rounded-xl border-2 px-3 py-4 text-center transition-all duration-200 ${
+        selected
+          ? "border-suliko-default-color bg-suliko-default-color/5"
+          : "border-border bg-card hover:border-suliko-default-color/40 hover:bg-muted/30"
+      }`}
+    >
+      <span className="mb-1 flex h-6 items-center justify-center">{icon}</span>
+      <span className="text-sm font-semibold leading-tight text-foreground">{title}</span>
+      {caption && (
+        <span className="text-xs leading-tight text-muted-foreground">{caption}</span>
+      )}
+      {badge && (
+        <span
+          className={`mt-1 rounded-md px-2 py-0.5 text-[11px] font-semibold ${BADGE_TONES[badgeTone]}`}
+        >
+          {badge}
+        </span>
+      )}
+    </button>
+  );
+}
+
+/** Plain checkbox row — for the delivery methods that cost nothing extra. */
+export function CheckRow({
+  checked,
+  onToggle,
+  label,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="checkbox"
+      aria-checked={checked}
+      onClick={onToggle}
+      className="flex w-full items-center gap-2.5 py-1.5 text-left"
+    >
+      <span
+        className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-[4px] border-2 transition-colors ${
+          checked
+            ? "border-suliko-default-color bg-suliko-default-color"
+            : "border-muted-foreground/40 bg-card"
+        }`}
+      >
+        {checked && (
+          <svg viewBox="0 0 12 12" className="h-2.5 w-2.5 text-white" aria-hidden="true">
+            <path
+              d="M2 6.5L4.5 9L10 3"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        )}
+      </span>
+      <span className="text-sm text-foreground">{label}</span>
+    </button>
+  );
+}
+
+/**
+ * Switch row — reserved for the delivery method that adds a charge, so an
+ * option that changes the price never reads as an ordinary tick box.
+ */
+export function ToggleRow({
+  checked,
+  onToggle,
+  label,
+}: {
+  checked: boolean;
+  onToggle: () => void;
+  label: string;
+}) {
+  return (
+    <button
+      type="button"
+      role="switch"
+      aria-checked={checked}
+      onClick={onToggle}
+      className="flex w-full items-center gap-2.5 py-1.5 text-left"
+    >
+      <span
+        className={`relative h-5 w-9 shrink-0 rounded-full transition-colors duration-200 ${
+          checked ? "bg-suliko-default-color" : "bg-muted-foreground/30"
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 h-4 w-4 rounded-full bg-white shadow transition-transform duration-200 ${
+            checked ? "translate-x-[1.125rem]" : "translate-x-0.5"
+          }`}
+        />
+      </span>
+      <span className="text-sm text-foreground">{label}</span>
+    </button>
+  );
+}
+
+/** Section heading with a leading icon — "Delivery Speed", "Delivery Service". */
+export function IconHeading({ icon, children }: { icon: ReactNode; children: ReactNode }) {
+  return (
+    <h4 className="mb-3 flex items-center gap-2 text-base font-semibold text-foreground">
+      {icon}
+      {children}
+    </h4>
+  );
+}
