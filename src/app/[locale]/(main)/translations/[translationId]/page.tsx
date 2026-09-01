@@ -442,9 +442,24 @@ export default function TranslationDetailPage() {
   const isIndeterminate =
     backendProgress === 0 && (liveStatus === "Queued" || elapsedMs === 0);
 
+  /**
+   * Remaining time, the single thing people actually want during a multi-minute
+   * wait. This is what the learned estimate is for — the page previously only
+   * showed elapsed time plus a static figure buried in the metadata grid.
+   */
+  const remainingMinutes = Math.max(
+    1,
+    Math.ceil((expectedDurationMs - elapsedMs) / 60_000)
+  );
+
+  /**
+   * Driven by the displayed progress, not by elapsed time, so the sentence can
+   * never contradict the stage chips sitting directly beneath it — the page
+   * used to read "Preparing document…" while the chips said "Translating".
+   */
   const msgIdx = Math.min(
     PROGRESS_MESSAGE_KEYS.length - 1,
-    Math.max(0, Math.floor(elapsedFraction * PROGRESS_MESSAGE_KEYS.length))
+    Math.max(0, Math.floor((displayProgress / 100) * PROGRESS_MESSAGE_KEYS.length))
   );
   const msgKey = PROGRESS_MESSAGE_KEYS[msgIdx];
 
@@ -455,7 +470,8 @@ export default function TranslationDetailPage() {
   const ext = chat?.originalFileName?.split(".").pop()?.toLowerCase() || chat?.fileType || "docx";
 
   const getProgressMsg = () => {
-    if (isOverdue) return tProgress("longerThanUsual");
+    // No "taking longer" here — the remaining-time slot beside it already
+    // carries that signal, and showing both said the same thing twice.
     if (msgKey === "documentInfo")
       return tProgress("documentInfo", { data: pageCountNum }).replace(" pages", pageCountNum === 1 ? " page" : " pages");
     if (msgKey === "wordCount") return tProgress("wordCount", { data: wordCountForMsg });
@@ -615,32 +631,50 @@ export default function TranslationDetailPage() {
       <div className="space-y-5">
         {/* Status + timer + progress bar */}
         <Card className="p-6">
-          <div className="flex flex-wrap items-center gap-4 mb-4">
-            <Loader2 className="h-6 w-6 animate-spin text-primary shrink-0" />
-            <span className="px-2 py-1 rounded text-sm bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 shrink-0">
+          <div className="flex flex-wrap items-center gap-3 mb-5">
+            <Loader2 className="h-4 w-4 animate-spin text-suliko-default-color shrink-0" />
+            <span className="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 shrink-0">
               {t(`status.${getDisplayStatus(liveStatus || chat.status)}`)}
             </span>
-            <span className="text-sm text-muted-foreground shrink-0">
-              {t("elapsed")}: <span className="font-mono font-medium tabular-nums">{formatElapsed(elapsedSeconds)}</span>
+            <span className="text-xs text-muted-foreground shrink-0">
+              {t("elapsed")}: <span className="font-mono tabular-nums">{formatElapsed(elapsedSeconds)}</span>
             </span>
           </div>
 
-          {/* Progress bar */}
-          <div className="w-full mb-3">
-            <div className="flex justify-between gap-3 text-xs text-muted-foreground mb-1">
-              <span className="min-w-0 truncate">{progressMsg}</span>
-              {!isIndeterminate && (
-                <span className="shrink-0 tabular-nums">{Math.round(displayProgress)}%</span>
-              )}
+          {/*
+            Progress is the anchor of this screen, so it gets the largest type.
+            Remaining time sits beside it because "how much longer" is the
+            question people are actually asking while they wait — it used to be
+            a static figure buried in the metadata grid below.
+          */}
+          <div className="flex items-end justify-between gap-4 mb-2">
+            <div className="min-w-0">
+              <div className="text-4xl font-semibold tabular-nums leading-none text-suliko-default-color">
+                {isIndeterminate ? "—" : `${Math.round(displayProgress)}%`}
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground truncate">{progressMsg}</p>
             </div>
-            <ProgressBar
-              value={displayProgress}
-              indeterminate={isIndeterminate}
-              size="md"
-              tone="primary"
-              label={progressMsg}
-            />
+            {/* `estimatedTimeWithValue` already reads "Estimated time: about N
+                minutes", so it needs no separate label above it. */}
+            <p
+              className={`shrink-0 text-right text-sm max-w-[45%] ${
+                isOverdue ? "text-amber-600 dark:text-amber-400" : "text-muted-foreground"
+              }`}
+            >
+              {isOverdue
+                ? tOverlay("takingLonger")
+                : tOverlay("estimatedTimeWithValue", { minutes: remainingMinutes })}
+            </p>
           </div>
+
+          <ProgressBar
+            value={displayProgress}
+            indeterminate={isIndeterminate}
+            size="md"
+            tone="brand"
+            label={progressMsg}
+            className="mb-3"
+          />
 
           {/* Stage chips */}
           <div className="flex flex-wrap gap-1.5 mt-3">
