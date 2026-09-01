@@ -22,6 +22,14 @@ import { useChatEditingStore } from "@/features/chatHistory/store/chatEditingSto
 import { useChatSuggestionsStore } from "@/features/chatHistory/store/chatSuggestionsStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import ChatTranslationResultView from "@/features/chatHistory/components/ChatTranslationResultView";
+import ProgressBar from "@/shared/components/ProgressBar";
+import { PROGRESS_MESSAGE_KEYS } from "@/features/translation/hooks/useDocumentLoadingProgress";
+import {
+  estimateCost,
+  estimateDurationMs,
+  estimateMinutes,
+  recordTranslationDuration,
+} from "@/features/translation/utils/translationEta";
 
 function formatElapsed(seconds: number): string {
   const safe = Math.max(0, seconds);
@@ -41,28 +49,36 @@ function getDisplayStatus(status: string): string {
   return map[status] ?? status;
 }
 
-const PROGRESS_KEYS = [
-  "starting",
-  "documentType",
-  "documentInfo",
-  "wordCount",
-  "estimatedTime",
-  "estimatedCost",
-  "preparing",
-  "analyzing",
-  "translating",
-  "firstPageDone",
-  "checkingMistakes",
-  "stillChecking",
-  "enhancing",
-  "finalizing",
-  "waiting",
-  "thankYou",
-] as const;
-
 const TIP_KEYS = ["tip1", "tip2", "tip3", "tip4", "tip5", "tip6"] as const;
 
 const STAGE_LABELS_EN = ["Uploading", "Queued", "Analyzing", "Translating", "Finalizing"];
+
+/**
+ * Ceiling for the simulated curve. Only a real "Completed" from the backend is
+ * allowed to reach 100 — a simulation must never claim the job is done.
+ */
+const MAX_SIMULATED_PROGRESS = 95;
+/**
+ * Decay constant for the simulated curve. Chosen so the bar reads ~85% at the
+ * estimated finish time and then keeps inching toward the ceiling instead of
+ * flatlining: a bar that stops moving entirely reads as "hung", which was the
+ * single most misleading thing about the old fixed-increment schedule.
+ */
+const PROGRESS_DECAY = 2.2;
+
+/**
+ * One number drives the bar, the status message and the stage chips.
+ *
+ * These used to run off two unrelated clocks — the message advanced on a fixed
+ * 15s-per-step schedule while the bar climbed on its own increment ladder — so
+ * the page could say "Finalizing…" while the chips said "Analyzing" and the bar
+ * read 40%.
+ */
+function getSimulatedProgress(elapsedMs: number, expectedMs: number): number {
+  if (expectedMs <= 0) return 0;
+  const fraction = Math.max(0, elapsedMs / expectedMs);
+  return MAX_SIMULATED_PROGRESS * (1 - Math.exp(-PROGRESS_DECAY * fraction));
+}
 
 export default function TranslationDetailPage() {
   const {
@@ -81,10 +97,11 @@ export default function TranslationDetailPage() {
   const [hydrated, setHydrated] = useState(false);
   const [reconstructedFile, setReconstructedFile] = useState<File | null>(null);
   const [isSuggestionsLoading, setIsSuggestionsLoading] = useState(false);
-  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+  const [elapsedMs, setElapsedMs] = useState(0);
   const [tipIndex, setTipIndex] = useState(0);
   const [liveStatus, setLiveStatus] = useState<string>("");
-  const [simulatedProgress, setSimulatedProgress] = useState(0);
+  /** Real progress from the backend. Overrides the simulation upward, never down. */
+  const [backendProgress, setBackendProgress] = useState(0);
   const t = useTranslations("Translation");
   const tProgress = useTranslations("DocumentTranslationCard.progress");
   const tOverlay = useTranslations("TranslationLoadingOverlay");
@@ -99,21 +116,28 @@ export default function TranslationDetailPage() {
   const pollCancelledRef = useRef(false);
   const isTerminalRef = useRef(false);
   const hasHydratedRef = useRef(false);
+  /**
+   * Only true once we've seen this job actually running. Opening an already-
+   * finished translation would otherwise report its entire idle age as the
+   * translation duration and poison the learned estimate.
+   */
+  const observedInProgressRef = useRef(false);
 
   // Reset stores when switching translations
   useEffect(() => {
     if (!translationId) return;
     setChat(null);
     setReconstructedFile(null);
-    setElapsedSeconds(0);
+    setElapsedMs(0);
     setHydrated(false);
     setLiveStatus("");
-    setSimulatedProgress(0);
+    setBackendProgress(0);
     setTipIndex(0);
     mountTimeRef.current = Date.now();
     pollCancelledRef.current = false;
     isTerminalRef.current = false;
     hasHydratedRef.current = false;
+    observedInProgressRef.current = false;
     resetChatEditingStore();
     resetChatSuggestionsStore();
   }, [translationId, resetChatEditingStore, resetChatSuggestionsStore]);
@@ -138,8 +162,7 @@ export default function TranslationDetailPage() {
           const createdAt = new Date(data.createdAt).getTime();
           if (Number.isFinite(createdAt)) {
             mountTimeRef.current = createdAt;
-            const initialElapsed = Math.max(0, Math.floor((Date.now() - createdAt) / 1000));
-            setElapsedSeconds(initialElapsed);
+            setElapsedMs(Math.max(0, Date.now() - createdAt));
           }
           setLoading(false);
           return;
@@ -161,13 +184,21 @@ export default function TranslationDetailPage() {
     return () => { cancelled = true; };
   }, [translationId]);
 
-  // Timer: increments every second, initial value set from createdAt in fetch
+  /**
+   * The page's single clock. Everything the user sees while waiting — the
+   * elapsed timer, the progress bar, the status message and the stage chips —
+   * is derived from this one value, so they can no longer disagree.
+   *
+   * Recomputed from the job's start time rather than incremented, so a
+   * backgrounded tab (where browsers throttle timers) still shows the truth on
+   * return.
+   */
   useEffect(() => {
     if (!translationId) return;
     const id = setInterval(() => {
       if (isTerminalRef.current) return;
-      setElapsedSeconds((prev) => prev + 1);
-    }, 1000);
+      setElapsedMs(Math.max(0, Date.now() - mountTimeRef.current));
+    }, 500);
     return () => clearInterval(id);
   }, [translationId]);
 
@@ -181,25 +212,19 @@ export default function TranslationDetailPage() {
     return () => clearInterval(id);
   }, [translationId]);
 
-  // Simulated progress bar: smoothly climbs, decoupled from backend
-  useEffect(() => {
-    if (!translationId) return;
-    const id = setInterval(() => {
-      if (isTerminalRef.current) return;
-      setSimulatedProgress((prev) => {
-        if (prev >= 95) return prev;
-        const increment = prev < 30 ? 0.8 : prev < 60 ? 0.4 : prev < 80 ? 0.2 : 0.05;
-        return Math.min(95, prev + increment);
-      });
-    }, 500);
-    return () => clearInterval(id);
-  }, [translationId]);
-
   // Completion handler
   const handleCompleted = useCallback(async (jobId: string, chatId: string) => {
     isTerminalRef.current = true;
-    setSimulatedProgress(100);
+    setBackendProgress(100);
     setLiveStatus("Completed");
+
+    // Feed the real duration back into the estimator, so this user's next
+    // document gets an ETA based on what their documents actually take.
+    const pages = chatRef.current?.pageCount ?? 0;
+    if (observedInProgressRef.current && pages > 0) {
+      recordTranslationDuration(pages, Date.now() - mountTimeRef.current);
+    }
+
     await fetchUserProfileWithRetry(3, 1000);
     try {
       const resultBlob = (await getResult(jobId)) as Blob;
@@ -251,9 +276,12 @@ export default function TranslationDetailPage() {
           return;
         }
 
+        // We've now seen the job genuinely running, so its duration is a valid
+        // sample for the estimator when it finishes.
+        observedInProgressRef.current = true;
         setLiveStatus(statusResult.status);
         if (statusResult.progress > 0) {
-          setSimulatedProgress((prev) => Math.max(prev, statusResult.progress));
+          setBackendProgress((prev) => Math.max(prev, statusResult.progress));
         }
         if (!pollCancelledRef.current) setTimeout(poll, 3000);
       } catch {
@@ -394,34 +422,53 @@ export default function TranslationDetailPage() {
   
 
   // --- Derived state for rendering ---
-  const SECONDS_PER_MESSAGE = 15;
-  const progressIdx = elapsedSeconds >= 240
-    ? PROGRESS_KEYS.length - 1
-    : Math.floor(elapsedSeconds / SECONDS_PER_MESSAGE);
-  const msgKey = PROGRESS_KEYS[Math.min(progressIdx, PROGRESS_KEYS.length - 1)];
-
+  // Every value below comes from `elapsedMs` and `expectedDurationMs`, so the
+  // bar, the message and the stage chips are always telling the same story.
   const pageCountNum = chat?.pageCount ?? 0;
+  const elapsedSeconds = Math.floor(elapsedMs / 1000);
+  const expectedDurationMs = estimateDurationMs(pageCountNum);
+  const elapsedFraction = expectedDurationMs > 0 ? elapsedMs / expectedDurationMs : 0;
+  const isOverdue = elapsedFraction >= 1;
+
+  const displayProgress = Math.min(
+    100,
+    Math.max(getSimulatedProgress(elapsedMs, expectedDurationMs), backendProgress)
+  );
+
+  /**
+   * Queued jobs have no meaningful position to report, so show a shimmer rather
+   * than a number that is pure guesswork.
+   */
+  const isIndeterminate =
+    backendProgress === 0 && (liveStatus === "Queued" || elapsedMs === 0);
+
+  const msgIdx = Math.min(
+    PROGRESS_MESSAGE_KEYS.length - 1,
+    Math.max(0, Math.floor(elapsedFraction * PROGRESS_MESSAGE_KEYS.length))
+  );
+  const msgKey = PROGRESS_MESSAGE_KEYS[msgIdx];
+
   const wordCountForMsg = chat?.estimatedWordCount ??
     (chat?.fileSizeKB ? Math.round(chat.fileSizeKB * 280) : pageCountNum * 483);
-  const estMin = chat?.estimatedTimeMinutes ?? (pageCountNum > 0 ? pageCountNum * 2 : 0);
-  const estCost = pageCountNum > 0 ? (pageCountNum * 0.1).toFixed(2) : "0.00";
+  const estMin = chat?.estimatedTimeMinutes ?? estimateMinutes(pageCountNum);
+  const estCost = estimateCost(pageCountNum);
   const ext = chat?.originalFileName?.split(".").pop()?.toLowerCase() || chat?.fileType || "docx";
 
   const getProgressMsg = () => {
+    if (isOverdue) return tProgress("longerThanUsual");
     if (msgKey === "documentInfo")
       return tProgress("documentInfo", { data: pageCountNum }).replace(" pages", pageCountNum === 1 ? " page" : " pages");
     if (msgKey === "wordCount") return tProgress("wordCount", { data: wordCountForMsg });
     if (msgKey === "estimatedTime") return tProgress("estimatedTime", { data: estMin });
     if (msgKey === "estimatedCost") return tProgress("estimatedCost", { data: estCost });
     if (msgKey === "documentType") return tProgress("documentType", { data: ext });
-    if (msgKey === "thankYou" && elapsedSeconds >= 240) return tProgress("longerThanUsual");
     return tProgress(msgKey);
   };
 
-  const currentStageIndex = simulatedProgress < 10 ? 0
-    : simulatedProgress < 25 ? 1
-    : simulatedProgress < 50 ? 2
-    : simulatedProgress < 85 ? 3
+  const currentStageIndex = displayProgress < 10 ? 0
+    : displayProgress < 25 ? 1
+    : displayProgress < 50 ? 2
+    : displayProgress < 85 ? 3
     : 4;
 
   const stageLabels = [
@@ -448,7 +495,7 @@ export default function TranslationDetailPage() {
       ? `✅ ${tabFileName}`
       : tabStatus === "Failed"
         ? `⚠️ ${tabFileName}`
-        : `⏳ ${Math.round(simulatedProgress)}% · ${tabFileName}`;
+        : `⏳ ${Math.round(displayProgress)}% · ${tabFileName}`;
   useDocumentTitle(tabTitle);
 
   // --- RENDER ---
@@ -580,16 +627,19 @@ export default function TranslationDetailPage() {
 
           {/* Progress bar */}
           <div className="w-full mb-3">
-            <div className="flex justify-between text-xs text-muted-foreground mb-1">
-              <span>{progressMsg}</span>
-              <span>{Math.round(simulatedProgress)}%</span>
+            <div className="flex justify-between gap-3 text-xs text-muted-foreground mb-1">
+              <span className="min-w-0 truncate">{progressMsg}</span>
+              {!isIndeterminate && (
+                <span className="shrink-0 tabular-nums">{Math.round(displayProgress)}%</span>
+              )}
             </div>
-            <div className="w-full bg-muted rounded-full h-2 overflow-hidden">
-              <div
-                className="bg-primary h-2 rounded-full transition-[width] duration-500 ease-out"
-                style={{ width: `${simulatedProgress}%` }}
-              />
-            </div>
+            <ProgressBar
+              value={displayProgress}
+              indeterminate={isIndeterminate}
+              size="md"
+              tone="primary"
+              label={progressMsg}
+            />
           </div>
 
           {/* Stage chips */}
