@@ -15,6 +15,7 @@ import {
 import { Button } from "@/features/ui/components/ui/button";
 import { ConfirmDialog } from "@/features/ui/components/ui/confirm-dialog";
 import { cn } from "@/shared/lib/utils";
+import ProgressBar from "@/shared/components/ProgressBar";
 import { Batch, BatchItem, BatchItemStatus } from "../types/types.Bulk";
 import { DownloadableDocument } from "../utils/downloadAll";
 import { cancelBatch, retryFailedItems } from "../services/batchService";
@@ -121,15 +122,13 @@ export function BatchProgressView({
           )}
         </div>
 
-        <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-          <div
-            className={cn(
-              "h-full rounded-full transition-[width] duration-500",
-              batch.failedCount > 0 ? "bg-amber-500" : "bg-suliko-default-color"
-            )}
-            style={{ width: `${batch.progressPercent}%` }}
-          />
-        </div>
+        <ProgressBar
+          value={batch.progressPercent}
+          size="md"
+          tone="brand"
+          label={t("title")}
+          fillClassName={cn(batch.failedCount > 0 && "bg-amber-500")}
+        />
       </div>
 
       <div className="divide-y divide-border/60 rounded-lg border border-border/70 overflow-hidden">

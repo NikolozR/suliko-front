@@ -1220,3 +1220,23 @@ html.dark .sidebar-main {
 }
 
 /* Move Crisp chat widget to right-middle on mobile — handled via JS CRISP_READY_TRIGGER */
+/* Indeterminate progress fill — used by ProgressBar when we genuinely don't
+   know how far along a job is (e.g. a queued translation). */
+@keyframes sulikoProgressIndeterminate {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
+}
+
+.suliko-progress-indeterminate {
+  animation: sulikoProgressIndeterminate 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  /* Don't slide the bar back and forth; show a calm, static filled track so
+     the "something is happening" signal survives without the motion. */
+  .suliko-progress-indeterminate {
+    animation: none !important;
+    width: 100% !important;
+    opacity: 0.5;
+  }
+}

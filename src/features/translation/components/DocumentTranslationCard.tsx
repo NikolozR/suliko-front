@@ -44,8 +44,11 @@ import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import PageCountDisplay from "./PageCountDisplay";
 import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
+import { estimateMinutes } from "@/features/translation/utils/translationEta";
 import { useCountdown } from "@/hooks";
 import { ocrToHtml } from "@/features/translation/services/conversionsService";
+import ProgressBar from "@/shared/components/ProgressBar";
+import { startRouteProgress } from "@/shared/components/RouteTransitionProgress";
 
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import toaster, { toast } from 'react-hot-toast'
@@ -194,8 +197,9 @@ const DocumentTranslationCard = () => {
       estimatedWordCount,
     });
 
-  // Calculate countdown duration: 4 minutes base + 25 seconds per additional page
-  const countdownMinutes = estimatedPageCount > 0 ? 4 + Math.ceil((estimatedPageCount - 1) * 25 / 60) : 4;
+  // Shared with the progress bar and the wait page, so the same document is
+  // never quoted two different durations in one session.
+  const countdownMinutes = estimateMinutes(estimatedPageCount);
 
   const { start, stop } = useCountdown({
     initialMinutes: countdownMinutes,
@@ -261,7 +265,6 @@ const DocumentTranslationCard = () => {
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
-  console.log("Current file object:", currentFileObj);
 
   // Restore file from storage when user returns after authentication
   useEffect(() => {
@@ -661,6 +664,10 @@ const DocumentTranslationCard = () => {
 
       setManualProgress(12, t("progress.translationStarted"));
       window.dispatchEvent(new Event("translations-updated"));
+      // App Router gives no navigation-start hook for router.push, so the top
+      // progress bar has to be told explicitly — this is the slowest, most
+      // visible navigation in the app.
+      startRouteProgress();
       router.push(`/translations/${chatId}`);
     } catch (err) {
       console.error("Translation failed:", err);
@@ -736,7 +743,6 @@ const DocumentTranslationCard = () => {
       setShowEmailModal(true);
       return;
     }
-    console.log("User profile for email check:", profile);
 
     handleSubmit(onSubmit, handleFormError)();
   };
@@ -1011,12 +1017,12 @@ const DocumentTranslationCard = () => {
                     })}
                   </div>
                   {/* Progress bar */}
-                  <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full suliko-default-bg transition-all duration-500 ease-out"
-                      style={{ width: `${Math.min(100, loadingProgress)}%` }}
-                    />
-                  </div>
+                  <ProgressBar
+                    value={loadingProgress}
+                    size="sm"
+                    tone="brand"
+                    label={t("progress.stepUploading")}
+                  />
                   {/* Status message */}
                   {loadingMessage && (
                     <p className="text-xs text-center text-muted-foreground truncate">{loadingMessage}</p>
