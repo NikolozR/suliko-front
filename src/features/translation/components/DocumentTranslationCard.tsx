@@ -664,7 +664,10 @@ const DocumentTranslationCard = () => {
       router.push(`/translations/${chatId}`);
     } catch (err) {
       console.error("Translation failed:", err);
-      setError(t("progress.unexpectedError"));
+      // Prefer the server's explanation (e.g. an unsupported file type) over the
+      // generic fallback — otherwise every failure looks identical to the user.
+      const detail = err instanceof Error ? err.message.trim() : "";
+      setError(detail ? `${t("progress.unexpectedError")} ${detail}` : t("progress.unexpectedError"));
     } finally {
       setIsLoading(false);
       reset();
