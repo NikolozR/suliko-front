@@ -6,6 +6,7 @@ import { Button } from "@/features/ui";
 import { ArrowRight, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { LoadingButton } from "@/features/ui/components/loading";
+import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
@@ -94,7 +95,7 @@ export default function HeroSection() {
             </p>
 
             {/* CTAs */}
-            <div className="mb-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+            <div className="mb-5 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
               <Link
                 href="/document"
                 prefetch
@@ -126,6 +127,23 @@ export default function HeroSection() {
                 </Button>
               </Link>
             </div>
+
+            {/* Sales-assist path, deliberately lighter than the two product CTAs */}
+            <p className="mb-10 text-sm text-slate-500">
+              {t("bookDemoPrompt")}{" "}
+              <a
+                href={BOOK_DEMO_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center gap-1 font-medium text-slate-300 underline-offset-4 transition-colors hover:text-white hover:underline"
+              >
+                {t("bookDemo")}
+                <ArrowRight
+                  className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </a>
+            </p>
 
             {/* Stats */}
             <dl className="grid grid-cols-3 gap-6">
