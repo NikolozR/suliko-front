@@ -10,14 +10,14 @@ import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 const DISMISSED_KEY = "suliko:demo-bubble-dismissed";
 
 /** Kept clear of the hero, which carries its own demo link. */
-const REVEAL_AFTER_PX = 400;
+const REVEAL_AFTER_PX = 250;
 
 /** Bounded fallback for scroll positions that arrive without a scroll event. */
 const REVEAL_POLL_MS = 400;
 const REVEAL_POLL_TICKS = 15;
 
 /** Breathing room between the head appearing and the panel popping open. */
-const AUTO_OPEN_DELAY_MS = 1200;
+const AUTO_OPEN_DELAY_MS = 500;
 
 export default function BookDemoBubble() {
   const t = useTranslations("DemoBubble");
