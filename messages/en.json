@@ -819,6 +819,8 @@
     "badge": "CAT Tool",
     "cta": "Start translating",
     "viewPricing": "Get Notarized Translation",
+    "bookDemoPrompt": "Prefer a walkthrough?",
+    "bookDemo": "Book a 30-min demo",
     "trustedBy": "Trusted by professionals worldwide",
     "documentsTranslated": "Documents Translated",
     "languagesSupported": "Languages Supported",
@@ -842,6 +844,7 @@
     "blog": "Blog",
     "notary": "Notary",
     "getStarted": "Get Started",
+    "bookDemo": "Book a Demo",
     "loading": "Loading..."
   },
   "AboutSection": {

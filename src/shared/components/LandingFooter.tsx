@@ -8,6 +8,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/features/ui";
 import { NOTARY_PHONE_DISPLAY } from "@/shared/constants/notary";
+import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 
 export default function LandingFooter() {
   const t = useTranslations("LandingFooter");
@@ -129,7 +130,7 @@ export default function LandingFooter() {
               <Button
                 size="sm"
                 className="w-full"
-                onClick={() => window.open('https://calendly.com/misha-suliko/30min', '_blank')}
+                onClick={() => window.open(BOOK_DEMO_URL, "_blank", "noopener,noreferrer")}
               >
                 {t("bookDemo")}
               </Button>

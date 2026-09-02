@@ -9,6 +9,10 @@ import { Check, Star, Zap, Building2, Users, Sparkles, Clock, Mail, Phone, Messa
 import { PayAsYouGoModal } from "@/features/pricing/components/PayAsYouGoModal";
 import { formatPriceFromString } from "@/shared/utils/domainUtils";
 import { NOTARY_PHONE, NOTARY_WHATSAPP } from "@/shared/constants/notary";
+import { BOOK_DEMO_URL } from "@/shared/constants/booking";
+
+/** What a plan's CTA does, independent of its translated label. */
+type PlanAction = "buyCredits" | "payAsYouGo" | "bookDemo";
 
 interface Plan {
   name: string;
@@ -18,6 +22,7 @@ interface Plan {
   icon: React.ElementType;
   features: string[];
   cta: string;
+  action: PlanAction;
   popular: boolean;
   color: string;
   discount?: boolean;
@@ -33,14 +38,12 @@ export default function PricingSection() {
   // Choose email based on current hostname: use info@suliko.io for suliko.io, otherwise use info@suliko.ge
   const email = typeof window !== 'undefined' && window.location.hostname.endsWith('suliko.io') ? 'info@suliko.io' : 'info@suliko.ge';
 
-  const handleButtonClick = (ctaText: string) => {
-    if (ctaText === "Contact Sales" || ctaText === "დაგვიკავშირდით" || ctaText === "Skontaktuj się ze sprzedażą") {
-      // Redirect to Calendly for booking a demo
-      window.open('https://calendly.com/misha-suliko/30min', '_blank');
-    } else if (ctaText === "Purchase Pages" || ctaText === "გვერდების შეძენა" || ctaText === "Kup strony") {
+  const handleButtonClick = (action: PlanAction) => {
+    if (action === "bookDemo") {
+      window.open(BOOK_DEMO_URL, "_blank", "noopener,noreferrer");
+    } else if (action === "payAsYouGo") {
       setIsPayAsYouGoModalOpen(true);
     } else {
-      // Redirect to document translation page
       router.push("/price");
     }
   };
@@ -58,6 +61,7 @@ export default function PricingSection() {
         t("starter.features.2")
       ],
       cta: t("starter.cta"),
+      action: "buyCredits",
       popular: false,
       color: "blue"
     },
@@ -73,6 +77,7 @@ export default function PricingSection() {
         t("professional.features.2"),
       ],
       cta: t("professional.cta"),
+      action: "buyCredits",
       popular: true,
       color: "purple",
       discount: true
@@ -91,6 +96,9 @@ export default function PricingSection() {
         // t("payAsYouGo.features.4")
       ],
       cta: t("payAsYouGo.cta"),
+      // Matches today's live behaviour: this CTA reads "Buy Credits" and routes
+      // to /price. Switch to "payAsYouGo" to open PayAsYouGoModal instead.
+      action: "buyCredits",
       popular: false,
       color: "green"
     }
@@ -110,6 +118,7 @@ export default function PricingSection() {
         t("business.features.3")
       ],
       cta: t("business.cta"),
+      action: "buyCredits",
       popular: true,
       color: "blue",
       discount: true
@@ -131,6 +140,7 @@ export default function PricingSection() {
         t("enterpriseBusiness.features.7")
       ],
       cta: t("enterpriseBusiness.cta"),
+      action: "bookDemo",
       popular: false,
       color: "gold"
     }
@@ -293,7 +303,7 @@ export default function PricingSection() {
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleButtonClick(plan.cta);
+                    handleButtonClick(plan.action);
                   }}
                   type="button"
                 >

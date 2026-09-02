@@ -8,6 +8,8 @@ import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTheme } from "next-themes";
 import { LoadingButton } from "@/features/ui/components/loading";
+import { Button } from "@/features/ui";
+import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 
 
 // Theme toggle component
@@ -423,6 +425,18 @@ export default function LandingHeader() {
                       {t("getStarted")}
                     </LoadingButton>
                   </Link>
+
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => {
+                      window.open(BOOK_DEMO_URL, "_blank", "noopener,noreferrer");
+                      setIsMobileMenuOpen(false);
+                    }}
+                    type="button"
+                  >
+                    {t("bookDemo")}
+                  </Button>
                 </div>
               </div>
             </div>
