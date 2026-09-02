@@ -28,6 +28,10 @@ const NotaryPromoSection = dynamic(() => import("@/shared/components/NotaryPromo
   loading: () => <LandingSectionSkeleton minHeight={180} />,
 });
 
+const BookDemoBubble = dynamic(() => import("@/shared/components/BookDemoBubble"), {
+  ssr: false,
+});
+
 const LandingFooter = dynamic(() => import("@/shared/components/LandingFooter"), {
   loading: () => (
     <div className="border-t border-border bg-muted/30 px-4 py-10">
@@ -103,6 +107,7 @@ export default function LandingPageClient() {
           </div>
         )}
         <ScrollToTop />
+        <BookDemoBubble />
       </div>
     </div>
   );

@@ -828,6 +828,13 @@
     "browserNotSupported": "Twoja przeglądarka nie obsługuje tagu wideo.",
     "videoUnavailable": "Wideo niedostępne"
   },
+  "DemoBubble": {
+    "title": "Wolisz prezentację?",
+    "body": "Zamów 30-minutowe demo i zobacz, jak Suliko działa na Twoich dokumentach.",
+    "cta": "Zamów 30-minutowe demo",
+    "openLabel": "Zamów demo",
+    "closeLabel": "Zamknij"
+  },
   "LandingHeader": {
     "about": "O nas",
     "pricing": "Ceny",

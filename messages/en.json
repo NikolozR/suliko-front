@@ -835,6 +835,13 @@
     "browserNotSupported": "Your browser does not support the video tag.",
     "videoUnavailable": "Video unavailable"
   },
+  "DemoBubble": {
+    "title": "Want a walkthrough?",
+    "body": "Get a 30-minute demo and see Suliko run on your own documents.",
+    "cta": "Book a 30-min demo",
+    "openLabel": "Book a demo",
+    "closeLabel": "Close"
+  },
   "LandingHeader": {
     "about": "About",
     "pricing": "Pricing",
