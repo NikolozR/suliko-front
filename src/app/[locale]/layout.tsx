@@ -47,12 +47,12 @@ export async function generateMetadata({
 
   return {
     title: {
-      default: "Suliko — AI-Powered Document Translation",
+      absolute: "Suliko Translate",
       template: "%s | Suliko",
     },
     description:
-      "Translate documents with AI precision. Suliko delivers fast, accurate, and secure translations for legal, technical, and business documents in 50+ languages.",
-    keywords: ["document translation", "AI translation", "legal translation", "Suliko"],
+      "Translate documents with precision. Suliko delivers fast, accurate, and secure translations for legal, technical, and business documents in 50+ languages.",
+    keywords: ["document translation", "legal translation", "business translation", "Suliko"],
     alternates: {
       canonical: getCanonical(locale),
       languages: {
@@ -65,15 +65,15 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       siteName: "Suliko",
-      title: "Suliko — AI-Powered Document Translation",
+      title: "Suliko Translate",
       description:
-        "Translate documents with AI precision. Fast, accurate, and secure translations for legal, technical, and business documents.",
-      images: [{ url: "/Suliko_logo_black.svg", width: 1200, height: 630, alt: "Suliko AI Translation" }],
+        "Translate documents with precision. Fast, accurate, and secure translations for legal, technical, and business documents.",
+      images: [{ url: "/Suliko_logo_black.svg", width: 1200, height: 630, alt: "Suliko Translate" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Suliko — AI-Powered Document Translation",
-      description: "Fast, accurate, and secure AI document translations in 50+ languages.",
+      title: "Suliko Translate",
+      description: "Fast, accurate, and secure document translations in 50+ languages.",
       images: ["/Suliko_logo_black.svg"],
     },
     icons: {
