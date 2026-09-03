@@ -1,8 +1,35 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-html {
-  font-size: 80%;
+/* ---------------------------------------------------------------------------
+   Type scale.
+
+   The root used to be pinned at `font-size: 80%`, which silently made every
+   rem-based Tailwind size 0.8x its name: `text-xs` labels rendered at 9.6px,
+   `text-sm` body at 11.2px, and no control anywhere met a 44px hit target.
+   The root is now 100%, so the small end of the scale finally renders at the
+   size it claims to be.
+
+   Growing the *display* end by the same 25% was never the goal — it was
+   collateral. The marketing and notary pages were laid out against the old
+   rendered sizes, and the landing header in particular has no slack to give:
+   in Georgian at 1024px its nav already overflows and the logo is squeezed to
+   zero width. So `text-3xl` and up are pinned to roughly the sizes they
+   rendered at before, and only xs..2xl grow. Line heights come down to match,
+   since Tailwind's defaults are tuned for the larger sizes.
+
+   If you want a bigger hero, change it at the call site — don't reach for the
+   root font-size again.
+   --------------------------------------------------------------------------- */
+@theme {
+  --text-3xl: 1.5rem;      /* 24px — unchanged from the old rendered size */
+  --text-3xl--line-height: 1.25;
+  --text-4xl: 1.875rem;    /* 30px — was 28.8px */
+  --text-4xl--line-height: 1.2;
+  --text-5xl: 2.5rem;      /* 40px — was 38.4px */
+  --text-5xl--line-height: 1.1;
+  --text-6xl: 3rem;        /* 48px — unchanged */
+  --text-6xl--line-height: 1.05;
 }
 
 @keyframes marquee {

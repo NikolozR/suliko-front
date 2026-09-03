@@ -210,7 +210,7 @@ export default function LandingHeader() {
             <div className="flex items-center space-x-2">
               <div className="h-24 w-24 lg:h-32 lg:w-32 bg-muted animate-pulse rounded" />
             </div>
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden xl:flex items-center space-x-8">
               <div className="h-4 w-16 bg-muted animate-pulse rounded" />
               <div className="h-4 w-16 bg-muted animate-pulse rounded" />
               <div className="h-4 w-16 bg-muted animate-pulse rounded" />
@@ -255,8 +255,23 @@ export default function LandingHeader() {
             />
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center justify-center flex-1">
+          {/*
+            Desktop Navigation.
+
+            The desktop/mobile switch is `xl` (1280px), not `md`. Measured across
+            all three locales, the row simply does not fit below that: at the md
+            container width the nav needs 649px in Georgian against a 720px bar
+            that also has to hold a 128px logo and 312px of controls, so the logo
+            was being squeezed to zero and nav labels wrapped onto two lines.
+            Polish and English are only marginally better — English fits the lg
+            tier at exactly 100% of the available width, with nothing to spare.
+
+            Georgian is the binding constraint and it clears comfortably at xl.
+            Below that the hamburger is the honest answer. If the nav is wanted
+            back at lg, the lever is the logo — 128px inside an 80px bar — not
+            tighter nav spacing, which has already been spent.
+          */}
+          <div className="hidden xl:flex items-center justify-center flex-1">
             {/* Navigation Items */}
             <div className="flex items-center space-x-8">
               {navItems.map((item) => (
@@ -293,7 +308,7 @@ export default function LandingHeader() {
           </div>
 
           {/* Right Controls Group */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden xl:flex items-center space-x-4">
             <LanguageSwitcher />
             <ThemeToggle />
             <Link 
@@ -315,7 +330,7 @@ export default function LandingHeader() {
 
           {/* Hamburger Menu Button */}
           <button
-            className={`md:hidden p-2 rounded-md transition-colors relative z-50 ${
+            className={`xl:hidden p-2 rounded-md transition-colors relative z-50 ${
               isBlogPage
                 ? "text-white hover:bg-white/20 bg-white/10"
                 : "text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
@@ -346,7 +361,7 @@ export default function LandingHeader() {
 
         {/* Mobile Navigation Overlay */}
         {isMobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-[60]">
+          <div className="xl:hidden fixed inset-0 z-[60]">
             {/* Backdrop */}
             <div 
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
