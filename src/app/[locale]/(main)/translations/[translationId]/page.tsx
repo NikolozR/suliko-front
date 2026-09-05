@@ -8,6 +8,7 @@ import {
 import type { ChatDetailed } from "@/features/chatHistory";
 import { settingUpChatSuggestions } from "@/features/chatHistory/utils/settingUpSuggestions";
 import { getStatus, getResult } from "@/features/translation/services/jobService";
+import type { JobStage } from "@/features/translation/types/types.Translation";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useTranslations } from "next-intl";
 import { Card } from "@/features/ui/components/ui/card";
@@ -102,6 +103,11 @@ export default function TranslationDetailPage() {
   const [liveStatus, setLiveStatus] = useState<string>("");
   /** Real progress from the backend. Overrides the simulation upward, never down. */
   const [backendProgress, setBackendProgress] = useState(0);
+  /**
+   * Named stage from the backend. Null on jobs created before it began
+   * reporting one, in which case the progress number is all there is.
+   */
+  const [jobStage, setJobStage] = useState<JobStage | null>(null);
   const t = useTranslations("Translation");
   const tProgress = useTranslations("DocumentTranslationCard.progress");
   const tOverlay = useTranslations("TranslationLoadingOverlay");
@@ -280,6 +286,8 @@ export default function TranslationDetailPage() {
         // sample for the estimator when it finishes.
         observedInProgressRef.current = true;
         setLiveStatus(statusResult.status);
+        // Prefer the server's own stage over inferring one from 10/25/80.
+        if (statusResult.stage) setJobStage(statusResult.stage);
         if (statusResult.progress > 0) {
           setBackendProgress((prev) => Math.max(prev, statusResult.progress));
         }
@@ -634,7 +642,12 @@ export default function TranslationDetailPage() {
           <div className="flex flex-wrap items-center gap-3 mb-5">
             <Loader2 className="h-4 w-4 animate-spin text-suliko-default-color shrink-0" />
             <span className="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 shrink-0">
-              {t(`status.${getDisplayStatus(liveStatus || chat.status)}`)}
+              {/* The backend's own stage is more specific than the coarse
+                  status, so prefer it. Older jobs report no stage and fall
+                  back to the status map. */}
+              {jobStage
+                ? t(`stage.${jobStage}`)
+                : t(`status.${getDisplayStatus(liveStatus || chat.status)}`)}
             </span>
             <span className="text-xs text-muted-foreground shrink-0">
               {t("elapsed")}: <span className="font-mono tabular-nums">{formatElapsed(elapsedSeconds)}</span>

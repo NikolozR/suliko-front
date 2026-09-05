@@ -621,6 +621,13 @@
       "Failed": "Failed",
       "Queued": "Queued",
       "Processing": "Processing"
+    },
+    "stage": {
+      "queued": "Queued",
+      "translating": "Translating",
+      "rebuilding": "Rebuilding layout",
+      "ready": "Ready",
+      "failed": "Failed"
     }
   },
   "Chat": {

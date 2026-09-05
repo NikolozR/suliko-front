@@ -179,6 +179,11 @@ interface QuoteProps {
   busy?: boolean;
   /** 0-100 while bytes are going up, null at every other stage. */
   uploadPercent?: number | null;
+  /**
+   * Shown in place of the CTA label while the page count is still unknown —
+   * the file is uploading and being measured. Falls back to "counting".
+   */
+  pendingLabel?: string | null;
 }
 
 /**
@@ -198,6 +203,7 @@ export function QuoteBlock({
   etaMax,
   busy = false,
   uploadPercent = null,
+  pendingLabel = null,
 }: QuoteProps) {
   const t = useTranslations("DocumentTranslationCard.quote");
 
@@ -264,7 +270,7 @@ export function QuoteBlock({
               className="relative size-[18px] shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
             />
           )}
-          <span className="relative">{resolved ? submitLabel : t("counting")}</span>
+          <span className="relative">{resolved ? submitLabel : pendingLabel ?? t("counting")}</span>
         </button>
       )}
 

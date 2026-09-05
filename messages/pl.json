@@ -621,6 +621,13 @@
       "Failed": "Błąd",
       "Queued": "W kolejce",
       "Processing": "Przetwarzanie"
+    },
+    "stage": {
+      "queued": "W kolejce",
+      "translating": "Tłumaczenie",
+      "rebuilding": "Odtwarzanie układu",
+      "ready": "Gotowe",
+      "failed": "Błąd"
     }
   },
   "Chat": {

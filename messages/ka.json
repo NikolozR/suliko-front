@@ -621,6 +621,13 @@
       "Failed": "შეცდომა",
       "Queued": "რიგში",
       "Processing": "მუშავდება"
+    },
+    "stage": {
+      "queued": "რიგში",
+      "translating": "ითარგმნება",
+      "rebuilding": "განლაგება აღდგება",
+      "ready": "მზადაა",
+      "failed": "შეცდომა"
     }
   },
   "Chat": {

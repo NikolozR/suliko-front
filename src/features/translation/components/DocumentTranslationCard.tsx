@@ -37,6 +37,8 @@ import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "
 // import { extractPagesFromDocument } from "../utils/extractPages";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
 import { MAX_DOCUMENT_UPLOAD_BYTES, formatBytes } from "../constants/uploadLimits";
+import { prepareDocumentUpload, PrepareUploadError } from "../services/prepareUploadService";
+import type { PrepareUploadResponse } from "../types/types.Translation";
 import LanguageSelect from "./LanguageSelect";
 import { DeliverableSelect, NamesBlock, QuoteBlock } from "./JobPanel";
 import { Button } from "@/features/ui/components/ui/button";
@@ -149,7 +151,6 @@ const DocumentTranslationCard = () => {
     currentSourceLanguageId,
     setCurrentSourceLanguageId,
     estimatedPageCount,
-    isCountingPages,
     estimatedMinutes,
     estimatedCost,
     estimatedWordCount,
@@ -169,6 +170,14 @@ const DocumentTranslationCard = () => {
    */
   const [submitStage, setSubmitStage] = useState<null | "detectingNames" | "uploading" | "starting">(null);
   const [uploadPercent, setUploadPercent] = useState(0);
+  /**
+   * The file as the server measured it. Prepared on selection rather than on
+   * submit, because its pageCount is the number the user is quoted and the
+   * number they are billed — the client can no longer derive either.
+   */
+  const [prepared, setPrepared] = useState<PrepareUploadResponse | null>(null);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [preparePercent, setPreparePercent] = useState(0);
   const [showNameModal, setShowNameModal] = useState(false);
   const [detectedNames, setDetectedNames] = useState<NameTranslationItem[]>([]);
   const [pendingTranslationData, setPendingTranslationData] = useState<DocumentFormData | null>(null);
@@ -209,11 +218,8 @@ const DocumentTranslationCard = () => {
    * guess as the number the user is charged is what made the old balance check
    * fail after the click rather than before it.
    */
-  const quotedPageCount: number | null = !hasFile
-    ? null
-    : isCountingPages
-      ? null
-      : realPageCount ?? (estimatedPageCount > 0 ? estimatedPageCount : null);
+  const quotedPageCount: number | null =
+    !hasFile || isPreparing ? null : prepared?.pageCount ?? null;
 
   const quoteEtaMin = quotedPageCount ? Math.max(1, estimateMinutes(quotedPageCount)) : 0;
   const quoteEtaMax = quotedPageCount ? Math.max(2, Math.round(quoteEtaMin * 1.35)) : 0;
@@ -441,6 +447,29 @@ const DocumentTranslationCard = () => {
     setIsButtonHighlighted(true);
     setTimeout(() => setIsButtonHighlighted(false), 3000);
 
+    // Hand the file to the server straight away. Its pageCount is what the
+    // user is quoted and what they are billed, so the quote cannot be shown
+    // until this returns — and the old failure mode, where someone who never
+    // scrolled the preview was quoted 1 page for a 200-page PDF, disappears.
+    setPrepared(null);
+    if (token && !isSrtFile) {
+      setIsPreparing(true);
+      setPreparePercent(0);
+      prepareDocumentUpload(file, {
+        onProgress: (fraction) => setPreparePercent(Math.round(fraction * 100)),
+      })
+        .then((result) => setPrepared(result))
+        .catch((err) => {
+          setPrepared(null);
+          setError(
+            err instanceof PrepareUploadError
+              ? err.message
+              : t("progress.unexpectedError")
+          );
+        })
+        .finally(() => setIsPreparing(false));
+    }
+
     const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
 
     if (fileExtension === "docx" && token) {
@@ -469,6 +498,9 @@ const DocumentTranslationCard = () => {
   // Clear translation result and OCR flag
   setTranslatedMarkdown("");
   setIsOcrOnly(false);
+  setPrepared(null);
+  setIsPreparing(false);
+  setPreparePercent(0);
 
   // Clear form values
   setValue("currentFile", null, { shouldValidate: false });
@@ -700,6 +732,9 @@ const DocumentTranslationCard = () => {
         reviewedNames,
         outputFormat,
         {
+          // Already uploaded at selection time; this only re-uploads if
+          // something went wrong and we have nothing prepared.
+          prepared,
           onUploadProgress: (fraction) => setUploadPercent(Math.round(fraction * 100)),
           onStarting: () => setSubmitStage("starting"),
         }
@@ -1043,6 +1078,13 @@ const DocumentTranslationCard = () => {
                       }
                       etaMin={quoteEtaMin}
                       etaMax={quoteEtaMax}
+                      pendingLabel={
+                        isPreparing
+                          ? preparePercent > 0
+                            ? t("submitStage.uploading", { percent: preparePercent })
+                            : t("submitStage.uploadingNoPercent")
+                          : null
+                      }
                     />
                   </aside>
                 </div>
