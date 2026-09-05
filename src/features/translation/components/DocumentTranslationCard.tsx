@@ -28,6 +28,7 @@ import { useSearchParams } from "next/navigation";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
+import { DocumentTranslateError } from "../services/translationService";
 import { suggestNameTranslations } from "../services/nameTranslationService";
 import NameReviewModal from "./NameReviewModal";
 import { NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
@@ -767,10 +768,23 @@ const DocumentTranslationCard = () => {
       router.push(`/translations/${chatId}`);
     } catch (err) {
       console.error("Translation failed:", err);
-      // Prefer the server's explanation (e.g. an unsupported file type) over the
-      // generic fallback — otherwise every failure looks identical to the user.
-      const detail = err instanceof Error ? err.message.trim() : "";
-      setError(detail ? `${t("progress.unexpectedError")} ${detail}` : t("progress.unexpectedError"));
+      if (err instanceof DocumentTranslateError && err.reason === "insufficientBalance") {
+        // The balance moved between the quote and the click — another job, or
+        // a top-up spent elsewhere. Say so in our own words and refresh the
+        // figure so the panel stops showing a number the server disagrees with.
+        setError(t("translateError.insufficientBalance"));
+        fetchUserProfile().catch(() => {});
+      } else if (err instanceof DocumentTranslateError && err.reason === "fileChanged") {
+        // The URI no longer matches what was measured, so the prepared upload
+        // is void — drop it and make the user pick the file again.
+        setError(t("translateError.fileChanged"));
+        setPrepared(null);
+      } else {
+        // Prefer the server's explanation (e.g. an unsupported file type) over the
+        // generic fallback — otherwise every failure looks identical to the user.
+        const detail = err instanceof Error ? err.message.trim() : "";
+        setError(detail ? `${t("progress.unexpectedError")} ${detail}` : t("progress.unexpectedError"));
+      }
     } finally {
       setIsLoading(false);
       setSubmitStage(null);

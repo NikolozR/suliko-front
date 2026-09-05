@@ -9,6 +9,7 @@ import type { ChatDetailed } from "@/features/chatHistory";
 import { settingUpChatSuggestions } from "@/features/chatHistory/utils/settingUpSuggestions";
 import { getStatus, getResult } from "@/features/translation/services/jobService";
 import type { JobStage } from "@/features/translation/types/types.Translation";
+import TranslationStageList from "@/features/translation/components/TranslationStageList";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useTranslations } from "next-intl";
 import { Card } from "@/features/ui/components/ui/card";
@@ -448,7 +449,13 @@ export default function TranslationDetailPage() {
    * than a number that is pure guesswork.
    */
   const isIndeterminate =
-    backendProgress === 0 && (liveStatus === "Queued" || elapsedMs === 0);
+    // A named stage means we know *what* is happening but not how far through
+    // it is — the backend's 10/25/80 are checkpoints and everything between
+    // them was a simulated curve. Naming the stage and leaving the bar
+    // indeterminate is the honest pairing; inventing a percentage next to a
+    // real stage label would be worse than either alone.
+    jobStage !== null ||
+    (backendProgress === 0 && (liveStatus === "Queued" || elapsedMs === 0));
 
   /**
    * Remaining time, the single thing people actually want during a multi-minute
@@ -689,7 +696,11 @@ export default function TranslationDetailPage() {
             className="mb-3"
           />
 
-          {/* Stage chips */}
+          {/* The backend's own stages, when it reports them. The chips below
+              are the fallback for jobs created before it did. */}
+          {jobStage && <TranslationStageList stage={jobStage} className="mt-4" />}
+
+          {!jobStage && (
           <div className="flex flex-wrap gap-1.5 mt-3">
             {stageLabels.map((label, index) => {
               const isDone = index < currentStageIndex;
@@ -712,6 +723,7 @@ export default function TranslationDetailPage() {
               );
             })}
           </div>
+          )}
         </Card>
 
         {/* Translation info */}

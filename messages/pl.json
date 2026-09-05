@@ -494,6 +494,10 @@
       "uploading": "Wysyłanie {percent}%",
       "uploadingNoPercent": "Wysyłanie dokumentu…",
       "starting": "Rozpoczynam tłumaczenie…"
+    },
+    "translateError": {
+      "insufficientBalance": "Za mało stron na ten dokument. Doładuj, aby kontynuować.",
+      "fileChanged": "Plik zmienił się od pomiaru. Prześlij go ponownie."
     }
   },
   "Profile": {

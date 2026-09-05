@@ -474,6 +474,10 @@
       "uploading": "Uploading {percent}%",
       "uploadingNoPercent": "Uploading your document…",
       "starting": "Starting the translation…"
+    },
+    "translateError": {
+      "insufficientBalance": "Not enough pages left for this document. Top up to continue.",
+      "fileChanged": "This file changed since we measured it. Please upload it again."
     }
   },
   "TranslationLoadingOverlay": {
