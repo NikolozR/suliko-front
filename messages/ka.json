@@ -268,7 +268,9 @@
     "title": "შენი თარჯიმანი",
     "description": "აირჩიე მეთოდი",
     "textTab": "ტექსტი",
-    "documentTab": "დოკუმენტი"
+    "documentTab": "დოკუმენტი",
+    "greeting": "გამარჯობა, {name}",
+    "greetingAnonymous": "გამარჯობა"
   },
   "TextTranslationCard": {
     "title": "აკრიფე ტექსტი",

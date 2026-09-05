@@ -268,7 +268,9 @@
     "title": "Your Translator",
     "description": "Choose a method",
     "textTab": "Text",
-    "documentTab": "Document"
+    "documentTab": "Document",
+    "greeting": "Hello, {name}",
+    "greetingAnonymous": "Hello"
   },
   "TextTranslationCard": {
     "title": "Type text",

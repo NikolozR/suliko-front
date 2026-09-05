@@ -1154,84 +1154,9 @@ html.dark .sidebar-main {
 }
 
 
-.slot-container {
-  height: 2rem;
-  overflow: hidden;
-}
 
-.slot-track {
-  display: flex;
-  flex-direction: column;
-  animation: slotScroll 13s infinite;
-}
 
-.slot-item {
-  height: 2rem;
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-}
 
-@keyframes slotScroll {
-
-  0% {
-    transform: translateY(0rem);
-  }
-
-  7.69% {
-    transform: translateY(-2rem);
-  }
-
-  15.38% {
-    transform: translateY(-4rem);
-  }
-
-  23.07% {
-    transform: translateY(-6rem);
-  }
-
-  30.76% {
-    transform: translateY(-8rem);
-  }
-
-  38.45% {
-    transform: translateY(-10rem);
-  }
-
-  46.14% {
-    transform: translateY(-12rem);
-  }
-
-  53.83% {
-    transform: translateY(-14rem);
-  }
-
-  61.52% {
-    transform: translateY(-16rem);
-  }
-
-  69.21% {
-    transform: translateY(-18rem);
-  }
-
-  76.9% {
-    transform: translateY(-20rem);
-  }
-
-  84.59% {
-    transform: translateY(-22rem);
-  }
-
-  92.28% {
-    transform: translateY(-24rem);
-  }
-
-  100% {
-    transform: translateY(0rem);
-  }
-
-  /* reset cleanly */
-}
 
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -1251,14 +1176,6 @@ html.dark .sidebar-main {
     animation: spin 1s linear infinite !important;
   }
 
-  /* Keep the language greeting cycle visible on translation page */
-  .slot-track {
-    animation: slotScroll 13s infinite !important;
-  }
-
-  .slot-item {
-    transition-duration: 0ms !important;
-  }
 }
 
 /* Accordion animations */
