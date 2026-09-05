@@ -162,6 +162,13 @@ const DocumentTranslationCard = () => {
   // Output format for document (non-SRT) translations. Defaults to the standard HTML output.
   const [outputFormat, setOutputFormat] = useState<number>(DEFAULT_DOCUMENT_OUTPUT_FORMAT);
   const [isDetectingNames, setIsDetectingNames] = useState(false);
+  /**
+   * What the submit is actually doing right now. Only real transitions —
+   * name detection, bytes going up, and the request going out. The upload is
+   * the one step with a measurable percentage; the rest are named, not timed.
+   */
+  const [submitStage, setSubmitStage] = useState<null | "detectingNames" | "uploading" | "starting">(null);
+  const [uploadPercent, setUploadPercent] = useState(0);
   const [showNameModal, setShowNameModal] = useState(false);
   const [detectedNames, setDetectedNames] = useState<NameTranslationItem[]>([]);
   const [pendingTranslationData, setPendingTranslationData] = useState<DocumentFormData | null>(null);
@@ -558,6 +565,7 @@ const DocumentTranslationCard = () => {
         // Project flow: auto-apply the saved glossary, review only names not already saved.
         try {
           setIsDetectingNames(true);
+          setSubmitStage("detectingNames");
           // Detection is resilient: a failure here still applies the saved glossary.
           const [savedPairs, detected] = await Promise.all([
             getProjectNames(projectId).catch(() => [] as ProjectNameTranslation[]),
@@ -587,6 +595,7 @@ const DocumentTranslationCard = () => {
         // Standalone flow: only when the user has opted in via the toggle.
         try {
           setIsDetectingNames(true);
+          setSubmitStage("detectingNames");
           const names = await suggestNameTranslations(
             data.currentFile[0],
             data.currentSourceLanguageId,
@@ -683,7 +692,18 @@ const DocumentTranslationCard = () => {
       //   setValue("currentFile", newFileList);
       // }
 
-      const { chatId } = await startTranslationProject(data, estimatedPageCount || 1, reviewedNames, outputFormat);
+      setSubmitStage("uploading");
+      setUploadPercent(0);
+      const { chatId } = await startTranslationProject(
+        data,
+        estimatedPageCount || 1,
+        reviewedNames,
+        outputFormat,
+        {
+          onUploadProgress: (fraction) => setUploadPercent(Math.round(fraction * 100)),
+          onStarting: () => setSubmitStage("starting"),
+        }
+      );
 
       // Persist the original file so the translation detail page can show the preview.
       // URI-based (Gemini) translations don't store bytes on the backend during translation,
@@ -718,6 +738,8 @@ const DocumentTranslationCard = () => {
       setError(detail ? `${t("progress.unexpectedError")} ${detail}` : t("progress.unexpectedError"));
     } finally {
       setIsLoading(false);
+      setSubmitStage(null);
+      setUploadPercent(0);
       reset();
     }
   };
@@ -1004,10 +1026,18 @@ const DocumentTranslationCard = () => {
                       pageCount={quotedPageCount}
                       balance={userProfile?.balance ?? 0}
                       submitLabel={
-                        isLoading || isDetectingNames
-                          ? tButton("translating")
-                          : t("quote.translateCta", { count: quotedPageCount ?? 0 })
+                        submitStage === "detectingNames"
+                          ? t("submitStage.detectingNames")
+                          : submitStage === "uploading"
+                            ? uploadPercent > 0
+                              ? t("submitStage.uploading", { percent: uploadPercent })
+                              : t("submitStage.uploadingNoPercent")
+                            : submitStage === "starting"
+                              ? t("submitStage.starting")
+                              : t("quote.translateCta", { count: quotedPageCount ?? 0 })
                       }
+                      busy={submitStage !== null}
+                      uploadPercent={submitStage === "uploading" ? uploadPercent : null}
                       onSubmitDisabled={
                         isLoading || isDetectingNames || (token ? !hasFile : false)
                       }

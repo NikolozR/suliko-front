@@ -416,7 +416,6 @@
     "outputFormat": "Output format",
     "outputFormatHtml": "HTML",
     "outputFormatRichPdf": "Rich PDF",
-    "outputFormatMarkdown": "Markdown",
     "ocrOnly": "OCR Only",
     "progress": {
       "longerThanUsual": "Takes longer than usual",
@@ -447,12 +446,10 @@
     },
     "deliverable": {
       "label": "Deliverable",
-      "pdfTitle": "PDF — original layout",
-      "pdfDesc": "A page-for-page copy of your file, with tables and formatting kept.",
-      "wordTitle": "Editable Word (.docx)",
-      "wordDesc": "For further edits before you send or print.",
-      "textTitle": "Plain text",
-      "textDesc": "Text only, no layout. For copying into another system."
+      "richTitle": "Formatted document",
+      "richDesc": "Keeps colours, styling and tables from your original. Takes a little longer.",
+      "plainTitle": "Plain text",
+      "plainDesc": "Just the translated text, without colours or layout. Faster."
     },
     "names": {
       "title": "Confirm names before translating",
@@ -471,7 +468,13 @@
       "counting": "Reading the page count…",
       "usuallyReady": "Usually ready in {min}–{max} minutes"
     },
-    "fileTooLarge": "\"{name}\" is too large ({size}). The maximum file size is {max}."
+    "fileTooLarge": "\"{name}\" is too large ({size}). The maximum file size is {max}.",
+    "submitStage": {
+      "detectingNames": "Finding names to confirm…",
+      "uploading": "Uploading {percent}%",
+      "uploadingNoPercent": "Uploading your document…",
+      "starting": "Starting the translation…"
+    }
   },
   "TranslationLoadingOverlay": {
     "progress": "Progress",

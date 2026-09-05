@@ -436,7 +436,6 @@
     "outputFormat": "Format wyjściowy",
     "outputFormatHtml": "HTML",
     "outputFormatRichPdf": "Rich PDF",
-    "outputFormatMarkdown": "Markdown",
     "progress": {
       "longerThanUsual": "Trwa to dłużej niż zwykle",
       "starting": "Rozpoczynanie tłumaczenia...",
@@ -466,12 +465,10 @@
     },
     "deliverable": {
       "label": "Format wyniku",
-      "pdfTitle": "PDF — oryginalny układ",
-      "pdfDesc": "Kopia strona w stronę, z zachowaniem tabel i formatowania.",
-      "wordTitle": "Edytowalny Word (.docx)",
-      "wordDesc": "Do dalszej edycji przed wysłaniem lub wydrukiem.",
-      "textTitle": "Zwykły tekst",
-      "textDesc": "Sam tekst, bez układu. Do skopiowania do innego systemu."
+      "richTitle": "Dokument z formatowaniem",
+      "richDesc": "Zachowuje kolory, style i tabele z oryginału. Trwa nieco dłużej.",
+      "plainTitle": "Zwykły tekst",
+      "plainDesc": "Sam przetłumaczony tekst, bez kolorów i układu. Szybciej."
     },
     "names": {
       "title": "Potwierdź nazwy przed tłumaczeniem",
@@ -491,7 +488,13 @@
       "usuallyReady": "Zwykle gotowe w {min}–{max} min"
     },
     "ocrOnly": "Tylko OCR",
-    "fileTooLarge": "„{name}” jest za duży ({size}). Maksymalny rozmiar pliku to {max}."
+    "fileTooLarge": "„{name}” jest za duży ({size}). Maksymalny rozmiar pliku to {max}.",
+    "submitStage": {
+      "detectingNames": "Szukam nazw do potwierdzenia…",
+      "uploading": "Wysyłanie {percent}%",
+      "uploadingNoPercent": "Wysyłanie dokumentu…",
+      "starting": "Rozpoczynam tłumaczenie…"
+    }
   },
   "Profile": {
     "fullName": "Pełne imię i nazwisko",

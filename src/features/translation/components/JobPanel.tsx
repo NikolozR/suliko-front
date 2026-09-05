@@ -15,11 +15,17 @@ import { cn } from "@/shared/lib/utils";
  * when it does not, so the click can never fail after the fact.
  */
 
-/** API `OutputFormat` values, named by what the user actually receives. */
+/**
+ * API `OutputFormat` values, named by what the user actually receives.
+ *
+ * 6 (RichPdf) and 5 (Html) differ in the prompt the backend builds:
+ * BuildFileUriTranslationPromptRichHtml asks the model to reconstruct colours,
+ * tables and emphasis, which costs time; the plain variant does not. Format 2
+ * (Markdown) is a developer-testing output and is deliberately not offered.
+ */
 export const DELIVERABLES = [
-  { format: 6, titleKey: "pdfTitle", descKey: "pdfDesc" },
-  { format: 5, titleKey: "wordTitle", descKey: "wordDesc" },
-  { format: 2, titleKey: "textTitle", descKey: "textDesc" },
+  { format: 6, titleKey: "richTitle", descKey: "richDesc" },
+  { format: 5, titleKey: "plainTitle", descKey: "plainDesc" },
 ] as const;
 
 function PanelCard({ children, className }: { children: React.ReactNode; className?: string }) {
@@ -169,6 +175,10 @@ interface QuoteProps {
   onSubmitDisabled: boolean;
   etaMin: number;
   etaMax: number;
+  /** A submit is in flight — show a spinner and hold the ETA line. */
+  busy?: boolean;
+  /** 0-100 while bytes are going up, null at every other stage. */
+  uploadPercent?: number | null;
 }
 
 /**
@@ -186,6 +196,8 @@ export function QuoteBlock({
   onSubmitDisabled,
   etaMin,
   etaMax,
+  busy = false,
+  uploadPercent = null,
 }: QuoteProps) {
   const t = useTranslations("DocumentTranslationCard.quote");
 
@@ -234,14 +246,30 @@ export function QuoteBlock({
         <button
           type="submit"
           disabled={onSubmitDisabled || !resolved}
-          className="suliko-default-bg mt-4 flex h-[52px] w-full items-center justify-center rounded-[10px] text-base font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          className="suliko-default-bg relative mt-4 flex h-[52px] w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] text-base font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
         >
-          {resolved ? submitLabel : t("counting")}
+          {/* A real fill, and only while real bytes are moving. Every other
+              stage gets a spinner and a name — there is nothing honest to
+              measure during a single opaque model call. */}
+          {uploadPercent !== null && (
+            <span
+              aria-hidden
+              className="absolute inset-y-0 left-0 bg-white/20 transition-[width] duration-200 ease-out"
+              style={{ width: `${uploadPercent}%` }}
+            />
+          )}
+          {busy && (
+            <span
+              aria-hidden
+              className="relative size-[18px] shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
+            />
+          )}
+          <span className="relative">{resolved ? submitLabel : t("counting")}</span>
         </button>
       )}
 
-      <p className="mt-2.5 text-center text-[13px] text-white/55">
-        {resolved ? t("usuallyReady", { min: etaMin, max: etaMax }) : " "}
+      <p aria-live="polite" className="mt-2.5 text-center text-[13px] text-white/55">
+        {busy ? submitLabel : resolved ? t("usuallyReady", { min: etaMin, max: etaMax }) : " "}
       </p>
     </div>
   );
