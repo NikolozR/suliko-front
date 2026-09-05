@@ -468,7 +468,8 @@
       "topUpCta": "Top up {count} pages",
       "counting": "Reading the page count…",
       "usuallyReady": "Usually ready in {min}–{max} minutes"
-    }
+    },
+    "fileTooLarge": "\"{name}\" is too large ({size}). The maximum file size is {max}."
   },
   "TranslationLoadingOverlay": {
     "progress": "Progress",
@@ -1047,7 +1048,8 @@
   },
   "ErrorAlert": {
     "ups": "Problem Detected",
-    "networkProblem": "Network Problem"
+    "networkProblem": "Network Problem",
+    "retry": "Try again"
   },
   "Developers": {
     "hero": {

@@ -36,6 +36,7 @@ import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
+import { MAX_DOCUMENT_UPLOAD_BYTES, formatBytes } from "../constants/uploadLimits";
 import LanguageSelect from "./LanguageSelect";
 import { DeliverableSelect, NamesBlock, QuoteBlock } from "./JobPanel";
 import { Button } from "@/features/ui/components/ui/button";
@@ -73,8 +74,8 @@ const documentTranslationSchema = z.object({
     .refine((files) => {
       if (!files || !files.length) return false;
       const file = files[0];
-      return file && file.size <= 50 * 1024 * 1024; // 50MB limit
-    }, "File size must be less than 50MB."),
+      return file && file.size <= MAX_DOCUMENT_UPLOAD_BYTES;
+    }, `File must be ${formatBytes(MAX_DOCUMENT_UPLOAD_BYTES)} or smaller.`),
   currentTargetLanguageId: z.number(),
   currentSourceLanguageId: z.number(),
   isSrt: z.boolean().optional(),
@@ -399,9 +400,13 @@ const DocumentTranslationCard = () => {
 
     const file = event.target.files[0];
 
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > MAX_DOCUMENT_UPLOAD_BYTES) {
       toaster.error(
-        `"${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum file size is 10 MB.`,
+        t("fileTooLarge", {
+          name: file.name,
+          size: formatBytes(file.size),
+          max: formatBytes(MAX_DOCUMENT_UPLOAD_BYTES),
+        }),
         { duration: 6000 }
       );
       event.target.value = "";
