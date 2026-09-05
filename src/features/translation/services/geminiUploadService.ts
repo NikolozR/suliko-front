@@ -187,6 +187,22 @@ export async function uploadFileToGemini(
     const unreachable = error instanceof DirectUploadUnreachableError;
     const fitsThroughProxy = file.size <= PROXY_FALLBACK_LIMIT_BYTES;
 
+    if (unreachable) {
+      // The direct upload is the whole reason files larger than Vercel's body
+      // cap work at all. If it is failing, every upload is quietly going
+      // through the proxy and the effective ceiling collapses to 4MB — which
+      // looks to a user like "anything over 4MB is blocked". Say so plainly
+      // rather than letting it read as a size limit.
+      console.error(
+        `[gemini-upload] Direct browser-to-Google upload FAILED for "${file.name}" ` +
+          `(${(file.size / 1024 / 1024).toFixed(1)}MB). This is not a size limit — ` +
+          `it is the direct upload path breaking, which caps every upload at ` +
+          `${PROXY_FALLBACK_LIMIT_BYTES / 1024 / 1024}MB via the proxy fallback. ` +
+          `Investigate before raising any client-side limit.`,
+        error
+      );
+    }
+
     if (!unreachable || !fitsThroughProxy) {
       if (unreachable) {
         throw new Error(
@@ -197,7 +213,7 @@ export async function uploadFileToGemini(
     }
 
     console.warn(
-      "[gemini-upload] Direct upload unreachable, falling back to server proxy"
+      "[gemini-upload] Falling back to server proxy for this upload"
     );
     return uploadViaProxy(file);
   }

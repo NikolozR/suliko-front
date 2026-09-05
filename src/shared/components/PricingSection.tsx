@@ -193,11 +193,18 @@ export default function PricingSection() {
           </p>
 
           {/* Tabs */}
+          {/*
+            The pill is capped at the container width and its buttons share the
+            space, rather than sizing to their labels. Georgian runs long enough
+            ("თარჯიმნებისთვის" / "ბიზნესისთვის") that the intrinsic width was
+            407px against a 390px viewport, which was the one thing making the
+            landing page scroll sideways on a phone.
+          */}
           <div className="flex justify-center mb-8">
-            <div className="bg-muted p-1 rounded-lg inline-flex">
+            <div className="bg-muted p-1 rounded-lg inline-flex max-w-full">
               <button
                 onClick={() => setActiveTab('translators')}
-                className={`px-6 py-3 rounded-md font-medium transition-all ${activeTab === 'translators'
+                className={`flex-1 px-3 sm:px-6 py-3 rounded-md font-medium text-sm sm:text-base transition-all ${activeTab === 'translators'
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -206,7 +213,7 @@ export default function PricingSection() {
               </button>
               <button
                 onClick={() => setActiveTab('businesses')}
-                className={`px-6 py-3 rounded-md font-medium transition-all ${activeTab === 'businesses'
+                className={`flex-1 px-3 sm:px-6 py-3 rounded-md font-medium text-sm sm:text-base transition-all ${activeTab === 'businesses'
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                   }`}

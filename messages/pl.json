@@ -128,7 +128,9 @@
     "stepperVerify": "Weryfikacja",
     "stepperInfo": "Dane",
     "stepperPassword": "Hasło",
-    "privacyText": "1. Zbieranie informacji\n\nInformacje, które podajesz: Zbieramy tekst, który przesyłasz w celu korzystania z usługi tłumaczenia.\n\nDane techniczne i dotyczące użytkowania: Możemy zbierać informacje o Twoim urządzeniu, adresie IP, typie przeglądarki i korzystaniu z usługi (np. częstotliwość tłumaczeń, używane języki) w celach analitycznych i ulepszania usługi.\n\n2. Używanie informacji\n\nZebrane informacje są używane do następujących celów:\n\nWykonywania usługi tłumaczenia.\n\nUlepszania usługi i dostosowywania jej do Twoich potrzeb.\n\nAnalizy sposobu korzystania z usługi przez użytkowników.\n\nRozwiązywania problemów technicznych i zapewnienia bezpieczeństwa.\n\n3. Bezpieczeństwo danych\n\nStosujemy rozsądne środki administracyjne, techniczne i fizyczne, aby chronić Twoje dane przed nieautoryzowanym dostępem, użyciem lub ujawnieniem. Jednak żadna metoda transmisji danych przez Internet nie jest w 100% bezpieczna.\n\n4. Twoje prawa\n\nMasz prawo żądać dostępu do, korekty lub usunięcia swoich danych. Aby skorzystać z tych praw, skontaktuj się z nami:\nE-mail: info@suliko.ge\nTelefon: +995 591 729 911\n\n5. Przechowywanie danych\n\nBędziemy przechowywać Twoje dane osobowe tylko tak długo, jak to konieczne do realizacji celów opisanych w niniejszej polityce. Po usunięciu Twojego konta lub zaprzestaniu korzystania z Usługi usuniemy lub zaanonimizujemy Twoje dane osobowe w ciągu 30 dni, chyba że prawo wymaga ich przechowywania.\n\n6. Usunięcie danych\n\nMasz prawo żądać usunięcia Twojego konta i wszystkich powiązanych z nim danych osobowych. Aby żądać usunięcia danych, skontaktuj się z nami na adres info@suliko.ge. Rozpatrzymy Twoją prośbę i potwierdzimy usunięcie w ciągu 30 dni. Pamiętaj, że niektóre dane mogą być przechowywane ze względów prawnych, regulacyjnych lub bezpieczeństwa.\n\n7. RODO i międzynarodowa ochrona danych\n\nDla użytkowników z Unii Europejskiej i innych jurysdykcji z przepisami o ochronie danych (takimi jak RODO) zapewniamy zgodność z obowiązującymi przepisami prawa ochrony danych. Masz prawo do:\n\n- Dostępu do swoich danych osobowych\n- Poprawy niedokładnych danych\n- Żądania usunięcia swoich danych\n- Sprzeciwu wobec przetwarzania twoich danych\n- Żądania ograniczenia przetwarzania\n- Przenoszenia danych\n\nAby skorzystać z któregokolwiek z tych praw, skontaktuj się z nami na adres info@suliko.ge. Odpowiemy na wszystkie żądania zgodnie z obowiązującym prawem w wymaganych ramach czasowych."
+    "privacyText": "1. Zbieranie informacji\n\nInformacje, które podajesz: Zbieramy tekst, który przesyłasz w celu korzystania z usługi tłumaczenia.\n\nDane techniczne i dotyczące użytkowania: Możemy zbierać informacje o Twoim urządzeniu, adresie IP, typie przeglądarki i korzystaniu z usługi (np. częstotliwość tłumaczeń, używane języki) w celach analitycznych i ulepszania usługi.\n\n2. Używanie informacji\n\nZebrane informacje są używane do następujących celów:\n\nWykonywania usługi tłumaczenia.\n\nUlepszania usługi i dostosowywania jej do Twoich potrzeb.\n\nAnalizy sposobu korzystania z usługi przez użytkowników.\n\nRozwiązywania problemów technicznych i zapewnienia bezpieczeństwa.\n\n3. Bezpieczeństwo danych\n\nStosujemy rozsądne środki administracyjne, techniczne i fizyczne, aby chronić Twoje dane przed nieautoryzowanym dostępem, użyciem lub ujawnieniem. Jednak żadna metoda transmisji danych przez Internet nie jest w 100% bezpieczna.\n\n4. Twoje prawa\n\nMasz prawo żądać dostępu do, korekty lub usunięcia swoich danych. Aby skorzystać z tych praw, skontaktuj się z nami:\nE-mail: info@suliko.ge\nTelefon: +995 591 729 911\n\n5. Przechowywanie danych\n\nBędziemy przechowywać Twoje dane osobowe tylko tak długo, jak to konieczne do realizacji celów opisanych w niniejszej polityce. Po usunięciu Twojego konta lub zaprzestaniu korzystania z Usługi usuniemy lub zaanonimizujemy Twoje dane osobowe w ciągu 30 dni, chyba że prawo wymaga ich przechowywania.\n\n6. Usunięcie danych\n\nMasz prawo żądać usunięcia Twojego konta i wszystkich powiązanych z nim danych osobowych. Aby żądać usunięcia danych, skontaktuj się z nami na adres info@suliko.ge. Rozpatrzymy Twoją prośbę i potwierdzimy usunięcie w ciągu 30 dni. Pamiętaj, że niektóre dane mogą być przechowywane ze względów prawnych, regulacyjnych lub bezpieczeństwa.\n\n7. RODO i międzynarodowa ochrona danych\n\nDla użytkowników z Unii Europejskiej i innych jurysdykcji z przepisami o ochronie danych (takimi jak RODO) zapewniamy zgodność z obowiązującymi przepisami prawa ochrony danych. Masz prawo do:\n\n- Dostępu do swoich danych osobowych\n- Poprawy niedokładnych danych\n- Żądania usunięcia swoich danych\n- Sprzeciwu wobec przetwarzania twoich danych\n- Żądania ograniczenia przetwarzania\n- Przenoszenia danych\n\nAby skorzystać z któregokolwiek z tych praw, skontaktuj się z nami na adres info@suliko.ge. Odpowiemy na wszystkie żądania zgodnie z obowiązującym prawem w wymaganych ramach czasowych.",
+    "name": "Imię",
+    "surname": "Nazwisko"
   },
   "AuthModal": {
     "title": "Proszę zarejestrować się w systemie",
@@ -266,7 +268,9 @@
     "title": "Twój tłumacz",
     "description": "Wybierz metodę",
     "textTab": "Tekst",
-    "documentTab": "Dokument"
+    "documentTab": "Dokument",
+    "greeting": "Cześć, {name}",
+    "greetingAnonymous": "Cześć"
   },
   "TextTranslationCard": {
     "title": "Wpisz tekst",
@@ -275,7 +279,8 @@
     "result": "Przetłumaczony tekst",
     "yourText": "Twój tekst",
     "orPress": "lub naciśnij",
-    "insufficientPages": "Niewystarczający balans stron. Potrzebujesz {needed} stron, ale masz tylko {available} stron. Proszę zakupić więcej stron, aby kontynuować."
+    "insufficientPages": "Niewystarczający balans stron. Potrzebujesz {needed} stron, ale masz tylko {available} stron. Proszę zakupić więcej stron, aby kontynuować.",
+    "unexpectedError": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie."
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "Na jaki język chcesz przetłumaczyć",
@@ -288,7 +293,6 @@
   "TranslationLoadingOverlay": {
     "progress": "Postęp",
     "processingDocument": "Przetwarzanie dokumentu...",
-    "applySuggestion": "Stosowanie sugestii...",
     "translatingText": "Tłumaczenie tekstu...",
     "estimatedTime": "Szacowany pozostały czas",
     "takingLonger": "Dokument zajmuje więcej czasu niż oczekiwano",
@@ -302,7 +306,9 @@
     "stageQueue": "Kolejkowanie",
     "stageAnalyze": "Analiza",
     "stageTranslate": "Tłumaczenie",
-    "stageFinalize": "Finalizacja"
+    "stageFinalize": "Finalizacja",
+    "longerThanExpected": "Przetwarzanie dokumentu trwa dłużej niż zwykle",
+    "thankYou": "Dziękujemy za cierpliwość"
   },
   "NameReviewModal": {
     "title": "Potwierdź tłumaczenia nazw",
@@ -430,7 +436,6 @@
     "outputFormat": "Format wyjściowy",
     "outputFormatHtml": "HTML",
     "outputFormatRichPdf": "Rich PDF",
-    "outputFormatMarkdown": "Markdown",
     "progress": {
       "longerThanUsual": "Trwa to dłużej niż zwykle",
       "starting": "Rozpoczynanie tłumaczenia...",
@@ -457,6 +462,38 @@
       "stepUploading": "Przesyłanie",
       "stepTranslating": "Tłumaczenie",
       "stepReady": "Gotowe"
+    },
+    "deliverable": {
+      "label": "Format wyniku",
+      "richTitle": "Dokument z formatowaniem",
+      "richDesc": "Zachowuje kolory, style i tabele z oryginału. Trwa nieco dłużej.",
+      "plainTitle": "Zwykły tekst",
+      "plainDesc": "Sam przetłumaczony tekst, bez kolorów i układu. Szybciej."
+    },
+    "names": {
+      "title": "Potwierdź nazwy przed tłumaczeniem",
+      "body": "Sprawdzisz pisownię każdej osoby i organizacji, aby była taka sama we wszystkich dokumentach.",
+      "savedCount": "Zapisane nazwy: {count} w {project}",
+      "editGlossary": "Edytuj glosariusz"
+    },
+    "quote": {
+      "label": "Wycena",
+      "thisDocument": "Ten dokument",
+      "yourBalance": "Twój stan",
+      "leftAfter": "Pozostanie po tym zleceniu",
+      "pagesShort": "Brakuje {count} stron",
+      "translateCta": "Przetłumacz {count} stron",
+      "topUpCta": "Doładuj {count} stron",
+      "counting": "Odczytuję liczbę stron…",
+      "usuallyReady": "Zwykle gotowe w {min}–{max} min"
+    },
+    "ocrOnly": "Tylko OCR",
+    "fileTooLarge": "„{name}” jest za duży ({size}). Maksymalny rozmiar pliku to {max}.",
+    "submitStage": {
+      "detectingNames": "Szukam nazw…",
+      "uploading": "Wysyłanie {percent}%",
+      "uploadingNoPercent": "Wysyłanie dokumentu…",
+      "starting": "Rozpoczynam tłumaczenie…"
     }
   },
   "Profile": {
@@ -614,7 +651,9 @@
     "instant": "Natychmiastowe",
     "review": "Do przeglądu",
     "acceptAllInstant": "Zaakceptuj wszystkie natychmiastowe",
-    "jumpToSuggestions": "Przejdź do sugestii poniżej"
+    "jumpToSuggestions": "Przejdź do sugestii poniżej",
+    "cancel": "Anuluj",
+    "previewTitle": "Podgląd sugestii"
   },
   "Pricing": {
     "paymentModal": {
@@ -924,6 +963,15 @@
         "email": "info@api24.ge",
         "content": "Lokalizacja była kluczowym wyzwaniem dla API24. Suliko pomogło nam dostosować interfejs i dokumentację techniczną, czyniąc platformę dostępną dla deweloperów na całym świecie."
       }
+    },
+    "newsletter": {
+      "title": "Bądź na bieżąco",
+      "subtitle": "Zapisz się do naszego newslettera i dowiedz się pierwszy o nowych trendach w tłumaczeniach",
+      "emailPlaceholder": "E-MAIL",
+      "subscribeButton": "ZAPISZ SIĘ",
+      "subscribing": "ZAPISYWANIE...",
+      "success": "✅ Zapisano do newslettera!",
+      "error": "❌ Nie udało się zapisać. Spróbuj ponownie."
     }
   },
   "LandingFooter": {
@@ -1004,7 +1052,7 @@
     "translatedSuffix": "przetłumaczony"
   },
   "ErrorAlert": {
-    "ups": "Problem Detected",
+    "ups": "Wykryto problem",
     "retry": "Spróbuj ponownie",
     "networkProblem": "Problem z siecią"
   },

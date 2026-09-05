@@ -8,11 +8,19 @@ import { uploadFileToGemini } from "../services/geminiUploadService";
  * Submits the document and returns jobId + chatId for redirect to translation detail page.
  * `confirmedNames` (non-SRT only) are user-approved name renderings injected into the prompt.
  */
+export interface StartTranslationHooks {
+  /** Fraction of bytes sent to Google, 0..1. Only fires during the upload. */
+  onUploadProgress?: (fraction: number) => void;
+  /** Fires once the bytes are up and the translation request is going out. */
+  onStarting?: () => void;
+}
+
 export async function startTranslationProject(
   data: DocumentFormData,
   pageCount?: number,
   confirmedNames?: NameTranslationItem[],
-  outputFormat: number = DEFAULT_DOCUMENT_OUTPUT_FORMAT
+  outputFormat: number = DEFAULT_DOCUMENT_OUTPUT_FORMAT,
+  hooks: StartTranslationHooks = {}
 ): Promise<{ jobId: string; chatId: string }> {
   const model = 2;
   const outputLanguageId =
@@ -34,7 +42,13 @@ export async function startTranslationProject(
     };
     result = await translateDocumentUserContent(params, true);
   } else {
-    const { fileUri, mimeType } = await uploadFileToGemini(data.currentFile[0]);
+    // The upload is the one part of a submit with genuinely measurable
+    // progress — XHR reports bytes sent. Everything after it is a single
+    // opaque model call, so it gets a stage name rather than a percentage.
+    const { fileUri, mimeType } = await uploadFileToGemini(data.currentFile[0], {
+      onProgress: hooks.onUploadProgress,
+    });
+    hooks.onStarting?.();
     result = await translateDocumentWithUri({
       fileUri,
       mimeType,

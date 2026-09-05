@@ -268,7 +268,9 @@
     "title": "Your Translator",
     "description": "Choose a method",
     "textTab": "Text",
-    "documentTab": "Document"
+    "documentTab": "Document",
+    "greeting": "Hello, {name}",
+    "greetingAnonymous": "Hello"
   },
   "TextTranslationCard": {
     "title": "Type text",
@@ -414,7 +416,6 @@
     "outputFormat": "Output format",
     "outputFormatHtml": "HTML",
     "outputFormatRichPdf": "Rich PDF",
-    "outputFormatMarkdown": "Markdown",
     "ocrOnly": "OCR Only",
     "progress": {
       "longerThanUsual": "Takes longer than usual",
@@ -442,6 +443,37 @@
       "stepUploading": "Uploading",
       "stepTranslating": "Translating",
       "stepReady": "Ready"
+    },
+    "deliverable": {
+      "label": "Deliverable",
+      "richTitle": "Formatted document",
+      "richDesc": "Keeps colours, styling and tables from your original. Takes a little longer.",
+      "plainTitle": "Plain text",
+      "plainDesc": "Just the translated text, without colours or layout. Faster."
+    },
+    "names": {
+      "title": "Confirm names before translating",
+      "body": "You'll review how every person and organisation is spelled, so they stay the same across all your documents.",
+      "savedCount": "{count} names saved in {project}",
+      "editGlossary": "Edit glossary"
+    },
+    "quote": {
+      "label": "Quote",
+      "thisDocument": "This document",
+      "yourBalance": "Your balance",
+      "leftAfter": "Left after this job",
+      "pagesShort": "{count} pages short",
+      "translateCta": "Translate {count} pages",
+      "topUpCta": "Top up {count} pages",
+      "counting": "Reading the page count…",
+      "usuallyReady": "Usually ready in {min}–{max} minutes"
+    },
+    "fileTooLarge": "\"{name}\" is too large ({size}). The maximum file size is {max}.",
+    "submitStage": {
+      "detectingNames": "Finding names…",
+      "uploading": "Uploading {percent}%",
+      "uploadingNoPercent": "Uploading your document…",
+      "starting": "Starting the translation…"
     }
   },
   "TranslationLoadingOverlay": {
@@ -1021,7 +1053,8 @@
   },
   "ErrorAlert": {
     "ups": "Problem Detected",
-    "networkProblem": "Network Problem"
+    "networkProblem": "Network Problem",
+    "retry": "Try again"
   },
   "Developers": {
     "hero": {
