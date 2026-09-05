@@ -61,37 +61,74 @@
   font-style: normal;
 }
 
-*:not(.ck):not(.ck *) {
+/* ---------------------------------------------------------------------------
+   Which face does UI work.
+
+   This used to be `*:not(.ck):not(.ck *) { font-family: 'Main Font' }` — the
+   titling face, bpg_mrgvlovani_caps, forced onto every element on the page.
+   It is all-caps and ships a single weight, so `font-semibold` was synthesised
+   and the title/description hierarchy collapsed wherever the two sat together.
+   Every label, number, filename and button was set in a display face.
+
+   That `*` also outranked any utility class (specificity 0,2,0 against a
+   class's 0,1,0), which quietly broke `font-mono` — the code samples on
+   /developers and the elapsed-time counter were rendering in Georgian titling
+   caps.
+
+   Now the text face inherits from `body` and only real headings opt into the
+   titling face, so utilities like `font-mono` work again and anything that
+   sets its own family is no longer steamrolled. h5/h6 are deliberately left on
+   the text face: they are used here as card and section labels, which is
+   exactly the small-size role the caps face reads badly at.
+   --------------------------------------------------------------------------- */
+body {
+  font-family: 'Secondary Font', sans-serif;
+}
+
+:is(h1, h2, h3, h4) {
   font-family: 'Main Font', sans-serif;
 }
 
 /* ---------------------------------------------------------------------------
    Georgian (Mkhedruli) line metrics.
 
-   'Main Font' (bpg_mrgvlovani_caps) needs a 1.38 line-height — measured, and
-   consistent from 24px to 60px. Tailwind's leading-none/tight/snug are all
-   below that, so the glyph ink overflows its line box and any ancestor with
-   `overflow: hidden` (the notary hero, for one) slices the descenders off.
+   A Georgian face whose natural line is taller than the line-height it is
+   given will overflow its line box, and any ancestor with `overflow: hidden`
+   (the notary hero, for one) slices the descenders off. It shows up
+   intermittently in Safari because `font-display: swap` computes the first
+   line box against the fallback sans-serif, which fits — the clipping only
+   appears once the Georgian face swaps in, so whether you see it depends on
+   the font cache.
 
-   It shows up intermittently in Safari because `font-display: swap` means the
-   line box is first computed against the fallback sans-serif, which does fit
-   1.25 — the clipping only appears once the Georgian face swaps in, so whether
-   you see it depends on the font cache.
+   Re-measured after the two faces changed roles, via canvas fontBoundingBox
+   and a rendered `line-height: normal` probe. They differ a lot:
 
-   Scoped to `lang="ka"`, and only to the leadings that are actually too tight,
-   so Latin locales and looser leadings are untouched. Specificity beats the
+     'Main Font'      (bpg_mrgvlovani_caps)  natural line 1.375
+     'Secondary Font' (bpg_arial_2009)       natural line 1.125
+
+   So the patch is now split rather than blanket. Headings still use the
+   titling face and still need the full allowance. Body and UI text moved to
+   the text face, where `leading-tight` (1.25) and `leading-snug` (1.375) both
+   clear 1.125 on their own — patching those to 1.45 made Georgian UI text
+   visibly looser than the same screen in English, for no reason. Only
+   `leading-none` (1.0) still falls short.
+
+   Scoped to `lang="ka"` so Latin locales are untouched. Specificity beats the
    bare utility class, so no !important is needed.
+
+   Headings are excluded explicitly rather than left to the cascade: a class
+   selector here scores (0,2,1) and the heading rule below only (0,1,2), so
+   without the `:not()` an `h1.leading-none` would take the text face's 1.15
+   and clip — which is the original bug, just moved.
    --------------------------------------------------------------------------- */
-html[lang='ka'] .leading-none,
-html[lang='ka'] .leading-tight,
-html[lang='ka'] .leading-snug {
-  line-height: 1.45;
+html[lang='ka'] .leading-none:not(:is(h1, h2, h3, h4)) {
+  line-height: 1.15;
 }
 
 /* Tailwind's font-size utilities carry their own line-height (`text-2xl` is
    1.2), so headings need covering by element too — not just the leading-*
    classes. The element selector outranks the utility class, and 1.45 leaves
-   headroom over the 1.38–1.40 the face actually needs at every size. */
+   headroom over the 1.375 the titling face actually needs at every size. */
 html[lang='ka'] :is(h1, h2, h3, h4) {
   line-height: 1.45;
 }
@@ -615,7 +652,9 @@ body {
 :root {
   --suliko-default-color: #3b59f3;
   --suliko-default-hover-color: #11289c;
-  --suliko-main-content-bg-color: #e6e6e7;
+  /* Cooler, lighter page ground. #e6e6e7 is a warm mid-grey that reads muddy
+     against the white cards sitting on it. */
+  --suliko-main-content-bg-color: #f4f5f7;
   --radius: 0.625rem;
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
@@ -636,14 +675,19 @@ body {
   --secondary-foreground: #111111;
 
   --muted: #f5f5f5;
-  --muted-foreground: #8a8a8a;
+  /* #8a8a8a measured 2.94:1 on white — below AA at any size, and it carries
+     the page-count and cost lines on /document. #5c6270 clears AA for body
+     text while staying clearly secondary against the #14161d ink. */
+  --muted-foreground: #5c6270;
 
   --accent: #f5f5f5;
   --accent-foreground: #111111;
 
   --destructive: #dc2626;
 
-  --border: #e5e5e5;
+  /* Cooler than the old neutral #e5e5e5, to sit with the #f4f5f7 page ground
+     rather than reading muddy beside a white card. */
+  --border: #e3e5ea;
   --input: #e5e5e5;
   --ring: #b3b3b3;
 
