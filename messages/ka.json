@@ -490,7 +490,7 @@
     },
     "fileTooLarge": "\"{name}\" ძალიან დიდია ({size}). მაქსიმალური ზომაა {max}.",
     "submitStage": {
-      "detectingNames": "სახელების მოძიება დასადასტურებლად…",
+      "detectingNames": "სახელების მოძიება…",
       "uploading": "იტვირთება {percent}%",
       "uploadingNoPercent": "თქვენი დოკუმენტი იტვირთება…",
       "starting": "თარგმნა იწყება…"

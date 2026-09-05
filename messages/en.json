@@ -470,7 +470,7 @@
     },
     "fileTooLarge": "\"{name}\" is too large ({size}). The maximum file size is {max}.",
     "submitStage": {
-      "detectingNames": "Finding names to confirm…",
+      "detectingNames": "Finding names…",
       "uploading": "Uploading {percent}%",
       "uploadingNoPercent": "Uploading your document…",
       "starting": "Starting the translation…"

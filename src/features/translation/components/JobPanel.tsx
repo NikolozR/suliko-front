@@ -246,7 +246,7 @@ export function QuoteBlock({
         <button
           type="submit"
           disabled={onSubmitDisabled || !resolved}
-          className="suliko-default-bg relative mt-4 flex h-[52px] w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] text-base font-bold text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+          className="suliko-default-bg relative mt-4 flex h-[52px] w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] px-4 text-base font-bold leading-tight text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
         >
           {/* A real fill, and only while real bytes are moving. Every other
               stage gets a spinner and a name — there is nothing honest to
@@ -268,9 +268,14 @@ export function QuoteBlock({
         </button>
       )}
 
-      <p aria-live="polite" className="mt-2.5 text-center text-[13px] text-white/55">
-        {busy ? submitLabel : resolved ? t("usuallyReady", { min: etaMin, max: etaMax }) : " "}
+      <p className="mt-2.5 text-center text-[13px] text-white/55">
+        {resolved && !busy ? t("usuallyReady", { min: etaMin, max: etaMax }) : " "}
       </p>
+
+      {/* Announced, not painted — the button already shows this text. */}
+      <span aria-live="polite" className="sr-only">
+        {busy ? submitLabel : ""}
+      </span>
     </div>
   );
 }

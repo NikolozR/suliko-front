@@ -490,7 +490,7 @@
     "ocrOnly": "Tylko OCR",
     "fileTooLarge": "„{name}” jest za duży ({size}). Maksymalny rozmiar pliku to {max}.",
     "submitStage": {
-      "detectingNames": "Szukam nazw do potwierdzenia…",
+      "detectingNames": "Szukam nazw…",
       "uploading": "Wysyłanie {percent}%",
       "uploadingNoPercent": "Wysyłanie dokumentu…",
       "starting": "Rozpoczynam tłumaczenie…"
