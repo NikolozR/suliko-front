@@ -21,11 +21,15 @@ const buttonVariants = cva(
           "",
         link: "text-primary underline-offset-4 hover:underline",
       },
+      // 44 / 48 / 52px. Nothing here may sit below 44px: `sm` is the app's
+      // workhorse (73 call sites against 3 for `lg`), so it carries the floor
+      // rather than the smallest number. Horizontal padding grows with the
+      // height so the taller controls don't read as cramped.
       size: {
-        default: "h-9 px-4 py-2 has-[>svg]:px-3",
-        sm: "h-8 rounded-md gap-1.5 px-3 has-[>svg]:px-2.5",
-        lg: "h-10 rounded-md px-6 has-[>svg]:px-4",
-        icon: "size-9",
+        default: "h-12 px-5 py-2 has-[>svg]:px-4",
+        sm: "h-11 rounded-md gap-1.5 px-4 has-[>svg]:px-3",
+        lg: "h-13 rounded-md px-7 has-[>svg]:px-5",
+        icon: "size-11",
       },
     },
     defaultVariants: {
