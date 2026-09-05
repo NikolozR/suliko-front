@@ -494,6 +494,10 @@
       "uploading": "იტვირთება {percent}%",
       "uploadingNoPercent": "თქვენი დოკუმენტი იტვირთება…",
       "starting": "თარგმნა იწყება…"
+    },
+    "translateError": {
+      "insufficientBalance": "ამ დოკუმენტისთვის გვერდები არ გყოფნით. შესავსებად გააგრძელეთ.",
+      "fileChanged": "ფაილი შეიცვალა გაზომვის შემდეგ. გთხოვთ, ხელახლა ატვირთოთ."
     }
   },
   "Profile": {
@@ -621,6 +625,13 @@
       "Failed": "შეცდომა",
       "Queued": "რიგში",
       "Processing": "მუშავდება"
+    },
+    "stage": {
+      "queued": "რიგში",
+      "translating": "ითარგმნება",
+      "rebuilding": "განლაგება აღდგება",
+      "ready": "მზადაა",
+      "failed": "შეცდომა"
     }
   },
   "Chat": {

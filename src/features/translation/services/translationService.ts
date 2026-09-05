@@ -47,6 +47,33 @@ const readErrorMessage = async (
   }
 };
 
+/**
+ * Thrown by `translateDocumentWithUri` for the two failures the backend now
+ * reports synchronously. Insufficient balance used to surface as a background
+ * job failure minutes later; a stale URI could not be detected at all.
+ */
+export class DocumentTranslateError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+    readonly reason: "insufficientBalance" | "fileChanged" | "unknown",
+  ) {
+    super(message);
+    this.name = "DocumentTranslateError";
+  }
+}
+
+/**
+ * The backend distinguishes these in prose rather than with a code, so match
+ * on it — but keep the server's own wording as the message either way.
+ */
+const classify400 = (message: string): "insufficientBalance" | "fileChanged" | "unknown" => {
+  const m = message.toLowerCase();
+  if (/balance|ბალანს|insufficient/.test(m)) return "insufficientBalance";
+  if (/no longer|changed|mismatch|re-?upload|stale/.test(m)) return "fileChanged";
+  return "unknown";
+};
+
 export const translateUserContent = async (
   params: TextTranslateUserContentParams
 ): Promise<TextTranslateUserContentResponse> => {
@@ -208,7 +235,12 @@ export const translateDocumentWithUri = async (
   }
 
   if (response.status < 200 || response.status >= 300) {
-    throw new Error(await readErrorMessage(response, "Translation failed"));
+    const message = await readErrorMessage(response, "Translation failed");
+    throw new DocumentTranslateError(
+      message,
+      response.status,
+      response.status === 400 ? classify400(message) : "unknown",
+    );
   } else {
     const data = await response.json();
     return data;

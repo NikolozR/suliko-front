@@ -494,6 +494,10 @@
       "uploading": "Wysyłanie {percent}%",
       "uploadingNoPercent": "Wysyłanie dokumentu…",
       "starting": "Rozpoczynam tłumaczenie…"
+    },
+    "translateError": {
+      "insufficientBalance": "Za mało stron na ten dokument. Doładuj, aby kontynuować.",
+      "fileChanged": "Plik zmienił się od pomiaru. Prześlij go ponownie."
     }
   },
   "Profile": {
@@ -621,6 +625,13 @@
       "Failed": "Błąd",
       "Queued": "W kolejce",
       "Processing": "Przetwarzanie"
+    },
+    "stage": {
+      "queued": "W kolejce",
+      "translating": "Tłumaczenie",
+      "rebuilding": "Odtwarzanie układu",
+      "ready": "Gotowe",
+      "failed": "Błąd"
     }
   },
   "Chat": {

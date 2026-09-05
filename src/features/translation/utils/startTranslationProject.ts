@@ -1,7 +1,8 @@
 import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
 import { DocumentTranslateUserContentParams, NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
-import { uploadFileToGemini } from "../services/geminiUploadService";
+import { prepareDocumentUpload } from "../services/prepareUploadService";
+import type { PrepareUploadResponse } from "../types/types.Translation";
 
 /**
  * Starts a new translation project without waiting for completion.
@@ -9,10 +10,17 @@ import { uploadFileToGemini } from "../services/geminiUploadService";
  * `confirmedNames` (non-SRT only) are user-approved name renderings injected into the prompt.
  */
 export interface StartTranslationHooks {
-  /** Fraction of bytes sent to Google, 0..1. Only fires during the upload. */
+  /** Fraction of bytes sent, 0..1. Only fires if this call does the upload. */
   onUploadProgress?: (fraction: number) => void;
-  /** Fires once the bytes are up and the translation request is going out. */
+  /** Fires once the file is prepared and the translation request goes out. */
   onStarting?: () => void;
+  /**
+   * A file already handed to /Document/prepare-upload. The document screen
+   * prepares on file selection so it can quote a real page count before the
+   * user commits, and passes the result through here rather than uploading a
+   * second time. Callers without one make the server prepare it now.
+   */
+  prepared?: PrepareUploadResponse | null;
 }
 
 export async function startTranslationProject(
@@ -42,12 +50,12 @@ export async function startTranslationProject(
     };
     result = await translateDocumentUserContent(params, true);
   } else {
-    // The upload is the one part of a submit with genuinely measurable
-    // progress — XHR reports bytes sent. Everything after it is a single
-    // opaque model call, so it gets a stage name rather than a percentage.
-    const { fileUri, mimeType } = await uploadFileToGemini(data.currentFile[0], {
-      onProgress: hooks.onUploadProgress,
-    });
+    const prepared =
+      hooks.prepared ??
+      (await prepareDocumentUpload(data.currentFile[0], {
+        onProgress: hooks.onUploadProgress,
+      }));
+    const { fileUri, mimeType } = prepared;
     hooks.onStarting?.();
     result = await translateDocumentWithUri({
       fileUri,
@@ -57,7 +65,9 @@ export async function startTranslationProject(
       OutputLanguageId: outputLanguageId,
       OutputFormat: outputFormat,
       model,
-      pageCount: pageCount ?? 1,
+      // Advisory only: translate-with-uri bills from the count prepare-upload
+      // measured server-side and ignores this. Sent so older backends still work.
+      pageCount: prepared.pageCount ?? pageCount ?? 1,
       nameTranslations: confirmedNames && confirmedNames.length > 0 ? confirmedNames : undefined,
     });
   }

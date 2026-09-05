@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { AlertTriangle, Loader2, Play } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import { getProjectNames } from "@/features/projects";
-import { uploadFileToGemini } from "@/features/translation/services/geminiUploadService";
+import { prepareDocumentUpload } from "@/features/translation/services/prepareUploadService";
 import { DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "@/features/translation/types/types.Translation";
 import { NameTranslationItem } from "@/features/translation/types/types.Translation";
 import {
@@ -252,7 +252,7 @@ export function BulkTranslationPanel({
 
     return runWithConcurrency(current, UPLOAD_CONCURRENCY, async (doc) => {
       try {
-        const result = await uploadFileToGemini(doc.file, {
+        const result = await prepareDocumentUpload(doc.file, {
           onProgress: (fraction) =>
             setDocuments((prev) =>
               prev.map((d) =>
