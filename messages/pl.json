@@ -457,6 +457,32 @@
       "stepUploading": "Przesyłanie",
       "stepTranslating": "Tłumaczenie",
       "stepReady": "Gotowe"
+    },
+    "deliverable": {
+      "label": "Format wyniku",
+      "pdfTitle": "PDF — oryginalny układ",
+      "pdfDesc": "Kopia strona w stronę, z zachowaniem tabel i formatowania.",
+      "wordTitle": "Edytowalny Word (.docx)",
+      "wordDesc": "Do dalszej edycji przed wysłaniem lub wydrukiem.",
+      "textTitle": "Zwykły tekst",
+      "textDesc": "Sam tekst, bez układu. Do skopiowania do innego systemu."
+    },
+    "names": {
+      "title": "Potwierdź nazwy przed tłumaczeniem",
+      "body": "Sprawdzisz pisownię każdej osoby i organizacji, aby była taka sama we wszystkich dokumentach.",
+      "savedCount": "Zapisane nazwy: {count} w {project}",
+      "editGlossary": "Edytuj glosariusz"
+    },
+    "quote": {
+      "label": "Wycena",
+      "thisDocument": "Ten dokument",
+      "yourBalance": "Twój stan",
+      "leftAfter": "Pozostanie po tym zleceniu",
+      "pagesShort": "Brakuje {count} stron",
+      "translateCta": "Przetłumacz {count} stron",
+      "topUpCta": "Doładuj {count} stron",
+      "counting": "Odczytuję liczbę stron…",
+      "usuallyReady": "Zwykle gotowe w {min}–{max} min"
     }
   },
   "Profile": {

@@ -442,6 +442,32 @@
       "stepUploading": "Uploading",
       "stepTranslating": "Translating",
       "stepReady": "Ready"
+    },
+    "deliverable": {
+      "label": "Deliverable",
+      "pdfTitle": "PDF — original layout",
+      "pdfDesc": "A page-for-page copy of your file, with tables and formatting kept.",
+      "wordTitle": "Editable Word (.docx)",
+      "wordDesc": "For further edits before you send or print.",
+      "textTitle": "Plain text",
+      "textDesc": "Text only, no layout. For copying into another system."
+    },
+    "names": {
+      "title": "Confirm names before translating",
+      "body": "You'll review how every person and organisation is spelled, so they stay the same across all your documents.",
+      "savedCount": "{count} names saved in {project}",
+      "editGlossary": "Edit glossary"
+    },
+    "quote": {
+      "label": "Quote",
+      "thisDocument": "This document",
+      "yourBalance": "Your balance",
+      "leftAfter": "Left after this job",
+      "pagesShort": "{count} pages short",
+      "translateCta": "Translate {count} pages",
+      "topUpCta": "Top up {count} pages",
+      "counting": "Reading the page count…",
+      "usuallyReady": "Usually ready in {min}–{max} minutes"
     }
   },
   "TranslationLoadingOverlay": {
