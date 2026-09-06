@@ -481,9 +481,9 @@
       "thisDocument": "Ten dokument",
       "yourBalance": "Twój stan",
       "leftAfter": "Pozostanie po tym zleceniu",
-      "pagesShort": "Brakuje {count} stron",
-      "translateCta": "Przetłumacz {count} stron",
-      "topUpCta": "Doładuj {count} stron",
+      "pagesShort": "{count, plural, one {Brakuje # strony} few {Brakuje # stron} many {Brakuje # stron} other {Brakuje # stron}}",
+      "translateCta": "{count, plural, one {Przetłumacz # stronę} few {Przetłumacz # strony} many {Przetłumacz # stron} other {Przetłumacz # stron}}",
+      "topUpCta": "{count, plural, one {Doładuj # stronę} few {Doładuj # strony} many {Doładuj # stron} other {Doładuj # stron}}",
       "counting": "Odczytuję liczbę stron…",
       "usuallyReady": "Zwykle gotowe w {min}–{max} min"
     },
