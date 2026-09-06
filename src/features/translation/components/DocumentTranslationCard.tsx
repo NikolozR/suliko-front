@@ -42,6 +42,8 @@ import { prepareDocumentUpload, PrepareUploadError } from "../services/prepareUp
 import type { PrepareUploadResponse } from "../types/types.Translation";
 import LanguageSelect from "./LanguageSelect";
 import { DeliverableSelect, NamesBlock, QuoteBlock } from "./JobPanel";
+import InProgressView from "./InProgressView";
+import { useJobStage } from "../hooks/useJobStage";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
 import { countPages } from "@/features/translation/services/countPagesService";
@@ -176,6 +178,8 @@ const DocumentTranslationCard = () => {
    * submit, because its pageCount is the number the user is quoted and the
    * number they are billed — the client can no longer derive either.
    */
+  /** Set once a job is running, so the screen shows progress instead of navigating. */
+  const [activeJob, setActiveJob] = useState<{ chatId: string; jobId: string; fileName: string } | null>(null);
   const [prepared, setPrepared] = useState<PrepareUploadResponse | null>(null);
   const [isPreparing, setIsPreparing] = useState(false);
   const [preparePercent, setPreparePercent] = useState(0);
@@ -232,6 +236,18 @@ const DocumentTranslationCard = () => {
 
   const quoteEtaMin = quotedPageCount ? Math.max(1, estimateMinutes(quotedPageCount)) : 0;
   const quoteEtaMax = quotedPageCount ? Math.max(2, Math.round(quoteEtaMin * 1.35)) : 0;
+
+  const job = useJobStage(activeJob?.jobId ?? null);
+
+  useEffect(() => {
+    if (!activeJob) return;
+    if (job.outcome === "completed") {
+      // The result view lives on the wait page, and the URL already points
+      // there, so this is a navigation the user cannot perceive as a jump.
+      startRouteProgress();
+      router.push(`/translations/${activeJob.chatId}`);
+    }
+  }, [job.outcome, activeJob, router]);
 
   /** Saved glossary size, shown instead of hiding the control inside a project. */
   const [projectGlossaryCount, setProjectGlossaryCount] = useState<number>(0);
@@ -735,7 +751,7 @@ const DocumentTranslationCard = () => {
 
       setSubmitStage("uploading");
       setUploadPercent(0);
-      const { chatId } = await startTranslationProject(
+      const { chatId, jobId } = await startTranslationProject(
         data,
         estimatedPageCount || 1,
         reviewedNames,
@@ -767,13 +783,22 @@ const DocumentTranslationCard = () => {
         moveChatToProject(chatId, projectId).catch(() => {});
       }
 
-      setManualProgress(12, t("progress.translationStarted"));
       window.dispatchEvent(new Event("translations-updated"));
-      // App Router gives no navigation-start hook for router.push, so the top
-      // progress bar has to be told explicitly — this is the slowest, most
-      // visible navigation in the app.
-      startRouteProgress();
-      router.push(`/translations/${chatId}`);
+
+      // The job now runs in place. This used to push to /translations/[chatId]
+      // at a scripted 12%, moving people off the screen they were working on
+      // before anything had actually happened, and replacing a real document
+      // with a simulated progress bar.
+      //
+      // The URL is rewritten underneath so the job stays linkable and survives
+      // a reload — a refresh lands on the wait page, which renders the same
+      // stages from the same endpoint. history.replaceState rather than
+      // router.replace, because the latter would navigate and defeat the point.
+      setActiveJob({ chatId, jobId, fileName: data.currentFile[0].name });
+      if (typeof window !== "undefined") {
+        const locale = window.location.pathname.split("/")[1] || "en";
+        window.history.replaceState(null, "", `/${locale}/translations/${chatId}`);
+      }
     } catch (err) {
       console.error("Translation failed:", err);
       if (err instanceof DocumentTranslateError && err.reason === "insufficientBalance") {
@@ -1036,7 +1061,15 @@ const DocumentTranslationCard = () => {
                   </div>
                 </div>
               )}
-              {translatedMarkdown ? (
+              {activeJob ? (
+                <InProgressView
+                  fileName={activeJob.fileName}
+                  pageCount={prepared?.pageCount ?? null}
+                  stage={job.stage}
+                  chatId={activeJob.chatId}
+                  failedMessage={job.outcome === "failed" ? job.message : null}
+                />
+              ) : translatedMarkdown ? (
                 <>
                   <TranslationResultView
                     currentFile={currentFileObj!}

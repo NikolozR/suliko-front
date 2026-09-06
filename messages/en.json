@@ -478,6 +478,15 @@
     "translateError": {
       "insufficientBalance": "Not enough pages left for this document. Top up to continue.",
       "fileChanged": "This file changed since we measured it. Please upload it again."
+    },
+    "inProgress": {
+      "pages": "{count, plural, one {# page} other {# pages}}",
+      "working": "Translating your document",
+      "leaveHint": "You don't have to wait here — the translation carries on if you leave, and you'll find it in your history.",
+      "stagesLabel": "Progress",
+      "startingUp": "Starting up…",
+      "openFullView": "Open full view",
+      "failed": "The translation failed. Please try again."
     }
   },
   "TranslationLoadingOverlay": {

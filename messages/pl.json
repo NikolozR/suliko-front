@@ -498,6 +498,15 @@
     "translateError": {
       "insufficientBalance": "Za mało stron na ten dokument. Doładuj, aby kontynuować.",
       "fileChanged": "Plik zmienił się od pomiaru. Prześlij go ponownie."
+    },
+    "inProgress": {
+      "pages": "{count, plural, one {# strona} few {# strony} many {# stron} other {# stron}}",
+      "working": "Tłumaczę dokument",
+      "leaveHint": "Nie musisz tu czekać — tłumaczenie działa dalej, a znajdziesz je w historii.",
+      "stagesLabel": "Postęp",
+      "startingUp": "Uruchamiam…",
+      "openFullView": "Otwórz pełny widok",
+      "failed": "Tłumaczenie nie powiodło się. Spróbuj ponownie."
     }
   },
   "Profile": {
