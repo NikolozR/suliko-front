@@ -219,8 +219,16 @@ const DocumentTranslationCard = () => {
    * guess as the number the user is charged is what made the old balance check
    * fail after the click rather than before it.
    */
-  const quotedPageCount: number | null =
-    !hasFile || isPreparing ? null : prepared?.pageCount ?? null;
+  const quotedPageCount: number | null = (() => {
+    if (!hasFile) return null;
+    // Subtitles never go through prepare-upload -- /Document/srt/translate takes
+    // the file directly and bills a flat single page. Without this they had no
+    // prepared record, so the quote sat on "reading the page count" and the
+    // submit button stayed disabled forever.
+    if (currentFile?.[0]?.name?.toLowerCase().endsWith(".srt")) return 1;
+    if (isPreparing) return null;
+    return prepared?.pageCount ?? null;
+  })();
 
   const quoteEtaMin = quotedPageCount ? Math.max(1, estimateMinutes(quotedPageCount)) : 0;
   const quoteEtaMax = quotedPageCount ? Math.max(2, Math.round(quoteEtaMin * 1.35)) : 0;
