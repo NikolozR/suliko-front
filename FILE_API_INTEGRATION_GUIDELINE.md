@@ -101,8 +101,13 @@ Content-Type: application/json
 plain text and is faster. `pageCount` is accepted but ignored — the server bills
 what it measured in step 1.
 
-`model`: send `2`. Do not send `3` — it maps to a preview model Google has
-retired, and now returns 404.
+`model`: **omit it.** The default follows whichever model Suliko has measured as
+best for translation — currently `5`, Gemini 3.8 Flash. Pin a number only if you
+have a reason to: `2` is Gemini 2.5 Pro, `4` is Gemini 3 Flash.
+
+Google withdraws model ids on its own schedule — `3` pointed at one that had been
+retired and returned 404 for a while — so a pinned number is something you have
+to keep checking. Omitting it moves you with us.
 
 A `fileUri` is valid for **48 hours**. If you queue work or let a user come back
 later, run step 1 again rather than reusing a stored URI.
