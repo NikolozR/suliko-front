@@ -1,3 +1,4 @@
+import { TRANSLATION_MODEL } from "@/shared/constants/translationModel";
 import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
 import { DocumentTranslateUserContentParams, NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
@@ -30,7 +31,7 @@ export async function startTranslationProject(
   outputFormat: number = DEFAULT_DOCUMENT_OUTPUT_FORMAT,
   hooks: StartTranslationHooks = {}
 ): Promise<{ jobId: string; chatId: string }> {
-  const model = 2;
+  const model = TRANSLATION_MODEL;
   const outputLanguageId =
     typeof window !== "undefined" &&
     window.location &&
