@@ -1,3 +1,4 @@
+import { TRANSLATION_MODEL } from "@/shared/constants/translationModel";
 import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
 import { DocumentTranslateUserContentParams, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
 import { prepareDocumentUpload } from "../services/prepareUploadService";
@@ -12,8 +13,7 @@ export async function documentTranslatingWithJobId(
   onProgress?: (progress: number, message: string) => void,
   setSuggestionsLoading?: (loading: boolean) => void
 ) {
-  // We set by default to Gemini model
-  const model = 2;
+  const model = TRANSLATION_MODEL;
   const outputLanguageId =
     typeof window !== "undefined" &&
     window.location &&
