@@ -46,7 +46,6 @@ import InProgressView from "./InProgressView";
 import { useJobStage } from "../hooks/useJobStage";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
-import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import PageCountDisplay from "./PageCountDisplay";
 import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
@@ -452,6 +451,20 @@ const DocumentTranslationCard = () => {
     }
 
     const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
+
+    // Word documents are refused here rather than at the end.
+    //
+    // They used to be accepted, page-counted and quoted, and only failed once the user
+    // pressed Translate -- the API rejects the MIME type outright, because Gemini cannot
+    // read .docx from a file URI. The backend can convert Word to PDF, but that runs on a
+    // separate conversion service which is currently not answering in production, so there
+    // is nothing to fall back to. Refusing on selection at least costs the user nothing.
+    if (fileExtension === "docx" || fileExtension === "doc") {
+      toaster.error(t("wordNotSupported", { name: file.name }), { duration: 8000 });
+      event.target.value = "";
+      return;
+    }
+
     const isSrtFile = fileExtension === "srt";
 
     // Clear previous translation results and suggestions
@@ -497,23 +510,10 @@ const DocumentTranslationCard = () => {
 
     const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
 
-    if (fileExtension === "docx" && token) {
-      // Count DOCX pages if authenticated
-      setIsCountingPages(true);
-      setRealPageCount(null);
-
-      try {
-        const pageCountResult = await countPages(file);
-        const pageCount = pageCountResult.pageCount || pageCountResult.pages || null;
-        setRealPageCount(pageCount);
-      } catch (err) {
-        console.error("Failed to count DOCX pages:", err);
-        setRealPageCount(null);
-      } finally {
-        setIsCountingPages(false);
-      }
-    } else if (fileExtension !== "pdf") {
-      // For non-PDF/non-DOCX, reset page count
+    // The .docx branch that used to sit here counted Word pages over the network. It is
+    // unreachable now that Word files are refused on selection, and leaving it implied a
+    // capability that does not exist.
+    if (fileExtension !== "pdf") {
       setRealPageCount(null);
       setIsCountingPages(false);
     }

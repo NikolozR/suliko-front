@@ -362,7 +362,7 @@
     },
     "dragAndDrop": "Przeciągnij i upuść plik lub kliknij, aby wybrać",
     "dropFiles": "Upuść pliki tutaj",
-    "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, JPEG, PNG, JPG, itp.",
+    "supportedFormats": "Obsługiwane typy plików: PDF, TXT, JPEG, PNG, JPG, itp.",
     "pasteFromClipboard": "lub naciśnij Ctrl+V, aby wkleić obraz ze schowka",
     "pageCountWarning": "⚠️ Dokumenty powyżej 4 stron mogą powodować problemy z przetwarzaniem i saldem; nie wszystkie strony mogą zostać przetłumaczone. Zalecamy podzielić plik na części do 3 stron i przesyłać je osobno.",
     "warningDialog": {
@@ -489,6 +489,7 @@
     },
     "ocrOnly": "Tylko OCR",
     "fileTooLarge": "„{name}” jest za duży ({size}). Maksymalny rozmiar pliku to {max}.",
+    "wordNotSupported": "Dokumentów Word nie można jeszcze tłumaczyć. Zapisz „{name}” jako PDF i prześlij ten plik.",
     "submitStage": {
       "detectingNames": "Szukam nazw…",
       "uploading": "Wysyłanie {percent}%",
