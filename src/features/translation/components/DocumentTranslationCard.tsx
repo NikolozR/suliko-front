@@ -137,7 +137,7 @@ const DocumentTranslationCard = () => {
   const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
   const { suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
-  const { userProfile, fetchUserProfile } = useUserStore();
+  const { userProfile, fetchUserProfile, fetchUserProfileWithRetry } = useUserStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectId = searchParams.get("projectId");
@@ -248,6 +248,25 @@ const DocumentTranslationCard = () => {
       router.push(`/translations/${activeJob.chatId}`);
     }
   }, [job.outcome, activeJob, router]);
+
+  // Re-read the balance whenever a job reaches a terminal state.
+  //
+  // The balance moves twice over a job's life: the API debits the page count when
+  // the job is created, and refunds it if the job fails. Neither shows up here on
+  // its own -- the figure comes from the user profile, and the store holding it is
+  // persisted, so a stale number survives even a reload.
+  //
+  // This used to be covered by accident. The old flow pushed the user to the wait
+  // page while the job was still running, and that page refreshes the profile when
+  // it watches a job finish. Running the job in place removed that: the wait page
+  // is now reached after the job is already complete, and it skips its own
+  // completion handler in that case. So the debit happened and the screen kept
+  // showing the old figure.
+  useEffect(() => {
+    if (!activeJob) return;
+    if (job.outcome === "running") return;
+    void fetchUserProfileWithRetry(3, 1000);
+  }, [job.outcome, activeJob, fetchUserProfileWithRetry]);
 
   /** Saved glossary size, shown instead of hiding the control inside a project. */
   const [projectGlossaryCount, setProjectGlossaryCount] = useState<number>(0);
@@ -795,6 +814,10 @@ const DocumentTranslationCard = () => {
       // stages from the same endpoint. history.replaceState rather than
       // router.replace, because the latter would navigate and defeat the point.
       setActiveJob({ chatId, jobId, fileName: data.currentFile[0].name });
+
+      // The debit happens when the job is created, not when it finishes, so the
+      // quoted balance is out of date from this moment on.
+      void fetchUserProfileWithRetry(3, 1000);
       if (typeof window !== "undefined") {
         const locale = window.location.pathname.split("/")[1] || "en";
         window.history.replaceState(null, "", `/${locale}/translations/${chatId}`);
