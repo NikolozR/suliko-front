@@ -264,7 +264,13 @@ export default function TranslationDetailPage() {
         return;
       }
 
-      if (currentChat.status === "Completed" || currentChat.status === "Failed") return;
+      if (currentChat.status === "Completed" || currentChat.status === "Failed") {
+        // Nothing left to poll, but the balance still has to be re-read: the page
+        // is now commonly reached after the job has already finished, and this
+        // early return skips handleCompleted, which is what used to do it.
+        void fetchUserProfileWithRetry(3, 1000);
+        return;
+      }
 
       try {
         const statusResult = await getStatus(currentChat.jobId);
@@ -303,7 +309,7 @@ export default function TranslationDetailPage() {
       pollCancelledRef.current = true;
       clearTimeout(initialDelay);
     };
-  }, [translationId, handleCompleted]);
+  }, [translationId, handleCompleted, fetchUserProfileWithRetry]);
 
   // Hydrate when we have translation result
   useEffect(() => {
