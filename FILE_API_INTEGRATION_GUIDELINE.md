@@ -179,11 +179,25 @@ the cases above.
 
 ---
 
-## Deprecated: `POST https://suliko.ge/api/gemini-upload`
+## Deprecated: `POST https://www.suliko.ge/api/gemini-upload`
 
 The original guide started here. It still works — multipart, field `file`,
 returning `{ fileUri, mimeType, displayName }` — and now also returns
 `pageCount`. It forwards to `/Document/prepare-upload`.
+
+**Use the `www.` host.** The apex `suliko.ge` answers `307` to `www.suliko.ge`,
+and because that changes host, HTTP clients drop the `Authorization` header when
+they follow it — `fetch` and `curl -L` both do, by design. The redirected request
+then arrives unauthenticated and the endpoint answers:
+
+```jsonc
+// 401 — the token was sent, but not by the time the request arrived
+{ "error": "Authentication required" }
+```
+
+A client that does *not* follow redirects sees the bare `307` instead. Neither
+failure mentions the redirect, which makes this an expensive one to diagnose.
+`content.api24.ge` does not redirect, so the direct route below is not affected.
 
 **Migrate to calling `prepare-upload` directly.** The shim adds a hop, and being
 a Vercel route it is subject to a ~4.5 MB request-body cap that
