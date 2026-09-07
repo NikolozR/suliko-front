@@ -57,6 +57,25 @@ Show this number to your user before they commit.
 
 Limit: **20 MB**.
 
+### Set the part's content type
+
+The MIME type is taken from your multipart part and the file is stored under it.
+Many clients default to `application/octet-stream` when handed a bare file
+handle — Python `requests`, `curl -F` and a plain .NET `MultipartFormDataContent`
+all do — and the translation then fails at step 2 with
+`does not match parent MIME type` or `Unsupported MIME type`.
+
+Say what the file is, e.g. in Python
+`files={"File": ("contract.pdf", handle, "application/pdf")}`, and in step 2 send
+back the `mimeType` this endpoint returned rather than one you chose.
+
+Supported: PDF, PNG, JPEG, WebP, HEIC/HEIF, and plain-text formats (`text/plain`,
+`text/html`, `text/markdown`, `text/csv`, `text/xml`, `application/rtf`).
+
+`.docx` is not supported and relabelling it as PDF does not work — Gemini reads
+the bytes and answers `The document has no pages.` Convert it first with
+`POST {API}/Document/convert-to-pdf`.
+
 ---
 
 ## 2. Start the translation
@@ -81,6 +100,17 @@ Content-Type: application/json
 `OutputFormat`: `6` keeps colours, tables and styling and takes longer; `5` is
 plain text and is faster. `pageCount` is accepted but ignored — the server bills
 what it measured in step 1.
+
+`model`: **omit it.** The default follows whichever model Suliko has measured as
+best for translation — currently `5`, Gemini 3.8 Flash. Pin a number only if you
+have a reason to: `2` is Gemini 2.5 Pro, `4` is Gemini 3 Flash.
+
+Google withdraws model ids on its own schedule — `3` pointed at one that had been
+retired and returned 404 for a while — so a pinned number is something you have
+to keep checking. Omitting it moves you with us.
+
+A `fileUri` is valid for **48 hours**. If you queue work or let a user come back
+later, run step 1 again rather than reusing a stored URI.
 
 Two failures to handle, both `400`:
 
@@ -119,6 +149,33 @@ GET https://content.api24.ge/api/Document/translate/result/{jobId}
 
 Returns the translated document. A `400` here carries a JSON body explaining
 why.
+
+---
+
+## When a translation fails
+
+Read the `message` on the failed job. Do not pattern-match on its text — the
+wording changes — but two phrasings are load-bearing and stable in meaning:
+
+| the message says | what it means |
+| --- | --- |
+| "…sending the same file again will not help" | the model refused the content. Retrying fails identically. Documents carrying identity data are the usual cause. |
+| "…please try again" | transient. Retry after a backoff. |
+| "…too long to translate in one pass… split it into smaller files" | the document exceeded the output budget. Splitting is the only fix; waiting is not. |
+
+The balance is refunded on every failure. A translation that produced nothing is
+never charged.
+
+If a failure is not self-explanatory, send Suliko the **`jobId`** and the
+approximate **UTC time**. The model's own reason is recorded against that job
+server-side and can be read directly; the message alone often cannot distinguish
+the cases above.
+
+> Historical note: before 2026-09, a model refusal was reported as
+> `File '<gemini uri>' is empty or does not contain translatable text`, and an
+> over-long document was reported as a rate limit advising a wait of some hours.
+> Both were misclassifications by an error handler that matched on keywords, and
+> neither described the file. If you built handling around either string, remove it.
 
 ---
 
