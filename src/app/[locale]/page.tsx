@@ -33,7 +33,7 @@ const faqSchema = {
       name: "Is there a free tier?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes — every new user receives 25 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow.",
+        text: "Yes — every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow.",
       },
     },
     {
