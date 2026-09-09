@@ -1661,5 +1661,8 @@
     "downloadFailed": "ჩამოტვირთვის მომზადება ვერ მოხერხდა",
     "requeuedToast": "ხელახლა რიგში დადგა {count, plural, one {# დოკუმენტი} other {# დოკუმენტი}}.",
     "retryFailedToast": "ხელახლა ცდა ვერ მოხერხდა"
+  },
+  "Company": {
+    "legalEntity": "კომპანია: {name} · საიდენთიფიკაციო კოდი: {id}"
   }
 }

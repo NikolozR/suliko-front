@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Button } from "@/features/ui";
 import { NOTARY_PHONE_DISPLAY } from "@/shared/constants/notary";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
+import CompanyLegalInfo from "@/shared/components/CompanyLegalInfo";
 
 export default function LandingFooter() {
   const t = useTranslations("LandingFooter");
@@ -140,16 +141,19 @@ export default function LandingFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-5 border-t border-border flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
-          <p className="text-sm text-muted-foreground">
-            {t("bottom.copyright")}
-          </p>
-          <Link
-            href="/terms"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("links.termsOfService")}
-          </Link>
+        <div className="py-5 border-t border-border flex flex-col items-center gap-3">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+            <p className="text-sm text-muted-foreground">
+              {t("bottom.copyright")}
+            </p>
+            <Link
+              href="/terms"
+              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              {t("links.termsOfService")}
+            </Link>
+          </div>
+          <CompanyLegalInfo className="text-center" />
         </div>
 
       </div>

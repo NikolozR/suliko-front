@@ -11,9 +11,11 @@ export { default as PricingSection } from './components/PricingSection';
 export { default as TestimonialsSection } from './components/TestimonialsSection';
 export { default as LandingFooter } from './components/LandingFooter';
 export { default as ScrollToTop } from './components/ScrollToTop';
+export { default as CompanyLegalInfo } from './components/CompanyLegalInfo';
 
 // Constants
 export * from './constants/api';
+export * from './constants/company';
 
 // Store
 export * from './store/sidebarStore';
