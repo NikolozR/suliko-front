@@ -2,7 +2,13 @@ import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import LegalDocumentPage from "@/shared/components/LegalDocumentPage";
 import { canonicalFor } from "@/shared/utils/legalPageMeta";
-import { COMPANY_EMAIL, COMPANY_PHONE_DISPLAY } from "@/shared/constants/company";
+import {
+  COMPANY_EMAIL,
+  COMPANY_ID,
+  COMPANY_NAME_EN,
+  COMPANY_NAME_KA,
+  COMPANY_PHONE_DISPLAY,
+} from "@/shared/constants/company";
 
 export async function generateMetadata({
   params,
@@ -43,11 +49,15 @@ export default async function RefundPolicyPage({
     email: COMPANY_EMAIL,
     phone: COMPANY_PHONE_DISPLAY,
   });
+  const intro = t("intro", {
+    name: locale === "ka" ? COMPANY_NAME_KA : COMPANY_NAME_EN,
+    id: COMPANY_ID,
+  });
 
   return (
     <LegalDocumentPage
       title={t("title")}
-      intro={t("intro")}
+      intro={intro}
       body={body}
       lastUpdated={t("lastUpdated")}
       locale={locale}

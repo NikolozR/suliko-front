@@ -16,6 +16,13 @@ import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
 import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import {
+  COMPANY_ADDRESS_EN,
+  COMPANY_EMAIL,
+  COMPANY_ID,
+  COMPANY_NAME_EN,
+  COMPANY_PHONE,
+} from "@/shared/constants/company";
 // import OneTimeOfferModal from "@/shared/components/OneTimeOfferModal";
 
 const geistSans = Geist({
@@ -82,19 +89,29 @@ export async function generateMetadata({
   };
 }
 
+// Keeps the machine-readable identity the same as the one printed on the legal
+// pages and registered with the payment provider. See constants/company.ts.
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Suliko",
+  legalName: COMPANY_NAME_EN,
+  taxID: COMPANY_ID,
   url: "https://suliko.ge",
   logo: "https://suliko.ge/Suliko_logo_black.svg",
   sameAs: [
     "https://www.facebook.com/profile.php?id=61564358761003",
     "https://www.linkedin.com/company/suliko-ai/",
   ],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: COMPANY_ADDRESS_EN,
+    addressCountry: "GE",
+  },
   contactPoint: {
     "@type": "ContactPoint",
-    email: "Info@suliko.ge",
+    email: COMPANY_EMAIL,
+    telephone: COMPANY_PHONE,
     contactType: "customer support",
   },
 };

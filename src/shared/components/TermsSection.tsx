@@ -53,19 +53,27 @@ function DocumentText({ text }: { text: string }) {
 
 const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
   const t = useTranslations("Authorization");
+  const tPrivacy = useTranslations("Privacy");
   const locale = useLocale();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
 
-  // Same document, same details as the public /terms page: the terms carry
-  // placeholders so the entity named at sign-up cannot drift from the registered
-  // one. See constants/company.ts.
+  // Same documents, same details as the public /terms and /privacy pages: what a
+  // user accepts here has to be what the site publishes, and the placeholders keep
+  // the entity named at sign-up from drifting from the registered one.
+  // See constants/company.ts.
   const entityName = locale === "ka" ? COMPANY_NAME_KA : COMPANY_NAME_EN;
+  const address = locale === "ka" ? COMPANY_ADDRESS_KA : COMPANY_ADDRESS_EN;
   const termsText = t("termsText", {
     name: entityName,
     id: COMPANY_ID,
     email: COMPANY_EMAIL,
     phone: COMPANY_PHONE_DISPLAY,
-    address: locale === "ka" ? COMPANY_ADDRESS_KA : COMPANY_ADDRESS_EN,
+    address,
+  });
+  const privacyText = tPrivacy("body", {
+    name: entityName,
+    email: COMPANY_EMAIL,
+    address,
   });
 
   return (
@@ -132,7 +140,10 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
                           </span>
                           <div className="h-px flex-1 bg-gray-100" />
                         </div>
-                        <DocumentText text={t("privacyText")} />
+                        <p className="text-gray-900 leading-7 whitespace-pre-wrap text-sm mb-5">
+                          {tPrivacy("intro")}
+                        </p>
+                        <DocumentText text={privacyText} />
                       </section>
                     </div>
                   </DialogContent>
