@@ -36,7 +36,8 @@ export interface BogCheckoutRequest {
   amount: number;
   currency?: string;
   orderDescription?: string;
-  language?: string;
+  /** "ka" | "en" | "pl" — decides the language of BOG's page and where we return to. */
+  locale?: string;
 }
 
 export interface BogCheckoutResponse {
@@ -69,8 +70,9 @@ export async function createBogPayment(
     amount,
     currency,
     orderDescription: options?.orderDescription ?? `Suliko ${amount} ${currency}`,
-    // BOG's hosted page speaks Georgian and English; everyone else gets English.
-    language: getCurrentLocale() === "ka" ? "ka" : "en",
+    // The server pairs this with the request's Origin to bring the customer back to
+    // the domain and language they started on.
+    locale: getCurrentLocale(),
   };
 
   return authedJson<BogCheckoutResponse>("/Payment/bog-create", {
