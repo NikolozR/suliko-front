@@ -4,9 +4,7 @@ import { useState } from "react";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
-import { ContactPaymentModal } from "./ContactPaymentModal";
-import { createFlittPayment, /* createFlittSubscription, */ createPayment } from "../services/paymentService";
-import { isSulikoIo } from "@/shared/utils/domainUtils";
+import { createBogPayment } from "../services/paymentService";
 import { useAuthStore } from "@/features/auth";
 import { useRouter } from "@/i18n/navigation";
 import toast from "react-hot-toast";
@@ -24,101 +22,37 @@ import { Label } from "@/features/ui/components/ui/label";
 export function PricingGrid() {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [showPayAsYouGoModal, setShowPayAsYouGoModal] = useState(false);
-  const [showContactPaymentModal, setShowContactPaymentModal] = useState(false);
   const [showAmountDialog, setShowAmountDialog] = useState(false);
   const [payAsYouGoAmount, setPayAsYouGoAmount] = useState(1);
   const { token } = useAuthStore();
   const router = useRouter();
   const t = useTranslations("Pricing");
 
-  // useEffect(() => {
-  //   if (autoOpenContactModal) {
-  //     setShowContactPaymentModal(true);
-  //   }
-  // }, [autoOpenContactModal]);
 
-
-
-  const handleSelectPackage = async (amount: number) => {
+  /**
+   * Sends the customer to Bank of Georgia's hosted page for the given amount.
+   * Both domains bill through the same merchant, so there is no per-domain branch.
+   */
+  const startCheckout = async (amount: number) => {
     if (!token) {
       toast.error(t("signInToPay"));
       router.push("/sign-in");
       return;
     }
 
-    const choice = localStorage.getItem("paymentChoice") || "flitt";
-
-    // For suliko.io, show contact modal instead of making payment API call
-    if (isSulikoIo()) {
-      setShowContactPaymentModal(true);
-      return;
-    }
-    if (choice == "paysera") {
-      try {
-        // Currency and country will be determined automatically based on domain
-        const response = await createPayment(amount);
-        window.open(response.redirectUrl, "_blank");
-      } catch (error) {
-        console.error('Payment failed:', error);
-        // Could show an error modal here
-      }
-    } else {
-      try {
-        // Currency and country will be determined automatically based on domain
-        const response = await createFlittPayment(amount);
-        console.log(response)
-        window.open(response.checkoutUrl, "_blank");
-      } catch (error) {
-        console.error('Payment failed:', error);
-        // Could show an error modal here
-      }
-    }
-  }
-  // const isTestMode = () => typeof window !== "undefined" && localStorage.getItem("paymentMode") === "test";
-
-  const handleStarterPackage = async () => {
-    if (!token) {
-      toast.error(t("signInToPay"));
-      router.push("/sign-in");
-      return;
-    }
-    if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
     try {
-      const response = await createFlittPayment(20);
-      window.open(response.checkoutUrl, "_blank");
+      const response = await createBogPayment(amount);
+      // Same tab: opening a window after an await gets caught by popup blockers.
+      window.location.href = response.redirectUrl;
     } catch (error) {
       console.error("Payment failed:", error);
+      toast.error(t("payAsYouGoModal.errors.purchaseFailed"));
     }
-    // ── SUBSCRIPTION FLOW (restore once Flitt approves) ──
-    // try {
-    //   const response = await createFlittSubscription("starter", 20);
-    //   window.open(response.checkoutUrl, "_blank");
-    // } catch (error) {
-    //   console.error("Subscription failed:", error);
-    // }
   };
 
-  const handleProfessionalPackage = async () => {
-    if (!token) {
-      toast.error(t("signInToPay"));
-      router.push("/sign-in");
-      return;
-    }
-    if (isSulikoIo()) { setShowContactPaymentModal(true); return; }
-    try {
-      const response = await createFlittPayment(50);
-      window.open(response.checkoutUrl, "_blank");
-    } catch (error) {
-      console.error("Payment failed:", error);
-    }
-    // ── SUBSCRIPTION FLOW (restore once Flitt approves) ──
-    // try {
-    //   const response = await createFlittSubscription("professional", 50);
-    //   window.open(response.checkoutUrl, "_blank");
-    // } catch (error) {
-    //   console.error("Subscription failed:", error);
-    // }
-  };
+  const handleSelectPackage = (amount: number) => startCheckout(amount);
+  const handleStarterPackage = () => startCheckout(20);
+  const handleProfessionalPackage = () => startCheckout(50);
   const handleSelectPayAsYouGo = () => {
     if (!token) {
       toast.error(t("signInToPay"));
@@ -152,11 +86,6 @@ export function PricingGrid() {
       <PayAsYouGoModal
         isOpen={showPayAsYouGoModal}
         onClose={() => setShowPayAsYouGoModal(false)}
-      />
-
-      <ContactPaymentModal
-        isOpen={showContactPaymentModal}
-        onClose={() => setShowContactPaymentModal(false)}
       />
 
       <Dialog open={showAmountDialog} onOpenChange={setShowAmountDialog}>

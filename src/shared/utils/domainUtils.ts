@@ -60,38 +60,35 @@ export function getDefaultLocale(hostname?: string): 'ka' | 'en' {
 }
 
 /**
- * Get the currency symbol based on the domain
- * @returns '₾' for suliko.ge, '€' for suliko.io, '₾' as fallback
+ * Currency symbol shown with prices.
+ *
+ * Both domains bill in GEL: the card processor settles the merchant account in
+ * GEL, so quoting suliko.io in euro would show a figure the customer is not the
+ * one charged. Payment rules require the displayed price to be the price taken,
+ * so display follows settlement rather than the other way round.
+ *
+ * @returns '₾' on every domain
  */
 export function getCurrencySymbol(): string {
-  if (isSulikoIo()) {
-    return '€';
-  }
-  // Default to GEL for suliko.ge and other domains
   return '₾';
 }
 
 /**
- * Get the currency code based on the domain
- * @returns 'EUR' for suliko.io, 'GEL' for suliko.ge, 'GEL' as fallback
+ * Currency code used for both display and the amount sent to the processor.
+ * Single source of truth, so the quoted price and the charged price cannot drift.
+ *
+ * @returns 'GEL' on every domain
  */
 export function getCurrencyCode(): string {
-  if (isSulikoIo()) {
-    return 'EUR';
-  }
-  // Default to GEL for suliko.ge and other domains
   return 'GEL';
 }
 
 /**
- * Get the country code based on the domain
- * @returns 'LT' for suliko.io (Lithuania for EUR), 'GE' for suliko.ge (Georgia for GEL), 'GE' as fallback
+ * Country code accompanying a payment. The merchant is registered in Georgia.
+ *
+ * @returns 'GE' on every domain
  */
 export function getCountryCode(): string {
-  if (isSulikoIo()) {
-    return 'LT'; // Lithuania for EUR payments
-  }
-  // Default to GE for suliko.ge and other domains
   return 'GE';
 }
 

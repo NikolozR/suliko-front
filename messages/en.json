@@ -114,7 +114,7 @@
     "phoneWillBeAskedLater": "You can add and verify your phone number after registration",
     "phoneVerificationDescription": "We'll send a verification code to your phone number",
     "emailVerificationDescription": "We'll send a verification code to your email address",
-    "termsText": "1. General Provisions\n\nThese terms and conditions govern the use of the translation service (\"Service\") offered by შკს სულიკო ეი აი, identification code: 400403265 (hereinafter - \"Company\", \"we\"). By accessing or using the Service, you as a user (\"User\") agree to the terms of this document.\n\n2. User Obligations\n\nWhen using the Service, you are obligated to use it only for legal purposes and not violate applicable laws.\n\nIt is prohibited to use the Service to create, distribute, or transmit any harmful or illegal content.\n\n3. Intellectual Property\n\nYou retain ownership of the text you upload to the Service. By using the Service, you grant the Company a limited, non-exclusive license to process and use this text solely for performing and improving the translation service.\n\nThe Service, all its components, software, design, and other materials constitute the intellectual property of the Company and are protected by copyright.\n\n4. Limitation of Liability\n\nThe Service is provided \"as is\" without any warranty. The Company makes no guarantee that the Service will be uninterrupted, error-free, or secure.\n\nThe Company is not liable for any direct, indirect, incidental, or other damages caused by the use of the Service.\n\n5. Service Termination\n\nThe Company has the right to restrict or terminate user access to the Service at any time and for any reason if the user violates these terms and conditions.\n\n6. Changes\n\nThe Company reserves the right to make changes to these terms and conditions at any time. Changes take effect immediately upon posting on the website or application.\n\n7. Refund Policy\n\nAll refund requests are reviewed on a case-by-case basis. If you believe you are entitled to a refund, please contact our support team at info@suliko.ge with a description of your issue. We will review each request and respond within a reasonable timeframe.\n\n8. Contact Information\n\nCompany: შკს სულიკო ეი აი\nIdentification Code: 400403265\nEmail: info@suliko.ge\nPhone: +995 591 729 911\nAddress: Georgia, Tbilisi, Gldani District, Mukhiani, Micro-district IVb, Building 37, Apartment 54",
+    "termsText": "1. General Provisions\n\nThese terms and conditions govern the use of the translation service (\"Service\") offered by {name}, identification code: {id} (hereinafter - \"Company\", \"we\"). By accessing or using the Service, you as a user (\"User\") agree to the terms of this document.\n\n2. User Obligations\n\nWhen using the Service, you are obligated to use it only for legal purposes and not violate applicable laws.\n\nIt is prohibited to use the Service to create, distribute, or transmit any harmful or illegal content.\n\n3. Intellectual Property\n\nYou retain ownership of the text you upload to the Service. By using the Service, you grant the Company a limited, non-exclusive license to process and use this text solely for performing and improving the translation service.\n\nThe Service, all its components, software, design, and other materials constitute the intellectual property of the Company and are protected by copyright.\n\n4. Limitation of Liability\n\nThe Service is provided \"as is\" without any warranty. The Company makes no guarantee that the Service will be uninterrupted, error-free, or secure.\n\nThe Company is not liable for any direct, indirect, incidental, or other damages caused by the use of the Service.\n\n5. Service Termination\n\nThe Company has the right to restrict or terminate user access to the Service at any time and for any reason if the user violates these terms and conditions.\n\n6. Changes\n\nThe Company reserves the right to make changes to these terms and conditions at any time. Changes take effect immediately upon posting on the website or application.\n\n7. Refund Policy\n\nUnused translation credits are refundable in full for 14 days from the date of purchase, refunded to the card used. Credits already spent on a completed translation are not refundable, because the service has been performed. If a translation fails for a technical reason on our side, its credits are returned to your balance.\n\nTo request a refund, email {email} from the address on your account with the date and amount. We reply within 3 business days and send approved refunds within 10 business days.\n\nThe full delivery, cancellation and refund policy is published at /refund-policy.\n\n8. Contact Information\n\nCompany: {name}\nIdentification Code: {id}\nEmail: {email}\nPhone: {phone}\nAddress: {address}",
     "orContinueWith": "Continue with Google",
     "orWithCredentials": "or sign in with credentials",
     "welcomeBack": "Welcome back — sign in to your account",
@@ -718,11 +718,11 @@
     "starter": {
       "title": "Starter",
       "price": "20 ₾",
-      "period": "/month",
-      "documents": "100 pages per month",
+      "period": " one-time",
+      "documents": "100 pages",
       "description": "Perfect for individuals and small projects",
       "features": {
-        "0": "100 pages per month",
+        "0": "100 pages, no expiry",
         "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
@@ -731,11 +731,11 @@
     "professional": {
       "title": "Professional",
       "price": "50 ₾",
-      "period": "/month",
-      "documents": "500 pages per month",
+      "period": " one-time",
+      "documents": "500 pages",
       "description": "Ideal for growing businesses and teams",
       "features": {
-        "0": "500 pages per month",
+        "0": "500 pages, no expiry",
         "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages",
         "3": "Priority email & chat support",
@@ -1026,7 +1026,9 @@
       "privacyPolicy": "Privacy Policy",
       "termsOfService": "Terms of Service",
       "cookiePolicy": "Cookie Policy",
-      "gdpr": "GDPR"
+      "gdpr": "GDPR",
+      "about": "About Us",
+      "refundPolicy": "Refunds & Delivery"
     },
     "newsletter": {
       "title": "Stay Updated",
@@ -1581,7 +1583,8 @@
   "Terms": {
     "backToHome": "Back to home",
     "pageTitle": "Terms & Conditions | Suliko",
-    "pageDescription": "Read the full Terms and Conditions for the Suliko AI translation service."
+    "pageDescription": "Read the full Terms and Conditions for the Suliko AI translation service.",
+    "lastUpdated": "Last updated: 9 September 2026"
   },
   "BulkTranslation": {
     "title": "Bulk translation",
@@ -1664,5 +1667,28 @@
   },
   "Company": {
     "legalEntity": "Company: {name} · Identification code: {id}"
+  },
+  "About": {
+    "pageTitle": "About Suliko",
+    "pageDescription": "Who runs Suliko, what the service does, what it costs, and how to reach us.",
+    "title": "About us",
+    "intro": "Suliko is an AI translation service for documents and text. This page sets out who operates it, what it does, what it costs and how to contact us.",
+    "body": "1. The company\n\nSuliko is operated by {name}, identification code {id}, registered in Georgia. We are the merchant of record for every payment made on suliko.ge and suliko.io, and the party responsible for delivering the service described below.\n\n2. What the service does\n\nSuliko translates documents and text between more than 60 languages. You upload a file — Word, PDF, PowerPoint, Excel, images or subtitles — or paste text directly, choose the target language, and receive a translation that keeps the original layout, tables and formatting.\n\nThe service is used for contracts, technical documentation, academic and medical papers, subtitles and everyday correspondence. Georgian is a first-class language throughout, including Georgian passports and identity documents.\n\nA notarised translation option is available for documents that need legal certification in Georgia.\n\n3. How it works\n\nCreate an account, top up your balance, upload a document and choose the target language. Translation usually completes in under a minute for an ordinary document; large files take proportionally longer. Finished translations stay in your history and can be downloaded again at any time.\n\n4. What it costs\n\nAll prices are in Georgian lari (GEL, ₾), and that is the currency charged at checkout on both suliko.ge and suliko.io.\n\nPay as you go — 1 ₾ per page. Buy any amount from 1 ₾ upwards.\n\nStarter — 20 ₾ for 100 pages.\n\nProfessional — 50 ₾ for 500 pages.\n\nA page means one standard page of translated text. Pages do not expire and can be used whenever you need them. There is no subscription and no recurring charge: you are billed only for what you buy, at the moment you buy it.\n\n5. Contact\n\nEmail: {email}\nPhone: {phone}\nAddress: {address}\n\nWe answer support enquiries by email within one business day."
+  },
+  "RefundPolicy": {
+    "pageTitle": "Delivery, Cancellation and Refund Policy",
+    "pageDescription": "How translation credits are delivered, and how to cancel an order or request a refund.",
+    "title": "Delivery, cancellation and refund policy",
+    "lastUpdated": "Last updated: 9 September 2026",
+    "intro": "This policy covers what you receive when you pay, when an order can be cancelled, and when we refund. It applies to purchases made on suliko.ge and suliko.io.",
+    "body": "1. What you are buying\n\nYou are buying translation credits, measured in pages, which are added to your account balance. Nothing is shipped: the service is delivered entirely online.\n\n2. Delivery\n\nCredits are added to your account as soon as the bank confirms your payment — normally within seconds. If your balance has not updated within 15 minutes of a successful payment, contact us at {email} with the date and amount and we will apply the credits manually.\n\nThere is no delivery charge, because there is nothing to deliver physically.\n\n3. Cancelling before you pay\n\nYou can abandon a payment at any point before you confirm it on the bank's page. Nothing is charged and no order is created. Closing the payment page, or letting it expire, cancels the order by itself.\n\n4. Refunds\n\nUnused credits are refundable in full for 14 days from the date of purchase. We will refund the amount paid to the card used for the purchase.\n\nCredits you have already spent on a completed translation are not refundable, because the service has been performed and delivered.\n\nIf a translation fails for a technical reason on our side, the credits for it are returned to your balance automatically. If that does not happen, tell us and we will restore them.\n\nIf you were charged twice for the same order, or charged after a payment that visibly failed, we refund the duplicate in full regardless of how long ago it happened.\n\n5. How to request a refund\n\nEmail {email} from the address on your account, telling us the date of the purchase, the amount, and briefly why you are asking. You do not need to give a reason for a refund of unused credits within 14 days.\n\nWe reply to every refund request within 3 business days. Approved refunds are sent back to the original card within 10 business days; how quickly it then appears on your statement is up to your bank.\n\n6. Problems with a translation\n\nIf a translation is wrong, incomplete or unusable, tell us within 14 days and we will re-run it at no cost, or refund the credits it consumed if we cannot put it right.\n\n7. Disputes\n\nIf something has gone wrong with a payment, please contact us first at {email} or {phone} — we can almost always resolve it faster than a card dispute can. Raising a chargeback with your bank remains your right and does not affect the rights described above."
+  },
+  "Privacy": {
+    "pageTitle": "Privacy Policy",
+    "pageDescription": "What Suliko collects, why, how long it is kept, and what you can ask us to do with it.",
+    "title": "Privacy policy",
+    "lastUpdated": "Last updated: 9 September 2026",
+    "intro": "This policy explains what personal data Suliko collects, why we collect it, how long we keep it, and the choices you have. It applies to suliko.ge and suliko.io.",
+    "body": "1. Who is responsible\n\n{name} is the controller of the personal data described here. You can reach us at {email}, or by post at {address}.\n\n2. What we collect\n\nAccount details: your email address, and your phone number if you register with one. A password, stored only as a cryptographic hash that cannot be reversed.\n\nContent you submit: documents and text you upload for translation, and the translations produced from them.\n\nUsage records: pages translated, language pairs, timestamps and balance movements — what we need to bill correctly and to show your history.\n\nTechnical data: IP address, browser and device type, collected in ordinary server logs.\n\n3. Documents you upload\n\nYour documents are yours. We process them to produce your translation and to keep it available in your history, and for nothing else. We do not sell them, we do not publish them, and we do not use their contents to train models.\n\nTranslation is performed using Google's Gemini API. Your document text is sent to that service for the sole purpose of translating it, under Google's terms for API customers, which do not permit its use for training.\n\n4. Payment data\n\nCard payments are processed by the Bank of Georgia. Card numbers, expiry dates and security codes are entered on the bank's own page and are never sent to, seen by, or stored by us. We keep only the order reference, the amount, the currency and whether the payment succeeded.\n\n5. How long we keep it\n\nDocuments and translations stay in your history until you delete them or close your account.\n\nAccount records are kept while your account is open. When you close it, we delete your account and content within 30 days.\n\nPayment and invoicing records are kept for as long as Georgian accounting and tax law requires, which is longer than the periods above and applies even after an account is closed.\n\n6. Who else sees it\n\nWe share personal data only with the providers needed to run the service: our hosting provider, the Gemini API for translation, and the Bank of Georgia for payments. Each receives only what its task requires.\n\nWe disclose data to authorities only where the law obliges us to, and we do not sell personal data to anyone.\n\n7. Your rights\n\nYou can ask us to give you a copy of your data, correct it, delete it, or stop processing it. Write to {email} from the address on your account and we will respond within 30 days.\n\nYou can delete individual documents from your history yourself at any time, and you can close your account whenever you like.\n\n8. Cookies\n\nWe use cookies that are necessary for the site to work — keeping you signed in, and remembering your language and theme. We do not use advertising cookies. Analytics, where used, is limited to aggregate traffic measurement.\n\n9. Security\n\nTraffic to and from the site is encrypted in transit. Passwords are hashed. Access to production data is limited to the people who need it to operate the service.\n\n10. Changes\n\nIf we change this policy we will update the date at the top of this page. Material changes will be announced on the site before they take effect.\n\n11. Contact\n\nQuestions about privacy: {email}."
   }
 }

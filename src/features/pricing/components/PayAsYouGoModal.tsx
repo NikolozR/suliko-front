@@ -7,10 +7,8 @@ import { Button } from '@/features/ui/components/ui/button';
 import { Input } from '@/features/ui/components/ui/input';
 import { Label } from '@/features/ui/components/ui/label';
 import { CreditCard, AlertCircle } from "lucide-react";
-import { Checkbox } from "@/features/ui/components/ui/checkbox";
-import { createPayment } from "../services/paymentService";
-import { getCurrencySymbol, isSulikoIo } from "@/shared/utils/domainUtils";
-import { ContactPaymentModal } from "./ContactPaymentModal";
+import { createBogPayment } from "../services/paymentService";
+import { getCurrencySymbol } from "@/shared/utils/domainUtils";
 import CompanyLegalInfo from "@/shared/components/CompanyLegalInfo";
 
 interface PayAsYouGoModalProps {
@@ -29,8 +27,6 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
   const [pages, setPages] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>('');
-  const [showContactPaymentModal, setShowContactPaymentModal] = useState(false);
-  const [saveCard, setSaveCard] = useState(false);
   const currencySymbol = getCurrencySymbol();
 
   // Calculate pages when amount changes
@@ -82,35 +78,27 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
       return;
     }
 
-    // For suliko.io, show contact modal instead of making payment API call
-    if (isSulikoIo()) {
-      setShowContactPaymentModal(true);
-      return;
-    }
-
     setIsLoading(true);
     setError('');
 
     try {
       const numericAmount = parseFloat(amount);
-      // const response = await createFlittPayment(numericAmount, undefined, undefined, saveCard);
-      const response = await createPayment(numericAmount);
-      // window.open(response.checkoutUrl, "_blank"); 
-      window.open(response.redirectUrl, "_blank");
-      onClose();
+      const response = await createBogPayment(numericAmount);
+      // Same tab, not a popup: this runs after an await, so a new window would be
+      // blocked, and the bank returns the customer to our success page anyway.
+      window.location.href = response.redirectUrl;
     } catch (err) {
       const errorMsg = err instanceof Error ? err.message : t('payAsYouGoModal.errors.purchaseFailed');
       console.error('PayAsYouGo purchase error:', errorMsg);
       setError(errorMsg);
-    } finally {
       setIsLoading(false);
     }
+    // Left loading on success: the page is navigating away.
   };
 
   const suggestedAmounts = [5, 10, 20, 50];
 
   return (
-    <>
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto p-6">
         <DialogHeader>
@@ -192,18 +180,6 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
             </div>
           )}
 
-          {/* Save Card Checkbox */}
-          <div className="flex items-center gap-3">
-            <Checkbox
-              id="saveCard"
-              checked={saveCard}
-              onCheckedChange={(checked) => setSaveCard(checked === true)}
-            />
-            <Label htmlFor="saveCard" className="text-sm text-muted-foreground cursor-pointer">
-              {t('payAsYouGoModal.saveCard')}
-            </Label>
-          </div>
-
           {/* Action Buttons */}
           <div className="flex gap-3">
             <Button
@@ -242,11 +218,5 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
         </div>
       </DialogContent>
     </Dialog>
-
-    <ContactPaymentModal 
-      isOpen={showContactPaymentModal} 
-      onClose={() => setShowContactPaymentModal(false)} 
-    />
-    </>
   );
 }

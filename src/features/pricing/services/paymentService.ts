@@ -27,9 +27,116 @@ export interface FlittCheckoutRequest {
 
 export interface FlittCheckoutResponse {
   orderId: string;
-  checkoutUrl: string; 
+  checkoutUrl: string;
   responseStatus: string;
   errorMessage?: string;
+}
+
+export interface BogCheckoutRequest {
+  amount: number;
+  currency?: string;
+  orderDescription?: string;
+  /** "ka" | "en" | "pl" — decides the language of BOG's page and where we return to. */
+  locale?: string;
+}
+
+export interface BogCheckoutResponse {
+  orderId: string;
+  redirectUrl: string;
+}
+
+export interface BogPaymentStatus {
+  orderId: string;
+  /** "created" | "pending" | "succeeded" | "failed" | "refunded" | "unknown" */
+  status: string;
+  amount: number;
+  currency: string;
+}
+
+/**
+ * Starts a Bank of Georgia checkout and returns where to send the customer.
+ *
+ * Only the amount travels from here: the merchant credentials, callback URL and
+ * return URLs all live on the server, and the balance is credited from BOG's
+ * signed callback rather than from anything the browser reports back.
+ */
+export async function createBogPayment(
+  amount: number,
+  options?: { currency?: string; orderDescription?: string }
+): Promise<BogCheckoutResponse> {
+  const currency = options?.currency ?? getCurrencyCode();
+
+  const body: BogCheckoutRequest = {
+    amount,
+    currency,
+    orderDescription: options?.orderDescription ?? `Suliko ${amount} ${currency}`,
+    // The server pairs this with the request's Origin to bring the customer back to
+    // the domain and language they started on.
+    locale: getCurrentLocale(),
+  };
+
+  return authedJson<BogCheckoutResponse>("/Payment/bog-create", {
+    method: "POST",
+    body: JSON.stringify(body),
+  });
+}
+
+/**
+ * Reads back the status of one of the caller's own orders. The success page polls
+ * this because the customer usually returns before BOG's callback lands.
+ */
+export async function getBogPaymentStatus(orderId: string): Promise<BogPaymentStatus> {
+  return authedJson<BogPaymentStatus>(`/Payment/bog-status/${encodeURIComponent(orderId)}`);
+}
+
+/** First path segment when it is one of our locales, so BOG's page opens in the same language. */
+function getCurrentLocale(): string {
+  if (typeof window === "undefined") return "ka";
+  const first = window.location.pathname.split("/").filter(Boolean)[0];
+  return ["en", "ka", "pl"].includes(first || "") ? (first as string) : "ka";
+}
+
+/**
+ * Calls the API with the stored token, retrying once against a refreshed one.
+ * Shared by the BOG calls so the retry is written in a single place.
+ */
+async function authedJson<T>(endpoint: string, init: RequestInit = {}): Promise<T> {
+  const { refreshToken, token } = useAuthStore.getState();
+  if (!token) throw new Error("No token found");
+
+  const send = (bearer: string) =>
+    fetch(`${API_BASE_URL}${endpoint}`, {
+      ...init,
+      headers: {
+        Authorization: `Bearer ${bearer}`,
+        "Content-Type": "application/json",
+      },
+    });
+
+  let response = await send(token);
+
+  if (response.status === 401 && refreshToken) {
+    try {
+      const newTokens = (await reaccessToken(refreshToken)) as {
+        token: string;
+        refreshToken: string;
+      };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      response = await send(newTokens.token);
+    } catch (error) {
+      useAuthStore.getState().reset();
+      throw new Error("Failed to refresh token " + error);
+    }
+  }
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.error || errorData.message || "Payment failed");
+  }
+
+  return (await response.json()) as T;
 }
 
 
