@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { PricingGrid } from "@/features/pricing";
+import CompanyLegalInfo from "@/shared/components/CompanyLegalInfo";
 
 export async function generateMetadata({
   params,
@@ -24,6 +25,8 @@ export default function PricePackages() {
       </div>
       
       <PricingGrid />
+
+      <CompanyLegalInfo className="mt-12 text-center" />
     </div>
   );
 }

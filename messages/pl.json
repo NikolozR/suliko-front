@@ -1661,5 +1661,8 @@
     "downloadFailed": "Nie udało się przygotować pobierania",
     "requeuedToast": "Ponownie dodano do kolejki {count, plural, one {# dokument} few {# dokumenty} many {# dokumentów} other {# dokumentu}}.",
     "retryFailedToast": "Ponowienie nie powiodło się"
+  },
+  "Company": {
+    "legalEntity": "Firma: {name} · Numer identyfikacyjny: {id}"
   }
 }

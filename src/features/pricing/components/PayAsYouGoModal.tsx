@@ -11,6 +11,7 @@ import { Checkbox } from "@/features/ui/components/ui/checkbox";
 import { createPayment } from "../services/paymentService";
 import { getCurrencySymbol, isSulikoIo } from "@/shared/utils/domainUtils";
 import { ContactPaymentModal } from "./ContactPaymentModal";
+import CompanyLegalInfo from "@/shared/components/CompanyLegalInfo";
 
 interface PayAsYouGoModalProps {
   isOpen: boolean;
@@ -236,6 +237,7 @@ export function PayAsYouGoModal({ isOpen, onClose }: PayAsYouGoModalProps) {
           <div className="text-xs text-muted-foreground text-center space-y-1">
             <p>{t('payAsYouGoModal.pagesNeverExpire')}</p>
             <p>{t('payAsYouGoModal.minimumPurchase', { min: MINIMUM_AMOUNT }).replace(/₾|€/g, currencySymbol)}</p>
+            <CompanyLegalInfo />
           </div>
         </div>
       </DialogContent>

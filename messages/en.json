@@ -1661,5 +1661,8 @@
     "downloadFailed": "Failed to build the download",
     "requeuedToast": "Requeued {count, plural, one {# document} other {# documents}}.",
     "retryFailedToast": "Retry failed"
+  },
+  "Company": {
+    "legalEntity": "Company: {name} · Identification code: {id}"
   }
 }
