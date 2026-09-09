@@ -1,18 +1,23 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { Mail, Phone, Facebook, Linkedin } from "lucide-react";
+import { Mail, MapPin, Phone, Facebook, Linkedin } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Button } from "@/features/ui";
 import { NOTARY_PHONE_DISPLAY } from "@/shared/constants/notary";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 import CompanyLegalInfo from "@/shared/components/CompanyLegalInfo";
+import {
+  COMPANY_ADDRESS_EN,
+  COMPANY_ADDRESS_KA,
+} from "@/shared/constants/company";
 
 export default function LandingFooter() {
   const t = useTranslations("LandingFooter");
+  const locale = useLocale();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -126,6 +131,15 @@ export default function LandingFooter() {
                   <span className="whitespace-nowrap">{NOTARY_PHONE_DISPLAY}</span>
                 </div>
               </li>
+              <li>
+                {/* Card processors require a readable postal address for the merchant. */}
+                <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                  <span>
+                    {locale === "ka" ? COMPANY_ADDRESS_KA : COMPANY_ADDRESS_EN}
+                  </span>
+                </div>
+              </li>
             </ul>
             <div className="mt-6">
               <Button
@@ -142,16 +156,25 @@ export default function LandingFooter() {
 
         {/* Bottom Bar */}
         <div className="py-5 border-t border-border flex flex-col items-center gap-3">
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
             <p className="text-sm text-muted-foreground">
               {t("bottom.copyright")}
             </p>
-            <Link
-              href="/terms"
-              className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-            >
-              {t("links.termsOfService")}
-            </Link>
+            {/* The documents a card processor checks before lifting a merchant limit. */}
+            {[
+              { href: "/about", label: t("links.about") },
+              { href: "/terms", label: t("links.termsOfService") },
+              { href: "/privacy", label: t("links.privacyPolicy") },
+              { href: "/refund-policy", label: t("links.refundPolicy") },
+            ].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
           </div>
           <CompanyLegalInfo className="text-center" />
         </div>

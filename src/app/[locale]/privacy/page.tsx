@@ -6,10 +6,8 @@ import {
   COMPANY_ADDRESS_EN,
   COMPANY_ADDRESS_KA,
   COMPANY_EMAIL,
-  COMPANY_ID,
   COMPANY_NAME_EN,
   COMPANY_NAME_KA,
-  COMPANY_PHONE_DISPLAY,
 } from "@/shared/constants/company";
 
 export async function generateMetadata({
@@ -18,12 +16,12 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations("Terms");
+  const t = await getTranslations("Privacy");
 
   return {
     title: t("pageTitle"),
     description: t("pageDescription"),
-    alternates: { canonical: canonicalFor(locale, "/terms") },
+    alternates: { canonical: canonicalFor(locale, "/privacy") },
     openGraph: {
       title: t("pageTitle"),
       description: t("pageDescription"),
@@ -32,31 +30,30 @@ export async function generateMetadata({
   };
 }
 
-export default async function TermsPage({
+/**
+ * What we collect, why, how long we keep it, and what a user can ask us to do
+ * with it.
+ */
+export default async function PrivacyPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const tTerms = await getTranslations("Terms");
-  const tAuth = await getTranslations("Authorization");
+  const t = await getTranslations("Privacy");
 
-  // Company details are interpolated from constants/company.ts rather than written
-  // into the translations, so the entity named here matches the one on every other
-  // page and the one registered with the payment provider.
-  const body = tAuth("termsText", {
+  const body = t("body", {
     name: locale === "ka" ? COMPANY_NAME_KA : COMPANY_NAME_EN,
-    id: COMPANY_ID,
     email: COMPANY_EMAIL,
-    phone: COMPANY_PHONE_DISPLAY,
     address: locale === "ka" ? COMPANY_ADDRESS_KA : COMPANY_ADDRESS_EN,
   });
 
   return (
     <LegalDocumentPage
-      title={tAuth("termsAndConditions")}
+      title={t("title")}
+      intro={t("intro")}
       body={body}
-      lastUpdated={tTerms("lastUpdated")}
+      lastUpdated={t("lastUpdated")}
       locale={locale}
     />
   );
