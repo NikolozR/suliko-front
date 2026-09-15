@@ -119,6 +119,17 @@ export default function AdminSidebar({ isAuth }: { isAuth: boolean }) {
               <path strokeLinecap="round" strokeLinejoin="round" d="M8 17h8" />
             </svg>
           </NavLink>
+          <NavLink href="/en/admin/translators" label="Translators" collapsed={collapsed}>
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+              <rect x="5" y="3" width="14" height="18" rx="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M9 3v2h6V3M9 11h6M9 15h4" />
+            </svg>
+          </NavLink>
+          <NavLink href="/en/admin/organizations" label="Organizations" collapsed={collapsed}>
+            <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth={1.8} viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-4h6v4M9 10h.01M15 10h.01M9 14h.01M15 14h.01" />
+            </svg>
+          </NavLink>
         </nav>
       )}
 
