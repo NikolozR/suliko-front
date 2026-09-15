@@ -2,15 +2,17 @@
 
 import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { Plus, FolderOpen, HelpCircle, User } from "lucide-react";
+import { Plus, FolderOpen, HelpCircle, User, ClipboardList } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useTranslations } from "next-intl";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
+import { usePortalMe } from "@/features/orders/hooks/usePortalMe";
 
 export default function MobileBottomNav() {
   const pathname = usePathname();
   const { token } = useAuthStore();
+  const { isTranslator } = usePortalMe();
   const t = useTranslations("Sidebar");
   const resetTextTranslation = useTextTranslationStore((s) => s.reset);
   const resetDocumentTranslation = useDocumentTranslationStore((s) => s.reset);
@@ -32,6 +34,9 @@ export default function MobileBottomNav() {
     },
     ...(token
       ? [{ label: t("projects"), href: "/projects" as const, icon: FolderOpen }]
+      : []),
+    ...(token && isTranslator
+      ? [{ label: t("orders"), href: "/orders" as const, icon: ClipboardList }]
       : []),
     { label: t("help"), href: "/help" as const, icon: HelpCircle },
     token
