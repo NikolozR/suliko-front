@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { hashEmail, hashPhone, getCurrentTimestamp } from '@/shared/utils/hashUtils';
+import { getMetaPixelId, isProductionDeployment } from '@/shared/utils/analyticsEnv';
 
-const FACEBOOK_ACCESS_TOKEN = 'EAAHoqwDjfusBPglG2tVZCqQhzZC3LxJHoZB9ct6hRxEZA8z3dFXxzm86mF1ZBQqGcHwpZBtIlIo3nfzdBygnqagFcMdWq7uVhGGHXb3rZCZB0QqPVq6NuTZApAfer4Da56oQ7GSJB0xkjn1BMxg9VGeP5gFg9Eb11XsgpCskx11SYxRVSly0hIZC0e6mjZABwVnoQZDZD';
-const PIXEL_ID = '763067889892928';
+/**
+ * Conversions API access token. Server-side only — deliberately no NEXT_PUBLIC_
+ * prefix, so Next.js will not inline it into the client bundle.
+ */
+const FACEBOOK_ACCESS_TOKEN = process.env.FACEBOOK_ACCESS_TOKEN;
 const API_VERSION = 'v21.0';
 
 interface FacebookEventData {
@@ -23,8 +27,9 @@ interface FacebookEventData {
     attribution_share: string;
   };
   custom_data?: {
-    currency: string;
-    value: string;
+    /** Revenue events only; absent on registrations and other non-revenue events. */
+    currency?: string;
+    value?: string;
     content_name?: string;
     content_category?: string;
   };
@@ -40,6 +45,17 @@ interface FacebookEventsPayload {
 }
 
 export async function POST(request: NextRequest) {
+  const pixelId = getMetaPixelId();
+
+  if (!isProductionDeployment() || !pixelId || !FACEBOOK_ACCESS_TOKEN) {
+    // Same gate as the browser pixel. Without it, a registration on localhost or
+    // a preview deployment would still reach Meta through this route.
+    return NextResponse.json(
+      { skipped: true, reason: 'Conversions API disabled outside production' },
+      { status: 200 }
+    );
+  }
+
   try {
     const body = await request.json();
     const { 
@@ -126,10 +142,12 @@ export async function POST(request: NextRequest) {
         attribution_share: '0.3'
       },
       custom_data: {
-        currency: customData?.currency || 'GEL',
-        value: customData?.value || '0.00',
         content_name: customData?.contentName || 'User Registration',
-        content_category: customData?.contentCategory || 'User Signup'
+        content_category: customData?.contentCategory || 'User Signup',
+        // Only for genuine revenue events; omitted otherwise so that free
+        // signups do not register as zero-value purchases.
+        ...(customData?.currency ? { currency: customData.currency } : {}),
+        ...(customData?.value ? { value: customData.value } : {})
       },
       original_event_data: {
         event_name: eventName,
@@ -139,12 +157,15 @@ export async function POST(request: NextRequest) {
 
     const payload: FacebookEventsPayload = {
       data: [facebookEvent],
-      test_event_code: testEventCode || 'TEST6827' // Use provided test code or default
+      // Events carrying a test code appear only in Meta's Test Events tool and
+      // are never counted as conversions, so this is set only when a caller
+      // explicitly asks for it while debugging.
+      ...(testEventCode ? { test_event_code: testEventCode } : {})
     };
 
     // Send to Facebook Conversions API
     const facebookResponse = await fetch(
-      `https://graph.facebook.com/${API_VERSION}/${PIXEL_ID}/events?access_token=${FACEBOOK_ACCESS_TOKEN}`,
+      `https://graph.facebook.com/${API_VERSION}/${pixelId}/events?access_token=${FACEBOOK_ACCESS_TOKEN}`,
       {
         method: 'POST',
         headers: {

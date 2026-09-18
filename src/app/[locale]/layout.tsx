@@ -23,6 +23,11 @@ import {
   COMPANY_NAME_EN,
   COMPANY_PHONE,
 } from "@/shared/constants/company";
+import {
+  ANALYTICS_ALLOWED_HOSTS,
+  getMetaPixelId,
+  isAnalyticsEnabled,
+} from "@/shared/utils/analyticsEnv";
 // import OneTimeOfferModal from "@/shared/components/OneTimeOfferModal";
 
 const geistSans = Geist({
@@ -129,15 +134,28 @@ export default async function LocaleLayout({
     notFound();
   }
 
+  // undefined on preview/dev deployments and when the id is unconfigured, which
+  // omits both the pixel script and its noscript image from the HTML entirely.
+  const metaPixelId = isAnalyticsEnabled() ? getMetaPixelId() : undefined;
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* Enhanced Meta Pixel Code */}
-        <Script
-          id="meta-pixel"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `!function(f,b,e,v,n,t,s){
+        {/*
+          Meta Pixel. Rendered only on a production deployment (server half of the
+          guard); the snippet itself refuses to define fbq or fetch fbevents.js
+          unless the browser is on an allowed host (client half). See
+          shared/utils/analyticsEnv.ts.
+        */}
+        {metaPixelId && (
+          <Script
+            id="meta-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `(function(){
+  if(${JSON.stringify(ANALYTICS_ALLOWED_HOSTS)}.indexOf(window.location.hostname.toLowerCase())===-1)return;
+
+  !function(f,b,e,v,n,t,s){
   if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
@@ -146,21 +164,16 @@ export default async function LocaleLayout({
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
 
-  // Enhanced initialization with additional parameters
-  fbq('init', '763067889892928', {
-    em: 'hashed_email_placeholder', // Will be replaced with actual hashed email
-    ph: 'hashed_phone_placeholder', // Will be replaced with actual hashed phone
-    fbc: 'fb_click_id_placeholder', // Will be replaced with actual click ID
-    fbp: 'fb_browser_id_placeholder' // Will be replaced with actual browser ID
-  });
+  fbq('init', ${JSON.stringify(metaPixelId)});
 
-  // Track PageView with enhanced parameters
   fbq('track', 'PageView', {
     content_name: 'Suliko Landing Page',
     content_category: 'AI Translation Service'
-  });`,
-          }}
-        />
+  });
+})();`,
+            }}
+          />
+        )}
         {/* Hotjar Tracking Code for Suliko AI NEW */}
         <Script
           id="hotjar"
@@ -257,11 +270,14 @@ export default async function LocaleLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
 
-        {/* Meta Pixel (noscript) */}
-        <noscript>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=763067889892928&ev=PageView&noscript=1" alt="" />
-        </noscript>
+        {/* Meta Pixel (noscript). Same server-side guard as the script above; a
+            noscript image cannot check its own hostname, so it rides on VERCEL_ENV. */}
+        {metaPixelId && (
+          <noscript>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img height="1" width="1" style={{ display: 'none' }} src={`https://www.facebook.com/tr?id=${encodeURIComponent(metaPixelId)}&ev=PageView&noscript=1`} alt="" />
+          </noscript>
+        )}
 
         {/* Yandex.Metrika (noscript) */}
         <noscript>
