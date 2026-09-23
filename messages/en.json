@@ -1714,7 +1714,6 @@
       "login": "Log in"
     },
     "dash": {
-      "label": "Sample Suliko Office dashboard",
       "title": "Overview",
       "month": "September",
       "sample": "Sample data",
@@ -1863,6 +1862,39 @@
       "errorRateLimited": "Too many requests. Please try again in a few minutes.",
       "errorGeneric": "Something went wrong. Please try again, or email us at info@suliko.ge.",
       "honeypot": "Leave this field empty"
+    },
+    "demo": {
+      "label": "Animated sample of Suliko Office: a new order is priced automatically, tracked to pickup and paid out",
+      "newOrder": "New order",
+      "save": "Save order",
+      "fDoc": "Document",
+      "fPair": "Language pair",
+      "fUrgency": "Urgency",
+      "fCopies": "Copies",
+      "vUrgent": "Urgent",
+      "vCopies": "2 copies",
+      "price": "Price",
+      "priceNote": "Calculated automatically",
+      "assignee": "Nino K.",
+      "financeTitle": "Payouts",
+      "clientPayment": "Client payment",
+      "translatorPayout": "Translator payout",
+      "notaryFee": "Notary fee",
+      "orderProfit": "Order profit",
+      "completed": "Order {id} completed",
+      "stepOverview": "Overview",
+      "stepNew": "New order",
+      "stepTrack": "Tracking",
+      "stepFinance": "Payouts",
+      "steps": "Demo steps",
+      "pause": "Pause demo",
+      "play": "Play demo",
+      "fClient": "Client",
+      "clientValue": "Mariam T. · WhatsApp",
+      "basePrice": "Diploma, KA → EN",
+      "extraCopy": "Extra copy",
+      "monthTranslators": "Translator payouts this month",
+      "monthNotary": "Notary fees this month"
     }
   },
   "OfficePromo": {
