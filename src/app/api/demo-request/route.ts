@@ -97,9 +97,9 @@ export async function POST(request: NextRequest) {
     ['Name', data.name],
     ['Company', data.company],
     ['Email', data.email],
-    ['Phone', data.phone || '—'],
-    ['Team size', TEAM_SIZES[data.team as keyof typeof TEAM_SIZES] ?? '—'],
-    ['Orders per month', ORDER_VOLUMES[data.orders as keyof typeof ORDER_VOLUMES] ?? '—'],
+    ['Phone', data.phone || 'not given'],
+    ['Team size', TEAM_SIZES[data.team as keyof typeof TEAM_SIZES] ?? 'not given'],
+    ['Orders per month', ORDER_VOLUMES[data.orders as keyof typeof ORDER_VOLUMES] ?? 'not given'],
     ['Page language', data.locale],
   ];
 
@@ -114,7 +114,7 @@ export async function POST(request: NextRequest) {
         .join('')}
     </table>
     <p style="color:#525c75">Message:</p>
-    <p>${data.message ? escapeHtml(data.message).replace(/\n/g, '<br>') : '—'}</p>
+    <p>${data.message ? escapeHtml(data.message).replace(/\n/g, '<br>') : 'None'}</p>
   `;
 
   const text = [
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
     ...rows.map(([label, value]) => `${label}: ${value}`),
     '',
     'Message:',
-    data.message || '—',
+    data.message || 'None',
   ].join('\n');
 
   try {
@@ -132,8 +132,8 @@ export async function POST(request: NextRequest) {
       to: [INBOX],
       replyTo: data.email,
       // Resend sets the subject as a header, not HTML, but newlines would still
-      // break it — the schema's trim() doesn't touch interior ones.
-      subject: `[Suliko Office] Demo request — ${data.company.replace(/[\r\n]+/g, ' ')}`,
+      // break it, and the schema's trim() doesn't touch interior ones.
+      subject: `[Suliko Office] Demo request: ${data.company.replace(/[\r\n]+/g, ' ')}`,
       html,
       text,
     });

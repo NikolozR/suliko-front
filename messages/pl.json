@@ -1693,7 +1693,7 @@
   },
   "SulikoOffice": {
     "meta": {
-      "title": "Suliko Office — Translation Management System for Bureaus & LSPs",
+      "title": "Suliko Office: Translation Management System for Bureaus & LSPs",
       "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. Book a demo."
     },
     "nav": {
@@ -1707,7 +1707,7 @@
     "hero": {
       "eyebrow": "Translation management system for bureaus",
       "title": "Run your translation bureau from one screen",
-      "sub": "Orders, translators, notaries, payments and clients in one system — built and used daily by a working bureau.",
+      "sub": "Orders, translators, notaries, payments and clients in one system. Built and used daily by a working bureau.",
       "primary": "Book a demo",
       "secondary": "See how it works",
       "already": "Already using Suliko Office?",
@@ -1789,7 +1789,7 @@
       "f5d": "Individual and business clients, a client portal, and where each client came from.",
       "tagPortal": "Client portal",
       "f6t": "Team & roles",
-      "f6d": "Five roles — staff don't see margins. Two-factor login and a full audit log.",
+      "f6d": "Five roles, and staff don't see margins. Two-factor login and a full audit log.",
       "tagRoles": "5 roles",
       "tag2fa": "2FA",
       "tagAudit": "Audit log",
@@ -1813,19 +1813,19 @@
       "i2t": "Two-factor login",
       "i2d": "A second check at sign-in keeps accounts safe, even if a password leaks.",
       "i3t": "Full audit log",
-      "i3d": "See who changed what, and when — on every order and payment."
+      "i3d": "See who changed what and when, on every order and payment."
     },
     "faq": {
       "kicker": "FAQ",
       "title": "Questions bureaus ask us",
       "q1": "We run everything on Excel and WhatsApp. Is it hard to switch?",
-      "a1": "No. You keep talking to clients on WhatsApp — orders, payments and statuses simply move into one place. We help you bring your existing data across.",
+      "a1": "No. You keep talking to clients on WhatsApp, while orders, payments and statuses move into one place. We help you bring your existing data across.",
       "q2": "How do onboarding and data import work?",
       "a2": "We set up your bureau, import your clients, translators and price list, and walk your team through the system.",
       "q3": "Which languages does it support?",
-      "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers — you set the pairs for each translator.",
+      "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers, and you set the pairs for each translator.",
       "q4": "How much does it cost?",
-      "a4": "Pricing is tailored to your bureau's size and needs — let's talk. Book a demo and we'll put together an offer for you."
+      "a4": "Pricing is tailored to your bureau's size and needs, so let's talk. Book a demo and we'll put together an offer for you."
     },
     "form": {
       "kicker": "Book a demo",
@@ -1855,7 +1855,7 @@
       "submit": "Book a demo",
       "sending": "Sending…",
       "note": "We only use these details to arrange your demo.",
-      "okTitle": "Thanks — request received",
+      "okTitle": "Thanks, request received",
       "okBody": "We'll be in touch shortly to pick a time for your demo.",
       "again": "Send another request",
       "errorRequired": "Please fill in your name, company and email.",
@@ -1867,7 +1867,7 @@
   },
   "OfficePromo": {
     "heading": "Prowadzisz biuro tłumaczeń? Poznaj Suliko Office",
-    "subheading": "Zamówienia, tłumacze, notariusze i płatności w jednym systemie — tym samym, na którym działa nasze biuro.",
+    "subheading": "Zamówienia, tłumacze, notariusze i płatności w jednym systemie. Na nim działa nasze biuro.",
     "cta": "Poznaj Suliko Office"
   }
 }
