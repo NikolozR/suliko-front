@@ -59,6 +59,19 @@ export function trackRegistrationComplete(): void {
 }
 
 /**
+ * Fired once a Suliko Office demo request has been accepted by the server —
+ * never on the button press, which would count validation bounces as leads.
+ */
+export function trackDemoRequest(): void {
+  if (!isPixelReady()) return
+
+  window.fbq?.('track', 'Lead', {
+    content_name: 'Suliko Office Demo Request',
+    content_category: 'Suliko Office',
+  })
+}
+
+/**
  * Facebook Click ID (fbc), from the fbclid query parameter or the _fbc cookie.
  *
  * This is Meta's own attribution identifier rather than anything about the user,

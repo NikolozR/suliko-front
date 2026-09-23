@@ -51,6 +51,14 @@ export default defineConfig({
       testMatch: /route-progress\.spec\.ts/,
     },
 
+    // Suliko Office landing page (/tms) and /api/demo-request. Outside the CI
+    // jobs until the page is deployed; fold into `public` once it is live.
+    {
+      name: 'tms',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /tms\.spec\.ts/,
+    },
+
     // Supabase-backed API routes — isolated so a Supabase outage on the
     // deployment doesn't take down the public suite.
     {
