@@ -25,8 +25,10 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
+  ClipboardList,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
+import { usePortalMe } from "@/features/orders/hooks/usePortalMe";
 import SulikoLogo from "./SulikoLogo";
 import { useTranslations } from "next-intl";
 
@@ -41,6 +43,14 @@ const NAV_ITEMS = [
     href: "/passport",
     icon: FileText,
     requiresAuth: true,
+  },
+  {
+    // Only for accounts an admin has set up as translators.
+    label: "orders",
+    href: "/orders",
+    icon: ClipboardList,
+    requiresAuth: true,
+    requiresTranslator: true,
   },
   {
     label: "profile",
@@ -92,6 +102,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
   const router = useRouter();
   const t = useTranslations('Sidebar');
+  const { isTranslator } = usePortalMe();
 
   // Hydrate userStore with server-fetched data
   useEffect(() => {
@@ -114,10 +125,16 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     if (href === '/text') {
       return pathname === '/text' || pathname === '/document';
     }
+    if (href === '/orders') {
+      return pathname === '/orders' || pathname?.startsWith('/orders/');
+    }
     return pathname === href;
   };
 
   const visibleNavItems = NAV_ITEMS.filter(item => {
+    if (item.requiresTranslator && !isTranslator) {
+      return false;
+    }
     if (item.requiresAuth) {
       return !!token;
     }
