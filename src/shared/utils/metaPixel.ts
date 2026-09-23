@@ -59,7 +59,7 @@ export function trackRegistrationComplete(): void {
 }
 
 /**
- * Fired once a Suliko Office demo request has been accepted by the server —
+ * Fired once a Suliko Office demo request has been accepted by the server,
  * never on the button press, which would count validation bounces as leads.
  */
 export function trackDemoRequest(): void {

@@ -7,7 +7,7 @@ import { test, expect } from '@playwright/test';
  * can pass against the live URL. Run locally with
  * `npx playwright test --project=tms`, and fold it into `public` once live.
  *
- * Never submits a valid demo request — that would email the sales inbox.
+ * Never submits a valid demo request: that would email the sales inbox.
  */
 
 test.describe('Suliko Office landing', () => {
