@@ -1228,3 +1228,30 @@ html.dark .sidebar-main {
     opacity: 0.5;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Suliko Office live demo (/tms hero).
+
+   Its own names on purpose: this file already defines a scroll-reveal
+   `.fade-in` (opacity 0 until `.visible`), which silently overrides
+   tw-animate's `fade-in` and left the demo's animated parts invisible.
+   --------------------------------------------------------------------------- */
+@keyframes office-enter {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes office-fade {
+  from { opacity: 0; }
+}
+@keyframes office-pop {
+  from { opacity: 0; transform: scale(0.8); }
+}
+@keyframes office-slide {
+  from { opacity: 0; transform: translateX(-6px); }
+}
+.office-enter { animation: office-enter 450ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.office-fade { animation: office-fade 400ms ease-out both; }
+.office-pop { animation: office-pop 350ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.office-slide { animation: office-slide 300ms ease-out both; }
+@media (prefers-reduced-motion: reduce) {
+  .office-enter, .office-fade, .office-pop, .office-slide { animation: none; }
+}
