@@ -9,6 +9,7 @@ const DOMAIN_PL = "https://suliko.ge"; // pl uses path prefix: /pl/
 const staticPages = [
   "",
   "/blog",
+  "/tms",
   "/about",
   "/terms",
   "/privacy",
@@ -19,6 +20,7 @@ const staticPages = [
 function priorityFor(path: string): number {
   if (path === "") return 1.0;
   if (path === "/blog") return 0.8;
+  if (path === "/tms") return 0.8;
   return 0.4;
 }
 

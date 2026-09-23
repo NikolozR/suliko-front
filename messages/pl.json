@@ -1040,7 +1040,8 @@
     },
     "bottom": {
       "copyright": "© 2026 Suliko. Wszystkie prawa zastrzeżone."
-    }
+    },
+    "sulikoOffice": "Suliko Office"
   },
   "ReferralPage": {
     "title": "Program Polecający",
@@ -1689,5 +1690,184 @@
     "lastUpdated": "Ostatnia aktualizacja: 9 września 2026",
     "intro": "Ta polityka wyjaśnia, jakie dane osobowe zbiera Suliko, dlaczego je zbieramy, jak długo je przechowujemy i jakie masz możliwości wyboru. Dotyczy serwisów suliko.ge i suliko.io.",
     "body": "1. Kto jest odpowiedzialny\n\n{name} jest administratorem opisanych tu danych osobowych. Możesz się z nami skontaktować pod adresem {email} lub listownie: {address}.\n\n2. Co zbieramy\n\nDane konta: adres e-mail oraz numer telefonu, jeśli rejestrujesz się z jego użyciem. Hasło przechowywane wyłącznie jako nieodwracalny skrót kryptograficzny.\n\nPrzesyłane treści: dokumenty i tekst przesyłane do tłumaczenia oraz powstałe z nich tłumaczenia.\n\nZapisy użycia: przetłumaczone strony, pary językowe, znaczniki czasu i ruchy na saldzie — to, czego potrzebujemy do prawidłowego rozliczenia i pokazania Twojej historii.\n\nDane techniczne: adres IP, typ przeglądarki i urządzenia, zbierane w zwykłych logach serwera.\n\n3. Przesyłane dokumenty\n\nTwoje dokumenty należą do Ciebie. Przetwarzamy je, aby wykonać tłumaczenie i udostępniać je w Twojej historii — i w żadnym innym celu. Nie sprzedajemy ich, nie publikujemy i nie wykorzystujemy ich treści do trenowania modeli.\n\nTłumaczenie realizowane jest z użyciem Gemini API firmy Google. Tekst Twojego dokumentu jest wysyłany do tej usługi wyłącznie w celu przetłumaczenia, na warunkach Google dla klientów API, które nie zezwalają na wykorzystanie go do trenowania.\n\n4. Dane płatnicze\n\nPłatności kartą obsługuje Bank of Georgia. Numer karty, data ważności i kod zabezpieczający są wprowadzane na stronie banku i nigdy nie są do nas wysyłane, przez nas widziane ani przechowywane. Przechowujemy wyłącznie numer zamówienia, kwotę, walutę oraz informację, czy płatność się powiodła.\n\n5. Jak długo przechowujemy\n\nDokumenty i tłumaczenia pozostają w historii do momentu ich usunięcia przez Ciebie lub zamknięcia konta.\n\nDane konta przechowujemy przez okres jego istnienia. Po zamknięciu usuwamy konto i treści w ciągu 30 dni.\n\nDokumentacja płatnicza i rozliczeniowa przechowywana jest tak długo, jak wymaga tego gruzińskie prawo rachunkowe i podatkowe — dłużej niż powyższe okresy i również po zamknięciu konta.\n\n6. Kto jeszcze ma dostęp\n\nDane osobowe udostępniamy wyłącznie dostawcom niezbędnym do działania usługi: dostawcy hostingu, Gemini API do tłumaczenia oraz Bank of Georgia do płatności. Każdy otrzymuje tylko to, czego wymaga jego zadanie.\n\nDane ujawniamy organom władzy wyłącznie wtedy, gdy zobowiązuje nas do tego prawo, i nikomu nie sprzedajemy danych osobowych.\n\n7. Twoje prawa\n\nMożesz poprosić o kopię swoich danych, ich sprostowanie, usunięcie lub zaprzestanie przetwarzania. Napisz na {email} z adresu przypisanego do konta, a odpowiemy w ciągu 30 dni.\n\nPojedyncze dokumenty możesz usunąć z historii samodzielnie w dowolnym momencie, a konto zamknąć, kiedy zechcesz.\n\n8. Pliki cookie\n\nUżywamy plików cookie niezbędnych do działania serwisu — utrzymania zalogowania oraz zapamiętania języka i motywu. Nie używamy reklamowych plików cookie. Analityka, o ile jest stosowana, ogranicza się do zbiorczego pomiaru ruchu.\n\n9. Bezpieczeństwo\n\nRuch do i z serwisu jest szyfrowany podczas transmisji. Hasła są hashowane. Dostęp do danych produkcyjnych mają wyłącznie osoby, które potrzebują go do prowadzenia usługi.\n\n10. Zmiany\n\nJeśli zmienimy tę politykę, zaktualizujemy datę na górze strony. Istotne zmiany ogłosimy w serwisie przed ich wejściem w życie.\n\n11. Kontakt\n\nPytania dotyczące prywatności: {email}."
+  },
+  "SulikoOffice": {
+    "meta": {
+      "title": "Suliko Office — Translation Management System for Bureaus & LSPs",
+      "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. Book a demo."
+    },
+    "nav": {
+      "home": "Suliko Office home",
+      "language": "Language",
+      "login": "Log in",
+      "demo": "Book a demo",
+      "menu": "Open menu",
+      "closeMenu": "Close menu"
+    },
+    "hero": {
+      "eyebrow": "Translation management system for bureaus",
+      "title": "Run your translation bureau from one screen",
+      "sub": "Orders, translators, notaries, payments and clients in one system — built and used daily by a working bureau.",
+      "primary": "Book a demo",
+      "secondary": "See how it works",
+      "already": "Already using Suliko Office?",
+      "login": "Log in"
+    },
+    "dash": {
+      "label": "Sample Suliko Office dashboard",
+      "title": "Overview",
+      "month": "September",
+      "sample": "Sample data",
+      "navOrders": "Orders",
+      "navClients": "Clients",
+      "navTranslators": "Translators",
+      "navFinance": "Finance",
+      "navReports": "Reports",
+      "kOrders": "Orders this month",
+      "kOrdersDelta": "+9% vs last month",
+      "kClients": "Clients",
+      "kClientsNote": "31 new this month",
+      "kSources": "New clients by source",
+      "whatsapp": "WhatsApp",
+      "website": "Website",
+      "call": "Call",
+      "recent": "Recent orders",
+      "d1": "Diploma",
+      "d2": "Power of attorney",
+      "d3": "Birth certificate",
+      "d4": "Passport"
+    },
+    "st": {
+      "nw": "New",
+      "paid": "Paid",
+      "translator": "With translator",
+      "correcting": "Being corrected",
+      "notary": "Being notarised",
+      "ready": "Ready for pickup",
+      "done": "Completed"
+    },
+    "stNote": {
+      "nw": "Request logged, price calculated",
+      "paid": "Client payment recorded",
+      "translator": "Assigned by language pair",
+      "correcting": "A second pair of eyes",
+      "notary": "At the notary",
+      "ready": "Waiting for the client",
+      "done": "Handed over, payouts due"
+    },
+    "pains": {
+      "kicker": "Sound familiar?",
+      "p1": "“Where is this document right now?”",
+      "a1": "Every order shows its live status.",
+      "p2": "“Did we pay the translator and the notary?”",
+      "a2": "Payouts are tracked on every order.",
+      "p3": "“Why did two staff quote different prices?”",
+      "a3": "One price list, calculated the same way every time."
+    },
+    "journey": {
+      "kicker": "How it works",
+      "title": "One order, from the counter to pickup",
+      "sub": "Everyone on the team sees the same status, so nobody has to ask where a document is.",
+      "order": "Order #1042 · Diploma · KA → EN"
+    },
+    "feat": {
+      "kicker": "What's inside",
+      "title": "Everything a bureau runs on, in one system",
+      "f1t": "Orders & statuses",
+      "f1d": "Every order from first request to pickup, with a status the whole team can see.",
+      "f2t": "Translators & notaries",
+      "f2d": "Your translators and notaries with their language pairs, so each order goes to the right person.",
+      "f3t": "Automatic pricing",
+      "f3d": "Price is calculated from language pair, document type, urgency and number of copies.",
+      "tagPair": "KA → EN",
+      "tagDoc": "Diploma",
+      "tagUrg": "Urgent",
+      "tagCopies": "2 copies",
+      "f4t": "Finance",
+      "f4d": "Client payments, translator and notary payouts, expenses and profit reports.",
+      "f5t": "Clients & lead sources",
+      "f5d": "Individual and business clients, a client portal, and where each client came from.",
+      "tagPortal": "Client portal",
+      "f6t": "Team & roles",
+      "f6d": "Five roles — staff don't see margins. Two-factor login and a full audit log.",
+      "tagRoles": "5 roles",
+      "tag2fa": "2FA",
+      "tagAudit": "Audit log",
+      "f7t": "Built-in AI translation by Suliko",
+      "f7d": "Get a first draft from Suliko AI without leaving the system, then hand it to your translator to finish."
+    },
+    "proof": {
+      "kicker": "Track record",
+      "title": "Built inside a working translation bureau",
+      "sub": "Suliko Office runs the daily work of our own translation bureau. These are its numbers.",
+      "s1l": "orders processed",
+      "s2l": "clients",
+      "s3l": "business clients",
+      "s4l": "orders a month"
+    },
+    "sec": {
+      "kicker": "Security",
+      "title": "Your bureau's data stays yours",
+      "i1t": "Tenant data isolation",
+      "i1d": "Each bureau's data is kept separate from every other bureau on the system.",
+      "i2t": "Two-factor login",
+      "i2d": "A second check at sign-in keeps accounts safe, even if a password leaks.",
+      "i3t": "Full audit log",
+      "i3d": "See who changed what, and when — on every order and payment."
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Questions bureaus ask us",
+      "q1": "We run everything on Excel and WhatsApp. Is it hard to switch?",
+      "a1": "No. You keep talking to clients on WhatsApp — orders, payments and statuses simply move into one place. We help you bring your existing data across.",
+      "q2": "How do onboarding and data import work?",
+      "a2": "We set up your bureau, import your clients, translators and price list, and walk your team through the system.",
+      "q3": "Which languages does it support?",
+      "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers — you set the pairs for each translator.",
+      "q4": "How much does it cost?",
+      "a4": "Pricing is tailored to your bureau's size and needs — let's talk. Book a demo and we'll put together an offer for you."
+    },
+    "form": {
+      "kicker": "Book a demo",
+      "title": "See Suliko Office on a call",
+      "sub": "Tell us a little about your bureau and we'll get in touch to pick a time.",
+      "onCall": "On the call",
+      "e1": "A walkthrough of one order, from request to pickup",
+      "e2": "How your current Excel and WhatsApp setup would move across",
+      "e3": "Pricing tailored to your bureau",
+      "name": "Your name",
+      "company": "Bureau / company",
+      "email": "Email",
+      "phone": "Phone",
+      "team": "Team size",
+      "orders": "Orders per month",
+      "select": "Select",
+      "t1": "1–3 people",
+      "t2": "4–10 people",
+      "t3": "11–25 people",
+      "t4": "26+ people",
+      "o1": "Under 50",
+      "o2": "50–150",
+      "o3": "150–500",
+      "o4": "500+",
+      "message": "Message (optional)",
+      "messagePh": "Anything we should know before the call?",
+      "submit": "Book a demo",
+      "sending": "Sending…",
+      "note": "We only use these details to arrange your demo.",
+      "okTitle": "Thanks — request received",
+      "okBody": "We'll be in touch shortly to pick a time for your demo.",
+      "again": "Send another request",
+      "errorRequired": "Please fill in your name, company and email.",
+      "errorEmail": "Please enter a valid email address.",
+      "errorRateLimited": "Too many requests. Please try again in a few minutes.",
+      "errorGeneric": "Something went wrong. Please try again, or email us at info@suliko.ge.",
+      "honeypot": "Leave this field empty"
+    }
+  },
+  "OfficePromo": {
+    "heading": "Prowadzisz biuro tłumaczeń? Poznaj Suliko Office",
+    "subheading": "Zamówienia, tłumacze, notariusze i płatności w jednym systemie — tym samym, na którym działa nasze biuro.",
+    "cta": "Poznaj Suliko Office"
   }
 }

@@ -79,6 +79,11 @@ export default function LandingFooter() {
                 </Link>
               </li>
               <li>
+                <Link href="/tms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t("sulikoOffice")}
+                </Link>
+              </li>
+              <li>
                 <Link href="/sign-in" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t("logIn")}
                 </Link>
