@@ -1,9 +1,9 @@
 /**
  * Colour roles for the Suliko Office landing page.
  *
- * The page follows the product UI's pastel card tints, but the site defaults to
- * the dark theme, so every tint carries its dark counterpart here instead of
- * being scattered as one-off hex values across the sections.
+ * The page follows the product UI's pastel card tints. It is always shown in
+ * the light theme (see ThemeProvider); the dark: variants are kept so it can
+ * follow the site theme again without redoing every colour.
  */
 
 export const CONTAINER = "mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8";
@@ -17,8 +17,8 @@ export const PRIMARY_BUTTON =
 export const GHOST_BUTTON =
   "inline-flex items-center justify-center gap-2.5 rounded-xl border border-border bg-background text-foreground transition-colors hover:bg-[#eef1fe] dark:hover:bg-white/5";
 
-/** Tinted surfaces behind a band of the page. */
-export const ALT_SECTION = "border-y border-border bg-[#f6f8fd] dark:bg-white/[0.03]";
+/** White bands, alternating with the page's soft blue. */
+export const ALT_SECTION = "border-y border-border bg-white";
 
 export type Tone = "blue" | "amber" | "green";
 

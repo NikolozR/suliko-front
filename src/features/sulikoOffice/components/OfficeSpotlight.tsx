@@ -1,24 +1,22 @@
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Check } from "lucide-react";
-import { ALT_SECTION, CONTAINER, KICKER } from "./tones";
+import { CONTAINER, KICKER } from "./tones";
 
 /** A text column beside one of the product demos. `reverse` puts the demo on the left. */
 export default function OfficeSpotlight({
   id,
   demo,
   reverse = false,
-  tinted = false,
 }: {
   id: "pricing" | "payouts";
   demo: ReactNode;
   reverse?: boolean;
-  tinted?: boolean;
 }) {
   const t = useTranslations(`SulikoOffice.spot.${id}`);
 
   return (
-    <section className={tinted ? ALT_SECTION : ""}>
+    <section>
       <div className={`${CONTAINER} grid items-center gap-14 py-20 lg:grid-cols-2 lg:gap-20 lg:py-24`}>
         <div className={`flex max-w-[560px] flex-col gap-5 ${reverse ? "lg:order-2" : ""}`}>
           <p className={KICKER}>{t("kicker")}</p>

@@ -1255,3 +1255,10 @@ html.dark .sidebar-main {
 @media (prefers-reduced-motion: reduce) {
   .office-enter, .office-fade, .office-pop, .office-slide { animation: none; }
 }
+
+/* Suliko Office page (/tms): a soft blue page with a glow behind the hero demo. */
+.office-page {
+  background:
+    radial-gradient(1100px 620px at 74% 380px, #d3dcff 0%, rgba(211, 220, 255, 0) 70%),
+    #f2f5ff;
+}
