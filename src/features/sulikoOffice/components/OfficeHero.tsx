@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { ArrowDown, ArrowRight } from "lucide-react";
-import OfficeLiveDemo from "./OfficeLiveDemo";
+import OverviewDemo from "./demo/OverviewDemo";
 import { CONTAINER, GHOST_BUTTON, PRIMARY_BUTTON } from "./tones";
 
 export default function OfficeHero() {
@@ -36,7 +36,7 @@ export default function OfficeHero() {
       </div>
 
       <div className="w-full max-w-3xl xl:max-w-none">
-        <OfficeLiveDemo />
+        <OverviewDemo />
       </div>
     </section>
   );
