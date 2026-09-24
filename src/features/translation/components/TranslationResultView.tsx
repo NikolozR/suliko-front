@@ -1,4 +1,5 @@
 "use client";
+import { isSrtResult } from "@/features/translation/utils/resultFormat";
 import { ChangeEvent, useRef, useEffect, useState, useCallback, type RefObject } from "react";
 // import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
@@ -105,12 +106,19 @@ interface TranslationResultViewProps {
   onRemoveFile: () => void;
   onEdit: (content: string) => void;
   isSuggestionsLoading: boolean;
+  /**
+   * `translationResult.outputFormat` — what the server produced. Nothing supplies it on
+   * this path yet, because the live store carries only the requested format, so the file
+   * name decides. Kept here so the two result views take the same input.
+   */
+  outputFormat?: number | null;
   isOcrOnly?: boolean;
   onOcrOnlyChange?: (checked: boolean) => void;
 }
 
 const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   currentFile,
+  outputFormat,
   translatedMarkdown,
   onFileChange,
   onRemoveFile,
@@ -144,10 +152,10 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   );
   const stableOnRemoveFile = useCallback(() => onRemoveFileRef.current?.(), []);
 
-  const isOriginalFileSrt = () => {
-    const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
-    return fileExtension === 'srt';
-  };
+  // Same rule as the history view. Here currentFile is genuinely the document being
+  // translated, so the file-name fallback is accurate -- but the rule lives in one place
+  // so the two cannot drift apart.
+  const isSrtDownload = isSrtResult(outputFormat, currentFile?.name);
 
   const hasTranslatedContent = !!translatedMarkdown;
 
@@ -362,7 +370,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                     <Eye className="h-4 w-4" />
                   </Button>
                 )}
-                {isOriginalFileSrt() ? (
+                {isSrtDownload ? (
                   <DownloadButton
                     content={translatedMarkdown}
                     size="sm"

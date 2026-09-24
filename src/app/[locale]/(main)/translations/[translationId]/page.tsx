@@ -621,6 +621,7 @@ export default function TranslationDetailPage() {
         </div>
         <ChatTranslationResultView
           currentFile={reconstructedFile}
+          outputFormat={chat.translationResult?.outputFormat}
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
           onRemoveFile={handleRemoveFile}
