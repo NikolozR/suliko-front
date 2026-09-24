@@ -4,8 +4,6 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Mail, MapPin, Phone, Facebook, Linkedin } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
 import { Button } from "@/features/ui";
 import { NOTARY_PHONE_DISPLAY } from "@/shared/constants/notary";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
@@ -18,13 +16,6 @@ import {
 export default function LandingFooter() {
   const t = useTranslations("LandingFooter");
   const locale = useLocale();
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   const socialLinks = [
     { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61564358761003", label: "Facebook" },
     { icon: Linkedin, href: "https://www.linkedin.com/company/suliko-ai/?viewAsMember=true", label: "LinkedIn" },
@@ -39,14 +30,14 @@ export default function LandingFooter() {
 
           {/* Col 1: Brand */}
           <div className="space-y-4">
-            <Link href="/" className="inline-flex items-center">
-              <Image
-                src={mounted && resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
-                alt="Suliko"
-                width={80}
-                height={80}
-                className="h-14 w-14"
-              />
+            {/*
+              Both logos, switched by the `dark` class actually on the page. Reading
+              the theme in JS picked the visitor's saved preference, which is wrong on
+              pages that force a theme (/tms is always light) and flashed on load.
+            */}
+            <Link href="/" className="inline-flex items-center" aria-label="Suliko">
+              <Image src="/Suliko_logo_black.svg" alt="" width={148} height={38} className="h-9 w-auto dark:hidden" />
+              <Image src="/Suliko_logo_white.svg" alt="" width={148} height={38} className="hidden h-9 w-auto dark:block" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {t("description")}
