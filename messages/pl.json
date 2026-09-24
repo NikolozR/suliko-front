@@ -1716,7 +1716,6 @@
     "dash": {
       "title": "Overview",
       "month": "September",
-      "sample": "Sample data",
       "navOrders": "Orders",
       "navClients": "Clients",
       "navTranslators": "Translators",
@@ -1766,8 +1765,7 @@
     "journey": {
       "kicker": "How it works",
       "title": "One order, from the counter to pickup",
-      "sub": "Everyone on the team sees the same status, so nobody has to ask where a document is.",
-      "order": "Order #1042 · Diploma · KA → EN"
+      "sub": "Everyone on the team sees the same status, so nobody has to ask where a document is."
     },
     "feat": {
       "kicker": "What's inside",
@@ -1864,7 +1862,6 @@
       "honeypot": "Leave this field empty"
     },
     "demo": {
-      "label": "Animated sample of Suliko Office: a new order is priced automatically, tracked to pickup and paid out",
       "newOrder": "New order",
       "save": "Save order",
       "fDoc": "Document",
@@ -1882,19 +1879,35 @@
       "notaryFee": "Notary fee",
       "orderProfit": "Order profit",
       "completed": "Order {id} completed",
-      "stepOverview": "Overview",
-      "stepNew": "New order",
-      "stepTrack": "Tracking",
-      "stepFinance": "Payouts",
-      "steps": "Demo steps",
-      "pause": "Pause demo",
-      "play": "Play demo",
       "fClient": "Client",
       "clientValue": "Mariam T. · WhatsApp",
       "basePrice": "Diploma, KA → EN",
       "extraCopy": "Extra copy",
       "monthTranslators": "Translator payouts this month",
-      "monthNotary": "Notary fees this month"
+      "monthNotary": "Notary fees this month",
+      "labelOverview": "Sample Suliko Office dashboard: a finished order is counted as soon as it comes in",
+      "labelNew": "Sample new order in Suliko Office: the price is calculated as the fields are filled in",
+      "labelTrack": "Sample order in Suliko Office moving through its statuses to completion",
+      "labelPayouts": "Sample payouts in Suliko Office: the client payment, translator and notary payouts, and the order profit",
+      "saved": "Order {id} saved"
+    },
+    "spot": {
+      "pricing": {
+        "kicker": "Automatic pricing",
+        "title": "A price in seconds, the same every time",
+        "body": "Pick the document, language pair, urgency and copies. Suliko Office applies your price list and shows how the total was reached.",
+        "p1": "Your own prices for every language pair",
+        "p2": "Urgency and extra copies added automatically",
+        "p3": "No more different quotes from different staff"
+      },
+      "payouts": {
+        "kicker": "Finance",
+        "title": "Know who has paid, and who you owe",
+        "body": "Every order records the client's payment and what goes to the translator and the notary, so your monthly totals add up on their own.",
+        "p1": "Client payments and refunds",
+        "p2": "Translator and notary payouts on every order",
+        "p3": "Profit per order and per month"
+      }
     }
   },
   "OfficePromo": {
