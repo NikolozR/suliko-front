@@ -1702,7 +1702,15 @@
       "login": "Log in",
       "demo": "Book a demo",
       "menu": "Open menu",
-      "closeMenu": "Close menu"
+      "closeMenu": "Close menu",
+      "sections": "Page sections",
+      "s": {
+        "pricing": "Quotes",
+        "journey": "How it works",
+        "finance": "Finance",
+        "reports": "Reports",
+        "faq": "FAQ"
+      }
     },
     "hero": {
       "eyebrow": "Translation management system for bureaus",

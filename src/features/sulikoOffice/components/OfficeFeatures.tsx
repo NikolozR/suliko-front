@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import type { LucideIcon } from "lucide-react";
 import { Calculator, ClipboardList, Languages, ShieldCheck, Sparkles, Users, Wallet } from "lucide-react";
+import { revealDelay } from "./sections";
 import { CONTAINER, KICKER, TONES, type Tone } from "./tones";
 
 /** Whether to show the built-in AI translation card. */
@@ -54,19 +55,19 @@ export default function OfficeFeatures() {
   return (
     <section className="border-t border-border bg-white">
       <div className={`${CONTAINER} flex flex-col gap-12 py-20 lg:py-24`}>
-        <div className="flex max-w-[760px] flex-col gap-3.5">
+        <div data-reveal className="flex max-w-[760px] flex-col gap-3.5">
           <p className={KICKER}>{t("feat.kicker")}</p>
           <h2 className="text-3xl leading-[1.15] font-bold text-foreground lg:text-[42px]">{t("feat.title")}</h2>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {features.map((f) => (
-            <FeatureCard key={f.title} {...f} />
+          {features.map((f, i) => (
+            <FeatureCard key={f.title} {...f} delay={(i % 3) * 90} />
           ))}
         </div>
 
         {SHOW_AI_CARD && (
-          <div className="grid items-center gap-6 rounded-[18px] bg-suliko-default-color px-7 py-8 text-white sm:grid-cols-[72px_minmax(0,1fr)] sm:px-9">
+          <div data-reveal className="grid items-center gap-6 rounded-[18px] bg-suliko-default-color px-7 py-8 text-white sm:grid-cols-[72px_minmax(0,1fr)] sm:px-9">
             <span className="flex h-[72px] w-[72px] items-center justify-center rounded-[18px] bg-white/15">
               <Sparkles className="h-8 w-8" aria-hidden />
             </span>
@@ -81,11 +82,11 @@ export default function OfficeFeatures() {
   );
 }
 
-function FeatureCard({ icon: Icon, tone, title, body, tags, formula }: Feature) {
+function FeatureCard({ icon: Icon, tone, title, body, tags, formula, delay }: Feature & { delay: number }) {
   const c = TONES[tone];
 
   return (
-    <div className={`flex flex-col gap-4 rounded-[18px] p-8 ${c.card}`}>
+    <div data-reveal style={revealDelay(delay)} className={`flex flex-col gap-4 rounded-[18px] p-8 ${c.card}`}>
       <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white dark:bg-white/10">
         <Icon className={`h-6 w-6 ${c.icon}`} aria-hidden />
       </span>

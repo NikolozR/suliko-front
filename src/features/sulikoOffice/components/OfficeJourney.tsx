@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { Check } from "lucide-react";
 import TrackingDemo from "./demo/TrackingDemo";
+import { SECTION_ANCHOR, revealDelay } from "./sections";
 import { ALT_SECTION, CONTAINER, KICKER, STATUS_CHIP, STATUS_ORDER } from "./tones";
 
 /**
@@ -11,15 +12,15 @@ export default function OfficeJourney() {
   const t = useTranslations("SulikoOffice");
 
   return (
-    <section id="journey" className={`${ALT_SECTION} scroll-mt-24`}>
+    <section id="journey" className={`${ALT_SECTION} ${SECTION_ANCHOR}`}>
       <div className={`${CONTAINER} flex flex-col gap-14 py-20 lg:pt-[104px] lg:pb-24`}>
         <div className="grid items-center gap-14 lg:grid-cols-2 lg:gap-20">
-          <div className="flex max-w-[560px] flex-col gap-3.5">
+          <div data-reveal className="flex max-w-[560px] flex-col gap-3.5">
             <p className={KICKER}>{t("journey.kicker")}</p>
             <h2 className="text-3xl leading-[1.15] font-bold text-foreground lg:text-[42px]">{t("journey.title")}</h2>
             <p className="text-lg leading-[1.55] text-muted-foreground">{t("journey.sub")}</p>
           </div>
-          <div className="w-full max-w-xl justify-self-center">
+          <div data-reveal style={revealDelay(150)} className="w-full max-w-xl justify-self-center">
             <TrackingDemo />
           </div>
         </div>
@@ -33,7 +34,7 @@ export default function OfficeJourney() {
             {STATUS_ORDER.map((key, i) => {
               const last = i === STATUS_ORDER.length - 1;
               return (
-                <li key={key} className="flex gap-4 lg:flex-col lg:gap-3.5">
+                <li key={key} data-reveal style={revealDelay(i * 70)} className="flex gap-4 lg:flex-col lg:gap-3.5">
                   <span
                     className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-suliko-default-color text-xs ${
                       last ? "bg-suliko-default-color text-white" : "bg-background text-suliko-default-color dark:text-[#aebcff]"

@@ -1291,3 +1291,14 @@ html.dark .sidebar-main {
     radial-gradient(1100px 620px at 74% 380px, #d3dcff 0%, rgba(211, 220, 255, 0) 70%),
     #f2f5ff;
 }
+
+/* Reveal on scroll (/tms, see ScrollReveal). Only once the script has marked the
+   page ready, so the server HTML and no-JS visitors always show everything. */
+[data-reveal-ready] [data-reveal] {
+  transition: opacity 700ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+[data-reveal-ready] [data-reveal]:not([data-revealed]) {
+  opacity: 0;
+  transform: translateY(18px);
+}
