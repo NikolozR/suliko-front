@@ -23,14 +23,14 @@ test.describe('Suliko Office landing', () => {
 
   test('/ka/tms renders in Georgian', async ({ page }) => {
     await page.goto('/ka/tms', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('h1')).toHaveText('მართე შენი თარგმნის ბიურო ერთი ეკრანიდან');
+    await expect(page.locator('h1')).toHaveText('მართეთ მთელი ბიურო ერთი სისტემიდან');
   });
 
   test('language switch moves between KA and EN', async ({ page }) => {
     await page.goto('/en/tms', { waitUntil: 'networkidle' });
     await page.getByRole('button', { name: 'KA', pressed: false }).first().click();
     await expect(page).toHaveURL(/\/ka\/tms/);
-    await expect(page.locator('h1')).toHaveText('მართე შენი თარგმნის ბიურო ერთი ეკრანიდან');
+    await expect(page.locator('h1')).toHaveText('მართეთ მთელი ბიურო ერთი სისტემიდან');
   });
 
   test('demo form blocks an empty submission client-side', async ({ page }) => {
