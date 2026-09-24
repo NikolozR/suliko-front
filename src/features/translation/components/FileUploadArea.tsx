@@ -76,7 +76,7 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileCli
             type="file"
             className="hidden"
             id={id}
-            accept=".pdf,.docx,.doc,.txt,.md,.markdown,.srt,.jpg,.jpeg,.png"
+            accept=".pdf,.txt,.md,.markdown,.srt,.jpg,.jpeg,.png"
             onChange={onFileChange}
             onClick={(e) => {
               if (onFileClick && !onFileClick()) {
