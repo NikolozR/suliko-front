@@ -1,7 +1,10 @@
 import type { ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { Check } from "lucide-react";
+import { SECTION_ANCHOR, revealDelay, type NavSection } from "./sections";
 import { ALT_SECTION, CONTAINER, KICKER } from "./tones";
+
+const ANCHOR: Record<"pricing" | "payouts" | "reports", NavSection> = { pricing: "pricing", payouts: "finance", reports: "reports" };
 
 /**
  * A text column beside one of the product demos. `reverse` puts the demo on the
@@ -21,9 +24,9 @@ export default function OfficeSpotlight({
   const t = useTranslations(`SulikoOffice.spot.${id}`);
 
   return (
-    <section className={band ? ALT_SECTION : undefined}>
+    <section id={ANCHOR[id]} className={`${SECTION_ANCHOR} ${band ? ALT_SECTION : ""}`}>
       <div className={`${CONTAINER} grid items-center gap-14 py-20 lg:grid-cols-2 lg:gap-20 lg:py-24`}>
-        <div className={`flex max-w-[560px] flex-col gap-5 ${reverse ? "lg:order-2" : ""}`}>
+        <div data-reveal className={`flex max-w-[560px] flex-col gap-5 ${reverse ? "lg:order-2" : ""}`}>
           <p className={KICKER}>{t("kicker")}</p>
           <h2 className="text-3xl leading-[1.15] font-bold text-foreground lg:text-[42px]">{t("title")}</h2>
           <p className="text-lg leading-[1.55] text-muted-foreground">{t("body")}</p>
@@ -36,7 +39,9 @@ export default function OfficeSpotlight({
             ))}
           </ul>
         </div>
-        <div className={`w-full max-w-xl justify-self-center ${reverse ? "lg:order-1" : ""}`}>{demo}</div>
+        <div data-reveal style={revealDelay(150)} className={`w-full max-w-xl justify-self-center ${reverse ? "lg:order-1" : ""}`}>
+          {demo}
+        </div>
       </div>
     </section>
   );

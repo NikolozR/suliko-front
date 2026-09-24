@@ -11,6 +11,7 @@ import OfficeSpotlight from "./OfficeSpotlight";
 import NewOrderDemo from "./demo/NewOrderDemo";
 import PayoutsDemo from "./demo/PayoutsDemo";
 import ReportsDemo from "./demo/ReportsDemo";
+import ScrollReveal from "./ScrollReveal";
 
 /**
  * Landing page for Suliko Office, the translation management system at
@@ -34,6 +35,7 @@ export default function SulikoOfficePage() {
         <OfficeDemoSection />
       </main>
       <LandingFooter />
+      <ScrollReveal />
     </div>
   );
 }
