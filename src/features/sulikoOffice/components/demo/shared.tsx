@@ -67,7 +67,8 @@ export function useDemoLoop(steps: readonly { ms: number }[], staticIndex: numbe
       }
     }, ms);
     return () => window.clearTimeout(id);
-  }, [running, step, ms, steps.length]);
+    // `loop` restarts the timer when a one-step loop wraps back to step 0.
+  }, [running, step, loop, ms, steps.length]);
 
   return {
     frameRef,
@@ -182,17 +183,6 @@ export function FakeCursor({ x, y, visible, clicking }: { x: number; y: number; 
       >
         <path d="M4 2.5 19.5 12l-7 1.6L9 20.5z" fill="#111a3a" stroke="#ffffff" strokeWidth="1.5" strokeLinejoin="round" />
       </svg>
-    </div>
-  );
-}
-
-/** A small confirmation pill along the bottom of a frame. */
-export function DemoToast({ children }: { children: ReactNode }) {
-  return (
-    <div className="absolute inset-x-4 bottom-4 flex justify-center sm:inset-x-[22px] sm:bottom-[22px]">
-      <div className="flex items-center gap-2 rounded-full bg-[#111a3a] px-4 py-2.5 text-[13px] text-white shadow-lg office-enter dark:bg-white dark:text-[#111a3a]">
-        {children}
-      </div>
     </div>
   );
 }

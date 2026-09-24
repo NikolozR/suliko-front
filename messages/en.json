@@ -1711,7 +1711,11 @@
       "primary": "Book a demo",
       "secondary": "See how it works",
       "already": "Already using Suliko Office?",
-      "login": "Log in"
+      "login": "Log in",
+      "badge1Title": "Notary fee",
+      "badge1Text": "14.44 ₾",
+      "badge2Title": "Translator assigned",
+      "badge2Text": "Nino K. · KA → EN"
     },
     "dash": {
       "title": "Overview",
@@ -1895,7 +1899,10 @@
       "vDocs": "{count, plural, one {# document} other {# documents}}",
       "fNotary": "Notarisation",
       "translation": "Translation",
-      "total": "Total"
+      "total": "Total",
+      "feedNew": "New order {id} · {source}",
+      "feedPaid": "{id}: payment received, {amount}",
+      "feedStatus": "{id}: {status}"
     },
     "spot": {
       "pricing": {

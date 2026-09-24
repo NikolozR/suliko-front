@@ -1711,7 +1711,11 @@
       "primary": "დემოს დაჯავშნა",
       "secondary": "ნახეთ, როგორ მუშაობს",
       "already": "უკვე იყენებთ Suliko Office-ს?",
-      "login": "შესვლა"
+      "login": "შესვლა",
+      "badge1Title": "ნოტარიუსის საფასური",
+      "badge1Text": "14.44 ₾",
+      "badge2Title": "თარჯიმანი დაინიშნა",
+      "badge2Text": "ნინო კ. · KA → EN"
     },
     "dash": {
       "title": "მიმოხილვა",
@@ -1895,7 +1899,10 @@
       "vDocs": "{count} დოკუმენტი",
       "fNotary": "ნოტარიული დამოწმება",
       "translation": "თარგმანი",
-      "total": "ჯამი"
+      "total": "ჯამი",
+      "feedNew": "ახალი შეკვეთა {id} · {source}",
+      "feedPaid": "{id}: გადახდა მიღებულია, {amount}",
+      "feedStatus": "{id}: {status}"
     },
     "spot": {
       "pricing": {

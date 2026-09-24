@@ -19,7 +19,7 @@ import PayoutsDemo from "./demo/PayoutsDemo";
  */
 export default function SulikoOfficePage() {
   return (
-    <div id="top" className="office-page min-h-screen text-foreground">
+    <div id="top" className="office-page min-h-screen overflow-x-clip text-foreground">
       <OfficeHeader />
       <main>
         <OfficeHero />
