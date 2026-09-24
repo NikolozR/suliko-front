@@ -127,7 +127,7 @@ export default function NotaryHeader() {
         <nav className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             <div className="h-24 w-24 lg:h-32 lg:w-32 bg-muted animate-pulse rounded" />
-            <div className="hidden md:flex items-center space-x-8">
+            <div className="hidden lg:flex items-center space-x-8">
               <div className="h-4 w-16 bg-muted animate-pulse rounded" />
               <div className="h-4 w-16 bg-muted animate-pulse rounded" />
             </div>
@@ -166,7 +166,14 @@ export default function NotaryHeader() {
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center justify-center flex-1">
+          {/*
+            Desktop/mobile switch is `lg`, not `md`: below 1024px the Georgian
+            nav overruns its bar by ~32px and the logo is squeezed to zero. This
+            header carries a shorter nav than LandingHeader, which needs `xl` for
+            the same reason — each is set from its own measurements rather than
+            kept artificially in step.
+          */}
+          <div className="hidden lg:flex items-center justify-center flex-1">
             <div className="flex items-center space-x-8">
               {navItems.map((item) => (
                 <NavItem key={item.id} onClick={() => handleNavClick(item.id)}>
@@ -177,7 +184,7 @@ export default function NotaryHeader() {
           </div>
 
           {/* Right Controls */}
-          <div className="hidden md:flex items-center space-x-4">
+          <div className="hidden lg:flex items-center space-x-4">
             <LanguageSwitcher />
             <ThemeToggle />
             {/* SULIKO back button */}
@@ -193,7 +200,7 @@ export default function NotaryHeader() {
 
           {/* Hamburger */}
           <button
-            className="md:hidden p-2 rounded-md transition-colors relative z-50 text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
+            className="lg:hidden p-2 rounded-md transition-colors relative z-50 text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
             type="button"
@@ -217,7 +224,7 @@ export default function NotaryHeader() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden fixed inset-0 z-[60]">
+          <div className="lg:hidden fixed inset-0 z-[60]">
             <div
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}

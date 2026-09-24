@@ -1,6 +1,7 @@
+import { TRANSLATION_MODEL } from "@/shared/constants/translationModel";
 import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
 import { DocumentTranslateUserContentParams, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
-import { uploadFileToGemini } from "../services/geminiUploadService";
+import { prepareDocumentUpload } from "../services/prepareUploadService";
 import { useDocumentTranslationStore } from "../store/documentTranslationStore";
 import { getResult, getStatus } from "../services/jobService";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
@@ -12,8 +13,7 @@ export async function documentTranslatingWithJobId(
   onProgress?: (progress: number, message: string) => void,
   setSuggestionsLoading?: (loading: boolean) => void
 ) {
-  // We set by default to Gemini model
-  const model = 2;
+  const model = TRANSLATION_MODEL;
   const outputLanguageId =
     typeof window !== "undefined" &&
     window.location &&
@@ -46,9 +46,10 @@ export async function documentTranslatingWithJobId(
     };
     result = await translateDocumentUserContent(params, true);
   } else {
-    // All other documents go through Gemini Files API
-    onProgress?.(5, "Uploading to Gemini...");
-    const { fileUri, mimeType } = await uploadFileToGemini(file);
+    // The backend takes the bytes and hands back a Gemini URI plus the page
+    // count it will bill from.
+    onProgress?.(5, "Uploading document...");
+    const { fileUri, mimeType } = await prepareDocumentUpload(file);
     onProgress?.(15, "Starting translation...");
     result = await translateDocumentWithUri({
       fileUri,

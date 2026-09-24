@@ -3,12 +3,13 @@
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, LayoutDashboard, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { LoadingButton } from "@/features/ui/components/loading";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
+  const tOffice = useTranslations("OfficePromo");
   const router = useRouter();
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -94,7 +95,7 @@ export default function HeroSection() {
             </p>
 
             {/* CTAs */}
-            <div className="mb-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+            <div className="mb-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
               <Link
                 href="/document"
                 prefetch
@@ -126,6 +127,23 @@ export default function HeroSection() {
                 </Button>
               </Link>
             </div>
+
+            {/*
+              For translation bureaus: the way into Suliko Office, the TMS. The demo
+              booking line that sat above it moved out to keep the hero calm; booking
+              stays one click away in BookDemoBubble and the footer.
+            */}
+            <Link
+              href="/tms"
+              className="group mb-14 inline-flex max-w-full items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/60 py-1.5 pr-3.5 pl-1.5 text-sm text-slate-300 transition-colors hover:border-slate-500 hover:text-white"
+            >
+              <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-suliko-default-color px-2 py-0.5 text-xs font-medium text-white">
+                <LayoutDashboard className="h-3 w-3" aria-hidden="true" />
+                Suliko Office
+              </span>
+              <span className="min-w-0 leading-snug sm:truncate">{tOffice("heroLink")}</span>
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </Link>
 
             {/* Stats */}
             <dl className="grid grid-cols-3 gap-6">

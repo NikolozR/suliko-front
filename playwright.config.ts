@@ -40,6 +40,25 @@ export default defineConfig({
       ],
     },
 
+    // Route transition progress bar. Deliberately outside the CI jobs: it
+    // asserts behaviour that has to be deployed before it can pass against the
+    // live URL. Run locally with `npx playwright test --project=route-progress`
+    // (DEPLOYMENT_URL defaults to the local dev server), and fold it into the
+    // `public` project once the change is live.
+    {
+      name: 'route-progress',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /route-progress\.spec\.ts/,
+    },
+
+    // Suliko Office landing page (/tms) and /api/demo-request. Outside the CI
+    // jobs until the page is deployed; fold into `public` once it is live.
+    {
+      name: 'tms',
+      use: { ...devices['Desktop Chrome'] },
+      testMatch: /tms\.spec\.ts/,
+    },
+
     // Supabase-backed API routes — isolated so a Supabase outage on the
     // deployment doesn't take down the public suite.
     {

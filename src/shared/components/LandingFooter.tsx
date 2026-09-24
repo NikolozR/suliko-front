@@ -1,23 +1,21 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { Mail, Phone, Facebook, Linkedin } from "lucide-react";
-import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
+import { Mail, MapPin, Phone, Facebook, Linkedin } from "lucide-react";
 import { Button } from "@/features/ui";
 import { NOTARY_PHONE_DISPLAY } from "@/shared/constants/notary";
+import { BOOK_DEMO_URL } from "@/shared/constants/booking";
+import CompanyLegalInfo from "@/shared/components/CompanyLegalInfo";
+import {
+  COMPANY_ADDRESS_EN,
+  COMPANY_ADDRESS_KA,
+} from "@/shared/constants/company";
 
 export default function LandingFooter() {
   const t = useTranslations("LandingFooter");
-  const { resolvedTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
+  const locale = useLocale();
   const socialLinks = [
     { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61564358761003", label: "Facebook" },
     { icon: Linkedin, href: "https://www.linkedin.com/company/suliko-ai/?viewAsMember=true", label: "LinkedIn" },
@@ -32,14 +30,14 @@ export default function LandingFooter() {
 
           {/* Col 1: Brand */}
           <div className="space-y-4">
-            <Link href="/" className="inline-flex items-center">
-              <Image
-                src={mounted && resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
-                alt="Suliko"
-                width={80}
-                height={80}
-                className="h-14 w-14"
-              />
+            {/*
+              Both logos, switched by the `dark` class actually on the page. Reading
+              the theme in JS picked the visitor's saved preference, which is wrong on
+              pages that force a theme (/tms is always light) and flashed on load.
+            */}
+            <Link href="/" className="inline-flex items-center" aria-label="Suliko">
+              <Image src="/Suliko_logo_black.svg" alt="" width={148} height={38} className="h-9 w-auto dark:hidden" />
+              <Image src="/Suliko_logo_white.svg" alt="" width={148} height={38} className="hidden h-9 w-auto dark:block" />
             </Link>
             <p className="text-sm text-muted-foreground leading-relaxed">
               {t("description")}
@@ -69,6 +67,11 @@ export default function LandingFooter() {
               <li>
                 <Link href="/developers" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                   {t("developers")}
+                </Link>
+              </li>
+              <li>
+                <Link href="/tms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                  {t("sulikoOffice")}
                 </Link>
               </li>
               <li>
@@ -124,12 +127,21 @@ export default function LandingFooter() {
                   <span className="whitespace-nowrap">{NOTARY_PHONE_DISPLAY}</span>
                 </div>
               </li>
+              <li>
+                {/* Card processors require a readable postal address for the merchant. */}
+                <div className="flex items-start gap-2 text-sm text-muted-foreground">
+                  <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                  <span>
+                    {locale === "ka" ? COMPANY_ADDRESS_KA : COMPANY_ADDRESS_EN}
+                  </span>
+                </div>
+              </li>
             </ul>
             <div className="mt-6">
               <Button
                 size="sm"
                 className="w-full"
-                onClick={() => window.open('https://calendly.com/misha-suliko/30min', '_blank')}
+                onClick={() => window.open(BOOK_DEMO_URL, "_blank", "noopener,noreferrer")}
               >
                 {t("bookDemo")}
               </Button>
@@ -139,16 +151,28 @@ export default function LandingFooter() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="py-5 border-t border-border flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6">
-          <p className="text-sm text-muted-foreground">
-            {t("bottom.copyright")}
-          </p>
-          <Link
-            href="/terms"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {t("links.termsOfService")}
-          </Link>
+        <div className="py-5 border-t border-border flex flex-col items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2">
+            <p className="text-sm text-muted-foreground">
+              {t("bottom.copyright")}
+            </p>
+            {/* The documents a card processor checks before lifting a merchant limit. */}
+            {[
+              { href: "/about", label: t("links.about") },
+              { href: "/terms", label: t("links.termsOfService") },
+              { href: "/privacy", label: t("links.privacyPolicy") },
+              { href: "/refund-policy", label: t("links.refundPolicy") },
+            ].map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+          <CompanyLegalInfo className="text-center" />
         </div>
 
       </div>

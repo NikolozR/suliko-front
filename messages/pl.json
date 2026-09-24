@@ -112,7 +112,7 @@
     "phoneWillBeAskedLater": "Możesz dodać i zweryfikować swój numer telefonu po rejestracji",
     "phoneVerificationDescription": "Wyślemy kod weryfikacyjny na Twój numer telefonu",
     "emailVerificationDescription": "Wyślemy kod weryfikacyjny na Twój adres e-mail",
-    "termsText": "1. Postanowienia ogólne\n\nNiniejsze warunki i zasady regulują korzystanie z usługi tłumaczenia (\"Usługa\") oferowanej przez შკს სულიკო ეი აი, kod identyfikacyjny: 400403265 (zwane dalej - \"Firma\", \"my\"). Uzyskując dostęp do Usługi lub z niej korzystając, jako użytkownik (\"Użytkownik\") zgadzasz się na warunki niniejszego dokumentu.\n\n2. Obowiązki użytkownika\n\nKorzystając z Usługi, jesteś zobowiązany używać jej wyłącznie do celów prawnych i nie naruszać obowiązującego prawa.\n\nZabronione jest używanie Usługi do tworzenia, rozpowszechniania lub przekazywania jakiejkolwiek szkodliwej lub nielegalnej treści.\n\n3. Własność intelektualna\n\nZachowujesz własność tekstu, który przesyłasz do Usługi. Korzystając z Usługi, udzielasz Firmie ograniczonej, niewyłącznej licencji na przetwarzanie i używanie tego tekstu wyłącznie w celu wykonywania i ulepszania usługi tłumaczenia.\n\nUsługa, wszystkie jej komponenty, oprogramowanie, projekt i inne materiały stanowią własność intelektualną Firmy i są chronione prawami autorskimi.\n\n4. Ograniczenie odpowiedzialności\n\nUsługa jest świadczona \"jak jest\" bez jakiejkolwiek gwarancji. Firma nie gwarantuje, że Usługa będzie nieprzerwana, bezbłędna lub bezpieczna.\n\nFirma nie ponosi odpowiedzialności za jakiekolwiek bezpośrednie, pośrednie, przypadkowe lub inne szkody spowodowane korzystaniem z Usługi.\n\n5. Zakończenie usługi\n\nFirma ma prawo ograniczyć lub zakończyć dostęp użytkownika do Usługi w dowolnym momencie i z jakiegokolwiek powodu, jeśli użytkownik narusza niniejsze warunki i zasady.\n\n6. Zmiany\n\nFirma zastrzega sobie prawo do wprowadzania zmian w niniejszych warunkach i zasadach w dowolnym momencie. Zmiany wchodzą w życie natychmiast po opublikowaniu na stronie internetowej lub w aplikacji.\n\n7. Polityka zwrotów\n\nWszystkie wnioski o zwrot są rozpatrywane indywidualnie. Jeśli uważasz, że przysługuje Ci zwrot, skontaktuj się z naszym zespołem wsparcia pod adresem info@suliko.ge, opisując swój problem. Rozpatrzymy każde zgłoszenie i odpowiemy w rozsądnym terminie.\n\n8. Informacje kontaktowe\n\nFirma: შკს სულიკო ეი აი\nKod identyfikacyjny: 400403265\nE-mail: info@suliko.ge\nTelefon: +995 591 729 911\nAdres: Gruzja, Tbilisi, Dzielnica Gldani, Mukhiani, Mikrodzielnica IVb, Budynek 37, Mieszkanie 54",
+    "termsText": "1. Postanowienia ogólne\n\nNiniejsze warunki i zasady regulują korzystanie z usługi tłumaczenia (\"Usługa\") oferowanej przez {name}, kod identyfikacyjny: {id} (zwane dalej - \"Firma\", \"my\"). Uzyskując dostęp do Usługi lub z niej korzystając, jako użytkownik (\"Użytkownik\") zgadzasz się na warunki niniejszego dokumentu.\n\n2. Obowiązki użytkownika\n\nKorzystając z Usługi, jesteś zobowiązany używać jej wyłącznie do celów prawnych i nie naruszać obowiązującego prawa.\n\nZabronione jest używanie Usługi do tworzenia, rozpowszechniania lub przekazywania jakiejkolwiek szkodliwej lub nielegalnej treści.\n\n3. Własność intelektualna\n\nZachowujesz własność tekstu, który przesyłasz do Usługi. Korzystając z Usługi, udzielasz Firmie ograniczonej, niewyłącznej licencji na przetwarzanie i używanie tego tekstu wyłącznie w celu wykonywania i ulepszania usługi tłumaczenia.\n\nUsługa, wszystkie jej komponenty, oprogramowanie, projekt i inne materiały stanowią własność intelektualną Firmy i są chronione prawami autorskimi.\n\n4. Ograniczenie odpowiedzialności\n\nUsługa jest świadczona \"jak jest\" bez jakiejkolwiek gwarancji. Firma nie gwarantuje, że Usługa będzie nieprzerwana, bezbłędna lub bezpieczna.\n\nFirma nie ponosi odpowiedzialności za jakiekolwiek bezpośrednie, pośrednie, przypadkowe lub inne szkody spowodowane korzystaniem z Usługi.\n\n5. Zakończenie usługi\n\nFirma ma prawo ograniczyć lub zakończyć dostęp użytkownika do Usługi w dowolnym momencie i z jakiegokolwiek powodu, jeśli użytkownik narusza niniejsze warunki i zasady.\n\n6. Zmiany\n\nFirma zastrzega sobie prawo do wprowadzania zmian w niniejszych warunkach i zasadach w dowolnym momencie. Zmiany wchodzą w życie natychmiast po opublikowaniu na stronie internetowej lub w aplikacji.\n\n7. Polityka zwrotów\n\nNiewykorzystane kredyty tłumaczeniowe podlegają pełnemu zwrotowi przez 14 dni od daty zakupu, na kartę użytą przy płatności. Kredyty już wykorzystane na ukończone tłumaczenie nie podlegają zwrotowi, ponieważ usługa została wykonana. Jeśli tłumaczenie nie powiedzie się z przyczyn technicznych po naszej stronie, zużyte kredyty wracają na saldo.\n\nAby poprosić o zwrot, napisz na {email} z adresu przypisanego do konta, podając datę i kwotę. Odpowiadamy w ciągu 3 dni roboczych, a zatwierdzone zwroty wysyłamy w ciągu 10 dni roboczych.\n\nPełna polityka dostawy, anulowania i zwrotów jest opublikowana pod adresem /refund-policy.\n\n8. Informacje kontaktowe\n\nFirma: {name}\nKod identyfikacyjny: {id}\nE-mail: {email}\nTelefon: {phone}\nAdres: {address}",
     "orContinueWith": "Kontynuuj przez Google",
     "orWithCredentials": "lub zaloguj się danymi",
     "welcomeBack": "Witaj ponownie — zaloguj się",
@@ -128,7 +128,8 @@
     "stepperVerify": "Weryfikacja",
     "stepperInfo": "Dane",
     "stepperPassword": "Hasło",
-    "privacyText": "1. Zbieranie informacji\n\nInformacje, które podajesz: Zbieramy tekst, który przesyłasz w celu korzystania z usługi tłumaczenia.\n\nDane techniczne i dotyczące użytkowania: Możemy zbierać informacje o Twoim urządzeniu, adresie IP, typie przeglądarki i korzystaniu z usługi (np. częstotliwość tłumaczeń, używane języki) w celach analitycznych i ulepszania usługi.\n\n2. Używanie informacji\n\nZebrane informacje są używane do następujących celów:\n\nWykonywania usługi tłumaczenia.\n\nUlepszania usługi i dostosowywania jej do Twoich potrzeb.\n\nAnalizy sposobu korzystania z usługi przez użytkowników.\n\nRozwiązywania problemów technicznych i zapewnienia bezpieczeństwa.\n\n3. Bezpieczeństwo danych\n\nStosujemy rozsądne środki administracyjne, techniczne i fizyczne, aby chronić Twoje dane przed nieautoryzowanym dostępem, użyciem lub ujawnieniem. Jednak żadna metoda transmisji danych przez Internet nie jest w 100% bezpieczna.\n\n4. Twoje prawa\n\nMasz prawo żądać dostępu do, korekty lub usunięcia swoich danych. Aby skorzystać z tych praw, skontaktuj się z nami:\nE-mail: info@suliko.ge\nTelefon: +995 591 729 911\n\n5. Przechowywanie danych\n\nBędziemy przechowywać Twoje dane osobowe tylko tak długo, jak to konieczne do realizacji celów opisanych w niniejszej polityce. Po usunięciu Twojego konta lub zaprzestaniu korzystania z Usługi usuniemy lub zaanonimizujemy Twoje dane osobowe w ciągu 30 dni, chyba że prawo wymaga ich przechowywania.\n\n6. Usunięcie danych\n\nMasz prawo żądać usunięcia Twojego konta i wszystkich powiązanych z nim danych osobowych. Aby żądać usunięcia danych, skontaktuj się z nami na adres info@suliko.ge. Rozpatrzymy Twoją prośbę i potwierdzimy usunięcie w ciągu 30 dni. Pamiętaj, że niektóre dane mogą być przechowywane ze względów prawnych, regulacyjnych lub bezpieczeństwa.\n\n7. RODO i międzynarodowa ochrona danych\n\nDla użytkowników z Unii Europejskiej i innych jurysdykcji z przepisami o ochronie danych (takimi jak RODO) zapewniamy zgodność z obowiązującymi przepisami prawa ochrony danych. Masz prawo do:\n\n- Dostępu do swoich danych osobowych\n- Poprawy niedokładnych danych\n- Żądania usunięcia swoich danych\n- Sprzeciwu wobec przetwarzania twoich danych\n- Żądania ograniczenia przetwarzania\n- Przenoszenia danych\n\nAby skorzystać z któregokolwiek z tych praw, skontaktuj się z nami na adres info@suliko.ge. Odpowiemy na wszystkie żądania zgodnie z obowiązującym prawem w wymaganych ramach czasowych."
+    "name": "Imię",
+    "surname": "Nazwisko"
   },
   "AuthModal": {
     "title": "Proszę zarejestrować się w systemie",
@@ -266,7 +267,9 @@
     "title": "Twój tłumacz",
     "description": "Wybierz metodę",
     "textTab": "Tekst",
-    "documentTab": "Dokument"
+    "documentTab": "Dokument",
+    "greeting": "Cześć, {name}",
+    "greetingAnonymous": "Cześć"
   },
   "TextTranslationCard": {
     "title": "Wpisz tekst",
@@ -275,7 +278,8 @@
     "result": "Przetłumaczony tekst",
     "yourText": "Twój tekst",
     "orPress": "lub naciśnij",
-    "insufficientPages": "Niewystarczający balans stron. Potrzebujesz {needed} stron, ale masz tylko {available} stron. Proszę zakupić więcej stron, aby kontynuować."
+    "insufficientPages": "Niewystarczający balans stron. Potrzebujesz {needed} stron, ale masz tylko {available} stron. Proszę zakupić więcej stron, aby kontynuować.",
+    "unexpectedError": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie."
   },
   "CommonLanguageSelect": {
     "targetLanguageQuestion": "Na jaki język chcesz przetłumaczyć",
@@ -288,7 +292,6 @@
   "TranslationLoadingOverlay": {
     "progress": "Postęp",
     "processingDocument": "Przetwarzanie dokumentu...",
-    "applySuggestion": "Stosowanie sugestii...",
     "translatingText": "Tłumaczenie tekstu...",
     "estimatedTime": "Szacowany pozostały czas",
     "takingLonger": "Dokument zajmuje więcej czasu niż oczekiwano",
@@ -302,7 +305,9 @@
     "stageQueue": "Kolejkowanie",
     "stageAnalyze": "Analiza",
     "stageTranslate": "Tłumaczenie",
-    "stageFinalize": "Finalizacja"
+    "stageFinalize": "Finalizacja",
+    "longerThanExpected": "Przetwarzanie dokumentu trwa dłużej niż zwykle",
+    "thankYou": "Dziękujemy za cierpliwość"
   },
   "NameReviewModal": {
     "title": "Potwierdź tłumaczenia nazw",
@@ -430,7 +435,6 @@
     "outputFormat": "Format wyjściowy",
     "outputFormatHtml": "HTML",
     "outputFormatRichPdf": "Rich PDF",
-    "outputFormatMarkdown": "Markdown",
     "progress": {
       "longerThanUsual": "Trwa to dłużej niż zwykle",
       "starting": "Rozpoczynanie tłumaczenia...",
@@ -457,6 +461,51 @@
       "stepUploading": "Przesyłanie",
       "stepTranslating": "Tłumaczenie",
       "stepReady": "Gotowe"
+    },
+    "deliverable": {
+      "label": "Format wyniku",
+      "richTitle": "Dokument z formatowaniem",
+      "richDesc": "Zachowuje kolory, style i tabele z oryginału. Trwa nieco dłużej.",
+      "plainTitle": "Zwykły tekst",
+      "plainDesc": "Sam przetłumaczony tekst, bez kolorów i układu. Szybciej."
+    },
+    "names": {
+      "title": "Potwierdź nazwy przed tłumaczeniem",
+      "body": "Sprawdzisz pisownię każdej osoby i organizacji, aby była taka sama we wszystkich dokumentach.",
+      "savedCount": "Zapisane nazwy: {count} w {project}",
+      "editGlossary": "Edytuj glosariusz"
+    },
+    "quote": {
+      "label": "Wycena",
+      "thisDocument": "Ten dokument",
+      "yourBalance": "Twój stan",
+      "leftAfter": "Pozostanie po tym zleceniu",
+      "pagesShort": "{count, plural, one {Brakuje # strony} few {Brakuje # stron} many {Brakuje # stron} other {Brakuje # stron}}",
+      "translateCta": "{count, plural, one {Przetłumacz # stronę} few {Przetłumacz # strony} many {Przetłumacz # stron} other {Przetłumacz # stron}}",
+      "topUpCta": "{count, plural, one {Doładuj # stronę} few {Doładuj # strony} many {Doładuj # stron} other {Doładuj # stron}}",
+      "counting": "Odczytuję liczbę stron…",
+      "usuallyReady": "Zwykle gotowe w {min}–{max} min"
+    },
+    "ocrOnly": "Tylko OCR",
+    "fileTooLarge": "„{name}” jest za duży ({size}). Maksymalny rozmiar pliku to {max}.",
+    "submitStage": {
+      "detectingNames": "Szukam nazw…",
+      "uploading": "Wysyłanie {percent}%",
+      "uploadingNoPercent": "Wysyłanie dokumentu…",
+      "starting": "Rozpoczynam tłumaczenie…"
+    },
+    "translateError": {
+      "insufficientBalance": "Za mało stron na ten dokument. Doładuj, aby kontynuować.",
+      "fileChanged": "Plik zmienił się od pomiaru. Prześlij go ponownie."
+    },
+    "inProgress": {
+      "pages": "{count, plural, one {# strona} few {# strony} many {# stron} other {# stron}}",
+      "working": "Tłumaczę dokument",
+      "leaveHint": "Nie musisz tu czekać — tłumaczenie działa dalej, a znajdziesz je w historii.",
+      "stagesLabel": "Postęp",
+      "startingUp": "Uruchamiam…",
+      "openFullView": "Otwórz pełny widok",
+      "failed": "Tłumaczenie nie powiodło się. Spróbuj ponownie."
     }
   },
   "Profile": {
@@ -584,6 +633,13 @@
       "Failed": "Błąd",
       "Queued": "W kolejce",
       "Processing": "Przetwarzanie"
+    },
+    "stage": {
+      "queued": "W kolejce",
+      "translating": "Tłumaczenie",
+      "rebuilding": "Odtwarzanie układu",
+      "ready": "Gotowe",
+      "failed": "Błąd"
     }
   },
   "Chat": {
@@ -614,7 +670,9 @@
     "instant": "Natychmiastowe",
     "review": "Do przeglądu",
     "acceptAllInstant": "Zaakceptuj wszystkie natychmiastowe",
-    "jumpToSuggestions": "Przejdź do sugestii poniżej"
+    "jumpToSuggestions": "Przejdź do sugestii poniżej",
+    "cancel": "Anuluj",
+    "previewTitle": "Podgląd sugestii"
   },
   "Pricing": {
     "paymentModal": {
@@ -659,11 +717,11 @@
     "starter": {
       "title": "Startowy",
       "price": "20 ₾",
-      "period": "/miesiąc",
-      "documents": "100 stron miesięcznie",
+      "period": " jednorazowo",
+      "documents": "100 stron",
       "description": "Idealny dla osób indywidualnych i małych projektów",
       "features": {
-        "0": "100 stron miesięcznie",
+        "0": "100 stron, bez terminu ważności",
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
@@ -672,11 +730,11 @@
     "professional": {
       "title": "Profesjonalny",
       "price": "50 ₾",
-      "period": "/miesiąc",
-      "documents": "500 stron miesięcznie",
+      "period": " jednorazowo",
+      "documents": "500 stron",
       "description": "Idealny dla rozwijających się firm i zespołów",
       "features": {
-        "0": "500 stron miesięcznie",
+        "0": "500 stron, bez terminu ważności",
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków",
         "3": "Priorytetowe wsparcie e-mailowe i czatowe",
@@ -826,6 +884,13 @@
     "browserNotSupported": "Twoja przeglądarka nie obsługuje tagu wideo.",
     "videoUnavailable": "Wideo niedostępne"
   },
+  "DemoBubble": {
+    "title": "Wolisz prezentację?",
+    "body": "Zamów 30-minutowe demo i zobacz, jak Suliko działa na Twoich dokumentach.",
+    "cta": "Zamów 30-minutowe demo",
+    "openLabel": "Zamów demo",
+    "closeLabel": "Zamknij"
+  },
   "LandingHeader": {
     "about": "O nas",
     "pricing": "Ceny",
@@ -835,6 +900,7 @@
     "blog": "Blog",
     "notary": "Notarialne",
     "getStarted": "Zacznij",
+    "bookDemo": "Zamów demo",
     "loading": "Ładowanie..."
   },
   "AboutSection": {
@@ -914,6 +980,15 @@
         "email": "info@api24.ge",
         "content": "Lokalizacja była kluczowym wyzwaniem dla API24. Suliko pomogło nam dostosować interfejs i dokumentację techniczną, czyniąc platformę dostępną dla deweloperów na całym świecie."
       }
+    },
+    "newsletter": {
+      "title": "Bądź na bieżąco",
+      "subtitle": "Zapisz się do naszego newslettera i dowiedz się pierwszy o nowych trendach w tłumaczeniach",
+      "emailPlaceholder": "E-MAIL",
+      "subscribeButton": "ZAPISZ SIĘ",
+      "subscribing": "ZAPISYWANIE...",
+      "success": "✅ Zapisano do newslettera!",
+      "error": "❌ Nie udało się zapisać. Spróbuj ponownie."
     }
   },
   "LandingFooter": {
@@ -948,7 +1023,9 @@
       "privacyPolicy": "Polityka prywatności",
       "termsOfService": "Warunki usługi",
       "cookiePolicy": "Polityka plików cookie",
-      "gdpr": "RODO"
+      "gdpr": "RODO",
+      "about": "O nas",
+      "refundPolicy": "Zwroty i dostawa"
     },
     "newsletter": {
       "title": "Bądź na bieżąco",
@@ -961,7 +1038,8 @@
     },
     "bottom": {
       "copyright": "© 2026 Suliko. Wszystkie prawa zastrzeżone."
-    }
+    },
+    "sulikoOffice": "Suliko Office"
   },
   "ReferralPage": {
     "title": "Program Polecający",
@@ -994,7 +1072,7 @@
     "translatedSuffix": "przetłumaczony"
   },
   "ErrorAlert": {
-    "ups": "Problem Detected",
+    "ups": "Wykryto problem",
     "retry": "Spróbuj ponownie",
     "networkProblem": "Problem z siecią"
   },
@@ -1503,7 +1581,8 @@
   "Terms": {
     "backToHome": "Wróć do strony głównej",
     "pageTitle": "Warunki i zasady | Suliko",
-    "pageDescription": "Przeczytaj pełne Warunki i zasady korzystania z usługi tłumaczenia AI Suliko."
+    "pageDescription": "Przeczytaj pełne Warunki i zasady korzystania z usługi tłumaczenia AI Suliko.",
+    "lastUpdated": "Ostatnia aktualizacja: 9 września 2026"
   },
   "BulkTranslation": {
     "title": "Tłumaczenie zbiorcze",
@@ -1583,5 +1662,294 @@
     "downloadFailed": "Nie udało się przygotować pobierania",
     "requeuedToast": "Ponownie dodano do kolejki {count, plural, one {# dokument} few {# dokumenty} many {# dokumentów} other {# dokumentu}}.",
     "retryFailedToast": "Ponowienie nie powiodło się"
+  },
+  "Company": {
+    "legalEntity": "Firma: {name} · Numer identyfikacyjny: {id}"
+  },
+  "About": {
+    "pageTitle": "O Suliko",
+    "pageDescription": "Kto prowadzi Suliko, co robi usługa, ile kosztuje i jak się z nami skontaktować.",
+    "title": "O nas",
+    "intro": "Suliko to usługa tłumaczenia dokumentów i tekstu oparta na sztucznej inteligencji. Na tej stronie opisujemy, kto ją prowadzi, co robi, ile kosztuje i jak się z nami skontaktować.",
+    "body": "1. Firma\n\nSuliko jest prowadzone przez {name}, kod identyfikacyjny {id}, zarejestrowaną w Gruzji. Jesteśmy podmiotem rozliczającym wszystkie płatności dokonywane w serwisach suliko.ge i suliko.io oraz stroną odpowiedzialną za świadczenie opisanej poniżej usługi.\n\n2. Czym jest usługa\n\nSuliko tłumaczy dokumenty i tekst między ponad 60 językami. Przesyłasz plik — Word, PDF, PowerPoint, Excel, obrazy lub napisy — albo wklejasz tekst bezpośrednio, wybierasz język docelowy i otrzymujesz tłumaczenie zachowujące oryginalny układ, tabele i formatowanie.\n\nUsługa jest wykorzystywana do umów, dokumentacji technicznej, prac naukowych i medycznych, napisów oraz codziennej korespondencji. Język gruziński jest w pełni obsługiwany, w tym gruzińskie paszporty i dokumenty tożsamości.\n\nDostępna jest opcja tłumaczenia poświadczonego notarialnie dla dokumentów wymagających uwierzytelnienia prawnego w Gruzji.\n\n3. Jak to działa\n\nZałóż konto, doładuj saldo, prześlij dokument i wybierz język docelowy. Tłumaczenie zwykłego dokumentu zajmuje zwykle mniej niż minutę; duże pliki proporcjonalnie dłużej. Ukończone tłumaczenia pozostają w historii i można je pobrać ponownie w dowolnym momencie.\n\n4. Ile to kosztuje\n\nWszystkie ceny podane są w larach gruzińskich (GEL, ₾) i to właśnie ta waluta jest pobierana przy płatności, zarówno w suliko.ge, jak i suliko.io.\n\nPłatność za użycie — 1 ₾ za stronę. Możesz kupić dowolną kwotę od 1 ₾ wzwyż.\n\nPakiet startowy — 20 ₾ za 100 stron.\n\nPakiet profesjonalny — 50 ₾ za 500 stron.\n\nStrona oznacza jedną standardową stronę przetłumaczonego tekstu. Strony nie tracą ważności i możesz z nich korzystać, kiedy chcesz. Nie ma abonamentu ani płatności cyklicznych: płacisz wyłącznie za to, co kupujesz, w momencie zakupu.\n\n5. Kontakt\n\nE-mail: {email}\nTelefon: {phone}\nAdres: {address}\n\nNa zapytania do wsparcia odpowiadamy e-mailem w ciągu jednego dnia roboczego."
+  },
+  "RefundPolicy": {
+    "pageTitle": "Polityka dostawy, anulowania i zwrotów",
+    "pageDescription": "Jak dostarczane są kredyty tłumaczeniowe oraz jak anulować zamówienie lub poprosić o zwrot.",
+    "title": "Polityka dostawy, anulowania i zwrotów",
+    "lastUpdated": "Ostatnia aktualizacja: 9 września 2026",
+    "intro": "Ta polityka opisuje, co otrzymujesz po dokonaniu płatności, kiedy można anulować zamówienie i kiedy zwracamy pieniądze. Dotyczy zakupów dokonanych w suliko.ge i suliko.io. Oba serwisy prowadzi {name} (numer identyfikacyjny: {id}).",
+    "body": "1. Co kupujesz\n\nKupujesz kredyty tłumaczeniowe, liczone w stronach, które są dodawane do salda Twojego konta. Nic nie jest wysyłane fizycznie: usługa jest świadczona w całości online.\n\n2. Dostawa\n\nKredyty są dodawane do konta natychmiast po potwierdzeniu płatności przez bank — zwykle w ciągu kilku sekund. Jeśli saldo nie zaktualizuje się w ciągu 15 minut od udanej płatności, napisz na {email}, podając datę i kwotę, a doliczymy kredyty ręcznie.\n\nNie pobieramy opłaty za dostawę, ponieważ nie ma nic do dostarczenia fizycznie.\n\n3. Anulowanie przed płatnością\n\nPłatność możesz przerwać w dowolnym momencie, zanim potwierdzisz ją na stronie banku. Nic nie zostanie pobrane i nie powstanie żadne zamówienie. Zamknięcie strony płatności lub upłynięcie jej ważności samo anuluje zamówienie.\n\n4. Zwroty\n\nNiewykorzystane kredyty podlegają pełnemu zwrotowi przez 14 dni od daty zakupu. Zwracamy zapłaconą kwotę na kartę użytą przy zakupie.\n\nKredyty już wykorzystane na ukończone tłumaczenie nie podlegają zwrotowi, ponieważ usługa została wykonana i dostarczona.\n\nJeśli tłumaczenie nie powiedzie się z przyczyn technicznych po naszej stronie, zużyte na nie kredyty wracają na saldo automatycznie. Jeśli tak się nie stanie, daj nam znać, a je przywrócimy.\n\nJeśli obciążono Cię dwukrotnie za to samo zamówienie lub pobrano opłatę po płatności, która wyraźnie się nie powiodła, zwracamy duplikat w całości, niezależnie od tego, jak dawno to nastąpiło.\n\n5. Jak poprosić o zwrot\n\nNapisz na {email} z adresu przypisanego do konta, podając datę zakupu, kwotę i krótko powód. Przy zwrocie niewykorzystanych kredytów w ciągu 14 dni nie musisz podawać powodu.\n\nNa każde zgłoszenie odpowiadamy w ciągu 3 dni roboczych. Zatwierdzone zwroty trafiają z powrotem na pierwotną kartę w ciągu 10 dni roboczych; to, jak szybko pojawią się na wyciągu, zależy od Twojego banku.\n\n6. Problemy z tłumaczeniem\n\nJeśli tłumaczenie jest błędne, niekompletne lub nieprzydatne, zgłoś to w ciągu 14 dni, a wykonamy je ponownie bez opłat albo zwrócimy zużyte kredyty, jeśli nie zdołamy tego naprawić.\n\n7. Spory\n\nJeśli coś poszło nie tak z płatnością, skontaktuj się najpierw z nami pod adresem {email} lub numerem {phone} — niemal zawsze rozwiążemy sprawę szybciej niż reklamacja kartowa. Zgłoszenie sporu w banku pozostaje Twoim prawem i nie ogranicza praw opisanych powyżej."
+  },
+  "Privacy": {
+    "pageTitle": "Polityka prywatności",
+    "pageDescription": "Co Suliko zbiera, dlaczego, jak długo przechowuje i o co możesz nas poprosić.",
+    "title": "Polityka prywatności",
+    "lastUpdated": "Ostatnia aktualizacja: 9 września 2026",
+    "intro": "Ta polityka wyjaśnia, jakie dane osobowe zbiera Suliko, dlaczego je zbieramy, jak długo je przechowujemy i jakie masz możliwości wyboru. Dotyczy serwisów suliko.ge i suliko.io.",
+    "body": "1. Kto jest odpowiedzialny\n\n{name} jest administratorem opisanych tu danych osobowych. Możesz się z nami skontaktować pod adresem {email} lub listownie: {address}.\n\n2. Co zbieramy\n\nDane konta: adres e-mail oraz numer telefonu, jeśli rejestrujesz się z jego użyciem. Hasło przechowywane wyłącznie jako nieodwracalny skrót kryptograficzny.\n\nPrzesyłane treści: dokumenty i tekst przesyłane do tłumaczenia oraz powstałe z nich tłumaczenia.\n\nZapisy użycia: przetłumaczone strony, pary językowe, znaczniki czasu i ruchy na saldzie — to, czego potrzebujemy do prawidłowego rozliczenia i pokazania Twojej historii.\n\nDane techniczne: adres IP, typ przeglądarki i urządzenia, zbierane w zwykłych logach serwera.\n\n3. Przesyłane dokumenty\n\nTwoje dokumenty należą do Ciebie. Przetwarzamy je, aby wykonać tłumaczenie i udostępniać je w Twojej historii — i w żadnym innym celu. Nie sprzedajemy ich, nie publikujemy i nie wykorzystujemy ich treści do trenowania modeli.\n\nTłumaczenie realizowane jest z użyciem Gemini API firmy Google. Tekst Twojego dokumentu jest wysyłany do tej usługi wyłącznie w celu przetłumaczenia, na warunkach Google dla klientów API, które nie zezwalają na wykorzystanie go do trenowania.\n\n4. Dane płatnicze\n\nPłatności kartą obsługuje Bank of Georgia. Numer karty, data ważności i kod zabezpieczający są wprowadzane na stronie banku i nigdy nie są do nas wysyłane, przez nas widziane ani przechowywane. Przechowujemy wyłącznie numer zamówienia, kwotę, walutę oraz informację, czy płatność się powiodła.\n\n5. Jak długo przechowujemy\n\nDokumenty i tłumaczenia pozostają w historii do momentu ich usunięcia przez Ciebie lub zamknięcia konta.\n\nDane konta przechowujemy przez okres jego istnienia. Po zamknięciu usuwamy konto i treści w ciągu 30 dni.\n\nDokumentacja płatnicza i rozliczeniowa przechowywana jest tak długo, jak wymaga tego gruzińskie prawo rachunkowe i podatkowe — dłużej niż powyższe okresy i również po zamknięciu konta.\n\n6. Kto jeszcze ma dostęp\n\nDane osobowe udostępniamy wyłącznie dostawcom niezbędnym do działania usługi: dostawcy hostingu, Gemini API do tłumaczenia oraz Bank of Georgia do płatności. Każdy otrzymuje tylko to, czego wymaga jego zadanie.\n\nDane ujawniamy organom władzy wyłącznie wtedy, gdy zobowiązuje nas do tego prawo, i nikomu nie sprzedajemy danych osobowych.\n\n7. Twoje prawa\n\nMożesz poprosić o kopię swoich danych, ich sprostowanie, usunięcie lub zaprzestanie przetwarzania. Napisz na {email} z adresu przypisanego do konta, a odpowiemy w ciągu 30 dni.\n\nPojedyncze dokumenty możesz usunąć z historii samodzielnie w dowolnym momencie, a konto zamknąć, kiedy zechcesz.\n\n8. Pliki cookie\n\nUżywamy plików cookie niezbędnych do działania serwisu — utrzymania zalogowania oraz zapamiętania języka i motywu. Nie używamy reklamowych plików cookie. Analityka, o ile jest stosowana, ogranicza się do zbiorczego pomiaru ruchu.\n\n9. Bezpieczeństwo\n\nRuch do i z serwisu jest szyfrowany podczas transmisji. Hasła są hashowane. Dostęp do danych produkcyjnych mają wyłącznie osoby, które potrzebują go do prowadzenia usługi.\n\n10. Zmiany\n\nJeśli zmienimy tę politykę, zaktualizujemy datę na górze strony. Istotne zmiany ogłosimy w serwisie przed ich wejściem w życie.\n\n11. Kontakt\n\nPytania dotyczące prywatności: {email}."
+  },
+  "SulikoOffice": {
+    "meta": {
+      "title": "Suliko Office: Translation Management System for Bureaus & LSPs",
+      "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. Book a demo."
+    },
+    "nav": {
+      "home": "Suliko Office home",
+      "language": "Language",
+      "login": "Log in",
+      "demo": "Book a demo",
+      "menu": "Open menu",
+      "closeMenu": "Close menu",
+      "sections": "Page sections",
+      "s": {
+        "pricing": "Quotes",
+        "journey": "How it works",
+        "finance": "Finance",
+        "reports": "Reports",
+        "faq": "FAQ"
+      }
+    },
+    "hero": {
+      "eyebrow": "Translation management system for bureaus",
+      "title": "Run your translation bureau from one screen",
+      "sub": "Orders, translators, notaries, payments and clients in one system. Built and used daily by a working bureau.",
+      "primary": "Book a demo",
+      "secondary": "See how it works",
+      "already": "Already using Suliko Office?",
+      "login": "Log in",
+      "badge1Title": "Notary fee",
+      "badge1Text": "14.44 ₾",
+      "badge2Title": "Translator assigned",
+      "badge2Text": "Nino K. · KA → EN"
+    },
+    "dash": {
+      "title": "Overview",
+      "month": "September",
+      "navOrders": "Orders",
+      "navClients": "Clients",
+      "navTranslators": "Translators",
+      "navFinance": "Finance",
+      "navReports": "Reports",
+      "kOrders": "Orders this month",
+      "kOrdersDelta": "+9% vs last month",
+      "kClients": "Clients",
+      "kClientsNote": "31 new this month",
+      "kSources": "New clients by source",
+      "whatsapp": "WhatsApp",
+      "website": "Website",
+      "call": "Call",
+      "recent": "Recent orders",
+      "d1": "Diploma",
+      "d2": "Power of attorney",
+      "d3": "Birth certificate",
+      "d4": "Passport"
+    },
+    "st": {
+      "nw": "New",
+      "paid": "Paid",
+      "translator": "With translator",
+      "correcting": "Being corrected",
+      "notary": "Being notarised",
+      "ready": "Ready for pickup",
+      "done": "Completed"
+    },
+    "stNote": {
+      "nw": "Request logged, price calculated",
+      "paid": "Client payment recorded",
+      "translator": "Assigned by language pair",
+      "correcting": "A second pair of eyes",
+      "notary": "At the notary",
+      "ready": "Waiting for the client",
+      "done": "Handed over, payouts due"
+    },
+    "pains": {
+      "kicker": "Sound familiar?",
+      "p1": "“Where is this document right now?”",
+      "a1": "Every order shows its live status.",
+      "p2": "“Did we pay the translator and the notary?”",
+      "a2": "Payouts are tracked on every order.",
+      "p3": "“Why did two staff quote different prices?”",
+      "a3": "One price list, calculated the same way every time."
+    },
+    "journey": {
+      "kicker": "How it works",
+      "title": "One order, from the counter to pickup",
+      "sub": "Everyone on the team sees the same status, so nobody has to ask where a document is."
+    },
+    "feat": {
+      "kicker": "What's inside",
+      "title": "Everything a bureau runs on, in one system",
+      "f1t": "Orders & statuses",
+      "f1d": "Every order from first request to pickup, with a status the whole team can see.",
+      "f2t": "Translators & notaries",
+      "f2d": "Your translators and notaries with their language pairs, so each order goes to the right person.",
+      "f3t": "Automatic pricing",
+      "f3d": "Translation and notary costs are calculated from the language pair, document type, pages, urgency and copies.",
+      "tagPair": "KA → EN",
+      "tagDoc": "Diploma",
+      "tagUrg": "Urgent",
+      "tagCopies": "2 copies",
+      "f4t": "Finance",
+      "f4d": "Client payments, translator and notary payouts, expenses and profit reports.",
+      "f5t": "Clients & lead sources",
+      "f5d": "Individual and business clients, a client portal, and where each client came from.",
+      "tagPortal": "Client portal",
+      "f6t": "Team & roles",
+      "f6d": "Five roles, and staff don't see margins. Two-factor login and a full audit log.",
+      "tagRoles": "5 roles",
+      "tag2fa": "2FA",
+      "tagAudit": "Audit log",
+      "f7t": "Built-in AI translation by Suliko",
+      "f7d": "Get a first draft from Suliko AI without leaving the system, then hand it to your translator to finish."
+    },
+    "sec": {
+      "kicker": "Security",
+      "title": "Your bureau's data stays yours",
+      "i1t": "Tenant data isolation",
+      "i1d": "Each bureau's data is kept separate from every other bureau on the system.",
+      "i2t": "Two-factor login",
+      "i2d": "A second check at sign-in keeps accounts safe, even if a password leaks.",
+      "i3t": "Full audit log",
+      "i3d": "See who changed what and when, on every order and payment."
+    },
+    "faq": {
+      "kicker": "FAQ",
+      "title": "Questions bureaus ask us",
+      "q1": "We run everything on Excel and WhatsApp. Is it hard to switch?",
+      "a1": "No. You keep talking to clients on WhatsApp, while orders, payments and statuses move into one place. We help you bring your existing data across.",
+      "q2": "How do onboarding and data import work?",
+      "a2": "We set up your bureau, import your clients, translators and price list, and walk your team through the system.",
+      "q3": "Which languages does it support?",
+      "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers, and you set the pairs for each translator.",
+      "q4": "How much does it cost?",
+      "a4": "Pricing is tailored to your bureau's size and needs, so let's talk. Book a demo and we'll put together an offer for you."
+    },
+    "form": {
+      "kicker": "Book a demo",
+      "title": "See Suliko Office on a call",
+      "sub": "Tell us a little about your bureau and we'll get in touch to pick a time.",
+      "onCall": "On the call",
+      "e1": "A walkthrough of one order, from request to pickup",
+      "e2": "How your current Excel and WhatsApp setup would move across",
+      "e3": "Pricing tailored to your bureau",
+      "name": "Your name",
+      "company": "Bureau / company",
+      "email": "Email",
+      "phone": "Phone",
+      "team": "Team size",
+      "orders": "Orders per month",
+      "select": "Select",
+      "t1": "1–3 people",
+      "t2": "4–10 people",
+      "t3": "11–25 people",
+      "t4": "26+ people",
+      "o1": "Under 50",
+      "o2": "50–150",
+      "o3": "150–500",
+      "o4": "500+",
+      "message": "Message (optional)",
+      "messagePh": "Anything we should know before the call?",
+      "submit": "Book a demo",
+      "sending": "Sending…",
+      "note": "We only use these details to arrange your demo.",
+      "okTitle": "Thanks, request received",
+      "okBody": "We'll be in touch shortly to pick a time for your demo.",
+      "again": "Send another request",
+      "errorRequired": "Please fill in your name, company and email.",
+      "errorEmail": "Please enter a valid email address.",
+      "errorRateLimited": "Too many requests. Please try again in a few minutes.",
+      "errorGeneric": "Something went wrong. Please try again, or email us at info@suliko.ge.",
+      "honeypot": "Leave this field empty"
+    },
+    "demo": {
+      "newOrder": "New order",
+      "save": "Save order",
+      "fDoc": "Document type",
+      "fPair": "Language pair",
+      "price": "Price",
+      "priceNote": "Calculated automatically",
+      "assignee": "Nino K.",
+      "financeTitle": "Payouts",
+      "clientPayment": "Client payment",
+      "translatorPayout": "Translator payout",
+      "notaryFee": "Notary fee",
+      "orderProfit": "Order profit",
+      "completed": "Order {id} completed",
+      "fClient": "Client",
+      "clientValue": "Mariam T. · WhatsApp",
+      "monthTranslators": "Translator payouts this month",
+      "monthNotary": "Notary fees this month",
+      "labelOverview": "Sample Suliko Office dashboard: a finished order is counted as soon as it comes in",
+      "labelNew": "Sample new order in Suliko Office: the translation price and notary fee are recalculated as the pages and documents change",
+      "labelTrack": "Sample order in Suliko Office moving through its statuses to completion",
+      "labelPayouts": "Sample payouts in Suliko Office: the client payment, translator and notary payouts, and the order profit",
+      "saved": "Order {id} saved",
+      "fPages": "Pages",
+      "fDocs": "Documents",
+      "vPages": "{count, plural, one {# page} other {# pages}}",
+      "vDocs": "{count, plural, one {# document} other {# documents}}",
+      "fNotary": "Notarisation",
+      "translation": "Translation",
+      "total": "Total",
+      "feedNew": "New order {id} · {source}",
+      "feedPaid": "{id}: payment received, {amount}",
+      "feedStatus": "{id}: {status}"
+    },
+    "spot": {
+      "pricing": {
+        "kicker": "Automatic pricing",
+        "title": "Translation and notary costs, worked out for you",
+        "body": "Enter the document, language pair, pages and number of documents. Suliko Office prices the translation from your price list and adds the notary fee, so you can give the client the full total straight away.",
+        "p1": "Your own prices for every language pair",
+        "p2": "Notary fees calculated by pages and documents",
+        "p3": "Every staff member quotes the same price"
+      },
+      "payouts": {
+        "kicker": "Finance",
+        "title": "Know who has paid, and who you owe",
+        "body": "Every order records the client's payment and what goes to the translator and the notary, so your monthly totals add up on their own.",
+        "p1": "Client payments and refunds",
+        "p2": "Translator and notary payouts on every order",
+        "p3": "Profit per order and per month"
+      },
+      "reports": {
+        "kicker": "Reports",
+        "title": "Weekly and monthly reports, with charts",
+        "body": "See revenue, profit and translation volume at a glance, and how each compares with the previous period. Then break it down by language pair, by where orders come from and by client type.",
+        "p1": "Revenue and profit, by week and by month",
+        "p2": "Orders and translated pages, with the trend",
+        "p3": "Your busiest language pairs and where orders come from"
+      }
+    },
+    "reports": {
+      "label": "Sample Suliko Office reports: revenue and profit, translation volume, language pairs and order sources, weekly and monthly",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "tab": {
+        "revenue": "Revenue & profit",
+        "volume": "Volume",
+        "pairs": "Language pairs",
+        "sources": "Sources"
+      },
+      "kRevenue": "Revenue",
+      "kProfit": "Profit",
+      "kPages": "Pages translated",
+      "margin": "{pct}% of revenue",
+      "months": "Apr,May,Jun,Jul,Aug,Sep",
+      "week": "W{n}",
+      "pages": "Pages",
+      "orders": "Orders",
+      "pairsNote": "Share of revenue by language pair",
+      "other": "Other",
+      "individuals": "Individuals",
+      "companies": "Companies"
+    }
+  },
+  "OfficePromo": {
+    "heading": "Prowadzisz biuro tłumaczeń? Poznaj Suliko Office",
+    "subheading": "Zamówienia, tłumacze, notariusze i płatności w jednym systemie. Na nim działa nasze biuro.",
+    "cta": "Poznaj Suliko Office",
+    "heroLink": "Prowadzisz biuro tłumaczeń? Zobacz, na czym pracujemy"
   }
 }

@@ -10,46 +10,30 @@ const DocumentTranslationPage = () => {
   const pathname = usePathname();
   const { userProfile } = useUserStore();
 
-  const items = [
-    'გამარჯობა',
-    'Cześć',
-    'Hello',
-    'Bonjour',
-    'Ciao',
-    'Hallo',
-    'Hola',
-    "你好",
-    'こんにちは',
-    '안녕하세요',
-    'مرحبا',
-    'שלום',
-    'नमस्ते',
-  ]
 
   return (
     <div className="min-h-screen pl-8 p-4 md:p-8 bg-suliko-main-content-bg-color">
       <div className="mx-auto">
         <div className="mb-8">
-          <div className="text-2xl w-full gap-x-5 md:text-3xl font-semibold text-foreground flex-wrap slot-container flex gap-5">
-            <div className="slot-track">
-              {items.concat(items).map((item, i) => (
-                <span key={i} className="slot-item">
-                  {item}
-                </span>
-              ))}
-            </div>
-            <span className="md:block hidden">{userProfile?.firstName}</span>
-          </div>
-          <span className="md:hidden block md:text-3xl text-2xl mt-2">{userProfile?.firstName}</span>
+          {/* Was a 13-language slot-machine carousel inside a fixed 2rem box,
+              which clipped its own glyphs — the container was shorter than the
+              line it held, and got worse once the type scale was corrected.
+              A greeting in the locale the user actually chose says the same
+              thing without cycling through languages they did not pick. */}
+          <h1 className="text-2xl font-semibold text-foreground md:text-3xl">
+            {userProfile?.firstName
+              ? t('greeting', { name: userProfile.firstName })
+              : t('greetingAnonymous')}
+          </h1>
           <p className="text-muted-foreground mt-2">{t('description')}</p>
         </div>
 
         <div className="w-full mb-6">
-          <div className="bg-muted text-muted-foreground inline-flex h-9 w-full items-center justify-center rounded-lg p-[3px]">
-            <div className="grid w-full grid-cols-2 gap-0">
+          <div className="bg-muted text-muted-foreground inline-flex h-[50px] w-full items-center justify-center rounded-lg p-[3px]">
+            <div className="grid h-full w-full grid-cols-2 gap-0">
               <Link
                 href="/text"
-                className={`cursor-pointer flex items-center gap-2 h-[calc(100%-1px)] flex-1 justify-center rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${pathname.split('/')[pathname.split('/').length - 1] === 'text'
+                className={`cursor-pointer flex items-center gap-2 h-full flex-1 justify-center rounded-md px-3 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${pathname.split('/')[pathname.split('/').length - 1] === 'text'
                   ? '!bg-suliko-default-color text-white shadow-sm border-suliko-default-color z-10'
                   : 'text-foreground hover:bg-background/50 border-transparent'
                   }`}
@@ -59,7 +43,7 @@ const DocumentTranslationPage = () => {
               </Link>
               <Link
                 href="/document"
-                className={`cursor-pointer flex items-center gap-2 h-[calc(100%-1px)] flex-1 justify-center rounded-md px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${pathname.split('/')[pathname.split('/').length - 1] === 'document'
+                className={`cursor-pointer flex items-center gap-2 h-full flex-1 justify-center rounded-md px-3 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] border ${pathname.split('/')[pathname.split('/').length - 1] === 'document'
                   ? '!bg-suliko-default-color text-white shadow-sm border-suliko-default-color z-10'
                   : 'text-foreground hover:bg-background/50 border-transparent'
                   }`}

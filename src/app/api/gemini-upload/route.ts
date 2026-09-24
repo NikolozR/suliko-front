@@ -1,158 +1,62 @@
 import { NextRequest, NextResponse } from "next/server";
 import { API_BASE_URL } from "@/shared/constants/api";
 
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_UPLOAD_URL =
-  "https://generativelanguage.googleapis.com/upload/v1beta/files";
-const GEMINI_UPLOAD_HOST = "generativelanguage.googleapis.com";
-
 /**
- * This route only *opens* a Gemini resumable upload session; the browser then sends the
- * file bytes straight to Google. It deliberately never receives the file itself.
+ * Compatibility shim for external integrations.
  *
- * Proxying the bytes through here used to fail for anything over ~4.5MB: Vercel caps a
- * serverless function's request body at that size and rejects it at the edge with a 413
- * before this handler ever runs. (`serverActions.bodySizeLimit` in next.config.ts does not
- * apply to route handlers.) Uploading direct-to-Google removes that ceiling entirely and
- * skips a full extra copy of every file.
+ * This route used to hold Suliko's Gemini key and open upload sessions itself.
+ * That moved to the backend (`POST /Document/prepare-upload`), and this file was
+ * deleted along with the key — which broke third-party clients following the
+ * File API integration guide, whose documented flow starts with a multipart
+ * POST here. They began receiving Next's HTML 404 page.
  *
- * The session URL Google returns is safe to hand to the browser: it authenticates the
- * upload on its own and carries no API key. We assert that below rather than trusting it.
+ * It is restored as a thin forwarder so those integrations work unchanged. It
+ * holds no credentials: the caller's own Bearer token is passed straight
+ * through, and the backend does the upload and the measuring.
+ *
+ * New integrations should call `POST {API_BASE_URL}/Document/prepare-upload`
+ * directly. It is the same work with one less hop, it returns the page count
+ * the translation will be billed for, and it is not subject to the ~4.5MB
+ * request-body cap that Vercel imposes on this route — the reason the limit
+ * note below exists.
  */
-export async function POST(request: NextRequest) {
-  if (!GEMINI_API_KEY) {
-    return NextResponse.json(
-      { error: "Gemini API key not configured" },
-      { status: 500 }
-    );
-  }
 
-  // Opening a session spends Suliko's Gemini quota, so it requires a real logged-in user.
+/** Mirrors the old response so existing clients need no change. */
+interface LegacyUploadResponse {
+  fileUri: string;
+  mimeType: string;
+  displayName: string;
+  /** Not in the original contract; additive, and useful to callers. */
+  pageCount?: number;
+}
+
+const DEPRECATION_NOTE =
+  'Deprecated: POST ' + API_BASE_URL + '/Document/prepare-upload directly instead.';
+
+export async function POST(request: NextRequest) {
   const authorization = request.headers.get("authorization");
   if (!authorization?.startsWith("Bearer ")) {
     return NextResponse.json({ error: "Authentication required" }, { status: 401 });
   }
 
-  let subscriptionCheck: Response;
-  try {
-    subscriptionCheck = await fetch(`${API_BASE_URL}/Subscription/me`, {
-      headers: { Authorization: authorization },
-      cache: "no-store",
-    });
-  } catch {
+  const contentType = request.headers.get("content-type") ?? "";
+
+  // The other historical shape: JSON asking for a resumable session URL to send
+  // bytes to directly. That existed only for our own browser and required the
+  // Gemini key this route no longer has, so it cannot be served. Say so
+  // precisely rather than failing as if the file were the problem.
+  if (!contentType.includes("multipart/form-data")) {
     return NextResponse.json(
-      { error: "Could not verify authentication" },
-      { status: 502 }
-    );
-  }
-
-  if (!subscriptionCheck.ok) {
-    return NextResponse.json({ error: "Authentication required" }, { status: 401 });
-  }
-
-  // Legacy path: the client falls back to proxying bytes through here if it cannot reach
-  // Google directly (e.g. the browser blocks the cross-origin upload). Only works below
-  // Vercel's ~4.5MB body cap, which is exactly why it is the fallback and not the default.
-  if (request.headers.get("content-type")?.includes("multipart/form-data")) {
-    return proxyUpload(request);
-  }
-
-  let body: { fileName?: string; mimeType?: string; sizeBytes?: number };
-  try {
-    body = await request.json();
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
-  }
-
-  const displayName = body.fileName?.trim();
-  const mimeType = body.mimeType?.trim() || "application/octet-stream";
-  const sizeBytes = body.sizeBytes;
-
-  if (!displayName) {
-    return NextResponse.json({ error: "fileName is required" }, { status: 400 });
-  }
-
-  if (typeof sizeBytes !== "number" || !Number.isFinite(sizeBytes) || sizeBytes <= 0) {
-    return NextResponse.json(
-      { error: "sizeBytes must be a positive number" },
-      { status: 400 }
-    );
-  }
-
-  const initResponse = await fetch(
-    `${GEMINI_UPLOAD_URL}?uploadType=resumable&key=${GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "X-Goog-Upload-Protocol": "resumable",
-        "X-Goog-Upload-Command": "start",
-        "X-Goog-Upload-Header-Content-Length": String(sizeBytes),
-        "X-Goog-Upload-Header-Content-Type": mimeType,
-        "Content-Type": "application/json",
+      {
+        error:
+          "This endpoint now accepts only multipart/form-data with a `file` field. " +
+          "The JSON resumable-session form has been withdrawn. " +
+          DEPRECATION_NOTE,
       },
-      body: JSON.stringify({ file: { display_name: displayName } }),
-    }
-  );
-
-  if (!initResponse.ok) {
-    const errorText = await initResponse.text();
-    console.error("[gemini-upload] Init failed:", errorText);
-    return NextResponse.json(
-      { error: "Failed to initiate Gemini upload" },
-      { status: 502 }
+      { status: 410, headers: { Deprecation: "true" } }
     );
   }
 
-  const rawUploadUrl = initResponse.headers.get("x-goog-upload-url");
-  if (!rawUploadUrl) {
-    return NextResponse.json(
-      { error: "No upload URL returned by Gemini" },
-      { status: 502 }
-    );
-  }
-
-  // Never hand the browser a URL that points somewhere unexpected or that carries
-  // credentials, even if Google's response format changes.
-  let uploadUrl: URL;
-  try {
-    uploadUrl = new URL(rawUploadUrl);
-  } catch {
-    return NextResponse.json(
-      { error: "Gemini returned a malformed upload URL" },
-      { status: 502 }
-    );
-  }
-
-  if (uploadUrl.protocol !== "https:" || uploadUrl.hostname !== GEMINI_UPLOAD_HOST) {
-    console.error("[gemini-upload] Unexpected upload host:", uploadUrl.hostname);
-    return NextResponse.json(
-      { error: "Gemini returned an unexpected upload host" },
-      { status: 502 }
-    );
-  }
-
-  for (const param of ["key", "apiKey", "api_key"]) {
-    if (uploadUrl.searchParams.has(param)) {
-      console.warn(
-        "[gemini-upload] Stripping unexpected credential param from upload URL:",
-        param
-      );
-      uploadUrl.searchParams.delete(param);
-    }
-  }
-
-  return NextResponse.json({
-    uploadUrl: uploadUrl.toString(),
-    mimeType,
-    displayName,
-  });
-}
-
-/**
- * Streams the file through this function to Gemini and returns the finished file URI.
- * Subject to Vercel's request-body cap, so it is only reachable as a fallback.
- */
-async function proxyUpload(request: NextRequest): Promise<NextResponse> {
   let formData: FormData;
   try {
     formData = await request.formData();
@@ -165,61 +69,63 @@ async function proxyUpload(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "No file provided" }, { status: 400 });
   }
 
-  const mimeType = file.type || "application/octet-stream";
-  const fileBuffer = await file.arrayBuffer();
-
-  const initResponse = await fetch(
-    `${GEMINI_UPLOAD_URL}?uploadType=resumable&key=${GEMINI_API_KEY}`,
-    {
-      method: "POST",
-      headers: {
-        "X-Goog-Upload-Protocol": "resumable",
-        "X-Goog-Upload-Command": "start",
-        "X-Goog-Upload-Header-Content-Length": String(fileBuffer.byteLength),
-        "X-Goog-Upload-Header-Content-Type": mimeType,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ file: { display_name: file.name } }),
-    }
+  // Logged so we can tell when the last external caller has migrated and this
+  // file can go for good.
+  console.warn(
+    `[gemini-upload] Legacy shim used for "${file.name}" ` +
+      `(${(file.size / 1024 / 1024).toFixed(1)}MB). ${DEPRECATION_NOTE}`
   );
 
-  const uploadUrl = initResponse.ok
-    ? initResponse.headers.get("x-goog-upload-url")
-    : null;
+  const forwarded = new FormData();
+  forwarded.append("File", file); // prepare-upload names the field `File`
 
-  if (!uploadUrl) {
-    console.error("[gemini-upload] Fallback init failed:", await initResponse.text());
+  let upstream: Response;
+  try {
+    upstream = await fetch(`${API_BASE_URL}/Document/prepare-upload`, {
+      method: "POST",
+      headers: { Authorization: authorization },
+      body: forwarded,
+    });
+  } catch {
     return NextResponse.json(
-      { error: "Failed to initiate Gemini upload" },
+      { error: "Could not reach the translation service" },
       { status: 502 }
     );
   }
 
-  const uploadResponse = await fetch(uploadUrl, {
-    method: "POST",
-    headers: {
-      "X-Goog-Upload-Offset": "0",
-      "X-Goog-Upload-Command": "upload, finalize",
-      "Content-Type": mimeType,
-    },
-    body: fileBuffer,
-  });
+  const raw = await upstream.text();
+  let parsed: {
+    success?: boolean;
+    fileUri?: string;
+    mimeType?: string;
+    pageCount?: number;
+    fileName?: string;
+    errorMessage?: string;
+  } | null = null;
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    /* upstream returned something that is not JSON; handled below */
+  }
 
-  if (!uploadResponse.ok) {
-    console.error("[gemini-upload] Fallback upload failed:", await uploadResponse.text());
+  if (!upstream.ok || !parsed?.success || !parsed.fileUri) {
     return NextResponse.json(
-      { error: "Failed to upload file to Gemini" },
-      { status: 502 }
+      {
+        error:
+          parsed?.errorMessage ||
+          (raw.trim() && !raw.trimStart().startsWith("<") ? raw.trim() : null) ||
+          "Failed to upload file",
+      },
+      { status: upstream.status === 200 ? 502 : upstream.status }
     );
   }
 
-  const fileUri: string | undefined = (await uploadResponse.json())?.file?.uri;
-  if (!fileUri) {
-    return NextResponse.json(
-      { error: "Gemini did not return a file URI" },
-      { status: 502 }
-    );
-  }
+  const body: LegacyUploadResponse = {
+    fileUri: parsed.fileUri,
+    mimeType: parsed.mimeType || file.type || "application/octet-stream",
+    displayName: parsed.fileName || file.name,
+    pageCount: parsed.pageCount,
+  };
 
-  return NextResponse.json({ fileUri, mimeType, displayName: file.name });
+  return NextResponse.json(body, { headers: { Deprecation: "true" } });
 }

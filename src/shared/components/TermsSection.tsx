@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   FormField,
   FormItem,
@@ -18,33 +18,19 @@ import {
   DialogTrigger,
 } from "@/features/ui/components/ui/dialog";
 import { LoginFormData, RegisterFormData } from "@/features/auth/types/types.Auth";
+import { parseDocumentSections } from "@/shared/utils/parseDocumentSections";
+import {
+  COMPANY_ADDRESS_EN,
+  COMPANY_ADDRESS_KA,
+  COMPANY_EMAIL,
+  COMPANY_ID,
+  COMPANY_NAME_EN,
+  COMPANY_NAME_KA,
+  COMPANY_PHONE_DISPLAY,
+} from "@/shared/constants/company";
 
 interface TermsSectionProps {
   form: UseFormReturn<LoginFormData | RegisterFormData>;
-}
-
-function parseDocumentSections(text: string) {
-  const blocks = text.split(/\n\n+/);
-  const sections: { heading: string | null; body: string }[] = [];
-  let current: { heading: string | null; body: string } | null = null;
-
-  for (const block of blocks) {
-    const trimmed = block.trim();
-    if (!trimmed) continue;
-    const isHeading = /^\d+\.\s/.test(trimmed) && trimmed.split("\n").length === 1;
-    if (isHeading) {
-      if (current) sections.push(current);
-      current = { heading: trimmed, body: "" };
-    } else {
-      if (current) {
-        current.body += (current.body ? "\n\n" : "") + trimmed;
-      } else {
-        sections.push({ heading: null, body: trimmed });
-      }
-    }
-  }
-  if (current) sections.push(current);
-  return sections;
 }
 
 function DocumentText({ text }: { text: string }) {
@@ -67,7 +53,28 @@ function DocumentText({ text }: { text: string }) {
 
 const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
   const t = useTranslations("Authorization");
+  const tPrivacy = useTranslations("Privacy");
+  const locale = useLocale();
   const [isTermsModalOpen, setIsTermsModalOpen] = useState(false);
+
+  // Same documents, same details as the public /terms and /privacy pages: what a
+  // user accepts here has to be what the site publishes, and the placeholders keep
+  // the entity named at sign-up from drifting from the registered one.
+  // See constants/company.ts.
+  const entityName = locale === "ka" ? COMPANY_NAME_KA : COMPANY_NAME_EN;
+  const address = locale === "ka" ? COMPANY_ADDRESS_KA : COMPANY_ADDRESS_EN;
+  const termsText = t("termsText", {
+    name: entityName,
+    id: COMPANY_ID,
+    email: COMPANY_EMAIL,
+    phone: COMPANY_PHONE_DISPLAY,
+    address,
+  });
+  const privacyText = tPrivacy("body", {
+    name: entityName,
+    email: COMPANY_EMAIL,
+    address,
+  });
 
   return (
     <div className="flex flex-col gap-4">
@@ -106,7 +113,7 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
                       <DialogTitle className="text-xl font-bold text-gray-900">
                         {t("termsAndPrivacy")}
                       </DialogTitle>
-                      <p className="text-xs text-gray-500 mt-1">შკს სულიკო ეი აი · ID: 400403265</p>
+                      <p className="text-xs text-gray-500 mt-1">{entityName} · ID: {COMPANY_ID}</p>
                     </div>
 
                     {/* Scrollable body */}
@@ -121,7 +128,7 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
                           </span>
                           <div className="h-px flex-1 bg-gray-100" />
                         </div>
-                        <DocumentText text={t("termsText")} />
+                        <DocumentText text={termsText} />
                       </section>
 
                       {/* Privacy */}
@@ -133,7 +140,10 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
                           </span>
                           <div className="h-px flex-1 bg-gray-100" />
                         </div>
-                        <DocumentText text={t("privacyText")} />
+                        <p className="text-gray-900 leading-7 whitespace-pre-wrap text-sm mb-5">
+                          {tPrivacy("intro")}
+                        </p>
+                        <DocumentText text={privacyText} />
                       </section>
                     </div>
                   </DialogContent>

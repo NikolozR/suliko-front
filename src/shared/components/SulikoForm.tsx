@@ -27,9 +27,8 @@ import { useTranslations, useLocale } from "next-intl";
 import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 import { getRequiredVerificationMethod } from "@/shared/utils/domainUtils";
-import { trackRegistrationStart, trackRegistrationComplete } from "./MetaPixel";
+import { trackRegistrationStart, trackRegistrationComplete } from "../utils/metaPixel";
 import { trackRegistrationServerEvent, trackRegistrationStartServerEvent } from "../utils/facebookServerEvents";
-import "../utils/testFacebookEvents"; // Import test utilities
 import PhoneVerificationSection from "./PhoneVerificationSection";
 import EmailVerificationSection from "./EmailVerificationSection";
 import PasswordSection from "./PasswordSection";
@@ -359,16 +358,11 @@ const SulikoForm: React.FC = () => {
           referralCode: registerValues.referralCode?.trim() || undefined,
         } as RegisterParams);
 
-        trackRegistrationComplete({
-          phoneNumber: phoneNumber || "",
-          firstName: registerValues.firstname || generateDefaultName(),
-          lastName: registerValues.lastname || "",
-        });
+        trackRegistrationComplete();
 
         await trackRegistrationServerEvent({
-          phone: phoneNumber || "",
-          firstName: registerValues.firstname || generateDefaultName(),
-          lastName: registerValues.lastname || "",
+          phone: phoneNumber || undefined,
+          email,
         });
 
         setToken(data.token);

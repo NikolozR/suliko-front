@@ -2,14 +2,13 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: {
-    default: "Suliko | AI Translation Platform",
+    default: "Suliko Translate",
     template: "%s | Suliko",
   },
   description:
-    "Translate documents and text with AI-assisted workflows, fast turnaround, and a clean editor experience built for teams.",
+    "Translate documents and text with fast turnaround and a clean editor experience built for teams.",
   applicationName: "Suliko",
   keywords: [
-    "AI translation",
     "document translation",
     "text translation",
     "multilingual",

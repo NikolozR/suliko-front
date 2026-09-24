@@ -9,6 +9,71 @@ import {
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { reaccessToken } from "@/features/auth/services/authorizationService";
 
+/**
+ * Extracts a human-readable message from a failed response.
+ *
+ * The API returns validation failures as bare strings with `text/plain`
+ * (ASP.NET Core's StringOutputFormatter), so calling `response.json()`
+ * directly throws a SyntaxError and swallows the real reason. Read the body
+ * as text first, then parse it as JSON only if it actually is JSON.
+ */
+const readErrorMessage = async (
+  response: Response,
+  fallback: string
+): Promise<string> => {
+  let body: string;
+  try {
+    body = await response.text();
+  } catch {
+    return fallback;
+  }
+
+  if (!body.trim()) return fallback;
+
+  try {
+    const parsed = JSON.parse(body);
+    if (typeof parsed === "string") return parsed || fallback;
+    if (parsed && typeof parsed === "object") {
+      const { message, errorText, title, detail } = parsed as Record<string, unknown>;
+      const found = [message, errorText, title, detail].find(
+        (v): v is string => typeof v === "string" && v.trim().length > 0
+      );
+      return found ?? fallback;
+    }
+    return fallback;
+  } catch {
+    // Not JSON — the plain-text body is the message.
+    return body;
+  }
+};
+
+/**
+ * Thrown by `translateDocumentWithUri` for the two failures the backend now
+ * reports synchronously. Insufficient balance used to surface as a background
+ * job failure minutes later; a stale URI could not be detected at all.
+ */
+export class DocumentTranslateError extends Error {
+  constructor(
+    message: string,
+    readonly status: number,
+    readonly reason: "insufficientBalance" | "fileChanged" | "unknown",
+  ) {
+    super(message);
+    this.name = "DocumentTranslateError";
+  }
+}
+
+/**
+ * The backend distinguishes these in prose rather than with a code, so match
+ * on it — but keep the server's own wording as the message either way.
+ */
+const classify400 = (message: string): "insufficientBalance" | "fileChanged" | "unknown" => {
+  const m = message.toLowerCase();
+  if (/balance|ბალანს|insufficient/.test(m)) return "insufficientBalance";
+  if (/no longer|changed|mismatch|re-?upload|stale/.test(m)) return "fileChanged";
+  return "unknown";
+};
+
 export const translateUserContent = async (
   params: TextTranslateUserContentParams
 ): Promise<TextTranslateUserContentResponse> => {
@@ -54,8 +119,7 @@ export const translateUserContent = async (
   }
 
   if (response.status !== 200) {
-    const errorData = await response.json();
-    throw new Error(errorData.errorText || "Translation failed");
+    throw new Error(await readErrorMessage(response, "Translation failed"));
   } else {
     const data = await response.json();
     return data;
@@ -123,8 +187,7 @@ export const translateDocumentUserContent = async (
   }
 
   if (response.status < 200 || response.status >= 300) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Translation failed");
+    throw new Error(await readErrorMessage(response, "Translation failed"));
   } else {
     const data = await response.json();
     return data;
@@ -172,8 +235,12 @@ export const translateDocumentWithUri = async (
   }
 
   if (response.status < 200 || response.status >= 300) {
-    const errorData = await response.json();
-    throw new Error(errorData.message || "Translation failed");
+    const message = await readErrorMessage(response, "Translation failed");
+    throw new DocumentTranslateError(
+      message,
+      response.status,
+      response.status === 400 ? classify400(message) : "unknown",
+    );
   } else {
     const data = await response.json();
     return data;

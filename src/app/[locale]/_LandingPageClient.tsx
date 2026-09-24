@@ -24,8 +24,15 @@ const TestimonialsSection = dynamic(() => import("@/shared/components/Testimonia
 const FAQSection = dynamic(() => import("@/shared/components/FAQSection"), {
   loading: () => <LandingSectionSkeleton />,
 });
+const OfficePromoSection = dynamic(() => import("@/shared/components/OfficePromoSection"), {
+  loading: () => <LandingSectionSkeleton minHeight={180} />,
+});
 const NotaryPromoSection = dynamic(() => import("@/shared/components/NotaryPromoSection"), {
   loading: () => <LandingSectionSkeleton minHeight={180} />,
+});
+
+const BookDemoBubble = dynamic(() => import("@/shared/components/BookDemoBubble"), {
+  ssr: false,
 });
 
 const LandingFooter = dynamic(() => import("@/shared/components/LandingFooter"), {
@@ -82,6 +89,7 @@ export default function LandingPageClient() {
               <PricingSection />
               <VideoSection />
               <TestimonialsSection />
+              <OfficePromoSection />
               <FAQSection />
               <NotaryPromoSection />
             </>
@@ -103,6 +111,7 @@ export default function LandingPageClient() {
           </div>
         )}
         <ScrollToTop />
+        <BookDemoBubble />
       </div>
     </div>
   );

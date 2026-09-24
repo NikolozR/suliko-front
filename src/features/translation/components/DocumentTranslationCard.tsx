@@ -28,6 +28,7 @@ import { useSearchParams } from "next/navigation";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
+import { DocumentTranslateError } from "../services/translationService";
 import { suggestNameTranslations } from "../services/nameTranslationService";
 import NameReviewModal from "./NameReviewModal";
 import { NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
@@ -36,16 +37,24 @@ import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
+import { MAX_DOCUMENT_UPLOAD_BYTES, formatBytes } from "../constants/uploadLimits";
+import { prepareDocumentUpload, PrepareUploadError } from "../services/prepareUploadService";
+import type { PrepareUploadResponse } from "../types/types.Translation";
 import LanguageSelect from "./LanguageSelect";
+import { DeliverableSelect, NamesBlock, QuoteBlock } from "./JobPanel";
+import InProgressView from "./InProgressView";
+import { useJobStage } from "../hooks/useJobStage";
 import { Button } from "@/features/ui/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/features/ui/components/ui/select";
 import { ArrowRightLeft } from "lucide-react";
 import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import PageCountDisplay from "./PageCountDisplay";
 import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
+import { estimateMinutes } from "@/features/translation/utils/translationEta";
 import { useCountdown } from "@/hooks";
 import { ocrToHtml } from "@/features/translation/services/conversionsService";
+import ProgressBar from "@/shared/components/ProgressBar";
+import { startRouteProgress } from "@/shared/components/RouteTransitionProgress";
 
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import toaster, { toast } from 'react-hot-toast'
@@ -70,8 +79,8 @@ const documentTranslationSchema = z.object({
     .refine((files) => {
       if (!files || !files.length) return false;
       const file = files[0];
-      return file && file.size <= 50 * 1024 * 1024; // 50MB limit
-    }, "File size must be less than 50MB."),
+      return file && file.size <= MAX_DOCUMENT_UPLOAD_BYTES;
+    }, `File must be ${formatBytes(MAX_DOCUMENT_UPLOAD_BYTES)} or smaller.`),
   currentTargetLanguageId: z.number(),
   currentSourceLanguageId: z.number(),
   isSrt: z.boolean().optional(),
@@ -128,7 +137,7 @@ const DocumentTranslationCard = () => {
   const [/*loadingMessageState*/, /*setLoadingMessageState*/] = useState<string>("");
   const { suggestionsLoading } = useSuggestionsStore();
   const { token } = useAuthStore();
-  const { userProfile, fetchUserProfile } = useUserStore();
+  const { userProfile, fetchUserProfile, fetchUserProfileWithRetry } = useUserStore();
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectId = searchParams.get("projectId");
@@ -157,17 +166,40 @@ const DocumentTranslationCard = () => {
   // Output format for document (non-SRT) translations. Defaults to the standard HTML output.
   const [outputFormat, setOutputFormat] = useState<number>(DEFAULT_DOCUMENT_OUTPUT_FORMAT);
   const [isDetectingNames, setIsDetectingNames] = useState(false);
+  /**
+   * What the submit is actually doing right now. Only real transitions —
+   * name detection, bytes going up, and the request going out. The upload is
+   * the one step with a measurable percentage; the rest are named, not timed.
+   */
+  const [submitStage, setSubmitStage] = useState<null | "detectingNames" | "uploading" | "starting">(null);
+  const [uploadPercent, setUploadPercent] = useState(0);
+  /**
+   * The file as the server measured it. Prepared on selection rather than on
+   * submit, because its pageCount is the number the user is quoted and the
+   * number they are billed — the client can no longer derive either.
+   */
+  /** Set once a job is running, so the screen shows progress instead of navigating. */
+  const [activeJob, setActiveJob] = useState<{ chatId: string; jobId: string; fileName: string } | null>(null);
+  const [prepared, setPrepared] = useState<PrepareUploadResponse | null>(null);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [preparePercent, setPreparePercent] = useState(0);
   const [showNameModal, setShowNameModal] = useState(false);
   const [detectedNames, setDetectedNames] = useState<NameTranslationItem[]>([]);
   const [pendingTranslationData, setPendingTranslationData] = useState<DocumentFormData | null>(null);
   // Saved project glossary carried across the review modal (project flow only).
   const [pendingSavedNames, setPendingSavedNames] = useState<ProjectNameTranslation[]>([]);
   // Standalone-only opt-in for name detection; remembered per browser. Default OFF.
-  const [nameDetectionEnabled, setNameDetectionEnabled] = useState(false);
+  /**
+   * Default on. Consistent naming across a user's documents is the point of the
+   * feature, and defaulting it off meant most people never discovered it — it
+   * was a 22px unlabelled switch. Only an explicit "0" in storage turns it off,
+   * so a user who has actively opted out keeps that choice.
+   */
+  const [nameDetectionEnabled, setNameDetectionEnabled] = useState(true);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    setNameDetectionEnabled(window.localStorage.getItem(NAME_DETECTION_STORAGE_KEY) === "1");
+    setNameDetectionEnabled(window.localStorage.getItem(NAME_DETECTION_STORAGE_KEY) !== "0");
   }, []);
 
   const toggleNameDetection = () => {
@@ -181,6 +213,71 @@ const DocumentTranslationCard = () => {
   };
 
   const hasFile = currentFile && currentFile.length > 0;
+
+  /**
+   * What the quote is allowed to show as the page count.
+   *
+   * `null` means "not resolved yet" and puts the quote figures into a skeleton
+   * with the CTA disabled. That is deliberate: `estimatedPageCount` falls back
+   * to a file-size heuristic for types we cannot really count, and presenting a
+   * guess as the number the user is charged is what made the old balance check
+   * fail after the click rather than before it.
+   */
+  const quotedPageCount: number | null = (() => {
+    if (!hasFile) return null;
+    // Subtitles never go through prepare-upload -- /Document/srt/translate takes
+    // the file directly and bills a flat single page. Without this they had no
+    // prepared record, so the quote sat on "reading the page count" and the
+    // submit button stayed disabled forever.
+    if (currentFile?.[0]?.name?.toLowerCase().endsWith(".srt")) return 1;
+    if (isPreparing) return null;
+    return prepared?.pageCount ?? null;
+  })();
+
+  const quoteEtaMin = quotedPageCount ? Math.max(1, estimateMinutes(quotedPageCount)) : 0;
+  const quoteEtaMax = quotedPageCount ? Math.max(2, Math.round(quoteEtaMin * 1.35)) : 0;
+
+  const job = useJobStage(activeJob?.jobId ?? null);
+
+  useEffect(() => {
+    if (!activeJob) return;
+    if (job.outcome === "completed") {
+      // The result view lives on the wait page, and the URL already points
+      // there, so this is a navigation the user cannot perceive as a jump.
+      startRouteProgress();
+      router.push(`/translations/${activeJob.chatId}`);
+    }
+  }, [job.outcome, activeJob, router]);
+
+  // Re-read the balance whenever a job reaches a terminal state.
+  //
+  // The balance moves twice over a job's life: the API debits the page count when
+  // the job is created, and refunds it if the job fails. Neither shows up here on
+  // its own -- the figure comes from the user profile, and the store holding it is
+  // persisted, so a stale number survives even a reload.
+  //
+  // This used to be covered by accident. The old flow pushed the user to the wait
+  // page while the job was still running, and that page refreshes the profile when
+  // it watches a job finish. Running the job in place removed that: the wait page
+  // is now reached after the job is already complete, and it skips its own
+  // completion handler in that case. So the debit happened and the screen kept
+  // showing the old figure.
+  useEffect(() => {
+    if (!activeJob) return;
+    if (job.outcome === "running") return;
+    void fetchUserProfileWithRetry(3, 1000);
+  }, [job.outcome, activeJob, fetchUserProfileWithRetry]);
+
+  /** Saved glossary size, shown instead of hiding the control inside a project. */
+  const [projectGlossaryCount, setProjectGlossaryCount] = useState<number>(0);
+  useEffect(() => {
+    if (!projectId) return;
+    let cancelled = false;
+    getProjectNames(projectId)
+      .then((names) => { if (!cancelled) setProjectGlossaryCount(names.length); })
+      .catch(() => { /* the panel simply omits the count */ });
+    return () => { cancelled = true; };
+  }, [projectId]);
   const currentFileObj = hasFile ? currentFile[0] : null;
 
   const { loadingProgress, loadingMessage, setManualProgress, reset } =
@@ -194,8 +291,9 @@ const DocumentTranslationCard = () => {
       estimatedWordCount,
     });
 
-  // Calculate countdown duration: 4 minutes base + 25 seconds per additional page
-  const countdownMinutes = estimatedPageCount > 0 ? 4 + Math.ceil((estimatedPageCount - 1) * 25 / 60) : 4;
+  // Shared with the progress bar and the wait page, so the same document is
+  // never quoted two different durations in one session.
+  const countdownMinutes = estimateMinutes(estimatedPageCount);
 
   const { start, stop } = useCountdown({
     initialMinutes: countdownMinutes,
@@ -261,7 +359,6 @@ const DocumentTranslationCard = () => {
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
-  console.log("Current file object:", currentFileObj);
 
   // Restore file from storage when user returns after authentication
   useEffect(() => {
@@ -360,9 +457,13 @@ const DocumentTranslationCard = () => {
 
     const file = event.target.files[0];
 
-    if (file.size > 10 * 1024 * 1024) {
+    if (file.size > MAX_DOCUMENT_UPLOAD_BYTES) {
       toaster.error(
-        `"${file.name}" is too large (${(file.size / 1024 / 1024).toFixed(1)} MB). Maximum file size is 10 MB.`,
+        t("fileTooLarge", {
+          name: file.name,
+          size: formatBytes(file.size),
+          max: formatBytes(MAX_DOCUMENT_UPLOAD_BYTES),
+        }),
         { duration: 6000 }
       );
       event.target.value = "";
@@ -389,6 +490,29 @@ const DocumentTranslationCard = () => {
     // Highlight translate button briefly
     setIsButtonHighlighted(true);
     setTimeout(() => setIsButtonHighlighted(false), 3000);
+
+    // Hand the file to the server straight away. Its pageCount is what the
+    // user is quoted and what they are billed, so the quote cannot be shown
+    // until this returns — and the old failure mode, where someone who never
+    // scrolled the preview was quoted 1 page for a 200-page PDF, disappears.
+    setPrepared(null);
+    if (token && !isSrtFile) {
+      setIsPreparing(true);
+      setPreparePercent(0);
+      prepareDocumentUpload(file, {
+        onProgress: (fraction) => setPreparePercent(Math.round(fraction * 100)),
+      })
+        .then((result) => setPrepared(result))
+        .catch((err) => {
+          setPrepared(null);
+          setError(
+            err instanceof PrepareUploadError
+              ? err.message
+              : t("progress.unexpectedError")
+          );
+        })
+        .finally(() => setIsPreparing(false));
+    }
 
     const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
 
@@ -418,6 +542,9 @@ const DocumentTranslationCard = () => {
   // Clear translation result and OCR flag
   setTranslatedMarkdown("");
   setIsOcrOnly(false);
+  setPrepared(null);
+  setIsPreparing(false);
+  setPreparePercent(0);
 
   // Clear form values
   setValue("currentFile", null, { shouldValidate: false });
@@ -514,6 +641,7 @@ const DocumentTranslationCard = () => {
         // Project flow: auto-apply the saved glossary, review only names not already saved.
         try {
           setIsDetectingNames(true);
+          setSubmitStage("detectingNames");
           // Detection is resilient: a failure here still applies the saved glossary.
           const [savedPairs, detected] = await Promise.all([
             getProjectNames(projectId).catch(() => [] as ProjectNameTranslation[]),
@@ -543,6 +671,7 @@ const DocumentTranslationCard = () => {
         // Standalone flow: only when the user has opted in via the toggle.
         try {
           setIsDetectingNames(true);
+          setSubmitStage("detectingNames");
           const names = await suggestNameTranslations(
             data.currentFile[0],
             data.currentSourceLanguageId,
@@ -639,7 +768,21 @@ const DocumentTranslationCard = () => {
       //   setValue("currentFile", newFileList);
       // }
 
-      const { chatId } = await startTranslationProject(data, estimatedPageCount || 1, reviewedNames, outputFormat);
+      setSubmitStage("uploading");
+      setUploadPercent(0);
+      const { chatId, jobId } = await startTranslationProject(
+        data,
+        estimatedPageCount || 1,
+        reviewedNames,
+        outputFormat,
+        {
+          // Already uploaded at selection time; this only re-uploads if
+          // something went wrong and we have nothing prepared.
+          prepared,
+          onUploadProgress: (fraction) => setUploadPercent(Math.round(fraction * 100)),
+          onStarting: () => setSubmitStage("starting"),
+        }
+      );
 
       // Persist the original file so the translation detail page can show the preview.
       // URI-based (Gemini) translations don't store bytes on the backend during translation,
@@ -659,14 +802,49 @@ const DocumentTranslationCard = () => {
         moveChatToProject(chatId, projectId).catch(() => {});
       }
 
-      setManualProgress(12, t("progress.translationStarted"));
       window.dispatchEvent(new Event("translations-updated"));
-      router.push(`/translations/${chatId}`);
+
+      // The job now runs in place. This used to push to /translations/[chatId]
+      // at a scripted 12%, moving people off the screen they were working on
+      // before anything had actually happened, and replacing a real document
+      // with a simulated progress bar.
+      //
+      // The URL is rewritten underneath so the job stays linkable and survives
+      // a reload — a refresh lands on the wait page, which renders the same
+      // stages from the same endpoint. history.replaceState rather than
+      // router.replace, because the latter would navigate and defeat the point.
+      setActiveJob({ chatId, jobId, fileName: data.currentFile[0].name });
+
+      // The debit happens when the job is created, not when it finishes, so the
+      // quoted balance is out of date from this moment on.
+      void fetchUserProfileWithRetry(3, 1000);
+      if (typeof window !== "undefined") {
+        const locale = window.location.pathname.split("/")[1] || "en";
+        window.history.replaceState(null, "", `/${locale}/translations/${chatId}`);
+      }
     } catch (err) {
       console.error("Translation failed:", err);
-      setError(t("progress.unexpectedError"));
+      if (err instanceof DocumentTranslateError && err.reason === "insufficientBalance") {
+        // The balance moved between the quote and the click — another job, or
+        // a top-up spent elsewhere. Say so in our own words and refresh the
+        // figure so the panel stops showing a number the server disagrees with.
+        setError(t("translateError.insufficientBalance"));
+        fetchUserProfile().catch(() => {});
+      } else if (err instanceof DocumentTranslateError && err.reason === "fileChanged") {
+        // The URI no longer matches what was measured, so the prepared upload
+        // is void — drop it and make the user pick the file again.
+        setError(t("translateError.fileChanged"));
+        setPrepared(null);
+      } else {
+        // Prefer the server's explanation (e.g. an unsupported file type) over the
+        // generic fallback — otherwise every failure looks identical to the user.
+        const detail = err instanceof Error ? err.message.trim() : "";
+        setError(detail ? `${t("progress.unexpectedError")} ${detail}` : t("progress.unexpectedError"));
+      }
     } finally {
       setIsLoading(false);
+      setSubmitStage(null);
+      setUploadPercent(0);
       reset();
     }
   };
@@ -733,7 +911,6 @@ const DocumentTranslationCard = () => {
       setShowEmailModal(true);
       return;
     }
-    console.log("User profile for email check:", profile);
 
     handleSubmit(onSubmit, handleFormError)();
   };
@@ -829,35 +1006,10 @@ const DocumentTranslationCard = () => {
                   </p>
                 )}
               </div>
-              {!projectId && !translatedMarkdown && !isOcrOnly && (
-                <div
-                  className="flex items-center gap-2 shrink-0"
-                  title={t("nameDetection.tooltip")}
-                >
-                  <span className="text-sm font-medium text-muted-foreground">
-                    {t("nameDetection.label")}
-                  </span>
-                  <button
-                    type="button"
-                    role="switch"
-                    aria-checked={nameDetectionEnabled}
-                    aria-label={t("nameDetection.label")}
-                    onClick={toggleNameDetection}
-                    className={`
-                      relative inline-flex h-7 w-12 items-center rounded-full transition-colors
-                      focus:outline-none focus:ring-2 focus:ring-suliko-default-color focus:ring-offset-2
-                      ${nameDetectionEnabled ? 'bg-suliko-default-color' : 'bg-gray-300 dark:bg-gray-600'}
-                    `}
-                  >
-                    <span
-                      className={`
-                        inline-block h-5 w-5 transform rounded-full bg-white transition-transform
-                        ${nameDetectionEnabled ? 'translate-x-6' : 'translate-x-1'}
-                      `}
-                    />
-                  </button>
-                </div>
-              )}
+              {/* The name-detection toggle moved into the job panel's Names
+                  block, where it has a title, a body and a visible glossary
+                  count instead of a `title=` attribute no touch or keyboard
+                  user could reach. */}
               {/* OCR Only Toggle - waishala */}
               {/* <div className="flex items-center gap-2">
                 <Label
@@ -908,7 +1060,7 @@ const DocumentTranslationCard = () => {
                       type="button"
                       variant="outline"
                       size="icon"
-                      className="h-10 w-10 border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
+                      className="h-11 w-11 rounded-full border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
                       disabled={currentSourceLanguageId === 0}
                       onClick={() => {
                         if (currentSourceLanguageId !== 0) {
@@ -932,23 +1084,15 @@ const DocumentTranslationCard = () => {
                   </div>
                 </div>
               )}
-              {/* Output format (document / non-SRT translations) */}
-              {!isOcrOnly && !watch("isSrt") && (
-                <div className="mb-4 sm:max-w-xs">
-                  <span className="block text-xs text-muted-foreground mb-1">{t("outputFormat")}</span>
-                  <Select value={String(outputFormat)} onValueChange={(v) => setOutputFormat(Number(v))}>
-                    <SelectTrigger className="h-10">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5">{t("outputFormatHtml")}</SelectItem>
-                      <SelectItem value="6">{t("outputFormatRichPdf")}</SelectItem>
-                      <SelectItem value="2">{t("outputFormatMarkdown")}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-              {translatedMarkdown ? (
+              {activeJob ? (
+                <InProgressView
+                  fileName={activeJob.fileName}
+                  pageCount={prepared?.pageCount ?? null}
+                  stage={job.stage}
+                  chatId={activeJob.chatId}
+                  failedMessage={job.outcome === "failed" ? job.message : null}
+                />
+              ) : translatedMarkdown ? (
                 <>
                   <TranslationResultView
                     currentFile={currentFileObj!}
@@ -962,8 +1106,11 @@ const DocumentTranslationCard = () => {
                   />
                 </>
               ) : (
-                <div className="flex gap-2 md:gap-4 items-stretch sm:items-end flex-col sm:flex-row">
-                  <div className="w-full md:flex-1 min-w-0">
+                /* Document column beside the job panel. The panel is a fixed
+                   392px so the quote arithmetic stays put while the document
+                   column absorbs the width. */
+                <div className="flex flex-col items-start gap-6 lg:flex-row">
+                  <div className="w-full min-w-0 lg:flex-1">
                     <DocumentUploadView
                       currentFile={currentFileObj}
                       onFileChange={handleFileChange}
@@ -974,18 +1121,64 @@ const DocumentTranslationCard = () => {
                       <PageCountDisplay file={currentFileObj} />
                     )}
                   </div>
+
+                  <aside className="flex w-full flex-col gap-4 lg:w-[392px] lg:shrink-0">
+                    {!isOcrOnly && !watch("isSrt") && (
+                      <DeliverableSelect value={outputFormat} onChange={setOutputFormat} />
+                    )}
+                    {!isOcrOnly && !watch("isSrt") && (
+                      <NamesBlock
+                        enabled={nameDetectionEnabled}
+                        onToggle={toggleNameDetection}
+                        projectId={projectId}
+                        projectName={projectName}
+                        savedCount={projectId ? projectGlossaryCount : undefined}
+                      />
+                    )}
+                    <QuoteBlock
+                      pageCount={quotedPageCount}
+                      balance={userProfile?.balance ?? 0}
+                      submitLabel={
+                        submitStage === "detectingNames"
+                          ? t("submitStage.detectingNames")
+                          : submitStage === "uploading"
+                            ? uploadPercent > 0
+                              ? t("submitStage.uploading", { percent: uploadPercent })
+                              : t("submitStage.uploadingNoPercent")
+                            : submitStage === "starting"
+                              ? t("submitStage.starting")
+                              : t("quote.translateCta", { count: quotedPageCount ?? 0 })
+                      }
+                      busy={submitStage !== null}
+                      uploadPercent={submitStage === "uploading" ? uploadPercent : null}
+                      onSubmitDisabled={
+                        isLoading || isDetectingNames || (token ? !hasFile : false)
+                      }
+                      etaMin={quoteEtaMin}
+                      etaMax={quoteEtaMax}
+                      pendingLabel={
+                        isPreparing
+                          ? preparePercent > 0
+                            ? t("submitStage.uploading", { percent: preparePercent })
+                            : t("submitStage.uploadingNoPercent")
+                          : null
+                      }
+                    />
+                  </aside>
                 </div>
               )}
 
-              <TranslationSubmitButton
-                isLoading={isLoading || isDetectingNames}
-                hasResult={!!translatedMarkdown}
-                disabled={isLoading || isDetectingNames || (!token ? false : !hasFile)}
-                showShiftEnter={true}
-                formError={token ? getFormError() : null}
-                isHighlighted={isButtonHighlighted}
-                onTranslateMore={handleRemoveFile}
-              />
+              {translatedMarkdown && (
+                <TranslationSubmitButton
+                  isLoading={isLoading || isDetectingNames}
+                  hasResult={!!translatedMarkdown}
+                  disabled={isLoading || isDetectingNames || (!token ? false : !hasFile)}
+                  showShiftEnter={true}
+                  formError={token ? getFormError() : null}
+                  isHighlighted={isButtonHighlighted}
+                  onTranslateMore={handleRemoveFile}
+                />
+              )}
 
               {/* Progress bar + step indicator */}
               {isLoading && (
@@ -1008,12 +1201,12 @@ const DocumentTranslationCard = () => {
                     })}
                   </div>
                   {/* Progress bar */}
-                  <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
-                    <div
-                      className="h-full rounded-full suliko-default-bg transition-all duration-500 ease-out"
-                      style={{ width: `${Math.min(100, loadingProgress)}%` }}
-                    />
-                  </div>
+                  <ProgressBar
+                    value={loadingProgress}
+                    size="sm"
+                    tone="brand"
+                    label={t("progress.stepUploading")}
+                  />
                   {/* Status message */}
                   {loadingMessage && (
                     <p className="text-xs text-center text-muted-foreground truncate">{loadingMessage}</p>

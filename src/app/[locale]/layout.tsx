@@ -16,6 +16,18 @@ import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
 import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
 import { GoogleOAuthProvider } from '@react-oauth/google';
+import {
+  COMPANY_ADDRESS_EN,
+  COMPANY_EMAIL,
+  COMPANY_ID,
+  COMPANY_NAME_EN,
+  COMPANY_PHONE,
+} from "@/shared/constants/company";
+import {
+  ANALYTICS_ALLOWED_HOSTS,
+  getMetaPixelId,
+  isAnalyticsEnabled,
+} from "@/shared/utils/analyticsEnv";
 // import OneTimeOfferModal from "@/shared/components/OneTimeOfferModal";
 
 const geistSans = Geist({
@@ -47,12 +59,12 @@ export async function generateMetadata({
 
   return {
     title: {
-      default: "Suliko — AI-Powered Document Translation",
+      absolute: "Suliko Translate",
       template: "%s | Suliko",
     },
     description:
-      "Translate documents with AI precision. Suliko delivers fast, accurate, and secure translations for legal, technical, and business documents in 50+ languages.",
-    keywords: ["document translation", "AI translation", "legal translation", "Suliko"],
+      "Translate documents with precision. Suliko delivers fast, accurate, and secure translations for legal, technical, and business documents in 50+ languages.",
+    keywords: ["document translation", "legal translation", "business translation", "Suliko"],
     alternates: {
       canonical: getCanonical(locale),
       languages: {
@@ -65,15 +77,15 @@ export async function generateMetadata({
     openGraph: {
       type: "website",
       siteName: "Suliko",
-      title: "Suliko — AI-Powered Document Translation",
+      title: "Suliko Translate",
       description:
-        "Translate documents with AI precision. Fast, accurate, and secure translations for legal, technical, and business documents.",
-      images: [{ url: "/Suliko_logo_black.svg", width: 1200, height: 630, alt: "Suliko AI Translation" }],
+        "Translate documents with precision. Fast, accurate, and secure translations for legal, technical, and business documents.",
+      images: [{ url: "/Suliko_logo_black.svg", width: 1200, height: 630, alt: "Suliko Translate" }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Suliko — AI-Powered Document Translation",
-      description: "Fast, accurate, and secure AI document translations in 50+ languages.",
+      title: "Suliko Translate",
+      description: "Fast, accurate, and secure document translations in 50+ languages.",
       images: ["/Suliko_logo_black.svg"],
     },
     icons: {
@@ -82,19 +94,29 @@ export async function generateMetadata({
   };
 }
 
+// Keeps the machine-readable identity the same as the one printed on the legal
+// pages and registered with the payment provider. See constants/company.ts.
 const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "Suliko",
+  legalName: COMPANY_NAME_EN,
+  taxID: COMPANY_ID,
   url: "https://suliko.ge",
   logo: "https://suliko.ge/Suliko_logo_black.svg",
   sameAs: [
     "https://www.facebook.com/profile.php?id=61564358761003",
     "https://www.linkedin.com/company/suliko-ai/",
   ],
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: COMPANY_ADDRESS_EN,
+    addressCountry: "GE",
+  },
   contactPoint: {
     "@type": "ContactPoint",
-    email: "Info@suliko.ge",
+    email: COMPANY_EMAIL,
+    telephone: COMPANY_PHONE,
     contactType: "customer support",
   },
 };
@@ -112,15 +134,28 @@ export default async function LocaleLayout({
     notFound();
   }
 
+  // undefined on preview/dev deployments and when the id is unconfigured, which
+  // omits both the pixel script and its noscript image from the HTML entirely.
+  const metaPixelId = isAnalyticsEnabled() ? getMetaPixelId() : undefined;
+
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        {/* Enhanced Meta Pixel Code */}
-        <Script
-          id="meta-pixel"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `!function(f,b,e,v,n,t,s){
+        {/*
+          Meta Pixel. Rendered only on a production deployment (server half of the
+          guard); the snippet itself refuses to define fbq or fetch fbevents.js
+          unless the browser is on an allowed host (client half). See
+          shared/utils/analyticsEnv.ts.
+        */}
+        {metaPixelId && (
+          <Script
+            id="meta-pixel"
+            strategy="afterInteractive"
+            dangerouslySetInnerHTML={{
+              __html: `(function(){
+  if(${JSON.stringify(ANALYTICS_ALLOWED_HOSTS)}.indexOf(window.location.hostname.toLowerCase())===-1)return;
+
+  !function(f,b,e,v,n,t,s){
   if(f.fbq)return;n=f.fbq=function(){n.callMethod?
   n.callMethod.apply(n,arguments):n.queue.push(arguments)};
   if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
@@ -129,21 +164,16 @@ export default async function LocaleLayout({
   s.parentNode.insertBefore(t,s)}(window, document,'script',
   'https://connect.facebook.net/en_US/fbevents.js');
 
-  // Enhanced initialization with additional parameters
-  fbq('init', '763067889892928', {
-    em: 'hashed_email_placeholder', // Will be replaced with actual hashed email
-    ph: 'hashed_phone_placeholder', // Will be replaced with actual hashed phone
-    fbc: 'fb_click_id_placeholder', // Will be replaced with actual click ID
-    fbp: 'fb_browser_id_placeholder' // Will be replaced with actual browser ID
-  });
+  fbq('init', ${JSON.stringify(metaPixelId)});
 
-  // Track PageView with enhanced parameters
   fbq('track', 'PageView', {
     content_name: 'Suliko Landing Page',
     content_category: 'AI Translation Service'
-  });`,
-          }}
-        />
+  });
+})();`,
+            }}
+          />
+        )}
         {/* Hotjar Tracking Code for Suliko AI NEW */}
         <Script
           id="hotjar"
@@ -240,11 +270,14 @@ export default async function LocaleLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
         />
 
-        {/* Meta Pixel (noscript) */}
-        <noscript>
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img height="1" width="1" style={{ display: 'none' }} src="https://www.facebook.com/tr?id=763067889892928&ev=PageView&noscript=1" alt="" />
-        </noscript>
+        {/* Meta Pixel (noscript). Same server-side guard as the script above; a
+            noscript image cannot check its own hostname, so it rides on VERCEL_ENV. */}
+        {metaPixelId && (
+          <noscript>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img height="1" width="1" style={{ display: 'none' }} src={`https://www.facebook.com/tr?id=${encodeURIComponent(metaPixelId)}&ev=PageView&noscript=1`} alt="" />
+          </noscript>
+        )}
 
         {/* Yandex.Metrika (noscript) */}
         <noscript>

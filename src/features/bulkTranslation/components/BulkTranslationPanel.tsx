@@ -1,12 +1,13 @@
 "use client";
 
+import { TRANSLATION_MODEL } from "@/shared/constants/translationModel";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { AlertTriangle, Loader2, Play } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import { getProjectNames } from "@/features/projects";
-import { uploadFileToGemini } from "@/features/translation/services/geminiUploadService";
+import { prepareDocumentUpload } from "@/features/translation/services/prepareUploadService";
 import { DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "@/features/translation/types/types.Translation";
 import { NameTranslationItem } from "@/features/translation/types/types.Translation";
 import {
@@ -46,7 +47,7 @@ const REJECTION_KEYS: Record<RejectionReason, string> = {
 };
 
 /** Gemini's default; the model is not exposed per document, only the language pair is. */
-const DEFAULT_MODEL = 2;
+const DEFAULT_MODEL = TRANSLATION_MODEL;
 
 const defaultSettings = (
   glossary: NameTranslationItem[]
@@ -252,7 +253,7 @@ export function BulkTranslationPanel({
 
     return runWithConcurrency(current, UPLOAD_CONCURRENCY, async (doc) => {
       try {
-        const result = await uploadFileToGemini(doc.file, {
+        const result = await prepareDocumentUpload(doc.file, {
           onProgress: (fraction) =>
             setDocuments((prev) =>
               prev.map((d) =>

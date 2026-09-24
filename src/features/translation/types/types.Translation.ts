@@ -22,12 +22,22 @@ export interface  DocumentTranslateUserContentParams {
   model: number;
 }
 
+/** Stages the backend reports. Null on jobs created before that shipped. */
+export type JobStage =
+  | "queued"
+  | "translating"
+  | "rebuilding"
+  | "ready"
+  | "failed";
+
 export interface JobStatusResponse {
   jobId: string;
   status: string;
   progress: number;
   message: string;
   estimatedRemainingMinutes: number;
+  /** Null for jobs started before the backend began reporting stages. */
+  stage?: JobStage | null;
 }
 
 export interface JobResultResponseOnError {
@@ -109,8 +119,16 @@ export interface DocumentTranslateWithUriParams {
   nameTranslations?: NameTranslationItem[];
 }
 
-export interface GeminiUploadResponse {
+/**
+ * Response from POST /Document/prepare-upload. `pageCount` is authoritative —
+ * it is what the server bills, and it ignores whatever the client sends to
+ * translate-with-uri.
+ */
+export interface PrepareUploadResponse {
+  success: boolean;
   fileUri: string;
   mimeType: string;
-  displayName: string;
+  pageCount: number;
+  fileName: string;
+  errorMessage: string | null;
 }

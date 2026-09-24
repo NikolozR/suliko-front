@@ -29,7 +29,7 @@ export const ProfileError = ({ error, onRetry }: ProfileErrorProps) => {
           className="bg-primary hover:bg-primary/90 text-primary-foreground"
         >
           <RefreshCw className="h-4 w-4 mr-2" />
-          {t('retry') || "სცადე თავიდან"}
+          {t('retry')}
         </Button>
       </CardContent>
     </Card>
