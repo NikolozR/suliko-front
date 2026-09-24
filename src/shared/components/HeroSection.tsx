@@ -3,13 +3,14 @@
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
-import { ArrowRight, Zap } from "lucide-react";
+import { ArrowRight, LayoutDashboard, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { LoadingButton } from "@/features/ui/components/loading";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
+  const tOffice = useTranslations("OfficePromo");
   const router = useRouter();
   const [isReducedMotion, setIsReducedMotion] = useState(false);
   const [videoError, setVideoError] = useState(false);
@@ -129,7 +130,7 @@ export default function HeroSection() {
             </div>
 
             {/* Sales-assist path, deliberately lighter than the two product CTAs */}
-            <p className="mb-10 text-sm text-slate-500">
+            <p className="mb-4 text-sm text-slate-500">
               {t("bookDemoPrompt")}{" "}
               <a
                 href={BOOK_DEMO_URL}
@@ -144,6 +145,19 @@ export default function HeroSection() {
                 />
               </a>
             </p>
+
+            {/* For translation bureaus: the way into Suliko Office, the TMS. */}
+            <Link
+              href="/tms"
+              className="group mb-10 inline-flex max-w-full items-center gap-2 rounded-full border border-slate-700 bg-slate-900/60 py-1.5 pr-3.5 pl-1.5 text-sm text-slate-300 transition-colors hover:border-slate-500 hover:text-white"
+            >
+              <span className="inline-flex items-center gap-1 rounded-full bg-suliko-default-color px-2 py-0.5 text-xs font-medium text-white">
+                <LayoutDashboard className="h-3 w-3" aria-hidden="true" />
+                Suliko Office
+              </span>
+              <span className="truncate">{tOffice("heroLink")}</span>
+              <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </Link>
 
             {/* Stats */}
             <dl className="grid grid-cols-3 gap-6">

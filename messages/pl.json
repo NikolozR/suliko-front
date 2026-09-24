@@ -1906,12 +1906,44 @@
         "p1": "Client payments and refunds",
         "p2": "Translator and notary payouts on every order",
         "p3": "Profit per order and per month"
+      },
+      "reports": {
+        "kicker": "Reports",
+        "title": "Weekly and monthly reports, with charts",
+        "body": "See revenue, profit and translation volume at a glance, and how each compares with the previous period. Then break it down by language pair, by where orders come from and by client type.",
+        "p1": "Revenue and profit, by week and by month",
+        "p2": "Orders and translated pages, with the trend",
+        "p3": "Your busiest language pairs and where orders come from"
       }
+    },
+    "reports": {
+      "label": "Sample Suliko Office reports: revenue and profit, translation volume, language pairs and order sources, weekly and monthly",
+      "weekly": "Weekly",
+      "monthly": "Monthly",
+      "tab": {
+        "revenue": "Revenue & profit",
+        "volume": "Volume",
+        "pairs": "Language pairs",
+        "sources": "Sources"
+      },
+      "kRevenue": "Revenue",
+      "kProfit": "Profit",
+      "kPages": "Pages translated",
+      "margin": "{pct}% of revenue",
+      "months": "Apr,May,Jun,Jul,Aug,Sep",
+      "week": "W{n}",
+      "pages": "Pages",
+      "orders": "Orders",
+      "pairsNote": "Share of revenue by language pair",
+      "other": "Other",
+      "individuals": "Individuals",
+      "companies": "Companies"
     }
   },
   "OfficePromo": {
     "heading": "Prowadzisz biuro tłumaczeń? Poznaj Suliko Office",
     "subheading": "Zamówienia, tłumacze, notariusze i płatności w jednym systemie. Na nim działa nasze biuro.",
-    "cta": "Poznaj Suliko Office"
+    "cta": "Poznaj Suliko Office",
+    "heroLink": "Prowadzisz biuro tłumaczeń? Zobacz, na czym pracujemy"
   }
 }

@@ -10,11 +10,12 @@ import OfficeDemoSection from "./OfficeDemoSection";
 import OfficeSpotlight from "./OfficeSpotlight";
 import NewOrderDemo from "./demo/NewOrderDemo";
 import PayoutsDemo from "./demo/PayoutsDemo";
+import ReportsDemo from "./demo/ReportsDemo";
 
 /**
  * Landing page for Suliko Office, the translation management system at
  * app.suliko.ge. Server-rendered, apart from the header (language switch,
- * mobile menu), the four product demos and the demo-request form.
+ * mobile menu), the product demos and the demo-request form.
  */
 export default function SulikoOfficePage() {
   return (
@@ -27,6 +28,7 @@ export default function SulikoOfficePage() {
         <OfficeJourney />
         <OfficeFeatures />
         <OfficeSpotlight id="payouts" demo={<PayoutsDemo />} reverse />
+        <OfficeSpotlight id="reports" demo={<ReportsDemo />} band />
         <OfficeSecurity />
         <OfficeFaq />
         <OfficeDemoSection />

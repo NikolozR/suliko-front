@@ -1266,8 +1266,23 @@ html.dark .sidebar-main {
 .office-grow { transform-origin: left; animation: office-grow 900ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .office-float { animation: office-float 3.6s ease-in-out infinite alternate; }
 .office-drift { animation: office-drift 14s ease-in-out infinite alternate; }
+/* Report charts: a line that draws itself, SVG bars that rise, donut segments that fill. */
+@keyframes office-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes office-rise {
+  from { transform: scaleY(0); }
+}
+@keyframes office-donut {
+  from { stroke-dasharray: 0 100; }
+}
+.office-draw { stroke-dasharray: 1; animation: office-draw 1100ms cubic-bezier(0.4, 0, 0.2, 1) both; }
+.office-rise { transform-box: fill-box; transform-origin: bottom; animation: office-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.office-donut { animation: office-donut 900ms ease-out both; }
 @media (prefers-reduced-motion: reduce) {
-  .office-enter, .office-fade, .office-pop, .office-slide, .office-grow, .office-float, .office-drift { animation: none; }
+  .office-enter, .office-fade, .office-pop, .office-slide, .office-grow, .office-float, .office-drift,
+  .office-draw, .office-rise, .office-donut { animation: none; }
 }
 
 /* Suliko Office page (/tms): a soft blue page with a glow behind the hero demo. */
