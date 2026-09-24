@@ -1797,20 +1797,6 @@
       "f7t": "Built-in AI translation by Suliko",
       "f7d": "Get a first draft from Suliko AI without leaving the system, then hand it to your translator to finish."
     },
-    "proof": {
-      "kicker": "Track record",
-      "title": "Built inside a working translation bureau",
-      "sub": "Suliko Office runs the daily work of our own translation bureau. These are its numbers.",
-      "s1l": "orders handled",
-      "s1s": "each one tracked from intake to pickup",
-      "s2l": "clients",
-      "s2s": "571 individuals and 144 companies",
-      "s3l": "orders every month",
-      "s3s": "127 in August alone",
-      "s4l": "new clients every month",
-      "s4s": "from WhatsApp, the website and calls",
-      "caption": "Figures from our own bureau's Suliko Office, September 2026."
-    },
     "sec": {
       "kicker": "Security",
       "title": "Your bureau's data stays yours",

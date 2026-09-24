@@ -4,7 +4,6 @@ import OfficeHero from "./OfficeHero";
 import OfficePains from "./OfficePains";
 import OfficeJourney from "./OfficeJourney";
 import OfficeFeatures from "./OfficeFeatures";
-import OfficeProof from "./OfficeProof";
 import OfficeSecurity from "./OfficeSecurity";
 import OfficeFaq from "./OfficeFaq";
 import OfficeDemoSection from "./OfficeDemoSection";
@@ -28,7 +27,6 @@ export default function SulikoOfficePage() {
         <OfficeJourney />
         <OfficeFeatures />
         <OfficeSpotlight id="payouts" demo={<PayoutsDemo />} reverse />
-        <OfficeProof />
         <OfficeSecurity />
         <OfficeFaq />
         <OfficeDemoSection />
