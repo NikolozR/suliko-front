@@ -52,7 +52,7 @@ export default function OfficeFeatures() {
   ];
 
   return (
-    <section className="border-t border-border bg-[#fbfcfe] dark:bg-transparent">
+    <section className="border-t border-border bg-white">
       <div className={`${CONTAINER} flex flex-col gap-12 py-20 lg:py-24`}>
         <div className="flex max-w-[760px] flex-col gap-3.5">
           <p className={KICKER}>{t("feat.kicker")}</p>

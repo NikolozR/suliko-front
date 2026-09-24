@@ -19,7 +19,7 @@ import PayoutsDemo from "./demo/PayoutsDemo";
  */
 export default function SulikoOfficePage() {
   return (
-    <div id="top" className="min-h-screen bg-background text-foreground">
+    <div id="top" className="office-page min-h-screen text-foreground">
       <OfficeHeader />
       <main>
         <OfficeHero />
@@ -27,7 +27,7 @@ export default function SulikoOfficePage() {
         <OfficeSpotlight id="pricing" demo={<NewOrderDemo />} />
         <OfficeJourney />
         <OfficeFeatures />
-        <OfficeSpotlight id="payouts" demo={<PayoutsDemo />} reverse tinted />
+        <OfficeSpotlight id="payouts" demo={<PayoutsDemo />} reverse />
         <OfficeProof />
         <OfficeSecurity />
         <OfficeFaq />
