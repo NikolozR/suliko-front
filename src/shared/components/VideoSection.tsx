@@ -4,13 +4,17 @@ import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
 import { Button } from "@/features/ui";
+import { useAutoplay } from "@/shared/components/landing/useAutoplay";
 
 export default function VideoSection() {
   const t = useTranslations("VideoSection");
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressRef = useRef<HTMLInputElement>(null);
+  const { ref: sectionRef, running } = useAutoplay<HTMLElement>();
+  // Set once the visitor pauses by hand, so scrolling back doesn't restart it.
+  const pausedByUser = useRef(false);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [volume, setVolume] = useState(1);
@@ -34,15 +38,32 @@ export default function VideoSection() {
     };
   }, []);
 
+  // Plays muted and on a loop while on screen, like the rest of the page.
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    video.muted = isMuted;
+    if (running && !pausedByUser.current) {
+      video.play().then(() => setIsPlaying(true)).catch(() => {});
+    } else if (!running && !video.paused) {
+      video.pause();
+      setIsPlaying(false);
+    }
+    // isMuted is applied by toggleMute; only visibility should start or stop playback.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [running]);
+
   const togglePlay = () => {
     const video = videoRef.current;
     if (!video) return;
 
     if (isPlaying) {
       video.pause();
+      pausedByUser.current = true;
       setIsPlaying(false);
     } else {
-      video.play();
+      pausedByUser.current = false;
+      video.play().catch(() => {});
       setIsPlaying(true);
     }
   };
@@ -93,24 +114,28 @@ export default function VideoSection() {
   const progressPercent = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
-    <section className="py-20 bg-muted/30">
+    <section id="video" ref={sectionRef} className="scroll-mt-24 py-20 sm:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+        <div data-reveal className="max-w-4xl mx-auto text-center mb-12">
+          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
             {t("title")}
           </h2>
-          <p className="text-xl text-muted-foreground leading-relaxed">
+          <p className="text-lg text-muted-foreground leading-relaxed">
             {t("description")}
           </p>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="relative bg-black rounded-xl overflow-hidden shadow-2xl">
+        <div data-reveal className="max-w-5xl mx-auto">
+          <div className="relative bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
             <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
               <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full object-cover"
                 poster="/video-poster.png"
+                muted
+                loop
+                playsInline
+                preload="metadata"
               >
                 <source src="/api/video2" type="video/mp4" />
                 {t("browserNotSupported")}
