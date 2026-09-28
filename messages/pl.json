@@ -1698,6 +1698,7 @@
     },
     "nav": {
       "home": "Suliko Office home",
+      "backToSuliko": "Suliko",
       "language": "Language",
       "login": "Log in",
       "demo": "Book a demo",

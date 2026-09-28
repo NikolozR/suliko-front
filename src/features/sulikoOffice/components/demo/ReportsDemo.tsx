@@ -21,25 +21,27 @@ type Target = "week" | "month" | `tab-${Tab}`;
 type Step = { ms: number; tab: Tab; period: Period; cursor?: Target; click?: boolean };
 
 // Each switch is: aim at the control, click it (the view changes), then hold.
+// The aim lasts as long as the cursor's glide (CURSOR_MS), so it lands before the click.
+const CURSOR_MS = 450;
 const STEPS: Step[] = [
-  { ms: 2600, tab: "revenue", period: "month" },
-  { ms: 700, tab: "revenue", period: "month", cursor: "week" },
-  { ms: 300, tab: "revenue", period: "week", cursor: "week", click: true },
-  { ms: 2600, tab: "revenue", period: "week", cursor: "week" },
-  { ms: 700, tab: "revenue", period: "week", cursor: "tab-volume" },
-  { ms: 300, tab: "volume", period: "week", cursor: "tab-volume", click: true },
-  { ms: 2600, tab: "volume", period: "week", cursor: "tab-volume" },
-  { ms: 700, tab: "volume", period: "week", cursor: "month" },
-  { ms: 300, tab: "volume", period: "month", cursor: "month", click: true },
-  { ms: 2600, tab: "volume", period: "month", cursor: "month" },
-  { ms: 700, tab: "volume", period: "month", cursor: "tab-pairs" },
-  { ms: 300, tab: "pairs", period: "month", cursor: "tab-pairs", click: true },
-  { ms: 2800, tab: "pairs", period: "month", cursor: "tab-pairs" },
-  { ms: 700, tab: "pairs", period: "month", cursor: "tab-sources" },
-  { ms: 300, tab: "sources", period: "month", cursor: "tab-sources", click: true },
-  { ms: 3000, tab: "sources", period: "month", cursor: "tab-sources" },
-  { ms: 700, tab: "sources", period: "month", cursor: "tab-revenue" },
-  { ms: 300, tab: "revenue", period: "month", cursor: "tab-revenue", click: true },
+  { ms: 1600, tab: "revenue", period: "month" },
+  { ms: CURSOR_MS, tab: "revenue", period: "month", cursor: "week" },
+  { ms: 250, tab: "revenue", period: "week", cursor: "week", click: true },
+  { ms: 1600, tab: "revenue", period: "week", cursor: "week" },
+  { ms: CURSOR_MS, tab: "revenue", period: "week", cursor: "tab-volume" },
+  { ms: 250, tab: "volume", period: "week", cursor: "tab-volume", click: true },
+  { ms: 1600, tab: "volume", period: "week", cursor: "tab-volume" },
+  { ms: CURSOR_MS, tab: "volume", period: "week", cursor: "month" },
+  { ms: 250, tab: "volume", period: "month", cursor: "month", click: true },
+  { ms: 1600, tab: "volume", period: "month", cursor: "month" },
+  { ms: CURSOR_MS, tab: "volume", period: "month", cursor: "tab-pairs" },
+  { ms: 250, tab: "pairs", period: "month", cursor: "tab-pairs", click: true },
+  { ms: 1700, tab: "pairs", period: "month", cursor: "tab-pairs" },
+  { ms: CURSOR_MS, tab: "pairs", period: "month", cursor: "tab-sources" },
+  { ms: 250, tab: "sources", period: "month", cursor: "tab-sources", click: true },
+  { ms: 1800, tab: "sources", period: "month", cursor: "tab-sources" },
+  { ms: CURSOR_MS, tab: "sources", period: "month", cursor: "tab-revenue" },
+  { ms: 250, tab: "revenue", period: "month", cursor: "tab-revenue", click: true },
 ];
 
 /** Sample figures, six periods each, oldest first. */
@@ -140,7 +142,7 @@ export default function ReportsDemo() {
       label={t("reports.label")}
       title={t("dash.navReports")}
       headerExtra={toggle}
-      overlay={<FakeCursor {...cursor} clicking={!!current.click} />}
+      overlay={<FakeCursor {...cursor} clicking={!!current.click} travelMs={CURSOR_MS} />}
     >
       <div className="flex flex-wrap gap-1.5">
         {TABS.map((key) => (
@@ -177,7 +179,7 @@ export default function ReportsDemo() {
       </div>
 
       {/* Keyed by view, so each chart animates in again when it is selected. */}
-      <div key={`${tab}-${period}`} className="flex h-[230px] flex-col rounded-xl border border-border p-3.5 office-fade">
+      <div key={`${tab}-${period}`} className="office-quick flex h-[230px] flex-col rounded-xl border border-border p-3.5 office-fade">
         {tab === "revenue" && <RevenueChart t={t} labels={labels} revenue={d.revenue} profit={d.profit} />}
         {tab === "volume" && <VolumeChart t={t} labels={labels} pages={d.pages} orders={d.orders} />}
         {tab === "pairs" && <PairsChart t={t} />}
@@ -267,10 +269,10 @@ function RevenueChart({ t, labels, revenue, profit }: { t: T; labels: string[]; 
           </linearGradient>
         </defs>
         <Gridlines />
-        <path d={area} fill={`url(#${gradient})`} className="office-fade" style={delay(500)} />
+        <path d={area} fill={`url(#${gradient})`} className="office-fade" style={delay(300)} />
         <path d={revLine} pathLength={1} fill="none" stroke="#3b59f3" strokeWidth={3} strokeLinecap="round" vectorEffect="non-scaling-stroke" className="office-draw" />
-        <path d={smoothPath(pro)} pathLength={1} fill="none" stroke="#2f9e5b" strokeWidth={3} strokeLinecap="round" vectorEffect="non-scaling-stroke" className="office-draw" style={delay(250)} />
-        <circle cx={lx} cy={ly} r={5} fill="#3b59f3" stroke="white" strokeWidth={2} vectorEffect="non-scaling-stroke" className="office-pop" style={delay(1000)} />
+        <path d={smoothPath(pro)} pathLength={1} fill="none" stroke="#2f9e5b" strokeWidth={3} strokeLinecap="round" vectorEffect="non-scaling-stroke" className="office-draw" style={delay(150)} />
+        <circle cx={lx} cy={ly} r={5} fill="#3b59f3" stroke="white" strokeWidth={2} vectorEffect="non-scaling-stroke" className="office-pop" style={delay(600)} />
       </svg>
       <XLabels labels={labels} />
     </>
@@ -307,11 +309,11 @@ function VolumeChart({ t, labels, pages, orders }: { t: T; labels: string[]; pag
               rx={4}
               fill={i === n - 1 ? "#3b59f3" : "#aebcff"}
               className="office-rise"
-              style={delay(i * 90)}
+              style={delay(i * 60)}
             />
           );
         })}
-        <path d={smoothPath(line)} pathLength={1} fill="none" stroke="#1e7440" strokeWidth={2.5} strokeLinecap="round" vectorEffect="non-scaling-stroke" className="office-draw" style={delay(550)} />
+        <path d={smoothPath(line)} pathLength={1} fill="none" stroke="#1e7440" strokeWidth={2.5} strokeLinecap="round" vectorEffect="non-scaling-stroke" className="office-draw" style={delay(300)} />
       </svg>
       <XLabels labels={labels} />
     </>
@@ -329,7 +331,7 @@ function PairsChart({ t }: { t: T }) {
           <div className="h-3 overflow-hidden rounded bg-[#f1f3f9] dark:bg-white/10">
             <div
               className={`h-3 rounded office-grow ${i === 0 ? "bg-suliko-default-color" : "bg-[#aebcff]"}`}
-              style={{ width: `${(p.share / top) * 100}%`, ...delay(i * 110) }}
+              style={{ width: `${(p.share / top) * 100}%`, ...delay(i * 70) }}
             />
           </div>
           <span className="text-right tabular-nums">{p.share}%</span>
@@ -360,7 +362,7 @@ function SourcesChart({ t }: { t: T }) {
                 strokeDasharray={`${s.share - 1} ${101 - s.share}`}
                 strokeDashoffset={-offset}
                 className="office-donut"
-                style={delay(i * 180)}
+                style={delay(i * 110)}
               />
             );
             offset += s.share;
@@ -387,7 +389,7 @@ function SourcesChart({ t }: { t: T }) {
           </span>
         </div>
         <div className="flex h-2.5 overflow-hidden rounded-full bg-[#fff4d9] dark:bg-amber-400/15">
-          <div className="h-full rounded-full bg-[#f0a020] office-grow" style={{ width: `${INDIVIDUALS}%`, ...delay(500) }} />
+          <div className="h-full rounded-full bg-[#f0a020] office-grow" style={{ width: `${INDIVIDUALS}%`, ...delay(300) }} />
         </div>
       </div>
     </div>

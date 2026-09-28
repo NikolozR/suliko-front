@@ -1280,6 +1280,11 @@ html.dark .sidebar-main {
 .office-draw { stroke-dasharray: 1; animation: office-draw 1100ms cubic-bezier(0.4, 0, 0.2, 1) both; }
 .office-rise { transform-box: fill-box; transform-origin: bottom; animation: office-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .office-donut { animation: office-donut 900ms ease-out both; }
+/* The reports demo switches views quickly, so its charts draw in faster. */
+.office-quick .office-draw { animation-duration: 650ms; }
+.office-quick .office-rise { animation-duration: 450ms; }
+.office-quick .office-grow, .office-quick .office-donut { animation-duration: 550ms; }
+.office-quick .office-fade { animation-duration: 250ms; }
 @media (prefers-reduced-motion: reduce) {
   .office-enter, .office-fade, .office-pop, .office-slide, .office-grow, .office-float, .office-drift,
   .office-draw, .office-rise, .office-donut { animation: none; }

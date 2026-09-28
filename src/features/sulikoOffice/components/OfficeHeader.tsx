@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { Menu, X } from "lucide-react";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { ArrowLeft, Menu, X } from "lucide-react";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { NAV_SECTIONS, type NavSection } from "./sections";
 import { CONTAINER, PRIMARY_BUTTON } from "./tones";
 
@@ -13,7 +13,8 @@ const APP_URL = "https://app.suliko.ge";
 /**
  * The page's own header rather than LandingHeader: that one has no room for
  * another control. This one carries links to the page's sections (lit up as
- * you scroll through them), language, log in and the demo CTA.
+ * you scroll through them), a way back to the main Suliko site, language,
+ * log in and the demo CTA.
  */
 export default function OfficeHeader() {
   const t = useTranslations("SulikoOffice.nav");
@@ -40,7 +41,8 @@ export default function OfficeHeader() {
           </span>
         </a>
 
-        <nav aria-label={t("sections")} className="hidden items-center gap-7 xl:flex">
+        {/* Gaps tighten just above xl, where Georgian labels fill the row. */}
+        <nav aria-label={t("sections")} className="hidden items-center gap-5 xl:flex 2xl:gap-7">
           {NAV_SECTIONS.map((id) => (
             <a
               key={id}
@@ -61,7 +63,15 @@ export default function OfficeHeader() {
           ))}
         </nav>
 
-        <nav aria-label="Main" className="hidden items-center gap-6 md:flex">
+        <nav aria-label="Main" className="hidden items-center gap-6 md:flex xl:gap-4 2xl:gap-6">
+          {/* From lg up: at md the header is full and the link crowds the logo. */}
+          <Link
+            href="/"
+            className="hidden items-center gap-1.5 px-1 py-3 text-base whitespace-nowrap text-muted-foreground hover:text-foreground lg:flex"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden />
+            {t("backToSuliko")}
+          </Link>
           <LanguageToggle label={t("language")} />
           <a href={APP_URL} className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-suliko-default-color">
             {t("login")}
@@ -105,6 +115,10 @@ export default function OfficeHeader() {
                 </a>
               ))}
             </div>
+            <Link href="/" className="flex h-11 items-center gap-2 rounded-lg px-3 text-base text-muted-foreground">
+              <ArrowLeft className="h-4 w-4" aria-hidden />
+              {t("backToSuliko")}
+            </Link>
             <LanguageToggle label={t("language")} />
             <a
               href={APP_URL}
