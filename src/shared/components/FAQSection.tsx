@@ -22,9 +22,9 @@ export default function FAQSection() {
   const t = useTranslations("FAQ");
 
   return (
-    <section id="faq" className="py-20 bg-background">
+    <section id="faq" className="scroll-mt-24 py-20 sm:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto text-center mb-12">
+        <div data-reveal className="max-w-3xl mx-auto text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary font-medium mb-4">
             FAQ
           </div>
@@ -36,7 +36,7 @@ export default function FAQSection() {
           </p>
         </div>
 
-        <div className="max-w-2xl mx-auto">
+        <div data-reveal className="max-w-2xl mx-auto">
           <Accordion type="single" collapsible className="w-full">
             {FAQ_KEYS.map((key, index) => (
               <AccordionItem key={key} value={`item-${index}`}>

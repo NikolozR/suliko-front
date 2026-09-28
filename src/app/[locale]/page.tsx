@@ -1,4 +1,20 @@
-import LandingPageClient from "./_LandingPageClient";
+import dynamic from "next/dynamic";
+import LandingHeader from "@/shared/components/LandingHeader";
+import HeroSection from "@/shared/components/HeroSection";
+import LandingClientExtras from "./_LandingClientExtras";
+
+// Below the fold: split into their own chunks, but still rendered on the
+// server, so the HTML carries every section (crawlers, first paint) and there
+// is no skeleton-to-content flash.
+const HowItWorksSection = dynamic(() => import("@/shared/components/landing/HowItWorksSection"));
+const FeaturesSection = dynamic(() => import("@/shared/components/landing/FeaturesSection"));
+const VideoSection = dynamic(() => import("@/shared/components/VideoSection"));
+const TestimonialsSection = dynamic(() => import("@/shared/components/TestimonialsSection"));
+const PricingSection = dynamic(() => import("@/shared/components/PricingSection"));
+const ProductsSection = dynamic(() => import("@/shared/components/landing/ProductsSection"));
+const FAQSection = dynamic(() => import("@/shared/components/FAQSection"));
+const ClosingCtaSection = dynamic(() => import("@/shared/components/landing/ClosingCtaSection"));
+const LandingFooter = dynamic(() => import("@/shared/components/LandingFooter"));
 
 const faqSchema = {
   "@context": "https://schema.org",
@@ -33,7 +49,7 @@ const faqSchema = {
       name: "Is there a free tier?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes — every new user receives 25 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow.",
+        text: "Yes — every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow.",
       },
     },
     {
@@ -70,7 +86,22 @@ export default function LandingPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
-      <LandingPageClient />
+      <div id="top" className="min-h-screen bg-background">
+        <LandingHeader />
+        <main>
+          <HeroSection />
+          <HowItWorksSection />
+          <FeaturesSection />
+          <VideoSection />
+          <TestimonialsSection />
+          <PricingSection />
+          <ProductsSection />
+          <FAQSection />
+          <ClosingCtaSection />
+        </main>
+        <LandingFooter />
+        <LandingClientExtras />
+      </div>
     </>
   );
 }
