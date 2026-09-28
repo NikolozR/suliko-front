@@ -165,12 +165,25 @@ export function useDemoCursor<K extends string>(
   return cursor;
 }
 
-export function FakeCursor({ x, y, visible, clicking }: { x: number; y: number; visible: boolean; clicking: boolean }) {
+/** `travelMs` is how long the cursor takes to glide to its next target. */
+export function FakeCursor({
+  x,
+  y,
+  visible,
+  clicking,
+  travelMs = 700,
+}: {
+  x: number;
+  y: number;
+  visible: boolean;
+  clicking: boolean;
+  travelMs?: number;
+}) {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute top-0 left-0 z-10 transition-[transform,opacity] duration-700 ease-in-out motion-reduce:transition-none"
-      style={{ transform: `translate(${x}px, ${y}px)`, opacity: visible ? 1 : 0 }}
+      className="pointer-events-none absolute top-0 left-0 z-10 transition-[transform,opacity] ease-in-out motion-reduce:transition-none"
+      style={{ transform: `translate(${x}px, ${y}px)`, opacity: visible ? 1 : 0, transitionDuration: `${travelMs}ms` }}
     >
       {clicking && (
         <span className="absolute -top-3 -left-3 h-6 w-6 animate-ping rounded-full bg-suliko-default-color/40 motion-reduce:animate-none" />
