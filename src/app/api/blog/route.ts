@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // GET /api/blog — list all posts (admin, no status filter)
 export async function GET() {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const { data, error } = await supabaseAdmin
     .from('blog_posts')
     .select('*, blog_post_translations(*)')
@@ -14,6 +18,9 @@ export async function GET() {
 
 // POST /api/blog — create a new post
 export async function POST(req: NextRequest) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const body = await req.json();
   const { cover_image, author_name, tags, status, published_at, translations } = body;
 
