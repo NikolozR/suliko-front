@@ -17,6 +17,7 @@ import {
 import GoogleButton from "./GoogleButton";
 import SulikoLogo from "./SulikoLogo";
 import { updateUserProfile } from "@/features/auth/services/userService";
+import { UpdateUserProfile } from "@/features/auth/types/types.User";
 import PasswordRecoveryModal from "@/features/auth/components/PasswordRecoveryModal";
 import type { RegisterParams } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
@@ -306,17 +307,7 @@ const SulikoForm: React.FC = () => {
           await fetchUserProfile();
           const profileState = useUserStore.getState().userProfile;
           if (profileState && profileState.hasSeenRegistrationBonus === false) {
-            await updateUserProfile({
-              id: profileState.id,
-              firstName: profileState.firstName,
-              lastName: profileState.lastName,
-              phoneNUmber: profileState.phoneNUmber,
-              email: profileState.email,
-              userName: profileState.userName,
-              roleId: profileState.roleId,
-              balance: profileState.balance,
-              hasSeenRegistrationBonus: true,
-            });
+            await updateUserProfile({ id: profileState.id, hasSeenRegistrationBonus: true });
             setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
             triggerWelcomeModal();
           }
@@ -372,13 +363,15 @@ const SulikoForm: React.FC = () => {
           await fetchUserProfile();
           const profileState = useUserStore.getState().userProfile;
           if (profileState) {
-            const { roleName, ...profileData } = profileState;
-            const updatePayload = {
-              ...profileData,
-              ...(email && { email }),
+            const updatePayload: UpdateUserProfile = {
+              id: profileState.id,
+              firstName: profileState.firstName,
+              lastName: profileState.lastName,
+              phoneNUmber: profileState.phoneNUmber,
+              email: email || profileState.email,
             };
             await updateUserProfile(updatePayload);
-            setUserProfile({ ...updatePayload, roleName });
+            setUserProfile({ ...profileState, ...updatePayload });
           }
         } catch (syncError) {
           console.error("Failed to sync profile after registration:", syncError);
@@ -454,17 +447,7 @@ const SulikoForm: React.FC = () => {
       await fetchUserProfile();
       const profileState = useUserStore.getState().userProfile;
       if (profileState && profileState.hasSeenRegistrationBonus === false) {
-        await updateUserProfile({
-          id: profileState.id,
-          firstName: profileState.firstName,
-          lastName: profileState.lastName,
-          phoneNUmber: profileState.phoneNUmber,
-          email: profileState.email,
-          userName: profileState.userName,
-          roleId: profileState.roleId,
-          balance: profileState.balance,
-          hasSeenRegistrationBonus: true,
-        });
+        await updateUserProfile({ id: profileState.id, hasSeenRegistrationBonus: true });
         setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
         triggerWelcomeModal();
       }

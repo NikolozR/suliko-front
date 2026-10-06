@@ -1,13 +1,11 @@
-import { cookies } from "next/headers";
+import { isAdminRequest } from "@/lib/admin-auth";
 import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import PassportTemplatesTable from "./PassportTemplatesTable";
 import type { PassportTemplate } from "@/lib/passport-types";
 
 export default async function AdminPassportTemplatesPage() {
-  const cookieStore = await cookies();
-  const adminAllowed = cookieStore.get("adminAllowed")?.value === "1";
-  if (!adminAllowed) redirect("/en/admin/login");
+  if (!(await isAdminRequest())) redirect("/en/admin/login");
 
   const { data, error } = await supabaseAdmin
     .from("passport_templates")

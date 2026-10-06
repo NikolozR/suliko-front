@@ -10,7 +10,7 @@ export interface SubscriptionInfo {
   currentPeriodEnd: string;
 }
 
-export interface UpdateUserProfile {
+export interface UserProfile {
   id: string;
   firstName: string;
   lastName: string;
@@ -20,10 +20,15 @@ export interface UpdateUserProfile {
   roleId: string;
   balance: number;
   hasSeenRegistrationBonus?: boolean;
-}
-
-export interface UserProfile extends UpdateUserProfile {
   roleName: string;
   referralCode?: string;
   subscription?: SubscriptionInfo | null;
 }
+
+/**
+ * Body of PUT /User: the only fields a user can change on their own profile. The API ignores
+ * anything else (balance, role, user name), always updates the signed-in user, and leaves
+ * omitted fields unchanged.
+ */
+export type UpdateUserProfile = Pick<UserProfile, "id"> &
+  Partial<Pick<UserProfile, "firstName" | "lastName" | "phoneNUmber" | "email" | "hasSeenRegistrationBonus">>;

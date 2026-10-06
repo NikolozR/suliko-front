@@ -100,19 +100,13 @@ export default function ProfileClient() {
       lastName: formData.lastName || "",
       phoneNUmber: userProfile.phoneNUmber,
       email: formData.email,
-      userName: userProfile.userName,
-      roleId: userProfile.roleId,
-      balance: userProfile.balance,
     };
     
     setIsUpdating(true);
     setUpdateError(null);
     const prevUserProfile = userProfile;
     
-    setUserProfile({
-      ...editData,
-      roleName: userProfile?.roleName || "",
-    });
+    setUserProfile({ ...userProfile, ...editData });
     
     try {
       await updateUserProfile(editData);
