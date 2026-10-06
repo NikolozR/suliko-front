@@ -251,9 +251,11 @@ export async function resetPassword(phoneNumber: string, newPassword: string, to
   }
 }
 
-export async function loginWithGoogle(idToken: string): Promise<LoginResponse> {
+export async function loginWithGoogle(idToken: string, referralCode?: string): Promise<LoginResponse> {
   try {
-    const response = await apiClient.post<LoginResponse>("/Auth/login-with-google", idToken);
+    // The referral code only matters when this Google account signs up for the first time.
+    const query = referralCode?.trim() ? `?referralCode=${encodeURIComponent(referralCode.trim())}` : "";
+    const response = await apiClient.post<LoginResponse>(`/Auth/login-with-google${query}`, idToken);
     if (response.ok) {
       return response.data;
     } else {

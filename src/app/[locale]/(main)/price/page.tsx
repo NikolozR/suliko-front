@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
 import { PricingGrid } from "@/features/pricing";
 import CompanyLegalInfo from "@/shared/components/CompanyLegalInfo";
+import { CouponRedeemCard } from "@/features/promoCodes";
 
 export async function generateMetadata({
   params,
@@ -24,6 +25,8 @@ export default function PricePackages() {
         <p className="text-muted-foreground text-lg">{t("description")}</p>
       </div>
       
+      <CouponRedeemCard className="max-w-xl mx-auto mb-10" />
+
       <PricingGrid />
 
       <CompanyLegalInfo className="mt-12 text-center" />

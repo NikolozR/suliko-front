@@ -2036,5 +2036,19 @@
     "subtitle": "Prześlij dokument teraz i już po kilku minutach zobacz tłumaczenie obok oryginału.",
     "cta": "Zacznij tłumaczyć",
     "bookDemo": "Umów demo"
+  },
+  "Coupon": {
+    "title": "Masz kupon?",
+    "description": "Wpisz kod kuponu, aby dodać darmowe strony do salda.",
+    "placeholder": "Kod kuponu",
+    "apply": "Zastosuj",
+    "applying": "Stosowanie...",
+    "success": "Do Twojego salda dodano {pages} stron.",
+    "errors": {
+      "invalid_code": "Ten kupon jest nieprawidłowy lub wygasł.",
+      "already_redeemed": "Ten kupon został już przez Ciebie użyty.",
+      "too_many_attempts": "Zbyt wiele prób. Spróbuj ponownie za kilka minut.",
+      "unknown": "Nie udało się zastosować kuponu. Spróbuj ponownie."
+    }
   }
 }

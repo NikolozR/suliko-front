@@ -448,7 +448,9 @@ const SulikoForm: React.FC = () => {
     setAuthError(null);
     setIsSubmitting(true);
     try {
-      const data = await loginWithGoogle(credentialResponse.credential);
+      // Only used by the backend if this Google account is new.
+      const referralCode = (form.getValues("referralCode") as string | undefined)?.trim() || refFromUrl;
+      const data = await loginWithGoogle(credentialResponse.credential, referralCode);
       setToken(data.token);
       setRefreshToken(data.refreshToken);
       await fetchUserProfile();
@@ -532,6 +534,31 @@ const SulikoForm: React.FC = () => {
                 label={t("orContinueWith") || "Continue with Google"}
               />
             </div>)}
+            {/* Referral code — before the sign-up method is chosen, so it applies to Google too */}
+            {!isLoginMode && registrationStep === 1 && (
+              <div className="w-full mb-5">
+                <FormField
+                  control={form.control}
+                  name="referralCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold dark:text-white">
+                        {t("referralCode")} <span className="text-muted-foreground text-xs ml-1">({t("optional")})</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t("referralCodePlaceholder")}
+                          className="border-2 shadow-md dark:border-slate-600"
+                          autoComplete="off"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
             {/* Subtitle */}
             <div className="pb-5 w-full">
               <p className="text-center text-[0.85rem] lg:text-[0.95rem] text-muted-foreground">
@@ -773,26 +800,6 @@ const SulikoForm: React.FC = () => {
                 <>
                   <PasswordSection form={form} isLoginMode={false} />
                   <TermsSection form={form} />
-                  <FormField
-                    control={form.control}
-                    name="referralCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-bold dark:text-white">
-                          {t("referralCode")} <span className="text-muted-foreground text-xs ml-1">({t("optional")})</span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("referralCodePlaceholder")}
-                            className="border-2 shadow-md dark:border-slate-600"
-                            autoComplete="off"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                   <div className="flex gap-3">
                     <Button
                       type="button"
