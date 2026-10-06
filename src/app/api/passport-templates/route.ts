@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function GET(req: NextRequest) {
   const activeOnly = req.nextUrl.searchParams.get("active") === "true";
@@ -21,6 +22,9 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const body = await req.json();
   const { name, country, docx_file_url, fields } = body;
 

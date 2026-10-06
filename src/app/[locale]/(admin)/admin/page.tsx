@@ -2,6 +2,7 @@ import React from "react";
 import { cookies } from "next/headers";
 import Link from "next/link";
 import { API_BASE_URL } from "@/shared/constants/api";
+import { isAdminRequest } from "@/lib/admin-auth";
 import { User as TableUser } from "./users-table";
 import AdminTabsWrapper from "./AdminTabsWrapper";
 import LanguageManager from "./LanguageManager";
@@ -71,9 +72,8 @@ function StatGrid({ stats }: { stats: StatItem[] }) {
 export default async function AdminDashboardPage() {
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
-  const adminAllowed = cookieStore.get("adminAllowed")?.value === "1";
 
-  if (!token || !adminAllowed) {
+  if (!token || !(await isAdminRequest())) {
     return (
       <div style={{ maxWidth: 480 }}>
         <div

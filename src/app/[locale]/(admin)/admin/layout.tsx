@@ -1,12 +1,9 @@
 import React from "react";
-import { cookies } from "next/headers";
+import { isAdminRequest } from "@/lib/admin-auth";
 import AdminSidebar from "./AdminSidebar";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-  const adminAllowed = cookieStore.get("adminAllowed")?.value === "1";
-  const isAuth = !!(token && adminAllowed);
+  const isAuth = await isAdminRequest();
 
   return (
     <>

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { requireAdmin } from "@/lib/admin-auth";
 
 export async function GET(
   _req: NextRequest,
@@ -22,6 +23,9 @@ export async function PUT(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const { id } = await params;
   const body = await req.json();
   const { name, country, docx_file_url, fields, is_active } = body;
@@ -49,6 +53,9 @@ export async function DELETE(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const { id } = await params;
 
   const { error } = await supabaseAdmin

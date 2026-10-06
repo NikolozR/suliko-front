@@ -14,7 +14,7 @@ import {
   DialogTitle,
 } from "@/features/ui/components/ui/dialog";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/features/ui/components/ui/form";
-import { sendVerificationCode, recoverPassword, checkUserExists } from "@/features/auth/services/authorizationService";
+import { sendVerificationCode, recoverPassword, checkUserExists, verifyCode } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { Eye, EyeOff, CheckCircle, Shield, Key } from "lucide-react";
 
@@ -127,7 +127,9 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
   const locale = useLocale();
   const [currentStep, setCurrentStep] = useState<RecoveryStep>('phone');
   const [identifier, setIdentifier] = useState<string>("");
-  const [sentVerificationCode, setSentVerificationCode] = useState<string>("");
+  // The code the user typed and the API accepted; sent again with the new password, where the
+  // API checks it once more and uses it up.
+  const [verifiedCode, setVerifiedCode] = useState<string>("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showNewPassword, setShowNewPassword] = useState(false);
@@ -175,11 +177,11 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
 
   const sendCodeFor = async (value: string) => {
     const trimmed = value.trim();
-    const response = await sendVerificationCode(
+    await sendVerificationCode(
       isEmail(trimmed) ? undefined : trimmed,
       isEmail(trimmed) ? trimmed : undefined
-    ) as { code: string | number };
-    setSentVerificationCode(response.code?.toString() || "");
+    );
+    setVerifiedCode("");
     startResendTimer();
   };
 
@@ -232,21 +234,14 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     }
   };
 
-  // CRITICAL (backend follow-up required, not fixed here):
-  // The verification code is returned to the client by sendVerificationCode (response.code) and
-  // compared client-side below. This means the OTP can be read directly from the network
-  // response, bypassing SMS/email possession entirely. A proper fix requires a backend endpoint
-  // that verifies { identifier, code } server-side without returning the code to clients, and
-  // returns a short-lived token (see ValidateRecoveryCodeResponse in types.Auth.ts) for the final
-  // recoverPassword/resetPassword call. Do not remove this client-side check without a backend
-  // replacement - doing so would break the currently-working (if insecure) flow entirely.
   const handleVerificationSubmit = async (data: VerificationFormData) => {
     setError(null);
     setIsLoading(true);
     
     try {
-      // Client-side validation: compare user input with sent verification code
-      if (data.verificationCode === sentVerificationCode) {
+      // The API checks the code; the browser never sees the real one.
+      if (await verifyCode(identifier, data.verificationCode)) {
+        setVerifiedCode(data.verificationCode);
         setCurrentStep('password');
       } else {
         setError(t("incorrectVerificationCode"));
@@ -264,7 +259,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
     setIsLoading(true);
     
     try {
-      await recoverPassword(identifier, data.newPassword);
+      await recoverPassword(identifier, data.newPassword, verifiedCode);
       setCurrentStep('success');
     } catch (err) {
       let message = err instanceof Error ? err.message : t("passwordRecoveryError");
@@ -282,7 +277,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
   const handleClose = () => {
     setCurrentStep('phone');
     setIdentifier("");
-    setSentVerificationCode("");
+    setVerifiedCode("");
     setResendTimer(0);
     setError(null);
     identifierForm.reset();

@@ -12,11 +12,13 @@ import {
   register,
   login,
   sendCode,
+  verifyCode,
   loginWithGoogle,
 } from "@/features/auth/services/authorizationService";
 import GoogleButton from "./GoogleButton";
 import SulikoLogo from "./SulikoLogo";
 import { updateUserProfile } from "@/features/auth/services/userService";
+import { UpdateUserProfile } from "@/features/auth/types/types.User";
 import PasswordRecoveryModal from "@/features/auth/components/PasswordRecoveryModal";
 import type { RegisterParams } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
@@ -24,7 +26,6 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 import { getRequiredVerificationMethod } from "@/shared/utils/domainUtils";
 import { trackRegistrationStart, trackRegistrationComplete } from "../utils/metaPixel";
@@ -61,8 +62,10 @@ const SulikoForm: React.FC = () => {
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [sentVerificationCode, setSentVerificationCode] = useState<string>("");
+  // The phone/email the current code was sent to. The code itself never reaches the browser.
+  const [codeTarget, setCodeTarget] = useState<string>("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [isCodeInvalid, setIsCodeInvalid] = useState(false);
   const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [verificationMethod, setVerificationMethod] = useState<"phone" | "email" | null>(null);
   const [switchedToLoginNote, setSwitchedToLoginNote] = useState(false);
@@ -102,18 +105,26 @@ const SulikoForm: React.FC = () => {
 
   const verificationCode = form.watch("verificationCode");
 
+  // Once all six digits are in, ask the API whether the code is right.
   useEffect(() => {
-    if (
-      !isLoginMode &&
-      verificationCode &&
-      sentVerificationCode &&
-      verificationCode === sentVerificationCode
-    ) {
-      setIsCodeVerified(true);
-    } else {
-      setIsCodeVerified(false);
-    }
-  }, [verificationCode, sentVerificationCode, isLoginMode]);
+    setIsCodeVerified(false);
+    setIsCodeInvalid(false);
+    if (isLoginMode || !codeTarget || !verificationCode || verificationCode.length < 6) return;
+
+    let cancelled = false;
+    verifyCode(codeTarget, verificationCode)
+      .then((valid) => {
+        if (cancelled) return;
+        setIsCodeVerified(valid);
+        setIsCodeInvalid(!valid);
+      })
+      .catch(() => {
+        if (!cancelled) setIsCodeInvalid(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [verificationCode, codeTarget, isLoginMode]);
 
   useEffect(() => {
     if (refFromUrl && !isLoginMode) {
@@ -146,7 +157,7 @@ const SulikoForm: React.FC = () => {
     setIsCodeSent(false);
     setIsSendingCode(false);
     setResendTimer(0);
-    setSentVerificationCode("");
+    setCodeTarget("");
     setIsCodeVerified(false);
   }
 
@@ -190,8 +201,8 @@ const SulikoForm: React.FC = () => {
     setVerificationMethod("phone");
 
     try {
-      const response = await sendCode(mobile.trim(), undefined) as SendVerificationCodeResponse;
-      setSentVerificationCode(response.code.toString());
+      await sendCode(mobile.trim(), undefined);
+      setCodeTarget(mobile.trim());
       setIsCodeSent(true);
 
       setResendTimer(30);
@@ -232,8 +243,8 @@ const SulikoForm: React.FC = () => {
     setVerificationMethod("email");
 
     try {
-      const response = await sendCode(undefined, email.trim()) as SendVerificationCodeResponse;
-      setSentVerificationCode(response.code.toString());
+      await sendCode(undefined, email.trim());
+      setCodeTarget(email.trim());
       setIsCodeSent(true);
 
       setResendTimer(30);
@@ -306,17 +317,7 @@ const SulikoForm: React.FC = () => {
           await fetchUserProfile();
           const profileState = useUserStore.getState().userProfile;
           if (profileState && profileState.hasSeenRegistrationBonus === false) {
-            await updateUserProfile({
-              id: profileState.id,
-              firstName: profileState.firstName,
-              lastName: profileState.lastName,
-              phoneNUmber: profileState.phoneNUmber,
-              email: profileState.email,
-              userName: profileState.userName,
-              roleId: profileState.roleId,
-              balance: profileState.balance,
-              hasSeenRegistrationBonus: true,
-            });
+            await updateUserProfile({ id: profileState.id, hasSeenRegistrationBonus: true });
             setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
             triggerWelcomeModal();
           }
@@ -334,7 +335,8 @@ const SulikoForm: React.FC = () => {
           setAuthError(t("pleaseEnterVerificationCode"));
           return;
         }
-        if (registerValues.verificationCode !== sentVerificationCode) {
+        // Checked by the API (verify-code), and again when registering.
+        if (!isCodeVerified) {
           setAuthError(t("incorrectVerificationCode"));
           return;
         }
@@ -372,13 +374,15 @@ const SulikoForm: React.FC = () => {
           await fetchUserProfile();
           const profileState = useUserStore.getState().userProfile;
           if (profileState) {
-            const { roleName, ...profileData } = profileState;
-            const updatePayload = {
-              ...profileData,
-              ...(email && { email }),
+            const updatePayload: UpdateUserProfile = {
+              id: profileState.id,
+              firstName: profileState.firstName,
+              lastName: profileState.lastName,
+              phoneNUmber: profileState.phoneNUmber,
+              email: email || profileState.email,
             };
             await updateUserProfile(updatePayload);
-            setUserProfile({ ...updatePayload, roleName });
+            setUserProfile({ ...profileState, ...updatePayload });
           }
         } catch (syncError) {
           console.error("Failed to sync profile after registration:", syncError);
@@ -418,7 +422,7 @@ const SulikoForm: React.FC = () => {
     if (isCodeSent && verificationMethod === "phone") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
-      setSentVerificationCode("");
+      setCodeTarget("");
       setResendTimer(0);
       const requiredMethod = getRequiredVerificationMethod();
       if (!requiredMethod) {
@@ -433,7 +437,7 @@ const SulikoForm: React.FC = () => {
     if (isCodeSent && verificationMethod === "email") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
-      setSentVerificationCode("");
+      setCodeTarget("");
       setResendTimer(0);
       const requiredMethod = getRequiredVerificationMethod();
       if (!requiredMethod) {
@@ -456,17 +460,7 @@ const SulikoForm: React.FC = () => {
       await fetchUserProfile();
       const profileState = useUserStore.getState().userProfile;
       if (profileState && profileState.hasSeenRegistrationBonus === false) {
-        await updateUserProfile({
-          id: profileState.id,
-          firstName: profileState.firstName,
-          lastName: profileState.lastName,
-          phoneNUmber: profileState.phoneNUmber,
-          email: profileState.email,
-          userName: profileState.userName,
-          roleId: profileState.roleId,
-          balance: profileState.balance,
-          hasSeenRegistrationBonus: true,
-        });
+        await updateUserProfile({ id: profileState.id, hasSeenRegistrationBonus: true });
         setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
         triggerWelcomeModal();
       }
@@ -707,7 +701,7 @@ const SulikoForm: React.FC = () => {
                         resendTimer={resendTimer}
                         onResendCode={handleResendCode}
                         isCodeVerified={isCodeVerified}
-                        sentVerificationCode={sentVerificationCode}
+                        isCodeInvalid={isCodeInvalid}
                       />
                       {!isCodeSent && !getRequiredVerificationMethod() && (
                         <button
@@ -735,7 +729,7 @@ const SulikoForm: React.FC = () => {
                         resendTimer={resendTimer}
                         onResendCode={handleResendCode}
                         isCodeVerified={isCodeVerified}
-                        sentVerificationCode={sentVerificationCode}
+                        isCodeInvalid={isCodeInvalid}
                       />
                       {!isCodeSent && !getRequiredVerificationMethod() && (
                         <button
