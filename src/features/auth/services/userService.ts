@@ -135,6 +135,39 @@ export const deleteUser = async (userId: string) => {
   }
 };
 
+// Admin only: the API rejects this for non-admins. Users can no longer set balances via PUT /User.
+export const setUserBalance = async (userId: string, balance: number) => {
+  const { refreshToken, token } = useAuthStore.getState();
+  if (!token) throw new Error("No token found");
+
+  const endpoint = `${API_BASE_URL}/User/${encodeURIComponent(userId)}/balance`;
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+  headers.set("Content-Type", "application/json");
+  const body = JSON.stringify({ balance });
+
+  let response = await fetch(endpoint, { headers, method: "PUT", body });
+
+  if (response.status === 401 && token && refreshToken) {
+    try {
+      const newTokens = await reaccessToken(refreshToken) as { token: string; refreshToken: string };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
+      response = await fetch(endpoint, { headers, method: "PUT", body });
+    } catch (error) {
+      useAuthStore.getState().reset();
+      throw new Error("Failed to refresh token " + error);
+    }
+  }
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({ message: "Failed to set balance." }));
+    throw new Error(`Failed to set balance: ${response.status} ${response.statusText}. ${errorData?.message || ""}`);
+  }
+};
+
 export interface ChangePasswordRequest {
   id: string;
   currentPassword: string;

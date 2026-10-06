@@ -1,4 +1,4 @@
-import { cookies } from "next/headers";
+import { isAdminRequest } from "@/lib/admin-auth";
 import { redirect } from "next/navigation";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import PassportTemplateForm from "../../PassportTemplateForm";
@@ -9,9 +9,7 @@ export default async function EditPassportTemplatePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const cookieStore = await cookies();
-  const adminAllowed = cookieStore.get("adminAllowed")?.value === "1";
-  if (!adminAllowed) redirect("/en/admin/login");
+  if (!(await isAdminRequest())) redirect("/en/admin/login");
 
   const { id } = await params;
 

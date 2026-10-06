@@ -9,9 +9,6 @@ export default function AdminAuthControls({ collapsed = false }: { collapsed?: b
 
   const handleLogout = () => {
     resetAuth();
-    if (typeof document !== "undefined") {
-      document.cookie = `adminAllowed=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/; SameSite=Strict; Secure`;
-    }
     router.push("/admin/login");
   };
 

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { login } from "@/features/auth/services/authorizationService";
 import { useAuthStore } from "@/features/auth/store/authStore";
+import { fetchIsAdmin } from "@/features/auth/services/adminService";
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -19,21 +20,14 @@ export default function AdminLoginPage() {
     setError(null);
     setLoading(true);
     try {
-      const normalizePhone = (p: string) => p.replace(/\s+/g, "");
-      const allowedPhone = normalizePhone("579 737 737");
-      const inputPhone = normalizePhone(phoneNumber);
-      const allowedPassword = "M.t.2002";
-      if (inputPhone !== allowedPhone || password !== allowedPassword) {
+      const res = await login({ phoneNumber: phoneNumber.replace(/\s+/g, ""), password });
+      // Whether this account may use the panel is the API's decision, not something the browser
+      // can check. Non-admin sign-ins are not kept.
+      if (!(await fetchIsAdmin(res.token))) {
         throw new Error("Not authorized for admin panel");
       }
-      const res = await login({ phoneNumber, password });
       setToken(res.token);
       setRefreshToken(res.refreshToken);
-      if (typeof document !== "undefined") {
-        const expires = new Date();
-        expires.setDate(expires.getDate() + 7);
-        document.cookie = `adminAllowed=1; expires=${expires.toUTCString()}; path=/; SameSite=Strict; Secure`;
-      }
       router.push("/admin");
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "Login failed";
@@ -148,7 +142,7 @@ export default function AdminLoginPage() {
               <input
                 value={phoneNumber}
                 onChange={(e) => setPhoneNumber(e.target.value)}
-                placeholder="579 737 737"
+                placeholder="5XX XXX XXX"
                 style={{
                   width: "100%",
                   background: "#0f1117",
