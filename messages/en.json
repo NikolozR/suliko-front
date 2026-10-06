@@ -2036,5 +2036,19 @@
     "subtitle": "Upload a document now and see the translation next to the original in a couple of minutes.",
     "cta": "Start translating",
     "bookDemo": "Book a demo"
+  },
+  "Coupon": {
+    "title": "Have a coupon?",
+    "description": "Enter a coupon code to add free pages to your balance.",
+    "placeholder": "Coupon code",
+    "apply": "Apply",
+    "applying": "Applying...",
+    "success": "{pages} pages were added to your balance.",
+    "errors": {
+      "invalid_code": "This coupon is invalid or has expired.",
+      "already_redeemed": "You have already used this coupon.",
+      "too_many_attempts": "Too many attempts. Please try again in a few minutes.",
+      "unknown": "The coupon could not be applied. Please try again."
+    }
   }
 }
