@@ -22,6 +22,8 @@ export interface StartTranslationHooks {
    * second time. Callers without one make the server prepare it now.
    */
   prepared?: PrepareUploadResponse | null;
+  /** Notes for the translator, sent to the translation and to the review. */
+  instructions?: string;
 }
 
 export async function startTranslationProject(
@@ -70,6 +72,9 @@ export async function startTranslationProject(
       // measured server-side and ignores this. Sent so older backends still work.
       pageCount: prepared.pageCount ?? pageCount ?? 1,
       nameTranslations: confirmedNames && confirmedNames.length > 0 ? confirmedNames : undefined,
+      // 0 is "detect automatically" in the language picker.
+      sourceLanguageId: data.currentSourceLanguageId > 0 ? data.currentSourceLanguageId : undefined,
+      instructions: hooks.instructions?.trim() || undefined,
     });
   }
 

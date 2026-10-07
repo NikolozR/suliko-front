@@ -166,6 +166,51 @@ export function NamesBlock({ enabled, onToggle, savedCount, projectName, project
   );
 }
 
+/** Mirrors the backend's cap on translate-with-uri, which rejects anything longer. */
+export const MAX_INSTRUCTIONS_LENGTH = 4000;
+
+interface InstructionsProps {
+  value: string;
+  onChange: (value: string) => void;
+}
+
+/**
+ * Free-text notes that go into the translation prompt and to the review that
+ * follows it, so "keep company names in English" is both followed and not
+ * flagged afterwards as untranslated text.
+ */
+export function InstructionsBlock({ value, onChange }: InstructionsProps) {
+  const t = useTranslations("DocumentTranslationCard.instructions");
+  const nearLimit = value.length > MAX_INSTRUCTIONS_LENGTH * 0.9;
+
+  return (
+    <PanelCard>
+      <label htmlFor="translator-instructions" className="block text-[15px] font-semibold leading-snug">
+        {t("title")}
+      </label>
+      <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{t("body")}</p>
+      <textarea
+        id="translator-instructions"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        maxLength={MAX_INSTRUCTIONS_LENGTH}
+        rows={3}
+        placeholder={t("placeholder")}
+        className={cn(
+          "mt-3 w-full resize-y rounded-[10px] border border-border bg-background px-3 py-2.5 text-[14px] leading-relaxed",
+          "placeholder:text-muted-foreground/70",
+          "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
+        )}
+      />
+      {nearLimit && (
+        <p className="mt-1 text-right text-[12px] tabular-nums text-muted-foreground">
+          {value.length}/{MAX_INSTRUCTIONS_LENGTH}
+        </p>
+      )}
+    </PanelCard>
+  );
+}
+
 interface QuoteProps {
   /** Authoritative page count, or null while it is still being read. */
   pageCount: number | null;

@@ -41,7 +41,7 @@ import { MAX_DOCUMENT_UPLOAD_BYTES, formatBytes } from "../constants/uploadLimit
 import { prepareDocumentUpload, PrepareUploadError } from "../services/prepareUploadService";
 import type { PrepareUploadResponse } from "../types/types.Translation";
 import LanguageSelect from "./LanguageSelect";
-import { DeliverableSelect, NamesBlock, QuoteBlock } from "./JobPanel";
+import { DeliverableSelect, InstructionsBlock, NamesBlock, QuoteBlock } from "./JobPanel";
 import InProgressView from "./InProgressView";
 import { useJobStage } from "../hooks/useJobStage";
 import { Button } from "@/features/ui/components/ui/button";
@@ -165,6 +165,7 @@ const DocumentTranslationCard = () => {
   const [isOcrOnly, setIsOcrOnly] = useState(false);
   // Output format for document (non-SRT) translations. Defaults to the standard HTML output.
   const [outputFormat, setOutputFormat] = useState<number>(DEFAULT_DOCUMENT_OUTPUT_FORMAT);
+  const [instructions, setInstructions] = useState("");
   const [isDetectingNames, setIsDetectingNames] = useState(false);
   /**
    * What the submit is actually doing right now. Only real transitions —
@@ -779,6 +780,7 @@ const DocumentTranslationCard = () => {
           // Already uploaded at selection time; this only re-uploads if
           // something went wrong and we have nothing prepared.
           prepared,
+          instructions,
           onUploadProgress: (fraction) => setUploadPercent(Math.round(fraction * 100)),
           onStarting: () => setSubmitStage("starting"),
         }
@@ -1134,6 +1136,9 @@ const DocumentTranslationCard = () => {
                         projectName={projectName}
                         savedCount={projectId ? projectGlossaryCount : undefined}
                       />
+                    )}
+                    {!isOcrOnly && !watch("isSrt") && (
+                      <InstructionsBlock value={instructions} onChange={setInstructions} />
                     )}
                     <QuoteBlock
                       pageCount={quotedPageCount}

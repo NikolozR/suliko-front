@@ -117,6 +117,10 @@ export interface DocumentTranslateWithUriParams {
   model: number;
   pageCount?: number;
   nameTranslations?: NameTranslationItem[];
+  /** Omitted to let the model detect the source language. */
+  sourceLanguageId?: number;
+  /** Free-text notes for the translator; the backend caps them at 4000 characters. */
+  instructions?: string;
 }
 
 /**
