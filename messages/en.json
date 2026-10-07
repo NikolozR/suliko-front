@@ -461,6 +461,28 @@
       "body": "Optional. Terminology, tone, or anything to keep as it is. The review checks the translation against these too.",
       "placeholder": "e.g. Keep company names in English. Use a formal register."
     },
+    "brief": {
+      "label": "Document brief",
+      "reading": "Reading the document…",
+      "failed": "We couldn't read the document in advance. You can still translate it as usual.",
+      "untitled": "Document",
+      "writtenIn": "Written in {language}",
+      "tables": "{count, plural, one {# table} other {# tables}}",
+      "stamps": "Stamps",
+      "signatures": "Signatures",
+      "handwriting": "Handwriting",
+      "scanned": "Scanned",
+      "names": "{count, plural, one {# name} other {# names}}",
+      "termsTitle": "Terminology",
+      "termsBody": "These renderings will be used throughout the translation. Change any you'd translate differently.",
+      "termInput": "Translation of {term}",
+      "removeTerm": "Remove {term}",
+      "showAll": "Show all {count}",
+      "showFewer": "Show fewer",
+      "questionsTitle": "Before we translate",
+      "ownAnswer": "Or write your own answer",
+      "ownAnswerFor": "Your answer to: {question}"
+    },
     "quote": {
       "label": "Quote",
       "thisDocument": "This document",

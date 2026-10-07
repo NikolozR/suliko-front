@@ -1,6 +1,6 @@
 import { TRANSLATION_MODEL } from "@/shared/constants/translationModel";
 import { translateDocumentUserContent, translateDocumentWithUri } from "../services/translationService";
-import { DocumentTranslateUserContentParams, NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
+import { DocumentBrief, DocumentTranslateUserContentParams, NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
 import { prepareDocumentUpload } from "../services/prepareUploadService";
 import type { PrepareUploadResponse } from "../types/types.Translation";
@@ -24,6 +24,8 @@ export interface StartTranslationHooks {
   prepared?: PrepareUploadResponse | null;
   /** Notes for the translator, sent to the translation and to the review. */
   instructions?: string;
+  /** The document brief the user confirmed, if the analysis ran. */
+  brief?: DocumentBrief;
 }
 
 export async function startTranslationProject(
@@ -75,6 +77,7 @@ export async function startTranslationProject(
       // 0 is "detect automatically" in the language picker.
       sourceLanguageId: data.currentSourceLanguageId > 0 ? data.currentSourceLanguageId : undefined,
       instructions: hooks.instructions?.trim() || undefined,
+      brief: hooks.brief,
     });
   }
 
