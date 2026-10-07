@@ -6,6 +6,7 @@ import { useChatEditingStore } from "../store/chatEditingStore";
 import { LoadingSpinner } from "@/features/ui/components/loading";
 import { useTranslations } from "next-intl";
 import { useSuggestionActions } from "@/features/translation/hooks/useSuggestionActions";
+import { uiOutputLanguageId } from "@/features/translation/utils/outputLanguage";
 import { SuggestionPreviewDialog } from "@/features/translation/components/SuggestionPreviewDialog";
 
 interface ChatSuggestionsPanelProps {
@@ -82,7 +83,8 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
           jobId,
           chatId,
           targetLanguageId: currentTargetLanguageId,
-          outputLanguageId: currentTargetLanguageId,
+          // The reader's language, not the translation's.
+          outputLanguageId: uiOutputLanguageId(),
         });
       } catch {
         setSuggestionsNotAvailable(true);

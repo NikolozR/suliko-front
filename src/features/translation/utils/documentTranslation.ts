@@ -6,6 +6,7 @@ import { useDocumentTranslationStore } from "../store/documentTranslationStore";
 import { getResult, getStatus } from "../services/jobService";
 import { DocumentFormData } from "../components/DocumentTranslationCard";
 import { useUserStore } from "@/features/auth/store/userStore";
+import { uiOutputLanguageId } from "./outputLanguage";
 
 export async function documentTranslatingWithJobId(
   data: DocumentFormData,
@@ -14,12 +15,7 @@ export async function documentTranslatingWithJobId(
   setSuggestionsLoading?: (loading: boolean) => void
 ) {
   const model = TRANSLATION_MODEL;
-  const outputLanguageId =
-    typeof window !== "undefined" &&
-    window.location &&
-    window.location.pathname.startsWith("/en")
-      ? 2
-      : 1;
+  const outputLanguageId = uiOutputLanguageId();
   const { setJobId, setTranslatedMarkdown, setChatId } =
     useDocumentTranslationStore.getState();
   const { currentFile } = useDocumentTranslationStore.getState();

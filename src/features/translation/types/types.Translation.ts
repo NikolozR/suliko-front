@@ -72,6 +72,10 @@ export interface SuggestionsResponse {
   suggestionCount: number;
   suggestions: Suggestion[];
   message: string;
+  /** "pending" while the review is still running; see SuggestionStatuses on the backend. */
+  suggestionsStatus?: string;
+  /** True while more suggestions may still arrive for this job. */
+  isGenerating?: boolean;
 }
 
 export interface SuggestionsResponseProcessing {
@@ -123,6 +127,8 @@ export interface DocumentTranslateWithUriParams {
   instructions?: string;
   /** What the user confirmed from /Document/analyze. */
   brief?: DocumentBrief;
+  /** A translation template to translate against, usually the one the analysis matched. */
+  templateId?: string;
 }
 
 export interface TermTranslationItem {
@@ -153,6 +159,9 @@ export interface DocumentAnalysis {
   names: NameTranslationItem[];
   terms: TermTranslationItem[];
   questions: AnalysisQuestion[];
+  /** Set only when the document is an instance of an active translation template. */
+  matchedTemplateId?: string | null;
+  matchedTemplateName?: string | null;
 }
 
 export interface BriefAnswer {

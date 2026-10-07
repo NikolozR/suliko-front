@@ -4,6 +4,7 @@ import { DocumentBrief, DocumentTranslateUserContentParams, NameTranslationItem,
 import { DocumentFormData } from "../components/DocumentTranslationCard";
 import { prepareDocumentUpload } from "../services/prepareUploadService";
 import type { PrepareUploadResponse } from "../types/types.Translation";
+import { uiOutputLanguageId } from "./outputLanguage";
 
 /**
  * Starts a new translation project without waiting for completion.
@@ -26,6 +27,8 @@ export interface StartTranslationHooks {
   instructions?: string;
   /** The document brief the user confirmed, if the analysis ran. */
   brief?: DocumentBrief;
+  /** The translation template the analysis matched, if any. */
+  templateId?: string;
 }
 
 export async function startTranslationProject(
@@ -36,12 +39,7 @@ export async function startTranslationProject(
   hooks: StartTranslationHooks = {}
 ): Promise<{ jobId: string; chatId: string }> {
   const model = TRANSLATION_MODEL;
-  const outputLanguageId =
-    typeof window !== "undefined" &&
-    window.location &&
-    window.location.pathname.startsWith("/en")
-      ? 2
-      : 1;
+  const outputLanguageId = uiOutputLanguageId();
 
   let result;
 
@@ -78,6 +76,7 @@ export async function startTranslationProject(
       sourceLanguageId: data.currentSourceLanguageId > 0 ? data.currentSourceLanguageId : undefined,
       instructions: hooks.instructions?.trim() || undefined,
       brief: hooks.brief,
+      templateId: hooks.templateId,
     });
   }
 
