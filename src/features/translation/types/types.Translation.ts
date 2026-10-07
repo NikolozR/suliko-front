@@ -72,6 +72,10 @@ export interface SuggestionsResponse {
   suggestionCount: number;
   suggestions: Suggestion[];
   message: string;
+  /** "pending" while the review is still running; see SuggestionStatuses on the backend. */
+  suggestionsStatus?: string;
+  /** True while more suggestions may still arrive for this job. */
+  isGenerating?: boolean;
 }
 
 export interface SuggestionsResponseProcessing {

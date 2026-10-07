@@ -408,13 +408,18 @@ export default function TranslationDetailPage() {
           const { useChatEditingStore } = await import(
             "@/features/chatHistory/store/chatEditingStore"
           );
+          const { uiOutputLanguageId } = await import(
+            "@/features/translation/utils/outputLanguage"
+          );
+          // The backend reads the translation's language from the chat;
+          // this store value is a placeholder that is never set.
           const targetLanguageId =
             useChatEditingStore.getState().currentTargetLanguageId || 1;
           await regenerateSuggestions({
             jobId: chat.jobId,
             chatId: chat.chatId,
             targetLanguageId,
-            outputLanguageId: targetLanguageId,
+            outputLanguageId: uiOutputLanguageId(),
           });
         } catch {
           // might already be generating — continue polling

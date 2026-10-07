@@ -38,6 +38,7 @@ import {
   type TermTranslationItem,
 } from "../types/types.Translation";
 import { useDocumentAnalysis } from "../hooks/useDocumentAnalysis";
+import { uiOutputLanguageId } from "../utils/outputLanguage";
 import { moveChatToProject, uploadOriginalForChat } from "@/features/chatHistory";
 import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "@/features/projects";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
@@ -367,8 +368,7 @@ const DocumentTranslationCard = () => {
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
   // Read the document as soon as the server holds it, so the brief is there
-  // before the user decides to pay. Same UI-language convention as
-  // startTranslationProject: English on /en, Georgian otherwise.
+  // before the user decides to pay.
   const isSrtSelected = watch("isSrt");
   const {
     status: analysisStatus,
@@ -379,8 +379,7 @@ const DocumentTranslationCard = () => {
     mimeType: prepared?.mimeType,
     sourceLanguageId: currentSourceLanguageId,
     targetLanguageId: currentTargetLanguageId,
-    outputLanguageId:
-      typeof window !== "undefined" && window.location.pathname.startsWith("/en") ? 2 : 1,
+    outputLanguageId: uiOutputLanguageId(),
     enabled: !!token && !isOcrOnly && !isSrtSelected && !activeJob,
   });
 

@@ -4,6 +4,7 @@ import { DocumentBrief, DocumentTranslateUserContentParams, NameTranslationItem,
 import { DocumentFormData } from "../components/DocumentTranslationCard";
 import { prepareDocumentUpload } from "../services/prepareUploadService";
 import type { PrepareUploadResponse } from "../types/types.Translation";
+import { uiOutputLanguageId } from "./outputLanguage";
 
 /**
  * Starts a new translation project without waiting for completion.
@@ -38,12 +39,7 @@ export async function startTranslationProject(
   hooks: StartTranslationHooks = {}
 ): Promise<{ jobId: string; chatId: string }> {
   const model = TRANSLATION_MODEL;
-  const outputLanguageId =
-    typeof window !== "undefined" &&
-    window.location &&
-    window.location.pathname.startsWith("/en")
-      ? 2
-      : 1;
+  const outputLanguageId = uiOutputLanguageId();
 
   let result;
 
