@@ -475,6 +475,11 @@
       "savedCount": "Zapisane nazwy: {count} w {project}",
       "editGlossary": "Edytuj glosariusz"
     },
+    "instructions": {
+      "title": "Uwagi dla tłumacza",
+      "body": "Opcjonalnie. Terminologia, ton lub to, co ma pozostać bez zmian. Weryfikacja również sprawdza tłumaczenie pod kątem tych uwag.",
+      "placeholder": "np. Nazwy firm zostaw po angielsku. Użyj stylu formalnego."
+    },
     "quote": {
       "label": "Wycena",
       "thisDocument": "Ten dokument",

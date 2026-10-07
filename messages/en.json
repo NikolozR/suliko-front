@@ -456,6 +456,11 @@
       "savedCount": "{count} names saved in {project}",
       "editGlossary": "Edit glossary"
     },
+    "instructions": {
+      "title": "Notes for the translator",
+      "body": "Optional. Terminology, tone, or anything to keep as it is. The review checks the translation against these too.",
+      "placeholder": "e.g. Keep company names in English. Use a formal register."
+    },
     "quote": {
       "label": "Quote",
       "thisDocument": "This document",
