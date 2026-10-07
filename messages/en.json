@@ -2088,6 +2088,8 @@
     "after": "After",
     "undo": "Undo",
     "redo": "Redo",
-    "editedSince": "This text has been edited since, so it can't be changed back automatically."
+    "editedSince": "This text has been edited since, so it can't be changed back automatically.",
+    "clean": "Checked against the original: no errors found.",
+    "handedOn": "{count, plural, one {Checked against the original: # possible error needs your review below.} other {Checked against the original: # possible errors need your review below.}}"
   }
 }

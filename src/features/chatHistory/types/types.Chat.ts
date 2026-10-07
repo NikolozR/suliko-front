@@ -1,5 +1,5 @@
 import { Suggestion } from "@/features/translation";
-import type { AutoFix } from "@/features/translation/types/types.Translation";
+import type { AutoFix, VerificationSummary } from "@/features/translation/types/types.Translation";
 
 export type ChatStatus = 'Completed' | 'InProgress' | 'Failed' | 'Queued';
 
@@ -51,6 +51,7 @@ export interface ChatTrnalsationResult {
     translationQualityScore: number;
     /** Corrections the verification pass made before delivery. Absent on older translations. */
     autoFixes?: AutoFix[];
+    verification?: VerificationSummary | null;
 }
 
 export interface ChatHistoryResponse {
