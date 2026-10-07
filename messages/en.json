@@ -665,6 +665,7 @@
     "stage": {
       "queued": "Queued",
       "translating": "Translating",
+      "verifying": "Checking against the original",
       "rebuilding": "Rebuilding layout",
       "ready": "Ready",
       "failed": "Failed"
@@ -2078,5 +2079,15 @@
       "too_many_attempts": "Too many attempts. Please try again in a few minutes.",
       "unknown": "The coupon could not be applied. Please try again."
     }
+  },
+  "AutoFixes": {
+    "title": "{count, plural, =0 {All automatic fixes undone} one {Checked against the original: # error fixed} other {Checked against the original: # errors fixed}}",
+    "subtitle": "These were corrected before delivery. Undo any you disagree with.",
+    "untitled": "Correction",
+    "before": "Before",
+    "after": "After",
+    "undo": "Undo",
+    "redo": "Redo",
+    "editedSince": "This text has been edited since, so it can't be changed back automatically."
   }
 }
