@@ -26,6 +26,8 @@ export interface StartTranslationHooks {
   instructions?: string;
   /** The document brief the user confirmed, if the analysis ran. */
   brief?: DocumentBrief;
+  /** The translation template the analysis matched, if any. */
+  templateId?: string;
 }
 
 export async function startTranslationProject(
@@ -78,6 +80,7 @@ export async function startTranslationProject(
       sourceLanguageId: data.currentSourceLanguageId > 0 ? data.currentSourceLanguageId : undefined,
       instructions: hooks.instructions?.trim() || undefined,
       brief: hooks.brief,
+      templateId: hooks.templateId,
     });
   }
 

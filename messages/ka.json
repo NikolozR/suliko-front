@@ -501,7 +501,8 @@
       "showFewer": "ნაკლების ჩვენება",
       "questionsTitle": "თარგმნამდე",
       "ownAnswer": "ან ჩაწერეთ თქვენი პასუხი",
-      "ownAnswerFor": "თქვენი პასუხი: {question}"
+      "ownAnswerFor": "თქვენი პასუხი: {question}",
+      "template": "გამოიყენება ტერმინოლოგიის შაბლონი: {name}"
     },
     "quote": {
       "label": "განრიცხვი",

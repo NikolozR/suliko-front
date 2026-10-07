@@ -123,6 +123,8 @@ export interface DocumentTranslateWithUriParams {
   instructions?: string;
   /** What the user confirmed from /Document/analyze. */
   brief?: DocumentBrief;
+  /** A translation template to translate against, usually the one the analysis matched. */
+  templateId?: string;
 }
 
 export interface TermTranslationItem {
@@ -153,6 +155,9 @@ export interface DocumentAnalysis {
   names: NameTranslationItem[];
   terms: TermTranslationItem[];
   questions: AnalysisQuestion[];
+  /** Set only when the document is an instance of an active translation template. */
+  matchedTemplateId?: string | null;
+  matchedTemplateName?: string | null;
 }
 
 export interface BriefAnswer {

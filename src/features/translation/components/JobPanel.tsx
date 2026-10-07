@@ -257,6 +257,13 @@ export function BriefBlock({
         {analysis.names.length > 0 && <Chip>{t("names", { count: analysis.names.length })}</Chip>}
       </div>
 
+      {analysis.matchedTemplateName && (
+        <p className="mt-3 flex items-center gap-2 text-[13px] text-muted-foreground">
+          <Check className="size-4 shrink-0 text-emerald-600" aria-hidden />
+          {t("template", { name: analysis.matchedTemplateName })}
+        </p>
+      )}
+
       {terms.length > 0 && (
         <div className="mt-4 border-t border-border pt-3.5">
           <h4 className="text-[13px] font-semibold">{t("termsTitle")}</h4>

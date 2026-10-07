@@ -500,7 +500,8 @@
       "showFewer": "Pokaż mniej",
       "questionsTitle": "Zanim przetłumaczymy",
       "ownAnswer": "Lub wpisz własną odpowiedź",
-      "ownAnswerFor": "Twoja odpowiedź: {question}"
+      "ownAnswerFor": "Twoja odpowiedź: {question}",
+      "template": "Używany szablon terminologii: {name}"
     },
     "quote": {
       "label": "Wycena",

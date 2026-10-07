@@ -481,7 +481,8 @@
       "showFewer": "Show fewer",
       "questionsTitle": "Before we translate",
       "ownAnswer": "Or write your own answer",
-      "ownAnswerFor": "Your answer to: {question}"
+      "ownAnswerFor": "Your answer to: {question}",
+      "template": "Using the {name} terminology template"
     },
     "quote": {
       "label": "Quote",

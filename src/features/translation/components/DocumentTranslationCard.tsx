@@ -837,6 +837,7 @@ const DocumentTranslationCard = () => {
           prepared,
           instructions,
           brief: buildBrief(),
+          templateId: analysis?.matchedTemplateId ?? undefined,
           onUploadProgress: (fraction) => setUploadPercent(Math.round(fraction * 100)),
           onStarting: () => setSubmitStage("starting"),
         }
