@@ -1,9 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check, Wallet } from "lucide-react";
+import { Check, Wallet, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/shared/lib/utils";
+import type { DocumentAnalysis, TermTranslationItem } from "../types/types.Translation";
+import type { AnalysisStatus } from "../hooks/useDocumentAnalysis";
 
 /**
  * The right-hand job panel on /document: what the translation will produce,
@@ -160,6 +163,187 @@ export function NamesBlock({ enabled, onToggle, savedCount, projectName, project
               {t("editGlossary")}
             </Link>
           )}
+        </div>
+      )}
+    </PanelCard>
+  );
+}
+
+interface BriefProps {
+  status: AnalysisStatus;
+  analysis: DocumentAnalysis | null;
+  /** The user's working copy of analysis.terms. */
+  terms: TermTranslationItem[];
+  onTermChange: (index: number, translation: string) => void;
+  onTermRemove: (index: number) => void;
+  /** Keyed by question index. */
+  answers: Record<number, string>;
+  onAnswer: (index: number, answer: string) => void;
+}
+
+/** How many terms show before "show all"; the panel is 392px wide. */
+const TERMS_PREVIEW = 5;
+
+function Chip({ children }: { children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-[12px] text-muted-foreground">
+      {children}
+    </span>
+  );
+}
+
+/**
+ * What the document turned out to be, read before anything is paid for: the
+ * terms whose rendering is fixed up front, and the few questions only the user
+ * can answer. Everything here is optional; translating without touching it
+ * works exactly as before.
+ */
+export function BriefBlock({
+  status,
+  analysis,
+  terms,
+  onTermChange,
+  onTermRemove,
+  answers,
+  onAnswer,
+}: BriefProps) {
+  const t = useTranslations("DocumentTranslationCard.brief");
+  const [showAllTerms, setShowAllTerms] = useState(false);
+
+  if (status === "idle") return null;
+
+  if (status === "loading") {
+    return (
+      <PanelCard>
+        <MicroLabel>{t("label")}</MicroLabel>
+        <p className="text-[13px] text-muted-foreground" aria-live="polite">{t("reading")}</p>
+        <div className="mt-3 flex flex-col gap-2" aria-hidden>
+          <span className="h-4 w-2/3 animate-pulse rounded bg-muted" />
+          <span className="h-3 w-full animate-pulse rounded bg-muted" />
+          <span className="h-3 w-5/6 animate-pulse rounded bg-muted" />
+        </div>
+      </PanelCard>
+    );
+  }
+
+  if (status === "failed" || !analysis) {
+    return (
+      <PanelCard>
+        <MicroLabel>{t("label")}</MicroLabel>
+        <p className="text-[13px] leading-relaxed text-muted-foreground">{t("failed")}</p>
+      </PanelCard>
+    );
+  }
+
+  const { layout } = analysis;
+  const visibleTerms = showAllTerms ? terms : terms.slice(0, TERMS_PREVIEW);
+
+  return (
+    <PanelCard>
+      <MicroLabel>{t("label")}</MicroLabel>
+      <h3 className="text-[15px] font-semibold leading-snug">{analysis.documentType ?? t("untitled")}</h3>
+      {analysis.summary && (
+        <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{analysis.summary}</p>
+      )}
+
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {analysis.detectedSourceLanguage && <Chip>{t("writtenIn", { language: analysis.detectedSourceLanguage })}</Chip>}
+        {analysis.register && <Chip>{analysis.register}</Chip>}
+        {layout.tables > 0 && <Chip>{t("tables", { count: layout.tables })}</Chip>}
+        {layout.hasStamps && <Chip>{t("stamps")}</Chip>}
+        {layout.hasSignatures && <Chip>{t("signatures")}</Chip>}
+        {layout.hasHandwriting && <Chip>{t("handwriting")}</Chip>}
+        {layout.isScanned && <Chip>{t("scanned")}</Chip>}
+        {analysis.names.length > 0 && <Chip>{t("names", { count: analysis.names.length })}</Chip>}
+      </div>
+
+      {terms.length > 0 && (
+        <div className="mt-4 border-t border-border pt-3.5">
+          <h4 className="text-[13px] font-semibold">{t("termsTitle")}</h4>
+          <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">{t("termsBody")}</p>
+          <ul className="mt-2.5 flex flex-col gap-2">
+            {visibleTerms.map((term, index) => (
+              <li key={`${term.original}-${index}`} className="flex items-center gap-2">
+                <span className="w-[38%] min-w-0 truncate text-[13px]" title={term.note ?? term.original}>
+                  {term.original}
+                </span>
+                <span aria-hidden className="text-muted-foreground">→</span>
+                <input
+                  value={term.translation}
+                  onChange={(e) => onTermChange(index, e.target.value)}
+                  aria-label={t("termInput", { term: term.original })}
+                  className={cn(
+                    "h-8 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-[13px]",
+                    "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
+                  )}
+                />
+                <button
+                  type="button"
+                  onClick={() => onTermRemove(index)}
+                  aria-label={t("removeTerm", { term: term.original })}
+                  className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
+                  <X className="size-3.5" aria-hidden />
+                </button>
+              </li>
+            ))}
+          </ul>
+          {terms.length > TERMS_PREVIEW && (
+            <button
+              type="button"
+              onClick={() => setShowAllTerms((v) => !v)}
+              className="mt-2 text-[13px] font-semibold text-suliko-default-color hover:underline"
+            >
+              {showAllTerms ? t("showFewer") : t("showAll", { count: terms.length })}
+            </button>
+          )}
+        </div>
+      )}
+
+      {analysis.questions.length > 0 && (
+        <div className="mt-4 border-t border-border pt-3.5">
+          <h4 className="text-[13px] font-semibold">{t("questionsTitle")}</h4>
+          <ol className="mt-2.5 flex flex-col gap-3.5">
+            {analysis.questions.map((question, index) => {
+              const answer = answers[index] ?? "";
+              const isOption = question.options.includes(answer);
+              return (
+                <li key={index}>
+                  <p className="text-[13px] leading-relaxed">{question.question}</p>
+                  <div className="mt-2 flex flex-wrap gap-1.5" role="radiogroup" aria-label={question.question}>
+                    {question.options.map((option) => (
+                      <button
+                        key={option}
+                        type="button"
+                        role="radio"
+                        aria-checked={answer === option}
+                        onClick={() => onAnswer(index, answer === option ? "" : option)}
+                        className={cn(
+                          "rounded-full border px-3 py-1 text-[12px] transition-colors",
+                          answer === option
+                            ? "border-suliko-default-color bg-suliko-default-color/10 font-semibold text-foreground"
+                            : "border-border text-muted-foreground hover:bg-muted/60"
+                        )}
+                      >
+                        {option}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    value={isOption ? "" : answer}
+                    onChange={(e) => onAnswer(index, e.target.value)}
+                    placeholder={t("ownAnswer")}
+                    aria-label={t("ownAnswerFor", { question: question.question })}
+                    className={cn(
+                      "mt-2 h-8 w-full rounded-md border border-border bg-background px-2 text-[13px]",
+                      "placeholder:text-muted-foreground/70",
+                      "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
+                    )}
+                  />
+                </li>
+              );
+            })}
+          </ol>
         </div>
       )}
     </PanelCard>

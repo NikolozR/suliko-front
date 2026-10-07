@@ -480,6 +480,28 @@
       "body": "Opcjonalnie. Terminologia, ton lub to, co ma pozostać bez zmian. Weryfikacja również sprawdza tłumaczenie pod kątem tych uwag.",
       "placeholder": "np. Nazwy firm zostaw po angielsku. Użyj stylu formalnego."
     },
+    "brief": {
+      "label": "Opis dokumentu",
+      "reading": "Czytamy dokument…",
+      "failed": "Nie udało się wcześniej przeczytać dokumentu. Nadal możesz go przetłumaczyć jak zwykle.",
+      "untitled": "Dokument",
+      "writtenIn": "Język: {language}",
+      "tables": "{count, plural, one {# tabela} few {# tabele} many {# tabel} other {# tabeli}}",
+      "stamps": "Pieczęcie",
+      "signatures": "Podpisy",
+      "handwriting": "Pismo odręczne",
+      "scanned": "Skan",
+      "names": "{count, plural, one {# nazwa} few {# nazwy} many {# nazw} other {# nazwy}}",
+      "termsTitle": "Terminologia",
+      "termsBody": "Te tłumaczenia zostaną użyte w całym tekście. Zmień te, które przetłumaczył(a)byś inaczej.",
+      "termInput": "Tłumaczenie: {term}",
+      "removeTerm": "Usuń: {term}",
+      "showAll": "Pokaż wszystkie ({count})",
+      "showFewer": "Pokaż mniej",
+      "questionsTitle": "Zanim przetłumaczymy",
+      "ownAnswer": "Lub wpisz własną odpowiedź",
+      "ownAnswerFor": "Twoja odpowiedź: {question}"
+    },
     "quote": {
       "label": "Wycena",
       "thisDocument": "Ten dokument",

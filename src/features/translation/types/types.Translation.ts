@@ -121,6 +121,52 @@ export interface DocumentTranslateWithUriParams {
   sourceLanguageId?: number;
   /** Free-text notes for the translator; the backend caps them at 4000 characters. */
   instructions?: string;
+  /** What the user confirmed from /Document/analyze. */
+  brief?: DocumentBrief;
+}
+
+export interface TermTranslationItem {
+  original: string;
+  translation: string;
+  note?: string | null;
+}
+
+export interface AnalysisQuestion {
+  question: string;
+  options: string[];
+}
+
+/** POST /Document/analyze: one read of the prepared file, before anything is paid for. */
+export interface DocumentAnalysis {
+  documentType: string | null;
+  summary: string | null;
+  detectedSourceLanguage: string | null;
+  domain: string | null;
+  register: string | null;
+  layout: {
+    tables: number;
+    hasStamps: boolean;
+    hasSignatures: boolean;
+    hasHandwriting: boolean;
+    isScanned: boolean;
+  };
+  names: NameTranslationItem[];
+  terms: TermTranslationItem[];
+  questions: AnalysisQuestion[];
+}
+
+export interface BriefAnswer {
+  question: string;
+  answer: string;
+}
+
+/** The confirmed parts of a DocumentAnalysis, sent back with the translation. */
+export interface DocumentBrief {
+  documentType?: string;
+  domain?: string;
+  register?: string;
+  terms: TermTranslationItem[];
+  answers: BriefAnswer[];
 }
 
 /**
