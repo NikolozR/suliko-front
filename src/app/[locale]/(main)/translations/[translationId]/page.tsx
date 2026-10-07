@@ -8,7 +8,7 @@ import {
 import type { ChatDetailed } from "@/features/chatHistory";
 import { settingUpChatSuggestions } from "@/features/chatHistory/utils/settingUpSuggestions";
 import { getStatus, getResult } from "@/features/translation/services/jobService";
-import type { JobStage } from "@/features/translation/types/types.Translation";
+import type { AutoFix, JobStage } from "@/features/translation/types/types.Translation";
 import TranslationStageList from "@/features/translation/components/TranslationStageList";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useTranslations } from "next-intl";
@@ -24,6 +24,7 @@ import { useChatEditingStore } from "@/features/chatHistory/store/chatEditingSto
 import { useChatSuggestionsStore } from "@/features/chatHistory/store/chatSuggestionsStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import ChatTranslationResultView from "@/features/chatHistory/components/ChatTranslationResultView";
+import AutoFixesPanel from "@/features/chatHistory/components/AutoFixesPanel";
 import ProgressBar from "@/shared/components/ProgressBar";
 import { PROGRESS_MESSAGE_KEYS } from "@/features/translation/hooks/useDocumentLoadingProgress";
 import {
@@ -94,6 +95,8 @@ export default function TranslationDetailPage() {
     useChatSuggestionsStore();
   const { fetchUserProfileWithRetry } = useUserStore();
   const [chat, setChat] = useState<ChatDetailed | null>(null);
+  // Kept apart from `chat`: replacing that object re-runs hydration, which resets the editor.
+  const [autoFixes, setAutoFixes] = useState<AutoFix[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
@@ -162,6 +165,7 @@ export default function TranslationDetailPage() {
           if (cancelled) return;
           const data = response.data;
           setChat(data);
+          setAutoFixes(data.translationResult?.autoFixes ?? []);
           chatRef.current = data;
           setError(null);
           setLiveStatus(data.status);
@@ -239,6 +243,10 @@ export default function TranslationDetailPage() {
       setTranslatedMarkdownWithoutZoomReset(text);
       setJobId(jobId);
       setChatId(chatId);
+      // The chat loaded while the job ran, before the verification pass recorded its fixes.
+      getChatById(chatId)
+        .then((res) => setAutoFixes(res.data.translationResult?.autoFixes ?? []))
+        .catch(() => {});
     } catch {
       try {
         const res = await getChatById(chatId);
@@ -624,6 +632,11 @@ export default function TranslationDetailPage() {
             </span>
           </div>
         </div>
+        <AutoFixesPanel
+          autoFixes={autoFixes}
+          translatedMarkdown={translatedMarkdown}
+          onEdit={setTranslatedMarkdownWithoutZoomReset}
+        />
         <ChatTranslationResultView
           currentFile={reconstructedFile}
           translatedMarkdown={translatedMarkdown}

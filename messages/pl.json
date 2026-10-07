@@ -665,6 +665,7 @@
     "stage": {
       "queued": "W kolejce",
       "translating": "Tłumaczenie",
+      "verifying": "Sprawdzanie z oryginałem",
       "rebuilding": "Odtwarzanie układu",
       "ready": "Gotowe",
       "failed": "Błąd"
@@ -2078,5 +2079,15 @@
       "too_many_attempts": "Zbyt wiele prób. Spróbuj ponownie za kilka minut.",
       "unknown": "Nie udało się zastosować kuponu. Spróbuj ponownie."
     }
+  },
+  "AutoFixes": {
+    "title": "{count, plural, =0 {Cofnięto wszystkie automatyczne poprawki} one {Sprawdzono z oryginałem: poprawiono # błąd} few {Sprawdzono z oryginałem: poprawiono # błędy} other {Sprawdzono z oryginałem: poprawiono # błędów}}",
+    "subtitle": "Poprawiono je przed dostarczeniem. Cofnij te, z którymi się nie zgadzasz.",
+    "untitled": "Poprawka",
+    "before": "Przed",
+    "after": "Po",
+    "undo": "Cofnij",
+    "redo": "Przywróć",
+    "editedSince": "Ten tekst został od tego czasu zmieniony, więc nie można go automatycznie przywrócić."
   }
 }

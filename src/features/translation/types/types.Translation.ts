@@ -26,6 +26,7 @@ export interface  DocumentTranslateUserContentParams {
 export type JobStage =
   | "queued"
   | "translating"
+  | "verifying"
   | "rebuilding"
   | "ready"
   | "failed";
@@ -129,6 +130,16 @@ export interface DocumentTranslateWithUriParams {
   brief?: DocumentBrief;
   /** A translation template to translate against, usually the one the analysis matched. */
   templateId?: string;
+}
+
+/** A correction the verification pass made before delivery; undo is the same replacement reversed. */
+export interface AutoFix {
+  id: string;
+  kind: string;
+  title: string;
+  problem: string;
+  originalText: string;
+  fixedText: string;
 }
 
 export interface TermTranslationItem {
