@@ -8,7 +8,7 @@ import {
 import type { ChatDetailed } from "@/features/chatHistory";
 import { settingUpChatSuggestions } from "@/features/chatHistory/utils/settingUpSuggestions";
 import { getStatus, getResult } from "@/features/translation/services/jobService";
-import type { AutoFix, JobStage } from "@/features/translation/types/types.Translation";
+import type { AutoFix, JobStage, VerificationSummary } from "@/features/translation/types/types.Translation";
 import TranslationStageList from "@/features/translation/components/TranslationStageList";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useTranslations } from "next-intl";
@@ -97,6 +97,7 @@ export default function TranslationDetailPage() {
   const [chat, setChat] = useState<ChatDetailed | null>(null);
   // Kept apart from `chat`: replacing that object re-runs hydration, which resets the editor.
   const [autoFixes, setAutoFixes] = useState<AutoFix[]>([]);
+  const [verification, setVerification] = useState<VerificationSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
@@ -166,6 +167,7 @@ export default function TranslationDetailPage() {
           const data = response.data;
           setChat(data);
           setAutoFixes(data.translationResult?.autoFixes ?? []);
+          setVerification(data.translationResult?.verification ?? null);
           chatRef.current = data;
           setError(null);
           setLiveStatus(data.status);
@@ -245,7 +247,10 @@ export default function TranslationDetailPage() {
       setChatId(chatId);
       // The chat loaded while the job ran, before the verification pass recorded its fixes.
       getChatById(chatId)
-        .then((res) => setAutoFixes(res.data.translationResult?.autoFixes ?? []))
+        .then((res) => {
+          setAutoFixes(res.data.translationResult?.autoFixes ?? []);
+          setVerification(res.data.translationResult?.verification ?? null);
+        })
         .catch(() => {});
     } catch {
       try {
@@ -634,6 +639,7 @@ export default function TranslationDetailPage() {
         </div>
         <AutoFixesPanel
           autoFixes={autoFixes}
+          verification={verification}
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
         />

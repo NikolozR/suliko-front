@@ -2088,6 +2088,8 @@
     "after": "Po",
     "undo": "Cofnij",
     "redo": "Przywróć",
-    "editedSince": "Ten tekst został od tego czasu zmieniony, więc nie można go automatycznie przywrócić."
+    "editedSince": "Ten tekst został od tego czasu zmieniony, więc nie można go automatycznie przywrócić.",
+    "clean": "Sprawdzono z oryginałem: nie znaleziono błędów.",
+    "handedOn": "{count, plural, one {Sprawdzono z oryginałem: # możliwy błąd wymaga Twojej uwagi poniżej.} few {Sprawdzono z oryginałem: # możliwe błędy wymagają Twojej uwagi poniżej.} other {Sprawdzono z oryginałem: # możliwych błędów wymaga Twojej uwagi poniżej.}}"
   }
 }

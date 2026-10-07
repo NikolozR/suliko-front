@@ -142,6 +142,15 @@ export interface AutoFix {
   fixedText: string;
 }
 
+/** What the verification pass did; absent on translations that never went through it. */
+export interface VerificationSummary {
+  ran: boolean;
+  found: number;
+  fixed: number;
+  handedOn: number;
+  failureReason?: string | null;
+}
+
 export interface TermTranslationItem {
   original: string;
   translation: string;

@@ -4,11 +4,13 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { ChevronDown, ShieldCheck, Undo2, Redo2 } from "lucide-react";
 import { cn } from "@/shared/lib/utils";
-import type { AutoFix } from "@/features/translation/types/types.Translation";
+import type { AutoFix, VerificationSummary } from "@/features/translation/types/types.Translation";
 import { replaceExactlyOnce } from "@/features/translation/utils/replaceExactlyOnce";
 
 interface Props {
   autoFixes: AutoFix[];
+  /** Null for translations that never went through the check. */
+  verification?: VerificationSummary | null;
   translatedMarkdown: string;
   onEdit: (content: string) => void;
 }
@@ -18,13 +20,23 @@ interface Props {
  * corrected without asking, so every change is listed and each can be undone
  * -- undo is the same exact-quote replacement the backend made, in reverse.
  */
-export default function AutoFixesPanel({ autoFixes, translatedMarkdown, onEdit }: Props) {
+export default function AutoFixesPanel({ autoFixes, verification, translatedMarkdown, onEdit }: Props) {
   const t = useTranslations("AutoFixes");
   const [open, setOpen] = useState(true);
   const [undone, setUndone] = useState<Set<string>>(new Set());
   const [notFound, setNotFound] = useState<Set<string>>(new Set());
 
-  if (autoFixes.length === 0) return null;
+  if (autoFixes.length === 0) {
+    // A check that ran and found nothing is worth saying; one that failed or
+    // never ran is not something to show the reader.
+    if (!verification?.ran) return null;
+    return (
+      <p className="mb-6 flex items-center gap-2 text-[14px] text-muted-foreground">
+        <ShieldCheck className="size-5 shrink-0 text-emerald-600" aria-hidden />
+        {verification.handedOn > 0 ? t("handedOn", { count: verification.handedOn }) : t("clean")}
+      </p>
+    );
+  }
 
   const toggle = (fix: AutoFix) => {
     const isUndone = undone.has(fix.id);
