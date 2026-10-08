@@ -1,5 +1,5 @@
 "use client";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
@@ -30,9 +30,8 @@ import {
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
 import { useLocale, useTranslations } from "next-intl";
-
-/** Suliko Office. Signing in there goes through suliko.ge, so this is one click. */
-const OFFICE_URL = "https://app.suliko.ge";
+import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
+import { signOutEverywhere } from "@/features/auth/services/signOut";
 
 const NAV_ITEMS = [
   {
@@ -72,7 +71,7 @@ interface SidebarProps {
 
 export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const pathname = usePathname();
-  const { token, reset } = useAuthStore();
+  const { token } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
@@ -94,7 +93,6 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const router = useRouter();
   const t = useTranslations('Sidebar');
   const locale = useLocale();
 
@@ -281,7 +279,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
           {token && (
             <a
-              href={`${OFFICE_URL}/${locale === "en" ? "en" : "ka"}/dashboard`}
+              href={`${OFFICE_URL}/${officeLocale(locale)}/dashboard`}
               className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""}`}
             >
               <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
@@ -362,10 +360,9 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${effectiveIsCollapsed ? "justify-center px-0" : "justify-start px-3"
                   }`}
                 onClick={() => {
-                  reset();
                   resetTextTranslation();
                   resetDocumentTranslation();
-                  router.push("/sign-in");
+                  signOutEverywhere(locale);
                 }}
               >
                 <LogOut

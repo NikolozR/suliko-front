@@ -2101,6 +2101,11 @@
     "openOffice": "Open Suliko Office",
     "errorTitle": "Couldn't open Suliko Office",
     "errorBody": "Something went wrong on our side. Try again in a moment.",
-    "retry": "Try again"
+    "retry": "Try again",
+    "signingOut": "Signing out…",
+    "signOutTitle": "Sign out of Suliko?",
+    "signOutBody": "You'll be signed out of Suliko and Suliko Office on this device.",
+    "signOut": "Sign out",
+    "stay": "Stay signed in"
   }
 }
