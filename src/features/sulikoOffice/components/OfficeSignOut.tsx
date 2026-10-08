@@ -6,6 +6,7 @@ import { useLocale, useTranslations } from "next-intl";
 import { Loader2 } from "lucide-react";
 
 import { useAuthStore } from "@/features/auth/store/authStore";
+import { WEB_SESSIONS, sessionPost } from "@/features/auth/lib/webSession";
 import { OFFICE_ORIGINS, officeAddress } from "../lib/officeLinks";
 
 /**
@@ -26,6 +27,7 @@ export default function OfficeSignOut() {
   const next = officeAddress(params.get("return_to")) ?? `/${locale}/sign-in`;
 
   const signOut = useCallback(() => {
+    if (WEB_SESSIONS) void sessionPost("sign-out", undefined, { keepalive: true }).catch(() => undefined);
     useAuthStore.getState().reset();
     window.location.replace(next);
   }, [next]);

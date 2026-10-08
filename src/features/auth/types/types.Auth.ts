@@ -54,4 +54,5 @@ export type RegisterFormData = z.infer<ReturnType<typeof createRegisterFormSchem
 export interface LoginResponse {
   token: string;
   refreshToken: string;
+  hasSeenRegistrationBonus?: boolean;
 }

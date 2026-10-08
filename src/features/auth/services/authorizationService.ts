@@ -1,5 +1,11 @@
 import { LoginResponse } from "@/features/auth/types/types.Auth";
 import { apiClient, ApiClient } from "@/shared/lib/apiClient";
+import {
+  WEB_SESSIONS,
+  SESSION_COOKIE_MARKER,
+  refreshWebSession,
+  sessionPost,
+} from "@/features/auth/lib/webSession";
 
 
 interface LoginParams {
@@ -78,11 +84,15 @@ export async function login({
       throw new Error("Either phone number or email must be provided");
     }
 
-    // Send email or phone in the phoneNumber field - backend handles both
-    const response = await apiClient.post("/Auth/login-with-phone", {
-      phoneNumber: identifier,
-      password,
-    });
+    // Send email or phone in the phoneNumber field - backend handles both.
+    // With web sessions, through this site's server, which keeps the refresh
+    // token in an HttpOnly cookie; the answers are the backend's either way.
+    const response = WEB_SESSIONS
+      ? await sessionPost("login", { phoneNumber: identifier, password })
+      : await apiClient.post("/Auth/login-with-phone", {
+          phoneNumber: identifier,
+          password,
+        });
     
     if (response.ok) {
       return response.data as LoginResponse;
@@ -109,6 +119,11 @@ export async function login({
 }
 
 export async function reaccessToken(refreshToken: string) {
+  // The marker means the real token is in this site's cookie. Anything else is
+  // a token from before web sessions, still refreshed the old way.
+  if (WEB_SESSIONS && refreshToken === SESSION_COOKIE_MARKER) {
+    return refreshWebSession();
+  }
   try {
     const response = await apiClient.post("/Auth/refresh-token", {
       refreshToken,
@@ -257,9 +272,11 @@ export async function loginWithGoogle(idToken: string, referralCode?: string): P
   try {
     // The referral code only matters when this Google account signs up for the first time.
     const query = referralCode?.trim() ? `?referralCode=${encodeURIComponent(referralCode.trim())}` : "";
-    const response = await apiClient.post<LoginResponse>(`/Auth/login-with-google${query}`, idToken);
+    const response = WEB_SESSIONS
+      ? await sessionPost("google", { idToken, referralCode: referralCode?.trim() || null })
+      : await apiClient.post<LoginResponse>(`/Auth/login-with-google${query}`, idToken);
     if (response.ok) {
-      return response.data;
+      return response.data as LoginResponse;
     } else {
       throw new Error("Google login failed");
     }
