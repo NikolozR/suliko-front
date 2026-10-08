@@ -8,8 +8,7 @@ import { Loader2 } from "lucide-react";
 import SulikoForm from "@/shared/components/SulikoForm";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { requestOfficeCode } from "../services/officeSsoService";
-
-const OFFICE_URL = "https://app.suliko.ge";
+import { OFFICE_URL } from "../lib/officeLinks";
 
 type Phase = "checking" | "signIn" | "redirecting" | "invalid" | "error";
 

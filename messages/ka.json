@@ -2101,6 +2101,11 @@
     "openOffice": "Suliko Office-ის გახსნა",
     "errorTitle": "Suliko Office ვერ გაიხსნა",
     "errorBody": "რაღაც შეცდომა მოხდა. სცადეთ ცოტა ხანში.",
-    "retry": "ხელახლა ცდა"
+    "retry": "ხელახლა ცდა",
+    "signingOut": "მიმდინარეობს გამოსვლა…",
+    "signOutTitle": "გამოხვიდეთ Suliko-დან?",
+    "signOutBody": "ამ მოწყობილობაზე გამოხვალთ Suliko-დან და Suliko Office-იდან.",
+    "signOut": "გამოსვლა",
+    "stay": "დარჩენა"
   }
 }

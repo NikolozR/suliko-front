@@ -4,10 +4,10 @@ import { Avatar, AvatarFallback } from "@/features/ui/components/ui/avatar";
 import { Plus, LogOut } from "lucide-react";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { useUser } from "@/features/auth/hooks/useUser";
-import { useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { formatBalance } from "@/shared/utils/domainUtils";
-import { useAuthStore } from "@/features/auth/store/authStore";
+import { signOutEverywhere } from "@/features/auth/services/signOut";
 
 interface ProfileHeroProps {
   userProfile: UserProfile;
@@ -16,12 +16,10 @@ interface ProfileHeroProps {
 export const ProfileHero = ({ userProfile }: ProfileHeroProps) => {
   const { displayName, initials } = useUser();
   const t = useTranslations("Profile");
-  const reset = useAuthStore((state) => state.reset);
-  const router = useRouter();
+  const locale = useLocale();
 
   const handleLogout = () => {
-    reset();
-    router.push("/sign-in");
+    signOutEverywhere(locale);
   };
 
   return (

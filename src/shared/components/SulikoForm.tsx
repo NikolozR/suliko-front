@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/features/ui/components/ui/form";
 import { Button } from "@/features/ui/components/ui/button";
 import { Input } from "@/features/ui/components/ui/input";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { Loader2, User } from "lucide-react";
 import {
@@ -75,6 +75,9 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle }) => {
     }
   };
   const [isLoginMode, setIsLoginMode] = useState(true);
+  // `?mode=register` opens on registration — the link invitations and Suliko
+  // Office's "create an account" send people to. Once, on arrival.
+  const openedInMode = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationStep, setRegistrationStep] = useState<RegistrationStep>(1);
   const [isCodeSent, setIsCodeSent] = useState(false);
@@ -186,6 +189,13 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle }) => {
     form.setValue("identifier", identifier);
     setSwitchedToLoginNote(true);
   }
+
+  useEffect(() => {
+    if (openedInMode.current) return;
+    openedInMode.current = true;
+    if (searchParams.get("mode") === "register" && isLoginMode) toggleAuthMode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- on arrival only
+  }, []);
 
   function toggleAuthMode() {
     const newIsLoginMode = !isLoginMode;

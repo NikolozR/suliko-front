@@ -2101,6 +2101,11 @@
     "openOffice": "Otwórz Suliko Office",
     "errorTitle": "Nie udało się otworzyć Suliko Office",
     "errorBody": "Coś poszło nie tak. Spróbuj ponownie za chwilę.",
-    "retry": "Spróbuj ponownie"
+    "retry": "Spróbuj ponownie",
+    "signingOut": "Wylogowywanie…",
+    "signOutTitle": "Wylogować się z Suliko?",
+    "signOutBody": "Zostaniesz wylogowany z Suliko i Suliko Office na tym urządzeniu.",
+    "signOut": "Wyloguj się",
+    "stay": "Zostań zalogowany"
   }
 }
