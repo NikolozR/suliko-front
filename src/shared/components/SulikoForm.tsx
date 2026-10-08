@@ -45,7 +45,18 @@ import {
 
 type RegistrationStep = 1 | 2 | 3;
 
-const SulikoForm: React.FC = () => {
+interface SulikoFormProps {
+  /**
+   * Where a successful sign-in or sign-up goes. Defaults to the translator
+   * (`/document`); the Suliko Office gateway passes its own, which sends the
+   * person on to Office instead.
+   */
+  onSignedIn?: () => void | Promise<void>;
+  /** A line under the logo saying what signing in is for. */
+  subtitle?: string;
+}
+
+const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle }) => {
   const t = useTranslations("Authorization");
   const tError = useTranslations("ErrorAlert");
   const locale = useLocale();
@@ -56,6 +67,13 @@ const SulikoForm: React.FC = () => {
   const fetchUserProfile = useUserStore((state) => state.fetchUserProfile);
   const setUserProfile = useUserStore((state) => state.setUserProfile);
   const [authError, setAuthError] = useState<string | null>(null);
+  const finishSignIn = async () => {
+    if (onSignedIn) {
+      await onSignedIn();
+    } else {
+      router.push("/document");
+    }
+  };
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationStep, setRegistrationStep] = useState<RegistrationStep>(1);
@@ -324,7 +342,7 @@ const SulikoForm: React.FC = () => {
         } catch (profileError) {
           console.error("Failed to check/update registration bonus flag:", profileError);
         }
-        router.push("/document");
+        await finishSignIn();
       } else {
         const registerValues = values as RegisterFormData;
         if (!isCodeSent || !verificationMethod) {
@@ -389,7 +407,7 @@ const SulikoForm: React.FC = () => {
         }
 
         triggerWelcomeModal();
-        router.push("/document");
+        await finishSignIn();
       }
     } catch (error: unknown) {
       const errorMessage =
@@ -464,7 +482,7 @@ const SulikoForm: React.FC = () => {
         setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
         triggerWelcomeModal();
       }
-      router.push("/document");
+      await finishSignIn();
     } catch (error) {
       console.error("Google login error:", error);
       setAuthError(tError("ups"));
@@ -496,6 +514,9 @@ const SulikoForm: React.FC = () => {
             {/* Logo */}
             <div className="mb-6">
               <SulikoLogo width={90} className="mx-auto" />
+              {subtitle && (
+                <p className="mt-3 text-center text-sm text-muted-foreground">{subtitle}</p>
+              )}
             </div>
 
             {/* Tab switcher */}

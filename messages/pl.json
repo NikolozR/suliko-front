@@ -150,7 +150,8 @@
     "balance": "Saldo",
     "pages": "stron",
     "completeEmail": "Uzupełnij e-mail",
-    "passport": "Paszport"
+    "passport": "Paszport",
+    "office": "Suliko Office"
   },
   "Passport": {
     "title": "Tłumaczenie paszportu",
@@ -2091,5 +2092,15 @@
     "editedSince": "Ten tekst został od tego czasu zmieniony, więc nie można go automatycznie przywrócić.",
     "clean": "Sprawdzono z oryginałem: nie znaleziono błędów.",
     "handedOn": "{count, plural, one {Sprawdzono z oryginałem: # możliwy błąd wymaga Twojej uwagi poniżej.} few {Sprawdzono z oryginałem: # możliwe błędy wymagają Twojej uwagi poniżej.} other {Sprawdzono z oryginałem: # możliwych błędów wymaga Twojej uwagi poniżej.}}"
+  },
+  "OfficeSso": {
+    "signInSubtitle": "Zaloguj się, aby przejść do Suliko Office",
+    "redirecting": "Otwieranie Suliko Office…",
+    "invalidTitle": "Ten link logowania nie działa",
+    "invalidBody": "Otwórz ponownie Suliko Office i zaloguj się stamtąd.",
+    "openOffice": "Otwórz Suliko Office",
+    "errorTitle": "Nie udało się otworzyć Suliko Office",
+    "errorBody": "Coś poszło nie tak. Spróbuj ponownie za chwilę.",
+    "retry": "Spróbuj ponownie"
   }
 }
