@@ -25,10 +25,14 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
+  Briefcase,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+
+/** Suliko Office. Signing in there goes through suliko.ge, so this is one click. */
+const OFFICE_URL = "https://app.suliko.ge";
 
 const NAV_ITEMS = [
   {
@@ -92,6 +96,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
   const router = useRouter();
   const t = useTranslations('Sidebar');
+  const locale = useLocale();
 
   // Hydrate userStore with server-fetched data
   useEffect(() => {
@@ -272,6 +277,16 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               </div>
               <HistoryDropdown isCollapsed={effectiveIsCollapsed} isOpen={isProjectsOpen} />
             </div>
+          )}
+
+          {token && (
+            <a
+              href={`${OFFICE_URL}/${locale === "en" ? "en" : "ka"}/dashboard`}
+              className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""}`}
+            >
+              <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
+              {!effectiveIsCollapsed && <span className="whitespace-nowrap">{t("office")}</span>}
+            </a>
           )}
         </nav>
 

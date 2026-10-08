@@ -150,7 +150,8 @@
     "balance": "Balance",
     "pages": "Pages",
     "completeEmail": "Add your email",
-    "passport": "Passport"
+    "passport": "Passport",
+    "office": "Suliko Office"
   },
   "Passport": {
     "title": "Passport Translation",
@@ -2091,5 +2092,15 @@
     "editedSince": "This text has been edited since, so it can't be changed back automatically.",
     "clean": "Checked against the original: no errors found.",
     "handedOn": "{count, plural, one {Checked against the original: # possible error needs your review below.} other {Checked against the original: # possible errors need your review below.}}"
+  },
+  "OfficeSso": {
+    "signInSubtitle": "Sign in to continue to Suliko Office",
+    "redirecting": "Opening Suliko Office…",
+    "invalidTitle": "This sign-in link doesn't work",
+    "invalidBody": "Open Suliko Office again and sign in from there.",
+    "openOffice": "Open Suliko Office",
+    "errorTitle": "Couldn't open Suliko Office",
+    "errorBody": "Something went wrong on our side. Try again in a moment.",
+    "retry": "Try again"
   }
 }

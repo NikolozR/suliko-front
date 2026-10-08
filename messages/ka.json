@@ -150,7 +150,8 @@
     "balance": "ბალანსი",
     "pages": "გვერდი",
     "completeEmail": "დაარედაქტირეთ ელფოსტა",
-    "passport": "პასპორტი"
+    "passport": "პასპორტი",
+    "office": "Suliko Office"
   },
   "Passport": {
     "title": "პასპორტის თარგმანი",
@@ -2091,5 +2092,15 @@
     "editedSince": "ეს ტექსტი მას შემდეგ შეიცვალა, ამიტომ ავტომატურად ვერ დაბრუნდება.",
     "clean": "ორიგინალთან შედარებულია: შეცდომა არ მოიძებნა.",
     "handedOn": "{count, plural, other {ორიგინალთან შედარებულია: # შესაძლო შეცდომა ქვემოთ თქვენს განხილვას საჭიროებს.}}"
+  },
+  "OfficeSso": {
+    "signInSubtitle": "შედით, რომ გააგრძელოთ Suliko Office-ში",
+    "redirecting": "Suliko Office იხსნება…",
+    "invalidTitle": "შესვლის ბმული არ მუშაობს",
+    "invalidBody": "ხელახლა გახსენით Suliko Office და შედით იქიდან.",
+    "openOffice": "Suliko Office-ის გახსნა",
+    "errorTitle": "Suliko Office ვერ გაიხსნა",
+    "errorBody": "რაღაც შეცდომა მოხდა. სცადეთ ცოტა ხანში.",
+    "retry": "ხელახლა ცდა"
   }
 }
