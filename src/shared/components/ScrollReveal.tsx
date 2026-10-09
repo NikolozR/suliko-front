@@ -3,7 +3,8 @@
 import { useEffect } from "react";
 
 /**
- * Reveals `[data-reveal]` elements inside `#top` the first time they scroll into
+ * Reveals `[data-reveal]` elements inside `#top` (the landing page and /tms both
+ * use that id on their root) the first time they scroll into
  * view: a short fade and rise, staggered by an optional `--reveal-delay`.
  *
  * Progressive on purpose. Nothing is hidden until this has run and marked the

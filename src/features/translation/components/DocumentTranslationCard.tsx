@@ -31,7 +31,14 @@ import { startTranslationProject } from "../utils/startTranslationProject";
 import { DocumentTranslateError } from "../services/translationService";
 import { suggestNameTranslations } from "../services/nameTranslationService";
 import NameReviewModal from "./NameReviewModal";
-import { NameTranslationItem, DEFAULT_DOCUMENT_OUTPUT_FORMAT } from "../types/types.Translation";
+import {
+  NameTranslationItem,
+  DEFAULT_DOCUMENT_OUTPUT_FORMAT,
+  type DocumentBrief,
+  type TermTranslationItem,
+} from "../types/types.Translation";
+import { useDocumentAnalysis } from "../hooks/useDocumentAnalysis";
+import { uiOutputLanguageId } from "../utils/outputLanguage";
 import { moveChatToProject, uploadOriginalForChat } from "@/features/chatHistory";
 import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "@/features/projects";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
@@ -41,7 +48,7 @@ import { MAX_DOCUMENT_UPLOAD_BYTES, formatBytes } from "../constants/uploadLimit
 import { prepareDocumentUpload, PrepareUploadError } from "../services/prepareUploadService";
 import type { PrepareUploadResponse } from "../types/types.Translation";
 import LanguageSelect from "./LanguageSelect";
-import { DeliverableSelect, NamesBlock, QuoteBlock } from "./JobPanel";
+import { BriefBlock, DeliverableSelect, InstructionsBlock, NamesBlock, QuoteBlock } from "./JobPanel";
 import InProgressView from "./InProgressView";
 import { useJobStage } from "../hooks/useJobStage";
 import { Button } from "@/features/ui/components/ui/button";
@@ -165,6 +172,7 @@ const DocumentTranslationCard = () => {
   const [isOcrOnly, setIsOcrOnly] = useState(false);
   // Output format for document (non-SRT) translations. Defaults to the standard HTML output.
   const [outputFormat, setOutputFormat] = useState<number>(DEFAULT_DOCUMENT_OUTPUT_FORMAT);
+  const [instructions, setInstructions] = useState("");
   const [isDetectingNames, setIsDetectingNames] = useState(false);
   /**
    * What the submit is actually doing right now. Only real transitions —
@@ -358,6 +366,61 @@ const DocumentTranslationCard = () => {
     setValue("currentTargetLanguageId", currentTargetLanguageId);
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
+
+  // Read the document as soon as the server holds it, so the brief is there
+  // before the user decides to pay.
+  const isSrtSelected = watch("isSrt");
+  const {
+    status: analysisStatus,
+    analysis,
+    waitForResult: waitForAnalysis,
+  } = useDocumentAnalysis({
+    fileUri: prepared?.fileUri,
+    mimeType: prepared?.mimeType,
+    sourceLanguageId: currentSourceLanguageId,
+    targetLanguageId: currentTargetLanguageId,
+    outputLanguageId: uiOutputLanguageId(),
+    enabled: !!token && !isOcrOnly && !isSrtSelected && !activeJob,
+  });
+
+  // The user's working copy of the brief, reset whenever a new analysis lands.
+  const [briefTerms, setBriefTerms] = useState<TermTranslationItem[]>([]);
+  const [briefAnswers, setBriefAnswers] = useState<Record<number, string>>({});
+  useEffect(() => {
+    setBriefTerms(analysis?.terms ?? []);
+    setBriefAnswers({});
+  }, [analysis]);
+
+  /** What the user confirmed, in the shape translate-with-uri takes. */
+  const buildBrief = (): DocumentBrief | undefined => {
+    if (!analysis) return undefined;
+    return {
+      documentType: analysis.documentType ?? undefined,
+      domain: analysis.domain ?? undefined,
+      register: analysis.register ?? undefined,
+      terms: briefTerms
+        .map(({ original, translation }) => ({ original, translation: translation.trim() }))
+        .filter((term) => term.translation),
+      answers: analysis.questions
+        .map((q, i) => ({ question: q.question, answer: (briefAnswers[i] ?? "").trim() }))
+        .filter((a) => a.answer),
+    };
+  };
+
+  /**
+   * Names for the review modal. The analysis already found them in the file
+   * the server holds; the old endpoint, which uploads the file again and makes
+   * two model calls, is only the fallback for when the analysis failed.
+   */
+  const detectNames = async (data: DocumentFormData): Promise<NameTranslationItem[]> => {
+    const analysed = await waitForAnalysis();
+    if (analysed) return analysed.names;
+    return suggestNameTranslations(
+      data.currentFile[0],
+      data.currentSourceLanguageId,
+      data.currentTargetLanguageId
+    );
+  };
 
 
   // Restore file from storage when user returns after authentication
@@ -645,11 +708,7 @@ const DocumentTranslationCard = () => {
           // Detection is resilient: a failure here still applies the saved glossary.
           const [savedPairs, detected] = await Promise.all([
             getProjectNames(projectId).catch(() => [] as ProjectNameTranslation[]),
-            suggestNameTranslations(
-              data.currentFile[0],
-              data.currentSourceLanguageId,
-              data.currentTargetLanguageId
-            ).catch(() => [] as NameTranslationItem[]),
+            detectNames(data).catch(() => [] as NameTranslationItem[]),
           ]);
           const savedKeys = new Set(savedPairs.map((p) => nameKey(p.original)));
           const newOnes = detected.filter((d) => !savedKeys.has(nameKey(d.original)));
@@ -672,11 +731,7 @@ const DocumentTranslationCard = () => {
         try {
           setIsDetectingNames(true);
           setSubmitStage("detectingNames");
-          const names = await suggestNameTranslations(
-            data.currentFile[0],
-            data.currentSourceLanguageId,
-            data.currentTargetLanguageId
-          );
+          const names = await detectNames(data);
           if (names.length > 0) {
             setPendingSavedNames([]);
             setDetectedNames(names);
@@ -779,6 +834,9 @@ const DocumentTranslationCard = () => {
           // Already uploaded at selection time; this only re-uploads if
           // something went wrong and we have nothing prepared.
           prepared,
+          instructions,
+          brief: buildBrief(),
+          templateId: analysis?.matchedTemplateId ?? undefined,
           onUploadProgress: (fraction) => setUploadPercent(Math.round(fraction * 100)),
           onStarting: () => setSubmitStage("starting"),
         }
@@ -1123,6 +1181,23 @@ const DocumentTranslationCard = () => {
                   </div>
 
                   <aside className="flex w-full flex-col gap-4 lg:w-[392px] lg:shrink-0">
+                    <BriefBlock
+                      status={analysisStatus}
+                      analysis={analysis}
+                      terms={briefTerms}
+                      onTermChange={(index, translation) =>
+                        setBriefTerms((terms) =>
+                          terms.map((term, i) => (i === index ? { ...term, translation } : term))
+                        )
+                      }
+                      onTermRemove={(index) =>
+                        setBriefTerms((terms) => terms.filter((_, i) => i !== index))
+                      }
+                      answers={briefAnswers}
+                      onAnswer={(index, answer) =>
+                        setBriefAnswers((answers) => ({ ...answers, [index]: answer }))
+                      }
+                    />
                     {!isOcrOnly && !watch("isSrt") && (
                       <DeliverableSelect value={outputFormat} onChange={setOutputFormat} />
                     )}
@@ -1134,6 +1209,9 @@ const DocumentTranslationCard = () => {
                         projectName={projectName}
                         savedCount={projectId ? projectGlossaryCount : undefined}
                       />
+                    )}
+                    {!isOcrOnly && !watch("isSrt") && (
+                      <InstructionsBlock value={instructions} onChange={setInstructions} />
                     )}
                     <QuoteBlock
                       pageCount={quotedPageCount}

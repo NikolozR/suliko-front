@@ -1,5 +1,5 @@
 "use client";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
@@ -25,11 +25,14 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
+  Briefcase,
   ClipboardList,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
+import { signOutEverywhere } from "@/features/auth/services/signOut";
 import { useIsTranslator } from "@/features/orders/useIsTranslator";
 
 const NAV_ITEMS = [
@@ -78,7 +81,7 @@ interface SidebarProps {
 
 export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const pathname = usePathname();
-  const { token, reset } = useAuthStore();
+  const { token } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
@@ -100,8 +103,8 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  const router = useRouter();
   const t = useTranslations('Sidebar');
+  const locale = useLocale();
 
   // The Orders tab only exists for translators a bureau has linked.
   const isTranslator = useIsTranslator(token);
@@ -292,6 +295,16 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               <HistoryDropdown isCollapsed={effectiveIsCollapsed} isOpen={isProjectsOpen} />
             </div>
           )}
+
+          {token && (
+            <a
+              href={`${OFFICE_URL}/${officeLocale(locale)}/dashboard`}
+              className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""}`}
+            >
+              <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
+              {!effectiveIsCollapsed && <span className="whitespace-nowrap">{t("office")}</span>}
+            </a>
+          )}
         </nav>
 
         <div className="mt-auto flex flex-col gap-2 p-3">
@@ -366,10 +379,9 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${effectiveIsCollapsed ? "justify-center px-0" : "justify-start px-3"
                   }`}
                 onClick={() => {
-                  reset();
                   resetTextTranslation();
                   resetDocumentTranslation();
-                  router.push("/sign-in");
+                  signOutEverywhere(locale);
                 }}
               >
                 <LogOut

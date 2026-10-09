@@ -1280,6 +1280,11 @@ html.dark .sidebar-main {
 .office-draw { stroke-dasharray: 1; animation: office-draw 1100ms cubic-bezier(0.4, 0, 0.2, 1) both; }
 .office-rise { transform-box: fill-box; transform-origin: bottom; animation: office-rise 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
 .office-donut { animation: office-donut 900ms ease-out both; }
+/* The reports demo switches views quickly, so its charts draw in faster. */
+.office-quick .office-draw { animation-duration: 650ms; }
+.office-quick .office-rise { animation-duration: 450ms; }
+.office-quick .office-grow, .office-quick .office-donut { animation-duration: 550ms; }
+.office-quick .office-fade { animation-duration: 250ms; }
 @media (prefers-reduced-motion: reduce) {
   .office-enter, .office-fade, .office-pop, .office-slide, .office-grow, .office-float, .office-drift,
   .office-draw, .office-rise, .office-donut { animation: none; }
@@ -1292,7 +1297,7 @@ html.dark .sidebar-main {
     #f2f5ff;
 }
 
-/* Reveal on scroll (/tms, see ScrollReveal). Only once the script has marked the
+/* Reveal on scroll (landing page and /tms, see ScrollReveal). Only once the script has marked the
    page ready, so the server HTML and no-JS visitors always show everything. */
 [data-reveal-ready] [data-reveal] {
   transition: opacity 700ms cubic-bezier(0.2, 0.8, 0.2, 1), transform 700ms cubic-bezier(0.2, 0.8, 0.2, 1);
@@ -1301,4 +1306,134 @@ html.dark .sidebar-main {
 [data-reveal-ready] [data-reveal]:not([data-revealed]) {
   opacity: 0;
   transform: translateY(18px);
+}
+
+/* ---------------------------------------------------------------------------
+   Main landing page: autoplay loops (hero demo, how it works, feature bento,
+   testimonials, Office + Notary, closing CTA).
+
+   Every loop stops for prefers-reduced-motion, and a section marked
+   `data-paused` (off screen, see useAutoplay) freezes its CSS loops so nothing
+   animates where nobody can see it.
+   --------------------------------------------------------------------------- */
+@keyframes lp-enter {
+  from { opacity: 0; transform: translateY(6px); }
+}
+@keyframes lp-enter-down {
+  from { opacity: 0; transform: translateY(-10px); }
+}
+@keyframes lp-pop {
+  from { opacity: 0; transform: scale(0.85); }
+}
+@keyframes lp-shimmer {
+  from { background-position: -200px 0; }
+  to { background-position: 200px 0; }
+}
+@keyframes lp-caret {
+  50% { opacity: 0; }
+}
+@keyframes lp-fill {
+  from { transform: scaleX(0); }
+}
+@keyframes lp-drop {
+  0% { opacity: 0; transform: translateY(-36px) rotate(-6deg); }
+  70% { opacity: 1; transform: translateY(4px) rotate(1deg); }
+}
+@keyframes lp-scan {
+  to { transform: translateY(var(--lp-scan, 220px)); }
+}
+@keyframes lp-ring {
+  from { stroke-dashoffset: 126; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes lp-hover {
+  from { transform: translateY(-4px); }
+  to { transform: translateY(4px); }
+}
+@keyframes lp-type {
+  0% { clip-path: inset(0 100% 0 0); }
+  55%, 100% { clip-path: inset(0 0 0 0); }
+}
+@keyframes lp-chip {
+  0%, 40% { opacity: 0; transform: translateY(8px); }
+  50%, 92% { opacity: 1; transform: none; }
+  100% { opacity: 0; }
+}
+@keyframes lp-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes lp-marquee {
+  to { transform: translateX(-50%); }
+}
+@keyframes lp-pulse {
+  from { transform: scale(0.8); opacity: 0.7; }
+  to { transform: scale(1.9); opacity: 0; }
+}
+@keyframes lp-travel {
+  0% { left: 0; opacity: 0; }
+  10%, 90% { opacity: 1; }
+  100% { left: calc(100% - 10px); opacity: 0; }
+}
+/* The stamp drops, presses, then lifts away to leave the ink mark behind. */
+@keyframes lp-stamp {
+  0%, 8% { opacity: 0; transform: translate(40px, -60px) scale(1.6) rotate(-18deg); }
+  24% { opacity: 1; transform: scale(1.04) rotate(-8deg); }
+  30% { opacity: 1; transform: scale(0.94) rotate(-8deg); }
+  46%, 100% { opacity: 0; transform: translate(30px, -50px) scale(1.4) rotate(-14deg); }
+}
+@keyframes lp-ink {
+  0%, 28% { opacity: 0; transform: scale(0.6) rotate(-8deg); }
+  36%, 88% { opacity: 1; transform: scale(1) rotate(-8deg); }
+  100% { opacity: 0; transform: rotate(-8deg); }
+}
+@keyframes lp-sign {
+  0%, 40% { stroke-dashoffset: 220; opacity: 1; }
+  70%, 90% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes lp-drift {
+  from { transform: translate(-8%, -10%) scale(1); }
+  to { transform: translate(10%, 8%) scale(1.15); }
+}
+@keyframes lp-sheen {
+  0%, 60% { transform: translateX(-120%) skewX(-20deg); }
+  100% { transform: translateX(260%) skewX(-20deg); }
+}
+.lp-enter { animation: lp-enter 420ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.lp-pop { animation: lp-pop 380ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.lp-shimmer {
+  background: linear-gradient(90deg, #dbe2f5 0%, #b9c6f7 50%, #dbe2f5 100%);
+  background-size: 400px 100%;
+  animation: lp-shimmer 900ms linear infinite;
+}
+.lp-caret { animation: lp-caret 800ms steps(1) infinite; }
+.lp-fill { transform-origin: left; animation: lp-fill var(--lp-step, 4s) linear both; }
+.lp-drop { animation: lp-drop 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.lp-scan { animation: lp-scan 2.6s cubic-bezier(0.5, 0, 0.5, 1) infinite alternate; }
+.lp-ring { stroke-dasharray: 126; animation: lp-ring 1.4s 600ms ease-out both; }
+.lp-hover { animation: lp-hover 2.4s ease-in-out infinite alternate; }
+.lp-type { animation: lp-type 5s steps(34) infinite; }
+.lp-chip { animation: lp-chip 5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite both; }
+.lp-orbit { animation: lp-spin 30s linear infinite; }
+.lp-orbit-counter { animation: lp-spin 30s linear infinite reverse; }
+.lp-orbit-inner { animation: lp-spin 44s linear infinite reverse; }
+.lp-orbit-inner-counter { animation: lp-spin 44s linear infinite; }
+.lp-marquee { animation: lp-marquee var(--lp-marquee, 40s) linear infinite; }
+.lp-marquee-reverse { animation: lp-marquee var(--lp-marquee, 40s) linear infinite reverse; }
+.lp-pause-on-hover:hover .lp-marquee,
+.lp-pause-on-hover:hover .lp-marquee-reverse { animation-play-state: paused; }
+.lp-pulse { animation: lp-pulse 2.2s ease-out infinite; }
+.lp-travel { animation: lp-travel 1.8s linear infinite; }
+.lp-stamp { animation: lp-stamp 4.2s cubic-bezier(0.3, 0.7, 0.3, 1) infinite; }
+.lp-ink { animation: lp-ink 4.2s ease-out infinite; }
+.lp-sign { stroke-dasharray: 220; animation: lp-sign 4.2s ease-in-out infinite; }
+.lp-drift { animation: lp-drift 12s ease-in-out infinite alternate; }
+.lp-sheen { animation: lp-sheen 3.6s ease-in-out infinite; }
+
+[data-paused] :is([class^="lp-"], [class*=" lp-"]) { animation-play-state: paused !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  :is([class^="lp-"], [class*=" lp-"]) { animation: none !important; }
+  /* Without its lift-off the stamp would sit on the seal for good. */
+  .lp-stamp { display: none; }
 }

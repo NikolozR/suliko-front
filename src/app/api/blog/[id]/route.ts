@@ -1,8 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase-admin';
+import { requireAdmin } from '@/lib/admin-auth';
 
 // GET /api/blog/[id]
 export async function GET(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const { id } = await params;
 
   const { data, error } = await supabaseAdmin
@@ -17,6 +21,9 @@ export async function GET(_req: NextRequest, { params }: { params: Promise<{ id:
 
 // PUT /api/blog/[id]
 export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const { id } = await params;
   const body = await req.json();
   const { cover_image, author_name, tags, status, published_at, translations } = body;
@@ -51,6 +58,9 @@ export async function PUT(req: NextRequest, { params }: { params: Promise<{ id: 
 
 // DELETE /api/blog/[id]
 export async function DELETE(_req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   const { id } = await params;
 
   const { error } = await supabaseAdmin.from('blog_posts').delete().eq('id', id);

@@ -26,6 +26,7 @@ export interface  DocumentTranslateUserContentParams {
 export type JobStage =
   | "queued"
   | "translating"
+  | "verifying"
   | "rebuilding"
   | "ready"
   | "failed";
@@ -72,6 +73,10 @@ export interface SuggestionsResponse {
   suggestionCount: number;
   suggestions: Suggestion[];
   message: string;
+  /** "pending" while the review is still running; see SuggestionStatuses on the backend. */
+  suggestionsStatus?: string;
+  /** True while more suggestions may still arrive for this job. */
+  isGenerating?: boolean;
 }
 
 export interface SuggestionsResponseProcessing {
@@ -117,6 +122,80 @@ export interface DocumentTranslateWithUriParams {
   model: number;
   pageCount?: number;
   nameTranslations?: NameTranslationItem[];
+  /** Omitted to let the model detect the source language. */
+  sourceLanguageId?: number;
+  /** Free-text notes for the translator; the backend caps them at 4000 characters. */
+  instructions?: string;
+  /** What the user confirmed from /Document/analyze. */
+  brief?: DocumentBrief;
+  /** A translation template to translate against, usually the one the analysis matched. */
+  templateId?: string;
+}
+
+/** A correction the verification pass made before delivery; undo is the same replacement reversed. */
+export interface AutoFix {
+  id: string;
+  kind: string;
+  title: string;
+  problem: string;
+  originalText: string;
+  fixedText: string;
+}
+
+/** What the verification pass did; absent on translations that never went through it. */
+export interface VerificationSummary {
+  ran: boolean;
+  found: number;
+  fixed: number;
+  handedOn: number;
+  failureReason?: string | null;
+}
+
+export interface TermTranslationItem {
+  original: string;
+  translation: string;
+  note?: string | null;
+}
+
+export interface AnalysisQuestion {
+  question: string;
+  options: string[];
+}
+
+/** POST /Document/analyze: one read of the prepared file, before anything is paid for. */
+export interface DocumentAnalysis {
+  documentType: string | null;
+  summary: string | null;
+  detectedSourceLanguage: string | null;
+  domain: string | null;
+  register: string | null;
+  layout: {
+    tables: number;
+    hasStamps: boolean;
+    hasSignatures: boolean;
+    hasHandwriting: boolean;
+    isScanned: boolean;
+  };
+  names: NameTranslationItem[];
+  terms: TermTranslationItem[];
+  questions: AnalysisQuestion[];
+  /** Set only when the document is an instance of an active translation template. */
+  matchedTemplateId?: string | null;
+  matchedTemplateName?: string | null;
+}
+
+export interface BriefAnswer {
+  question: string;
+  answer: string;
+}
+
+/** The confirmed parts of a DocumentAnalysis, sent back with the translation. */
+export interface DocumentBrief {
+  documentType?: string;
+  domain?: string;
+  register?: string;
+  terms: TermTranslationItem[];
+  answers: BriefAnswer[];
 }
 
 /**

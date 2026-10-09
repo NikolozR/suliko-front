@@ -5,18 +5,20 @@ import { useForm } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/features/ui/components/ui/form";
 import { Button } from "@/features/ui/components/ui/button";
 import { Input } from "@/features/ui/components/ui/input";
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
 import { Loader2, User } from "lucide-react";
 import {
   register,
   login,
   sendCode,
+  verifyCode,
   loginWithGoogle,
 } from "@/features/auth/services/authorizationService";
 import GoogleButton from "./GoogleButton";
 import SulikoLogo from "./SulikoLogo";
 import { updateUserProfile } from "@/features/auth/services/userService";
+import { UpdateUserProfile } from "@/features/auth/types/types.User";
 import PasswordRecoveryModal from "@/features/auth/components/PasswordRecoveryModal";
 import type { RegisterParams } from "@/features/auth/services/authorizationService";
 import ErrorAlert from "./ErrorAlert";
@@ -24,7 +26,6 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { SendVerificationCodeResponse } from "@/features/auth/types/types.Auth";
 import { generateDefaultName } from "@/shared/utils/generateDefaultName";
 import { getRequiredVerificationMethod } from "@/shared/utils/domainUtils";
 import { trackRegistrationStart, trackRegistrationComplete } from "../utils/metaPixel";
@@ -44,7 +45,18 @@ import {
 
 type RegistrationStep = 1 | 2 | 3;
 
-const SulikoForm: React.FC = () => {
+interface SulikoFormProps {
+  /**
+   * Where a successful sign-in or sign-up goes. Defaults to the translator
+   * (`/document`); the Suliko Office gateway passes its own, which sends the
+   * person on to Office instead.
+   */
+  onSignedIn?: () => void | Promise<void>;
+  /** A line under the logo saying what signing in is for. */
+  subtitle?: string;
+}
+
+const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle }) => {
   const t = useTranslations("Authorization");
   const tError = useTranslations("ErrorAlert");
   const locale = useLocale();
@@ -55,14 +67,26 @@ const SulikoForm: React.FC = () => {
   const fetchUserProfile = useUserStore((state) => state.fetchUserProfile);
   const setUserProfile = useUserStore((state) => state.setUserProfile);
   const [authError, setAuthError] = useState<string | null>(null);
+  const finishSignIn = async () => {
+    if (onSignedIn) {
+      await onSignedIn();
+    } else {
+      router.push("/document");
+    }
+  };
   const [isLoginMode, setIsLoginMode] = useState(true);
+  // `?mode=register` opens on registration — the link invitations and Suliko
+  // Office's "create an account" send people to. Once, on arrival.
+  const openedInMode = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [registrationStep, setRegistrationStep] = useState<RegistrationStep>(1);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
   const [resendTimer, setResendTimer] = useState(0);
-  const [sentVerificationCode, setSentVerificationCode] = useState<string>("");
+  // The phone/email the current code was sent to. The code itself never reaches the browser.
+  const [codeTarget, setCodeTarget] = useState<string>("");
   const [isCodeVerified, setIsCodeVerified] = useState(false);
+  const [isCodeInvalid, setIsCodeInvalid] = useState(false);
   const [showPasswordRecovery, setShowPasswordRecovery] = useState(false);
   const [verificationMethod, setVerificationMethod] = useState<"phone" | "email" | null>(null);
   const [switchedToLoginNote, setSwitchedToLoginNote] = useState(false);
@@ -102,18 +126,26 @@ const SulikoForm: React.FC = () => {
 
   const verificationCode = form.watch("verificationCode");
 
+  // Once all six digits are in, ask the API whether the code is right.
   useEffect(() => {
-    if (
-      !isLoginMode &&
-      verificationCode &&
-      sentVerificationCode &&
-      verificationCode === sentVerificationCode
-    ) {
-      setIsCodeVerified(true);
-    } else {
-      setIsCodeVerified(false);
-    }
-  }, [verificationCode, sentVerificationCode, isLoginMode]);
+    setIsCodeVerified(false);
+    setIsCodeInvalid(false);
+    if (isLoginMode || !codeTarget || !verificationCode || verificationCode.length < 6) return;
+
+    let cancelled = false;
+    verifyCode(codeTarget, verificationCode)
+      .then((valid) => {
+        if (cancelled) return;
+        setIsCodeVerified(valid);
+        setIsCodeInvalid(!valid);
+      })
+      .catch(() => {
+        if (!cancelled) setIsCodeInvalid(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [verificationCode, codeTarget, isLoginMode]);
 
   useEffect(() => {
     if (refFromUrl && !isLoginMode) {
@@ -146,7 +178,7 @@ const SulikoForm: React.FC = () => {
     setIsCodeSent(false);
     setIsSendingCode(false);
     setResendTimer(0);
-    setSentVerificationCode("");
+    setCodeTarget("");
     setIsCodeVerified(false);
   }
 
@@ -157,6 +189,13 @@ const SulikoForm: React.FC = () => {
     form.setValue("identifier", identifier);
     setSwitchedToLoginNote(true);
   }
+
+  useEffect(() => {
+    if (openedInMode.current) return;
+    openedInMode.current = true;
+    if (searchParams.get("mode") === "register" && isLoginMode) toggleAuthMode();
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- on arrival only
+  }, []);
 
   function toggleAuthMode() {
     const newIsLoginMode = !isLoginMode;
@@ -190,8 +229,8 @@ const SulikoForm: React.FC = () => {
     setVerificationMethod("phone");
 
     try {
-      const response = await sendCode(mobile.trim(), undefined) as SendVerificationCodeResponse;
-      setSentVerificationCode(response.code.toString());
+      await sendCode(mobile.trim(), undefined);
+      setCodeTarget(mobile.trim());
       setIsCodeSent(true);
 
       setResendTimer(30);
@@ -232,8 +271,8 @@ const SulikoForm: React.FC = () => {
     setVerificationMethod("email");
 
     try {
-      const response = await sendCode(undefined, email.trim()) as SendVerificationCodeResponse;
-      setSentVerificationCode(response.code.toString());
+      await sendCode(undefined, email.trim());
+      setCodeTarget(email.trim());
       setIsCodeSent(true);
 
       setResendTimer(30);
@@ -306,24 +345,14 @@ const SulikoForm: React.FC = () => {
           await fetchUserProfile();
           const profileState = useUserStore.getState().userProfile;
           if (profileState && profileState.hasSeenRegistrationBonus === false) {
-            await updateUserProfile({
-              id: profileState.id,
-              firstName: profileState.firstName,
-              lastName: profileState.lastName,
-              phoneNUmber: profileState.phoneNUmber,
-              email: profileState.email,
-              userName: profileState.userName,
-              roleId: profileState.roleId,
-              balance: profileState.balance,
-              hasSeenRegistrationBonus: true,
-            });
+            await updateUserProfile({ id: profileState.id, hasSeenRegistrationBonus: true });
             setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
             triggerWelcomeModal();
           }
         } catch (profileError) {
           console.error("Failed to check/update registration bonus flag:", profileError);
         }
-        router.push("/document");
+        await finishSignIn();
       } else {
         const registerValues = values as RegisterFormData;
         if (!isCodeSent || !verificationMethod) {
@@ -334,7 +363,8 @@ const SulikoForm: React.FC = () => {
           setAuthError(t("pleaseEnterVerificationCode"));
           return;
         }
-        if (registerValues.verificationCode !== sentVerificationCode) {
+        // Checked by the API (verify-code), and again when registering.
+        if (!isCodeVerified) {
           setAuthError(t("incorrectVerificationCode"));
           return;
         }
@@ -372,20 +402,22 @@ const SulikoForm: React.FC = () => {
           await fetchUserProfile();
           const profileState = useUserStore.getState().userProfile;
           if (profileState) {
-            const { roleName, ...profileData } = profileState;
-            const updatePayload = {
-              ...profileData,
-              ...(email && { email }),
+            const updatePayload: UpdateUserProfile = {
+              id: profileState.id,
+              firstName: profileState.firstName,
+              lastName: profileState.lastName,
+              phoneNUmber: profileState.phoneNUmber,
+              email: email || profileState.email,
             };
             await updateUserProfile(updatePayload);
-            setUserProfile({ ...updatePayload, roleName });
+            setUserProfile({ ...profileState, ...updatePayload });
           }
         } catch (syncError) {
           console.error("Failed to sync profile after registration:", syncError);
         }
 
         triggerWelcomeModal();
-        router.push("/document");
+        await finishSignIn();
       }
     } catch (error: unknown) {
       const errorMessage =
@@ -418,7 +450,7 @@ const SulikoForm: React.FC = () => {
     if (isCodeSent && verificationMethod === "phone") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
-      setSentVerificationCode("");
+      setCodeTarget("");
       setResendTimer(0);
       const requiredMethod = getRequiredVerificationMethod();
       if (!requiredMethod) {
@@ -433,7 +465,7 @@ const SulikoForm: React.FC = () => {
     if (isCodeSent && verificationMethod === "email") {
       setIsCodeSent(false);
       setIsCodeVerified(false);
-      setSentVerificationCode("");
+      setCodeTarget("");
       setResendTimer(0);
       const requiredMethod = getRequiredVerificationMethod();
       if (!requiredMethod) {
@@ -448,27 +480,19 @@ const SulikoForm: React.FC = () => {
     setAuthError(null);
     setIsSubmitting(true);
     try {
-      const data = await loginWithGoogle(credentialResponse.credential);
+      // Only used by the backend if this Google account is new.
+      const referralCode = (form.getValues("referralCode") as string | undefined)?.trim() || refFromUrl;
+      const data = await loginWithGoogle(credentialResponse.credential, referralCode);
       setToken(data.token);
       setRefreshToken(data.refreshToken);
       await fetchUserProfile();
       const profileState = useUserStore.getState().userProfile;
       if (profileState && profileState.hasSeenRegistrationBonus === false) {
-        await updateUserProfile({
-          id: profileState.id,
-          firstName: profileState.firstName,
-          lastName: profileState.lastName,
-          phoneNUmber: profileState.phoneNUmber,
-          email: profileState.email,
-          userName: profileState.userName,
-          roleId: profileState.roleId,
-          balance: profileState.balance,
-          hasSeenRegistrationBonus: true,
-        });
+        await updateUserProfile({ id: profileState.id, hasSeenRegistrationBonus: true });
         setUserProfile({ ...profileState, hasSeenRegistrationBonus: true });
         triggerWelcomeModal();
       }
-      router.push("/document");
+      await finishSignIn();
     } catch (error) {
       console.error("Google login error:", error);
       setAuthError(tError("ups"));
@@ -500,6 +524,9 @@ const SulikoForm: React.FC = () => {
             {/* Logo */}
             <div className="mb-6">
               <SulikoLogo width={90} className="mx-auto" />
+              {subtitle && (
+                <p className="mt-3 text-center text-sm text-muted-foreground">{subtitle}</p>
+              )}
             </div>
 
             {/* Tab switcher */}
@@ -532,6 +559,31 @@ const SulikoForm: React.FC = () => {
                 label={t("orContinueWith") || "Continue with Google"}
               />
             </div>)}
+            {/* Referral code — before the sign-up method is chosen, so it applies to Google too */}
+            {!isLoginMode && registrationStep === 1 && (
+              <div className="w-full mb-5">
+                <FormField
+                  control={form.control}
+                  name="referralCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className="font-bold dark:text-white">
+                        {t("referralCode")} <span className="text-muted-foreground text-xs ml-1">({t("optional")})</span>
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder={t("referralCodePlaceholder")}
+                          className="border-2 shadow-md dark:border-slate-600"
+                          autoComplete="off"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
             {/* Subtitle */}
             <div className="pb-5 w-full">
               <p className="text-center text-[0.85rem] lg:text-[0.95rem] text-muted-foreground">
@@ -680,7 +732,7 @@ const SulikoForm: React.FC = () => {
                         resendTimer={resendTimer}
                         onResendCode={handleResendCode}
                         isCodeVerified={isCodeVerified}
-                        sentVerificationCode={sentVerificationCode}
+                        isCodeInvalid={isCodeInvalid}
                       />
                       {!isCodeSent && !getRequiredVerificationMethod() && (
                         <button
@@ -708,7 +760,7 @@ const SulikoForm: React.FC = () => {
                         resendTimer={resendTimer}
                         onResendCode={handleResendCode}
                         isCodeVerified={isCodeVerified}
-                        sentVerificationCode={sentVerificationCode}
+                        isCodeInvalid={isCodeInvalid}
                       />
                       {!isCodeSent && !getRequiredVerificationMethod() && (
                         <button
@@ -773,26 +825,6 @@ const SulikoForm: React.FC = () => {
                 <>
                   <PasswordSection form={form} isLoginMode={false} />
                   <TermsSection form={form} />
-                  <FormField
-                    control={form.control}
-                    name="referralCode"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel className="font-bold dark:text-white">
-                          {t("referralCode")} <span className="text-muted-foreground text-xs ml-1">({t("optional")})</span>
-                        </FormLabel>
-                        <FormControl>
-                          <Input
-                            placeholder={t("referralCodePlaceholder")}
-                            className="border-2 shadow-md dark:border-slate-600"
-                            autoComplete="off"
-                            {...field}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
                   <div className="flex gap-3">
                     <Button
                       type="button"

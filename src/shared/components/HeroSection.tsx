@@ -4,24 +4,15 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
 import { ArrowRight, LayoutDashboard, Zap } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { LoadingButton } from "@/features/ui/components/loading";
+import HeroDemo from "@/shared/components/landing/HeroDemo";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
   const tOffice = useTranslations("OfficePromo");
   const router = useRouter();
-  const [isReducedMotion, setIsReducedMotion] = useState(false);
-  const [videoError, setVideoError] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
-  const [demoUrl, setDemoUrl] = useState("suliko.ai/document");
-  const videoRef = useRef<HTMLVideoElement | null>(null);
-
-  useEffect(() => {
-    const host = window.location.hostname;
-    if (host.endsWith(".ge")) setDemoUrl("suliko.ge/document");
-    else if (host.endsWith(".io")) setDemoUrl("suliko.io/document");
-  }, []);
 
   const handleMouseEnter = () => router.prefetch("/document");
 
@@ -30,27 +21,6 @@ export default function HeroSection() {
     setIsNavigating(true);
     router.push("/document");
   };
-
-  useEffect(() => {
-    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const onChange = () => setIsReducedMotion(media.matches);
-    onChange();
-    media.addEventListener("change", onChange);
-    return () => media.removeEventListener("change", onChange);
-  }, []);
-
-  useEffect(() => {
-    const v = videoRef.current;
-    if (!v) return;
-    const onCanPlay = () => v.play().catch(() => {});
-    const onError = () => setVideoError(true);
-    v.addEventListener("canplay", onCanPlay);
-    v.addEventListener("error", onError);
-    return () => {
-      v.removeEventListener("canplay", onCanPlay);
-      v.removeEventListener("error", onError);
-    };
-  }, []);
 
   return (
     <section className="relative flex min-h-[93.5vh] items-center overflow-hidden bg-slate-950">
@@ -160,51 +130,10 @@ export default function HeroSection() {
             </dl>
           </div>
 
-          {/* ── Right: product mockup ── */}
+          {/* ── Right: live product demo ── */}
           <div className="relative flex items-center justify-center lg:justify-end">
-            {/* Glow behind card */}
-            <div
-              aria-hidden="true"
-              className="absolute inset-4 rounded-3xl bg-blue-500/20 blur-3xl"
-            />
-
-            {/* Browser chrome */}
-            <div className="relative w-full overflow-hidden rounded-2xl border border-white/[0.08] bg-slate-900 shadow-[0_32px_64px_rgba(0,0,0,0.6)]">
-              {/* Title bar */}
-              <div className="flex items-center gap-2 border-b border-white/[0.06] bg-slate-900/90 px-4 py-3">
-                <div className="flex gap-1.5" aria-hidden="true">
-                  <div className="h-3 w-3 rounded-full bg-red-400/60" />
-                  <div className="h-3 w-3 rounded-full bg-yellow-400/60" />
-                  <div className="h-3 w-3 rounded-full bg-green-400/60" />
-                </div>
-                <div className="mx-3 flex h-5 flex-1 items-center overflow-hidden rounded-full bg-white/[0.05] px-3">
-                  <span className="truncate text-xs text-slate-500">{demoUrl}</span>
-                </div>
-              </div>
-
-              {/* Video */}
-              {videoError ? (
-                <div className="flex aspect-video w-full items-center justify-center bg-slate-900">
-                  <p className="text-sm text-slate-600">{t("videoUnavailable")}</p>
-                </div>
-              ) : (
-                <video
-                  ref={videoRef}
-                  className="block h-auto w-full"
-                  title="Suliko product demo"
-                  autoPlay={!isReducedMotion}
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  onError={() => setVideoError(true)}
-                >
-                  <source src="/api/hero-video" type="video/mp4" />
-                  <source src="/Video1.mp4" type="video/mp4" />
-                  <source src="/videos/Video1.mp4" type="video/mp4" />
-                </video>
-              )}
-            </div>
+            <div aria-hidden="true" className="absolute inset-4 rounded-3xl bg-blue-500/20 blur-3xl" />
+            <HeroDemo />
           </div>
 
         </div>

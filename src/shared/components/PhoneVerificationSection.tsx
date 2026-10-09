@@ -13,8 +13,9 @@ interface PhoneVerificationSectionProps {
   isCodeSent: boolean;
   isSendingCode: boolean;
   isCodeVerified: boolean;
+  /** The API rejected the full code that was typed. */
+  isCodeInvalid: boolean;
   resendTimer: number;
-  sentVerificationCode: string;
   onSendCode: () => void;
   onResendCode: () => void;
   onPhoneChange: (value: string) => void;
@@ -27,7 +28,7 @@ const PhoneVerificationSection = ({
   isSendingCode,
   isCodeVerified,
   resendTimer,
-  sentVerificationCode,
+  isCodeInvalid,
   onSendCode,
   onResendCode,
   onPhoneChange
@@ -83,8 +84,8 @@ const PhoneVerificationSection = ({
                   <VerificationCodeInput
                     value={field.value || ''}
                     onChange={(value) => field.onChange(value)}
-                    isValid={field.value === sentVerificationCode}
-                    isInvalid={!!field.value && field.value !== sentVerificationCode}
+                    isValid={isCodeVerified}
+                    isInvalid={isCodeInvalid}
                     disabled={isCodeVerified}
                   />
                   {isCodeVerified && (

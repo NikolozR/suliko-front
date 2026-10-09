@@ -48,11 +48,14 @@ export async function pollSuggestions(
           setSuggestions(filtered);
           return "success";
         }
-        if (!waitForNew) {
+        // The review runs after the job completes, so "nothing yet" is the
+        // normal answer for the first few polls. Returning "empty" here made
+        // the translation page regenerate on top of a review still in flight.
+        if (!waitForNew && !response.isGenerating) {
           setSuggestions([]);
           return "empty";
         }
-        // waitForNew=true: background generation still running — keep polling
+        // Still generating, or waiting for a regenerate — keep polling
       } else if (response.status === "not_found") {
         setSuggestions([]);
         return "not_found";

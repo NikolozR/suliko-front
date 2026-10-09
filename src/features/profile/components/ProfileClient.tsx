@@ -22,6 +22,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ProfileDeleteAccount } from "./ProfileDelete";
 import { ProfileSavedCards } from "./";
+import { CouponRedeemCard } from "@/features/promoCodes";
 
 const profileUpdateSchema = z.object({
   firstName: z.string().min(1, "სახელი სავალდებულოა"),
@@ -100,19 +101,13 @@ export default function ProfileClient() {
       lastName: formData.lastName || "",
       phoneNUmber: userProfile.phoneNUmber,
       email: formData.email,
-      userName: userProfile.userName,
-      roleId: userProfile.roleId,
-      balance: userProfile.balance,
     };
     
     setIsUpdating(true);
     setUpdateError(null);
     const prevUserProfile = userProfile;
     
-    setUserProfile({
-      ...editData,
-      roleName: userProfile?.roleName || "",
-    });
+    setUserProfile({ ...userProfile, ...editData });
     
     try {
       await updateUserProfile(editData);
@@ -191,6 +186,7 @@ export default function ProfileClient() {
           isUpdating={isUpdating}
           errors={validationErrors}
         />
+        <CouponRedeemCard />
         {userProfile.referralCode && (
           <ProfileReferral referralCode={userProfile.referralCode} />
         )}

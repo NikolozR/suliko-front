@@ -152,6 +152,7 @@
     "pages": "Pages",
     "completeEmail": "Add your email",
     "passport": "Passport",
+    "office": "Suliko Office",
     "orders": "Orders"
   },
   "Passport": {
@@ -458,6 +459,34 @@
       "savedCount": "{count} names saved in {project}",
       "editGlossary": "Edit glossary"
     },
+    "instructions": {
+      "title": "Notes for the translator",
+      "body": "Optional. Terminology, tone, or anything to keep as it is. The review checks the translation against these too.",
+      "placeholder": "e.g. Keep company names in English. Use a formal register."
+    },
+    "brief": {
+      "label": "Document brief",
+      "reading": "Reading the document…",
+      "failed": "We couldn't read the document in advance. You can still translate it as usual.",
+      "untitled": "Document",
+      "writtenIn": "Written in {language}",
+      "tables": "{count, plural, one {# table} other {# tables}}",
+      "stamps": "Stamps",
+      "signatures": "Signatures",
+      "handwriting": "Handwriting",
+      "scanned": "Scanned",
+      "names": "{count, plural, one {# name} other {# names}}",
+      "termsTitle": "Terminology",
+      "termsBody": "These renderings will be used throughout the translation. Change any you'd translate differently.",
+      "termInput": "Translation of {term}",
+      "removeTerm": "Remove {term}",
+      "showAll": "Show all {count}",
+      "showFewer": "Show fewer",
+      "questionsTitle": "Before we translate",
+      "ownAnswer": "Or write your own answer",
+      "ownAnswerFor": "Your answer to: {question}",
+      "template": "Using the {name} terminology template"
+    },
     "quote": {
       "label": "Quote",
       "thisDocument": "This document",
@@ -639,6 +668,7 @@
     "stage": {
       "queued": "Queued",
       "translating": "Translating",
+      "verifying": "Checking against the original",
       "rebuilding": "Rebuilding layout",
       "ready": "Ready",
       "failed": "Failed"
@@ -856,7 +886,7 @@
   "WelcomeModal": {
     "title": "Hello!",
     "thankYou": "Thank you for using Suliko.",
-    "freePages": "🎉 Welcome! You get 25 pages to translate for free as a new user.",
+    "freePages": "🎉 Welcome! You get 10 pages to translate for free as a new user.",
     "betaNotice": "Please note that the website is running in beta mode, so you may encounter certain issues.",
     "workingOnIssues": "We work daily on fixing these issues, and your feedback is very important!",
     "reportIssues": "Please, if you discover any type of issue (whether in translation or technical), write to us here:",
@@ -946,7 +976,7 @@
     },
     "cta": {
       "title": "Ready to Join Them?",
-      "subtitle": "Sign up and translate 25 documents for free.",
+      "subtitle": "Sign up and translate 10 pages for free.",
       "startTrial": "Try Suliko",
       "contactSales": "Contact Sales"
     },
@@ -991,7 +1021,8 @@
         "email": "info@api24.ge",
         "content": "Localization was a critical challenge for API24's international expansion. Suliko helped us adapt our interface and technical docs, making the platform accessible to developers worldwide."
       }
-    }
+    },
+    "eyebrow": "Customers"
   },
   "LandingFooter": {
     "description": "The world's most advanced translation platform. Breaking down language barriers with precision, speed, and reliability.",
@@ -1041,7 +1072,8 @@
     "bottom": {
       "copyright": "© 2026 Suliko. All rights reserved."
     },
-    "sulikoOffice": "Suliko Office"
+    "sulikoOffice": "Suliko Office",
+    "notary": "Notarized translation"
   },
   "ReferralPage": {
     "title": "Referral Program",
@@ -1210,7 +1242,7 @@
       },
       "pricing": {
         "question": "Is there a free tier?",
-        "answer": "Yes — every new user receives 25 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow."
+        "answer": "Yes — every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow."
       },
       "security": {
         "question": "Is my document data secure?",
@@ -1698,6 +1730,7 @@
     },
     "nav": {
       "home": "Suliko Office home",
+      "backToSuliko": "Suliko",
       "language": "Language",
       "login": "Log in",
       "demo": "Book a demo",
@@ -1953,6 +1986,129 @@
     "subheading": "Orders, translators, notaries and payments in one system. It's the one our own bureau runs on.",
     "cta": "Explore Suliko Office",
     "heroLink": "Run a translation bureau? See the system we run on"
+  },
+  "HeroDemo": {
+    "original": "Original · English",
+    "translation": "Translation · {language}",
+    "georgian": "Georgian",
+    "polish": "Polish",
+    "uploading": "Uploading…",
+    "readingLayout": "Reading layout…",
+    "translating": "Translating {done}/{total}",
+    "done": "Done",
+    "layoutPreserved": "Layout preserved",
+    "reviewHint": "Review every segment side by side while Suliko works",
+    "exportPdf": "Export PDF",
+    "exportDocx": "Export DOCX",
+    "ariaLabel": "Demo: a service agreement is uploaded, translated segment by segment into Georgian, then exported."
+  },
+  "HowItWorks": {
+    "eyebrow": "How it works",
+    "title": "From upload to finished file in three steps",
+    "steps": {
+      "upload": {
+        "title": "Upload",
+        "body": "Drop in a PNG, JPG, PDF, DOCX or TXT file. Suliko reads it and keeps the layout."
+      },
+      "translate": {
+        "title": "Translate & review",
+        "body": "Read the original and the translation side by side, with smart suggestions for every segment."
+      },
+      "export": {
+        "title": "Export",
+        "body": "Download in Word, PDF or plain text, formatted like the file you uploaded."
+      }
+    },
+    "dropHint": "Drop a file to start",
+    "formats": "PNG, JPG, PDF, DOCX or TXT",
+    "original": "Original",
+    "translation": "Translation",
+    "suggestion": "Smart suggestion",
+    "formatWord": "Word",
+    "formatPdf": "PDF",
+    "formatTxt": "Plain text",
+    "exportNote": "Same headings, tables and layout as the original"
+  },
+  "Features": {
+    "eyebrow": "Why Suliko",
+    "title": "An assistant for translators, not a replacement",
+    "subtitle": "The intelligent assistant that helps translators work faster and businesses scale — without sacrificing quality.",
+    "copilot": {
+      "title": "Translator's Copilot",
+      "body": "Earn 3–10x more by speeding up the work you already do, with suggestions on every segment.",
+      "segment": "Segment 4 of 12",
+      "glossary": "Glossary match",
+      "consistent": "Terminology consistent"
+    },
+    "languages": {
+      "title": "50+ languages",
+      "body": "Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and more."
+    },
+    "georgian": {
+      "title": "Built for Georgian",
+      "body": "Fine-tuned on Georgian legal, medical and business texts."
+    },
+    "privacy": {
+      "title": "Private by default",
+      "body": "Encrypted in transit (TLS 1.3) and at rest. Your documents are never used to train our models.",
+      "yourFile": "Your file",
+      "encrypted": "Encrypted",
+      "onlyYou": "Only you"
+    }
+  },
+  "Products": {
+    "eyebrow": "More from Suliko",
+    "title": "For bureaus, and for official documents",
+    "ordersToday": "Orders today",
+    "notaryTag": "Notary",
+    "notaryCta": "Get a notarized translation"
+  },
+  "ClosingCta": {
+    "title": "Your first 10 pages are on us",
+    "subtitle": "Upload a document now and see the translation next to the original in a couple of minutes.",
+    "cta": "Start translating",
+    "bookDemo": "Book a demo"
+  },
+  "Coupon": {
+    "title": "Have a coupon?",
+    "description": "Enter a coupon code to add free pages to your balance.",
+    "placeholder": "Coupon code",
+    "apply": "Apply",
+    "applying": "Applying...",
+    "success": "{pages} pages were added to your balance.",
+    "errors": {
+      "invalid_code": "This coupon is invalid or has expired.",
+      "already_redeemed": "You have already used this coupon.",
+      "too_many_attempts": "Too many attempts. Please try again in a few minutes.",
+      "unknown": "The coupon could not be applied. Please try again."
+    }
+  },
+  "AutoFixes": {
+    "title": "{count, plural, =0 {All automatic fixes undone} one {Checked against the original: # error fixed} other {Checked against the original: # errors fixed}}",
+    "subtitle": "These were corrected before delivery. Undo any you disagree with.",
+    "untitled": "Correction",
+    "before": "Before",
+    "after": "After",
+    "undo": "Undo",
+    "redo": "Redo",
+    "editedSince": "This text has been edited since, so it can't be changed back automatically.",
+    "clean": "Checked against the original: no errors found.",
+    "handedOn": "{count, plural, one {Checked against the original: # possible error needs your review below.} other {Checked against the original: # possible errors need your review below.}}"
+  },
+  "OfficeSso": {
+    "signInSubtitle": "Sign in to continue to Suliko Office",
+    "redirecting": "Opening Suliko Office…",
+    "invalidTitle": "This sign-in link doesn't work",
+    "invalidBody": "Open Suliko Office again and sign in from there.",
+    "openOffice": "Open Suliko Office",
+    "errorTitle": "Couldn't open Suliko Office",
+    "errorBody": "Something went wrong on our side. Try again in a moment.",
+    "retry": "Try again",
+    "signingOut": "Signing out…",
+    "signOutTitle": "Sign out of Suliko?",
+    "signOutBody": "You'll be signed out of Suliko and Suliko Office on this device.",
+    "signOut": "Sign out",
+    "stay": "Stay signed in"
   },
   "Orders": {
     "title": "Orders",

@@ -1,5 +1,11 @@
 import { LoginResponse } from "@/features/auth/types/types.Auth";
 import { apiClient, ApiClient } from "@/shared/lib/apiClient";
+import {
+  WEB_SESSIONS,
+  SESSION_COOKIE_MARKER,
+  refreshWebSession,
+  sessionPost,
+} from "@/features/auth/lib/webSession";
 
 
 interface LoginParams {
@@ -15,9 +21,11 @@ interface RegisterParams extends Omit<LoginParams, 'phoneNumber'> {
   email: string;
   subscribeNewsletter?: boolean;
   referralCode?: string;
+  /** The code sent to the phone (or, for email sign-ups, the email) being registered. */
+  verificationCode: string;
 }
 
-export async function register({ phoneNumber, password, firstname, lastname, email, referralCode }: Omit<RegisterParams, 'subscribeNewsletter'>) {
+export async function register({ phoneNumber, password, firstname, lastname, email, referralCode, verificationCode }: Omit<RegisterParams, 'subscribeNewsletter'>) {
   const phoneNumberToSend = phoneNumber?.trim() || email;
 
   let response;
@@ -28,6 +36,7 @@ export async function register({ phoneNumber, password, firstname, lastname, ema
       firstname,
       lastname,
       email,
+      verificationCode,
       ...(referralCode?.trim() ? { referralCode: referralCode.trim() } : {}),
     });
   } catch (error) {
@@ -75,11 +84,15 @@ export async function login({
       throw new Error("Either phone number or email must be provided");
     }
 
-    // Send email or phone in the phoneNumber field - backend handles both
-    const response = await apiClient.post("/Auth/login-with-phone", {
-      phoneNumber: identifier,
-      password,
-    });
+    // Send email or phone in the phoneNumber field - backend handles both.
+    // With web sessions, through this site's server, which keeps the refresh
+    // token in an HttpOnly cookie; the answers are the backend's either way.
+    const response = WEB_SESSIONS
+      ? await sessionPost("login", { phoneNumber: identifier, password })
+      : await apiClient.post("/Auth/login-with-phone", {
+          phoneNumber: identifier,
+          password,
+        });
     
     if (response.ok) {
       return response.data as LoginResponse;
@@ -106,6 +119,11 @@ export async function login({
 }
 
 export async function reaccessToken(refreshToken: string) {
+  // The marker means the real token is in this site's cookie. Anything else is
+  // a token from before web sessions, still refreshed the old way.
+  if (WEB_SESSIONS && refreshToken === SESSION_COOKIE_MARKER) {
+    return refreshWebSession();
+  }
   try {
     const response = await apiClient.post("/Auth/refresh-token", {
       refreshToken,
@@ -177,6 +195,24 @@ export async function sendVerificationCode(phoneNumber?: string, email?: string)
 // Export alias for convenience
 export const sendCode = sendVerificationCode;
 
+/**
+ * Asks the API whether `code` is the one it sent to `identifier` (phone or email). The code is
+ * never sent to the browser; register and recover-password check it again on the server.
+ */
+export async function verifyCode(identifier: string, code: string): Promise<boolean> {
+  try {
+    const response = await apiClient.post("/Auth/verify-code", {
+      phoneNumber: identifier.trim(),
+      code: code.trim(),
+    });
+    const data = response.data as { isValid?: boolean } | undefined;
+    return response.ok && data?.isValid === true;
+  } catch (error) {
+    const errorMessage = ApiClient.handleApiError(error);
+    throw new Error(errorMessage);
+  }
+}
+
 export async function checkUserExists(identifier: string): Promise<boolean> {
   try {
     const encoded = encodeURIComponent(identifier.trim());
@@ -198,11 +234,12 @@ export async function checkUserExists(identifier: string): Promise<boolean> {
   }
 }
 
-export async function recoverPassword(identifier: string, newPassword: string) {
+export async function recoverPassword(identifier: string, newPassword: string, verificationCode: string) {
   try {
     const response = await apiClient.patch("/User/recover-password", {
       phoneNumber: identifier,
       newPassword,
+      verificationCode,
     });
 
     // Check if the API returned an error in the response data
@@ -217,9 +254,11 @@ export async function recoverPassword(identifier: string, newPassword: string) {
       return response.data;
     }
 
-    const errorMessage = response.data && typeof response.data === 'object' && 'message' in response.data
-      ? (response.data as { message: string }).message
-      : "Password recovery failed";
+    const errorMessage = typeof response.data === 'string' && response.data
+      ? response.data
+      : response.data && typeof response.data === 'object' && 'message' in response.data
+        ? (response.data as { message: string }).message
+        : "Password recovery failed";
     throw new Error(errorMessage);
   } catch (error) {
     // Handle CORS and other errors
@@ -229,33 +268,15 @@ export async function recoverPassword(identifier: string, newPassword: string) {
 }
 
 
-// NOTE: resetPassword is currently UNUSED. It implements step 3 of the secure recovery flow
-// described in types.Auth.ts (ValidateRecoveryCodeResponse.token -> ResetPasswordRequest.token).
-// The currently-active flow uses recoverPassword() above instead, which does not require a
-// server-issued token because verification is done client-side (see CRITICAL note in
-// PasswordRecoveryModal.tsx handleVerificationSubmit). Once the backend exposes a verify-code
-// endpoint that returns a token, this function (or one like it) should replace recoverPassword()
-// in the 'password' step.
-export async function resetPassword(phoneNumber: string, newPassword: string, token: string) {
+export async function loginWithGoogle(idToken: string, referralCode?: string): Promise<LoginResponse> {
   try {
-    const response = await apiClient.post("/User/reset-password", {
-      phoneNumber,
-      newPassword,
-      token,
-    });
-    return response.data;
-  } catch (error) {
-    // Handle CORS and other errors
-    const errorMessage = ApiClient.handleApiError(error);
-    throw new Error(errorMessage);
-  }
-}
-
-export async function loginWithGoogle(idToken: string): Promise<LoginResponse> {
-  try {
-    const response = await apiClient.post<LoginResponse>("/Auth/login-with-google", idToken);
+    // The referral code only matters when this Google account signs up for the first time.
+    const query = referralCode?.trim() ? `?referralCode=${encodeURIComponent(referralCode.trim())}` : "";
+    const response = WEB_SESSIONS
+      ? await sessionPost("google", { idToken, referralCode: referralCode?.trim() || null })
+      : await apiClient.post<LoginResponse>(`/Auth/login-with-google${query}`, idToken);
     if (response.ok) {
-      return response.data;
+      return response.data as LoginResponse;
     } else {
       throw new Error("Google login failed");
     }

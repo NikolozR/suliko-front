@@ -16,7 +16,7 @@ import type { JobStage } from "../types/types.Translation";
  * simulated curve, so the steps advanced on a timer rather than on anything
  * the job had done.
  */
-const STEPS = ["queued", "translating", "rebuilding"] as const;
+const STEPS = ["queued", "translating", "verifying", "rebuilding"] as const;
 type Step = (typeof STEPS)[number];
 
 const stepIndex = (stage: JobStage): number => {

@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { updateUserProfile, deleteUser } from "@/features/auth/services/userService";
+import { setUserBalance, deleteUser } from "@/features/auth/services/userService";
 
 export type User = {
   id: string;
@@ -73,16 +73,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       setError(null);
       setSaveState(row.id, "saving");
       try {
-        await updateUserProfile({
-          id: row.id,
-          userName: row.userName,
-          email: row.email || "",
-          phoneNUmber: row.phoneNUmber || row.phoneNumber || "",
-          firstName: row.firstName || "",
-          lastName: row.lastName || "",
-          roleId: row.roleId || "",
-          balance: typeof row.balance === "number" ? row.balance : 0,
-        });
+        await setUserBalance(row.id, typeof row.balance === "number" ? row.balance : 0);
         setSaveState(row.id, "saved");
         setTimeout(() => setSaveState(row.id, "idle"), 2000);
       } catch (e: unknown) {

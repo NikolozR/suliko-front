@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase-admin";
+import { requireAdmin } from "@/lib/admin-auth";
 import JSZip from "jszip";
 
 function extractPlaceholders(xmlContent: string): string[] {
@@ -12,6 +13,9 @@ function extractPlaceholders(xmlContent: string): string[] {
 }
 
 export async function POST(req: NextRequest) {
+  const forbidden = await requireAdmin();
+  if (forbidden) return forbidden;
+
   try {
     const formData = await req.formData();
     const file = formData.get("file") as File | null;
