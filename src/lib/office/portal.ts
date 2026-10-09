@@ -106,8 +106,17 @@ export async function requirePortalUser(request: NextRequest): Promise<Outcome> 
 /** GET one portal path on the Office API as `userId`, passing its answer through. */
 export async function portalGet(outcome: Exclude<Outcome, NextResponse>, path: string) {
   const assertion = signToken(outcome.secret, claimsFor("assertion", outcome.userId, ASSERTION_TTL_SECONDS));
+  const headers: Record<string, string> = {
+    "X-Suliko-Portal-Assertion": assertion,
+    Accept: "application/json",
+  };
+  // The Office API answers 404 to anyone without its gateway secret (core/gateway.py),
+  // the same one app.suliko.ge sends. File tickets are exempt, so only this call needs it.
+  const gatewaySecret = process.env.BFF_SHARED_SECRET;
+  if (gatewaySecret) headers["X-Suliko-Gateway"] = gatewaySecret;
+
   const response = await fetch(`${outcome.apiUrl}${PORTAL_PREFIX}${path}`, {
-    headers: { "X-Suliko-Portal-Assertion": assertion, Accept: "application/json" },
+    headers,
     cache: "no-store",
   }).catch(() => null);
 
