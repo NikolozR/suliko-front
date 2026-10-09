@@ -7,7 +7,8 @@
     "profile": "Profil",
     "pricing": "Cennik",
     "feedback": "Opinie",
-    "help": "Pomoc"
+    "help": "Pomoc",
+    "orders": "Zamówienia"
   },
   "Common": {
     "cancel": "Anuluj",
@@ -150,7 +151,8 @@
     "balance": "Saldo",
     "pages": "stron",
     "completeEmail": "Uzupełnij e-mail",
-    "passport": "Paszport"
+    "passport": "Paszport",
+    "orders": "Zamówienia"
   },
   "Passport": {
     "title": "Tłumaczenie paszportu",
@@ -1951,5 +1953,31 @@
     "subheading": "Zamówienia, tłumacze, notariusze i płatności w jednym systemie. Na nim działa nasze biuro.",
     "cta": "Poznaj Suliko Office",
     "heroLink": "Prowadzisz biuro tłumaczeń? Zobacz, na czym pracujemy"
+  },
+  "Orders": {
+    "title": "Zamówienia",
+    "subtitle": "Dokumenty, które biura tłumaczeń przypisały do Ciebie",
+    "loading": "Ładowanie…",
+    "empty": "Obecnie nie masz przypisanych zamówień.",
+    "error": "Nie udało się wczytać zamówień. Spróbuj ponownie za chwilę.",
+    "unavailable": "Zamówienia nie są jeszcze dostępne.",
+    "order": "Zamówienie #{id}",
+    "client": "Klient",
+    "due": "Termin",
+    "noDue": "Bez terminu",
+    "ordered": "Data zamówienia",
+    "documents": "Dokumenty",
+    "pages": "{count} str.",
+    "files": "Pliki",
+    "noFiles": "Brak plików",
+    "download": "Pobierz",
+    "back": "Wróć do zamówień",
+    "fileGone": "Plik już niedostępny — zapytaj biuro",
+    "filesUnavailable": "Magazyn plików jest chwilowo niedostępny",
+    "notFound": "Nie znaleziono zamówienia",
+    "bureau": "Biuro",
+    "open": "Otwórz",
+    "fromBureau": "Od biura",
+    "mine": "Dodane przez Ciebie"
   }
 }

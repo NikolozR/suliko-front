@@ -25,10 +25,12 @@ import {
   ChevronDown,
   ChevronUp,
   FileText,
+  ClipboardList,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
 import { useTranslations } from "next-intl";
+import { useIsTranslator } from "@/features/orders/useIsTranslator";
 
 const NAV_ITEMS = [
   {
@@ -41,6 +43,14 @@ const NAV_ITEMS = [
     href: "/passport",
     icon: FileText,
     requiresAuth: true,
+  },
+  {
+    // Only for translators that a bureau has linked: see `isTranslator` below.
+    label: "orders",
+    href: "/orders",
+    icon: ClipboardList,
+    requiresAuth: true,
+    requiresTranslator: true,
   },
   {
     label: "profile",
@@ -93,6 +103,9 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const router = useRouter();
   const t = useTranslations('Sidebar');
 
+  // The Orders tab only exists for translators a bureau has linked.
+  const isTranslator = useIsTranslator(token);
+
   // Hydrate userStore with server-fetched data
   useEffect(() => {
     if (initialUserProfile && !userProfile) {
@@ -114,10 +127,16 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     if (href === '/text') {
       return pathname === '/text' || pathname === '/document';
     }
+    if (href === '/orders') {
+      return pathname === '/orders' || pathname.startsWith('/orders/');
+    }
     return pathname === href;
   };
 
   const visibleNavItems = NAV_ITEMS.filter(item => {
+    if (item.requiresTranslator && !isTranslator) {
+      return false;
+    }
     if (item.requiresAuth) {
       return !!token;
     }
