@@ -12,7 +12,13 @@ export type AssignedDocument = {
 
 export type AssignedOrder = {
   organization: Organization;
+  /** The key: in every URL. Shared by all bureaus, so never shown. */
   order_id: number;
+  /**
+   * The order's number in its bureau, which is what people see. Missing only
+   * from an Office API older than its per-bureau numbers (migration 0016).
+   */
+  order_number?: number | null;
   client_name: string;
   order_date: string;
   due_date: string | null;
