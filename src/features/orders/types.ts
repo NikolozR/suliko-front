@@ -1,4 +1,4 @@
-/** What the Office portal returns (api.suliko.ge `/portal`), as far as the Orders tab uses it. */
+/** What the Office portal returns (api.suliko.ge `/portal`), as far as the Orders page uses it. */
 
 export type Organization = { slug: string; name: string };
 
@@ -44,10 +44,4 @@ export type AssignedDocumentDetail = AssignedDocument & {
 
 export type AssignedOrderDetail = Omit<AssignedOrder, "documents"> & {
   documents: AssignedDocumentDetail[];
-};
-
-export type PortalMe = {
-  is_translator: boolean;
-  display_name: string | null;
-  organizations: Organization[];
 };

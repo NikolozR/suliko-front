@@ -1,4 +1,4 @@
-import type { AssignedOrder, AssignedOrderDetail, PortalMe } from "./types";
+import type { AssignedOrder, AssignedOrderDetail } from "./types";
 
 export type OrdersLoad<T> =
   | { status: "ok"; data: T }
@@ -22,8 +22,6 @@ async function load<T>(url: string): Promise<OrdersLoad<T>> {
     return { status: "error" };
   }
 }
-
-export const fetchPortalMe = () => load<PortalMe>("/api/office/me");
 
 export const fetchAssignments = () => load<AssignedOrder[]>("/api/office/assignments");
 
