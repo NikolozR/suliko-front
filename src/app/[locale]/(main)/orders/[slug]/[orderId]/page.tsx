@@ -76,7 +76,7 @@ function OrderDetail({ order }: { order: AssignedOrderDetail }) {
   const t = useTranslations("Orders");
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">{t("order", { id: order.order_id })}</h1>
+      <h1 className="text-2xl font-semibold tracking-tight">{t("order", { id: order.order_number ?? "" })}</h1>
       <p className="text-sm text-muted-foreground mt-1 mb-8">
         {t("bureau")}: {order.organization.name} · {t("client")}: {order.client_name} ·{" "}
         {t("ordered")}: {order.order_date} ·{" "}

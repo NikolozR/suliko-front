@@ -79,7 +79,7 @@ function OrderRow({ order }: { order: AssignedOrder }) {
         <div className="flex items-center gap-4">
           <div className="min-w-0 flex-1">
             <p className="font-medium truncate">
-              {t("order", { id: order.order_id })} · {order.organization.name}
+              {t("order", { id: order.order_number ?? "" })} · {order.organization.name}
             </p>
             <p className="text-xs text-muted-foreground mt-1">
               {t("client")}: {order.client_name} · {t("documents")}: {order.documents.length} (
