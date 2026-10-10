@@ -7,7 +7,8 @@
     "profile": "Profile",
     "pricing": "Pricing",
     "feedback": "Feedback",
-    "help": "Help"
+    "help": "Help",
+    "orders": "Orders"
   },
   "Common": {
     "cancel": "Cancel",
@@ -152,7 +153,8 @@
     "pages": "Pages",
     "completeEmail": "Add your email",
     "passport": "Passport",
-    "office": "Suliko Office"
+    "office": "Suliko Office",
+    "orders": "Orders"
   },
   "Passport": {
     "title": "Passport Translation",
@@ -2109,5 +2111,31 @@
     "signOut": "Sign out",
     "stay": "Stay signed in",
     "registerSubtitle": "Create a Suliko account to use Suliko Office"
+  },
+  "Orders": {
+    "title": "Orders",
+    "subtitle": "Documents that translation bureaus have assigned to you",
+    "loading": "Loading…",
+    "empty": "No orders are assigned to you right now.",
+    "error": "Could not load your orders. Please try again in a moment.",
+    "unavailable": "Orders are not available yet.",
+    "order": "Order #{id}",
+    "client": "Client",
+    "due": "Due",
+    "noDue": "No due date",
+    "ordered": "Ordered",
+    "documents": "Documents",
+    "pages": "{count} pages",
+    "files": "Files",
+    "noFiles": "No files yet",
+    "download": "Download",
+    "back": "Back to orders",
+    "fileGone": "No longer available — ask the bureau",
+    "filesUnavailable": "File storage is temporarily unavailable",
+    "notFound": "This order was not found",
+    "bureau": "Bureau",
+    "open": "Open",
+    "fromBureau": "From the bureau",
+    "mine": "Uploaded by you"
   }
 }
