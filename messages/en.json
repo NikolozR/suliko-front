@@ -2119,6 +2119,8 @@
     "empty": "No orders are assigned to you right now.",
     "error": "Could not load your orders. Please try again in a moment.",
     "unavailable": "Orders are not available yet.",
+    "notLinkedTitle": "No bureau has added you as a translator yet.",
+    "notLinkedBody": "A bureau adds you from its Suliko Office account, under Translators, by choosing this suliko.ge account. The documents it assigns to you then appear here.",
     "order": "Order #{id}",
     "client": "Client",
     "due": "Due",
