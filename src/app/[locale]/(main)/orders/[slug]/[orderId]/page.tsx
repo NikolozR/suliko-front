@@ -62,7 +62,9 @@ export default function AssignedOrderPage({
               ? t("notFound")
               : result.status === "unavailable"
                 ? t("unavailable")
-                : t("error")}
+                : result.status === "notTranslator"
+                  ? t("notLinkedTitle")
+                  : t("error")}
           </p>
         </div>
       )}

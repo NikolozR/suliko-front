@@ -2119,6 +2119,8 @@
     "empty": "Obecnie nie masz przypisanych zamówień.",
     "error": "Nie udało się wczytać zamówień. Spróbuj ponownie za chwilę.",
     "unavailable": "Zamówienia nie są jeszcze dostępne.",
+    "notLinkedTitle": "Żadne biuro nie dodało Cię jeszcze jako tłumacza.",
+    "notLinkedBody": "Biuro dodaje Cię ze swojego konta Suliko Office, w sekcji Tłumacze, wybierając to konto suliko.ge. Przypisane Ci dokumenty pojawią się wtedy tutaj.",
     "order": "Zamówienie #{id}",
     "client": "Klient",
     "due": "Termin",

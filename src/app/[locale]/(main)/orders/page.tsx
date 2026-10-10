@@ -43,7 +43,18 @@ export default function OrdersPage() {
         </div>
       )}
 
-      {result && result.status !== "ok" && (
+      {/* Not an error: nobody has added this account as a translator yet.
+          It used to read "Could not load your orders. Please try again",
+          and trying again could never help. */}
+      {result?.status === "notTranslator" && (
+        <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
+          <ClipboardList className="h-10 w-10" />
+          <p className="text-sm font-medium text-foreground">{t("notLinkedTitle")}</p>
+          <p className="text-sm max-w-md">{t("notLinkedBody")}</p>
+        </div>
+      )}
+
+      {result && result.status !== "ok" && result.status !== "notTranslator" && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200/60 dark:border-red-800/40 text-red-700 dark:text-red-400">
           <AlertCircle className="h-5 w-5 shrink-0" />
           <p className="text-sm">{result.status === "unavailable" ? t("unavailable") : t("error")}</p>
