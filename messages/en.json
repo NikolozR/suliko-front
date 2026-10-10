@@ -576,6 +576,8 @@
     "deleteAccountConfirm": "Are you sure you want to delete your account?",
     "confirmDelete": "Yes, delete",
     "deleting": "Deleting...",
+    "languageAndHelp": "Language and help",
+    "language": "Language",
     "referral": "Referral Program",
     "referralDescription": "Share your code with friends. Both of you earn 50 credits when they register.",
     "copyCode": "Copy Code",

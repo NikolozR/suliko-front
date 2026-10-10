@@ -576,6 +576,8 @@
     "deleteAccountConfirm": "ნამდვილად გსურთ ანგარიშის წაშლა?",
     "confirmDelete": "დიახ, წაშლა",
     "deleting": "იშლება...",
+    "languageAndHelp": "ენა და დახმარება",
+    "language": "ენა",
     "referral": "რეფერალური პროგრამა",
     "referralDescription": "გაუზიარეთ კოდი მეგობრებს. ორივე მიიღებთ 50 კრედიტს.",
     "copyCode": "კოდის კოპირება",
