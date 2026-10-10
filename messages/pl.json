@@ -325,7 +325,7 @@
     "translating": "Tłumaczenie…",
     "emptyState": "Brak nazw do przejrzenia. Kontynuuj tłumaczenie.",
     "projectTitle": "Nowe nazwy dla tego projektu",
-    "projectDescription": "Tych nazw nie ma jeszcze w słowniku projektu. Potwierdź, aby je dodać — zostaną zapisane i automatycznie użyte w przyszłych tłumaczeniach tego projektu.",
+    "projectDescription": "Tych nazw nie ma jeszcze w słowniku projektu. Potwierdź, aby je dodać. Zostaną zapisane i automatycznie użyte w przyszłych tłumaczeniach tego projektu.",
     "projectSkip": "Pomiń (użyj tylko zapisanych)",
     "projectConfirm": "Dodaj i przetłumacz"
   },
@@ -533,7 +533,7 @@
     "inProgress": {
       "pages": "{count, plural, one {# strona} few {# strony} many {# stron} other {# stron}}",
       "working": "Tłumaczę dokument",
-      "leaveHint": "Nie musisz tu czekać — tłumaczenie działa dalej, a znajdziesz je w historii.",
+      "leaveHint": "Nie musisz tu czekać. Tłumaczenie działa dalej, a znajdziesz je w historii.",
       "stagesLabel": "Postęp",
       "startingUp": "Uruchamiam…",
       "openFullView": "Otwórz pełny widok",
@@ -648,16 +648,16 @@
       "pages": "Strony",
       "approxWords": "Ok. słów",
       "estimatedTime": "Szac. czas",
-      "leaveAndReturn": "Możesz opuścić tę stronę i wrócić później — tłumaczenie będzie tutaj."
+      "leaveAndReturn": "Możesz opuścić tę stronę i wrócić później. Tłumaczenie będzie tutaj."
     },
     "processingTips": {
       "title": "Czy wiesz, że?",
       "tip1": "Średni tłumacz profesjonalny tłumaczy ok. 2000–2500 słów dziennie.",
       "tip2": "Tłumaczenie AI przetwarza dokument w minuty, nie w dni.",
-      "tip3": "Suliko zachowuje oryginalne formatowanie — nagłówki, listy i inne.",
+      "tip3": "Suliko zachowuje oryginalne formatowanie: nagłówki, listy i inne.",
       "tip4": "Możesz edytować wynik tłumaczenia przed pobraniem.",
       "tip5": "Jakość tłumaczenia rośnie, gdy tekst źródłowy jest czytelny i dobrze ustrukturyzowany.",
-      "tip6": "Różne języki mają różną gęstość słów — np. polski używa mniej słów niż angielski dla tego samego znaczenia."
+      "tip6": "Różne języki mają różną gęstość słów, np. polski używa mniej słów niż angielski dla tego samego znaczenia."
     },
     "status": {
       "Completed": "Zakończone",
@@ -720,8 +720,8 @@
       "title": "Subskrybuj i tłumacz taniej! ✨",
       "description": "Do 28 lutego aktywuj pakiet miesięczny w wyjątkowej cenie:",
       "packages": [
-        "📑 100 stron/miesiąc — 20₾ (zamiast 57₾)",
-        "📑 500 stron/miesiąc — 50₾ (zamiast 173₾)"
+        "📑 100 stron/miesiąc: 20₾ (zamiast 57₾)",
+        "📑 500 stron/miesiąc: 50₾ (zamiast 173₾)"
       ],
       "proceed": "Przejdź do płatności",
       "okay": "OK"
@@ -938,9 +938,9 @@
   },
   "AboutSection": {
     "title": "Dlaczego Suliko?",
-    "subtitle": "Inteligentny asystent, który pomaga tłumaczom pracować szybciej, a firmom się rozwijać — bez utraty jakości.",
+    "subtitle": "Inteligentny asystent, który pomaga tłumaczom pracować szybciej, a firmom się rozwijać, bez utraty jakości.",
     "mission": "Nasza misja",
-    "missionText": "Naszą misją jest uczynienie tłumaczenia szybszym, dokładniejszym i dostępnym dla wszystkich. Suliko łączy sztuczną inteligencję z doświadczeniem tłumaczy, aby tłumaczenie dokumentów stało się prostym procesem — sprawą minut, a nie godzin. Chcemy, aby profesjonalni tłumacze i firmy mieli zunifikowane, inteligentne narzędzie, które zachowuje format tekstu, strukturę i dokładność znaczenia w każdym języku.",
+    "missionText": "Naszą misją jest uczynienie tłumaczenia szybszym, dokładniejszym i dostępnym dla wszystkich. Suliko łączy sztuczną inteligencję z doświadczeniem tłumaczy, aby tłumaczenie dokumentów stało się prostym procesem: sprawą minut, a nie godzin. Chcemy, aby profesjonalni tłumacze i firmy mieli zunifikowane, inteligentne narzędzie, które zachowuje format tekstu, strukturę i dokładność znaczenia w każdym języku.",
     "video": {
       "title": "Zobacz Suliko w akcji",
       "description": "Odkryj, jak działa Suliko i dlaczego profesjonaliści na całym świecie wybierają go do swoich potrzeb tłumaczeniowych."
@@ -948,7 +948,7 @@
     "features": {
       "aiPowered": {
         "title": "Kopilot tłumacza",
-        "description": "Suliko umożliwia tłumaczom zarabianie 3-10x więcej poprzez przyspieszenie ich przepływu pracy. Nie zastępujemy tłumaczy—jesteśmy ich inteligentnym asystentem."
+        "description": "Suliko umożliwia tłumaczom zarabianie 3-10x więcej poprzez przyspieszenie ich przepływu pracy. Nie zastępujemy tłumaczy. Jesteśmy ich inteligentnym asystentem."
       },
       "security": {
         "title": "Edycja z podziałem ekranu",
@@ -986,7 +986,7 @@
         "name": "თარგმნის სახლი",
         "role": "Agencja tłumaczeń",
         "company": "Translation House",
-        "content": "Suliko całkowicie przekształciło nasz proces pracy. Dokładność i szybkość pomagają nam zapewniać lepszą obsługę klientów — niezbędne narzędzie dla naszej agencji."
+        "content": "Suliko całkowicie przekształciło nasz proces pracy. Dokładność i szybkość pomagają nam zapewniać lepszą obsługę klientów. Niezbędne narzędzie dla naszej agencji."
       },
       "irakliVekua": {
         "name": "ირაკლი ვეკუა",
@@ -1243,7 +1243,7 @@
       },
       "pricing": {
         "question": "Czy jest bezpłatny plan?",
-        "answer": "Tak — każdy nowy użytkownik otrzymuje 10 bezpłatnych stron do przetłumaczenia. Następnie możesz wybrać plan miesięczny (Starter, Professional) lub opcję pay-as-you-go."
+        "answer": "Tak. Każdy nowy użytkownik otrzymuje 10 bezpłatnych stron do przetłumaczenia. Następnie możesz wybrać plan miesięczny (Starter, Professional) lub opcję pay-as-you-go."
       },
       "security": {
         "question": "Czy moje dane dokumentów są bezpieczne?",
@@ -1316,13 +1316,13 @@
     "services": {
       "sectionBadge": "Jak to działa",
       "heading": "Prosty 3-etapowy proces",
-      "subheading": "Od przesłania dokumentu do certyfikowanego tłumaczenia — szybko i prosto.",
+      "subheading": "Od przesłania dokumentu do certyfikowanego tłumaczenia, szybko i prosto.",
       "step1Title": "Prześlij swój dokument",
       "step1Desc": "Wyślij nam dokument przez formularz online lub WhatsApp.",
       "step2Title": "Tłumaczymy i certyfikujemy",
       "step2Desc": "Nasi certyfikowani tłumacze wykonują tłumaczenie z pieczęcią notarialną.",
       "step3Title": "Odbierz tłumaczenie",
-      "step3Desc": "Odbierz osobiście lub przez kuriera — dostawa tego samego dnia dostępna."
+      "step3Desc": "Odbierz osobiście lub przez kuriera. Dostawa tego samego dnia dostępna."
     },
     "pricing": {
       "sectionBadge": "Cennik",
@@ -1332,7 +1332,7 @@
       "subheadingLoading": "Aktualne stawki za stronę prosto od naszego partnera.",
       "directionCol": "Kierunek",
       "loadingRates": "Wczytywanie aktualnych stawek…",
-      "directionNote": "Stawki zależą od kierunku — tłumaczenie na dany język i z niego może kosztować inaczej. Dane pobierane na żywo od partnera, więc tabela nigdy nie jest nieaktualna.",
+      "directionNote": "Stawki zależą od kierunku: tłumaczenie na dany język i z niego może kosztować inaczej. Dane pobierane na żywo od partnera, więc tabela nigdy nie jest nieaktualna.",
       "urgencyTitle": "Termin realizacji",
       "handoverTitle": "Dostawa",
       "included": "W cenie",
@@ -1343,17 +1343,17 @@
       "heading": "Najczęściej zadawane pytania",
       "subheading": "Wszystko, co musisz wiedzieć o naszych usługach tłumaczenia notarialnego.",
       "q1": "Ile trwa tłumaczenie notarialne?",
-      "a1": "Standardowe tłumaczenia są zwykle realizowane w ciągu 1–2 dni roboczych. Ekspresowa usługa tego samego dnia jest dostępna dla pilnych dokumentów — skontaktuj się z nami.",
+      "a1": "Standardowe tłumaczenia są zwykle realizowane w ciągu 1–2 dni roboczych. Ekspresowa usługa tego samego dnia jest dostępna dla pilnych dokumentów. Skontaktuj się z nami.",
       "q2": "Jakie dokumenty możecie przetłumaczyć?",
       "a2": "Tłumaczymy wszystkie oficjalne dokumenty, w tym paszporty, akty urodzenia, akty małżeństwa, dyplomy, umowy, dokumentację medyczną, dokumenty sądowe i inne.",
       "q3": "Ile kosztuje jedna strona?",
-      "a3": "Ceny zaczynają się od [startingPrice] [currency] za stronę i zależą od pary językowej — tabela stawek na tej stronie pobierana jest na żywo od naszego partnera i pokazuje wszystkie kierunki. Poświadczenie notarialne wycenia notariusz osobno; potwierdzamy je razem z zamówieniem.",
+      "a3": "Ceny zaczynają się od [startingPrice] [currency] za stronę i zależą od pary językowej. Tabela stawek na tej stronie pobierana jest na żywo od naszego partnera i pokazuje wszystkie kierunki. Poświadczenie notarialne wycenia notariusz osobno; potwierdzamy je razem z zamówieniem.",
       "q4": "Czy wystawiacie certyfikowane/notarialne tłumaczenia?",
       "a4": "Tak. Wszystkie nasze tłumaczenia mogą zostać notarialnie poświadczone, co nadaje im moc prawną do użytku w Gruzji i za granicą.",
       "q5": "Czy mogę przesłać dokument online?",
       "a5": "Oczywiście. Prześlij dokument przez nasz formularz online lub wyślij przez WhatsApp. Sprawdzimy go i wyślemy wycenę w ciągu 5 minut.",
       "q6": "Czy tłumaczycie na języki inne niż gruziński?",
-      "a6": "Tak — tłumaczymy wiele par językowych, w tym angielski, rosyjski, niemiecki, francuski, włoski, hiszpański, portugalski, turecki, azerbejdżański, ukraiński i szwedzki. Tabela stawek na tej stronie pokazuje wszystkie oferowane kierunki."
+      "a6": "Tak. Tłumaczymy wiele par językowych, w tym angielski, rosyjski, niemiecki, francuski, włoski, hiszpański, portugalski, turecki, azerbejdżański, ukraiński i szwedzki. Tabela stawek na tej stronie pokazuje wszystkie oferowane kierunki."
     },
     "contact": {
       "heading": "Gotowy, żeby zacząć?",
@@ -1372,7 +1372,7 @@
         "uploadTitle": "Wyślij nam dokument po bezpłatną wycenę",
         "uploadSub": "Szybka odpowiedź ~ 5 minut",
         "order": "Złóż zamówienie",
-        "calcSub": "Bez podawania danych — wyceń dowolną parę językową.",
+        "calcSub": "Bez podawania danych. Wyceń dowolną parę językową.",
         "orderTitle": "Złóż zamówienie",
         "orderSub": "Cztery kroki. Przesłanie plików jest opcjonalne."
       },
@@ -1400,7 +1400,7 @@
         "documentType": "Rodzaj dokumentu",
         "urgency": "Termin realizacji",
         "urgencySurcharge": "Dopłata za termin",
-        "notarySeparate": "Poświadczenie notarialne wyceniamy osobno i potwierdzamy razem z zamówieniem — nie szacujemy go tutaj, bo błędna kwota jest gorsza niż jej brak.",
+        "notarySeparate": "Poświadczenie notarialne wyceniamy osobno i potwierdzamy razem z zamówieniem. Nie szacujemy go tutaj, bo błędna kwota jest gorsza niż jej brak.",
         "estimateNote": "Stawki pobierane na żywo od naszego partnera. Ostateczną cenę potwierdzamy przed rozpoczęciem pracy.",
         "orderThis": "Zamów to"
       },
@@ -1440,7 +1440,7 @@
       "t3text": "Potrzebowałam tłumaczenia i uwierzytelnienia dyplomu w ciągu 24 godzin na potrzeby wniosku za granicą. Suliko wykonało to perfekcyjnie.",
       "t4name": "David Tsiklauri",
       "t4role": "CEO, Karvi Logistics",
-      "t4text": "Nasza firma przetwarza dziesiątki umów w wielu językach. Suliko to nasz główny partner tłumaczeniowy — niezawodny, precyzyjny i zawsze terminowy."
+      "t4text": "Nasza firma przetwarza dziesiątki umów w wielu językach. Suliko to nasz główny partner tłumaczeniowy: niezawodny, precyzyjny i zawsze terminowy."
     },
     "about": {
       "sectionBadge": "O Suliko",
@@ -1449,7 +1449,7 @@
       "f1title": "Certyfikowani Tłumacze",
       "f1desc": "Wszyscy nasi tłumacze posiadają certyfikaty państwowe z doświadczeniem w dokumentach prawnych, medycznych, finansowych i technicznych.",
       "f2title": "Usługa Tego Samego Dnia",
-      "f2desc": "Oferujemy ekspresowe terminy realizacji pilnych dokumentów — otrzymaj certyfikowane tłumaczenie w godzinach, a nie dniach.",
+      "f2desc": "Oferujemy ekspresowe terminy realizacji pilnych dokumentów. Otrzymaj certyfikowane tłumaczenie w godzinach, a nie dniach.",
       "f3title": "Partnerstwo Notarialne",
       "f3desc": "Współpracujemy bezpośrednio z licencjonowanymi notariuszami, aby opieczętować i poświadczyć Twoje dokumenty, czyniąc je prawnie ważnymi w Gruzji i za granicą.",
       "stat1Label": "Lat Doświadczenia",
@@ -1541,18 +1541,18 @@
       "urgencyHint": "Dotyczy całego zamówienia.",
       "handover": "Sposób dostawy",
       "handoverHint": "Wybierz jedną lub więcej opcji.",
-      "uploadOptional": "Przesłanie plików teraz jest opcjonalne — możesz je wysłać później, ale to najszybsza droga do potwierdzonej ceny.",
+      "uploadOptional": "Przesłanie plików teraz jest opcjonalne. Możesz je wysłać później, ale to najszybsza droga do potwierdzonej ceny.",
       "uploadPrompt": "Kliknij, aby wybrać pliki, albo upuść je tutaj",
       "uploadFull": "Osiągnięto maksymalną liczbę plików",
       "uploadLimits": "Do {count} plików, po {size} MB",
-      "uploadRejectType": "{name} — nieobsługiwany typ pliku",
-      "uploadRejectSize": "{name} — przekracza limit rozmiaru",
-      "uploadRejectCount": "{name} — limit plików dla tego dokumentu wyczerpany",
+      "uploadRejectType": "{name}: nieobsługiwany typ pliku",
+      "uploadRejectSize": "{name}: przekracza limit rozmiaru",
+      "uploadRejectCount": "{name}: limit plików dla tego dokumentu wyczerpany",
       "subtotal": "Suma za tłumaczenie",
       "urgencySurcharge": "Dopłata: {level}",
       "handoverExtras": "Dostawa",
       "estimatedTotal": "Szacunkowa suma",
-      "notarySeparate": "Poświadczenie notarialne wyceniamy osobno i potwierdzamy razem z zamówieniem — nie szacujemy go tutaj, bo błędna kwota jest gorsza niż jej brak.",
+      "notarySeparate": "Poświadczenie notarialne wyceniamy osobno i potwierdzamy razem z zamówieniem. Nie szacujemy go tutaj, bo błędna kwota jest gorsza niż jej brak.",
       "estimateNote": "To jest wycena szacunkowa. Ostateczną kwotę potwierdzamy przy zamówieniu.",
       "clientType": "Zamawiam jako",
       "individual": "Osoba prywatna",
@@ -1579,17 +1579,17 @@
         "terms": "Zaakceptuj regulamin, aby kontynuować"
       },
       "errorAmbiguousTitle": "Nie mogliśmy potwierdzić zamówienia",
-      "errorAmbiguousBody": "Połączenie zerwało się przed otrzymaniem odpowiedzi, więc zamówienie mogło zostać złożone lub nie. Prosimy nie wysyłać ponownie — skontaktuj się z nami, podając poniższy numer referencyjny, a sprawdzimy.",
+      "errorAmbiguousBody": "Połączenie zerwało się przed otrzymaniem odpowiedzi, więc zamówienie mogło zostać złożone lub nie. Prosimy nie wysyłać ponownie. Skontaktuj się z nami, podając poniższy numer referencyjny, a sprawdzimy.",
       "errorValidationTitle": "Popraw proszę poniższe",
       "errorValidationBody": "Zamówienie nie zostało złożone.",
       "errorConfigTitle": "Składanie zamówień jest chwilowo niedostępne",
       "errorConfigBody": "To problem po naszej stronie, nie z Twoimi danymi. Skontaktuj się z nami, a przyjmiemy zamówienie bezpośrednio.",
       "errorServerTitle": "Coś poszło nie tak",
       "errorServerBody": "Zamówienie nie zostało złożone. Spróbuj ponownie lub skontaktuj się z nami, jeśli problem się powtarza.",
-      "errorUnavailableBody": "Usługa jest w tej chwili obciążona. Nic nie zostało zapisane — spróbuj za chwilę.",
+      "errorUnavailableBody": "Usługa jest w tej chwili obciążona. Nic nie zostało zapisane. Spróbuj za chwilę.",
       "successTitle": "Zamówienie złożone",
       "successBody": "Mamy Twoje zamówienie i wkrótce się odezwiemy.",
-      "successBodyEmail": "Twoje zgłoszenie trafiło do naszego zespołu — ostateczną cenę potwierdzimy wkrótce e-mailem.",
+      "successBodyEmail": "Twoje zgłoszenie trafiło do naszego zespołu. Ostateczną cenę potwierdzimy wkrótce e-mailem.",
       "orderNumber": "Numer zamówienia",
       "confirmedTotal": "Potwierdzona kwota",
       "dueDate": "Gotowe do {date}",
@@ -1603,11 +1603,11 @@
       "uploadEmailed": "Twoje pliki ({count}) trafiły do naszego zespołu z numerem zamówienia #{order}.",
       "uploadEmailFailed": "Nie udało się wysłać tego pliku automatycznie.",
       "step1Sub": "Dodaj dokumenty i wybierz opcje usługi",
-      "step2Sub": "Załącz dokumenty — opcjonalnie, ale przyspiesza sprawę",
+      "step2Sub": "Załącz dokumenty (opcjonalnie, ale przyspiesza sprawę)",
       "step3Sub": "Zweryfikuj szczegóły przed dalszym krokiem",
       "step4Sub": "Gdzie wysłać tłumaczenie i fakturę",
-      "fromPlaceholder": "— Z —",
-      "toPlaceholder": "— Na —",
+      "fromPlaceholder": "– Z –",
+      "toPlaceholder": "– Na –",
       "addDocumentHint": "Możesz dodać wiele dokumentów o różnych wymaganiach",
       "basePrice": "Cena bazowa",
       "surchargeBadge": "+{percent}% ceny"
@@ -1692,7 +1692,7 @@
     "slowPdfDescription": "Pliki PDF są generowane pojedynczo w Twojej przeglądarce, więc może to potrwać kilka minut i zajmie tę kartę. Word lub Markdown są znacznie szybsze.",
     "slowPdfConfirm": "Utwórz pliki PDF",
     "downloadNothing": "Nie udało się nic pobrać. Spróbuj ponownie.",
-    "downloadPartial": "Pobrano {succeeded} z {total}. {failed} nie udało się dołączyć — zobacz _missing-documents.txt w archiwum.",
+    "downloadPartial": "Pobrano {succeeded} z {total}. {failed} nie udało się dołączyć: zobacz _missing-documents.txt w archiwum.",
     "downloadSuccess": "Pobrano {count, plural, one {# tłumaczenie} few {# tłumaczenia} many {# tłumaczeń} other {# tłumaczenia}}.",
     "downloadFailed": "Nie udało się przygotować pobierania",
     "requeuedToast": "Ponownie dodano do kolejki {count, plural, one {# dokument} few {# dokumenty} many {# dokumentów} other {# dokumentu}}.",
@@ -1706,7 +1706,7 @@
     "pageDescription": "Kto prowadzi Suliko, co robi usługa, ile kosztuje i jak się z nami skontaktować.",
     "title": "O nas",
     "intro": "Suliko to usługa tłumaczenia dokumentów i tekstu oparta na sztucznej inteligencji. Na tej stronie opisujemy, kto ją prowadzi, co robi, ile kosztuje i jak się z nami skontaktować.",
-    "body": "1. Firma\n\nSuliko jest prowadzone przez {name}, kod identyfikacyjny {id}, zarejestrowaną w Gruzji. Jesteśmy podmiotem rozliczającym wszystkie płatności dokonywane w serwisach suliko.ge i suliko.io oraz stroną odpowiedzialną za świadczenie opisanej poniżej usługi.\n\n2. Czym jest usługa\n\nSuliko tłumaczy dokumenty i tekst między ponad 60 językami. Przesyłasz plik — Word, PDF, PowerPoint, Excel, obrazy lub napisy — albo wklejasz tekst bezpośrednio, wybierasz język docelowy i otrzymujesz tłumaczenie zachowujące oryginalny układ, tabele i formatowanie.\n\nUsługa jest wykorzystywana do umów, dokumentacji technicznej, prac naukowych i medycznych, napisów oraz codziennej korespondencji. Język gruziński jest w pełni obsługiwany, w tym gruzińskie paszporty i dokumenty tożsamości.\n\nDostępna jest opcja tłumaczenia poświadczonego notarialnie dla dokumentów wymagających uwierzytelnienia prawnego w Gruzji.\n\n3. Jak to działa\n\nZałóż konto, doładuj saldo, prześlij dokument i wybierz język docelowy. Tłumaczenie zwykłego dokumentu zajmuje zwykle mniej niż minutę; duże pliki proporcjonalnie dłużej. Ukończone tłumaczenia pozostają w historii i można je pobrać ponownie w dowolnym momencie.\n\n4. Ile to kosztuje\n\nWszystkie ceny podane są w larach gruzińskich (GEL, ₾) i to właśnie ta waluta jest pobierana przy płatności, zarówno w suliko.ge, jak i suliko.io.\n\nPłatność za użycie — 1 ₾ za stronę. Możesz kupić dowolną kwotę od 1 ₾ wzwyż.\n\nPakiet startowy — 20 ₾ za 100 stron.\n\nPakiet profesjonalny — 50 ₾ za 500 stron.\n\nStrona oznacza jedną standardową stronę przetłumaczonego tekstu. Strony nie tracą ważności i możesz z nich korzystać, kiedy chcesz. Nie ma abonamentu ani płatności cyklicznych: płacisz wyłącznie za to, co kupujesz, w momencie zakupu.\n\n5. Kontakt\n\nE-mail: {email}\nTelefon: {phone}\nAdres: {address}\n\nNa zapytania do wsparcia odpowiadamy e-mailem w ciągu jednego dnia roboczego."
+    "body": "1. Firma\n\nSuliko jest prowadzone przez {name}, kod identyfikacyjny {id}, zarejestrowaną w Gruzji. Jesteśmy podmiotem rozliczającym wszystkie płatności dokonywane w serwisach suliko.ge i suliko.io oraz stroną odpowiedzialną za świadczenie opisanej poniżej usługi.\n\n2. Czym jest usługa\n\nSuliko tłumaczy dokumenty i tekst między ponad 60 językami. Przesyłasz plik (Word, PDF, PowerPoint, Excel, obrazy lub napisy) albo wklejasz tekst bezpośrednio, wybierasz język docelowy i otrzymujesz tłumaczenie zachowujące oryginalny układ, tabele i formatowanie.\n\nUsługa jest wykorzystywana do umów, dokumentacji technicznej, prac naukowych i medycznych, napisów oraz codziennej korespondencji. Język gruziński jest w pełni obsługiwany, w tym gruzińskie paszporty i dokumenty tożsamości.\n\nDostępna jest opcja tłumaczenia poświadczonego notarialnie dla dokumentów wymagających uwierzytelnienia prawnego w Gruzji.\n\n3. Jak to działa\n\nZałóż konto, doładuj saldo, prześlij dokument i wybierz język docelowy. Tłumaczenie zwykłego dokumentu zajmuje zwykle mniej niż minutę; duże pliki proporcjonalnie dłużej. Ukończone tłumaczenia pozostają w historii i można je pobrać ponownie w dowolnym momencie.\n\n4. Ile to kosztuje\n\nWszystkie ceny podane są w larach gruzińskich (GEL, ₾) i to właśnie ta waluta jest pobierana przy płatności, zarówno w suliko.ge, jak i suliko.io.\n\nPłatność za użycie: 1 ₾ za stronę. Możesz kupić dowolną kwotę od 1 ₾ wzwyż.\n\nPakiet startowy: 20 ₾ za 100 stron.\n\nPakiet profesjonalny: 50 ₾ za 500 stron.\n\nStrona oznacza jedną standardową stronę przetłumaczonego tekstu. Strony nie tracą ważności i możesz z nich korzystać, kiedy chcesz. Nie ma abonamentu ani płatności cyklicznych: płacisz wyłącznie za to, co kupujesz, w momencie zakupu.\n\n5. Kontakt\n\nE-mail: {email}\nTelefon: {phone}\nAdres: {address}\n\nNa zapytania do wsparcia odpowiadamy e-mailem w ciągu jednego dnia roboczego."
   },
   "RefundPolicy": {
     "pageTitle": "Polityka dostawy, anulowania i zwrotów",
@@ -1714,7 +1714,7 @@
     "title": "Polityka dostawy, anulowania i zwrotów",
     "lastUpdated": "Ostatnia aktualizacja: 9 września 2026",
     "intro": "Ta polityka opisuje, co otrzymujesz po dokonaniu płatności, kiedy można anulować zamówienie i kiedy zwracamy pieniądze. Dotyczy zakupów dokonanych w suliko.ge i suliko.io. Oba serwisy prowadzi {name} (numer identyfikacyjny: {id}).",
-    "body": "1. Co kupujesz\n\nKupujesz kredyty tłumaczeniowe, liczone w stronach, które są dodawane do salda Twojego konta. Nic nie jest wysyłane fizycznie: usługa jest świadczona w całości online.\n\n2. Dostawa\n\nKredyty są dodawane do konta natychmiast po potwierdzeniu płatności przez bank — zwykle w ciągu kilku sekund. Jeśli saldo nie zaktualizuje się w ciągu 15 minut od udanej płatności, napisz na {email}, podając datę i kwotę, a doliczymy kredyty ręcznie.\n\nNie pobieramy opłaty za dostawę, ponieważ nie ma nic do dostarczenia fizycznie.\n\n3. Anulowanie przed płatnością\n\nPłatność możesz przerwać w dowolnym momencie, zanim potwierdzisz ją na stronie banku. Nic nie zostanie pobrane i nie powstanie żadne zamówienie. Zamknięcie strony płatności lub upłynięcie jej ważności samo anuluje zamówienie.\n\n4. Zwroty\n\nNiewykorzystane kredyty podlegają pełnemu zwrotowi przez 14 dni od daty zakupu. Zwracamy zapłaconą kwotę na kartę użytą przy zakupie.\n\nKredyty już wykorzystane na ukończone tłumaczenie nie podlegają zwrotowi, ponieważ usługa została wykonana i dostarczona.\n\nJeśli tłumaczenie nie powiedzie się z przyczyn technicznych po naszej stronie, zużyte na nie kredyty wracają na saldo automatycznie. Jeśli tak się nie stanie, daj nam znać, a je przywrócimy.\n\nJeśli obciążono Cię dwukrotnie za to samo zamówienie lub pobrano opłatę po płatności, która wyraźnie się nie powiodła, zwracamy duplikat w całości, niezależnie od tego, jak dawno to nastąpiło.\n\n5. Jak poprosić o zwrot\n\nNapisz na {email} z adresu przypisanego do konta, podając datę zakupu, kwotę i krótko powód. Przy zwrocie niewykorzystanych kredytów w ciągu 14 dni nie musisz podawać powodu.\n\nNa każde zgłoszenie odpowiadamy w ciągu 3 dni roboczych. Zatwierdzone zwroty trafiają z powrotem na pierwotną kartę w ciągu 10 dni roboczych; to, jak szybko pojawią się na wyciągu, zależy od Twojego banku.\n\n6. Problemy z tłumaczeniem\n\nJeśli tłumaczenie jest błędne, niekompletne lub nieprzydatne, zgłoś to w ciągu 14 dni, a wykonamy je ponownie bez opłat albo zwrócimy zużyte kredyty, jeśli nie zdołamy tego naprawić.\n\n7. Spory\n\nJeśli coś poszło nie tak z płatnością, skontaktuj się najpierw z nami pod adresem {email} lub numerem {phone} — niemal zawsze rozwiążemy sprawę szybciej niż reklamacja kartowa. Zgłoszenie sporu w banku pozostaje Twoim prawem i nie ogranicza praw opisanych powyżej."
+    "body": "1. Co kupujesz\n\nKupujesz kredyty tłumaczeniowe, liczone w stronach, które są dodawane do salda Twojego konta. Nic nie jest wysyłane fizycznie: usługa jest świadczona w całości online.\n\n2. Dostawa\n\nKredyty są dodawane do konta natychmiast po potwierdzeniu płatności przez bank, zwykle w ciągu kilku sekund. Jeśli saldo nie zaktualizuje się w ciągu 15 minut od udanej płatności, napisz na {email}, podając datę i kwotę, a doliczymy kredyty ręcznie.\n\nNie pobieramy opłaty za dostawę, ponieważ nie ma nic do dostarczenia fizycznie.\n\n3. Anulowanie przed płatnością\n\nPłatność możesz przerwać w dowolnym momencie, zanim potwierdzisz ją na stronie banku. Nic nie zostanie pobrane i nie powstanie żadne zamówienie. Zamknięcie strony płatności lub upłynięcie jej ważności samo anuluje zamówienie.\n\n4. Zwroty\n\nNiewykorzystane kredyty podlegają pełnemu zwrotowi przez 14 dni od daty zakupu. Zwracamy zapłaconą kwotę na kartę użytą przy zakupie.\n\nKredyty już wykorzystane na ukończone tłumaczenie nie podlegają zwrotowi, ponieważ usługa została wykonana i dostarczona.\n\nJeśli tłumaczenie nie powiedzie się z przyczyn technicznych po naszej stronie, zużyte na nie kredyty wracają na saldo automatycznie. Jeśli tak się nie stanie, daj nam znać, a je przywrócimy.\n\nJeśli obciążono Cię dwukrotnie za to samo zamówienie lub pobrano opłatę po płatności, która wyraźnie się nie powiodła, zwracamy duplikat w całości, niezależnie od tego, jak dawno to nastąpiło.\n\n5. Jak poprosić o zwrot\n\nNapisz na {email} z adresu przypisanego do konta, podając datę zakupu, kwotę i krótko powód. Przy zwrocie niewykorzystanych kredytów w ciągu 14 dni nie musisz podawać powodu.\n\nNa każde zgłoszenie odpowiadamy w ciągu 3 dni roboczych. Zatwierdzone zwroty trafiają z powrotem na pierwotną kartę w ciągu 10 dni roboczych; to, jak szybko pojawią się na wyciągu, zależy od Twojego banku.\n\n6. Problemy z tłumaczeniem\n\nJeśli tłumaczenie jest błędne, niekompletne lub nieprzydatne, zgłoś to w ciągu 14 dni, a wykonamy je ponownie bez opłat albo zwrócimy zużyte kredyty, jeśli nie zdołamy tego naprawić.\n\n7. Spory\n\nJeśli coś poszło nie tak z płatnością, skontaktuj się najpierw z nami pod adresem {email} lub numerem {phone}. Niemal zawsze rozwiążemy sprawę szybciej niż reklamacja kartowa. Zgłoszenie sporu w banku pozostaje Twoim prawem i nie ogranicza praw opisanych powyżej."
   },
   "Privacy": {
     "pageTitle": "Polityka prywatności",
@@ -1722,7 +1722,7 @@
     "title": "Polityka prywatności",
     "lastUpdated": "Ostatnia aktualizacja: 9 września 2026",
     "intro": "Ta polityka wyjaśnia, jakie dane osobowe zbiera Suliko, dlaczego je zbieramy, jak długo je przechowujemy i jakie masz możliwości wyboru. Dotyczy serwisów suliko.ge i suliko.io.",
-    "body": "1. Kto jest odpowiedzialny\n\n{name} jest administratorem opisanych tu danych osobowych. Możesz się z nami skontaktować pod adresem {email} lub listownie: {address}.\n\n2. Co zbieramy\n\nDane konta: adres e-mail oraz numer telefonu, jeśli rejestrujesz się z jego użyciem. Hasło przechowywane wyłącznie jako nieodwracalny skrót kryptograficzny.\n\nPrzesyłane treści: dokumenty i tekst przesyłane do tłumaczenia oraz powstałe z nich tłumaczenia.\n\nZapisy użycia: przetłumaczone strony, pary językowe, znaczniki czasu i ruchy na saldzie — to, czego potrzebujemy do prawidłowego rozliczenia i pokazania Twojej historii.\n\nDane techniczne: adres IP, typ przeglądarki i urządzenia, zbierane w zwykłych logach serwera.\n\n3. Przesyłane dokumenty\n\nTwoje dokumenty należą do Ciebie. Przetwarzamy je, aby wykonać tłumaczenie i udostępniać je w Twojej historii — i w żadnym innym celu. Nie sprzedajemy ich, nie publikujemy i nie wykorzystujemy ich treści do trenowania modeli.\n\nTłumaczenie realizowane jest z użyciem Gemini API firmy Google. Tekst Twojego dokumentu jest wysyłany do tej usługi wyłącznie w celu przetłumaczenia, na warunkach Google dla klientów API, które nie zezwalają na wykorzystanie go do trenowania.\n\n4. Dane płatnicze\n\nPłatności kartą obsługuje Bank of Georgia. Numer karty, data ważności i kod zabezpieczający są wprowadzane na stronie banku i nigdy nie są do nas wysyłane, przez nas widziane ani przechowywane. Przechowujemy wyłącznie numer zamówienia, kwotę, walutę oraz informację, czy płatność się powiodła.\n\n5. Jak długo przechowujemy\n\nDokumenty i tłumaczenia pozostają w historii do momentu ich usunięcia przez Ciebie lub zamknięcia konta.\n\nDane konta przechowujemy przez okres jego istnienia. Po zamknięciu usuwamy konto i treści w ciągu 30 dni.\n\nDokumentacja płatnicza i rozliczeniowa przechowywana jest tak długo, jak wymaga tego gruzińskie prawo rachunkowe i podatkowe — dłużej niż powyższe okresy i również po zamknięciu konta.\n\n6. Kto jeszcze ma dostęp\n\nDane osobowe udostępniamy wyłącznie dostawcom niezbędnym do działania usługi: dostawcy hostingu, Gemini API do tłumaczenia oraz Bank of Georgia do płatności. Każdy otrzymuje tylko to, czego wymaga jego zadanie.\n\nDane ujawniamy organom władzy wyłącznie wtedy, gdy zobowiązuje nas do tego prawo, i nikomu nie sprzedajemy danych osobowych.\n\n7. Twoje prawa\n\nMożesz poprosić o kopię swoich danych, ich sprostowanie, usunięcie lub zaprzestanie przetwarzania. Napisz na {email} z adresu przypisanego do konta, a odpowiemy w ciągu 30 dni.\n\nPojedyncze dokumenty możesz usunąć z historii samodzielnie w dowolnym momencie, a konto zamknąć, kiedy zechcesz.\n\n8. Pliki cookie\n\nUżywamy plików cookie niezbędnych do działania serwisu — utrzymania zalogowania oraz zapamiętania języka i motywu. Nie używamy reklamowych plików cookie. Analityka, o ile jest stosowana, ogranicza się do zbiorczego pomiaru ruchu.\n\n9. Bezpieczeństwo\n\nRuch do i z serwisu jest szyfrowany podczas transmisji. Hasła są hashowane. Dostęp do danych produkcyjnych mają wyłącznie osoby, które potrzebują go do prowadzenia usługi.\n\n10. Zmiany\n\nJeśli zmienimy tę politykę, zaktualizujemy datę na górze strony. Istotne zmiany ogłosimy w serwisie przed ich wejściem w życie.\n\n11. Kontakt\n\nPytania dotyczące prywatności: {email}."
+    "body": "1. Kto jest odpowiedzialny\n\n{name} jest administratorem opisanych tu danych osobowych. Możesz się z nami skontaktować pod adresem {email} lub listownie: {address}.\n\n2. Co zbieramy\n\nDane konta: adres e-mail oraz numer telefonu, jeśli rejestrujesz się z jego użyciem. Hasło przechowywane wyłącznie jako nieodwracalny skrót kryptograficzny.\n\nPrzesyłane treści: dokumenty i tekst przesyłane do tłumaczenia oraz powstałe z nich tłumaczenia.\n\nZapisy użycia: przetłumaczone strony, pary językowe, znaczniki czasu i ruchy na saldzie (to, czego potrzebujemy do prawidłowego rozliczenia i pokazania Twojej historii).\n\nDane techniczne: adres IP, typ przeglądarki i urządzenia, zbierane w zwykłych logach serwera.\n\n3. Przesyłane dokumenty\n\nTwoje dokumenty należą do Ciebie. Przetwarzamy je, aby wykonać tłumaczenie i udostępniać je w Twojej historii, i w żadnym innym celu. Nie sprzedajemy ich, nie publikujemy i nie wykorzystujemy ich treści do trenowania modeli.\n\nTłumaczenie realizowane jest z użyciem Gemini API firmy Google. Tekst Twojego dokumentu jest wysyłany do tej usługi wyłącznie w celu przetłumaczenia, na warunkach Google dla klientów API, które nie zezwalają na wykorzystanie go do trenowania.\n\n4. Dane płatnicze\n\nPłatności kartą obsługuje Bank of Georgia. Numer karty, data ważności i kod zabezpieczający są wprowadzane na stronie banku i nigdy nie są do nas wysyłane, przez nas widziane ani przechowywane. Przechowujemy wyłącznie numer zamówienia, kwotę, walutę oraz informację, czy płatność się powiodła.\n\n5. Jak długo przechowujemy\n\nDokumenty i tłumaczenia pozostają w historii do momentu ich usunięcia przez Ciebie lub zamknięcia konta.\n\nDane konta przechowujemy przez okres jego istnienia. Po zamknięciu usuwamy konto i treści w ciągu 30 dni.\n\nDokumentacja płatnicza i rozliczeniowa przechowywana jest tak długo, jak wymaga tego gruzińskie prawo rachunkowe i podatkowe, czyli dłużej niż powyższe okresy i również po zamknięciu konta.\n\n6. Kto jeszcze ma dostęp\n\nDane osobowe udostępniamy wyłącznie dostawcom niezbędnym do działania usługi: dostawcy hostingu, Gemini API do tłumaczenia oraz Bank of Georgia do płatności. Każdy otrzymuje tylko to, czego wymaga jego zadanie.\n\nDane ujawniamy organom władzy wyłącznie wtedy, gdy zobowiązuje nas do tego prawo, i nikomu nie sprzedajemy danych osobowych.\n\n7. Twoje prawa\n\nMożesz poprosić o kopię swoich danych, ich sprostowanie, usunięcie lub zaprzestanie przetwarzania. Napisz na {email} z adresu przypisanego do konta, a odpowiemy w ciągu 30 dni.\n\nPojedyncze dokumenty możesz usunąć z historii samodzielnie w dowolnym momencie, a konto zamknąć, kiedy zechcesz.\n\n8. Pliki cookie\n\nUżywamy plików cookie niezbędnych do działania serwisu: utrzymania zalogowania oraz zapamiętania języka i motywu. Nie używamy reklamowych plików cookie. Analityka, o ile jest stosowana, ogranicza się do zbiorczego pomiaru ruchu.\n\n9. Bezpieczeństwo\n\nRuch do i z serwisu jest szyfrowany podczas transmisji. Hasła są hashowane. Dostęp do danych produkcyjnych mają wyłącznie osoby, które potrzebują go do prowadzenia usługi.\n\n10. Zmiany\n\nJeśli zmienimy tę politykę, zaktualizujemy datę na górze strony. Istotne zmiany ogłosimy w serwisie przed ich wejściem w życie.\n\n11. Kontakt\n\nPytania dotyczące prywatności: {email}."
   },
   "SulikoOffice": {
     "meta": {
@@ -2033,10 +2033,10 @@
   "Features": {
     "eyebrow": "Dlaczego Suliko",
     "title": "Asystent tłumacza, nie jego zastępca",
-    "subtitle": "Inteligentny asystent, który pomaga tłumaczom pracować szybciej, a firmom się rozwijać — bez utraty jakości.",
+    "subtitle": "Inteligentny asystent, który pomaga tłumaczom pracować szybciej, a firmom się rozwijać, bez utraty jakości.",
     "copilot": {
       "title": "Kopilot tłumacza",
-      "body": "Zarabiaj 3–10x więcej, przyspieszając pracę, którą już wykonujesz — z podpowiedziami dla każdego segmentu.",
+      "body": "Zarabiaj 3–10x więcej, przyspieszając pracę, którą już wykonujesz, z podpowiedziami dla każdego segmentu.",
       "segment": "Segment 4 z 12",
       "glossary": "Zgodne z glosariuszem",
       "consistent": "Spójna terminologia"

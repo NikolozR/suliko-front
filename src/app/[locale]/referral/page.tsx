@@ -264,7 +264,7 @@ export default function ReferralPage() {
               className="h-20 w-20 sm:h-24 sm:w-24 md:h-28 md:w-28 lg:h-36 lg:w-36 mb-3 sm:mb-4"
             />
             <p className="text-center text-muted-foreground max-w-sm sm:max-w-md text-base sm:text-lg lg:text-xl leading-tight px-2">
-              თარჯიმნების ასისტენტი — ატვირთე დოკუმენტი და შეამცირე თარგმნის დრო 70%-მდე. კონცენტრირდი შინაარსზე, არა ტექნიკურ სამუშაოზე.
+              თარჯიმნების ასისტენტი: ატვირთე დოკუმენტი და შეამცირე თარგმნის დრო 70%-მდე. კონცენტრირდი შინაარსზე, არა ტექნიკურ სამუშაოზე.
             </p>
           </div>
 

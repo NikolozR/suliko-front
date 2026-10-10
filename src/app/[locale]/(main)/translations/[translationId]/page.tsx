@@ -700,7 +700,7 @@ export default function TranslationDetailPage() {
           <div className="flex items-end justify-between gap-4 mb-2">
             <div className="min-w-0">
               <div className="text-4xl font-semibold tabular-nums leading-none text-suliko-default-color">
-                {isIndeterminate ? "—" : `${Math.round(displayProgress)}%`}
+                {isIndeterminate ? "–" : `${Math.round(displayProgress)}%`}
               </div>
               <p className="mt-2 text-sm text-muted-foreground truncate">{progressMsg}</p>
             </div>
@@ -762,7 +762,7 @@ export default function TranslationDetailPage() {
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             <div>
               <p className="text-xs text-muted-foreground mb-0.5">{info?.fileType ?? "File type"}</p>
-              <p className="font-medium text-sm uppercase">{chat.fileType || "—"}</p>
+              <p className="font-medium text-sm uppercase">{chat.fileType || "–"}</p>
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-0.5">{info?.sourceLanguage ?? "Source"}</p>
@@ -770,7 +770,7 @@ export default function TranslationDetailPage() {
             </div>
             <div>
               <p className="text-xs text-muted-foreground mb-0.5">{info?.targetLanguage ?? "Target"}</p>
-              <p className="font-medium text-sm">{chat.targetLanguageName || "—"}</p>
+              <p className="font-medium text-sm">{chat.targetLanguageName || "–"}</p>
             </div>
             {pageCount != null && (
               <div>

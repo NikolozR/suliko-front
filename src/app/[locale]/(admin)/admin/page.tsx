@@ -171,7 +171,7 @@ export default async function AdminDashboardPage() {
     return now - new Date(u.lastActivityAt).getTime() < oneDayMs;
   }).length;
 
-  const dash = "—"; // em dash fallback when stats are unavailable
+  const dash = "–"; // fallback when stats are unavailable
 
   const overviewStats: StatItem[] = [
     { label: "Total Users", value: total.toLocaleString(), delay: "0ms" },

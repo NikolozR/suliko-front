@@ -492,7 +492,7 @@ export default function NotaryPriceCalculator() {
                   <div key={doc.id} className="space-y-2 rounded-xl bg-muted/40 p-4">
                     <div className="flex items-center justify-between border-b border-border pb-2">
                       <span className="text-sm font-semibold text-foreground">
-                        {t("document")} #{index + 1} — {line.pages} {t("pagesShort")}
+                        {t("document")} #{index + 1}: {line.pages} {t("pagesShort")}
                       </span>
                       <span className="text-sm font-bold text-suliko-default-color">
                         {money(line.subtotal)}

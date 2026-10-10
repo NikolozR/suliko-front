@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 const SITE_NAME = "Suliko";
-const DEFAULT_TITLE = "Suliko — AI-Powered Document Translation";
+const DEFAULT_TITLE = "Suliko: AI-Powered Document Translation";
 
 /**
  * Sets the browser tab title from a client component and restores the
