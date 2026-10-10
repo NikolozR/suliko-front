@@ -23,7 +23,7 @@ export default function NotaryTrustStrip() {
       icon: ArrowLeftRight,
       // Falls back to the label alone until the catalogue lands, rather than
       // rendering a number that is about to change.
-      value: directions > 0 ? String(directions) : "—",
+      value: directions > 0 ? String(directions) : "–",
       label: t("directionsLabel"),
     },
     { key: "accuracy", icon: ShieldCheck, value: t("accuracyValue"), label: t("accuracyLabel") },

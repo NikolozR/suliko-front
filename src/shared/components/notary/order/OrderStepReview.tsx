@@ -43,7 +43,7 @@ export default function OrderStepReview({ state, reference, estimate }: Props) {
               <div className="mb-2 flex items-start justify-between gap-3 border-b border-border pb-2">
                 <div className="min-w-0">
                   <p className="text-sm font-semibold text-foreground">
-                    {t("document")} #{line.index + 1} — {nameOf(doc.fromLang)} →{" "}
+                    {t("document")} #{line.index + 1}: {nameOf(doc.fromLang)} →{" "}
                     {nameOf(doc.toLang)}
                   </p>
                   <p className="mt-0.5 text-xs text-muted-foreground">

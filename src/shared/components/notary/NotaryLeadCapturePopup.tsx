@@ -127,7 +127,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           email: "callback@suliko.ge",
-          subject: `Callback Request — ${nameOf(fromLang)} → ${nameOf(toLang)}${notary ? " (Notary)" : ""}`,
+          subject: `Callback Request: ${nameOf(fromLang)} → ${nameOf(toLang)}${notary ? " (Notary)" : ""}`,
           message: [
             `Contact: ${phone.trim()}`,
             `From: ${nameOf(fromLang)}`,

@@ -33,7 +33,7 @@ const faqSchema = {
       name: "Which languages are supported?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "We currently support over 50 languages, including Georgian, English, French, Turkish, Polish, Ukrainian, Arabic, and many more. Georgian is a first-class citizen — our models are specifically fine-tuned for it.",
+        text: "We currently support over 50 languages, including Georgian, English, French, Turkish, Polish, Ukrainian, Arabic, and many more. Georgian is a first-class citizen: our models are specifically fine-tuned for it.",
       },
     },
     {
@@ -49,7 +49,7 @@ const faqSchema = {
       name: "Is there a free tier?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Yes — every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow.",
+        text: "Yes. Every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow.",
       },
     },
     {

@@ -64,7 +64,7 @@ export default function EditorTestClient() {
   return (
     <div className="p-4 md:p-6 max-w-[1400px] mx-auto">
       <div className="mb-4">
-        <h1 className="text-xl font-semibold text-suliko-default-color">Editor test — Word-like formatter</h1>
+        <h1 className="text-xl font-semibold text-suliko-default-color">Editor test: Word-like formatter</h1>
         <p className="text-sm text-muted-foreground mt-1">
           Same input/output contract as the production editor: it accepts markdown <em>or</em> HTML and always
           returns HTML via <code>onChange</code> / <code>getHTML()</code>. Nothing on the backend changes.
@@ -126,7 +126,7 @@ export default function EditorTestClient() {
         <div>
           <div className="text-sm font-semibold mb-1">Live HTML output (onChange / getHTML)</div>
           <pre className="text-xs bg-muted/50 border border-border rounded-md p-3 overflow-auto max-h-[300px] whitespace-pre-wrap break-words">
-            {output || "— edit the document above to see the emitted HTML —"}
+            {output || "Edit the document above to see the emitted HTML"}
           </pre>
         </div>
       </div>

@@ -42,7 +42,7 @@ export default function BlogPostsTable({ initialPosts }: Props) {
     return (
       post.blog_post_translations.find((t) => t.locale === "en")?.title ||
       post.blog_post_translations[0]?.title ||
-      "—"
+      "–"
     );
   }
 
@@ -111,7 +111,7 @@ export default function BlogPostsTable({ initialPosts }: Props) {
                     <span style={{ fontWeight: 600 }}>{getTitle(post)}</span>
                   </td>
                   <td style={{ padding: "12px", color: "#94a3b8", whiteSpace: "nowrap" }}>
-                    {post.author_name || "—"}
+                    {post.author_name || "–"}
                   </td>
                   <td style={{ padding: "12px", color: "#94a3b8" }}>
                     {post.tags?.length
@@ -132,7 +132,7 @@ export default function BlogPostsTable({ initialPosts }: Props) {
                             {tag}
                           </span>
                         ))
-                      : "—"}
+                      : "–"}
                   </td>
                   <td style={{ padding: "12px", whiteSpace: "nowrap" }}>
                     <span
@@ -156,7 +156,7 @@ export default function BlogPostsTable({ initialPosts }: Props) {
                   <td style={{ padding: "12px", color: "#64748b", whiteSpace: "nowrap" }}>
                     {post.published_at
                       ? new Date(post.published_at).toLocaleDateString("en-GB")
-                      : "—"}
+                      : "–"}
                   </td>
                   <td style={{ padding: "12px", whiteSpace: "nowrap" }}>
                     <div style={{ display: "flex", gap: 8 }}>

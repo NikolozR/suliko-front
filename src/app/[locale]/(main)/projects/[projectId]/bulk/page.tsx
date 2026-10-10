@@ -21,7 +21,7 @@ export default function BulkTranslationPage() {
   const [loading, setLoading] = useState(true);
 
   useDocumentTitle(
-    projectName ? `${t("pageTitle")} — ${projectName}` : t("pageTitle")
+    projectName ? `${t("pageTitle")}: ${projectName}` : t("pageTitle")
   );
 
   useEffect(() => {

@@ -224,7 +224,7 @@ export function calculateEstimate(
 export function buildNotes(state: OrderState): string {
   const isBusiness = state.contact.clientType === 'business';
   const parts: string[] = [
-    `[${ORDER_SOURCE_LABEL}] Order from ${ORDER_SOURCE_SITE} — ${
+    `[${ORDER_SOURCE_LABEL}] Order from ${ORDER_SOURCE_SITE}: ${
       isBusiness ? 'B2B (business)' : 'B2C (individual)'
     }`,
   ];

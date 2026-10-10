@@ -3,7 +3,7 @@ import React, { useMemo, useState } from "react";
 import { User } from "./users-table";
 
 function fmt(date?: string) {
-  if (!date) return "—";
+  if (!date) return "–";
   return new Date(date).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
 }
 
@@ -173,7 +173,7 @@ export default function ReferralsTab({ users }: { users: User[] }) {
                           {u.referredByCode} <span style={{ color: "#334155" }}>(deleted?)</span>
                         </span>
                       ) : (
-                        <span style={{ color: "#334155" }}>—</span>
+                        <span style={{ color: "#334155" }}>–</span>
                       )}
                     </td>
 

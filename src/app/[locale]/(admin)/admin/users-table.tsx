@@ -448,21 +448,21 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                   className="admin-table-row"
                 >
                   <td style={tdStyle}>
-                    <div style={{ ...monoStyle, fontSize: 13, color: "#e2e8f0" }}>{u.userName || "—"}</div>
+                    <div style={{ ...monoStyle, fontSize: 13, color: "#e2e8f0" }}>{u.userName || "–"}</div>
                     <div style={{ ...monoStyle, fontSize: 10, color: "#475569", marginTop: 2 }}>{u.id}</div>
                   </td>
                   <td style={tdStyle}>
                     {u.firstName || u.lastName
                       ? `${u.firstName || ""} ${u.lastName || ""}`.trim()
-                      : <span style={{ color: "#475569" }}>—</span>}
+                      : <span style={{ color: "#475569" }}>–</span>}
                   </td>
-                  <td style={tdStyle}>{u.email || <span style={{ color: "#475569" }}>—</span>}</td>
+                  <td style={tdStyle}>{u.email || <span style={{ color: "#475569" }}>–</span>}</td>
                   <td style={tdStyle}>
-                    <span style={monoStyle}>{u.phoneNUmber || u.phoneNumber || "—"}</span>
+                    <span style={monoStyle}>{u.phoneNUmber || u.phoneNumber || "–"}</span>
                   </td>
                   {showRoleId && (
                     <td style={tdStyle}>
-                      <span style={{ ...monoStyle, fontSize: 11 }}>{u.roleId || "—"}</span>
+                      <span style={{ ...monoStyle, fontSize: 11 }}>{u.roleId || "–"}</span>
                     </td>
                   )}
                   <td style={tdStyle}>
@@ -481,7 +481,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                         {u.roleName}
                       </span>
                     ) : (
-                      <span style={{ color: "#475569" }}>—</span>
+                      <span style={{ color: "#475569" }}>–</span>
                     )}
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
@@ -508,12 +508,12 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                   </td>
                   <td style={tdStyle}>
                     <span style={monoStyle}>
-                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "–"}
                     </span>
                   </td>
                   <td style={tdStyle}>
                     <span style={monoStyle}>
-                      {u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleDateString() : "—"}
+                      {u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleDateString() : "–"}
                     </span>
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>

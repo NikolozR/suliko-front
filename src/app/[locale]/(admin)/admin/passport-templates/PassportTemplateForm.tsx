@@ -251,7 +251,7 @@ export default function PassportTemplateForm({ initial }: Props) {
           ) : docxUrl ? (
             <div style={{ color: "#4ade80", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
               <Upload size={16} />
-              {docxFileName || "Template uploaded"} — Click to replace
+              {docxFileName || "Template uploaded"} (click to replace)
             </div>
           ) : (
             <div style={{ color: "#64748b" }}>
