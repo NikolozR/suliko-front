@@ -64,7 +64,9 @@ export default function AssignedOrderPage({
                 ? t("unavailable")
                 : result.status === "notTranslator"
                   ? t("notLinkedTitle")
-                  : t("error")}
+                  : result.status === "signedOut"
+                    ? t("signedOut")
+                    : t("error")}
           </p>
         </div>
       )}

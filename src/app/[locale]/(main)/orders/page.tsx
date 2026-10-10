@@ -14,6 +14,7 @@ import type { AssignedOrder } from "@/features/orders/types";
 export default function OrdersPage() {
   const t = useTranslations("Orders");
   const tTitles = useTranslations("PageTitles");
+  const tSidebar = useTranslations("Sidebar");
   useDocumentTitle(tTitles("orders"));
   const [result, setResult] = useState<OrdersLoad<AssignedOrder[]> | null>(null);
 
@@ -54,7 +55,17 @@ export default function OrdersPage() {
         </div>
       )}
 
-      {result && result.status !== "ok" && result.status !== "notTranslator" && (
+      {result?.status === "signedOut" && (
+        <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
+          <ClipboardList className="h-10 w-10" />
+          <p className="text-sm font-medium text-foreground">{t("signedOut")}</p>
+          <Link href="/sign-in" className="text-sm font-medium text-suliko-default-color hover:underline">
+            {tSidebar("login")}
+          </Link>
+        </div>
+      )}
+
+      {result && !["ok", "notTranslator", "signedOut"].includes(result.status) && (
         <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200/60 dark:border-red-800/40 text-red-700 dark:text-red-400">
           <AlertCircle className="h-5 w-5 shrink-0" />
           <p className="text-sm">{result.status === "unavailable" ? t("unavailable") : t("error")}</p>
