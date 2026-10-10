@@ -130,7 +130,8 @@
     "back": "Back",
     "stepperVerify": "Verify",
     "stepperInfo": "Your Info",
-    "stepperPassword": "Password"
+    "stepperPassword": "Password",
+    "haveReferralCode": "Have a referral code?"
   },
   "AuthModal": {
     "title": "Please register to the system",
@@ -2108,7 +2109,8 @@
     "signOutTitle": "Sign out of Suliko?",
     "signOutBody": "You'll be signed out of Suliko and Suliko Office on this device.",
     "signOut": "Sign out",
-    "stay": "Stay signed in"
+    "stay": "Stay signed in",
+    "registerSubtitle": "Create a Suliko account to use Suliko Office"
   },
   "Orders": {
     "title": "Orders",

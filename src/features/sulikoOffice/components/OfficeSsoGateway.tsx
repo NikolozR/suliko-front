@@ -82,7 +82,13 @@ export default function OfficeSsoGateway() {
   }, [wellFormed, forceSignIn, continueToOffice]);
 
   if (phase === "signIn") {
-    return <SulikoForm onSignedIn={continueToOffice} subtitle={t("signInSubtitle")} />;
+    return (
+      <SulikoForm
+        onSignedIn={continueToOffice}
+        subtitle={t("signInSubtitle")}
+        registerSubtitle={t("registerSubtitle")}
+      />
+    );
   }
 
   return (

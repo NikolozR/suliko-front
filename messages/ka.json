@@ -130,7 +130,8 @@
     "stepperInfo": "მონაცემები",
     "stepperPassword": "პაროლი",
     "name": "სახელი",
-    "surname": "გვარი"
+    "surname": "გვარი",
+    "haveReferralCode": "გაქვთ რეფერალური კოდი?"
   },
   "AuthModal": {
     "title": "გთხოვთ გაიაროთ რეგისტრაცია",
@@ -2108,7 +2109,8 @@
     "signOutTitle": "გამოხვიდეთ Suliko-დან?",
     "signOutBody": "ამ მოწყობილობაზე გამოხვალთ Suliko-დან და Suliko Office-იდან.",
     "signOut": "გამოსვლა",
-    "stay": "დარჩენა"
+    "stay": "დარჩენა",
+    "registerSubtitle": "Suliko Office-ით სარგებლობისთვის შექმენით Suliko-ს ანგარიში"
   },
   "Orders": {
     "title": "შეკვეთები",

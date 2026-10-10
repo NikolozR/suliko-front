@@ -130,7 +130,8 @@
     "stepperInfo": "Dane",
     "stepperPassword": "Hasło",
     "name": "Imię",
-    "surname": "Nazwisko"
+    "surname": "Nazwisko",
+    "haveReferralCode": "Masz kod polecający?"
   },
   "AuthModal": {
     "title": "Proszę zarejestrować się w systemie",
@@ -2108,7 +2109,8 @@
     "signOutTitle": "Wylogować się z Suliko?",
     "signOutBody": "Zostaniesz wylogowany z Suliko i Suliko Office na tym urządzeniu.",
     "signOut": "Wyloguj się",
-    "stay": "Zostań zalogowany"
+    "stay": "Zostań zalogowany",
+    "registerSubtitle": "Załóż konto Suliko, aby korzystać z Suliko Office"
   },
   "Orders": {
     "title": "Zamówienia",
