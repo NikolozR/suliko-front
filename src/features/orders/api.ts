@@ -1,6 +1,7 @@
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { reaccessToken } from "@/features/auth/services/authorizationService";
-import type { AssignedOrder, AssignedOrderDetail } from "./types";
+import type { NameTranslationItem } from "@/features/translation/types/types.Translation";
+import type { AssignedOrder, AssignedOrderDetail, OrderTranslation } from "./types";
 
 export type OrdersLoad<T> =
   | { status: "ok"; data: T }
@@ -43,25 +44,40 @@ async function renewSignIn(): Promise<"renewed" | "over" | "failed"> {
   }
 }
 
-async function load<T>(url: string): Promise<OrdersLoad<T>> {
+/**
+ * One request to an Orders route, with the sign-in renewed once if it had run out.
+ *
+ * The access token in the cookie lasts half an hour. Someone arriving after a
+ * pause still carries the expired one: the session provider renews it, but
+ * only once the page is up, and this request has left by then. So a refusal
+ * means "renew and ask again", not "could not load".
+ */
+async function ask(url: string, init?: RequestInit): Promise<Response | "signedOut" | "error"> {
   try {
-    let response = await fetch(url, { cache: "no-store" });
-    // The access token in the cookie lasts half an hour. Someone arriving after
-    // a pause still carries the expired one: the session provider renews it,
-    // but only once the page is up, and this request has left by then. So a
-    // refusal here means "renew and ask again", not "could not load".
+    let response = await fetch(url, { ...init, cache: "no-store" });
     if (await signInRefused(response)) {
       const renewal = await renewSignIn();
-      if (renewal === "over") return { status: "signedOut" };
-      if (renewal === "failed") return { status: "error" };
-      response = await fetch(url, { cache: "no-store" });
+      if (renewal === "over") return "signedOut";
+      if (renewal === "failed") return "error";
+      response = await fetch(url, { ...init, cache: "no-store" });
     }
-    // 503: the portal is not switched on for this deployment.
-    if (response.status === 503) return { status: "unavailable" };
-    if (response.status === 404) return { status: "notFound" };
-    // 403: the Office API knows who is asking and has no translator by that account.
-    if (response.status === 403) return { status: "notTranslator" };
-    if (!response.ok) return { status: "error" };
+    return response;
+  } catch {
+    return "error";
+  }
+}
+
+async function load<T>(url: string): Promise<OrdersLoad<T>> {
+  const response = await ask(url);
+  if (response === "signedOut") return { status: "signedOut" };
+  if (response === "error") return { status: "error" };
+  // 503: the portal is not switched on for this deployment.
+  if (response.status === 503) return { status: "unavailable" };
+  if (response.status === 404) return { status: "notFound" };
+  // 403: the Office API knows who is asking and has no translator by that account.
+  if (response.status === 403) return { status: "notTranslator" };
+  if (!response.ok) return { status: "error" };
+  try {
     return { status: "ok", data: (await response.json()) as T };
   } catch {
     return { status: "error" };
@@ -70,10 +86,79 @@ async function load<T>(url: string): Promise<OrdersLoad<T>> {
 
 export const fetchAssignments = () => load<AssignedOrder[]>("/api/office/assignments");
 
+const orderUrl = (slug: string, orderId: string | number) =>
+  `/api/office/orders/${encodeURIComponent(slug)}/${encodeURIComponent(orderId)}`;
+
 export const fetchAssignedOrder = (slug: string, orderId: string) =>
-  load<AssignedOrderDetail>(
-    `/api/office/orders/${encodeURIComponent(slug)}/${encodeURIComponent(orderId)}`
-  );
+  load<AssignedOrderDetail>(orderUrl(slug, orderId));
 
 export const fileDownloadUrl = (slug: string, orderId: number, documentId: number, fileId: string) =>
-  `/api/office/orders/${encodeURIComponent(slug)}/${orderId}/documents/${documentId}/files/${encodeURIComponent(fileId)}`;
+  `${orderUrl(slug, orderId)}/documents/${documentId}/files/${encodeURIComponent(fileId)}`;
+
+// ── Suliko Translate on a file the bureau sent ──────────────────────────────
+
+/** What the translator may tell Suliko before it translates. Both are optional. */
+export type TranslationRequest = {
+  /** Free-text notes: terms, tone, what to leave as it is. */
+  instructions: string;
+  /** Spellings fixed for names, so the model does not choose its own. */
+  names: NameTranslationItem[];
+};
+
+export type TranslationStart =
+  | { status: "started"; translation: OrderTranslation }
+  /** The balance does not cover the file. Nothing was charged. */
+  | { status: "insufficientBalance"; pages: number | null; balance: string | null }
+  | { status: "unsupportedFile" }
+  | { status: "tooLarge" }
+  | { status: "languageNotAvailable" }
+  /** The bureau pressed the same button first; its result will appear here. */
+  | { status: "alreadyTranslating" }
+  | { status: "signedOut" }
+  | { status: "error" };
+
+/** The Office API's error code: the last part of a problem document's `type`. */
+function problemCode(body: unknown): string {
+  const type = (body as { type?: unknown } | null)?.type;
+  return typeof type === "string" ? type.slice(type.lastIndexOf("/") + 1) : "";
+}
+
+export async function startTranslation(
+  slug: string,
+  orderId: number,
+  documentId: number,
+  fileId: string,
+  request: TranslationRequest,
+): Promise<TranslationStart> {
+  const response = await ask(`${fileDownloadUrl(slug, orderId, documentId, fileId)}/translate`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      instructions: request.instructions.trim() || null,
+      names: request.names.filter((name) => name.original.trim() && name.translation.trim()),
+    }),
+  });
+  if (response === "signedOut") return { status: "signedOut" };
+  if (response === "error") return { status: "error" };
+
+  const body = (await response.json().catch(() => null)) as Record<string, unknown> | null;
+  if (response.ok && body) return { status: "started", translation: body as OrderTranslation };
+
+  const code = problemCode(body);
+  if (response.status === 402 || code === "insufficient_balance") {
+    return {
+      status: "insufficientBalance",
+      pages: typeof body?.pages === "number" ? body.pages : null,
+      balance: typeof body?.balance === "string" ? body.balance : null,
+    };
+  }
+  if (response.status === 413) return { status: "tooLarge" };
+  if (code === "unsupported_file") return { status: "unsupportedFile" };
+  if (code === "language_not_available") return { status: "languageNotAvailable" };
+  if (response.status === 409) return { status: "alreadyTranslating" };
+  return { status: "error" };
+}
+
+/** This translator's jobs on one document. Asking is what files a finished one. */
+export const fetchTranslations = (slug: string, orderId: number, documentId: number) =>
+  load<OrderTranslation[]>(`${orderUrl(slug, orderId)}/documents/${documentId}/translations`);
