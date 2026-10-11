@@ -11,6 +11,12 @@ import 'react-pdf/dist/Page/TextLayer.css';
 
 interface DocumentPreviewProps {
   file: File | null;
+  /**
+   * Whether a PDF's page count is reported to the document screen's store,
+   * which shows it beside the file being translated. False where the preview
+   * is of some other file (an order's), whose count is not that screen's.
+   */
+  trackPageCount?: boolean;
 }
 
 type PdfDocumentComponent = React.ComponentType<{
@@ -51,9 +57,86 @@ const getFileType = (file: File): string => {
     case 'doc':
     case 'docx':
       return 'docx';
+    case 'html':
+    case 'htm':
+      return 'html';
     default:
       return 'unknown';
   }
+};
+
+/**
+ * The web page inside a Word file that carries its text as one ("altChunk").
+ *
+ * This site's own Word export writes its files this way (html-docx-js): the
+ * document proper is empty and points at an embedded page, which Word draws.
+ * Mammoth reads only the document proper, so such a file came out blank.
+ * Returns null for a Word file that has no such part.
+ */
+async function embeddedPageOf(buffer: ArrayBuffer): Promise<string | null> {
+  const JSZip = (await import('jszip')).default;
+  const zip = await JSZip.loadAsync(buffer);
+  // The page as it is (`afchunk.htm`, what this site writes)...
+  const page = zip.file(/^word\/[^/]+\.html?$/i)[0];
+  if (page) return page.async('string');
+
+  // ...or wrapped as a web archive (`afchunk.mht`, what other builds of the
+  // same library write): one HTML part between the MIME headers and the
+  // closing boundary, with every "=" written as "=3D".
+  const archive = zip.file(/^word\/[^/]+\.mht$/i)[0];
+  if (!archive) return null;
+  const packed = await archive.async('string');
+  const start = packed.search(/<(!doctype|html)/i);
+  if (start < 0) return null;
+  const end = packed.lastIndexOf('------=mhtDocumentPart--');
+  return packed.slice(start, end > start ? end : undefined).replace(/=3D/g, '=');
+}
+
+/**
+ * A page from a file, shown as it is and kept apart from this site: the frame
+ * runs no scripts and has no access to the page around it.
+ */
+const SandboxedPage: React.FC<{ html: string; title: string }> = ({ html, title }) => (
+  <iframe
+    sandbox=""
+    srcDoc={html}
+    title={title}
+    className="h-full w-full rounded-md border bg-white"
+  />
+);
+
+// HTML Preview Component
+const HtmlPreview: React.FC<{ file: File }> = ({ file }) => {
+  const t = useTranslations("DocumentTranslationCard.documentPreview");
+  const [html, setHtml] = useState<string | null>(null);
+  const [failed, setFailed] = useState(false);
+
+  useEffect(() => {
+    let cancelled = false;
+    setHtml(null);
+    setFailed(false);
+    file
+      .text()
+      .then((text) => {
+        if (!cancelled) setHtml(text);
+      })
+      .catch(() => {
+        if (!cancelled) setFailed(true);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [file]);
+
+  if (failed) {
+    return (
+      <div className="flex justify-center items-center h-full text-red-500">
+        <p>{t('loadErrorWord')}</p>
+      </div>
+    );
+  }
+  if (html === null) return <PreviewLoadingState stage="Preparing preview..." />;
+  return <SandboxedPage html={html} title={file.name} />;
 };
 
 // Helper function to read file as text
@@ -192,6 +275,8 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
 const WordPreview: React.FC<{ file: File }> = ({ file }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [content, setContent] = useState<string>('');
+  // Set instead of `content` for a file whose text is an embedded web page.
+  const [embeddedPage, setEmbeddedPage] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stage, setStage] = useState("Preparing preview...");
@@ -217,6 +302,10 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
         setStage("Rendering document...");
         const mammoth = (await import('mammoth')).default;
         const result = await mammoth.convertToHtml({ arrayBuffer });
+        // Nothing in the document proper: its text may be an embedded page.
+        const blank = !result.value.replace(/<[^>]*>/g, '').trim();
+        const embedded = blank ? await embeddedPageOf(arrayBuffer).catch(() => null) : null;
+        setEmbeddedPage(embedded);
         setContent(result.value);
       } catch (err) {
         setError(t('loadErrorWord'));
@@ -248,6 +337,8 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
       </div>
     );
   }
+
+  if (embeddedPage) return <SandboxedPage html={embeddedPage} title={file.name} />;
 
   return (
     <div className="w-full h-full flex flex-col">
@@ -313,7 +404,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
 };
 
 // PDF Preview Component (existing functionality)
-const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
+const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, trackPageCount }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [pdfModule, setPdfModule] = useState<{
@@ -458,7 +549,8 @@ const PdfPreview: React.FC<{ file: File }> = ({ file }) => {
 
   const onDocumentLoadSuccess = ({ numPages: nextNumPages }: { numPages: number }) => {
     setNumPages(nextNumPages);
-    setRealPageCount(nextNumPages); // Set the real page count from PDF parser for loading progress calculation
+    // The real page count from the PDF parser, for the loading progress calculation.
+    if (trackPageCount) setRealPageCount(nextNumPages);
     setIsRendering(false);
     setStage("Ready");
   };
@@ -699,7 +791,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
   );
 };
 
-const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
+const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file, trackPageCount = true }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
   if (!file) {
     return (
@@ -714,7 +806,7 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
   // Render appropriate preview based on file type
   switch (fileType) {
     case 'pdf':
-      return <PdfPreview file={file} />;
+      return <PdfPreview file={file} trackPageCount={trackPageCount} />;
     case 'image':
       return <ImagePreview file={file} />;
     case 'txt':
@@ -734,6 +826,12 @@ const DocumentPreview: React.FC<DocumentPreviewProps> = ({ file }) => {
       return (
         <div className="w-full h-full border rounded-md bg-slate-50 dark:bg-slate-800 overflow-hidden">
           <WordPreview file={file} />
+        </div>
+      );
+    case 'html':
+      return (
+        <div className="w-full h-full border rounded-md bg-slate-50 dark:bg-slate-800 overflow-hidden">
+          <HtmlPreview file={file} />
         </div>
       );
     default:

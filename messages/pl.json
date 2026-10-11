@@ -2167,7 +2167,6 @@
     "ordered": "Data zamówienia",
     "documents": "Dokumenty",
     "pages": "{count} str.",
-    "files": "Pliki",
     "noFiles": "Brak plików",
     "download": "Pobierz",
     "back": "Wróć do zamówień",
@@ -2177,6 +2176,11 @@
     "bureau": "Biuro",
     "open": "Otwórz",
     "fromBureau": "Od biura",
-    "mine": "Dodane przez Ciebie"
+    "yourTranslations": "Twoje tłumaczenia",
+    "nothingSent": "Nic jeszcze nie wysłano.",
+    "preview": "Podgląd",
+    "closePreview": "Zamknij podgląd",
+    "previewLoading": "Otwieranie pliku…",
+    "previewFailed": "Nie udało się otworzyć pliku tutaj. Nadal możesz go pobrać."
   }
 }

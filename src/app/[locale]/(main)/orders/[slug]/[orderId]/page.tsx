@@ -6,6 +6,9 @@ import {
   AlertCircle,
   ArrowLeft,
   Download,
+  Eye,
+  File as FileIcon,
+  FileImage,
   FileText,
   Languages,
   Loader2,
@@ -14,6 +17,8 @@ import {
   Upload,
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/shared/lib/utils";
+import { Button } from "@/features/ui/components/ui/button";
 import { Card } from "@/features/ui/components/ui/card";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
 import { ConfirmDialog } from "@/features/ui/components/ui/confirm-dialog";
@@ -27,6 +32,11 @@ import {
   type TranslationRemoval,
   type TranslationUpload,
 } from "@/features/orders/api";
+import {
+  OrderFilePreview,
+  isPreviewable,
+  type PreviewTarget,
+} from "@/features/orders/components/OrderFilePreview";
 import { isTranslatable, translateHref } from "@/features/orders/orderSource";
 import {
   noteRemovedFromOrder,
@@ -56,6 +66,9 @@ export default function AssignedOrderPage({
   const tTitles = useTranslations("PageTitles");
   useDocumentTitle(tTitles("orders"));
   const [result, setResult] = useState<OrdersLoad<AssignedOrderDetail> | null>(null);
+  // The file being looked at: beside the order on a wide screen, over it on a phone.
+  const [previewed, setPreviewed] = useState<PreviewTarget | null>(null);
+  const closePreview = useCallback(() => setPreviewed(null), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -76,7 +89,8 @@ export default function AssignedOrderPage({
   }, [slug, orderId]);
 
   return (
-    <div className="container mx-auto p-6 max-w-3xl">
+    // Wider while a file is open, so the order keeps its width beside it.
+    <div className={cn("container mx-auto p-6", previewed ? "max-w-6xl" : "max-w-3xl")}>
       <Link
         href="/orders"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6"
@@ -104,18 +118,42 @@ export default function AssignedOrderPage({
         </div>
       )}
 
-      {result?.status === "ok" && <OrderDetail order={result.data} onChanged={reload} />}
+      {result?.status === "ok" && (
+        <div
+          className={cn(
+            previewed && "lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-start lg:gap-6",
+          )}
+        >
+          <div className="min-w-0">
+            <OrderDetail
+              order={result.data}
+              onChanged={reload}
+              previewedFileId={previewed?.file.id ?? null}
+              onPreview={setPreviewed}
+            />
+          </div>
+          {previewed && <OrderFilePreview target={previewed} onClose={closePreview} />}
+        </div>
+      )}
     </div>
   );
 }
 
+type PreviewControls = {
+  /** The file open in the preview, if any. */
+  previewedFileId: string | null;
+  /** Open a file in the preview, or close it with null. */
+  onPreview: (target: PreviewTarget | null) => void;
+};
+
 function OrderDetail({
   order,
   onChanged,
+  ...preview
 }: {
   order: AssignedOrderDetail;
   onChanged: () => void;
-}) {
+} & PreviewControls) {
   const t = useTranslations("Orders");
 
   return (
@@ -133,7 +171,7 @@ function OrderDetail({
       <ul className="space-y-3">
         {order.documents.map((document) => (
           <li key={document.id}>
-            <DocumentCard order={order} document={document} onChanged={onChanged} />
+            <DocumentCard order={order} document={document} onChanged={onChanged} {...preview} />
           </li>
         ))}
       </ul>
@@ -145,11 +183,12 @@ function DocumentCard({
   order,
   document,
   onChanged,
+  ...preview
 }: {
   order: AssignedOrderDetail;
   document: AssignedDocumentDetail;
   onChanged: () => void;
-}) {
+} & PreviewControls) {
   const t = useTranslations("Orders");
   const slug = order.organization.slug;
   const orderId = order.order_id;
@@ -161,6 +200,21 @@ function DocumentCard({
   useEffect(() => {
     setMade(translationsOfDocument(slug, orderId, documentId));
   }, [slug, orderId, documentId]);
+
+  // What came in and what went out, apart: whose a file is decides what can be done with it.
+  const fromBureau = document.files.filter((file) => !file.uploaded_by_me);
+  const mine = document.files.filter((file) => file.uploaded_by_me);
+  const row = (file: OrderFile) => (
+    <FileRow
+      key={file.id}
+      order={order}
+      document={document}
+      file={file}
+      made={made.find((note) => note.fileId === file.id) ?? null}
+      onRemoved={onChanged}
+      {...preview}
+    />
+  );
 
   return (
     <Card className="p-4 border border-border/60">
@@ -175,41 +229,50 @@ function DocumentCard({
           <p className="text-xs text-muted-foreground mt-1">
             {t("pages", { count: document.page_count })}
           </p>
-
-          <p className="text-xs font-medium text-muted-foreground mt-4 mb-2">{t("files")}</p>
-          {document.files_state === "unavailable" ? (
-            <p className="text-xs text-muted-foreground">{t("filesUnavailable")}</p>
-          ) : (
-            <>
-              {document.files.length === 0 ? (
-                <p className="text-xs text-muted-foreground">{t("noFiles")}</p>
-              ) : (
-                <ul className="space-y-2">
-                  {document.files.map((file) => (
-                    <FileRow
-                      key={file.id}
-                      order={order}
-                      document={document}
-                      file={file}
-                      made={made.find((note) => note.fileId === file.id) ?? null}
-                      onRemoved={onChanged}
-                    />
-                  ))}
-                </ul>
-              )}
-              <UploadTranslation
-                slug={slug}
-                orderId={orderId}
-                documentId={documentId}
-                onUploaded={onChanged}
-              />
-            </>
-          )}
         </div>
       </div>
+
+      {document.files_state === "unavailable" ? (
+        <p className="mt-4 text-xs text-muted-foreground">{t("filesUnavailable")}</p>
+      ) : (
+        <>
+          <FileGroup label={t("fromBureau")}>
+            {fromBureau.length === 0 ? (
+              <p className="text-xs text-muted-foreground">{t("noFiles")}</p>
+            ) : (
+              <ul className="space-y-2">{fromBureau.map(row)}</ul>
+            )}
+          </FileGroup>
+          <FileGroup label={t("yourTranslations")}>
+            {mine.length === 0 ? (
+              <p className="text-xs text-muted-foreground">{t("nothingSent")}</p>
+            ) : (
+              <ul className="space-y-2">{mine.map(row)}</ul>
+            )}
+            <UploadTranslation
+              slug={slug}
+              orderId={orderId}
+              documentId={documentId}
+              onUploaded={onChanged}
+            />
+          </FileGroup>
+        </>
+      )}
     </Card>
   );
 }
+
+function FileGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <section className="mt-4">
+      <h3 className="mb-2 text-xs font-medium text-muted-foreground">{label}</h3>
+      {children}
+    </section>
+  );
+}
+
+/** A small action that is all icon: named for a screen reader and on hover. */
+const ICON_ACTION = "text-muted-foreground hover:bg-muted hover:text-foreground";
 
 function FileRow({
   order,
@@ -217,6 +280,8 @@ function FileRow({
   file,
   made,
   onRemoved,
+  previewedFileId,
+  onPreview,
 }: {
   order: AssignedOrderDetail;
   document: AssignedDocumentDetail;
@@ -224,13 +289,24 @@ function FileRow({
   /** This person's latest translation of the file on this site, if any. */
   made: OrderTranslationNote | null;
   onRemoved: () => void;
-}) {
+} & PreviewControls) {
   const t = useTranslations("Orders");
   const slug = order.organization.slug;
   // Only what the bureau sent is translated, and only what the document screen reads.
-  const translatable = file.kind === "source" && file.downloadable && isTranslatable(file.name);
+  const translate =
+    file.kind === "source" && file.downloadable && isTranslatable(file.name)
+      ? translateHref({ slug, orderId: order.order_id, documentId: document.id, fileId: file.id })
+      : null;
   // Only a translation this person added: what the bureau sent or added is the bureau's.
   const removable = file.kind === "translation" && file.uploaded_by_me;
+  const previewable = isPreviewable(file);
+  const previewed = previewedFileId === file.id;
+  const preview = () =>
+    onPreview(
+      previewed
+        ? null
+        : { slug, orderId: order.order_id, documentId: document.id, file, translateHref: translate },
+    );
 
   const [confirming, setConfirming] = useState(false);
   const [removing, setRemoving] = useState(false);
@@ -245,71 +321,118 @@ function FileRow({
     if (result.status === "ok") {
       // The translation it was sent from, if any, no longer says "sent".
       noteRemovedFromOrder(slug, order.order_id, document.id, file.name);
+      if (previewed) onPreview(null);
       onRemoved();
     } else {
       setProblem(result.status);
     }
   };
 
+  const Kind = /\.(jpe?g|png|gif|webp|bmp)$/i.test(file.name)
+    ? FileImage
+    : /\.(pdf|docx?|txt|srt|md|rtf|odt)$/i.test(file.name)
+      ? FileText
+      : FileIcon;
+
   return (
-    // On a phone the name has the line to itself and the actions sit under
-    // it: beside them it would be squeezed to nothing.
-    <li className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
-      <span className="min-w-0 basis-full truncate sm:basis-0 sm:flex-1">
-        {file.name}
-        <span className="text-xs text-muted-foreground">
-          {" "}
-          {formatSize(file.size_bytes)} · {file.uploaded_by_me ? t("mine") : t("fromBureau")}
-        </span>
-      </span>
-      {made && (
-        <Link
-          href={`/translations/${made.chatId}`}
-          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline shrink-0"
-        >
-          <PenLine className="h-4 w-4" />
-          {t("openTranslation")}
-        </Link>
+    <li
+      className={cn(
+        "rounded-lg border px-3 py-1.5 text-sm transition-colors",
+        previewed ? "border-suliko-default-color bg-suliko-default-color/[0.04]" : "border-border/60",
       )}
-      {translatable && (
-        // The ordinary document screen, with this file in it.
-        <Link
-          href={translateHref({
-            slug: order.organization.slug,
-            orderId: order.order_id,
-            documentId: document.id,
-            fileId: file.id,
-          })}
-          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline shrink-0"
-        >
-          <Languages className="h-4 w-4" />
-          {made ? t("translateAgain") : t("translate")}
-        </Link>
+    >
+      {/* On a phone the name has the line to itself and the actions sit under it. */}
+      <div className="flex flex-wrap items-center gap-x-1 gap-y-0">
+        <div className="flex min-w-0 basis-full items-center gap-2.5 py-1.5 sm:basis-0 sm:flex-1">
+          <Kind className="h-5 w-5 shrink-0 text-muted-foreground" aria-hidden />
+          <div className="min-w-0">
+            {previewable ? (
+              <button
+                type="button"
+                onClick={preview}
+                className="block max-w-full truncate text-left hover:underline cursor-pointer"
+              >
+                {file.name}
+              </button>
+            ) : (
+              <p className="truncate">{file.name}</p>
+            )}
+            <p className="text-xs text-muted-foreground">{formatSize(file.size_bytes)}</p>
+          </div>
+        </div>
+
+        {previewable && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={preview}
+            aria-label={t("preview")}
+            aria-pressed={previewed}
+            title={t("preview")}
+            className={cn(ICON_ACTION, previewed && "text-suliko-default-color")}
+          >
+            <Eye />
+          </Button>
+        )}
+        {file.downloadable ? (
+          // A plain link: the server answers with a redirect to the file itself.
+          <Button asChild variant="ghost" size="icon" className={ICON_ACTION}>
+            <a
+              href={fileDownloadUrl(slug, order.order_id, document.id, file.id)}
+              aria-label={t("download")}
+              title={t("download")}
+            >
+              <Download />
+            </a>
+          </Button>
+        ) : (
+          <span className="text-xs text-muted-foreground shrink-0">{t("fileGone")}</span>
+        )}
+        {removable && (
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => setConfirming(true)}
+            aria-label={t("remove")}
+            title={t("remove")}
+            className="text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/30"
+          >
+            <Trash2 />
+          </Button>
+        )}
+      </div>
+
+      {translate && (
+        // The one thing to do with a bureau's file. Once done here, the
+        // translation itself is the next step, and doing it over is the lesser one.
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 pb-1.5 pt-1">
+          {made ? (
+            <>
+              <Button asChild size="sm">
+                <Link href={`/translations/${made.chatId}`}>
+                  <PenLine />
+                  {t("openTranslation")}
+                </Link>
+              </Button>
+              <Link href={translate} className="text-sm text-primary hover:underline">
+                {t("translateAgain")}
+              </Link>
+            </>
+          ) : (
+            <Button asChild size="sm">
+              <Link href={translate}>
+                <Languages />
+                {t("translate")}
+              </Link>
+            </Button>
+          )}
+        </div>
       )}
-      {file.downloadable ? (
-        // A plain link: the server answers with a redirect to the file itself.
-        <a
-          href={fileDownloadUrl(order.organization.slug, order.order_id, document.id, file.id)}
-          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline shrink-0"
-        >
-          <Download className="h-4 w-4" />
-          {t("download")}
-        </a>
-      ) : (
-        <span className="text-xs text-muted-foreground shrink-0">{t("fileGone")}</span>
-      )}
-      {removable && (
-        <button
-          type="button"
-          onClick={() => setConfirming(true)}
-          className="inline-flex items-center gap-1.5 text-sm text-red-600 hover:underline shrink-0 cursor-pointer dark:text-red-400"
-        >
-          <Trash2 className="h-4 w-4" />
-          {t("remove")}
-        </button>
-      )}
+
       {problem && (
-        <p role="alert" className="basis-full text-xs text-red-600 dark:text-red-400">
+        <p role="alert" className="pb-1.5 text-xs text-red-600 dark:text-red-400">
           {t(
             problem === "notMine"
               ? "removeNotMine"
@@ -368,7 +491,7 @@ function UploadTranslation({
   };
 
   return (
-    <div className="mt-3">
+    <div className="mt-2">
       <input
         ref={input}
         type="file"
@@ -382,15 +505,16 @@ function UploadTranslation({
           if (file) void upload(file);
         }}
       />
-      <button
+      <Button
         type="button"
+        variant="outline"
+        size="sm"
         disabled={busy}
         onClick={() => input.current?.click()}
-        className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline cursor-pointer disabled:cursor-default disabled:opacity-70 disabled:no-underline"
       >
-        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+        {busy ? <Loader2 className="animate-spin" /> : <Upload />}
         {busy ? t("uploading") : t("upload")}
-      </button>
+      </Button>
       {problem && (
         <p role="alert" className="mt-1.5 text-xs text-red-600 dark:text-red-400">
           {t(UPLOAD_PROBLEM_KEYS[problem])}
