@@ -2167,7 +2167,6 @@
     "ordered": "Ordered",
     "documents": "Documents",
     "pages": "{count} pages",
-    "files": "Files",
     "noFiles": "No files yet",
     "download": "Download",
     "back": "Back to orders",
@@ -2177,6 +2176,11 @@
     "bureau": "Bureau",
     "open": "Open",
     "fromBureau": "From the bureau",
-    "mine": "Uploaded by you"
+    "yourTranslations": "Your translations",
+    "nothingSent": "Nothing sent yet.",
+    "preview": "Preview",
+    "closePreview": "Close preview",
+    "previewLoading": "Opening the file…",
+    "previewFailed": "Could not open this file here. You can still download it."
   }
 }
