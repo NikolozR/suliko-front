@@ -28,6 +28,9 @@ type PdfDocumentComponent = React.ComponentType<{
   children?: React.ReactNode;
 }>;
 
+/** How wide a PDF's page is drawn at 100%, where there is room for it. */
+const PDF_PAGE_WIDTH = 600;
+
 type PdfPageComponent = React.ComponentType<{
   pageNumber: number;
   width: number;
@@ -361,9 +364,9 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3 bg-muted/30 rounded-lg shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">{t('zoom')}</span>
+          <span className="sr-only text-sm font-medium sm:not-sr-only">{t('zoom')}</span>
           <Button
             variant="outline"
             size="sm"
@@ -374,7 +377,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-sm font-mono min-w-[4rem] text-center">
+          <span className="text-sm font-mono min-w-12 text-center sm:min-w-16">
             {(scale * 100).toFixed(0)}%
           </span>
           <Button
@@ -412,11 +415,13 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
     Page: PdfPageComponent;
   } | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
-  const [containerWidth, setContainerWidth] = useState<number>(600);
+  const [containerWidth, setContainerWidth] = useState<number>(PDF_PAGE_WIDTH);
   const [scale, setScale] = useState<number>(1.0);
   const [isRendering, setIsRendering] = useState<boolean>(false);
   const [stage, setStage] = useState("Preparing preview...");
-  const containerRef = useRef<HTMLDivElement>(null);
+  // The box the pages are drawn in. Kept in state, not in a ref: it is not on
+  // the page until the viewer has loaded, and its width is measured from then.
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
 
   // const { shouldResetZoom, setShouldResetZoom, translatedMarkdown, setRealPageCount } = useDocumentTranslationStore();
   const shouldResetZoom = useDocumentTranslationStore(
@@ -499,17 +504,17 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
     }
   }, [file]);
 
-  const lastWidthRef = useRef<number>(600);
+  const lastWidthRef = useRef<number>(PDF_PAGE_WIDTH);
   const widthChangeThreshold = 5;
   const debounceMs = 100;
 
   useEffect(() => {
-    const container = containerRef.current;
     if (!container) return;
 
     const measureWidth = () => {
-      const width = container.offsetWidth || container.clientWidth || 600;
-      const safeWidth = width > 0 ? width : 600;
+      // Inside the border and beside the scrollbar: the room a page has.
+      const width = container.clientWidth || PDF_PAGE_WIDTH;
+      const safeWidth = width > 0 ? width : PDF_PAGE_WIDTH;
       lastWidthRef.current = safeWidth;
       setContainerWidth(safeWidth);
     };
@@ -519,8 +524,8 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
     let debounceTimer: NodeJS.Timeout | null = null;
 
     const resizeObserver = new ResizeObserver(entries => {
-      const newWidth = entries[0]?.contentRect.width || 600;
-      const safeWidth = newWidth > 0 ? newWidth : 600;
+      const newWidth = entries[0]?.contentRect.width || PDF_PAGE_WIDTH;
+      const safeWidth = newWidth > 0 ? newWidth : PDF_PAGE_WIDTH;
 
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
@@ -537,7 +542,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
       if (debounceTimer) clearTimeout(debounceTimer);
       resizeObserver.unobserve(container);
     };
-  }, []);
+  }, [container]);
 
   // Reset zoom to 100% when translation is completed and markdown is shown
   useEffect(() => {
@@ -578,8 +583,10 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
   return (
     <div className="w-full h-full flex flex-col">
       <div
-        ref={containerRef}
-        className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-y-auto mb-4"
+        ref={setContainer}
+        // The scrollbar's room is kept from the start, so that its arrival
+        // does not narrow the box and draw every page a second time.
+        className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-y-auto [scrollbar-gutter:stable] mb-4"
       >
         <PdfDocument
           file={fileUrl}
@@ -596,7 +603,8 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
             <PdfPage
               key={`page_${index + 1}`}
               pageNumber={index + 1}
-              width={containerWidth}
+              // A page's usual width, or the box's where that is narrower (a phone).
+              width={Math.min(containerWidth, PDF_PAGE_WIDTH)}
               scale={scale}
               renderTextLayer={true}
               renderAnnotationLayer={true}
@@ -606,9 +614,9 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
         </PdfDocument>
       </div>
 
-      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3 bg-muted/30 rounded-lg shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">{t('zoom')}</span>
+          <span className="sr-only text-sm font-medium sm:not-sr-only">{t('zoom')}</span>
           <Button
             variant="outline"
             size="sm"
@@ -619,7 +627,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-sm font-mono min-w-[4rem] text-center">
+          <span className="text-sm font-mono min-w-12 text-center sm:min-w-16">
             {(scale * 100).toFixed(0)}%
           </span>
           <Button
@@ -749,9 +757,9 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between p-3 bg-muted/30 rounded-lg shrink-0">
+      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3 bg-muted/30 rounded-lg shrink-0">
         <div className="flex items-center gap-2">
-          <span className="text-sm font-medium">{t('zoom')}</span>
+          <span className="sr-only text-sm font-medium sm:not-sr-only">{t('zoom')}</span>
           <Button
             variant="outline"
             size="sm"
@@ -762,7 +770,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
-          <span className="text-sm font-mono min-w-[4rem] text-center">
+          <span className="text-sm font-mono min-w-12 text-center sm:min-w-16">
             {(scale * 100).toFixed(0)}%
           </span>
           <Button
