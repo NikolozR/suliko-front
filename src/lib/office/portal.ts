@@ -104,25 +104,37 @@ export async function requirePortalUser(request: NextRequest): Promise<Outcome> 
 }
 
 /** GET one portal path on the Office API as `userId`, passing its answer through. */
-export async function portalGet(outcome: Exclude<Outcome, NextResponse>, path: string) {
+export function portalGet(outcome: Exclude<Outcome, NextResponse>, path: string) {
+  return portalCall(outcome, path);
+}
+
+/** POST a JSON body to one portal path as `userId`, passing the answer through. */
+export function portalPost(outcome: Exclude<Outcome, NextResponse>, path: string, body: unknown) {
+  return portalCall(outcome, path, body);
+}
+
+async function portalCall(outcome: Exclude<Outcome, NextResponse>, path: string, body?: unknown) {
   const assertion = signToken(outcome.secret, claimsFor("assertion", outcome.userId, ASSERTION_TTL_SECONDS));
   const headers: Record<string, string> = {
     "X-Suliko-Portal-Assertion": assertion,
     Accept: "application/json",
   };
   // The Office API answers 404 to anyone without its gateway secret (core/gateway.py),
-  // the same one app.suliko.ge sends. File tickets are exempt, so only this call needs it.
+  // the same one app.suliko.ge sends. File tickets are exempt, so only these calls need it.
   const gatewaySecret = process.env.BFF_SHARED_SECRET;
   if (gatewaySecret) headers["X-Suliko-Gateway"] = gatewaySecret;
+  if (body !== undefined) headers["Content-Type"] = "application/json";
 
   const response = await fetch(`${outcome.apiUrl}${PORTAL_PREFIX}${path}`, {
+    method: body === undefined ? "GET" : "POST",
     headers,
+    body: body === undefined ? undefined : JSON.stringify(body),
     cache: "no-store",
   }).catch(() => null);
 
   if (!response) return NextResponse.json({ error: "office_unreachable" }, { status: 502 });
-  const body = await response.text();
-  return new NextResponse(body, {
+  const answer = await response.text();
+  return new NextResponse(answer, {
     status: response.status,
     headers: { "Content-Type": response.headers.get("content-type") ?? "application/json" },
   });
