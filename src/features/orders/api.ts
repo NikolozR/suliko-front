@@ -167,3 +167,28 @@ export async function uploadTranslation(
     return { status: "error" };
   }
 }
+
+export type TranslationRemoval =
+  | { status: "ok" }
+  /** Not this translator's to remove: the bureau's file, or someone else's. */
+  | { status: "notMine" }
+  | { status: "signedOut" }
+  | { status: "error" };
+
+/** Take back a translation this translator added to a document of the order. */
+export async function removeTranslation(
+  slug: string,
+  orderId: number,
+  documentId: number,
+  fileId: string,
+): Promise<TranslationRemoval> {
+  const response = await ask(fileDownloadUrl(slug, orderId, documentId, fileId), {
+    method: "DELETE",
+  });
+  if (response === "signedOut") return { status: "signedOut" };
+  if (response === "error") return { status: "error" };
+  // Already gone counts as removed: the list is read again either way.
+  if (response.ok || response.status === 404) return { status: "ok" };
+  if (response.status === 403) return { status: "notMine" };
+  return { status: "error" };
+}
