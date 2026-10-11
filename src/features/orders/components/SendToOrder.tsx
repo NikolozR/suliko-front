@@ -78,7 +78,7 @@ export function SendToOrder({
         setProblem(sent.status);
         return;
       }
-      setNote(noteSentToOrder(chatId, sent.file.name) ?? note);
+      setNote(noteSentToOrder(chatId, sent.file) ?? note);
       setOpen(false);
       toast.success(t("sendDone"));
     } catch {

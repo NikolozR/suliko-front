@@ -36,9 +36,18 @@ export type OrderTranslationNote = OrderSourceRef & {
   /** Whose translation it is: a browser can be shared. */
   userId: string;
   startedAt: number;
-  /** The file last sent to the order from this translation. */
-  sent?: { name: string; at: number };
+  /**
+   * The file last sent to the order from this translation. `fileId` is the
+   * order's own name for it; notes written before it was kept have only `name`.
+   */
+  sent?: { name: string; at: number; fileId?: string };
 };
+
+/** Whether `file` of the order is the one this translation was last sent as. */
+export function sentAs(note: OrderTranslationNote, file: { id: string; name: string }): boolean {
+  if (!note.sent) return false;
+  return note.sent.fileId ? note.sent.fileId === file.id : note.sent.name === file.name;
+}
 
 /** The suliko.ge account signed in here, or null. */
 export function signedInUserId(): string | null {
@@ -99,12 +108,25 @@ export function translationsOfDocument(
   );
 }
 
-/** Note that the translation was sent to its order as `name`. */
-export function noteSentToOrder(chatId: string, name: string): OrderTranslationNote | null {
+/** This person's translation that a file of the order was sent from, if this browser knows it. */
+export function translationOfFile(
+  slug: string,
+  orderId: number,
+  documentId: number,
+  file: { id: string; name: string },
+): OrderTranslationNote | null {
+  return translationsOfDocument(slug, orderId, documentId).find((note) => sentAs(note, file)) ?? null;
+}
+
+/** Note that the translation was sent to its order as `file`. */
+export function noteSentToOrder(
+  chatId: string,
+  file: { id: string; name: string },
+): OrderTranslationNote | null {
   const notes = read();
   const note = notes.find((candidate) => candidate.chatId === chatId);
   if (!note) return null;
-  note.sent = { name, at: Date.now() };
+  note.sent = { name: file.name, at: Date.now(), fileId: file.id };
   write(notes);
   return note;
 }
@@ -114,7 +136,7 @@ export function noteRemovedFromOrder(
   slug: string,
   orderId: number,
   documentId: number,
-  name: string,
+  file: { id: string; name: string },
 ): void {
   const notes = read();
   let changed = false;
@@ -123,7 +145,7 @@ export function noteRemovedFromOrder(
       note.slug === slug &&
       note.orderId === orderId &&
       note.documentId === documentId &&
-      note.sent?.name === name
+      sentAs(note, file)
     ) {
       delete note.sent;
       changed = true;
