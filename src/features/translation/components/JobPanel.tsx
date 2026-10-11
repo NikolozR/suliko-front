@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check, Wallet, X } from "lucide-react";
+import { Check, ChevronDown, CircleHelp, Wallet, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/shared/lib/utils";
 import type { DocumentAnalysis, TermTranslationItem } from "../types/types.Translation";
@@ -125,7 +125,8 @@ export function NamesBlock({ enabled, onToggle, savedCount, projectName, project
     <PanelCard>
       <div className="flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h3 className="text-[15px] font-semibold leading-snug">{t("title")}</h3>
+          {/* h5, not h3: see the brief's title below. */}
+          <h5 className="text-[15px] font-semibold leading-snug">{t("title")}</h5>
           <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{t("body")}</p>
         </div>
         <button
@@ -181,14 +182,96 @@ interface BriefProps {
   onAnswer: (index: number, answer: string) => void;
 }
 
-/** How many terms show before "show all"; the panel is 392px wide. */
-const TERMS_PREVIEW = 5;
-
 function Chip({ children }: { children: React.ReactNode }) {
   return (
     <span className="inline-flex items-center rounded-full border border-border bg-muted/40 px-2.5 py-0.5 text-[12px] text-muted-foreground">
       {children}
     </span>
+  );
+}
+
+/**
+ * A paragraph held to two lines, with "More" when there is more of it. Whether
+ * there is depends on the width and the script, so it is measured, not guessed
+ * from a character count.
+ */
+function ClampedText({ text, more, less }: { text: string; more: string; less: string }) {
+  const paragraph = useRef<HTMLParagraphElement>(null);
+  const [open, setOpen] = useState(false);
+  const [overflows, setOverflows] = useState(false);
+
+  useLayoutEffect(() => {
+    const element = paragraph.current;
+    if (element && !open) setOverflows(element.scrollHeight > element.clientHeight + 1);
+  }, [text, open]);
+
+  return (
+    <div className="mt-1.5">
+      <p
+        ref={paragraph}
+        className={cn("text-[13px] leading-relaxed text-muted-foreground", !open && "line-clamp-2")}
+      >
+        {text}
+      </p>
+      {(overflows || open) && (
+        <button
+          type="button"
+          onClick={() => setOpen((value) => !value)}
+          aria-expanded={open}
+          className="mt-0.5 text-[13px] font-semibold text-suliko-default-color hover:underline"
+        >
+          {open ? less : more}
+        </button>
+      )}
+    </div>
+  );
+}
+
+/**
+ * One line that opens a part of the brief. The brief used to lay everything
+ * out at once and stood about 950px tall, most of it terms and questions that
+ * many people never touch; what needs a decision is now a line saying so.
+ */
+function Disclosure({
+  open,
+  onToggle,
+  label,
+  action,
+  tone = "plain",
+  children,
+}: {
+  open: boolean;
+  onToggle: () => void;
+  label: React.ReactNode;
+  /** What pressing it does, in a word: "Answer", "Review", "Hide". */
+  action: string;
+  tone?: "plain" | "ask" | "done";
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="mt-3">
+      <button
+        type="button"
+        onClick={onToggle}
+        aria-expanded={open}
+        className={cn(
+          "flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2 text-left text-[13px] transition-colors",
+          "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50",
+          tone === "ask"
+            ? "bg-amber-50 text-amber-900 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-300 dark:hover:bg-amber-950/60"
+            : tone === "done"
+              ? "bg-emerald-50 text-emerald-800 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:hover:bg-emerald-950/60"
+              : "bg-muted/50 text-foreground hover:bg-muted"
+        )}
+      >
+        <span className="flex min-w-0 items-center gap-2 font-medium">{label}</span>
+        <span className="flex shrink-0 items-center gap-1 text-[12px] font-semibold">
+          {action}
+          <ChevronDown className={cn("size-3.5 transition-transform", open && "rotate-180")} aria-hidden />
+        </span>
+      </button>
+      {open && <div className="mt-3">{children}</div>}
+    </div>
   );
 }
 
@@ -208,7 +291,8 @@ export function BriefBlock({
   onAnswer,
 }: BriefProps) {
   const t = useTranslations("DocumentTranslationCard.brief");
-  const [showAllTerms, setShowAllTerms] = useState(false);
+  const [questionsOpen, setQuestionsOpen] = useState(false);
+  const [termsOpen, setTermsOpen] = useState(false);
 
   if (status === "idle") return null;
 
@@ -236,15 +320,19 @@ export function BriefBlock({
   }
 
   const { layout } = analysis;
-  const visibleTerms = showAllTerms ? terms : terms.slice(0, TERMS_PREVIEW);
+  const documentType = analysis.documentType ?? t("untitled");
+  const asked = analysis.questions.length;
+  const answered = analysis.questions.filter((_, index) => (answers[index] ?? "").trim()).length;
 
   return (
     <PanelCard>
       <MicroLabel>{t("label")}</MicroLabel>
-      <h3 className="text-[15px] font-semibold leading-snug">{analysis.documentType ?? t("untitled")}</h3>
-      {analysis.summary && (
-        <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{analysis.summary}</p>
-      )}
+      {/* h5, not h3: h1 to h4 take the titling face, all capitals in Georgian,
+          which a card's title this size reads badly in (see globals.css). */}
+      <h5 className="line-clamp-2 text-[15px] font-semibold leading-snug" title={documentType}>
+        {documentType}
+      </h5>
+      {analysis.summary && <ClampedText text={analysis.summary} more={t("more")} less={t("less")} />}
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         {analysis.detectedSourceLanguage && <Chip>{t("writtenIn", { language: analysis.detectedSourceLanguage })}</Chip>}
@@ -264,53 +352,27 @@ export function BriefBlock({
         </p>
       )}
 
-      {terms.length > 0 && (
-        <div className="mt-4 border-t border-border pt-3.5">
-          <h4 className="text-[13px] font-semibold">{t("termsTitle")}</h4>
-          <p className="mt-1 text-[12px] leading-relaxed text-muted-foreground">{t("termsBody")}</p>
-          <ul className="mt-2.5 flex flex-col gap-2">
-            {visibleTerms.map((term, index) => (
-              <li key={`${term.original}-${index}`} className="flex items-center gap-2">
-                <span className="w-[38%] min-w-0 truncate text-[13px]" title={term.note ?? term.original}>
-                  {term.original}
-                </span>
-                <span aria-hidden className="text-muted-foreground">→</span>
-                <input
-                  value={term.translation}
-                  onChange={(e) => onTermChange(index, e.target.value)}
-                  aria-label={t("termInput", { term: term.original })}
-                  className={cn(
-                    "h-8 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-[13px]",
-                    "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
-                  )}
-                />
-                <button
-                  type="button"
-                  onClick={() => onTermRemove(index)}
-                  aria-label={t("removeTerm", { term: term.original })}
-                  className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
-                >
-                  <X className="size-3.5" aria-hidden />
-                </button>
-              </li>
-            ))}
-          </ul>
-          {terms.length > TERMS_PREVIEW && (
-            <button
-              type="button"
-              onClick={() => setShowAllTerms((v) => !v)}
-              className="mt-2 text-[13px] font-semibold text-suliko-default-color hover:underline"
-            >
-              {showAllTerms ? t("showFewer") : t("showAll", { count: terms.length })}
-            </button>
-          )}
-        </div>
-      )}
-
-      {analysis.questions.length > 0 && (
-        <div className="mt-4 border-t border-border pt-3.5">
-          <h4 className="text-[13px] font-semibold">{t("questionsTitle")}</h4>
-          <ol className="mt-2.5 flex flex-col gap-3.5">
+      {/* The one part that asks something of the user, so the one that stands out. */}
+      {asked > 0 && (
+        <Disclosure
+          open={questionsOpen}
+          onToggle={() => setQuestionsOpen((value) => !value)}
+          tone={answered === asked ? "done" : "ask"}
+          action={questionsOpen ? t("hide") : t("answer")}
+          label={
+            <>
+              {answered === asked ? (
+                <Check className="size-4 shrink-0" aria-hidden />
+              ) : (
+                <CircleHelp className="size-4 shrink-0" aria-hidden />
+              )}
+              <span className="truncate">
+                {answered > 0 ? t("questionsAnswered", { answered, count: asked }) : t("questionsCount", { count: asked })}
+              </span>
+            </>
+          }
+        >
+          <ol className="flex flex-col gap-3.5">
             {analysis.questions.map((question, index) => {
               const answer = answers[index] ?? "";
               const isOption = question.options.includes(answer);
@@ -351,7 +413,49 @@ export function BriefBlock({
               );
             })}
           </ol>
-        </div>
+        </Disclosure>
+      )}
+
+      {terms.length > 0 && (
+        <Disclosure
+          open={termsOpen}
+          onToggle={() => setTermsOpen((value) => !value)}
+          action={termsOpen ? t("hide") : t("review")}
+          label={
+            <span className="truncate">
+              {t("termsTitle")}: {t("termsCount", { count: terms.length })}
+            </span>
+          }
+        >
+          <p className="text-[12px] leading-relaxed text-muted-foreground">{t("termsBody")}</p>
+          <ul className="mt-2.5 flex flex-col gap-2">
+            {terms.map((term, index) => (
+              <li key={`${term.original}-${index}`} className="flex items-center gap-2">
+                <span className="w-[38%] min-w-0 truncate text-[13px]" title={term.note ?? term.original}>
+                  {term.original}
+                </span>
+                <span aria-hidden className="text-muted-foreground">→</span>
+                <input
+                  value={term.translation}
+                  onChange={(e) => onTermChange(index, e.target.value)}
+                  aria-label={t("termInput", { term: term.original })}
+                  className={cn(
+                    "h-8 min-w-0 flex-1 rounded-md border border-border bg-background px-2 text-[13px]",
+                    "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
+                  )}
+                />
+                <button
+                  type="button"
+                  onClick={() => onTermRemove(index)}
+                  aria-label={t("removeTerm", { term: term.original })}
+                  className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                >
+                  <X className="size-3.5" aria-hidden />
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Disclosure>
       )}
     </PanelCard>
   );
@@ -450,74 +554,91 @@ export function QuoteBlock({
   const leftAfter = resolved ? available - pageCount : 0;
 
   const figure = (v: React.ReactNode) =>
-    resolved ? v : <span className="inline-block h-4 w-10 animate-pulse rounded bg-white/20" />;
+    resolved ? v : <span className="inline-block h-4 w-8 animate-pulse rounded bg-white/20" />;
 
   return (
-    <div className="rounded-xl bg-[#14161d] p-5 text-white">
-      <dl className="flex flex-col gap-2.5 text-sm">
-        <div className="flex items-center justify-between gap-3">
-          <dt className="text-white/70">{t("thisDocument")}</dt>
-          <dd className="tabular-nums">{figure(pageCount)}</dd>
-        </div>
-        <div className="flex items-center justify-between gap-3">
-          <dt className="text-white/70">{t("yourBalance")}</dt>
-          <dd className="tabular-nums">{available}</dd>
-        </div>
-        <div className="mt-1.5 flex items-center justify-between gap-3 border-t border-white/15 pt-3">
-          <dt className="text-white/70">{isShort ? t("pagesShort", { count: shortBy }) : t("leftAfter")}</dt>
-          <dd
-            className={cn(
-              "font-bold tabular-nums",
-              isShort ? "text-[#fca5a5]" : "text-[#7ee2b8]"
-            )}
-          >
-            {figure(isShort ? `−${shortBy}` : leftAfter)}
-          </dd>
-        </div>
-      </dl>
-
-      {isShort ? (
-        <Link
-          href="/price"
-          className="suliko-default-bg mt-4 flex h-[52px] w-full items-center justify-center gap-2 rounded-[10px] text-base font-bold text-white transition-opacity hover:opacity-90"
-        >
-          <Wallet className="size-[18px]" aria-hidden />
-          {t("topUpCta", { count: shortBy })}
-        </Link>
-      ) : (
-        <button
-          type="submit"
-          disabled={onSubmitDisabled || !resolved}
-          className="suliko-default-bg relative mt-4 flex h-[52px] w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] px-4 text-base font-bold leading-tight text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
-        >
-          {/* A real fill, and only while real bytes are moving. Every other
-              stage gets a spinner and a name — there is nothing honest to
-              measure during a single opaque model call. */}
-          {uploadPercent !== null && (
-            <span
-              aria-hidden
-              className="absolute inset-y-0 left-0 bg-white/20 transition-[width] duration-200 ease-out"
-              style={{ width: `${uploadPercent}%` }}
-            />
-          )}
-          {busy && (
-            <span
-              aria-hidden
-              className="relative size-[18px] shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
-            />
-          )}
-          <span className="relative">{resolved ? submitLabel : pendingLabel ?? t("counting")}</span>
-        </button>
+    // Pinned to the foot of the screen while the panel above it scrolls: the
+    // button used to come after everything else, three screens down a long
+    // brief. On a phone it sits on the bottom bar (4rem tall, under md).
+    //
+    // The outer box is the card's own colour, so what scrolls behind does not
+    // show round the dark one, and fades out above it rather than being cut.
+    <div
+      className={cn(
+        "sticky bottom-16 z-10 bg-card pb-2 pt-1 md:bottom-0 md:pb-4",
+        "before:pointer-events-none before:absolute before:inset-x-0 before:bottom-full before:h-6",
+        "before:bg-linear-to-t before:from-card before:to-transparent"
       )}
+    >
+      <div className="rounded-xl bg-[#14161d] p-4 text-white">
+        {/* The figure over its name, so a name that wraps does not push the figures out of line. */}
+        <dl className="grid grid-cols-3 gap-3 text-center">
+          <div className="flex flex-col-reverse justify-end gap-0.5">
+            <dt className="text-[12px] leading-tight text-white/70">{t("thisDocument")}</dt>
+            <dd className="text-[17px] font-semibold tabular-nums">{figure(pageCount)}</dd>
+          </div>
+          <div className="flex flex-col-reverse justify-end gap-0.5">
+            <dt className="text-[12px] leading-tight text-white/70">{t("yourBalance")}</dt>
+            <dd className="text-[17px] font-semibold tabular-nums">{available}</dd>
+          </div>
+          <div className="flex flex-col-reverse justify-end gap-0.5">
+            <dt className="text-[12px] leading-tight text-white/70">
+              {isShort ? t("pagesShort", { count: shortBy }) : t("leftAfter")}
+            </dt>
+            <dd
+              className={cn(
+                "text-[17px] font-bold tabular-nums",
+                isShort ? "text-[#fca5a5]" : "text-[#7ee2b8]"
+              )}
+            >
+              {figure(isShort ? `−${shortBy}` : leftAfter)}
+            </dd>
+          </div>
+        </dl>
 
-      <p className="mt-2.5 text-center text-[13px] text-white/55">
-        {resolved && !busy ? t("usuallyReady", { min: etaMin, max: etaMax }) : " "}
-      </p>
+        {isShort ? (
+          <Link
+            href="/price"
+            className="suliko-default-bg mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-base font-bold text-white transition-opacity hover:opacity-90"
+          >
+            <Wallet className="size-[18px]" aria-hidden />
+            {t("topUpCta", { count: shortBy })}
+          </Link>
+        ) : (
+          <button
+            type="submit"
+            disabled={onSubmitDisabled || !resolved}
+            className="suliko-default-bg relative mt-3 flex h-12 w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] px-4 text-base font-bold leading-tight text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+          >
+            {/* A real fill, and only while real bytes are moving. Every other
+                stage gets a spinner and a name — there is nothing honest to
+                measure during a single opaque model call. */}
+            {uploadPercent !== null && (
+              <span
+                aria-hidden
+                className="absolute inset-y-0 left-0 bg-white/20 transition-[width] duration-200 ease-out"
+                style={{ width: `${uploadPercent}%` }}
+              />
+            )}
+            {busy && (
+              <span
+                aria-hidden
+                className="relative size-[18px] shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
+              />
+            )}
+            <span className="relative">{resolved ? submitLabel : pendingLabel ?? t("counting")}</span>
+          </button>
+        )}
 
-      {/* Announced, not painted — the button already shows this text. */}
-      <span aria-live="polite" className="sr-only">
-        {busy ? submitLabel : ""}
-      </span>
+        {resolved && !busy && (
+          <p className="mt-2 text-center text-[12px] text-white/55">{t("usuallyReady", { min: etaMin, max: etaMax })}</p>
+        )}
+
+        {/* Announced, not painted — the button already shows this text. */}
+        <span aria-live="polite" className="sr-only">
+          {busy ? submitLabel : ""}
+        </span>
+      </div>
     </div>
   );
 }
