@@ -1,10 +1,11 @@
 "use client";
-import React, { useEffect, useState, useRef } from 'react';
+import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useTranslations } from "next-intl";
 import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles } from 'lucide-react';
 import { Button } from '@/features/ui/components/ui/button';
 import { useDocumentTranslationStore } from '@/features/translation/store/documentTranslationStore';
 import { Skeleton } from '@/features/ui/components/ui/skeleton';
+import { embeddedPageOf } from '@/features/translation/utils/wordPage';
 import Image from 'next/image';
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -69,44 +70,50 @@ const getFileType = (file: File): string => {
 };
 
 /**
- * The web page inside a Word file that carries its text as one ("altChunk").
- *
- * This site's own Word export writes its files this way (html-docx-js): the
- * document proper is empty and points at an embedded page, which Word draws.
- * Mammoth reads only the document proper, so such a file came out blank.
- * Returns null for a Word file that has no such part.
+ * Where a preview scrolls: the box whose `scrollTop` moves, and where its
+ * scroll events arrive (for a framed page both belong to the frame's document).
  */
-async function embeddedPageOf(buffer: ArrayBuffer): Promise<string | null> {
-  const JSZip = (await import('jszip')).default;
-  const zip = await JSZip.loadAsync(buffer);
-  // The page as it is (`afchunk.htm`, what this site writes)...
-  const page = zip.file(/^word\/[^/]+\.html?$/i)[0];
-  if (page) return page.async('string');
+export type PreviewScroller = { box: Element; events: EventTarget };
 
-  // ...or wrapped as a web archive (`afchunk.mht`, what other builds of the
-  // same library write): one HTML part between the MIME headers and the
-  // closing boundary, with every "=" written as "=3D".
-  const archive = zip.file(/^word\/[^/]+\.mht$/i)[0];
-  if (!archive) return null;
-  const packed = await archive.async('string');
-  const start = packed.search(/<(!doctype|html)/i);
-  if (start < 0) return null;
-  const end = packed.lastIndexOf('------=mhtDocumentPart--');
-  return packed.slice(start, end > start ? end : undefined).replace(/=3D/g, '=');
+/**
+ * For a screen that moves two previews together (an order's compare view): the
+ * preview inside says where it scrolls, and says null when that is gone.
+ */
+export const PreviewScrollerContext = createContext<
+  ((scroller: PreviewScroller | null) => void) | null
+>(null);
+
+/** Says where this preview scrolls to whoever asked to know, if anyone did. */
+function useScrollerReport(box: Element | null, events: EventTarget | null = box) {
+  const report = useContext(PreviewScrollerContext);
+  useEffect(() => {
+    if (!report || !box || !events) return;
+    report({ box, events });
+    return () => report(null);
+  }, [report, box, events]);
 }
 
 /**
  * A page from a file, shown as it is and kept apart from this site: the frame
- * runs no scripts and has no access to the page around it.
+ * runs no scripts, sends no forms and opens no windows. It keeps this site's
+ * origin for one thing only: the page around it can read, and set, how far it
+ * is scrolled. With no scripts inside, the origin gives the file nothing.
  */
-const SandboxedPage: React.FC<{ html: string; title: string }> = ({ html, title }) => (
-  <iframe
-    sandbox=""
-    srcDoc={html}
-    title={title}
-    className="h-full w-full rounded-md border bg-white"
-  />
-);
+const SandboxedPage: React.FC<{ html: string; title: string }> = ({ html, title }) => {
+  // The document in the frame, once it has loaded.
+  const [page, setPage] = useState<Document | null>(null);
+  useScrollerReport(page?.scrollingElement ?? null, page);
+
+  return (
+    <iframe
+      sandbox="allow-same-origin"
+      srcDoc={html}
+      title={title}
+      onLoad={(event) => setPage(event.currentTarget.contentDocument)}
+      className="h-full w-full rounded-md border bg-white"
+    />
+  );
+};
 
 // HTML Preview Component
 const HtmlPreview: React.FC<{ file: File }> = ({ file }) => {
@@ -174,6 +181,8 @@ const TextPreview: React.FC<{ file: File }> = ({ file }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stage, setStage] = useState("Preparing preview...");
+  const [box, setBox] = useState<HTMLDivElement | null>(null);
+  useScrollerReport(box);
 
   useEffect(() => {
     const loadContent = async () => {
@@ -207,7 +216,7 @@ const TextPreview: React.FC<{ file: File }> = ({ file }) => {
   }
 
   return (
-    <div className="p-4 h-full overflow-y-auto">
+    <div ref={setBox} className="p-4 h-full overflow-y-auto">
       <pre className="whitespace-pre-wrap text-sm font-mono text-foreground leading-relaxed">
         {content}
       </pre>
@@ -222,6 +231,8 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [stage, setStage] = useState("Preparing subtitle preview...");
+  const [box, setBox] = useState<HTMLDivElement | null>(null);
+  useScrollerReport(box);
 
   useEffect(() => {
     const loadContent = async () => {
@@ -255,7 +266,7 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
   }
 
   return (
-    <div className="p-4 h-full overflow-y-auto">
+    <div ref={setBox} className="p-4 h-full overflow-y-auto">
       <div className="text-sm text-foreground">
         <div className="mb-4 p-3 bg-muted/50 rounded-lg">
           <div className="flex items-center gap-2 mb-2">
@@ -284,7 +295,8 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
   const [error, setError] = useState<string | null>(null);
   const [stage, setStage] = useState("Preparing preview...");
   const [scale, setScale] = useState<number>(1.0);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  useScrollerReport(container);
   const shouldResetZoom = useDocumentTranslationStore((state) => state.shouldResetZoom);
   const setShouldResetZoom = useDocumentTranslationStore((state) => state.setShouldResetZoom);
 
@@ -346,7 +358,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
   return (
     <div className="w-full h-full flex flex-col">
       <div
-        ref={containerRef}
+        ref={setContainer}
         className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-auto mb-4"
       >
         <div
@@ -422,6 +434,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
   // The box the pages are drawn in. Kept in state, not in a ref: it is not on
   // the page until the viewer has loaded, and its width is measured from then.
   const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  useScrollerReport(container);
 
   // const { shouldResetZoom, setShouldResetZoom, translatedMarkdown, setRealPageCount } = useDocumentTranslationStore();
   const shouldResetZoom = useDocumentTranslationStore(
@@ -524,8 +537,11 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
     let debounceTimer: NodeJS.Timeout | null = null;
 
     const resizeObserver = new ResizeObserver(entries => {
-      const newWidth = entries[0]?.contentRect.width || PDF_PAGE_WIDTH;
-      const safeWidth = newWidth > 0 ? newWidth : PDF_PAGE_WIDTH;
+      const newWidth = entries[0]?.contentRect.width ?? 0;
+      // Not on screen just now (hidden with its parent): there is nothing to
+      // fit, and the pages stay as they were drawn.
+      if (newWidth <= 0) return;
+      const safeWidth = newWidth;
 
       if (debounceTimer) clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
@@ -673,7 +689,8 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
   const [scale, setScale] = useState<number>(1.0);
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
   const [stage, setStage] = useState("Preparing image preview...");
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [container, setContainer] = useState<HTMLDivElement | null>(null);
+  useScrollerReport(container);
   const shouldResetZoom = useDocumentTranslationStore((state) => state.shouldResetZoom);
   const setShouldResetZoom = useDocumentTranslationStore((state) => state.setShouldResetZoom);
 
@@ -725,7 +742,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
   return (
     <div className="w-full h-full flex flex-col">
       <div
-        ref={containerRef}
+        ref={setContainer}
         className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-auto mb-4"
       >
         <div className="flex justify-center min-h-full p-4">
