@@ -1,7 +1,7 @@
 "use client";
 
 import { use, useCallback, useEffect, useRef, useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   AlertCircle,
   ArrowLeft,
@@ -32,11 +32,19 @@ import {
   type TranslationRemoval,
   type TranslationUpload,
 } from "@/features/orders/api";
+import { DueBadge, StatusChip } from "@/features/orders/components/OrderBadges";
 import {
   OrderFilePreview,
   isPreviewable,
   type PreviewTarget,
 } from "@/features/orders/components/OrderFilePreview";
+import {
+  formatDate,
+  languageName,
+  parseDay,
+  type DocumentStatus,
+} from "@/features/orders/display";
+import { countPagesUnopened, useOrderFilePages } from "@/features/orders/orderFilePages";
 import { isTranslatable, translateHref } from "@/features/orders/orderSource";
 import {
   noteRemovedFromOrder,
@@ -54,6 +62,9 @@ function formatSize(bytes: number | null): string {
   if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 }
+
+/** A translation this translator has added to the document: what makes it "sent". */
+const handedIn = (file: OrderFile) => file.uploaded_by_me && file.kind === "translation";
 
 /** One assigned order: only the documents given to this translator, and their files. */
 export default function AssignedOrderPage({
@@ -155,14 +166,25 @@ function OrderDetail({
   onChanged: () => void;
 } & PreviewControls) {
   const t = useTranslations("Orders");
+  const locale = useLocale();
+  const day = (value: string) => {
+    const date = parseDay(value);
+    return date ? formatDate(date, locale) : value;
+  };
+  // Nothing left to hurry once every document has a translation handed in.
+  const allSent =
+    order.documents.length > 0 && order.documents.every((document) => document.files.some(handedIn));
 
   return (
     <>
-      <h1 className="text-2xl font-semibold tracking-tight">{t("order", { id: order.order_number ?? "" })}</h1>
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2">
+        <h1 className="text-2xl font-semibold tracking-tight">{t("order", { id: order.order_number ?? "" })}</h1>
+        <DueBadge dueDate={order.due_date} done={allSent} />
+      </div>
       <p className="text-sm text-muted-foreground mt-1 mb-8">
         {t("bureau")}: {order.organization.name} · {t("client")}: {order.client_name} ·{" "}
-        {t("ordered")}: {order.order_date} ·{" "}
-        {order.due_date ? `${t("due")}: ${order.due_date}` : t("noDue")}
+        {t("ordered")}: {day(order.order_date)}
+        {order.due_date ? ` · ${t("due")}: ${day(order.due_date)}` : ""}
       </p>
 
       <h2 className="text-sm font-medium text-muted-foreground uppercase tracking-wide mb-3">
@@ -190,6 +212,7 @@ function DocumentCard({
   onChanged: () => void;
 } & PreviewControls) {
   const t = useTranslations("Orders");
+  const locale = useLocale();
   const slug = order.organization.slug;
   const orderId = order.order_id;
   const documentId = document.id;
@@ -200,6 +223,28 @@ function DocumentCard({
   useEffect(() => {
     setMade(translationsOfDocument(slug, orderId, documentId));
   }, [slug, orderId, documentId]);
+
+  // How many pages its small PDFs really have, one file after another.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      for (const file of document.files) {
+        if (cancelled) return;
+        await countPagesUnopened(slug, orderId, documentId, file);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [slug, orderId, documentId, document.files]);
+
+  // Sent: a translation is in the order. In progress: one was started on this
+  // site, as far as this browser knows, and nothing has been handed in yet.
+  const status: DocumentStatus = document.files.some(handedIn)
+    ? "sent"
+    : made.length > 0
+      ? "inProgress"
+      : "notStarted";
 
   // What came in and what went out, apart: whose a file is decides what can be done with it.
   const fromBureau = document.files.filter((file) => !file.uploaded_by_me);
@@ -218,18 +263,21 @@ function DocumentCard({
 
   return (
     <Card className="p-4 border border-border/60">
-      <div className="flex items-start gap-3">
+      {/* On a phone the status drops under the name rather than squeezing it. */}
+      <div className="flex flex-wrap items-start gap-x-3 gap-y-2">
         <FileText className="h-5 w-5 text-muted-foreground mt-0.5 shrink-0" />
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 basis-40">
           <p className="font-medium">
             {document.document_type_name ?? t("documents")} ·{" "}
-            <span className="uppercase">{document.source_language}</span> →{" "}
-            <span className="uppercase">{document.target_language}</span>
+            {languageName(document.source_language, locale)} →{" "}
+            {languageName(document.target_language, locale)}
           </p>
+          {/* The bureau's figure, said to be the order's: a file's own count is beside the file. */}
           <p className="text-xs text-muted-foreground mt-1">
-            {t("pages", { count: document.page_count })}
+            {t("pagesInOrder", { count: document.page_count })}
           </p>
         </div>
+        <StatusChip status={status} />
       </div>
 
       {document.files_state === "unavailable" ? (
@@ -301,6 +349,8 @@ function FileRow({
   const removable = file.kind === "translation" && file.uploaded_by_me;
   const previewable = isPreviewable(file);
   const previewed = previewedFileId === file.id;
+  // The file's own page count, where this browser has read it (PDFs).
+  const pages = useOrderFilePages((state) => state.pages[file.id]);
   const preview = () =>
     onPreview(
       previewed
@@ -357,7 +407,10 @@ function FileRow({
             ) : (
               <p className="truncate">{file.name}</p>
             )}
-            <p className="text-xs text-muted-foreground">{formatSize(file.size_bytes)}</p>
+            <p className="text-xs text-muted-foreground">
+              {formatSize(file.size_bytes)}
+              {pages ? ` · ${t("pages", { count: pages })}` : ""}
+            </p>
           </div>
         </div>
 
