@@ -50,6 +50,7 @@ import { countPagesUnopened, useOrderFilePages } from "@/features/orders/orderFi
 import { isTranslatable, translateHref } from "@/features/orders/orderSource";
 import {
   noteRemovedFromOrder,
+  sentAs,
   translationsOfDocument,
   type OrderTranslationNote,
 } from "@/features/orders/orderTranslations";
@@ -298,7 +299,7 @@ function DocumentCard({
       return null;
     }
     // Which original a translation answers, where it was sent from one in this browser.
-    const sentFrom = made.find((note) => note.sent?.name === file.name)?.fileId;
+    const sentFrom = made.find((note) => sentAs(note, file))?.fileId;
     return {
       slug,
       orderId,
@@ -448,7 +449,7 @@ function FileRow({
     setConfirming(false);
     if (result.status === "ok") {
       // The translation it was sent from, if any, no longer says "sent".
-      noteRemovedFromOrder(slug, order.order_id, document.id, file.name);
+      noteRemovedFromOrder(slug, order.order_id, document.id, file);
       if (previewed) onPreview(null);
       onRemoved();
     } else {

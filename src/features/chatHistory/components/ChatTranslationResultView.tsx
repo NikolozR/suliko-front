@@ -18,7 +18,7 @@ import { updateChatDocumentContent } from "../services/chatService";
 import SaveButton from "@/features/translation/components/SaveButton";
 import toast from "react-hot-toast";
 import { SendToOrder, type OrderExportFormat } from "@/features/orders/components/SendToOrder";
-import { wordBlob } from "@/features/translation/utils/wordPage";
+import { translationAsHtml, wordBlob } from "@/features/translation/utils/wordPage";
 
 /**
  * The translation as HTML, as it stands now. The editor's own HTML where it is
@@ -28,10 +28,7 @@ import { wordBlob } from "@/features/translation/utils/wordPage";
 function translationHtml(editor: NewEditorHandle | null, loaded: string): string {
   const editorHtml = editor?.getHTML();
   if (editorHtml && editorHtml !== "<p></p>") return editorHtml;
-  if (loaded.trimStart().startsWith("<")) return loaded;
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
-  return marked(loaded, { async: false }) as string;
+  return translationAsHtml(loaded);
 }
 
 interface ChatTranslationResultViewProps {

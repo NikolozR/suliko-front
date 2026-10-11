@@ -10,6 +10,8 @@ import { ConfirmDialog } from "@/features/ui/components/ui/confirm-dialog";
 import type { PreviewScroller } from "@/features/translation/components/DocumentPreview";
 import { embeddedPageOf, wordBlob } from "@/features/translation/utils/wordPage";
 import { removeTranslation, uploadTranslation, type TranslationUpload } from "../api";
+import { correctHistory } from "../historyCopy";
+import { noteSentToOrder, translationOfFile } from "../orderTranslations";
 import type { OrderFile } from "../types";
 
 /**
@@ -43,7 +45,8 @@ const WORD_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingm
  * A translation already in the order, open for corrections where it is being
  * compared with its original. Saving writes the file again under its own name
  * and takes the earlier one out of the order: the bureau keeps one file, the
- * corrected one.
+ * corrected one. The translation it was sent from, in the translator's
+ * history, is corrected with it where this browser knows which one that is.
  */
 export function OrderTranslationEditor({
   slug,
@@ -109,10 +112,20 @@ export function OrderTranslationEditor({
         setProblem(sent.status);
         return;
       }
-      // The corrected file is in the order: only now does the earlier one go.
-      const removed = await removeTranslation(slug, orderId, documentId, file.id);
-      if (removed.status === "ok") toast.success(t("saveDone"));
-      else toast(t("saveKeptEarlier"), { duration: 8000 });
+      // The corrected file is in the order: only now does the earlier one go,
+      // and the translation it was sent from is brought in step with it.
+      const source = translationOfFile(slug, orderId, documentId, file);
+      const [removed, history] = await Promise.all([
+        removeTranslation(slug, orderId, documentId, file.id),
+        source ? correctHistory(source.chatId, body, html) : null,
+      ]);
+      // That translation's file in the order is the new one now.
+      if (source) noteSentToOrder(source.chatId, sent.file);
+
+      if (removed.status !== "ok") toast(t("saveKeptEarlier"), { duration: 8000 });
+      else toast.success(t(history === "updated" ? "saveDoneBoth" : "saveDone"));
+      if (history === "differs") toast(t("historyDiffers"), { duration: 8000 });
+      if (history === "failed") toast(t("historyFailed"), { duration: 8000 });
       onEdited(false);
       onSaved(sent.file, removed.status === "ok");
     } catch {

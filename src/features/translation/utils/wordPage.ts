@@ -6,6 +6,17 @@
  * So a Word file made here can be read back as the page it was made from.
  */
 
+/**
+ * A translation as HTML, whichever way it is kept: the translation service
+ * sends Markdown or HTML, and the editor writes HTML.
+ */
+export function translationAsHtml(content: string): string {
+  if (content.trimStart().startsWith("<")) return content;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+  return marked(content, { async: false }) as string;
+}
+
 /** The translation's HTML as a page Word opens with the look of the editor. */
 export const wordPage = (bodyHtml: string) => `<!DOCTYPE html>
 <html xmlns:o="urn:schemas-microsoft-com:office:office"
