@@ -474,13 +474,13 @@
       "plainDesc": "Sam przetłumaczony tekst, bez kolorów i układu. Szybciej."
     },
     "names": {
-      "title": "Potwierdź nazwy przed tłumaczeniem",
+      "title": "Potwierdź nazwy",
       "body": "Sprawdzisz pisownię każdej osoby i organizacji, aby była taka sama we wszystkich dokumentach.",
       "savedCount": "Zapisane nazwy: {count} w {project}",
       "editGlossary": "Edytuj glosariusz"
     },
     "instructions": {
-      "title": "Uwagi dla tłumacza",
+      "title": "Uwagi",
       "body": "Opcjonalnie. Terminologia, ton lub to, co ma pozostać bez zmian. Weryfikacja również sprawdza tłumaczenie pod kątem tych uwag.",
       "placeholder": "np. Nazwy firm zostaw po angielsku. Użyj stylu formalnego."
     },
@@ -500,12 +500,17 @@
       "termsBody": "Te tłumaczenia zostaną użyte w całym tekście. Zmień te, które przetłumaczył(a)byś inaczej.",
       "termInput": "Tłumaczenie: {term}",
       "removeTerm": "Usuń: {term}",
-      "showAll": "Pokaż wszystkie ({count})",
-      "showFewer": "Pokaż mniej",
-      "questionsTitle": "Zanim przetłumaczymy",
       "ownAnswer": "Lub wpisz własną odpowiedź",
       "ownAnswerFor": "Twoja odpowiedź: {question}",
-      "template": "Używany szablon terminologii: {name}"
+      "template": "Używany szablon terminologii: {name}",
+      "more": "Więcej",
+      "less": "Mniej",
+      "questionsCount": "{count, plural, one {# pytanie przed tłumaczeniem} few {# pytania przed tłumaczeniem} many {# pytań przed tłumaczeniem} other {# pytania przed tłumaczeniem}}",
+      "questionsAnswered": "Odpowiedzi: {answered} z {count}",
+      "answer": "Odpowiedz",
+      "hide": "Ukryj",
+      "termsCount": "{count, plural, one {# termin} few {# terminy} many {# terminów} other {# terminu}}",
+      "review": "Przejrzyj"
     },
     "quote": {
       "label": "Wycena",

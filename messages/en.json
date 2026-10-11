@@ -455,13 +455,13 @@
       "plainDesc": "Just the translated text, without colours or layout. Faster."
     },
     "names": {
-      "title": "Confirm names before translating",
+      "title": "Confirm names first",
       "body": "You'll review how every person and organisation is spelled, so they stay the same across all your documents.",
       "savedCount": "{count} names saved in {project}",
       "editGlossary": "Edit glossary"
     },
     "instructions": {
-      "title": "Notes for the translator",
+      "title": "Notes",
       "body": "Optional. Terminology, tone, or anything to keep as it is. The review checks the translation against these too.",
       "placeholder": "e.g. Keep company names in English. Use a formal register."
     },
@@ -481,12 +481,17 @@
       "termsBody": "These renderings will be used throughout the translation. Change any you'd translate differently.",
       "termInput": "Translation of {term}",
       "removeTerm": "Remove {term}",
-      "showAll": "Show all {count}",
-      "showFewer": "Show fewer",
-      "questionsTitle": "Before we translate",
       "ownAnswer": "Or write your own answer",
       "ownAnswerFor": "Your answer to: {question}",
-      "template": "Using the {name} terminology template"
+      "template": "Using the {name} terminology template",
+      "more": "More",
+      "less": "Less",
+      "questionsCount": "{count, plural, one {# question before translating} other {# questions before translating}}",
+      "questionsAnswered": "{answered} of {count} answered",
+      "answer": "Answer",
+      "hide": "Hide",
+      "termsCount": "{count, plural, one {# term} other {# terms}}",
+      "review": "Review"
     },
     "quote": {
       "label": "Quote",
