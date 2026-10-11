@@ -10,21 +10,26 @@ import {
   Languages,
   Loader2,
   PenLine,
+  Trash2,
   Upload,
 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Card } from "@/features/ui/components/ui/card";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
+import { ConfirmDialog } from "@/features/ui/components/ui/confirm-dialog";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import {
   fetchAssignedOrder,
   fileDownloadUrl,
+  removeTranslation,
   uploadTranslation,
   type OrdersLoad,
+  type TranslationRemoval,
   type TranslationUpload,
 } from "@/features/orders/api";
 import { isTranslatable, translateHref } from "@/features/orders/orderSource";
 import {
+  noteRemovedFromOrder,
   translationsOfDocument,
   type OrderTranslationNote,
 } from "@/features/orders/orderTranslations";
@@ -187,6 +192,7 @@ function DocumentCard({
                       document={document}
                       file={file}
                       made={made.find((note) => note.fileId === file.id) ?? null}
+                      onRemoved={onChanged}
                     />
                   ))}
                 </ul>
@@ -210,16 +216,41 @@ function FileRow({
   document,
   file,
   made,
+  onRemoved,
 }: {
   order: AssignedOrderDetail;
   document: AssignedDocumentDetail;
   file: OrderFile;
   /** This person's latest translation of the file on this site, if any. */
   made: OrderTranslationNote | null;
+  onRemoved: () => void;
 }) {
   const t = useTranslations("Orders");
+  const slug = order.organization.slug;
   // Only what the bureau sent is translated, and only what the document screen reads.
   const translatable = file.kind === "source" && file.downloadable && isTranslatable(file.name);
+  // Only a translation this person added: what the bureau sent or added is the bureau's.
+  const removable = file.kind === "translation" && file.uploaded_by_me;
+
+  const [confirming, setConfirming] = useState(false);
+  const [removing, setRemoving] = useState(false);
+  const [problem, setProblem] = useState<Exclude<TranslationRemoval["status"], "ok"> | null>(null);
+
+  const remove = async () => {
+    setRemoving(true);
+    setProblem(null);
+    const result = await removeTranslation(slug, order.order_id, document.id, file.id);
+    setRemoving(false);
+    setConfirming(false);
+    if (result.status === "ok") {
+      // The translation it was sent from, if any, no longer says "sent".
+      noteRemovedFromOrder(slug, order.order_id, document.id, file.name);
+      onRemoved();
+    } else {
+      setProblem(result.status);
+    }
+  };
+
   return (
     // On a phone the name has the line to itself and the actions sit under
     // it: beside them it would be squeezed to nothing.
@@ -266,6 +297,38 @@ function FileRow({
         </a>
       ) : (
         <span className="text-xs text-muted-foreground shrink-0">{t("fileGone")}</span>
+      )}
+      {removable && (
+        <button
+          type="button"
+          onClick={() => setConfirming(true)}
+          className="inline-flex items-center gap-1.5 text-sm text-red-600 hover:underline shrink-0 cursor-pointer dark:text-red-400"
+        >
+          <Trash2 className="h-4 w-4" />
+          {t("remove")}
+        </button>
+      )}
+      {problem && (
+        <p role="alert" className="basis-full text-xs text-red-600 dark:text-red-400">
+          {t(
+            problem === "notMine"
+              ? "removeNotMine"
+              : problem === "signedOut"
+                ? "removeSignedOut"
+                : "removeError",
+          )}
+        </p>
+      )}
+      {removable && (
+        <ConfirmDialog
+          open={confirming}
+          onOpenChange={(open) => !removing && setConfirming(open)}
+          title={t("removeTitle")}
+          description={t("removeBody", { name: file.name, bureau: order.organization.name })}
+          confirmLabel={t("remove")}
+          onConfirm={remove}
+          loading={removing}
+        />
       )}
     </li>
   );

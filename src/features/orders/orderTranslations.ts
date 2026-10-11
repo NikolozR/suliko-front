@@ -108,3 +108,26 @@ export function noteSentToOrder(chatId: string, name: string): OrderTranslationN
   write(notes);
   return note;
 }
+
+/** Note that a file is no longer in the order, for whichever translation it was sent from. */
+export function noteRemovedFromOrder(
+  slug: string,
+  orderId: number,
+  documentId: number,
+  name: string,
+): void {
+  const notes = read();
+  let changed = false;
+  for (const note of notes) {
+    if (
+      note.slug === slug &&
+      note.orderId === orderId &&
+      note.documentId === documentId &&
+      note.sent?.name === name
+    ) {
+      delete note.sent;
+      changed = true;
+    }
+  }
+  if (changed) write(notes);
+}

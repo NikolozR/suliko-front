@@ -104,23 +104,39 @@ export async function requirePortalUser(request: NextRequest): Promise<Outcome> 
 }
 
 /** GET one portal path on the Office API as `userId`, passing its answer through. */
-export async function portalGet(outcome: Exclude<Outcome, NextResponse>, path: string) {
+export function portalGet(outcome: Exclude<Outcome, NextResponse>, path: string) {
+  return portalCall(outcome, path, "GET");
+}
+
+/** DELETE one portal path on the Office API as `userId`, passing its answer through. */
+export function portalDelete(outcome: Exclude<Outcome, NextResponse>, path: string) {
+  return portalCall(outcome, path, "DELETE");
+}
+
+async function portalCall(
+  outcome: Exclude<Outcome, NextResponse>,
+  path: string,
+  method: "GET" | "DELETE"
+) {
   const assertion = signToken(outcome.secret, claimsFor("assertion", outcome.userId, ASSERTION_TTL_SECONDS));
   const headers: Record<string, string> = {
     "X-Suliko-Portal-Assertion": assertion,
     Accept: "application/json",
   };
   // The Office API answers 404 to anyone without its gateway secret (core/gateway.py),
-  // the same one app.suliko.ge sends. File tickets are exempt, so only this call needs it.
+  // the same one app.suliko.ge sends. File tickets are exempt, so only these calls need it.
   const gatewaySecret = process.env.BFF_SHARED_SECRET;
   if (gatewaySecret) headers["X-Suliko-Gateway"] = gatewaySecret;
 
   const response = await fetch(`${outcome.apiUrl}${PORTAL_PREFIX}${path}`, {
+    method,
     headers,
     cache: "no-store",
   }).catch(() => null);
 
   if (!response) return NextResponse.json({ error: "office_unreachable" }, { status: 502 });
+  // "Done, nothing to say" (a removal) cannot carry a body, not even an empty one.
+  if (response.status === 204) return new NextResponse(null, { status: 204 });
   const body = await response.text();
   return new NextResponse(body, {
     status: response.status,
