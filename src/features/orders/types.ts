@@ -7,7 +7,13 @@ export type AssignedDocument = {
   document_type_name: string | null;
   source_language: string;
   target_language: string;
+  /** The bureau's count, which the work is counted in. Not the file's own. */
   page_count: number;
+  /**
+   * How many translations this translator has added to the document and not
+   * taken back. Missing from an Office API older than this figure.
+   */
+  my_translations?: number;
 };
 
 export type AssignedOrder = {

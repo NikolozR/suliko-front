@@ -7,6 +7,7 @@ import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui/components/ui/button";
 import DocumentPreview from "@/features/translation/components/DocumentPreview";
 import { fetchOrderFile, fileDownloadUrl } from "../api";
+import { learnPdfPages } from "../orderFilePages";
 import type { OrderFile } from "../types";
 
 /** What the site's document viewer can draw: PDF, Word, web pages, text, subtitles, pictures. */
@@ -60,6 +61,8 @@ export function OrderFilePreview({ target, onClose }: { target: PreviewTarget; o
       if (result.status === "ok") {
         keep(key, result.file);
         setLoaded({ key, file: result.file });
+        // The bytes are here anyway: a PDF too large to count unopened is counted now.
+        void learnPdfPages(file.id, result.file);
       } else {
         setLoaded({ key, failed: true });
       }
