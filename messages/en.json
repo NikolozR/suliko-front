@@ -2196,6 +2196,12 @@
     "nothingSent": "Nothing sent yet.",
     "preview": "Preview",
     "closePreview": "Close preview",
+    "compare": "Compare",
+    "compareWithOriginal": "Compare with the original",
+    "compareTitle": "Original and translation",
+    "original": "Original",
+    "translation": "Translation",
+    "closeCompare": "Close comparison",
     "previewLoading": "Opening the file…",
     "previewFailed": "Could not open this file here. You can still download it."
   }

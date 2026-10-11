@@ -2196,6 +2196,12 @@
     "nothingSent": "Nic jeszcze nie wysłano.",
     "preview": "Podgląd",
     "closePreview": "Zamknij podgląd",
+    "compare": "Porównaj",
+    "compareWithOriginal": "Porównaj z oryginałem",
+    "compareTitle": "Oryginał i tłumaczenie",
+    "original": "Oryginał",
+    "translation": "Tłumaczenie",
+    "closeCompare": "Zamknij porównanie",
     "previewLoading": "Otwieranie pliku…",
     "previewFailed": "Nie udało się otworzyć pliku tutaj. Nadal możesz go pobrać."
   }
