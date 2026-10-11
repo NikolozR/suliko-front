@@ -2202,6 +2202,16 @@
     "original": "Original",
     "translation": "Translation",
     "closeCompare": "Close comparison",
+    "scrollTogether": "Scroll together",
+    "edit": "Edit",
+    "editHint": "Saving replaces this file in the order.",
+    "saveToOrder": "Save to order",
+    "savingToOrder": "Saving…",
+    "saveDone": "Saved. The order now has the corrected file.",
+    "saveKeptEarlier": "Saved as a new file, but the earlier one could not be removed. Remove it on the order page.",
+    "discardTitle": "Close without saving?",
+    "discardBody": "Your corrections will be lost. The file in the order stays as it was.",
+    "discard": "Close without saving",
     "previewLoading": "Opening the file…",
     "previewFailed": "Could not open this file here. You can still download it."
   }

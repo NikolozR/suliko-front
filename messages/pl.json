@@ -2202,6 +2202,16 @@
     "original": "Oryginał",
     "translation": "Tłumaczenie",
     "closeCompare": "Zamknij porównanie",
+    "scrollTogether": "Przewijaj razem",
+    "edit": "Edytuj",
+    "editHint": "Zapisanie zastąpi ten plik w zamówieniu.",
+    "saveToOrder": "Zapisz w zamówieniu",
+    "savingToOrder": "Zapisywanie…",
+    "saveDone": "Zapisano. W zamówieniu jest teraz poprawiony plik.",
+    "saveKeptEarlier": "Zapisano jako nowy plik, ale nie udało się usunąć poprzedniego. Usuń go na stronie zamówienia.",
+    "discardTitle": "Zamknąć bez zapisywania?",
+    "discardBody": "Twoje poprawki przepadną. Plik w zamówieniu zostanie bez zmian.",
+    "discard": "Zamknij bez zapisywania",
     "previewLoading": "Otwieranie pliku…",
     "previewFailed": "Nie udało się otworzyć pliku tutaj. Nadal możesz go pobrać."
   }

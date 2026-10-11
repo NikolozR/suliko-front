@@ -103,6 +103,28 @@ export default function AssignedOrderPage({
     });
   }, [slug, orderId]);
 
+  // A translation was corrected in the compare view: the corrected file is in
+  // the order, and the one it was made from is out of it unless that failed.
+  const replaceCompared = useCallback(
+    (earlierId: string, added: OrderFile, earlierRemoved: boolean) => {
+      setCompared(
+        (target) =>
+          target && {
+            ...target,
+            translations: [
+              ...target.translations.filter((file) => !(earlierRemoved && file.id === earlierId)),
+              added,
+            ],
+            translationId: added.id,
+          },
+      );
+      // A preview of the file that is gone has nothing left to show.
+      if (earlierRemoved) setPreviewed((target) => (target?.file.id === earlierId ? null : target));
+      reload();
+    },
+    [reload],
+  );
+
   return (
     // Wider while a file is open, so the order keeps its width beside it.
     <div className={cn("container mx-auto p-6", previewed ? "max-w-6xl" : "max-w-3xl")}>
@@ -153,7 +175,13 @@ export default function AssignedOrderPage({
           )}
         </div>
       )}
-      {compared && <OrderFileCompare target={compared} onClose={() => setCompared(null)} />}
+      {compared && (
+        <OrderFileCompare
+          target={compared}
+          onClose={() => setCompared(null)}
+          onReplaced={replaceCompared}
+        />
+      )}
     </div>
   );
 }
