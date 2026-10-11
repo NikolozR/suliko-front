@@ -1,7 +1,6 @@
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { reaccessToken } from "@/features/auth/services/authorizationService";
-import type { NameTranslationItem } from "@/features/translation/types/types.Translation";
-import type { AssignedOrder, AssignedOrderDetail, OrderTranslation } from "./types";
+import type { AssignedOrder, AssignedOrderDetail, OrderFile } from "./types";
 
 export type OrdersLoad<T> =
   | { status: "ok"; data: T }
@@ -95,70 +94,76 @@ export const fetchAssignedOrder = (slug: string, orderId: string) =>
 export const fileDownloadUrl = (slug: string, orderId: number, documentId: number, fileId: string) =>
   `${orderUrl(slug, orderId)}/documents/${documentId}/files/${encodeURIComponent(fileId)}`;
 
-// ── Suliko Translate on a file the bureau sent ──────────────────────────────
 
-/** What the translator may tell Suliko before it translates. Both are optional. */
-export type TranslationRequest = {
-  /** Free-text notes: terms, tone, what to leave as it is. */
-  instructions: string;
-  /** Spellings fixed for names, so the model does not choose its own. */
-  names: NameTranslationItem[];
-};
+// ── Files: the bureau's, to translate, and the translator's, to send back ───
 
-export type TranslationStart =
-  | { status: "started"; translation: OrderTranslation }
-  /** The balance does not cover the file. Nothing was charged. */
-  | { status: "insufficientBalance"; pages: number | null; balance: string | null }
-  | { status: "unsupportedFile" }
-  | { status: "tooLarge" }
-  | { status: "languageNotAvailable" }
-  /** The bureau pressed the same button first; its result will appear here. */
-  | { status: "alreadyTranslating" }
+export type OrderFileLoad =
+  | { status: "ok"; file: File }
   | { status: "signedOut" }
   | { status: "error" };
 
-/** The Office API's error code: the last part of a problem document's `type`. */
-function problemCode(body: unknown): string {
-  const type = (body as { type?: unknown } | null)?.type;
-  return typeof type === "string" ? type.slice(type.lastIndexOf("/") + 1) : "";
-}
-
-export async function startTranslation(
+/**
+ * The bytes of one file of the order, as a `File` the document screen can take
+ * as if it had been picked from disk. The route answers with a redirect to the
+ * Office API, which the request follows.
+ */
+export async function fetchOrderFile(
   slug: string,
   orderId: number,
   documentId: number,
-  fileId: string,
-  request: TranslationRequest,
-): Promise<TranslationStart> {
-  const response = await ask(`${fileDownloadUrl(slug, orderId, documentId, fileId)}/translate`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      instructions: request.instructions.trim() || null,
-      names: request.names.filter((name) => name.original.trim() && name.translation.trim()),
-    }),
-  });
+  file: Pick<OrderFile, "id" | "name" | "content_type">,
+): Promise<OrderFileLoad> {
+  const response = await ask(fileDownloadUrl(slug, orderId, documentId, file.id));
   if (response === "signedOut") return { status: "signedOut" };
-  if (response === "error") return { status: "error" };
-
-  const body = (await response.json().catch(() => null)) as Record<string, unknown> | null;
-  if (response.ok && body) return { status: "started", translation: body as OrderTranslation };
-
-  const code = problemCode(body);
-  if (response.status === 402 || code === "insufficient_balance") {
+  if (response === "error" || !response.ok) return { status: "error" };
+  try {
+    const bytes = await response.blob();
     return {
-      status: "insufficientBalance",
-      pages: typeof body?.pages === "number" ? body.pages : null,
-      balance: typeof body?.balance === "string" ? body.balance : null,
+      status: "ok",
+      file: new File([bytes], file.name, { type: file.content_type || bytes.type }),
     };
+  } catch {
+    return { status: "error" };
   }
-  if (response.status === 413) return { status: "tooLarge" };
-  if (code === "unsupported_file") return { status: "unsupportedFile" };
-  if (code === "language_not_available") return { status: "languageNotAvailable" };
-  if (response.status === 409) return { status: "alreadyTranslating" };
-  return { status: "error" };
 }
 
-/** This translator's jobs on one document. Asking is what files a finished one. */
-export const fetchTranslations = (slug: string, orderId: number, documentId: number) =>
-  load<OrderTranslation[]>(`${orderUrl(slug, orderId)}/documents/${documentId}/translations`);
+export type TranslationUpload =
+  | { status: "ok"; file: OrderFile }
+  /** Over what the bureau's storage takes in one file. */
+  | { status: "tooLarge" }
+  /** The document is no longer this translator's to add to. */
+  | { status: "gone" }
+  | { status: "signedOut" }
+  | { status: "error" };
+
+/**
+ * Add a translation to one document of the order. Two steps: this site says
+ * where the file may go (a one-upload address on the Office API), then the
+ * browser sends it there itself.
+ */
+export async function uploadTranslation(
+  slug: string,
+  orderId: number,
+  documentId: number,
+  file: File,
+): Promise<TranslationUpload> {
+  const ticket = await ask(`${orderUrl(slug, orderId)}/documents/${documentId}/files`, {
+    method: "POST",
+  });
+  if (ticket === "signedOut") return { status: "signedOut" };
+  if (ticket === "error" || !ticket.ok) return { status: "error" };
+
+  try {
+    const { url } = (await ticket.json()) as { url?: unknown };
+    if (typeof url !== "string") return { status: "error" };
+    const form = new FormData();
+    form.append("file", file, file.name);
+    const response = await fetch(url, { method: "POST", body: form });
+    if (response.status === 413) return { status: "tooLarge" };
+    if (response.status === 403 || response.status === 404) return { status: "gone" };
+    if (!response.ok) return { status: "error" };
+    return { status: "ok", file: (await response.json()) as OrderFile };
+  } catch {
+    return { status: "error" };
+  }
+}
