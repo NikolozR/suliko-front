@@ -17,6 +17,47 @@ import React from "react";
 import { updateChatDocumentContent } from "../services/chatService";
 import SaveButton from "@/features/translation/components/SaveButton";
 import toast from "react-hot-toast";
+import { SendToOrder, type OrderExportFormat } from "@/features/orders/components/SendToOrder";
+
+/** The translation's HTML as a page Word opens with the look of the editor. */
+const wordPage = (bodyHtml: string) => `<!DOCTYPE html>
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+  <meta charset="utf-8">
+  <style>
+    body  { font-family: Calibri, sans-serif; font-size: 11pt; }
+    h1    { font-size: 16pt; }
+    h2    { font-size: 14pt; }
+    h3    { font-size: 12pt; }
+    p     { margin: 0 0 8pt 0; }
+    table { border-collapse: collapse; width: 100%; }
+    td, th { border: 1pt solid #aaa; padding: 4pt 8pt; }
+  </style>
+</head>
+<body>${bodyHtml}</body>
+</html>`;
+
+/**
+ * The translation as HTML, as it stands now. The editor's own HTML where it is
+ * up: the same content the user sees and what copy-paste into Word uses, so the
+ * formatting is right. Otherwise what was loaded, converted if it is Markdown.
+ */
+function translationHtml(editor: NewEditorHandle | null, loaded: string): string {
+  const editorHtml = editor?.getHTML();
+  if (editorHtml && editorHtml !== "<p></p>") return editorHtml;
+  if (loaded.trimStart().startsWith("<")) return loaded;
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+  return marked(loaded, { async: false }) as string;
+}
+
+async function wordBlob(bodyHtml: string): Promise<Blob> {
+  // @ts-expect-error Type errors, nothing special
+  const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
+  return htmlDocx.asBlob(wordPage(bodyHtml)) as Blob;
+}
 
 interface ChatTranslationResultViewProps {
   chatId: string;
@@ -140,6 +181,22 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   //   return `${mm}:${ss}`;
   // };
 
+  /** The translation as one file, for the bureau's order it was made for. */
+  const buildForOrder = async (format: OrderExportFormat, sourceName: string): Promise<globalThis.File> => {
+    // `File` in this module is the icon of that name.
+    const DomFile = globalThis.File;
+    const name = generateLocalizedFilename(sourceName, format, translatedSuffix);
+    if (format === "srt") return new DomFile([translatedMarkdown], name, { type: "text/srt" });
+    const html = translationHtml(editorRef.current, translatedMarkdown);
+    if (format === "docx") {
+      return new DomFile([await wordBlob(html)], name, {
+        type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      });
+    }
+    const { generatePdfBlobFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+    return new DomFile([await generatePdfBlobFromHtml(html, name)], name, { type: "application/pdf" });
+  };
+
   useEffect(() => {
     if (!downloadedFormat) return;
     const triggerDownload = async () => {
@@ -158,39 +215,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        // Prefer the editor's current HTML — it's the same content the user sees and
-        // what copy-paste into Word uses, so formatting is guaranteed to be correct.
-        // Fall back to converting translatedMarkdown with marked() when the ref isn't ready.
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
-        const editorHtml = editorRef.current?.getHTML();
-        const bodyHtml = editorHtml && editorHtml !== "<p></p>"
-          ? editorHtml
-          : (() => {
-              const isHtml = translatedMarkdown.trimStart().startsWith("<");
-              return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
-            })();
-        const fullHtml = `<!DOCTYPE html>
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:w="urn:schemas-microsoft-com:office:word"
-      xmlns="http://www.w3.org/TR/REC-html40">
-<head>
-  <meta charset="utf-8">
-  <style>
-    body  { font-family: Calibri, sans-serif; font-size: 11pt; }
-    h1    { font-size: 16pt; }
-    h2    { font-size: 14pt; }
-    h3    { font-size: 12pt; }
-    p     { margin: 0 0 8pt 0; }
-    table { border-collapse: collapse; width: 100%; }
-    td, th { border: 1pt solid #aaa; padding: 4pt 8pt; }
-  </style>
-</head>
-<body>${bodyHtml}</body>
-</html>`;
-        // @ts-expect-error Type errors, nothing special
-        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
-        const blob = htmlDocx.asBlob(fullHtml);
+        const blob = await wordBlob(translationHtml(editorRef.current, translatedMarkdown));
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -201,15 +226,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
         try {
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
-          const editorHtml = editorRef.current?.getHTML();
-          const htmlContent = editorHtml && editorHtml !== "<p></p>"
-            ? editorHtml
-            : (() => {
-                const isHtml = translatedMarkdown.trimStart().startsWith("<");
-                return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
-              })();
+          const htmlContent = translationHtml(editorRef.current, translatedMarkdown);
           const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
           await generatePdfFromHtml(htmlContent, fileName);
         } catch (err) {
@@ -243,6 +260,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
 
   return (
     <>
+      <SendToOrder chatId={chatId} build={buildForOrder} />
       <div className={hideOriginalDocument ? "relative" : "relative md:flex gap-4 lg:gap-6 xl:gap-8"}>
         {!hideOriginalDocument && (
           <div className="w-full mb-6 md:mb-0 md:flex-[0.95] min-w-0">

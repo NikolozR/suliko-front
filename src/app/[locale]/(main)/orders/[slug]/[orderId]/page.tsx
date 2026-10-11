@@ -1,31 +1,38 @@
 "use client";
 
-import { use, useCallback, useEffect, useState } from "react";
+import { use, useCallback, useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { AlertCircle, ArrowLeft, Download, FileText, Languages, Loader2 } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowLeft,
+  Download,
+  FileText,
+  Languages,
+  Loader2,
+  PenLine,
+  Upload,
+} from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Card } from "@/features/ui/components/ui/card";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import {
   fetchAssignedOrder,
-  fetchTranslations,
   fileDownloadUrl,
+  uploadTranslation,
   type OrdersLoad,
+  type TranslationUpload,
 } from "@/features/orders/api";
+import { isTranslatable, translateHref } from "@/features/orders/orderSource";
 import {
-  TranslateFileDialog,
-  type TranslateTarget,
-} from "@/features/orders/components/TranslateFileDialog";
+  translationsOfDocument,
+  type OrderTranslationNote,
+} from "@/features/orders/orderTranslations";
 import type {
   AssignedDocumentDetail,
   AssignedOrderDetail,
   OrderFile,
-  OrderTranslation,
 } from "@/features/orders/types";
-
-/** How often a running translation is asked about. */
-const POLL_MS = 3000;
 
 function formatSize(bytes: number | null): string {
   if (bytes === null) return "";
@@ -55,7 +62,7 @@ export default function AssignedOrderPage({
     };
   }, [slug, orderId]);
 
-  // After a translation has been filed: the same order again, for its new file.
+  // After a translation has been added: the same order again, for its new file.
   // A failed reload keeps what is on screen rather than replacing it with an error.
   const reload = useCallback(() => {
     fetchAssignedOrder(slug, orderId).then((loaded) => {
@@ -105,11 +112,6 @@ function OrderDetail({
   onChanged: () => void;
 }) {
   const t = useTranslations("Orders");
-  const [target, setTarget] = useState<TranslateTarget | null>(null);
-  // A job the dialog has just started, handed to its document's card.
-  const [started, setStarted] = useState<{ documentId: number; job: OrderTranslation } | null>(
-    null,
-  );
 
   return (
     <>
@@ -126,30 +128,10 @@ function OrderDetail({
       <ul className="space-y-3">
         {order.documents.map((document) => (
           <li key={document.id}>
-            <DocumentCard
-              order={order}
-              document={document}
-              started={started?.documentId === document.id ? started.job : null}
-              onTranslate={(file) =>
-                setTarget({
-                  slug: order.organization.slug,
-                  orderId: order.order_id,
-                  documentId: document.id,
-                  fileId: file.id,
-                  fileName: file.name,
-                })
-              }
-              onChanged={onChanged}
-            />
+            <DocumentCard order={order} document={document} onChanged={onChanged} />
           </li>
         ))}
       </ul>
-
-      <TranslateFileDialog
-        target={target}
-        onClose={() => setTarget(null)}
-        onStarted={(documentId, job) => setStarted({ documentId, job })}
-      />
     </>
   );
 }
@@ -157,15 +139,10 @@ function OrderDetail({
 function DocumentCard({
   order,
   document,
-  started,
-  onTranslate,
   onChanged,
 }: {
   order: AssignedOrderDetail;
   document: AssignedDocumentDetail;
-  /** A job started a moment ago from the dialog, before the order is read again. */
-  started: OrderTranslation | null;
-  onTranslate: (file: OrderFile) => void;
   onChanged: () => void;
 }) {
   const t = useTranslations("Orders");
@@ -173,41 +150,12 @@ function DocumentCard({
   const orderId = order.order_id;
   const documentId = document.id;
 
-  // The translator's own Suliko Translate jobs on this document, newest first.
-  const [jobs, setJobs] = useState<OrderTranslation[]>(document.translations ?? []);
+  // The translations this person made of this document's files on this site,
+  // newest first. Kept in the browser, so read once the page is up.
+  const [made, setMade] = useState<OrderTranslationNote[]>([]);
   useEffect(() => {
-    setJobs(document.translations ?? []);
-  }, [document.translations]);
-  useEffect(() => {
-    if (started) setJobs((known) => [started, ...known.filter((job) => job.id !== started.id)]);
-  }, [started]);
-
-  // While one runs, ask how far it is. Asking is also what files the result:
-  // the Office API has no worker of its own. Once nothing runs any more, the
-  // order is read again, for the new file.
-  const running = jobs.some((job) => job.status === "processing");
-  useEffect(() => {
-    if (!running) return;
-    let cancelled = false;
-    let timer: ReturnType<typeof setTimeout>;
-    const look = async () => {
-      const loaded = await fetchTranslations(slug, orderId, documentId);
-      if (cancelled) return;
-      if (loaded.status === "ok") {
-        setJobs(loaded.data);
-        if (!loaded.data.some((job) => job.status === "processing")) {
-          onChanged();
-          return;
-        }
-      }
-      timer = setTimeout(look, POLL_MS);
-    };
-    timer = setTimeout(look, POLL_MS);
-    return () => {
-      cancelled = true;
-      clearTimeout(timer);
-    };
-  }, [running, slug, orderId, documentId, onChanged]);
+    setMade(translationsOfDocument(slug, orderId, documentId));
+  }, [slug, orderId, documentId]);
 
   return (
     <Card className="p-4 border border-border/60">
@@ -226,22 +174,30 @@ function DocumentCard({
           <p className="text-xs font-medium text-muted-foreground mt-4 mb-2">{t("files")}</p>
           {document.files_state === "unavailable" ? (
             <p className="text-xs text-muted-foreground">{t("filesUnavailable")}</p>
-          ) : document.files.length === 0 ? (
-            <p className="text-xs text-muted-foreground">{t("noFiles")}</p>
           ) : (
-            <ul className="space-y-2">
-              {document.files.map((file) => (
-                <FileRow
-                  key={file.id}
-                  order={order}
-                  document={document}
-                  file={file}
-                  // The newest job on this file is the one that says how it stands.
-                  job={jobs.find((job) => job.source_file_id === file.id) ?? null}
-                  onTranslate={() => onTranslate(file)}
-                />
-              ))}
-            </ul>
+            <>
+              {document.files.length === 0 ? (
+                <p className="text-xs text-muted-foreground">{t("noFiles")}</p>
+              ) : (
+                <ul className="space-y-2">
+                  {document.files.map((file) => (
+                    <FileRow
+                      key={file.id}
+                      order={order}
+                      document={document}
+                      file={file}
+                      made={made.find((note) => note.fileId === file.id) ?? null}
+                    />
+                  ))}
+                </ul>
+              )}
+              <UploadTranslation
+                slug={slug}
+                orderId={orderId}
+                documentId={documentId}
+                onUploaded={onChanged}
+              />
+            </>
           )}
         </div>
       </div>
@@ -253,72 +209,130 @@ function FileRow({
   order,
   document,
   file,
-  job,
-  onTranslate,
+  made,
 }: {
   order: AssignedOrderDetail;
   document: AssignedDocumentDetail;
   file: OrderFile;
-  job: OrderTranslation | null;
-  onTranslate: () => void;
+  /** This person's latest translation of the file on this site, if any. */
+  made: OrderTranslationNote | null;
 }) {
   const t = useTranslations("Orders");
-  const translating = job?.status === "processing";
-  // Only what the bureau sent is translated; a translation is the answer to it.
-  const translatable = file.kind === "source" && file.downloadable;
+  // Only what the bureau sent is translated, and only what the document screen reads.
+  const translatable = file.kind === "source" && file.downloadable && isTranslatable(file.name);
   return (
-    <li className="text-sm">
-      {/* On a phone the name has the line to itself and the actions sit under
-          it: beside two actions it would be squeezed to nothing. */}
-      <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
-        <span className="min-w-0 basis-full truncate sm:basis-0 sm:flex-1">
-          {file.name}
-          <span className="text-xs text-muted-foreground">
-            {" "}
-            {formatSize(file.size_bytes)} · {file.uploaded_by_me ? t("mine") : t("fromBureau")}
-          </span>
+    // On a phone the name has the line to itself and the actions sit under
+    // it: beside them it would be squeezed to nothing.
+    <li className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+      <span className="min-w-0 basis-full truncate sm:basis-0 sm:flex-1">
+        {file.name}
+        <span className="text-xs text-muted-foreground">
+          {" "}
+          {formatSize(file.size_bytes)} · {file.uploaded_by_me ? t("mine") : t("fromBureau")}
         </span>
-        {translatable && !translating && (
-          <button
-            type="button"
-            onClick={onTranslate}
-            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline shrink-0 cursor-pointer"
-          >
-            <Languages className="h-4 w-4" />
-            {t("translate")}
-          </button>
-        )}
-        {file.downloadable ? (
-          // A plain link: the server answers with a redirect to the file itself.
-          <a
-            href={fileDownloadUrl(order.organization.slug, order.order_id, document.id, file.id)}
-            className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline shrink-0"
-          >
-            <Download className="h-4 w-4" />
-            {t("download")}
-          </a>
-        ) : (
-          <span className="text-xs text-muted-foreground shrink-0">{t("fileGone")}</span>
-        )}
-      </div>
-
-      {translating && (
-        <div className="mt-2" role="status">
-          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <Loader2 className="h-3.5 w-3.5 animate-spin" />
-            {t("translating", { progress: job.progress ?? 0 })}
-          </p>
-          <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
-            <div
-              className="h-full rounded-full bg-primary transition-all duration-500"
-              style={{ width: `${Math.max(4, job.progress ?? 0)}%` }}
-            />
-          </div>
-        </div>
+      </span>
+      {made && (
+        <Link
+          href={`/translations/${made.chatId}`}
+          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline shrink-0"
+        >
+          <PenLine className="h-4 w-4" />
+          {t("openTranslation")}
+        </Link>
       )}
-      {job?.status === "failed" && (
-        <p className="mt-1.5 text-xs text-red-600 dark:text-red-400">{t("translateFailed")}</p>
+      {translatable && (
+        // The ordinary document screen, with this file in it.
+        <Link
+          href={translateHref({
+            slug: order.organization.slug,
+            orderId: order.order_id,
+            documentId: document.id,
+            fileId: file.id,
+          })}
+          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline shrink-0"
+        >
+          <Languages className="h-4 w-4" />
+          {made ? t("translateAgain") : t("translate")}
+        </Link>
+      )}
+      {file.downloadable ? (
+        // A plain link: the server answers with a redirect to the file itself.
+        <a
+          href={fileDownloadUrl(order.organization.slug, order.order_id, document.id, file.id)}
+          className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline shrink-0"
+        >
+          <Download className="h-4 w-4" />
+          {t("download")}
+        </a>
+      ) : (
+        <span className="text-xs text-muted-foreground shrink-0">{t("fileGone")}</span>
       )}
     </li>
+  );
+}
+
+const UPLOAD_PROBLEM_KEYS: Record<Exclude<TranslationUpload["status"], "ok">, string> = {
+  tooLarge: "sendTooLarge",
+  gone: "sendGone",
+  signedOut: "sendSignedOut",
+  error: "sendError",
+};
+
+/** A translation finished somewhere else (Word, a CAT tool), added to the document. */
+function UploadTranslation({
+  slug,
+  orderId,
+  documentId,
+  onUploaded,
+}: {
+  slug: string;
+  orderId: number;
+  documentId: number;
+  onUploaded: () => void;
+}) {
+  const t = useTranslations("Orders");
+  const input = useRef<HTMLInputElement>(null);
+  const [busy, setBusy] = useState(false);
+  const [problem, setProblem] = useState<keyof typeof UPLOAD_PROBLEM_KEYS | null>(null);
+
+  const upload = async (file: File) => {
+    setBusy(true);
+    setProblem(null);
+    const result = await uploadTranslation(slug, orderId, documentId, file);
+    setBusy(false);
+    if (result.status === "ok") onUploaded();
+    else setProblem(result.status);
+  };
+
+  return (
+    <div className="mt-3">
+      <input
+        ref={input}
+        type="file"
+        className="sr-only"
+        tabIndex={-1}
+        aria-hidden
+        onChange={(event) => {
+          const file = event.target.files?.[0];
+          // Cleared so that choosing the same file again is still a change.
+          event.target.value = "";
+          if (file) void upload(file);
+        }}
+      />
+      <button
+        type="button"
+        disabled={busy}
+        onClick={() => input.current?.click()}
+        className="inline-flex items-center gap-1.5 text-sm text-primary hover:underline cursor-pointer disabled:cursor-default disabled:opacity-70 disabled:no-underline"
+      >
+        {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Upload className="h-4 w-4" />}
+        {busy ? t("uploading") : t("upload")}
+      </button>
+      {problem && (
+        <p role="alert" className="mt-1.5 text-xs text-red-600 dark:text-red-400">
+          {t(UPLOAD_PROBLEM_KEYS[problem])}
+        </p>
+      )}
+    </div>
   );
 }
