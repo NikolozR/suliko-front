@@ -2191,6 +2191,12 @@
     "nothingSent": "ჯერ არაფერი გაგზავნილა.",
     "preview": "გადახედვა",
     "closePreview": "გადახედვის დახურვა",
+    "compare": "შედარება",
+    "compareWithOriginal": "ორიგინალთან შედარება",
+    "compareTitle": "ორიგინალი და თარგმანი",
+    "original": "ორიგინალი",
+    "translation": "თარგმანი",
+    "closeCompare": "შედარების დახურვა",
     "previewLoading": "ფაილი იხსნება…",
     "previewFailed": "ფაილის აქ გახსნა ვერ მოხერხდა. მისი ჩამოტვირთვა მაინც შეგიძლიათ."
   }

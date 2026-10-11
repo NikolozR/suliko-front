@@ -1,14 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { AlertCircle, Download, Languages, Loader2, X } from "lucide-react";
+import { AlertCircle, Columns2, Download, Languages, Loader2, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui/components/ui/button";
 import DocumentPreview from "@/features/translation/components/DocumentPreview";
-import { fetchOrderFile, fileDownloadUrl } from "../api";
-import { learnPdfPages } from "../orderFilePages";
+import { fileDownloadUrl } from "../api";
+import { useOrderFile } from "../orderFileBytes";
 import type { OrderFile } from "../types";
+import type { CompareTarget } from "./OrderFileCompare";
 
 /** What the site's document viewer can draw: PDF, Word, web pages, text, subtitles, pictures. */
 const PREVIEWABLE = /\.(pdf|docx|html?|txt|srt|jpe?g|png|gif|webp|bmp)$/i;
@@ -22,61 +23,34 @@ export type PreviewTarget = {
   file: OrderFile;
   /** Where "Translate" leads for this file, if it is one the bureau sent to translate. */
   translateHref: string | null;
+  /** What "Compare" opens from this file, if its document has both an original and a translation. */
+  compare: CompareTarget | null;
 };
-
-/**
- * The files last looked at, so going back and forth between two of them does
- * not fetch each again. A handful only: these are whole files held in memory.
- */
-const KEPT = 3;
-const kept = new Map<string, File>();
-
-function keep(key: string, file: File): void {
-  kept.delete(key);
-  kept.set(key, file);
-  while (kept.size > KEPT) kept.delete(kept.keys().next().value as string);
-}
-
-type Loaded = { key: string; file: File } | { key: string; failed: true };
 
 /**
  * One file of an order, shown without downloading it: beside the order on a
  * wide screen, over it on a phone.
  */
-export function OrderFilePreview({ target, onClose }: { target: PreviewTarget; onClose: () => void }) {
+export function OrderFilePreview({
+  target,
+  onClose,
+  onCompare,
+}: {
+  target: PreviewTarget;
+  onClose: () => void;
+  onCompare: (compare: CompareTarget) => void;
+}) {
   const t = useTranslations("Orders");
-  const { slug, orderId, documentId, file } = target;
-  const key = `${slug}/${orderId}/${documentId}/${file.id}`;
-  const [loaded, setLoaded] = useState<Loaded | null>(null);
-
-  useEffect(() => {
-    const known = kept.get(key);
-    if (known) {
-      setLoaded({ key, file: known });
-      return;
-    }
-    let cancelled = false;
-    fetchOrderFile(slug, orderId, documentId, file).then((result) => {
-      if (cancelled) return;
-      if (result.status === "ok") {
-        keep(key, result.file);
-        setLoaded({ key, file: result.file });
-        // The bytes are here anyway: a PDF too large to count unopened is counted now.
-        void learnPdfPages(file.id, result.file);
-      } else {
-        setLoaded({ key, failed: true });
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-    // `key` names the file; the rest are its parts.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key]);
+  const { slug, orderId, documentId, file, compare } = target;
+  const loaded = useOrderFile(slug, orderId, documentId, file);
 
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
-      if (event.key === "Escape") onClose();
+      if (event.key !== "Escape") return;
+      // A dialog over the page (the comparison, "Remove this file?") takes
+      // Escape for itself: one press closes one thing.
+      if (document.querySelector('[role="dialog"][data-state="open"]')) return;
+      onClose();
     };
     document.addEventListener("keydown", onKey);
     return () => document.removeEventListener("keydown", onKey);
@@ -91,9 +65,6 @@ export function OrderFilePreview({ target, onClose }: { target: PreviewTarget; o
       document.body.style.overflow = before;
     };
   }, []);
-
-  // What was loaded for another file is not this file's.
-  const shown = loaded?.key === key ? loaded : null;
 
   return (
     <aside
@@ -116,12 +87,12 @@ export function OrderFilePreview({ target, onClose }: { target: PreviewTarget; o
       </header>
 
       <div className="min-h-0 flex-1 p-3">
-        {shown === null ? (
+        {loaded.status === "loading" ? (
           <div role="status" className="flex h-full items-center justify-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
             {t("previewLoading")}
           </div>
-        ) : "failed" in shown ? (
+        ) : loaded.status === "failed" ? (
           <div role="alert" className="flex h-full items-center justify-center gap-2 px-4 text-sm text-red-600 dark:text-red-400">
             <AlertCircle className="h-4 w-4 shrink-0" aria-hidden />
             {t("previewFailed")}
@@ -129,7 +100,7 @@ export function OrderFilePreview({ target, onClose }: { target: PreviewTarget; o
         ) : (
           <div className="h-full">
             {/* The page count it reads belongs to this file, not to the one on the document screen. */}
-            <DocumentPreview file={shown.file} trackPageCount={false} />
+            <DocumentPreview file={loaded.file} trackPageCount={false} />
           </div>
         )}
       </div>
@@ -141,6 +112,12 @@ export function OrderFilePreview({ target, onClose }: { target: PreviewTarget; o
               <Languages />
               {t("translate")}
             </Link>
+          </Button>
+        )}
+        {compare && (
+          <Button type="button" variant="outline" size="sm" onClick={() => onCompare(compare)}>
+            <Columns2 />
+            {t("compare")}
           </Button>
         )}
         <Button asChild variant="outline" size="sm">

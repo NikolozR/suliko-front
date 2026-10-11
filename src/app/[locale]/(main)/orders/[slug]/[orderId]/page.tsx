@@ -5,6 +5,7 @@ import { useLocale, useTranslations } from "next-intl";
 import {
   AlertCircle,
   ArrowLeft,
+  Columns2,
   Download,
   Eye,
   File as FileIcon,
@@ -33,6 +34,7 @@ import {
   type TranslationUpload,
 } from "@/features/orders/api";
 import { DueBadge, StatusChip } from "@/features/orders/components/OrderBadges";
+import { OrderFileCompare, type CompareTarget } from "@/features/orders/components/OrderFileCompare";
 import {
   OrderFilePreview,
   isPreviewable,
@@ -80,6 +82,8 @@ export default function AssignedOrderPage({
   // The file being looked at: beside the order on a wide screen, over it on a phone.
   const [previewed, setPreviewed] = useState<PreviewTarget | null>(null);
   const closePreview = useCallback(() => setPreviewed(null), []);
+  // An original and a translation of it, side by side over the page.
+  const [compared, setCompared] = useState<CompareTarget | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -141,11 +145,15 @@ export default function AssignedOrderPage({
               onChanged={reload}
               previewedFileId={previewed?.file.id ?? null}
               onPreview={setPreviewed}
+              onCompare={setCompared}
             />
           </div>
-          {previewed && <OrderFilePreview target={previewed} onClose={closePreview} />}
+          {previewed && (
+            <OrderFilePreview target={previewed} onClose={closePreview} onCompare={setCompared} />
+          )}
         </div>
       )}
+      {compared && <OrderFileCompare target={compared} onClose={() => setCompared(null)} />}
     </div>
   );
 }
@@ -155,6 +163,8 @@ type PreviewControls = {
   previewedFileId: string | null;
   /** Open a file in the preview, or close it with null. */
   onPreview: (target: PreviewTarget | null) => void;
+  /** Open an original and a translation side by side. */
+  onCompare: (target: CompareTarget) => void;
 };
 
 function OrderDetail({
@@ -249,6 +259,33 @@ function DocumentCard({
   // What came in and what went out, apart: whose a file is decides what can be done with it.
   const fromBureau = document.files.filter((file) => !file.uploaded_by_me);
   const mine = document.files.filter((file) => file.uploaded_by_me);
+
+  // Comparing takes one of each that the viewer can draw.
+  const originals = fromBureau.filter((file) => file.kind === "source" && isPreviewable(file));
+  const translations = mine.filter((file) => handedIn(file) && isPreviewable(file));
+  const compareFrom = (file: OrderFile): CompareTarget | null => {
+    const isOriginal = originals.includes(file);
+    const isTranslation = translations.includes(file);
+    if (originals.length === 0 || translations.length === 0 || (!isOriginal && !isTranslation)) {
+      return null;
+    }
+    // Which original a translation answers, where it was sent from one in this browser.
+    const sentFrom = made.find((note) => note.sent?.name === file.name)?.fileId;
+    return {
+      slug,
+      orderId,
+      documentId,
+      documentName: document.document_type_name,
+      originals,
+      translations,
+      originalId: isOriginal
+        ? file.id
+        : (originals.find((candidate) => candidate.id === sentFrom) ?? originals[0]).id,
+      // The newest translation: files come oldest first.
+      translationId: isTranslation ? file.id : translations[translations.length - 1].id,
+    };
+  };
+
   const row = (file: OrderFile) => (
     <FileRow
       key={file.id}
@@ -256,6 +293,7 @@ function DocumentCard({
       document={document}
       file={file}
       made={made.find((note) => note.fileId === file.id) ?? null}
+      compare={compareFrom(file)}
       onRemoved={onChanged}
       {...preview}
     />
@@ -313,7 +351,8 @@ function DocumentCard({
 function FileGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <section className="mt-4">
-      <h3 className="mb-2 text-xs font-medium text-muted-foreground">{label}</h3>
+      {/* h6, not h3: h1 to h4 take the titling face, all capitals in Georgian. */}
+      <h6 className="mb-2 text-xs font-medium text-muted-foreground">{label}</h6>
       {children}
     </section>
   );
@@ -327,15 +366,19 @@ function FileRow({
   document,
   file,
   made,
+  compare,
   onRemoved,
   previewedFileId,
   onPreview,
+  onCompare,
 }: {
   order: AssignedOrderDetail;
   document: AssignedDocumentDetail;
   file: OrderFile;
   /** This person's latest translation of the file on this site, if any. */
   made: OrderTranslationNote | null;
+  /** What comparing opens from this file, if its document has both sides. */
+  compare: CompareTarget | null;
   onRemoved: () => void;
 } & PreviewControls) {
   const t = useTranslations("Orders");
@@ -355,7 +398,14 @@ function FileRow({
     onPreview(
       previewed
         ? null
-        : { slug, orderId: order.order_id, documentId: document.id, file, translateHref: translate },
+        : {
+            slug,
+            orderId: order.order_id,
+            documentId: document.id,
+            file,
+            translateHref: translate,
+            compare,
+          },
     );
 
   const [confirming, setConfirming] = useState(false);
@@ -441,6 +491,20 @@ function FileRow({
           </Button>
         ) : (
           <span className="text-xs text-muted-foreground shrink-0">{t("fileGone")}</span>
+        )}
+        {removable && compare && (
+          // On the translator's own file: the check before the bureau makes its own.
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            onClick={() => onCompare(compare)}
+            aria-label={t("compareWithOriginal")}
+            title={t("compareWithOriginal")}
+            className={ICON_ACTION}
+          >
+            <Columns2 />
+          </Button>
         )}
         {removable && (
           <Button
