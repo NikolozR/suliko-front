@@ -8,7 +8,7 @@ on:
 
 jobs:
   # Reliable signal: does the deployed app's public surface work? No auth, no
-  # Supabase dependency — this job going green means the frontend code is healthy.
+  # backend data needed — this job going green means the frontend code is healthy.
   public:
     name: Public smoke tests
     runs-on: ubuntu-latest
@@ -41,15 +41,16 @@ jobs:
           retention-days: 14
 
   # These exercise live infrastructure beyond the frontend:
-  #   - api:           Supabase-backed API routes (/api/blog, /api/passport-templates)
+  #   - api:           the API's blog and passport-template endpoints
   #   - authenticated: user pages, needs the auth backend + TEST_USER_* account
   #   - admin:         admin panel, needs the auth backend + the 579737737 account
   #
-  # Kept non-blocking (continue-on-error) so a Supabase outage or a slow/invalid
+  # Kept non-blocking (continue-on-error) so an API outage or a slow/invalid
   # login can't turn the whole suite red — the `public` job above is the gate.
   # Once both infra items below are healthy, flip continue-on-error to false to
   # make this a required signal too:
-  #   1. The deployment can reach Supabase (the two /api routes return 200, not 500).
+  #   1. The API serves the blog and passport templates (its database has the
+  #      AddBlogAndPassportTemplates migration).
   #   2. The TEST_USER_* and admin (579737737) accounts exist on content.api24.ge.
   extended:
     name: API + authenticated (non-blocking)

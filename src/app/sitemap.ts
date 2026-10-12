@@ -1,4 +1,5 @@
 import { MetadataRoute } from "next";
+import { getAllPostSlugs } from "@/lib/blog";
 
 const DOMAIN_KA = "https://suliko.ge";
 const DOMAIN_EN = "https://suliko.io";
@@ -25,13 +26,11 @@ function priorityFor(path: string): number {
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  // The blog slugs come from Supabase, and its client throws on import when the
-  // credentials are missing — hence the dynamic import. Either way the static
-  // pages, the legal ones among them, still get listed rather than the whole
-  // sitemap returning a 500.
+  // The blog slugs come from the API. If it cannot be read, the static pages,
+  // the legal ones among them, still get listed rather than the whole sitemap
+  // returning a 500.
   let enSlugs: string[] = [];
   try {
-    const { getAllPostSlugs } = await import("@/lib/blog");
     const entries = await getAllPostSlugs();
     enSlugs = [...new Set(entries.filter((e) => e.locale === "en").map((e) => e.slug))];
   } catch (error) {

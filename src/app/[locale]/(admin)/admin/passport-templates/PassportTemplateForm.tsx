@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Upload, Save, ArrowLeft, GripVertical, Loader2 } from "lucide-react";
 import type { PassportTemplate, PassportTemplateField } from "@/lib/passport-types";
+import { savePassportTemplate, uploadPassportTemplateDocx } from "@/lib/site-content-client";
 
 interface Props {
   initial?: PassportTemplate;
@@ -17,6 +18,8 @@ export default function PassportTemplateForm({ initial }: Props) {
   const [name, setName] = useState(initial?.name || "");
   const [country, setCountry] = useState(initial?.country || "");
   const [docxUrl, setDocxUrl] = useState(initial?.docx_file_url || "");
+  // What the template is saved with; the address is for showing and downloading.
+  const [docxFileId, setDocxFileId] = useState(initial?.docx_file_id || "");
   const [fields, setFields] = useState<PassportTemplateField[]>(initial?.fields || []);
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -31,23 +34,11 @@ export default function PassportTemplateForm({ initial }: Props) {
     setError("");
     setDocxFileName(file.name);
 
-    const formData = new FormData();
-    formData.append("file", file);
-
     try {
-      const res = await fetch("/api/passport-templates/upload", {
-        method: "POST",
-        body: formData,
-      });
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error || "Upload failed");
-        setUploading(false);
-        return;
-      }
+      const data = await uploadPassportTemplateDocx(file);
 
       setDocxUrl(data.url);
+      setDocxFileId(data.id);
 
       const existingKeys = new Set(fields.map((f) => f.key));
       const newFields: PassportTemplateField[] = [...fields];
@@ -95,7 +86,7 @@ export default function PassportTemplateForm({ initial }: Props) {
   }
 
   async function handleSave() {
-    if (!name.trim() || !country.trim() || !docxUrl) {
+    if (!name.trim() || !country.trim() || !docxFileId) {
       setError("Name, country, and DOCX file are required.");
       return;
     }
@@ -103,34 +94,18 @@ export default function PassportTemplateForm({ initial }: Props) {
     setSaving(true);
     setError("");
 
-    const body = {
-      name: name.trim(),
-      country: country.trim(),
-      docx_file_url: docxUrl,
-      fields,
-    };
-
     try {
-      const url = isEdit
-        ? `/api/passport-templates/${initial!.id}`
-        : "/api/passport-templates";
-      const res = await fetch(url, {
-        method: isEdit ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+      await savePassportTemplate(isEdit ? initial!.id : null, {
+        name: name.trim(),
+        country: country.trim(),
+        docx_file_id: docxFileId,
+        fields,
       });
-
-      if (!res.ok) {
-        const data = await res.json();
-        setError(data.error || "Save failed");
-        setSaving(false);
-        return;
-      }
 
       router.push(`/${locale}/admin/passport-templates`);
       router.refresh();
-    } catch {
-      setError("Save failed. Please try again.");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Save failed. Please try again.");
     }
     setSaving(false);
   }
