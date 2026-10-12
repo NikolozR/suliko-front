@@ -4,8 +4,7 @@ import { useState } from "react";
 import { Download, Check } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import { saveAs } from "file-saver";
-// @ts-expect-error Type errors, nothing special
-import htmlDocx from "html-docx-js/dist/html-docx";
+import { wordBlob } from "@/features/translation/utils/wordPage";
 import { generatePdfFromHtml } from "@/features/translation/utils/html2pdf-client";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 
@@ -90,9 +89,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       } else if (fileType === "pdf") {
         await generatePdfFromHtml(content, fileName);
       } else if (fileType === "docx") {
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${content}</body></html>`;
-        const blob = htmlDocx.asBlob(fullHtml);
-        saveAs(blob, fileName);
+        saveAs(await wordBlob(content), fileName);
       }
 
       setDownloaded(true);
