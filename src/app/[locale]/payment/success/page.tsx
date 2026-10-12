@@ -7,6 +7,9 @@ import { Button } from "@/features/ui";
 import LandingHeader from "@/shared/components/LandingHeader";
 import LandingFooter from "@/shared/components/LandingFooter";
 import { useUserStore } from "@/features/auth/store/userStore";
+import { BilingualText } from "@/features/pricing/components/BilingualText";
+import { forgetLastBogOrder } from "@/features/pricing/services/paymentService";
+import { successText } from "@/features/pricing/utils/paymentResultText";
 
 export default function PaymentSuccessPage() {
   const router = useRouter();
@@ -15,6 +18,8 @@ export default function PaymentSuccessPage() {
   useEffect(() => {
     // Refresh balance after payment — webhook may take a few seconds to process
     fetchUserProfileWithRetry(5, 2000);
+    // Paid: the decline page has nothing to explain about this order.
+    forgetLastBogOrder();
   }, [fetchUserProfileWithRetry]);
 
   return (
@@ -42,27 +47,27 @@ export default function PaymentSuccessPage() {
                 {/* Success Message */}
                 <div className="text-center mb-8">
                   <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-4">
-                    Payment Successful!
+                    <BilingualText text={successText.title} secondClassName="text-lg sm:text-xl font-semibold opacity-80" />
                   </h1>
                   <p className="text-muted-foreground text-base sm:text-lg leading-relaxed">
-                    Thank you for your payment. Your transaction has been completed successfully.
+                    <BilingualText text={successText.body} />
                   </p>
                 </div>
 
                 {/* Action Buttons */}
                 <div className="flex flex-col sm:flex-row gap-3 w-full">
                   <Button 
-                    className="w-full sm:w-1/2 h-12 sm:h-14 text-sm sm:text-base bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
+                    className="w-full sm:w-1/2 h-auto min-h-12 sm:min-h-14 py-2 flex-col gap-0 whitespace-normal text-sm sm:text-base bg-primary hover:bg-primary/90 text-primary-foreground font-medium"
                     onClick={() => router.push('/document')}
                   >
-                    Start Translating
+                    <BilingualText text={successText.startTranslating} secondClassName="mt-0 text-xs opacity-80" />
                   </Button>
                   <Button 
                     variant="outline"
-                    className="w-full sm:w-1/2 h-12 sm:h-14 text-sm sm:text-base border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium"
+                    className="w-full sm:w-1/2 h-auto min-h-12 sm:min-h-14 py-2 flex-col gap-0 whitespace-normal text-sm sm:text-base border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium"
                     onClick={() => router.push('/profile')}
                   >
-                    View Profile
+                    <BilingualText text={successText.viewProfile} secondClassName="mt-0 text-xs opacity-80" />
                   </Button>
                 </div>
 
@@ -76,10 +81,10 @@ export default function PaymentSuccessPage() {
                     </div>
                     <div>
                       <h3 className="text-sm font-semibold text-green-800 dark:text-green-200 mb-1">
-                        What&apos;s Next?
+                        <BilingualText text={successText.nextTitle} secondClassName="mt-0 opacity-80" />
                       </h3>
                       <p className="text-sm text-green-700 dark:text-green-300">
-                        Your balance has been updated. You can now start using our translation services.
+                        <BilingualText text={successText.nextBody} />
                       </p>
                     </div>
                   </div>

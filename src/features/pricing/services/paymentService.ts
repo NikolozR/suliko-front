@@ -51,6 +51,39 @@ export interface BogPaymentStatus {
   status: string;
   amount: number;
   currency: string;
+  /** BOG's response code for a failed order ("107" is insufficient funds); null until its callback lands. */
+  declineCode?: string | null;
+  /** BOG's reject_reason for a failed order, e.g. "expiration". */
+  rejectReason?: string | null;
+}
+
+// The bank's return URLs carry no order id, so the page the customer comes back to
+// finds out which order was theirs from here. Per tab: the redirect stays in it.
+const LAST_ORDER_KEY = "suliko:bog-last-order";
+
+function rememberBogOrder(orderId: string) {
+  try {
+    sessionStorage.setItem(LAST_ORDER_KEY, orderId);
+  } catch {
+    // Storage blocked: the return page falls back to general advice.
+  }
+}
+
+/** The order this tab last sent to the bank, if any. */
+export function readLastBogOrder(): string | null {
+  try {
+    return sessionStorage.getItem(LAST_ORDER_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function forgetLastBogOrder() {
+  try {
+    sessionStorage.removeItem(LAST_ORDER_KEY);
+  } catch {
+    // Nothing to clean up.
+  }
 }
 
 /**
@@ -75,14 +108,16 @@ export async function createBogPayment(
     locale: getCurrentLocale(),
   };
 
-  return authedJson<BogCheckoutResponse>("/Payment/bog-create", {
+  const response = await authedJson<BogCheckoutResponse>("/Payment/bog-create", {
     method: "POST",
     body: JSON.stringify(body),
   });
+  rememberBogOrder(response.orderId);
+  return response;
 }
 
 /**
- * Reads back the status of one of the caller's own orders. The success page polls
+ * Reads back the status of one of the caller's own orders. The decline page polls
  * this because the customer usually returns before BOG's callback lands.
  */
 export async function getBogPaymentStatus(orderId: string): Promise<BogPaymentStatus> {
