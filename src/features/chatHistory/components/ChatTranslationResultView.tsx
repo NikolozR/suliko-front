@@ -19,6 +19,7 @@ import SaveButton from "@/features/translation/components/SaveButton";
 import toast from "react-hot-toast";
 import { SendToOrder, type OrderExportFormat } from "@/features/orders/components/SendToOrder";
 import { translationAsHtml, wordBlob } from "@/features/translation/utils/wordPage";
+import { originalPageSetup } from "@/features/translation/utils/originalPage";
 
 /**
  * The translation as HTML, as it stands now. The editor's own HTML where it is
@@ -161,7 +162,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     if (format === "srt") return new DomFile([translatedMarkdown], name, { type: "text/srt" });
     const html = translationHtml(editorRef.current, translatedMarkdown);
     if (format === "docx") {
-      return new DomFile([await wordBlob(html)], name, {
+      return new DomFile([await wordBlob(html, await originalPageSetup(currentFile))], name, {
         type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       });
     }
@@ -187,7 +188,8 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        const blob = await wordBlob(translationHtml(editorRef.current, translatedMarkdown));
+        const page = await originalPageSetup(currentFile);
+        const blob = await wordBlob(translationHtml(editorRef.current, translatedMarkdown), page);
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -210,7 +212,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
       setDownloadedFormat(null);
     };
     triggerDownload();
-  }, [downloadedFormat, translatedMarkdown, currentFile?.name, translatedSuffix]);
+  }, [downloadedFormat, translatedMarkdown, currentFile, translatedSuffix]);
 
 
   const handleSaveDocument = async (): Promise<void> => {
