@@ -183,26 +183,25 @@ the cases above.
 
 The original guide started here. It still works — multipart, field `file`,
 returning `{ fileUri, mimeType, displayName }` — and now also returns
-`pageCount`. It forwards to `/Document/prepare-upload`.
+`pageCount`. suliko.ge passes it straight through to
+`https://content.api24.ge/api/Document/gemini-upload`, which does
+`prepare-upload`'s work in these shapes, with the same **20 MB** limit.
 
 **Use the `www.` host.** The apex `suliko.ge` answers `307` to `www.suliko.ge`,
 and because that changes host, HTTP clients drop the `Authorization` header when
 they follow it — `fetch` and `curl -L` both do, by design. The redirected request
-then arrives unauthenticated and the endpoint answers:
-
-```jsonc
-// 401 — the token was sent, but not by the time the request arrived
-{ "error": "Authentication required" }
-```
+then arrives unauthenticated and the endpoint answers `401` — the token was
+sent, but not by the time the request arrived.
 
 A client that does *not* follow redirects sees the bare `307` instead. Neither
 failure mentions the redirect, which makes this an expensive one to diagnose.
 `content.api24.ge` does not redirect, so the direct route below is not affected.
 
-**Migrate to calling `prepare-upload` directly.** The shim adds a hop, and being
-a Vercel route it is subject to a ~4.5 MB request-body cap that
-`prepare-upload` is not — so files between 4.5 MB and 20 MB work only on the
-direct route.
+**Migrate to calling `prepare-upload` directly.** The old address adds a hop
+through suliko.ge and the redirect trap above. Until 2026-10 it was a Vercel
+function, which refuses request bodies over 4.5 MB with
+`413 FUNCTION_PAYLOAD_TOO_LARGE`; it is no longer one, so files up to 20 MB
+work on both.
 
 The JSON variant of this endpoint (`{fileName, mimeType, sizeBytes}` returning a
 resumable session URL) has been **withdrawn** and returns `410`. It existed for
