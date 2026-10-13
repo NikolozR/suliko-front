@@ -1734,7 +1734,7 @@
   "SulikoOffice": {
     "meta": {
       "title": "Suliko Office: Translation Management System for Bureaus & LSPs",
-      "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. The first month is free. Book a demo."
+      "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. Backed by a 90-day money-back guarantee. Book a demo."
     },
     "nav": {
       "home": "Suliko Office home",
@@ -1759,7 +1759,7 @@
       "sub": "Orders, translators, notaries, payments and clients in one system. Built and used daily by a working bureau.",
       "primary": "Book a demo",
       "secondary": "See how it works",
-      "free": "The first month is free",
+      "guarantee": "90-day money-back guarantee",
       "already": "Already using Suliko Office?",
       "login": "Log in",
       "badge1Title": "Notary fee",
@@ -1867,7 +1867,7 @@
       "q3": "Which languages does it support?",
       "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers, and you set the pairs for each translator.",
       "q4": "How much does it cost?",
-      "a4": "The first month is free, so your team can work in it before you pay anything. After that, the price depends on your bureau's size and needs: book a demo and we'll put together an offer for you."
+      "a4": "The price depends on how many orders your bureau handles: packages for up to 50, up to 100, and over 100 orders. Contact us and we'll put together an offer for you. Every plan comes with a 90-day money-back guarantee."
     },
     "form": {
       "kicker": "Book a demo",
@@ -1876,7 +1876,7 @@
       "onCall": "On the call",
       "e1": "A walkthrough of one order, from request to pickup",
       "e2": "How your current Excel and WhatsApp setup would move across",
-      "e3": "Your free first month, and pricing for your bureau",
+      "e3": "Pricing for your bureau, with a 90-day money-back guarantee",
       "name": "Your name",
       "company": "Bureau / company",
       "email": "Email",
