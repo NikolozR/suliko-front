@@ -40,6 +40,14 @@ const nextConfig: NextConfig = {
       { source: "/api/gemini-upload", destination: `${API_BASE_URL}/Document/gemini-upload` },
     ];
   },
+  // The Suliko Office landing page was /tms until October 2026. Old links,
+  // bookmarks and search results keep working.
+  async redirects() {
+    return [
+      { source: "/tms", destination: "/office", permanent: true },
+      { source: "/:locale(en|ka|pl)/tms", destination: "/:locale/office", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

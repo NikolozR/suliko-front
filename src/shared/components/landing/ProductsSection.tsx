@@ -70,7 +70,7 @@ export default function ProductsSection() {
                 <p className="text-[15px] leading-relaxed text-muted-foreground">{tOffice("subheading")}</p>
               </div>
               <Link
-                href="/tms"
+                href="/office"
                 className="group inline-flex items-center gap-2 self-start rounded-xl bg-suliko-default-color px-5 py-3 text-[15px] font-semibold text-white transition-colors hover:bg-suliko-default-hover-color"
               >
                 {tOffice("cta")}
