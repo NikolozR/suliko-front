@@ -19,6 +19,8 @@ export type User = {
   lastActivityAt?: string;
   referralCode?: string;
   referredByCode?: string;
+  /** A team or test account, as the API marks it. */
+  isInternal?: boolean;
 };
 
 type SaveState = "idle" | "confirm" | "saving" | "saved";

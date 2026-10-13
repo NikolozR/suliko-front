@@ -98,7 +98,15 @@ function StatGrid({ stats }: { stats: StatItem[] }) {
   );
 }
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const query = await searchParams;
+  // Our own accounts (the team's, and tests) are left out of every figure and the
+  // users table unless asked for with ?internal=show.
+  const showInternal = query.internal === "show";
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
@@ -156,6 +164,7 @@ export default async function AdminDashboardPage() {
     lastActivityAt?: string;
     referralCode?: string;
     referredByCode?: string;
+    isInternal?: boolean;
   };
 
   let users: AdminUser[] = [];
@@ -181,7 +190,7 @@ export default async function AdminDashboardPage() {
   // Load system-wide usage statistics (separate admin endpoint)
   let stats: AdminStats | null = null;
   try {
-    const statsRes = await fetch(`${API_BASE_URL}/Statistics/admin`, {
+    const statsRes = await fetch(`${API_BASE_URL}/Statistics/admin?includeInternal=${showInternal}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
@@ -192,10 +201,25 @@ export default async function AdminDashboardPage() {
     // Stats endpoint unavailable — usage cards fall back to "—".
   }
 
+  // The users the figures and the table are about.
+  const visibleUsers = showInternal ? users : users.filter((u) => !u.isInternal);
+  const hiddenCount = users.length - visibleUsers.length;
+  total = Math.max(0, total - hiddenCount);
+
+  // The switch keeps the tab the page was on.
+  const tab = typeof query.tab === "string" ? query.tab : undefined;
+  const switchHref = (show: boolean) => {
+    const params = new URLSearchParams();
+    if (tab) params.set("tab", tab);
+    if (show) params.set("internal", "show");
+    const text = params.toString();
+    return text ? `?${text}` : "?";
+  };
+
   // Compute "active today"
   const now = Date.now();
   const oneDayMs = 24 * 60 * 60 * 1000;
-  const activeToday = users.filter((u) => {
+  const activeToday = visibleUsers.filter((u) => {
     if (!u.lastActivityAt) return false;
     return now - new Date(u.lastActivityAt).getTime() < oneDayMs;
   }).length;
@@ -208,8 +232,8 @@ export default async function AdminDashboardPage() {
     {
       label: "Avg Balance",
       value:
-        users.length > 0
-          ? (users.reduce((s, u) => s + (u.balance ?? 0), 0) / users.length).toFixed(1)
+        visibleUsers.length > 0
+          ? (visibleUsers.reduce((s, u) => s + (u.balance ?? 0), 0) / visibleUsers.length).toFixed(1)
           : "0",
       delay: "160ms",
     },
@@ -270,6 +294,23 @@ export default async function AdminDashboardPage() {
         <p style={{ color: "#64748b", marginTop: 6, fontSize: 14 }}>
           Welcome back. Here&apos;s what&apos;s happening.
         </p>
+        <p style={{ color: "#64748b", marginTop: 10, fontSize: 13 }}>
+          {showInternal ? (
+            <>
+              Showing everyone, including our own accounts.{" "}
+              <Link href={switchHref(false)} style={{ color: "#fbbf24" }}>
+                Hide our accounts
+              </Link>
+            </>
+          ) : (
+            <>
+              Our own accounts are hidden ({hiddenCount} left out of the users, stats and revenue).{" "}
+              <Link href={switchHref(true)} style={{ color: "#fbbf24" }}>
+                Show our accounts
+              </Link>
+            </>
+          )}
+        </p>
       </div>
 
       {/* Overview stats */}
@@ -307,7 +348,11 @@ export default async function AdminDashboardPage() {
 
       {/* Users / Referrals tabs */}
       <section style={{ marginBottom: 48 }}>
-        <AdminTabsWrapper initialUsers={users as TableUser[]} loadError={loadError} />
+        <AdminTabsWrapper
+          initialUsers={visibleUsers as TableUser[]}
+          referralUsers={users as TableUser[]}
+          loadError={loadError}
+        />
       </section>
 
       {/* Languages section */}
