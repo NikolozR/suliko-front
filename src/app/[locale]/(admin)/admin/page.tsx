@@ -14,13 +14,42 @@ type AdminStats = {
   pagesUsedThisMonth: number;
   translationsThisMonth: number;
   successRateThisMonth: number;
+  /** GEL from card payments the bank confirmed, this month. */
   revenueThisMonth: number;
+  /** The same since the start. Absent from an API older than this card. */
+  revenueAllTime?: number;
+  /** Per currency (GEL; EUR from suliko.io), never added together. */
+  revenue?: { currency: string; thisMonth: number; allTime: number; payments: number }[];
   newUsersThisMonth: number;
   totalPagesRemaining: number;
   generatedAtUtc: string;
 };
 
 type StatItem = { label: string; value: React.ReactNode; delay: string };
+
+const CURRENCY_SIGN: Record<string, string> = { GEL: "₾", EUR: "€", USD: "$" };
+
+function money(amount: number, currency = "GEL") {
+  return `${amount.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${CURRENCY_SIGN[currency] ?? currency}`;
+}
+
+/** The GEL figure, with any other currency underneath rather than added to it. */
+function Revenue({ gel, others }: { gel: number; others: { currency: string; amount: number }[] }) {
+  const rest = others.filter((o) => o.amount > 0);
+  return (
+    <>
+      <span style={{ whiteSpace: "nowrap" }}>
+        {gel.toLocaleString("en-US", { maximumFractionDigits: 2 })}
+        <span style={{ fontSize: "0.6em", marginLeft: 6, color: "#94a3b8" }}>₾</span>
+      </span>
+      {rest.length > 0 && (
+        <div style={{ fontSize: 14, color: "#94a3b8", marginTop: 8 }}>
+          {rest.map((o) => `+ ${money(o.amount, o.currency)}`).join("  ")}
+        </div>
+      )}
+    </>
+  );
+}
 
 function StatCard({ label, value, delay }: StatItem) {
   return (
@@ -194,7 +223,32 @@ export default async function AdminDashboardPage() {
     { label: "Pages Today", value: stats ? stats.pagesUsedToday.toLocaleString() : dash, delay: "160ms" },
     { label: "Translations (This Month)", value: stats ? stats.translationsThisMonth.toLocaleString() : dash, delay: "240ms" },
     { label: "Success Rate", value: stats ? `${stats.successRateThisMonth}%` : dash, delay: "320ms" },
-    { label: "Revenue (This Month)", value: stats ? `${stats.revenueThisMonth.toLocaleString()} ₾` : dash, delay: "400ms" },
+  ];
+
+  // Card payments the bank confirmed. GEL is the headline; suliko.io's EUR is
+  // shown under it, never converted and added.
+  const otherCurrencies = (stats?.revenue ?? []).filter((r) => r.currency !== "GEL");
+  const revenueStats: StatItem[] = [
+    {
+      label: "Revenue (This Month)",
+      value: stats ? (
+        <Revenue gel={stats.revenueThisMonth} others={otherCurrencies.map((r) => ({ currency: r.currency, amount: r.thisMonth }))} />
+      ) : dash,
+      delay: "0ms",
+    },
+    {
+      label: "Revenue (All Time)",
+      value:
+        stats?.revenueAllTime !== undefined ? (
+          <Revenue gel={stats.revenueAllTime} others={otherCurrencies.map((r) => ({ currency: r.currency, amount: r.allTime }))} />
+        ) : dash,
+      delay: "80ms",
+    },
+    {
+      label: "Payments (All Time)",
+      value: stats?.revenue ? stats.revenue.reduce((n, r) => n + r.payments, 0).toLocaleString() : dash,
+      delay: "160ms",
+    },
   ];
 
   return (
@@ -235,6 +289,21 @@ export default async function AdminDashboardPage() {
         Usage
       </h2>
       <StatGrid stats={usageStats} />
+
+      {/* Money in */}
+      <h2
+        style={{
+          fontFamily: "'Syne', sans-serif",
+          fontWeight: 700,
+          fontSize: 18,
+          color: "#f8fafc",
+          letterSpacing: "-0.01em",
+          marginBottom: 16,
+        }}
+      >
+        Revenue
+      </h2>
+      <StatGrid stats={revenueStats} />
 
       {/* Users / Referrals tabs */}
       <section style={{ marginBottom: 48 }}>
