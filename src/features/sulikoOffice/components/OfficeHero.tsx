@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useTranslations } from "next-intl";
-import { ArrowDown, ArrowRight, Calculator, Gift, UserCheck } from "lucide-react";
+import { ArrowDown, ArrowRight, Calculator, ShieldCheck, UserCheck } from "lucide-react";
 import OverviewDemo from "./demo/OverviewDemo";
 import { CONTAINER, GHOST_BUTTON, PRIMARY_BUTTON } from "./tones";
 
@@ -46,9 +46,9 @@ export default function OfficeHero() {
         </div>
         <p className="inline-flex items-center gap-2 self-start text-[15px] font-medium text-[#1e7440] office-enter dark:text-emerald-300" style={delay(330)}>
           <span aria-hidden className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e7f6ec] dark:bg-emerald-400/15">
-            <Gift className="h-4 w-4" />
+            <ShieldCheck className="h-4 w-4" />
           </span>
-          {t("free")}
+          {t("guarantee")}
         </p>
         <p className="flex flex-wrap gap-1.5 text-[15px] text-muted-foreground office-enter" style={delay(360)}>
           <span>{t("already")}</span>
