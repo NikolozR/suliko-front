@@ -1,6 +1,10 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from 'next-intl/plugin';
-import { API_BASE_URL } from "./src/shared/constants/api";
+
+// The API's address: keep it the same as src/shared/constants/api.ts. Not imported
+// from there, because `next start` loads this config without compiling the
+// TypeScript it imports.
+const API_BASE_URL = "https://content.api24.ge/api";
 
 const withNextIntl = createNextIntlPlugin();
 const api = new URL(API_BASE_URL);

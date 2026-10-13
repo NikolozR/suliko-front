@@ -34,10 +34,11 @@ function rowToPost(row: BlogPostRow, locale: string): BlogPost {
 /**
  * A published-content read from the API, which keeps the blog (it used to be in Supabase).
  * Failures read as nothing, so the blog shows "no posts" rather than an error page.
+ * Answers are kept for five minutes, so a post an admin publishes shows up soon.
  */
 async function read<T>(path: string): Promise<T | null> {
   try {
-    const res = await fetch(`${API_BASE_URL}${path}`);
+    const res = await fetch(`${API_BASE_URL}${path}`, { next: { revalidate: 300 } });
     if (!res.ok) {
       if (res.status !== 404) console.error(`Blog: ${path} answered ${res.status}`);
       return null;
