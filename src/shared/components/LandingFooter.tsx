@@ -79,7 +79,7 @@ export default function LandingFooter() {
                 </Link>
               </li>
               <li>
-                <Link href="/tms" className={LINK}>
+                <Link href="/office" className={LINK}>
                   {t("sulikoOffice")}
                 </Link>
               </li>

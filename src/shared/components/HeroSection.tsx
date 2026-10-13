@@ -104,7 +104,7 @@ export default function HeroSection() {
               stays one click away in BookDemoBubble and the footer.
             */}
             <Link
-              href="/tms"
+              href="/office"
               className="group mb-14 inline-flex max-w-full items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/60 py-1.5 pr-3.5 pl-1.5 text-sm text-slate-300 transition-colors hover:border-slate-500 hover:text-white"
             >
               <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-suliko-default-color px-2 py-0.5 text-xs font-medium text-white">

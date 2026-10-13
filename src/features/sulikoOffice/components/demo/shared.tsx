@@ -4,7 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState, type ReactNode, type RefO
 import { useTranslations } from "next-intl";
 
 /**
- * Shared machinery for the four autoplaying product demos on /tms.
+ * Shared machinery for the four autoplaying product demos on /office.
  *
  * Every demo is drawn with invented figures. Deliberately not screen
  * recordings: the real dashboard shows our own bureau's revenue, profit and
