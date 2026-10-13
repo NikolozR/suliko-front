@@ -1,29 +1,26 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('API smoke tests', () => {
+// The blog and the passport templates the site reads from the API. They used to come from
+// Supabase through /api/blog and /api/passport-templates on the site itself.
+const API = process.env.API_BASE_URL ?? 'https://content.api24.ge/api';
 
-  test('GET /api/blog returns 200 with an array', async ({ request }) => {
-    const res = await request.get('/api/blog');
+test.describe('Site content API', () => {
+
+  test('published blog posts are public', async ({ request }) => {
+    const res = await request.get(`${API}/Blog/posts`);
     expect(res.status()).toBe(200);
-    const body = await res.json();
-    expect(Array.isArray(body)).toBe(true);
+    expect(Array.isArray(await res.json())).toBe(true);
   });
 
-  test('GET /api/blog does not return 500', async ({ request }) => {
-    const res = await request.get('/api/blog');
-    expect(res.status()).not.toBe(500);
-  });
-
-  test('GET /api/passport-templates returns 200 with an array', async ({ request }) => {
-    const res = await request.get('/api/passport-templates');
+  test('active passport templates are public', async ({ request }) => {
+    const res = await request.get(`${API}/PassportTemplate?active=true`);
     expect(res.status()).toBe(200);
-    const body = await res.json();
-    expect(Array.isArray(body)).toBe(true);
+    expect(Array.isArray(await res.json())).toBe(true);
   });
 
-  test('GET /api/passport-templates does not return 500', async ({ request }) => {
-    const res = await request.get('/api/passport-templates');
-    expect(res.status()).not.toBe(500);
+  test('every blog post, drafts included, needs an admin', async ({ request }) => {
+    const res = await request.get(`${API}/Blog/admin/posts`);
+    expect(res.status()).toBe(401);
   });
 
 });

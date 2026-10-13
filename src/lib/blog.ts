@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { API_BASE_URL } from '@/shared/constants/api';
 import { format } from 'date-fns';
 import type { BlogPost, BlogPostRow } from './blog-types';
 
@@ -31,56 +31,39 @@ function rowToPost(row: BlogPostRow, locale: string): BlogPost {
   };
 }
 
-export async function getAllPosts(locale = 'en'): Promise<BlogPost[]> {
-  const { data, error } = await supabase
-    .from('blog_posts')
-    .select('*, blog_post_translations(*)')
-    .eq('status', 'published')
-    .order('published_at', { ascending: false });
-
-  if (error) {
-    console.error('Error fetching posts:', error);
-    return [];
+/**
+ * A published-content read from the API, which keeps the blog (it used to be in Supabase).
+ * Failures read as nothing, so the blog shows "no posts" rather than an error page.
+ */
+async function read<T>(path: string): Promise<T | null> {
+  try {
+    const res = await fetch(`${API_BASE_URL}${path}`);
+    if (!res.ok) {
+      if (res.status !== 404) console.error(`Blog: ${path} answered ${res.status}`);
+      return null;
+    }
+    return (await res.json()) as T;
+  } catch (error) {
+    console.error(`Blog: could not read ${path}:`, error);
+    return null;
   }
+}
 
-  return (data as BlogPostRow[]).map((row) => rowToPost(row, locale));
+/** Published posts, newest first. */
+export async function getAllPosts(locale = 'en'): Promise<BlogPost[]> {
+  const rows = await read<BlogPostRow[]>('/Blog/posts');
+  return (rows ?? []).map((row) => rowToPost(row, locale));
 }
 
 export async function getPostBySlug(slug: string, locale = 'en'): Promise<BlogPost | null> {
-  // Search by slug across all locales so posts with only one locale still resolve
-  const { data, error } = await supabase
-    .from('blog_post_translations')
-    .select('post_id, blog_posts(*, blog_post_translations(*))')
-    .eq('slug', slug)
-    .single();
-
-  if (error || !data) {
-    console.error(`Error fetching post by slug "${slug}":`, error);
-    return null;
-  }
-
-  const post = (data as unknown as { blog_posts: BlogPostRow }).blog_posts;
-  if (!post || post.status !== 'published') return null;
-
-  // rowToPost falls back to 'en' if requested locale has no translation
-  return rowToPost(post, locale);
+  // A slug in any locale opens the post, so posts with only one locale still resolve;
+  // rowToPost then falls back to 'en' if the requested locale has no translation.
+  const row = await read<BlogPostRow>(`/Blog/posts/by-slug/${encodeURIComponent(slug)}`);
+  return row ? rowToPost(row, locale) : null;
 }
 
 export async function getAllPostSlugs(): Promise<{ slug: string; locale: string }[]> {
-  const { data, error } = await supabase
-    .from('blog_post_translations')
-    .select('slug, locale, blog_posts!inner(status)')
-    .eq('blog_posts.status', 'published');
-
-  if (error) {
-    console.error('Error fetching post slugs:', error);
-    return [];
-  }
-
-  return (data ?? []).map((row: { slug: string; locale: string }) => ({
-    slug: row.slug,
-    locale: row.locale,
-  }));
+  return (await read<{ slug: string; locale: string }[]>('/Blog/slugs')) ?? [];
 }
 
 export function formatDate(date: string): string {

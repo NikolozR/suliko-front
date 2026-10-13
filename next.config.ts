@@ -3,11 +3,23 @@ import createNextIntlPlugin from 'next-intl/plugin';
 import { API_BASE_URL } from "./src/shared/constants/api";
 
 const withNextIntl = createNextIntlPlugin();
+const api = new URL(API_BASE_URL);
 
 const nextConfig: NextConfig = {
   webpack: (config) => {
     config.resolve.alias.canvas = false;
     return config;
+  },
+  // Blog covers and images are served by the API (/api/files/{id}).
+  images: {
+    remotePatterns: [
+      {
+        protocol: api.protocol === "http:" ? "http" : "https",
+        hostname: api.hostname,
+        port: api.port,
+        pathname: `${api.pathname.replace(/\/$/, "")}/files/**`,
+      },
+    ],
   },
   experimental: {
     mdxRs: false, // Disable MDX RS to avoid build issues

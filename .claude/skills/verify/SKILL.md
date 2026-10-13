@@ -6,10 +6,9 @@ description: Build, serve and drive the Suliko front end (landing page and other
 # Verifying suliko-front
 
 ## Build and serve
-The build needs Supabase env vars even for public pages; placeholders are enough:
+No env vars are needed for a build (the blog and passport templates come from the API, not Supabase):
 
 ```bash
-export NEXT_PUBLIC_SUPABASE_URL=https://placeholder.supabase.co NEXT_PUBLIC_SUPABASE_ANON_KEY=placeholder SUPABASE_SERVICE_ROLE_KEY=placeholder
 npx next build
 npx next start -p 3200     # background; the default 3000 may be taken
 ```
