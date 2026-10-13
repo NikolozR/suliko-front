@@ -2,6 +2,7 @@ import type { CSSProperties, ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowDown, ArrowRight, Calculator, ShieldCheck, UserCheck } from "lucide-react";
 import OverviewDemo from "./demo/OverviewDemo";
+import { OFFICE_URL } from "../lib/officeLinks";
 import { CONTAINER, GHOST_BUTTON, PRIMARY_BUTTON } from "./tones";
 
 /**
@@ -52,7 +53,7 @@ export default function OfficeHero() {
         </p>
         <p className="flex flex-wrap gap-1.5 text-[15px] text-muted-foreground office-enter" style={delay(360)}>
           <span>{t("already")}</span>
-          <a href="https://app.suliko.ge" className="text-suliko-default-color underline-offset-2 hover:underline dark:text-[#8fa2ff]">
+          <a href={OFFICE_URL} className="text-suliko-default-color underline-offset-2 hover:underline dark:text-[#8fa2ff]">
             {t("login")}
           </a>
         </p>

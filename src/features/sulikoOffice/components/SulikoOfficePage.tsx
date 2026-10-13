@@ -15,7 +15,7 @@ import ScrollReveal from "@/shared/components/ScrollReveal";
 
 /**
  * Landing page for Suliko Office, the translation management system at
- * app.suliko.ge. Server-rendered, apart from the header (language switch,
+ * office.suliko.ge. Server-rendered, apart from the header (language switch,
  * mobile menu), the product demos and the demo-request form.
  */
 export default function SulikoOfficePage() {

@@ -5,10 +5,11 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft, Menu, X } from "lucide-react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { OFFICE_URL } from "../lib/officeLinks";
 import { NAV_SECTIONS, type NavSection } from "./sections";
 import { CONTAINER, PRIMARY_BUTTON } from "./tones";
 
-const APP_URL = "https://app.suliko.ge";
+const APP_URL = OFFICE_URL;
 
 /**
  * The page's own header rather than LandingHeader: that one has no room for
