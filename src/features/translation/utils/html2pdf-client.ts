@@ -73,6 +73,11 @@ const buildPdfDocument = (htmlContent: string, filename: string) => {
     },
     pagebreak: {
       mode: ["css"] as const,
+      // The page is drawn as one tall picture and cut into sheets, so whatever lies across the
+      // edge of a sheet is cut through: the last line of a page came out half on it and half on the
+      // next. An element that crosses an edge and would fit on a sheet is moved to the next one
+      // whole. (Only a paragraph taller than a sheet is still cut, where it must be.)
+      avoid: ["p", "li", "tr", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "pre", "figure", "img"],
     },
   };
 
