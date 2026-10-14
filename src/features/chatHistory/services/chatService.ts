@@ -170,7 +170,7 @@ import {
 /**
  * Centralized authenticated fetch handler
  */
-const fetchWithAuth = async (
+export const fetchWithAuth = async (
   endpoint: string,
   options: RequestInit = {}
 ): Promise<Response> => {

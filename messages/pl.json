@@ -355,6 +355,13 @@
     "wordDocument": "Dokument Word",
     "downloaded": "Pobrano!"
   },
+  "WordEditor": {
+    "hint": "Edytuj jak dokument Word",
+    "fullScreen": "Pełny ekran",
+    "exitFullScreen": "Zamknij pełny ekran",
+    "fullScreenTitle": "Tłumaczenie",
+    "simpleEditorNotice": "Nie udało się otworzyć edytora w stylu Worda, dlatego widać prosty edytor. Twoje tłumaczenie pozostaje bez zmian."
+  },
   "DocumentTranslationCard": {
     "title": "Prześlij dokument",
     "description": "Prześlij dokument do tłumaczenia",

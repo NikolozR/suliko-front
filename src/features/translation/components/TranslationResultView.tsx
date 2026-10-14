@@ -8,7 +8,7 @@ import CopyButton from "./CopyButton";
 import DownloadButton from "./DownloadButton";
 import SuggestionsPanel from './SuggestionsPanel';
 import SuggestionsJumpButton from './SuggestionsJumpButton';
-import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
+import TranslationEditor, { type TranslationEditorHandle } from "@/features/editor/TranslationEditor";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
@@ -126,7 +126,9 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
-  const editorRef = useRef<NewEditorHandle>(null) as RefObject<NewEditorHandle>;
+  const editorRef = useRef<TranslationEditorHandle>(null) as RefObject<TranslationEditorHandle>;
+  // The Word editor scrolls its own pages; the simple editor is scrolled by the box around it.
+  const [wordScroller, setWordScroller] = useState<HTMLElement | null>(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
@@ -159,7 +161,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
     const documentContainer =
       documentPreviewRef.current?.querySelector(".overflow-y-auto");
     const markdownContainer =
-      markdownPreviewRef.current?.querySelector(".overflow-y-auto");
+      wordScroller ?? markdownPreviewRef.current?.querySelector(".overflow-y-auto");
 
     if (!documentContainer || !markdownContainer) return;
 
@@ -189,7 +191,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       documentContainer.removeEventListener("scroll", handleDocumentScroll);
       markdownContainer.removeEventListener("scroll", handleMarkdownScroll);
     };
-  }, [hasTranslatedContent]);
+  }, [hasTranslatedContent, wordScroller]);
 
   // Start 10-minute editor timer on first mount of the result view
   useEffect(() => {
@@ -243,9 +245,10 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         // Prefer the editor's current HTML — it's the same content the user sees and
         // what copy-paste into Word uses, so formatting is guaranteed to be correct.
         // Fall back to the loaded translation when the ref isn't ready.
+        // The Word editor writes the Word file itself; the simple editor's HTML is put in one.
         const editorHtml = editorRef.current?.getHTML();
         const bodyHtml = editorHtml && editorHtml !== "<p></p>" ? editorHtml : translationAsHtml(translatedMarkdown);
-        const blob = await wordBlob(bodyHtml, await originalPageSetup(currentFile));
+        const blob = (await editorRef.current?.toDocx()) ?? (await wordBlob(bodyHtml, await originalPageSetup(currentFile)));
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -369,11 +372,15 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
             </div>
           </div>
           <div className="h-full max-h-[400px] md:max-h-[600px] lg:max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
-            <NewEditor
+            <TranslationEditor
               ref={editorRef}
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}
               hoveredText={hoveredSuggestionOriginalText}
+              file={currentFile}
+              forceSimple={isOriginalFileSrt()}
+              onScroller={setWordScroller}
+              className="h-[400px] md:h-[600px] lg:h-[800px]"
             />
           </div>
         </div>

@@ -335,6 +335,13 @@
     "wordDocument": "Word Document",
     "downloaded": "Downloaded!"
   },
+  "WordEditor": {
+    "hint": "Edit it like a Word document",
+    "fullScreen": "Full screen",
+    "exitFullScreen": "Exit full screen",
+    "fullScreenTitle": "Translation",
+    "simpleEditorNotice": "The Word-style editor could not be opened, so the simple editor is shown. Your translation is unchanged."
+  },
   "DocumentTranslationCard": {
     "title": "Upload document",
     "description": "Upload document for translation",
