@@ -6,6 +6,7 @@ import OfficeJourney from "./OfficeJourney";
 import OfficeFeatures from "./OfficeFeatures";
 import OfficeSecurity from "./OfficeSecurity";
 import OfficeFaq from "./OfficeFaq";
+import OfficeSignInBand from "./OfficeSignInBand";
 import OfficeDemoSection from "./OfficeDemoSection";
 import OfficeSpotlight from "./OfficeSpotlight";
 import NewOrderDemo from "./demo/NewOrderDemo";
@@ -32,6 +33,7 @@ export default function SulikoOfficePage() {
         <OfficeSpotlight id="reports" demo={<ReportsDemo />} band />
         <OfficeSecurity />
         <OfficeFaq />
+        <OfficeSignInBand />
         <OfficeDemoSection />
       </main>
       <LandingFooter />

@@ -1740,7 +1740,7 @@
       "home": "Suliko Office home",
       "backToSuliko": "Suliko",
       "language": "Language",
-      "login": "Log in",
+      "login": "Sign in",
       "demo": "Book a demo",
       "menu": "Open menu",
       "closeMenu": "Close menu",
@@ -1757,11 +1757,9 @@
       "eyebrow": "Translation management system for bureaus",
       "title": "Run your translation bureau from one screen",
       "sub": "Orders, translators, notaries, payments and clients in one system. Built and used daily by a working bureau.",
-      "primary": "Book a demo",
+      "primary": "Sign in",
       "secondary": "See how it works",
       "guarantee": "90-day money-back guarantee",
-      "already": "Already using Suliko Office?",
-      "login": "Log in",
       "badge1Title": "Notary fee",
       "badge1Text": "14.44 ₾",
       "badge2Title": "Translator assigned",
@@ -1868,6 +1866,15 @@
       "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers, and you set the pairs for each translator.",
       "q4": "How much does it cost?",
       "a4": "The price depends on how many orders your bureau handles: packages for up to 50, up to 100, and over 100 orders. Contact us and we'll put together an offer for you. Every plan comes with a 90-day money-back guarantee."
+    },
+    "signIn": {
+      "title": "Sign in to Suliko Office",
+      "sub": "Your orders, translators, notaries and payments in one place.",
+      "button": "Sign in"
+    },
+    "demoPrompt": {
+      "text": "Not using Suliko Office yet?",
+      "link": "Book a demo"
     },
     "form": {
       "kicker": "Book a demo",

@@ -25,6 +25,14 @@ export function officeLocale(locale: string): "en" | "ka" {
 }
 
 /**
+ * Where the landing page's "Sign in" goes: Office in the visitor's language,
+ * which sends anyone who is signed out through suliko.ge's sign-in.
+ */
+export function officeSignInUrl(locale: string): string {
+  return `${OFFICE_URL}/${officeLocale(locale)}`;
+}
+
+/**
  * Office's sign-out, which ends the Office session (if any) and comes back to
  * `returnTo` — a suliko.ge address, checked against Office's own list.
  */
