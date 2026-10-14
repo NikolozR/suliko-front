@@ -8,7 +8,7 @@ import CopyButton from "@/features/translation/components/CopyButton";
 import DownloadButton from "@/features/translation/components/DownloadButton";
 import ChatSuggestionsPanel from './ChatSuggestionsPanel';
 import SuggestionsJumpButton from "@/features/translation/components/SuggestionsJumpButton";
-import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
+import TranslationEditor, { type TranslationEditorHandle } from "@/features/editor/TranslationEditor";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
@@ -26,7 +26,7 @@ import { originalPageSetup } from "@/features/translation/utils/originalPage";
  * up: the same content the user sees and what copy-paste into Word uses, so the
  * formatting is right. Otherwise what was loaded, converted if it is Markdown.
  */
-function translationHtml(editor: NewEditorHandle | null, loaded: string): string {
+function translationHtml(editor: TranslationEditorHandle | null, loaded: string): string {
   const editorHtml = editor?.getHTML();
   if (editorHtml && editorHtml !== "<p></p>") return editorHtml;
   return translationAsHtml(loaded);
@@ -58,7 +58,9 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
-  const editorRef = useRef<NewEditorHandle>(null) as RefObject<NewEditorHandle>;
+  const editorRef = useRef<TranslationEditorHandle>(null) as RefObject<TranslationEditorHandle>;
+  // The Word editor scrolls its own pages; the simple editor is scrolled by the box around it.
+  const [wordScroller, setWordScroller] = useState<HTMLElement | null>(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
@@ -77,7 +79,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     const documentContainer =
       documentPreviewRef.current?.querySelector(".overflow-y-auto");
     const markdownContainer =
-      markdownPreviewRef.current?.querySelector(".overflow-y-auto");
+      wordScroller ?? markdownPreviewRef.current?.querySelector(".overflow-y-auto");
 
     if (!documentContainer || !markdownContainer || !translatedMarkdown) return;
 
@@ -109,7 +111,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
       documentContainer.removeEventListener("scroll", handleDocumentScroll);
       markdownContainer.removeEventListener("scroll", handleMarkdownScroll);
     };
-  }, [translatedMarkdown]);
+  }, [translatedMarkdown, wordScroller]);
 
 
   useEffect(() => {
@@ -162,7 +164,9 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     if (format === "srt") return new DomFile([translatedMarkdown], name, { type: "text/srt" });
     const html = translationHtml(editorRef.current, translatedMarkdown);
     if (format === "docx") {
-      return new DomFile([await wordBlob(html, await originalPageSetup(currentFile))], name, {
+      // The Word editor writes the Word file itself; the simple editor's HTML is put in one.
+      const blob = (await editorRef.current?.toDocx()) ?? (await wordBlob(html, await originalPageSetup(currentFile)));
+      return new DomFile([blob], name, {
         type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       });
     }
@@ -188,8 +192,9 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        const page = await originalPageSetup(currentFile);
-        const blob = await wordBlob(translationHtml(editorRef.current, translatedMarkdown), page);
+        const blob =
+          (await editorRef.current?.toDocx()) ??
+          (await wordBlob(translationHtml(editorRef.current, translatedMarkdown), await originalPageSetup(currentFile)));
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -350,11 +355,15 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
             </div>
           </div>
           <div className="min-h-[300px] h-[50vh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
-            <NewEditor
+            <TranslationEditor
               ref={editorRef}
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}
               hoveredText={hoveredSuggestionOriginalText}
+              file={currentFile}
+              forceSimple={isOriginalFileSrt()}
+              onScroller={setWordScroller}
+              className="h-full"
             />
           </div>
         </div>

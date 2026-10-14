@@ -355,6 +355,13 @@
     "wordDocument": "Word დოკუმენტი",
     "downloaded": "ჩამოტვირთულია!"
   },
+  "WordEditor": {
+    "hint": "დაარედაქტირეთ Word დოკუმენტის მსგავსად",
+    "fullScreen": "სრულ ეკრანზე",
+    "exitFullScreen": "სრული ეკრანიდან გამოსვლა",
+    "fullScreenTitle": "თარგმანი",
+    "simpleEditorNotice": "Word-ის მსგავსი რედაქტორი ვერ გაიხსნა, ამიტომ ნაჩვენებია მარტივი რედაქტორი. თქვენი თარგმანი უცვლელია."
+  },
   "DocumentTranslationCard": {
     "title": "ატვირთე დოკუმენტი",
     "description": "ატვირთე დოკუმენტი თარგმნისთვის",
