@@ -15,7 +15,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { originalPageSetup } from "@/features/translation/utils/originalPage";
 import { translationAsHtml, wordPage, type WordPageSetup } from "@/features/translation/utils/wordPage";
 import NewEditor, { type NewEditorHandle } from "./NewEditor";
-import { htmlToSfdt } from "./documentEditorService";
+import { htmlToSfdt, toPdf as docxToPdf, toSfdt } from "./documentEditorService";
 import { htmlToPlainText } from "./sfdtToHtml";
 import { registerSuggestionTarget } from "./suggestionTarget";
 import type { WordEditorHandle } from "./WordEditor";
@@ -37,6 +37,12 @@ export interface TranslationEditorHandle extends NewEditorHandle {
    * the one in use: the caller then builds a Word file from `getHTML()`.
    */
   toDocx(): Promise<Blob> | null;
+  /**
+   * The document as a PDF, made by the server from the Word file (so it is laid out as Word lays
+   * it out). Null when the simple editor is in use. Rejects when the server cannot make it: the
+   * caller then makes one from the HTML, as before.
+   */
+  toPdf(): Promise<Blob> | null;
   /** Prints the document as the Word editor lays it out (the browser can save that as a PDF). */
   print(): void;
 }
@@ -55,6 +61,23 @@ interface TranslationEditorProps {
   onScroller?: (element: HTMLElement | null) => void;
   /** The Word editor's height on the page (it fills the box it is given). */
   className?: string;
+  /**
+   * A Word file to open instead of converting the text above: what the Word editor saved for a
+   * translation last time (headers, footers and page breaks come back), or a Word file in an
+   * order. Asked for once, when the editor first opens; null, or a file that cannot be opened,
+   * and the text above is used.
+   */
+  openDocument?: () => Promise<Blob | null>;
+  /**
+   * Only the Word editor will do (there is no HTML to fall back on): when it cannot be had,
+   * nothing is shown and `onUnavailable` is called.
+   */
+  wordOnly?: boolean;
+  onUnavailable?: () => void;
+  /** Called when the Word editor has opened the document, with what it holds as HTML. */
+  onOpened?: (html: string) => void;
+  /** The screen already says what the editor is: leave out the line above it. */
+  hideHint?: boolean;
 }
 
 /** The simple editor can be asked for with `?classic=1` (or kept with `suliko:classic-editor`). */
@@ -81,14 +104,27 @@ const normalize = (text: string) => text.replace(/\s+/g, " ").trim();
  */
 const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorProps>(
   function TranslationEditor(
-    { translatedMarkdown, onChange, hoveredText, file, forceSimple = false, onScroller, className = "h-full" },
+    {
+      translatedMarkdown,
+      onChange,
+      hoveredText,
+      file,
+      forceSimple = false,
+      onScroller,
+      className = "h-full",
+      openDocument,
+      wordOnly = false,
+      onUnavailable,
+      onOpened,
+      hideHint = false,
+    },
     ref,
   ) {
     const t = useTranslations("WordEditor");
     const wordRef = useRef<WordEditorHandle>(null);
     const simpleRef = useRef<NewEditorHandle>(null);
 
-    const [engine, setEngine] = useState<"loading" | "word" | "simple">(
+    const [engine, setEngine] = useState<"loading" | "word" | "simple" | "unavailable">(
       forceSimple ? "simple" : "loading",
     );
     const [sfdt, setSfdt] = useState<string | null>(null);
@@ -115,6 +151,14 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
 
     const onChangeRef = useRef(onChange);
     onChangeRef.current = onChange;
+    const openDocumentRef = useRef(openDocument);
+    openDocumentRef.current = openDocument;
+    const onUnavailableRef = useRef(onUnavailable);
+    onUnavailableRef.current = onUnavailable;
+    const onOpenedRef = useRef(onOpened);
+    onOpenedRef.current = onOpened;
+    // A Word file is opened once, the first time; after that the text is what is converted.
+    const documentAsked = useRef(false);
 
     // The paper of the original, found once per file.
     const pageFor = useRef<{ file: File | null | undefined; page: Promise<WordPageSetup> } | null>(null);
@@ -133,33 +177,62 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
         setEngine("simple");
         return;
       }
-      if (!translatedMarkdown) return;
-      if (translatedMarkdown === emitted.current || translatedMarkdown === loaded.current) return;
-      if (simpleEditorAsked()) {
+      const wantsDocument = !!openDocumentRef.current && !documentAsked.current;
+      if (!translatedMarkdown && !wantsDocument) return;
+      if (
+        !wantsDocument &&
+        (translatedMarkdown === emitted.current || translatedMarkdown === loaded.current)
+      ) {
+        return;
+      }
+      if (!wordOnly && simpleEditorAsked()) {
         simple.current = true;
         setEngine("simple");
         return;
       }
 
       loaded.current = translatedMarkdown;
-      const html = translationAsHtml(translatedMarkdown);
+      const html = translatedMarkdown ? translationAsHtml(translatedMarkdown) : "";
       latestHtml.current = html;
       const mine = ++request.current;
+      const unavailable = (error: unknown) => {
+        if (mine !== request.current || !mounted.current) return;
+        console.warn("The Word editor could not be opened.", error);
+        if (wordOnly) {
+          setEngine("unavailable");
+          onUnavailableRef.current?.();
+        } else {
+          simple.current = true;
+          setEngine("simple");
+        }
+      };
       (async () => {
         try {
-          const document = await htmlToSfdt(wordPage(html), await paperOf(file));
+          let document: string | null = null;
+          if (wantsDocument) {
+            documentAsked.current = true;
+            try {
+              const saved = await openDocumentRef.current!();
+              if (saved) document = await toSfdt(saved, "translation.docx");
+            } catch (error) {
+              // The Word file is only a better way in; the text is still there.
+              if (!html) throw error;
+              console.warn("The saved Word file could not be opened; using the text.", error);
+            }
+          }
+          if (document === null) {
+            if (!html) throw new Error("There is nothing to open.");
+            document = await htmlToSfdt(wordPage(html), await paperOf(file));
+          }
           // A newer translation arrived meanwhile, or the page is gone.
           if (mine !== request.current || !mounted.current) return;
           setSfdt(document);
           setEngine("word");
         } catch (error) {
-          if (mine !== request.current || !mounted.current) return;
-          console.warn("The Word editor could not be opened; using the simple editor.", error);
-          simple.current = true;
-          setEngine("simple");
+          unavailable(error);
         }
       })();
-    }, [translatedMarkdown, forceSimple, file, paperOf]);
+    }, [translatedMarkdown, forceSimple, file, paperOf, wordOnly]);
 
     // The document written out as HTML for the page, once the person pauses.
     const timer = useRef<number | undefined>(undefined);
@@ -248,6 +321,10 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
           return simpleRef.current?.getHTML() ?? "";
         },
         toDocx: () => (engine === "word" ? (wordRef.current?.toDocx() ?? null) : null),
+        toPdf: () => {
+          const docx = engine === "word" ? wordRef.current?.toDocx() : null;
+          return docx ? docx.then((word) => docxToPdf(word)) : null;
+        },
         print: () => wordRef.current?.print(),
       }),
       [engine],
@@ -273,6 +350,7 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
       );
     }
 
+    if (engine === "unavailable") return null;
     if (engine === "loading" || !sfdt) return <EditorSkeleton className={className} />;
 
     return (
@@ -285,7 +363,7 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
       >
         <div className="flex items-center justify-between gap-2 pb-2">
           <span className={fullScreen ? "px-3 pt-2 text-sm font-semibold" : "text-xs text-muted-foreground"}>
-            {fullScreen ? t("fullScreenTitle") : t("hint")}
+            {fullScreen ? t("fullScreenTitle") : hideHint ? "" : t("hint")}
           </span>
           <Button
             type="button"
@@ -306,6 +384,18 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
             sfdt={sfdt}
             mode={fullScreen ? "full" : "compact"}
             onChange={edited}
+            onOpened={() => {
+              // What was opened, as HTML: the suggestions' quotes are looked for in it, and
+              // whoever opened a Word file has no HTML of it otherwise.
+              try {
+                const html = wordRef.current?.getHTML();
+                if (html === undefined) return;
+                if (!latestHtml.current) latestHtml.current = html;
+                onOpenedRef.current?.(html);
+              } catch {
+                // Nothing to tell.
+              }
+            }}
             scrollerRef={onScroller}
             handle={wordRef}
           />

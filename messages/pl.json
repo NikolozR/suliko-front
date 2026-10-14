@@ -2213,6 +2213,7 @@
     "scrollTogether": "Przewijaj razem",
     "edit": "Edytuj",
     "editHint": "Zapisanie zastąpi ten plik w zamówieniu.",
+    "editUnavailable": "Nie udało się otworzyć tego pliku w edytorze. Pobierz go, aby poprawić w Wordzie.",
     "saveToOrder": "Zapisz w zamówieniu",
     "savingToOrder": "Zapisywanie…",
     "saveDone": "Zapisano. W zamówieniu jest teraz poprawiony plik.",

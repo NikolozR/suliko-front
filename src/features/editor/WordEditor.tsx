@@ -91,6 +91,7 @@ export default function WordEditor({
   mode,
   readOnly = false,
   onChange,
+  onOpened,
   scrollerRef,
   handle,
 }: {
@@ -101,6 +102,8 @@ export default function WordEditor({
   readOnly?: boolean;
   /** Called when the person changes the document, not when it is opened. */
   onChange?: () => void;
+  /** Called once the document is open (and again if another is opened in its place). */
+  onOpened?: () => void;
   /** The element that scrolls the pages, as it appears and goes. */
   scrollerRef?: (element: HTMLElement | null) => void;
   /** What the parent calls to get the document out (see `WordEditorHandle`). */
@@ -109,6 +112,8 @@ export default function WordEditor({
   const container = useRef<DocumentEditorContainerComponent>(null);
   // Opening a document raises the same event as editing it: ignored until it is open.
   const opened = useRef(false);
+  const onOpenedRef = useRef(onOpened);
+  onOpenedRef.current = onOpened;
 
   useImperativeHandle(
     handle,
@@ -159,6 +164,7 @@ export default function WordEditor({
     // The first change event of a document is its being opened.
     window.setTimeout(() => {
       opened.current = true;
+      onOpenedRef.current?.();
     }, 300);
   }, [sfdt, readOnly, mode]);
 

@@ -259,17 +259,39 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
         try {
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
-          const editorHtml = editorRef.current?.getHTML();
-          const htmlContent = editorHtml && editorHtml !== "<p></p>"
-            ? editorHtml
-            : (() => {
-                const isHtml = translatedMarkdown.trimStart().startsWith("<");
-                return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
-              })();
-          const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
-          await generatePdfFromHtml(htmlContent, fileName);
+          // From the Word file, by the server, where the Word editor is in use: laid out as Word
+          // lays it out. From the HTML here when there is no Word file or the server cannot.
+          let sent = false;
+          const made = editorRef.current?.toPdf();
+          if (made) {
+            try {
+              const blob = await made;
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = fileName;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              sent = true;
+            } catch (error) {
+              console.warn("The server could not make the PDF; making it here.", error);
+            }
+          }
+          if (!sent) {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+            const editorHtml = editorRef.current?.getHTML();
+            const htmlContent = editorHtml && editorHtml !== "<p></p>"
+              ? editorHtml
+              : (() => {
+                  const isHtml = translatedMarkdown.trimStart().startsWith("<");
+                  return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
+                })();
+            const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+            await generatePdfFromHtml(htmlContent, fileName);
+          }
         } catch (err) {
           console.error("PDF export failed:", err);
           toast.error("Failed to generate PDF. Please try again.");

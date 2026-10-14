@@ -56,6 +56,36 @@ export async function toSfdt(
   return text;
 }
 
+/**
+ * The Word file as a PDF laid out the way Word lays it out. Throws `EditorConversionError`
+ * when the server cannot (it says `license` when its Syncfusion licence does not cover it);
+ * the caller then makes the PDF from the HTML as before.
+ */
+export async function toPdf(docx: Blob, fileName = "translation.docx"): Promise<Blob> {
+  const form = new FormData();
+  form.append("file", docx, fileName);
+
+  let response: Response;
+  try {
+    response = await fetchWithAuth("/document-editor/to-pdf", { method: "POST", body: form });
+  } catch (error) {
+    throw new EditorConversionError(
+      error instanceof Error ? error.message : "The PDF could not be made.",
+      "unavailable",
+    );
+  }
+  if (!response.ok) {
+    const body = (await response.json().catch(() => ({}))) as { error?: string };
+    throw new EditorConversionError(
+      `The server could not make the PDF (${response.status}).`,
+      body.error ?? (response.status === 429 ? "rate_limited" : "unavailable"),
+    );
+  }
+  const pdf = await response.blob();
+  if (pdf.size === 0) throw new EditorConversionError("The server sent no PDF.", "unavailable");
+  return new Blob([pdf], { type: "application/pdf" });
+}
+
 /** A translation's HTML as the editor's document. */
 export function htmlToSfdt(html: string, page?: WordPageSetup | null): Promise<string> {
   return toSfdt(new Blob([html], { type: "text/html" }), "translation.html", page);
