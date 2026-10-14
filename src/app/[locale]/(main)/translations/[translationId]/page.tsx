@@ -650,6 +650,7 @@ export default function TranslationDetailPage() {
           onRemoveFile={handleRemoveFile}
           isSuggestionsLoading={isSuggestionsLoading}
           chatId={chat.chatId}
+          hasSavedDocument={chat.translationResult?.hasEditedDocument === true}
         />
       </div>
     );

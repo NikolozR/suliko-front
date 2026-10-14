@@ -316,6 +316,43 @@ export const uploadOriginalForChat = async (
 };
 
 /**
+ * Save the Word file the Word editor wrote for a translation, together with the HTML the rest
+ * of the site works on (that HTML is the translation's content from now on). The server keeps
+ * the Word file only while the content is still that HTML, so opening the translation again
+ * shows it as it was left (headers, footers, page breaks) unless something else changed it.
+ */
+export const saveChatDocument = async (
+  chatId: string,
+  html: string,
+  docx: Blob
+): Promise<void> => {
+  const form = new FormData();
+  form.append("file", docx, "translation.docx");
+  form.append("html", html);
+
+  const response = await fetchWithAuth(`/document-translation/chat/${chatId}/document`, {
+    method: "PUT",
+    body: form,
+  });
+
+  if (!response.ok) {
+    const errorData = await response.json().catch(() => ({}));
+    throw new Error(errorData.Message || errorData.message || "Failed to update document content");
+  }
+};
+
+/**
+ * The Word file kept with a translation, or null when there is none that is current (the
+ * server says 404 then; the translation opens from its HTML instead).
+ */
+export const getChatDocument = async (chatId: string): Promise<Blob | null> => {
+  const response = await fetchWithAuth(`/document-translation/chat/${chatId}/document`);
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error("Failed to load the saved document");
+  return response.blob();
+};
+
+/**
  * Update chat document content
  */
 export const updateChatDocumentContent = async (

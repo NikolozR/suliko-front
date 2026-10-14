@@ -2213,6 +2213,7 @@
     "scrollTogether": "Scroll together",
     "edit": "Edit",
     "editHint": "Saving replaces this file in the order.",
+    "editUnavailable": "This file could not be opened in the editor. Download it to correct it in Word.",
     "saveToOrder": "Save to order",
     "savingToOrder": "Saving…",
     "saveDone": "Saved. The order now has the corrected file.",

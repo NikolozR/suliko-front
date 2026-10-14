@@ -14,7 +14,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, Eye, EyeOff,  FileDown } from "lucide-react";
 import React from "react";
-import { updateChatDocumentContent } from "../services/chatService";
+import { getChatDocument, saveChatDocument, updateChatDocumentContent } from "../services/chatService";
 import SaveButton from "@/features/translation/components/SaveButton";
 import toast from "react-hot-toast";
 import { SendToOrder, type OrderExportFormat } from "@/features/orders/components/SendToOrder";
@@ -40,6 +40,8 @@ interface ChatTranslationResultViewProps {
   onRemoveFile?: () => void;
   onEdit: (content: string) => void;
   isSuggestionsLoading: boolean;
+  /** The Word editor has saved a Word file for this translation that is still current: it opens from that. */
+  hasSavedDocument?: boolean;
 }
 
 const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
@@ -50,6 +52,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   onRemoveFile,
   onEdit,
   isSuggestionsLoading,
+  hasSavedDocument = false,
 }) => {
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
@@ -114,12 +117,46 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   }, [translatedMarkdown, wordScroller]);
 
 
+  /**
+   * Saved to the translation's chat. The Word editor's document goes as the Word file with the
+   * HTML written beside it, so it opens again as it was left; the simple editor's as HTML.
+   */
+  const saveToChat = async (): Promise<void> => {
+    const word = editorRef.current?.toDocx();
+    if (word) {
+      await saveChatDocument(chatId, translationHtml(editorRef.current, translatedMarkdown), await word);
+      return;
+    }
+    await updateChatDocumentContent(chatId, translatedMarkdown);
+  };
+
+  const saveToChatRef = useRef(saveToChat);
+  saveToChatRef.current = saveToChat;
+
+  /**
+   * The PDF. From the Word file, by the server, where the Word editor is in use: laid out as Word
+   * lays it out, not a picture of a web page. From the HTML here when there is no Word file, or
+   * when the server cannot (a licence it does not have, a busy minute).
+   */
+  const pdfBlob = async (name: string): Promise<Blob> => {
+    const made = editorRef.current?.toPdf();
+    if (made) {
+      try {
+        return await made;
+      } catch (error) {
+        console.warn("The server could not make the PDF; making it here.", error);
+      }
+    }
+    const { generatePdfBlobFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+    return generatePdfBlobFromHtml(translationHtml(editorRef.current, translatedMarkdown), name);
+  };
+
   useEffect(() => {
     if (remainingSeconds <= 0) return;
 
     const autosaveInterval = setInterval(async () => {
       try {
-        await updateChatDocumentContent(chatId, translatedMarkdown);
+        await saveToChatRef.current();
         toast.success("Autosaved.", { id: "autosave", duration: 1500 });
       } catch {
         toast.error("Autosave failed.", { id: "autosave" });
@@ -170,8 +207,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       });
     }
-    const { generatePdfBlobFromHtml } = await import("@/features/translation/utils/html2pdf-client");
-    return new DomFile([await generatePdfBlobFromHtml(html, name)], name, { type: "application/pdf" });
+    return new DomFile([await pdfBlob(name)], name, { type: "application/pdf" });
   };
 
   useEffect(() => {
@@ -205,9 +241,29 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
         try {
-          const htmlContent = translationHtml(editorRef.current, translatedMarkdown);
-          const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
-          await generatePdfFromHtml(htmlContent, fileName);
+          const made = editorRef.current?.toPdf();
+          let sent = false;
+          if (made) {
+            try {
+              const blob = await made;
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = fileName;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              sent = true;
+            } catch (error) {
+              console.warn("The server could not make the PDF; making it here.", error);
+            }
+          }
+          if (!sent) {
+            const htmlContent = translationHtml(editorRef.current, translatedMarkdown);
+            const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+            await generatePdfFromHtml(htmlContent, fileName);
+          }
         } catch (err) {
           console.error("PDF export failed:", err);
           alert("Failed to generate PDF");
@@ -222,7 +278,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
 
   const handleSaveDocument = async (): Promise<void> => {
     try {
-      await updateChatDocumentContent(chatId, translatedMarkdown);
+      await saveToChat();
       toast.success("Changes saved successfully.");
     } catch (error: unknown) {
       const message =
@@ -363,6 +419,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
               file={currentFile}
               forceSimple={isOriginalFileSrt()}
               onScroller={setWordScroller}
+              openDocument={hasSavedDocument ? () => getChatDocument(chatId) : undefined}
               className="h-full"
             />
           </div>
