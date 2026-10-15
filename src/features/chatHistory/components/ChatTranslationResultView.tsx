@@ -1,4 +1,5 @@
 "use client";
+import { isSrtResult } from "@/features/translation/utils/resultFormat";
 import { ChangeEvent, useRef, useEffect, useState, type RefObject } from "react";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
@@ -35,6 +36,12 @@ function translationHtml(editor: TranslationEditorHandle | null, loaded: string)
 interface ChatTranslationResultViewProps {
   chatId: string;
   currentFile: File | null;
+  /**
+   * `translationResult.outputFormat` for this chat — what the server actually produced.
+   * Optional because records written before it was carried do not have it; the file name
+   * is the fallback then.
+   */
+  outputFormat?: number | null;
   translatedMarkdown: string;
   onFileChange?: (event: ChangeEvent<HTMLInputElement>) => void;
   onRemoveFile?: () => void;
@@ -47,6 +54,7 @@ interface ChatTranslationResultViewProps {
 const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   chatId,
   currentFile,
+  outputFormat,
   translatedMarkdown,
   onFileChange,
   onRemoveFile,
@@ -73,10 +81,9 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   const { hoveredSuggestionOriginalText, suggestions } = useChatSuggestionsStore();
   const suggestionsPanelRef = useRef<HTMLDivElement>(null);
 
-  const isOriginalFileSrt = () => {
-    const fileExtension = currentFile?.name.split('.').pop()?.toLowerCase();
-    return fileExtension === 'srt';
-  };
+  // From what the server produced, not from whatever is in the upload form. This view is
+  // reached from history, where currentFile is a different document or none at all.
+  const isSrtDownload = isSrtResult(outputFormat, currentFile?.name);
 
   useEffect(() => {
     const documentContainer =
@@ -377,7 +384,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
               )}
             </div>
             <div className="flex items-center gap-1 flex-wrap">
-              {isOriginalFileSrt() ? (
+              {isSrtDownload ? (
                 <DownloadButton
                   content={translatedMarkdown}
                   size="sm"
