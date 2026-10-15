@@ -15,6 +15,30 @@ const loadHtml2Pdf = async (): Promise<Html2PdfFactory> => {
 };
 
 /**
+ * Runs `draw` (anything that calls html2canvas) with the page set up so text lands where it belongs.
+ *
+ * html2canvas finds where to draw a line of text by measuring, in this page, a 1x1 picture it sets
+ * on the baseline of some sample text. The site's CSS reset (Tailwind's preflight) makes every
+ * picture a block, which drops that one onto a line of its own: every line was drawn about a third
+ * of a line too low, and the last line of a document was cut through at the bottom of the PDF.
+ *
+ * The rule names html2canvas's own picture, so nothing on the page changes. It goes in the page's
+ * head for the length of the drawing: html2pdf sanitizes the HTML it is given, and a style at the
+ * start of it does not survive that.
+ */
+export const withHtml2CanvasBaselineFix = async <T,>(draw: () => Promise<T>): Promise<T> => {
+  const style = document.createElement("style");
+  style.textContent =
+    'img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"] { display: inline !important; }';
+  document.head.appendChild(style);
+  try {
+    return await draw();
+  } finally {
+    style.remove();
+  }
+};
+
+/**
  * Styling and layout for generated PDFs.
  *
  * Shared by the single-file download and the bulk zip so a document exported on its own and
@@ -92,7 +116,7 @@ export const generatePdfFromHtml = async (
   const { options, source } = buildPdfDocument(htmlContent, filename);
 
   try {
-    await html2pdf().set(options).from(source).save();
+    await withHtml2CanvasBaselineFix(() => html2pdf().set(options).from(source).save());
   } catch (error) {
     console.error("PDF generation failed:", error);
     throw new Error("Failed to generate PDF");
@@ -111,7 +135,7 @@ export const generatePdfBlobFromHtml = async (
   const { options, source } = buildPdfDocument(htmlContent, filename);
 
   try {
-    return await html2pdf().set(options).from(source).outputPdf("blob");
+    return await withHtml2CanvasBaselineFix(() => html2pdf().set(options).from(source).outputPdf("blob"));
   } catch (error) {
     console.error("PDF generation failed:", error);
     throw new Error("Failed to generate PDF");
