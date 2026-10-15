@@ -178,6 +178,7 @@ const TextTranslationCard = () => {
       } else if (fileType === "pdf") {
         const { jsPDF } = await import("jspdf");
         const html2canvas = (await import("html2canvas")).default;
+        const { withHtml2CanvasBaselineFix } = await import("@/features/translation/utils/html2pdf-client");
 
         // --- Create isolated wrapper ---
         const wrapper = document.createElement("div");
@@ -223,12 +224,12 @@ const TextTranslationCard = () => {
           await new Promise(r => requestAnimationFrame(r));
 
           // --- Render to canvas ---
-          const canvas = await html2canvas(wrapper, {
+          const canvas = await withHtml2CanvasBaselineFix(() => html2canvas(wrapper, {
             scale: 2,
             backgroundColor: "#ffffff",
             useCORS: true,
             logging: false,
-          });
+          }));
 
           const imgData = canvas.toDataURL("image/png");
 
