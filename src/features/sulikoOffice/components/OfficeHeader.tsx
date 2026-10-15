@@ -5,19 +5,19 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { ArrowLeft, Menu, X } from "lucide-react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { officeSignInUrl } from "../lib/officeLinks";
 import { NAV_SECTIONS, type NavSection } from "./sections";
 import { CONTAINER, PRIMARY_BUTTON } from "./tones";
-
-const APP_URL = "https://app.suliko.ge";
 
 /**
  * The page's own header rather than LandingHeader: that one has no room for
  * another control. This one carries links to the page's sections (lit up as
  * you scroll through them), a way back to the main Suliko site, language,
- * log in and the demo CTA.
+ * the Sign in button and a quiet link to the demo form.
  */
 export default function OfficeHeader() {
   const t = useTranslations("SulikoOffice.nav");
+  const signInUrl = officeSignInUrl(useLocale());
   const [menuOpen, setMenuOpen] = useState(false);
   const active = useActiveSection();
 
@@ -73,11 +73,11 @@ export default function OfficeHeader() {
             {t("backToSuliko")}
           </Link>
           <LanguageToggle label={t("language")} />
-          <a href={APP_URL} className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-suliko-default-color">
-            {t("login")}
-          </a>
-          <a href="#demo" className={`${PRIMARY_BUTTON} h-[46px] px-[22px] text-base whitespace-nowrap`}>
+          <a href="#demo" className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-suliko-default-color">
             {t("demo")}
+          </a>
+          <a href={signInUrl} className={`${PRIMARY_BUTTON} h-[46px] px-[22px] text-base whitespace-nowrap`}>
+            {t("login")}
           </a>
         </nav>
 
@@ -121,13 +121,14 @@ export default function OfficeHeader() {
             </Link>
             <LanguageToggle label={t("language")} />
             <a
-              href={APP_URL}
+              href="#demo"
+              onClick={() => setMenuOpen(false)}
               className="flex h-12 items-center rounded-xl border border-border px-4 text-base text-foreground"
             >
-              {t("login")}
-            </a>
-            <a href="#demo" onClick={() => setMenuOpen(false)} className={`${PRIMARY_BUTTON} h-12 text-base`}>
               {t("demo")}
+            </a>
+            <a href={signInUrl} className={`${PRIMARY_BUTTON} h-12 text-base`}>
+              {t("login")}
             </a>
           </div>
         </nav>

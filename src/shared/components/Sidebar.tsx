@@ -33,7 +33,6 @@ import SulikoLogo from "./SulikoLogo";
 import { useLocale, useTranslations } from "next-intl";
 import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
 import { signOutEverywhere } from "@/features/auth/services/signOut";
-import { useIsTranslator } from "@/features/orders/useIsTranslator";
 
 const NAV_ITEMS = [
   {
@@ -48,12 +47,12 @@ const NAV_ITEMS = [
     requiresAuth: true,
   },
   {
-    // Only for translators that a bureau has linked: see `isTranslator` below.
+    // What bureaus have assigned to this person. Always there for someone
+    // signed in: the page itself says so when no bureau has added them yet.
     label: "orders",
     href: "/orders",
     icon: ClipboardList,
     requiresAuth: true,
-    requiresTranslator: true,
   },
   {
     label: "profile",
@@ -61,17 +60,22 @@ const NAV_ITEMS = [
     icon: User,
     requiresAuth: true,
   },
+  // Help, Feedback and the language are on the Profile page for someone
+  // signed in (`ProfileLanguageAndHelp`). A visitor has no profile, so they
+  // stay here.
   {
     label: "help",
     href: "/help",
     icon: HelpCircle,
     disabled: false,
+    signedOutOnly: true,
   },
   {
     label: "feedback",
     href: "/feedback",
     icon: MessageSquare,
     disabled: false,
+    signedOutOnly: true,
   },
 ];
 
@@ -106,8 +110,10 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const t = useTranslations('Sidebar');
   const locale = useLocale();
 
-  // The Orders tab only exists for translators a bureau has linked.
-  const isTranslator = useIsTranslator(token);
+  // Until the browser has read its own token, go by what the server saw: the
+  // profile it fetched with the token cookie. Otherwise every page load would
+  // paint the visitor's links first and then swap them.
+  const signedIn = Boolean(token) || (!isClient && Boolean(initialUserProfile));
 
   // Hydrate userStore with server-fetched data
   useEffect(() => {
@@ -137,11 +143,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   };
 
   const visibleNavItems = NAV_ITEMS.filter(item => {
-    if (item.requiresTranslator && !isTranslator) {
-      return false;
+    if (item.signedOutOnly) {
+      return !signedIn;
     }
     if (item.requiresAuth) {
-      return !!token;
+      return signedIn;
     }
     return true;
   });
@@ -261,9 +267,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
             )
           ))}
 
-          <div className="w-full">
-            <SidebarLanguageSelector isCollapsed={effectiveIsCollapsed} />
-          </div>
+          {!signedIn && (
+            <div className="w-full">
+              <SidebarLanguageSelector isCollapsed={effectiveIsCollapsed} />
+            </div>
+          )}
 
           {token && (
             <div className="relative space-y-1">

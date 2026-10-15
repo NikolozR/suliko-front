@@ -14,13 +14,42 @@ type AdminStats = {
   pagesUsedThisMonth: number;
   translationsThisMonth: number;
   successRateThisMonth: number;
+  /** GEL from card payments the bank confirmed, this month. */
   revenueThisMonth: number;
+  /** The same since the start. Absent from an API older than this card. */
+  revenueAllTime?: number;
+  /** Per currency (GEL; EUR from suliko.io), never added together. */
+  revenue?: { currency: string; thisMonth: number; allTime: number; payments: number }[];
   newUsersThisMonth: number;
   totalPagesRemaining: number;
   generatedAtUtc: string;
 };
 
 type StatItem = { label: string; value: React.ReactNode; delay: string };
+
+const CURRENCY_SIGN: Record<string, string> = { GEL: "₾", EUR: "€", USD: "$" };
+
+function money(amount: number, currency = "GEL") {
+  return `${amount.toLocaleString("en-US", { maximumFractionDigits: 2 })} ${CURRENCY_SIGN[currency] ?? currency}`;
+}
+
+/** The GEL figure, with any other currency underneath rather than added to it. */
+function Revenue({ gel, others }: { gel: number; others: { currency: string; amount: number }[] }) {
+  const rest = others.filter((o) => o.amount > 0);
+  return (
+    <>
+      <span style={{ whiteSpace: "nowrap" }}>
+        {gel.toLocaleString("en-US", { maximumFractionDigits: 2 })}
+        <span style={{ fontSize: "0.6em", marginLeft: 6, color: "#94a3b8" }}>₾</span>
+      </span>
+      {rest.length > 0 && (
+        <div style={{ fontSize: 14, color: "#94a3b8", marginTop: 8 }}>
+          {rest.map((o) => `+ ${money(o.amount, o.currency)}`).join("  ")}
+        </div>
+      )}
+    </>
+  );
+}
 
 function StatCard({ label, value, delay }: StatItem) {
   return (
@@ -69,7 +98,15 @@ function StatGrid({ stats }: { stats: StatItem[] }) {
   );
 }
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}) {
+  const query = await searchParams;
+  // Our own accounts (the team's, and tests) are left out of every figure and the
+  // users table unless asked for with ?internal=show.
+  const showInternal = query.internal === "show";
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
@@ -127,6 +164,7 @@ export default async function AdminDashboardPage() {
     lastActivityAt?: string;
     referralCode?: string;
     referredByCode?: string;
+    isInternal?: boolean;
   };
 
   let users: AdminUser[] = [];
@@ -152,7 +190,7 @@ export default async function AdminDashboardPage() {
   // Load system-wide usage statistics (separate admin endpoint)
   let stats: AdminStats | null = null;
   try {
-    const statsRes = await fetch(`${API_BASE_URL}/Statistics/admin`, {
+    const statsRes = await fetch(`${API_BASE_URL}/Statistics/admin?includeInternal=${showInternal}`, {
       headers: { Authorization: `Bearer ${token}` },
       cache: "no-store",
     });
@@ -163,15 +201,30 @@ export default async function AdminDashboardPage() {
     // Stats endpoint unavailable — usage cards fall back to "—".
   }
 
+  // The users the figures and the table are about.
+  const visibleUsers = showInternal ? users : users.filter((u) => !u.isInternal);
+  const hiddenCount = users.length - visibleUsers.length;
+  total = Math.max(0, total - hiddenCount);
+
+  // The switch keeps the tab the page was on.
+  const tab = typeof query.tab === "string" ? query.tab : undefined;
+  const switchHref = (show: boolean) => {
+    const params = new URLSearchParams();
+    if (tab) params.set("tab", tab);
+    if (show) params.set("internal", "show");
+    const text = params.toString();
+    return text ? `?${text}` : "?";
+  };
+
   // Compute "active today"
   const now = Date.now();
   const oneDayMs = 24 * 60 * 60 * 1000;
-  const activeToday = users.filter((u) => {
+  const activeToday = visibleUsers.filter((u) => {
     if (!u.lastActivityAt) return false;
     return now - new Date(u.lastActivityAt).getTime() < oneDayMs;
   }).length;
 
-  const dash = "—"; // em dash fallback when stats are unavailable
+  const dash = "–"; // fallback when stats are unavailable
 
   const overviewStats: StatItem[] = [
     { label: "Total Users", value: total.toLocaleString(), delay: "0ms" },
@@ -179,8 +232,8 @@ export default async function AdminDashboardPage() {
     {
       label: "Avg Balance",
       value:
-        users.length > 0
-          ? (users.reduce((s, u) => s + (u.balance ?? 0), 0) / users.length).toFixed(1)
+        visibleUsers.length > 0
+          ? (visibleUsers.reduce((s, u) => s + (u.balance ?? 0), 0) / visibleUsers.length).toFixed(1)
           : "0",
       delay: "160ms",
     },
@@ -194,7 +247,32 @@ export default async function AdminDashboardPage() {
     { label: "Pages Today", value: stats ? stats.pagesUsedToday.toLocaleString() : dash, delay: "160ms" },
     { label: "Translations (This Month)", value: stats ? stats.translationsThisMonth.toLocaleString() : dash, delay: "240ms" },
     { label: "Success Rate", value: stats ? `${stats.successRateThisMonth}%` : dash, delay: "320ms" },
-    { label: "Revenue (This Month)", value: stats ? `${stats.revenueThisMonth.toLocaleString()} ₾` : dash, delay: "400ms" },
+  ];
+
+  // Card payments the bank confirmed. GEL is the headline; suliko.io's EUR is
+  // shown under it, never converted and added.
+  const otherCurrencies = (stats?.revenue ?? []).filter((r) => r.currency !== "GEL");
+  const revenueStats: StatItem[] = [
+    {
+      label: "Revenue (This Month)",
+      value: stats ? (
+        <Revenue gel={stats.revenueThisMonth} others={otherCurrencies.map((r) => ({ currency: r.currency, amount: r.thisMonth }))} />
+      ) : dash,
+      delay: "0ms",
+    },
+    {
+      label: "Revenue (All Time)",
+      value:
+        stats?.revenueAllTime !== undefined ? (
+          <Revenue gel={stats.revenueAllTime} others={otherCurrencies.map((r) => ({ currency: r.currency, amount: r.allTime }))} />
+        ) : dash,
+      delay: "80ms",
+    },
+    {
+      label: "Payments (All Time)",
+      value: stats?.revenue ? stats.revenue.reduce((n, r) => n + r.payments, 0).toLocaleString() : dash,
+      delay: "160ms",
+    },
   ];
 
   return (
@@ -216,6 +294,23 @@ export default async function AdminDashboardPage() {
         <p style={{ color: "#64748b", marginTop: 6, fontSize: 14 }}>
           Welcome back. Here&apos;s what&apos;s happening.
         </p>
+        <p style={{ color: "#64748b", marginTop: 10, fontSize: 13 }}>
+          {showInternal ? (
+            <>
+              Showing everyone, including our own accounts.{" "}
+              <Link href={switchHref(false)} style={{ color: "#fbbf24" }}>
+                Hide our accounts
+              </Link>
+            </>
+          ) : (
+            <>
+              Our own accounts are hidden ({hiddenCount} left out of the users, stats and revenue).{" "}
+              <Link href={switchHref(true)} style={{ color: "#fbbf24" }}>
+                Show our accounts
+              </Link>
+            </>
+          )}
+        </p>
       </div>
 
       {/* Overview stats */}
@@ -236,9 +331,28 @@ export default async function AdminDashboardPage() {
       </h2>
       <StatGrid stats={usageStats} />
 
+      {/* Money in */}
+      <h2
+        style={{
+          fontFamily: "'Syne', sans-serif",
+          fontWeight: 700,
+          fontSize: 18,
+          color: "#f8fafc",
+          letterSpacing: "-0.01em",
+          marginBottom: 16,
+        }}
+      >
+        Revenue
+      </h2>
+      <StatGrid stats={revenueStats} />
+
       {/* Users / Referrals tabs */}
       <section style={{ marginBottom: 48 }}>
-        <AdminTabsWrapper initialUsers={users as TableUser[]} loadError={loadError} />
+        <AdminTabsWrapper
+          initialUsers={visibleUsers as TableUser[]}
+          referralUsers={users as TableUser[]}
+          loadError={loadError}
+        />
       </section>
 
       {/* Languages section */}

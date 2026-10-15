@@ -1,25 +1,19 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getAllPostSlugs, getPostBySlug } from '@/lib/blog';
+import { getPostBySlug } from '@/lib/blog';
 import { BlogPost } from '@/components/blog';
 import LandingHeader from '@/shared/components/LandingHeader';
 import LandingFooter from '@/shared/components/LandingFooter';
 
 export const revalidate = 3600;
-export const dynamicParams = true;
+
+// Rendered on request, not ahead of time: every page reads the request's headers
+// (src/i18n/request.ts), which a pre-built page may not do. With slugs listed here,
+// a build that found none (the API unreachable, or the blog empty) left the route
+// static, and every post then failed with DYNAMIC_SERVER_USAGE (a 500).
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string; locale: string }>;
-}
-
-export async function generateStaticParams() {
-  try {
-    const entries = await getAllPostSlugs();
-    return entries.map(({ slug, locale }) => ({ slug, locale }));
-  } catch (error) {
-    console.error('Error in generateStaticParams:', error);
-    return [];
-  }
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {

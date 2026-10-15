@@ -12,6 +12,7 @@ import {
   ProfileError,
   ProfileNotFound,
   ProfileReferral,
+  ProfileLanguageAndHelp,
 } from "./";
 import { UpdateUserProfile } from "@/features/auth/types/types.User";
 import { updateUserProfile } from "@/features/auth/services/userService";
@@ -166,6 +167,7 @@ export default function ProfileClient() {
       )}
       <ProfileHero userProfile={currentUserProfile} />
       <div className="space-y-6">
+        <ProfileLanguageAndHelp />
         <ProfilePersonalInfo
           userProfile={currentUserProfile}
           isEditing={isEditing}

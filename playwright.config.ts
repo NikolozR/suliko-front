@@ -59,8 +59,8 @@ export default defineConfig({
       testMatch: /tms\.spec\.ts/,
     },
 
-    // Supabase-backed API routes — isolated so a Supabase outage on the
-    // deployment doesn't take down the public suite.
+    // The API's blog and passport-template endpoints — isolated so an API
+    // outage doesn't take down the public suite.
     {
       name: 'api',
       use: { ...devices['Desktop Chrome'] },

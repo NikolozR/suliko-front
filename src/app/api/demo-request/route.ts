@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
 /**
- * Demo requests from the Suliko Office landing page (/tms).
+ * Demo requests from the Suliko Office landing page (/office).
  *
  * Unlike /api/contact, everything a visitor types is escaped before it goes
  * into the email's HTML: this is a public form, and an unescaped field lets

@@ -54,9 +54,14 @@ interface SulikoFormProps {
   onSignedIn?: () => void | Promise<void>;
   /** A line under the logo saying what signing in is for. */
   subtitle?: string;
+  /**
+   * The same line on the Register tab. Without it the Register tab kept
+   * saying "Sign in to continue", which is not what it does.
+   */
+  registerSubtitle?: string;
 }
 
-const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle }) => {
+const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerSubtitle }) => {
   const t = useTranslations("Authorization");
   const tError = useTranslations("ErrorAlert");
   const locale = useLocale();
@@ -123,6 +128,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle }) => {
       referralCode: refFromUrl,
     },
   });
+  const [showReferral, setShowReferral] = useState(Boolean(refFromUrl));
 
   const verificationCode = form.watch("verificationCode");
 
@@ -524,8 +530,10 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle }) => {
             {/* Logo */}
             <div className="mb-6">
               <SulikoLogo width={90} className="mx-auto" />
-              {subtitle && (
-                <p className="mt-3 text-center text-sm text-muted-foreground">{subtitle}</p>
+              {(isLoginMode ? subtitle : registerSubtitle ?? subtitle) && (
+                <p className="mt-3 text-center text-sm text-muted-foreground">
+                  {isLoginMode ? subtitle : registerSubtitle ?? subtitle}
+                </p>
               )}
             </div>
 
@@ -559,8 +567,21 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle }) => {
                 label={t("orContinueWith") || "Continue with Google"}
               />
             </div>)}
-            {/* Referral code — before the sign-up method is chosen, so it applies to Google too */}
-            {!isLoginMode && registrationStep === 1 && (
+            {/* Referral code — before the sign-up method is chosen, so it applies to Google too.
+                Behind a link unless a ?ref= link already filled it: as the first
+                box on the form, an optional code read as a required step. */}
+            {!isLoginMode && registrationStep === 1 && !showReferral && (
+              <div className="w-full mb-5 text-center">
+                <button
+                  type="button"
+                  onClick={() => setShowReferral(true)}
+                  className="cursor-pointer text-sm text-suliko-default-color underline-offset-4 hover:underline"
+                >
+                  {t("haveReferralCode")}
+                </button>
+              </div>
+            )}
+            {!isLoginMode && registrationStep === 1 && showReferral && (
               <div className="w-full mb-5">
                 <FormField
                   control={form.control}

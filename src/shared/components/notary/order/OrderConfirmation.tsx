@@ -151,7 +151,7 @@ export default function OrderConfirmation({
                 {failures.map((failure) => (
                   <li key={failure.key} className="text-xs text-muted-foreground">
                     <span className="font-medium text-foreground">{failure.fileName}</span>
-                    {" — "}
+                    {": "}
                     {failure.message}
                   </li>
                 ))}
@@ -170,7 +170,7 @@ export default function OrderConfirmation({
                 )}
                 <a
                   href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
-                    `Order #${order.order_id} — files`
+                    `Order #${order.order_id}: files`
                   )}`}
                   className="text-xs font-medium text-suliko-default-color underline underline-offset-2"
                 >

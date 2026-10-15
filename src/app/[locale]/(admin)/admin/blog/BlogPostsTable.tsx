@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Pencil, Trash2, Plus, Eye, EyeOff } from "lucide-react";
+import { deleteBlogPost } from "@/lib/site-content-client";
 
 interface Translation {
   locale: string;
@@ -33,8 +34,12 @@ export default function BlogPostsTable({ initialPosts }: Props) {
   async function handleDelete(id: string) {
     if (!confirm("Delete this post permanently?")) return;
     setDeleting(id);
-    await fetch(`/api/blog/${id}`, { method: "DELETE" });
-    setPosts((prev) => prev.filter((p) => p.id !== id));
+    try {
+      await deleteBlogPost(id);
+      setPosts((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete post");
+    }
     setDeleting(null);
   }
 
@@ -42,7 +47,7 @@ export default function BlogPostsTable({ initialPosts }: Props) {
     return (
       post.blog_post_translations.find((t) => t.locale === "en")?.title ||
       post.blog_post_translations[0]?.title ||
-      "—"
+      "–"
     );
   }
 
@@ -111,7 +116,7 @@ export default function BlogPostsTable({ initialPosts }: Props) {
                     <span style={{ fontWeight: 600 }}>{getTitle(post)}</span>
                   </td>
                   <td style={{ padding: "12px", color: "#94a3b8", whiteSpace: "nowrap" }}>
-                    {post.author_name || "—"}
+                    {post.author_name || "–"}
                   </td>
                   <td style={{ padding: "12px", color: "#94a3b8" }}>
                     {post.tags?.length
@@ -132,7 +137,7 @@ export default function BlogPostsTable({ initialPosts }: Props) {
                             {tag}
                           </span>
                         ))
-                      : "—"}
+                      : "–"}
                   </td>
                   <td style={{ padding: "12px", whiteSpace: "nowrap" }}>
                     <span
@@ -156,7 +161,7 @@ export default function BlogPostsTable({ initialPosts }: Props) {
                   <td style={{ padding: "12px", color: "#64748b", whiteSpace: "nowrap" }}>
                     {post.published_at
                       ? new Date(post.published_at).toLocaleDateString("en-GB")
-                      : "—"}
+                      : "–"}
                   </td>
                   <td style={{ padding: "12px", whiteSpace: "nowrap" }}>
                     <div style={{ display: "flex", gap: 8 }}>

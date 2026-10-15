@@ -165,10 +165,8 @@ const TextTranslationCard = () => {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedText}</body></html>`;
-        // @ts-expect-error Type errors, nothing special
-        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
-        const blob = htmlDocx.asBlob(fullHtml);
+        const { wordBlob } = await import("@/features/translation/utils/wordPage");
+        const blob = await wordBlob(translatedText);
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;

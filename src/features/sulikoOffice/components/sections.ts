@@ -2,7 +2,7 @@ import type { CSSProperties } from "react";
 
 /**
  * Sections the header links to, in page order. Each id is also the section's
- * #anchor, so a link like /tms#reports can be shared.
+ * #anchor, so a link like /office#reports can be shared.
  */
 export const NAV_SECTIONS = ["pricing", "journey", "finance", "reports", "faq"] as const;
 export type NavSection = (typeof NAV_SECTIONS)[number];

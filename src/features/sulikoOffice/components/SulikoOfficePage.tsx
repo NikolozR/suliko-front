@@ -6,6 +6,7 @@ import OfficeJourney from "./OfficeJourney";
 import OfficeFeatures from "./OfficeFeatures";
 import OfficeSecurity from "./OfficeSecurity";
 import OfficeFaq from "./OfficeFaq";
+import OfficeSignInBand from "./OfficeSignInBand";
 import OfficeDemoSection from "./OfficeDemoSection";
 import OfficeSpotlight from "./OfficeSpotlight";
 import NewOrderDemo from "./demo/NewOrderDemo";
@@ -15,7 +16,7 @@ import ScrollReveal from "@/shared/components/ScrollReveal";
 
 /**
  * Landing page for Suliko Office, the translation management system at
- * app.suliko.ge. Server-rendered, apart from the header (language switch,
+ * office.suliko.ge. Server-rendered, apart from the header (language switch,
  * mobile menu), the product demos and the demo-request form.
  */
 export default function SulikoOfficePage() {
@@ -32,6 +33,7 @@ export default function SulikoOfficePage() {
         <OfficeSpotlight id="reports" demo={<ReportsDemo />} band />
         <OfficeSecurity />
         <OfficeFaq />
+        <OfficeSignInBand />
         <OfficeDemoSection />
       </main>
       <LandingFooter />

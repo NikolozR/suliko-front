@@ -1,5 +1,5 @@
 "use client";
-import React, { ChangeEvent, useState, useEffect } from "react";
+import React, { ChangeEvent, useState, useEffect, useRef } from "react";
 
 import {
   Card,
@@ -55,6 +55,9 @@ import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
 import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
+import { useOrderHandOffStore, useOrderOfFile, useOrderSource } from "@/features/orders/orderSource";
+import { noteOrderTranslation } from "@/features/orders/orderTranslations";
+import { OrderSourceBanner } from "@/features/orders/components/OrderSourceBanner";
 import PageCountDisplay from "./PageCountDisplay";
 import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
 import { estimateMinutes } from "@/features/translation/utils/translationEta";
@@ -221,6 +224,12 @@ const DocumentTranslationCard = () => {
   };
 
   const hasFile = currentFile && currentFile.length > 0;
+
+  // A bureau's file, when the address names one (an order's "Translate"), and
+  // the order the file on screen belongs to for as long as it is that file.
+  const orderSource = useOrderSource();
+  const orderOfFile = useOrderOfFile(currentFile);
+  const orderFileTaken = useRef<File | null>(null);
 
   /**
    * What the quote is allowed to show as the page count.
@@ -483,6 +492,22 @@ const DocumentTranslationCard = () => {
   }, [translatedMarkdown]);
 
 
+  // The order's file has arrived: put it on the screen as if it had been
+  // picked, in the languages the bureau asked for.
+  useEffect(() => {
+    if (orderSource.status !== "ready" || orderFileTaken.current === orderSource.file) return;
+    orderFileTaken.current = orderSource.file;
+
+    const transfer = new DataTransfer();
+    transfer.items.add(orderSource.file);
+    const files = transfer.files;
+    useOrderHandOffStore.getState().setHandOff({ files, source: orderSource.source });
+    void takeFiles(files);
+    if (orderSource.sourceLanguageId) setCurrentSourceLanguageId(orderSource.sourceLanguageId);
+    if (orderSource.targetLanguageId) setCurrentTargetLanguageId(orderSource.targetLanguageId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orderSource]);
+
   useEffect(() => {
     if (currentFile && currentFile.length > 0) {
       setValue("currentFile", currentFile, { shouldValidate: true });
@@ -533,6 +558,15 @@ const DocumentTranslationCard = () => {
       return;
     }
 
+    await takeFiles(event.target.files);
+  };
+
+  /**
+   * What happens to a file once it is on the screen, however it got here: the
+   * picker, a drop, or an order's "Translate" (a bureau's file, fetched).
+   */
+  const takeFiles = async (files: FileList) => {
+    const file = files[0];
     const fileExtension = file.name.split(".").pop()?.toLowerCase() || "";
     const isSrtFile = fileExtension === "srt";
 
@@ -545,8 +579,8 @@ const DocumentTranslationCard = () => {
     useSuggestionsStore.getState().reset();
 
     // Update current file in state and form
-    setCurrentFile(event.target.files);
-    setValue("currentFile", event.target.files);
+    setCurrentFile(files);
+    setValue("currentFile", files);
     setValue("isSrt", isSrtFile);
     clearErrors("currentFile");
 
@@ -859,6 +893,9 @@ const DocumentTranslationCard = () => {
       if (projectId) {
         moveChatToProject(chatId, projectId).catch(() => {});
       }
+      // A bureau's file: note which order this translation is for, so its
+      // result can be sent there and the order can point back at it.
+      if (orderOfFile) noteOrderTranslation(chatId, orderOfFile);
 
       window.dispatchEvent(new Event("translations-updated"));
 
@@ -1046,6 +1083,7 @@ const DocumentTranslationCard = () => {
           retryLabel={tButton('retry') || "Retry"}
         />
       )}
+      {!activeJob && <OrderSourceBanner state={orderSource} linked={orderOfFile} />}
       <div className={translatedMarkdown ? "flex gap-8" : undefined}>
         <Card className="border-none flex-1 min-w-0 relative">
           <CardHeader>

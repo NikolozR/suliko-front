@@ -339,7 +339,7 @@ export function BulkTranslationPanel({
             <ul className="space-y-0.5 text-amber-700 dark:text-amber-400">
               {rejected.slice(0, 5).map((file) => (
                 <li key={file.relativePath}>
-                  {file.name} — {t(REJECTION_KEYS[file.reason])}
+                  {file.name}: {t(REJECTION_KEYS[file.reason])}
                 </li>
               ))}
               {rejected.length > 5 && (

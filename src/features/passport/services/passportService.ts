@@ -124,7 +124,7 @@ export async function extractPassportFields(
     // "queued" or "processing" — keep waiting
   }
 
-  throw new Error("Processing timed out. The server is busy — please try again in a moment.");
+  throw new Error("Processing timed out. The server is busy. Please try again in a moment.");
 }
 
 export async function generatePassportDocx(

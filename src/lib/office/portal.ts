@@ -104,23 +104,39 @@ export async function requirePortalUser(request: NextRequest): Promise<Outcome> 
 }
 
 /** GET one portal path on the Office API as `userId`, passing its answer through. */
-export async function portalGet(outcome: Exclude<Outcome, NextResponse>, path: string) {
+export function portalGet(outcome: Exclude<Outcome, NextResponse>, path: string) {
+  return portalCall(outcome, path, "GET");
+}
+
+/** DELETE one portal path on the Office API as `userId`, passing its answer through. */
+export function portalDelete(outcome: Exclude<Outcome, NextResponse>, path: string) {
+  return portalCall(outcome, path, "DELETE");
+}
+
+async function portalCall(
+  outcome: Exclude<Outcome, NextResponse>,
+  path: string,
+  method: "GET" | "DELETE"
+) {
   const assertion = signToken(outcome.secret, claimsFor("assertion", outcome.userId, ASSERTION_TTL_SECONDS));
   const headers: Record<string, string> = {
     "X-Suliko-Portal-Assertion": assertion,
     Accept: "application/json",
   };
   // The Office API answers 404 to anyone without its gateway secret (core/gateway.py),
-  // the same one app.suliko.ge sends. File tickets are exempt, so only this call needs it.
+  // the same one app.suliko.ge sends. File tickets are exempt, so only these calls need it.
   const gatewaySecret = process.env.BFF_SHARED_SECRET;
   if (gatewaySecret) headers["X-Suliko-Gateway"] = gatewaySecret;
 
   const response = await fetch(`${outcome.apiUrl}${PORTAL_PREFIX}${path}`, {
+    method,
     headers,
     cache: "no-store",
   }).catch(() => null);
 
   if (!response) return NextResponse.json({ error: "office_unreachable" }, { status: 502 });
+  // "Done, nothing to say" (a removal) cannot carry a body, not even an empty one.
+  if (response.status === 204) return new NextResponse(null, { status: 204 });
   const body = await response.text();
   return new NextResponse(body, {
     status: response.status,
@@ -129,17 +145,22 @@ export async function portalGet(outcome: Exclude<Outcome, NextResponse>, path: s
 }
 
 /**
- * Where a browser can fetch ONE file from the Office API directly.
+ * Where a browser can fetch ONE file from the Office API directly, or send one to it.
  *
  * Scans are too big to pass through this server (Vercel caps bodies at 4.5 MB),
  * so the browser is sent to the Office API with a ticket good for this one
- * GET on this one path, for five minutes.
+ * request (a GET of a file, or a POST of a new one) on this one path, for
+ * five minutes.
  */
-export function fileTicketUrl(outcome: Exclude<Outcome, NextResponse>, path: string): string {
+export function fileTicketUrl(
+  outcome: Exclude<Outcome, NextResponse>,
+  path: string,
+  method: "GET" | "POST" = "GET"
+): string {
   const fullPath = `${PORTAL_PREFIX}${path}`;
   const ticket = signToken(
     outcome.secret,
-    claimsFor("ticket", outcome.userId, TICKET_TTL_SECONDS, { mth: "GET", pth: fullPath })
+    claimsFor("ticket", outcome.userId, TICKET_TTL_SECONDS, { mth: method, pth: fullPath })
   );
   return `${outcome.apiUrl}${fullPath}?ticket=${encodeURIComponent(ticket)}`;
 }

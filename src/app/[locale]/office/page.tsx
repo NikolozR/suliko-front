@@ -4,11 +4,11 @@ import SulikoOfficePage from "@/features/sulikoOffice/components/SulikoOfficePag
 import { FAQ_KEYS } from "@/features/sulikoOffice/components/OfficeFaq";
 import { canonicalFor } from "@/shared/utils/legalPageMeta";
 
-const PATH = "/tms";
+const PATH = "/office";
 
 /**
  * The page is written in Georgian and English only. Polish visitors get the
- * English copy, so /pl/tms points its canonical at the English page rather
+ * English copy, so /pl/office points its canonical at the English page rather
  * than competing with it as a duplicate.
  */
 function canonicalLocale(locale: string): "ka" | "en" {
@@ -52,7 +52,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function TmsPage({
+export default async function OfficeLandingPage({
   params,
 }: {
   params: Promise<{ locale: string }>;

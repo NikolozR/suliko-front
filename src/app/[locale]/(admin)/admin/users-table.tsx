@@ -1,6 +1,8 @@
 "use client";
 import React, { useMemo, useState } from "react";
 import { setUserBalance, deleteUser } from "@/features/auth/services/userService";
+import { listPaidTotals, type UserPaidTotal } from "@/features/adminPayments/services/adminPaymentsService";
+import PaymentHistory, { money } from "./payment-history";
 
 export type User = {
   id: string;
@@ -17,6 +19,8 @@ export type User = {
   lastActivityAt?: string;
   referralCode?: string;
   referredByCode?: string;
+  /** A team or test account, as the API marks it. */
+  isInternal?: boolean;
 };
 
 type SaveState = "idle" | "confirm" | "saving" | "saved";
@@ -27,6 +31,11 @@ const SortIcon = ({ dir }: { dir: "none" | "asc" | "desc" }) => (
     {dir === "asc" ? "↑" : dir === "desc" ? "↓" : "⇅"}
   </span>
 );
+
+/** GEL paid by one user, from confirmed card payments: the figure the Paid column sorts by. */
+function gelPaid(totals: Map<string, UserPaidTotal[]> | null, id: string): number {
+  return totals?.get(id)?.find((t) => t.currency === "GEL")?.total ?? 0;
+}
 
 export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   const [rows, setRows] = useState<User[]>(initialUsers || []);
@@ -41,6 +50,24 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   const [dateFilter, setDateFilter] = useState<{ from?: string; to?: string }>({});
   const [showRoleId, setShowRoleId] = useState(false);
   const [deleteStates, setDeleteStates] = useState<Record<string, DeleteState>>({});
+  const [paidSort, setPaidSort] = useState<"none" | "asc" | "desc">("none");
+  const [openPayments, setOpenPayments] = useState<string | null>(null);
+  // What each user has paid, per currency, from confirmed card payments.
+  // Loaded once; the column shows "?" if it cannot be, not a misleading zero.
+  const [paidTotals, setPaidTotals] = useState<Map<string, UserPaidTotal[]> | null>(null);
+  const [paidError, setPaidError] = useState(false);
+
+  React.useEffect(() => {
+    listPaidTotals()
+      .then((totals) => {
+        const byUser = new Map<string, UserPaidTotal[]>();
+        for (const t of totals) byUser.set(t.userId, [...(byUser.get(t.userId) ?? []), t]);
+        setPaidTotals(byUser);
+      })
+      .catch(() => setPaidError(true));
+  }, []);
+
+  const paidGel = (id: string) => gelPaid(paidTotals, id);
 
   const getDeleteState = (id: string): DeleteState => deleteStates[id] ?? "idle";
   const setDeleteState = (id: string, state: DeleteState) =>
@@ -164,8 +191,12 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
         return lastActivitySort === "asc" ? av - bv : bv - av;
       });
     }
+    if (paidSort !== "none") {
+      const paid = (id: string) => gelPaid(paidTotals, id);
+      copy.sort((a, b) => (paidSort === "asc" ? paid(a.id) - paid(b.id) : paid(b.id) - paid(a.id)));
+    }
     return copy;
-  }, [filteredRows, balanceSort, dateSort, lastActivitySort]);
+  }, [filteredRows, balanceSort, dateSort, lastActivitySort, paidSort, paidTotals]);
 
   const totalPages = Math.ceil(sortedRows.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -175,7 +206,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   React.useEffect(() => { setCurrentPage(1); }, [itemsPerPage]);
 
   const exportToCSV = () => {
-    const headers = ["ID","User Name","Email","Phone Number","First Name","Last Name","Role ID","Role Name","Balance","Created At","Last Activity"];
+    const headers = ["ID","User Name","Email","Phone Number","First Name","Last Name","Role ID","Role Name","Balance","Paid (GEL)","Created At","Last Activity"];
     const esc = (v: string | number | undefined) => {
       const s = String(v ?? "");
       return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s.replace(/"/g, '""')}"` : s;
@@ -188,6 +219,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
         u.firstName || "", u.lastName || "",
         u.roleId || "", u.roleName || "",
         u.balance ?? 0,
+        paidGel(u.id),
         u.createdAt ? new Date(u.createdAt).toLocaleString() : "",
         u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleString() : "",
       ].map(esc).join(","))
@@ -426,6 +458,13 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               <th style={{ ...thStyle, textAlign: "right", cursor: "pointer", userSelect: "none" }} onClick={() => setBalanceSort(toggleSort(balanceSort))}>
                 Balance <SortIcon dir={balanceSort} />
               </th>
+              <th
+                style={{ ...thStyle, textAlign: "right", cursor: "pointer", userSelect: "none" }}
+                onClick={() => setPaidSort(toggleSort(paidSort))}
+                title="Confirmed card payments, all time"
+              >
+                Paid <SortIcon dir={paidSort} />
+              </th>
               <th style={{ ...thStyle, cursor: "pointer", userSelect: "none" }} onClick={() => setDateSort(toggleSort(dateSort))}>
                 Created <SortIcon dir={dateSort} />
               </th>
@@ -438,9 +477,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
           <tbody>
             {displayedRows.map((u: User, i) => {
               const state = getSaveState(u.id);
+              const paid = paidTotals?.get(u.id) ?? [];
+              const name = `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.userName || u.id;
               return (
+                <React.Fragment key={u.id}>
                 <tr
-                  key={u.id}
                   style={{
                     animation: `fadeUp 0.3s ease ${Math.min(i * 30, 300)}ms both`,
                     transition: "background 0.12s",
@@ -448,21 +489,21 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                   className="admin-table-row"
                 >
                   <td style={tdStyle}>
-                    <div style={{ ...monoStyle, fontSize: 13, color: "#e2e8f0" }}>{u.userName || "—"}</div>
+                    <div style={{ ...monoStyle, fontSize: 13, color: "#e2e8f0" }}>{u.userName || "–"}</div>
                     <div style={{ ...monoStyle, fontSize: 10, color: "#475569", marginTop: 2 }}>{u.id}</div>
                   </td>
                   <td style={tdStyle}>
                     {u.firstName || u.lastName
                       ? `${u.firstName || ""} ${u.lastName || ""}`.trim()
-                      : <span style={{ color: "#475569" }}>—</span>}
+                      : <span style={{ color: "#475569" }}>–</span>}
                   </td>
-                  <td style={tdStyle}>{u.email || <span style={{ color: "#475569" }}>—</span>}</td>
+                  <td style={tdStyle}>{u.email || <span style={{ color: "#475569" }}>–</span>}</td>
                   <td style={tdStyle}>
-                    <span style={monoStyle}>{u.phoneNUmber || u.phoneNumber || "—"}</span>
+                    <span style={monoStyle}>{u.phoneNUmber || u.phoneNumber || "–"}</span>
                   </td>
                   {showRoleId && (
                     <td style={tdStyle}>
-                      <span style={{ ...monoStyle, fontSize: 11 }}>{u.roleId || "—"}</span>
+                      <span style={{ ...monoStyle, fontSize: 11 }}>{u.roleId || "–"}</span>
                     </td>
                   )}
                   <td style={tdStyle}>
@@ -481,7 +522,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                         {u.roleName}
                       </span>
                     ) : (
-                      <span style={{ color: "#475569" }}>—</span>
+                      <span style={{ color: "#475569" }}>–</span>
                     )}
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
@@ -506,14 +547,45 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       onBlur={(e) => (e.target.style.borderColor = "#2a2d3a")}
                     />
                   </td>
+                  <td style={{ ...tdStyle, textAlign: "right" }}>
+                    <button
+                      onClick={() => setOpenPayments(openPayments === u.id ? null : u.id)}
+                      title="Show payments"
+                      style={{
+                        background: openPayments === u.id ? "rgba(251,191,36,0.12)" : "transparent",
+                        border: `1px solid ${openPayments === u.id ? "#fbbf24" : "transparent"}`,
+                        borderRadius: 6,
+                        padding: "3px 8px",
+                        cursor: "pointer",
+                        textAlign: "right",
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: 12,
+                        color: paid.length ? "#86efac" : "#475569",
+                      }}
+                    >
+                      {paidError
+                        ? "?"
+                        : paidTotals === null
+                          ? "…"
+                          : paid.length
+                            ? paid.map((t) => money(t.total, t.currency)).join(" + ")
+                            : "–"}
+                      {paid.length > 0 && (
+                        <span style={{ display: "block", fontSize: 10, color: "#475569" }}>
+                          {paid.reduce((n, t) => n + t.payments, 0)} payment
+                          {paid.reduce((n, t) => n + t.payments, 0) === 1 ? "" : "s"}
+                        </span>
+                      )}
+                    </button>
+                  </td>
                   <td style={tdStyle}>
                     <span style={monoStyle}>
-                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "—"}
+                      {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "–"}
                     </span>
                   </td>
                   <td style={tdStyle}>
                     <span style={monoStyle}>
-                      {u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleDateString() : "—"}
+                      {u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleDateString() : "–"}
                     </span>
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
@@ -614,12 +686,20 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                     </div>
                   </td>
                 </tr>
+                {openPayments === u.id && (
+                  <tr style={{ background: "#0d0f1a" }}>
+                    <td colSpan={showRoleId ? 11 : 10} style={{ padding: 0 }}>
+                      <PaymentHistory userId={u.id} name={name} />
+                    </td>
+                  </tr>
+                )}
+                </React.Fragment>
               );
             })}
             {sortedRows.length === 0 && (
               <tr>
                 <td
-                  colSpan={showRoleId ? 10 : 9}
+                  colSpan={showRoleId ? 11 : 10}
                   style={{ padding: "40px", textAlign: "center", color: "#475569", fontSize: 14 }}
                 >
                   No users found

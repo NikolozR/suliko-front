@@ -73,7 +73,7 @@ export default function LanguageManager() {
       }
       if (!response.ok) {
         const errText = await response.text();
-        throw new Error(`Failed to save language: ${response.status} — ${errText}`);
+        throw new Error(`Failed to save language: ${response.status}: ${errText}`);
       }
 
       setMessage(`Language "${name.trim()}" saved with ID ${newId}.`);

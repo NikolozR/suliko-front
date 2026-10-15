@@ -5,7 +5,6 @@ import { Link } from "@/i18n/navigation";
 import { Plus, FolderOpen, HelpCircle, User, ClipboardList } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useTranslations } from "next-intl";
-import { useIsTranslator } from "@/features/orders/useIsTranslator";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 
@@ -13,7 +12,6 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
   const { token } = useAuthStore();
   const t = useTranslations("Sidebar");
-  const isTranslator = useIsTranslator(token);
   const resetTextTranslation = useTextTranslationStore((s) => s.reset);
   const resetDocumentTranslation = useDocumentTranslationStore((s) => s.reset);
 
@@ -32,16 +30,18 @@ export default function MobileBottomNav() {
         resetDocumentTranslation();
       },
     },
+    // Signed in: Help is on the Profile page, with Feedback and the language,
+    // which leaves room for the orders bureaus have assigned.
     ...(token
-      ? [{ label: t("projects"), href: "/projects" as const, icon: FolderOpen }]
-      : []),
-    ...(isTranslator
-      ? [{ label: t("orders"), href: "/orders" as const, icon: ClipboardList }]
-      : []),
-    { label: t("help"), href: "/help" as const, icon: HelpCircle },
-    token
-      ? { label: t("profile"), href: "/profile" as const, icon: User }
-      : { label: t("login"), href: "/sign-in" as const, icon: User },
+      ? [
+          { label: t("projects"), href: "/projects" as const, icon: FolderOpen },
+          { label: t("orders"), href: "/orders" as const, icon: ClipboardList },
+          { label: t("profile"), href: "/profile" as const, icon: User },
+        ]
+      : [
+          { label: t("help"), href: "/help" as const, icon: HelpCircle },
+          { label: t("login"), href: "/sign-in" as const, icon: User },
+        ]),
   ];
 
   return (

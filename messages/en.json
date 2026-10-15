@@ -115,10 +115,10 @@
     "phoneWillBeAskedLater": "You can add and verify your phone number after registration",
     "phoneVerificationDescription": "We'll send a verification code to your phone number",
     "emailVerificationDescription": "We'll send a verification code to your email address",
-    "termsText": "1. General Provisions\n\nThese terms and conditions govern the use of the translation service (\"Service\") offered by {name}, identification code: {id} (hereinafter - \"Company\", \"we\"). By accessing or using the Service, you as a user (\"User\") agree to the terms of this document.\n\n2. User Obligations\n\nWhen using the Service, you are obligated to use it only for legal purposes and not violate applicable laws.\n\nIt is prohibited to use the Service to create, distribute, or transmit any harmful or illegal content.\n\n3. Intellectual Property\n\nYou retain ownership of the text you upload to the Service. By using the Service, you grant the Company a limited, non-exclusive license to process and use this text solely for performing and improving the translation service.\n\nThe Service, all its components, software, design, and other materials constitute the intellectual property of the Company and are protected by copyright.\n\n4. Limitation of Liability\n\nThe Service is provided \"as is\" without any warranty. The Company makes no guarantee that the Service will be uninterrupted, error-free, or secure.\n\nThe Company is not liable for any direct, indirect, incidental, or other damages caused by the use of the Service.\n\n5. Service Termination\n\nThe Company has the right to restrict or terminate user access to the Service at any time and for any reason if the user violates these terms and conditions.\n\n6. Changes\n\nThe Company reserves the right to make changes to these terms and conditions at any time. Changes take effect immediately upon posting on the website or application.\n\n7. Refund Policy\n\nUnused translation credits are refundable in full for 14 days from the date of purchase, refunded to the card used. Credits already spent on a completed translation are not refundable, because the service has been performed. If a translation fails for a technical reason on our side, its credits are returned to your balance.\n\nTo request a refund, email {email} from the address on your account with the date and amount. We reply within 3 business days and send approved refunds within 10 business days.\n\nThe full delivery, cancellation and refund policy is published at /refund-policy.\n\n8. Contact Information\n\nCompany: {name}\nIdentification Code: {id}\nEmail: {email}\nPhone: {phone}\nAddress: {address}",
+    "termsText": "1. General Provisions\n\nThese terms and conditions govern the use of the translation service (\"Service\") offered by {name}, identification code: {id} (hereinafter - \"Company\", \"we\"). By accessing or using the Service, you as a user (\"User\") agree to the terms of this document.\n\n2. User Obligations\n\nWhen using the Service, you are obligated to use it only for legal purposes and not violate applicable laws.\n\nIt is prohibited to use the Service to create, distribute, or transmit any harmful or illegal content.\n\n3. Intellectual Property\n\nYou retain ownership of the text you upload to the Service. By using the Service, you grant the Company a limited, non-exclusive license to process and use this text solely for performing and improving the translation service.\n\nThe Service, all its components, software, design, and other materials constitute the intellectual property of the Company and are protected by copyright.\n\n4. Limitation of Liability\n\nThe Service is provided \"as is\" without any warranty. The Company makes no guarantee that the Service will be uninterrupted, error-free, or secure.\n\nThe Company is not liable for any direct, indirect, incidental, or other damages caused by the use of the Service.\n\n5. Service Termination\n\nThe Company has the right to restrict or terminate user access to the Service at any time and for any reason if the user violates these terms and conditions.\n\n6. Changes\n\nThe Company reserves the right to make changes to these terms and conditions at any time. Changes take effect immediately upon posting on the website or application.\n\n7. Refund Policy\n\nUnused translation credits are refundable in full for 14 days from the date of purchase, refunded to the card used. Credits already spent on a completed translation are not refundable, because the service has been performed. If a translation fails for a technical reason on our side, its credits are returned to your balance.\n\nTo request a refund, email {email} from the address on your account with the date and amount. We reply within 3 business days and send approved refunds within 10 business days.\n\nThe full delivery, cancellation and refund policy is published at /refund-policy.\n\n8. Data Security and Encryption\n\nEverything you send to the Service, and everything it sends back, travels over encrypted connections (TLS). Our servers use encrypted connections in the same way when they pass a document to the providers that translate it.\n\nPasswords are stored only as a one-way cryptographic hash, so nobody, including the Company, can read them.\n\nCard payments are made on the payment page of Bank of Georgia. You enter your card details there, and they never reach our servers and are not stored by us.\n\nIn Suliko Office, each bureau's data is kept apart from every other bureau's. Two-factor sign-in secrets, and the passwords and keys a bureau saves for connected services, are encrypted with AES-256-GCM, with a separate key for each bureau.\n\nAccess to users' data is limited to the people who need it to operate the Service. Section 4 still applies: no system is completely secure, and these measures are not a guarantee.\n\n9. Contact Information\n\nCompany: {name}\nIdentification Code: {id}\nEmail: {email}\nPhone: {phone}\nAddress: {address}",
     "orContinueWith": "Continue with Google",
-    "orWithCredentials": "or sign in with credentials",
-    "welcomeBack": "Welcome back — sign in to your account",
+    "orWithCredentials": "or",
+    "welcomeBack": "Welcome back! Sign in to your account.",
     "passwordHintLength": "At least 8 characters",
     "passwordHintDigit": "Contains a digit",
     "passwordHintSpecial": "Contains a special character",
@@ -130,7 +130,8 @@
     "back": "Back",
     "stepperVerify": "Verify",
     "stepperInfo": "Your Info",
-    "stepperPassword": "Password"
+    "stepperPassword": "Password",
+    "haveReferralCode": "Have a referral code?"
   },
   "AuthModal": {
     "title": "Please register to the system",
@@ -304,7 +305,7 @@
     "translating": "Translating…",
     "emptyState": "No names to review. Continue to translate.",
     "projectTitle": "New names for this project",
-    "projectDescription": "These names aren't in your project glossary yet. Confirm to add them — they'll be saved and reused automatically in this project's future translations.",
+    "projectDescription": "These names aren't in your project glossary yet. Confirm to add them. They'll be saved and reused automatically in this project's future translations.",
     "projectSkip": "Skip (use saved only)",
     "projectConfirm": "Add & Translate"
   },
@@ -454,13 +455,13 @@
       "plainDesc": "Just the translated text, without colours or layout. Faster."
     },
     "names": {
-      "title": "Confirm names before translating",
+      "title": "Confirm names first",
       "body": "You'll review how every person and organisation is spelled, so they stay the same across all your documents.",
       "savedCount": "{count} names saved in {project}",
       "editGlossary": "Edit glossary"
     },
     "instructions": {
-      "title": "Notes for the translator",
+      "title": "Notes",
       "body": "Optional. Terminology, tone, or anything to keep as it is. The review checks the translation against these too.",
       "placeholder": "e.g. Keep company names in English. Use a formal register."
     },
@@ -480,12 +481,17 @@
       "termsBody": "These renderings will be used throughout the translation. Change any you'd translate differently.",
       "termInput": "Translation of {term}",
       "removeTerm": "Remove {term}",
-      "showAll": "Show all {count}",
-      "showFewer": "Show fewer",
-      "questionsTitle": "Before we translate",
       "ownAnswer": "Or write your own answer",
       "ownAnswerFor": "Your answer to: {question}",
-      "template": "Using the {name} terminology template"
+      "template": "Using the {name} terminology template",
+      "more": "More",
+      "less": "Less",
+      "questionsCount": "{count, plural, one {# question before translating} other {# questions before translating}}",
+      "questionsAnswered": "{answered} of {count} answered",
+      "answer": "Answer",
+      "hide": "Hide",
+      "termsCount": "{count, plural, one {# term} other {# terms}}",
+      "review": "Review"
     },
     "quote": {
       "label": "Quote",
@@ -512,7 +518,7 @@
     "inProgress": {
       "pages": "{count, plural, one {# page} other {# pages}}",
       "working": "Translating your document",
-      "leaveHint": "You don't have to wait here — the translation carries on if you leave, and you'll find it in your history.",
+      "leaveHint": "You don't have to wait here. The translation carries on if you leave, and you'll find it in your history.",
       "stagesLabel": "Progress",
       "startingUp": "Starting up…",
       "openFullView": "Open full view",
@@ -575,6 +581,8 @@
     "deleteAccountConfirm": "Are you sure you want to delete your account?",
     "confirmDelete": "Yes, delete",
     "deleting": "Deleting...",
+    "languageAndHelp": "Language and help",
+    "language": "Language",
     "referral": "Referral Program",
     "referralDescription": "Share your code with friends. Both of you earn 50 credits when they register.",
     "copyCode": "Copy Code",
@@ -647,7 +655,7 @@
       "pages": "Pages",
       "approxWords": "Approx. words",
       "estimatedTime": "Est. time",
-      "leaveAndReturn": "You can leave this page and come back later — your translation will be here."
+      "leaveAndReturn": "You can leave this page and come back later. Your translation will be here."
     },
     "processingTips": {
       "title": "Did you know?",
@@ -656,7 +664,7 @@
       "tip3": "Suliko preserves your original formatting, including headings and lists.",
       "tip4": "You can edit the translation result directly before downloading.",
       "tip5": "Translation quality improves when the source text is clear and well-structured.",
-      "tip6": "Different languages have different word densities — Georgian uses fewer words than English for the same meaning."
+      "tip6": "Different languages have different word densities: Georgian uses fewer words than English for the same meaning."
     },
     "status": {
       "Completed": "Completed",
@@ -719,8 +727,8 @@
       "title": "Subscribe and Translate for Less! ✨",
       "description": "Until February 28, activate a monthly package at a special price:",
       "packages": [
-        "📑 100 pages/month — 20₾ (instead of 57₾)",
-        "📑 500 pages/month — 50₾ (instead of 173₾)"
+        "📑 100 pages/month: 20₾ (instead of 57₾)",
+        "📑 500 pages/month: 50₾ (instead of 173₾)"
       ],
       "proceed": "Proceed to payment",
       "okay": "Okay"
@@ -937,9 +945,9 @@
   },
   "AboutSection": {
     "title": "Why Choose Suliko?",
-    "subtitle": "The intelligent assistant that helps translators work faster and businesses scale — without sacrificing quality.",
+    "subtitle": "The intelligent assistant that helps translators work faster and businesses scale, without sacrificing quality.",
     "mission": "Our Mission",
-    "missionText": "Our mission is to make translation faster, more accurate, and accessible to everyone. Suliko combines artificial intelligence and translator expertise to make document translation a simple process — a matter of minutes, not hours. We want professional translators and businesses to have a unified, intelligent tool that preserves text format, structure, and meaning accuracy in any language.",
+    "missionText": "Our mission is to make translation faster, more accurate, and accessible to everyone. Suliko combines artificial intelligence and translator expertise to make document translation a simple process: a matter of minutes, not hours. We want professional translators and businesses to have a unified, intelligent tool that preserves text format, structure, and meaning accuracy in any language.",
     "video": {
       "title": "See Suliko in Action",
       "description": "Discover how Suliko works and why professionals worldwide choose it for their translation needs."
@@ -947,7 +955,7 @@
     "features": {
       "aiPowered": {
         "title": "Translator's Copilot",
-        "description": "Suliko empowers translators to earn 3-10x more by accelerating their workflow. We're not replacing translators—we're their intelligent assistant."
+        "description": "Suliko empowers translators to earn 3-10x more by accelerating their workflow. We're not replacing translators. We're their intelligent assistant."
       },
       "security": {
         "title": "Split-Screen Editing",
@@ -994,7 +1002,7 @@
         "name": "თარგმნის სახლი",
         "role": "Translation Agency",
         "company": "Translation House",
-        "content": "Suliko completely transformed our workflow. The accuracy and speed help us deliver better service to clients — an essential tool for our agency."
+        "content": "Suliko completely transformed our workflow. The accuracy and speed help us deliver better service to clients. An essential tool for our agency."
       },
       "irakliVekua": {
         "name": "ირაკლი ვეკუა",
@@ -1234,7 +1242,7 @@
       },
       "languages": {
         "question": "Which languages are supported?",
-        "answer": "We currently support over 50 languages, including Georgian, English, French, Turkish, Polish, Ukrainian, Arabic, and many more. Georgian is a first-class citizen — our models are specifically fine-tuned for it."
+        "answer": "We currently support over 50 languages, including Georgian, English, French, Turkish, Polish, Ukrainian, Arabic, and many more. Georgian is a first-class citizen: our models are specifically fine-tuned for it."
       },
       "formats": {
         "question": "What file formats can I upload?",
@@ -1242,7 +1250,7 @@
       },
       "pricing": {
         "question": "Is there a free tier?",
-        "answer": "Yes — every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow."
+        "answer": "Yes. Every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow."
       },
       "security": {
         "question": "Is my document data secure?",
@@ -1315,13 +1323,13 @@
     "services": {
       "sectionBadge": "How It Works",
       "heading": "Simple 3-Step Process",
-      "subheading": "From document upload to certified translation — fast and simple.",
+      "subheading": "From document upload to certified translation, fast and simple.",
       "step1Title": "Upload Your Document",
       "step1Desc": "Send us your document via our online form or WhatsApp.",
       "step2Title": "We Translate & Certify",
       "step2Desc": "Our certified translators complete the translation with notary stamp.",
       "step3Title": "Receive Your Translation",
-      "step3Desc": "Pick up in person or receive by courier — same day available."
+      "step3Desc": "Pick up in person or receive by courier. Same day available."
     },
     "pricing": {
       "sectionBadge": "Pricing",
@@ -1331,7 +1339,7 @@
       "subheadingLoading": "Live per-page rates straight from our translation partner.",
       "directionCol": "Direction",
       "loadingRates": "Loading live rates…",
-      "directionNote": "Rates are per direction — translating into a language and out of it can differ. Pulled live from our translation partner, so this table is never out of date.",
+      "directionNote": "Rates are per direction: translating into a language and out of it can differ. Pulled live from our translation partner, so this table is never out of date.",
       "urgencyTitle": "Delivery speed",
       "handoverTitle": "Delivery",
       "included": "Included",
@@ -1342,17 +1350,17 @@
       "heading": "Frequently Asked Questions",
       "subheading": "Everything you need to know about our notary translation services.",
       "q1": "How long does a notary translation take?",
-      "a1": "Standard translations are usually completed within 1–2 business days. Express same-day service is available for urgent documents — contact us for details.",
+      "a1": "Standard translations are usually completed within 1–2 business days. Express same-day service is available for urgent documents. Contact us for details.",
       "q2": "What documents can you translate?",
       "a2": "We translate all official documents including passports, birth certificates, marriage certificates, diplomas, contracts, medical records, court documents, and more.",
       "q3": "What is the price per page?",
-      "a3": "Prices start from [startingPrice] [currency] per page and vary by language pair — the rate table on this page is pulled live from our translation partner and lists every direction. Notarisation is quoted separately by the notary and confirmed with your order.",
+      "a3": "Prices start from [startingPrice] [currency] per page and vary by language pair. The rate table on this page is pulled live from our translation partner and lists every direction. Notarisation is quoted separately by the notary and confirmed with your order.",
       "q4": "Do you provide certified / notarized translations?",
       "a4": "Yes. All our translations can be notarially certified, making them legally valid for official use in Georgia and internationally.",
       "q5": "Can I submit a document online?",
       "a5": "Absolutely. Upload your document through our online form or send it via WhatsApp. We will review it and send you a price quote within 5 minutes.",
       "q6": "Do you translate to languages other than Georgian?",
-      "a6": "Yes — we translate between many language pairs including English, Russian, German, French, Italian, Spanish, Portuguese, Turkish, Azerbaijani, Ukrainian and Swedish. The live rate table on this page lists every direction we currently offer."
+      "a6": "Yes. We translate between many language pairs including English, Russian, German, French, Italian, Spanish, Portuguese, Turkish, Azerbaijani, Ukrainian and Swedish. The live rate table on this page lists every direction we currently offer."
     },
     "contact": {
       "heading": "Ready to Get Started?",
@@ -1371,7 +1379,7 @@
         "uploadTitle": "Send Us Your Document For Free Quote",
         "uploadSub": "Quick response ~ 5 minutes",
         "order": "Place an Order",
-        "calcSub": "No details needed — quote any language combination.",
+        "calcSub": "No details needed. Quote any language combination.",
         "orderTitle": "Place your order",
         "orderSub": "Four steps. Uploading files is optional."
       },
@@ -1399,7 +1407,7 @@
         "documentType": "Document type",
         "urgency": "Delivery speed",
         "urgencySurcharge": "Delivery speed surcharge",
-        "notarySeparate": "Notarisation is priced separately and confirmed with your order — we don't estimate it here, because a guess that differs from the confirmed total is worse than no figure at all.",
+        "notarySeparate": "Notarisation is priced separately and confirmed with your order. We don't estimate it here, because a guess that differs from the confirmed total is worse than no figure at all.",
         "estimateNote": "Live rates from our translation partner. The final price is confirmed with you before work begins.",
         "orderThis": "Order this"
       },
@@ -1436,10 +1444,10 @@
       "t2text": "We regularly use Suliko for employee visa documents. The team is professional, fast, and the quality is consistently excellent.",
       "t3name": "Anna Kopaliani",
       "t3role": "Private Client",
-      "t3text": "I needed my diploma translated and certified within 24 hours for an overseas application. Suliko delivered perfectly — would highly recommend.",
+      "t3text": "I needed my diploma translated and certified within 24 hours for an overseas application. Suliko delivered perfectly. Would highly recommend.",
       "t4name": "David Tsiklauri",
       "t4role": "CEO, Karvi Logistics",
-      "t4text": "Our company processes dozens of contracts in multiple languages. Suliko is our go-to translation partner — reliable, accurate, and always on time."
+      "t4text": "Our company processes dozens of contracts in multiple languages. Suliko is our go-to translation partner: reliable, accurate, and always on time."
     },
     "about": {
       "sectionBadge": "About Suliko",
@@ -1448,7 +1456,7 @@
       "f1title": "Certified Translators",
       "f1desc": "All our translators are state-certified with expertise in legal, medical, financial, and technical documents.",
       "f2title": "Same-Day Service",
-      "f2desc": "We offer express turnaround for urgent documents — receive your certified translation within hours, not days.",
+      "f2desc": "We offer express turnaround for urgent documents. Receive your certified translation within hours, not days.",
       "f3title": "Notary Partnership",
       "f3desc": "We work directly with licensed notaries to stamp and certify your documents, making them legally valid in Georgia and internationally.",
       "stat1Label": "Years Experience",
@@ -1540,18 +1548,18 @@
       "urgencyHint": "Applies to the whole order.",
       "handover": "Delivery Service",
       "handoverHint": "Pick one or more.",
-      "uploadOptional": "Uploading now is optional — you can send your files later, but it is the fastest way to a confirmed price.",
+      "uploadOptional": "Uploading now is optional. You can send your files later, but it is the fastest way to a confirmed price.",
       "uploadPrompt": "Click to choose files, or drop them here",
       "uploadFull": "Maximum number of files reached",
       "uploadLimits": "Up to {count} files, {size} MB each",
-      "uploadRejectType": "{name} — unsupported file type",
-      "uploadRejectSize": "{name} — larger than the size limit",
-      "uploadRejectCount": "{name} — file limit reached for this document",
+      "uploadRejectType": "{name}: unsupported file type",
+      "uploadRejectSize": "{name}: larger than the size limit",
+      "uploadRejectCount": "{name}: file limit reached for this document",
       "subtotal": "Translation subtotal",
       "urgencySurcharge": "{level} surcharge",
       "handoverExtras": "Delivery",
       "estimatedTotal": "Estimated total",
-      "notarySeparate": "Notarisation is priced separately and confirmed with your order — we do not estimate it here, because a guess that differs from the confirmed total is worse than no figure at all.",
+      "notarySeparate": "Notarisation is priced separately and confirmed with your order. We do not estimate it here, because a guess that differs from the confirmed total is worse than no figure at all.",
       "estimateNote": "This is an estimate. The confirmed total comes back with your order.",
       "clientType": "Ordering as",
       "individual": "Individual",
@@ -1578,14 +1586,14 @@
         "terms": "Please accept the terms to continue"
       },
       "errorAmbiguousTitle": "We could not confirm your order",
-      "errorAmbiguousBody": "The connection dropped before we heard back, so your order may or may not have gone through. Please do not resubmit — contact us with the reference below and we will check.",
+      "errorAmbiguousBody": "The connection dropped before we heard back, so your order may or may not have gone through. Please do not resubmit. Contact us with the reference below and we will check.",
       "errorValidationTitle": "Please fix the following",
       "errorValidationBody": "The order was not placed.",
       "errorConfigTitle": "Ordering is temporarily unavailable",
       "errorConfigBody": "This is a problem on our side, not with your details. Please contact us and we will take the order directly.",
       "errorServerTitle": "Something went wrong",
       "errorServerBody": "Your order was not placed. Please try again, or contact us if it keeps happening.",
-      "errorUnavailableBody": "The order service is busy right now. Nothing was saved — please try again in a moment.",
+      "errorUnavailableBody": "The order service is busy right now. Nothing was saved. Please try again in a moment.",
       "successTitle": "Order placed",
       "successBody": "We have your order and will be in touch shortly.",
       "successBodyEmail": "Your request is with our team and we will confirm the final price by email shortly.",
@@ -1602,11 +1610,11 @@
       "uploadEmailed": "Your {count} file(s) were sent to our team, tagged with order #{order}.",
       "uploadEmailFailed": "We could not send this file automatically.",
       "step1Sub": "Add your documents and select service options",
-      "step2Sub": "Attach your documents — optional, but it speeds things up",
+      "step2Sub": "Attach your documents (optional, but it speeds things up)",
       "step3Sub": "Check the details before you continue",
       "step4Sub": "Where we send the translation and the invoice",
-      "fromPlaceholder": "— From —",
-      "toPlaceholder": "— To —",
+      "fromPlaceholder": "– From –",
+      "toPlaceholder": "– To –",
       "addDocumentHint": "You can add multiple documents with different requirements",
       "basePrice": "Base Price",
       "surchargeBadge": "+{percent}% Price"
@@ -1616,7 +1624,7 @@
     "backToHome": "Back to home",
     "pageTitle": "Terms & Conditions | Suliko",
     "pageDescription": "Read the full Terms and Conditions for the Suliko AI translation service.",
-    "lastUpdated": "Last updated: 9 September 2026"
+    "lastUpdated": "Last updated: 13 October 2026"
   },
   "BulkTranslation": {
     "title": "Bulk translation",
@@ -1691,7 +1699,7 @@
     "slowPdfDescription": "PDFs are rendered one at a time in your browser, so this can take several minutes and will keep this tab busy. Word or Markdown are much faster.",
     "slowPdfConfirm": "Build PDFs",
     "downloadNothing": "Nothing could be downloaded. Please try again.",
-    "downloadPartial": "Downloaded {succeeded} of {total}. {failed} could not be included — see _missing-documents.txt in the zip.",
+    "downloadPartial": "Downloaded {succeeded} of {total}. {failed} could not be included: see _missing-documents.txt in the zip.",
     "downloadSuccess": "Downloaded {count, plural, one {# translation} other {# translations}}.",
     "downloadFailed": "Failed to build the download",
     "requeuedToast": "Requeued {count, plural, one {# document} other {# documents}}.",
@@ -1705,7 +1713,7 @@
     "pageDescription": "Who runs Suliko, what the service does, what it costs, and how to reach us.",
     "title": "About us",
     "intro": "Suliko is an AI translation service for documents and text. This page sets out who operates it, what it does, what it costs and how to contact us.",
-    "body": "1. The company\n\nSuliko is operated by {name}, identification code {id}, registered in Georgia. We are the merchant of record for every payment made on suliko.ge and suliko.io, and the party responsible for delivering the service described below.\n\n2. What the service does\n\nSuliko translates documents and text between more than 60 languages. You upload a file — Word, PDF, PowerPoint, Excel, images or subtitles — or paste text directly, choose the target language, and receive a translation that keeps the original layout, tables and formatting.\n\nThe service is used for contracts, technical documentation, academic and medical papers, subtitles and everyday correspondence. Georgian is a first-class language throughout, including Georgian passports and identity documents.\n\nA notarised translation option is available for documents that need legal certification in Georgia.\n\n3. How it works\n\nCreate an account, top up your balance, upload a document and choose the target language. Translation usually completes in under a minute for an ordinary document; large files take proportionally longer. Finished translations stay in your history and can be downloaded again at any time.\n\n4. What it costs\n\nAll prices are in Georgian lari (GEL, ₾), and that is the currency charged at checkout on both suliko.ge and suliko.io.\n\nPay as you go — 1 ₾ per page. Buy any amount from 1 ₾ upwards.\n\nStarter — 20 ₾ for 100 pages.\n\nProfessional — 50 ₾ for 500 pages.\n\nA page means one standard page of translated text. Pages do not expire and can be used whenever you need them. There is no subscription and no recurring charge: you are billed only for what you buy, at the moment you buy it.\n\n5. Contact\n\nEmail: {email}\nPhone: {phone}\nAddress: {address}\n\nWe answer support enquiries by email within one business day."
+    "body": "1. The company\n\nSuliko is operated by {name}, identification code {id}, registered in Georgia. We are the merchant of record for every payment made on suliko.ge and suliko.io, and the party responsible for delivering the service described below.\n\n2. What the service does\n\nSuliko translates documents and text between more than 60 languages. You upload a file (Word, PDF, PowerPoint, Excel, images or subtitles) or paste text directly, choose the target language, and receive a translation that keeps the original layout, tables and formatting.\n\nThe service is used for contracts, technical documentation, academic and medical papers, subtitles and everyday correspondence. Georgian is a first-class language throughout, including Georgian passports and identity documents.\n\nA notarised translation option is available for documents that need legal certification in Georgia.\n\n3. How it works\n\nCreate an account, top up your balance, upload a document and choose the target language. Translation usually completes in under a minute for an ordinary document; large files take proportionally longer. Finished translations stay in your history and can be downloaded again at any time.\n\n4. What it costs\n\nAll prices are in Georgian lari (GEL, ₾), and that is the currency charged at checkout on both suliko.ge and suliko.io.\n\nPay as you go: 1 ₾ per page. Buy any amount from 1 ₾ upwards.\n\nStarter: 20 ₾ for 100 pages.\n\nProfessional: 50 ₾ for 500 pages.\n\nA page means one standard page of translated text. Pages do not expire and can be used whenever you need them. There is no subscription and no recurring charge: you are billed only for what you buy, at the moment you buy it.\n\n5. Contact\n\nEmail: {email}\nPhone: {phone}\nAddress: {address}\n\nWe answer support enquiries by email within one business day."
   },
   "RefundPolicy": {
     "pageTitle": "Delivery, Cancellation and Refund Policy",
@@ -1713,7 +1721,7 @@
     "title": "Delivery, cancellation and refund policy",
     "lastUpdated": "Last updated: 9 September 2026",
     "intro": "This policy covers what you receive when you pay, when an order can be cancelled, and when we refund. It applies to purchases made on suliko.ge and suliko.io. Both sites are operated by {name} (identification code: {id}).",
-    "body": "1. What you are buying\n\nYou are buying translation credits, measured in pages, which are added to your account balance. Nothing is shipped: the service is delivered entirely online.\n\n2. Delivery\n\nCredits are added to your account as soon as the bank confirms your payment — normally within seconds. If your balance has not updated within 15 minutes of a successful payment, contact us at {email} with the date and amount and we will apply the credits manually.\n\nThere is no delivery charge, because there is nothing to deliver physically.\n\n3. Cancelling before you pay\n\nYou can abandon a payment at any point before you confirm it on the bank's page. Nothing is charged and no order is created. Closing the payment page, or letting it expire, cancels the order by itself.\n\n4. Refunds\n\nUnused credits are refundable in full for 14 days from the date of purchase. We will refund the amount paid to the card used for the purchase.\n\nCredits you have already spent on a completed translation are not refundable, because the service has been performed and delivered.\n\nIf a translation fails for a technical reason on our side, the credits for it are returned to your balance automatically. If that does not happen, tell us and we will restore them.\n\nIf you were charged twice for the same order, or charged after a payment that visibly failed, we refund the duplicate in full regardless of how long ago it happened.\n\n5. How to request a refund\n\nEmail {email} from the address on your account, telling us the date of the purchase, the amount, and briefly why you are asking. You do not need to give a reason for a refund of unused credits within 14 days.\n\nWe reply to every refund request within 3 business days. Approved refunds are sent back to the original card within 10 business days; how quickly it then appears on your statement is up to your bank.\n\n6. Problems with a translation\n\nIf a translation is wrong, incomplete or unusable, tell us within 14 days and we will re-run it at no cost, or refund the credits it consumed if we cannot put it right.\n\n7. Disputes\n\nIf something has gone wrong with a payment, please contact us first at {email} or {phone} — we can almost always resolve it faster than a card dispute can. Raising a chargeback with your bank remains your right and does not affect the rights described above."
+    "body": "1. What you are buying\n\nYou are buying translation credits, measured in pages, which are added to your account balance. Nothing is shipped: the service is delivered entirely online.\n\n2. Delivery\n\nCredits are added to your account as soon as the bank confirms your payment, normally within seconds. If your balance has not updated within 15 minutes of a successful payment, contact us at {email} with the date and amount and we will apply the credits manually.\n\nThere is no delivery charge, because there is nothing to deliver physically.\n\n3. Cancelling before you pay\n\nYou can abandon a payment at any point before you confirm it on the bank's page. Nothing is charged and no order is created. Closing the payment page, or letting it expire, cancels the order by itself.\n\n4. Refunds\n\nUnused credits are refundable in full for 14 days from the date of purchase. We will refund the amount paid to the card used for the purchase.\n\nCredits you have already spent on a completed translation are not refundable, because the service has been performed and delivered.\n\nIf a translation fails for a technical reason on our side, the credits for it are returned to your balance automatically. If that does not happen, tell us and we will restore them.\n\nIf you were charged twice for the same order, or charged after a payment that visibly failed, we refund the duplicate in full regardless of how long ago it happened.\n\n5. How to request a refund\n\nEmail {email} from the address on your account, telling us the date of the purchase, the amount, and briefly why you are asking. You do not need to give a reason for a refund of unused credits within 14 days.\n\nWe reply to every refund request within 3 business days. Approved refunds are sent back to the original card within 10 business days; how quickly it then appears on your statement is up to your bank.\n\n6. Problems with a translation\n\nIf a translation is wrong, incomplete or unusable, tell us within 14 days and we will re-run it at no cost, or refund the credits it consumed if we cannot put it right.\n\n7. Disputes\n\nIf something has gone wrong with a payment, please contact us first at {email} or {phone}. We can almost always resolve it faster than a card dispute can. Raising a chargeback with your bank remains your right and does not affect the rights described above."
   },
   "Privacy": {
     "pageTitle": "Privacy Policy",
@@ -1721,18 +1729,18 @@
     "title": "Privacy policy",
     "lastUpdated": "Last updated: 9 September 2026",
     "intro": "This policy explains what personal data Suliko collects, why we collect it, how long we keep it, and the choices you have. It applies to suliko.ge and suliko.io.",
-    "body": "1. Who is responsible\n\n{name} is the controller of the personal data described here. You can reach us at {email}, or by post at {address}.\n\n2. What we collect\n\nAccount details: your email address, and your phone number if you register with one. A password, stored only as a cryptographic hash that cannot be reversed.\n\nContent you submit: documents and text you upload for translation, and the translations produced from them.\n\nUsage records: pages translated, language pairs, timestamps and balance movements — what we need to bill correctly and to show your history.\n\nTechnical data: IP address, browser and device type, collected in ordinary server logs.\n\n3. Documents you upload\n\nYour documents are yours. We process them to produce your translation and to keep it available in your history, and for nothing else. We do not sell them, we do not publish them, and we do not use their contents to train models.\n\nTranslation is performed using Google's Gemini API. Your document text is sent to that service for the sole purpose of translating it, under Google's terms for API customers, which do not permit its use for training.\n\n4. Payment data\n\nCard payments are processed by the Bank of Georgia. Card numbers, expiry dates and security codes are entered on the bank's own page and are never sent to, seen by, or stored by us. We keep only the order reference, the amount, the currency and whether the payment succeeded.\n\n5. How long we keep it\n\nDocuments and translations stay in your history until you delete them or close your account.\n\nAccount records are kept while your account is open. When you close it, we delete your account and content within 30 days.\n\nPayment and invoicing records are kept for as long as Georgian accounting and tax law requires, which is longer than the periods above and applies even after an account is closed.\n\n6. Who else sees it\n\nWe share personal data only with the providers needed to run the service: our hosting provider, the Gemini API for translation, and the Bank of Georgia for payments. Each receives only what its task requires.\n\nWe disclose data to authorities only where the law obliges us to, and we do not sell personal data to anyone.\n\n7. Your rights\n\nYou can ask us to give you a copy of your data, correct it, delete it, or stop processing it. Write to {email} from the address on your account and we will respond within 30 days.\n\nYou can delete individual documents from your history yourself at any time, and you can close your account whenever you like.\n\n8. Cookies\n\nWe use cookies that are necessary for the site to work — keeping you signed in, and remembering your language and theme. We do not use advertising cookies. Analytics, where used, is limited to aggregate traffic measurement.\n\n9. Security\n\nTraffic to and from the site is encrypted in transit. Passwords are hashed. Access to production data is limited to the people who need it to operate the service.\n\n10. Changes\n\nIf we change this policy we will update the date at the top of this page. Material changes will be announced on the site before they take effect.\n\n11. Contact\n\nQuestions about privacy: {email}."
+    "body": "1. Who is responsible\n\n{name} is the controller of the personal data described here. You can reach us at {email}, or by post at {address}.\n\n2. What we collect\n\nAccount details: your email address, and your phone number if you register with one. A password, stored only as a cryptographic hash that cannot be reversed.\n\nContent you submit: documents and text you upload for translation, and the translations produced from them.\n\nUsage records: pages translated, language pairs, timestamps and balance movements (what we need to bill correctly and to show your history).\n\nTechnical data: IP address, browser and device type, collected in ordinary server logs.\n\n3. Documents you upload\n\nYour documents are yours. We process them to produce your translation and to keep it available in your history, and for nothing else. We do not sell them, we do not publish them, and we do not use their contents to train models.\n\nTranslation is performed using Google's Gemini API. Your document text is sent to that service for the sole purpose of translating it, under Google's terms for API customers, which do not permit its use for training.\n\n4. Payment data\n\nCard payments are processed by the Bank of Georgia. Card numbers, expiry dates and security codes are entered on the bank's own page and are never sent to, seen by, or stored by us. We keep only the order reference, the amount, the currency and whether the payment succeeded.\n\n5. How long we keep it\n\nDocuments and translations stay in your history until you delete them or close your account.\n\nAccount records are kept while your account is open. When you close it, we delete your account and content within 30 days.\n\nPayment and invoicing records are kept for as long as Georgian accounting and tax law requires, which is longer than the periods above and applies even after an account is closed.\n\n6. Who else sees it\n\nWe share personal data only with the providers needed to run the service: our hosting provider, the Gemini API for translation, and the Bank of Georgia for payments. Each receives only what its task requires.\n\nWe disclose data to authorities only where the law obliges us to, and we do not sell personal data to anyone.\n\n7. Your rights\n\nYou can ask us to give you a copy of your data, correct it, delete it, or stop processing it. Write to {email} from the address on your account and we will respond within 30 days.\n\nYou can delete individual documents from your history yourself at any time, and you can close your account whenever you like.\n\n8. Cookies\n\nWe use cookies that are necessary for the site to work: keeping you signed in, and remembering your language and theme. We do not use advertising cookies. Analytics, where used, is limited to aggregate traffic measurement.\n\n9. Security\n\nTraffic to and from the site is encrypted in transit. Passwords are hashed. Access to production data is limited to the people who need it to operate the service.\n\n10. Changes\n\nIf we change this policy we will update the date at the top of this page. Material changes will be announced on the site before they take effect.\n\n11. Contact\n\nQuestions about privacy: {email}."
   },
   "SulikoOffice": {
     "meta": {
       "title": "Suliko Office: Translation Management System for Bureaus & LSPs",
-      "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. Book a demo."
+      "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. Backed by a 90-day money-back guarantee. Book a demo."
     },
     "nav": {
       "home": "Suliko Office home",
       "backToSuliko": "Suliko",
       "language": "Language",
-      "login": "Log in",
+      "login": "Sign in",
       "demo": "Book a demo",
       "menu": "Open menu",
       "closeMenu": "Close menu",
@@ -1749,10 +1757,9 @@
       "eyebrow": "Translation management system for bureaus",
       "title": "Run your translation bureau from one screen",
       "sub": "Orders, translators, notaries, payments and clients in one system. Built and used daily by a working bureau.",
-      "primary": "Book a demo",
+      "primary": "Sign in",
       "secondary": "See how it works",
-      "already": "Already using Suliko Office?",
-      "login": "Log in",
+      "guarantee": "90-day money-back guarantee",
       "badge1Title": "Notary fee",
       "badge1Text": "14.44 ₾",
       "badge2Title": "Translator assigned",
@@ -1858,7 +1865,16 @@
       "q3": "Which languages does it support?",
       "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers, and you set the pairs for each translator.",
       "q4": "How much does it cost?",
-      "a4": "Pricing is tailored to your bureau's size and needs, so let's talk. Book a demo and we'll put together an offer for you."
+      "a4": "The price depends on how many orders your bureau handles: packages for up to 50, up to 100, and over 100 orders. Contact us and we'll put together an offer for you. Every plan comes with a 90-day money-back guarantee."
+    },
+    "signIn": {
+      "title": "Sign in to Suliko Office",
+      "sub": "Your orders, translators, notaries and payments in one place.",
+      "button": "Sign in"
+    },
+    "demoPrompt": {
+      "text": "Not using Suliko Office yet?",
+      "link": "Book a demo"
     },
     "form": {
       "kicker": "Book a demo",
@@ -1867,7 +1883,7 @@
       "onCall": "On the call",
       "e1": "A walkthrough of one order, from request to pickup",
       "e2": "How your current Excel and WhatsApp setup would move across",
-      "e3": "Pricing tailored to your bureau",
+      "e3": "Pricing for your bureau, with a 90-day money-back guarantee",
       "name": "Your name",
       "company": "Bureau / company",
       "email": "Email",
@@ -2032,7 +2048,7 @@
   "Features": {
     "eyebrow": "Why Suliko",
     "title": "An assistant for translators, not a replacement",
-    "subtitle": "The intelligent assistant that helps translators work faster and businesses scale — without sacrificing quality.",
+    "subtitle": "The intelligent assistant that helps translators work faster and businesses scale, without sacrificing quality.",
     "copilot": {
       "title": "Translator's Copilot",
       "body": "Earn 3–10x more by speeding up the work you already do, with suggestions on every segment.",
@@ -2108,7 +2124,8 @@
     "signOutTitle": "Sign out of Suliko?",
     "signOutBody": "You'll be signed out of Suliko and Suliko Office on this device.",
     "signOut": "Sign out",
-    "stay": "Stay signed in"
+    "stay": "Stay signed in",
+    "registerSubtitle": "Create a Suliko account to use Suliko Office"
   },
   "Orders": {
     "title": "Orders",
@@ -2117,23 +2134,96 @@
     "empty": "No orders are assigned to you right now.",
     "error": "Could not load your orders. Please try again in a moment.",
     "unavailable": "Orders are not available yet.",
+    "signedOut": "Sign in to see the orders bureaus have assigned to you.",
+    "translate": "Translate",
+    "translateAgain": "Translate again",
+    "openTranslation": "Open your translation",
+    "upload": "Upload a translation",
+    "uploading": "Uploading…",
+    "remove": "Remove",
+    "removeTitle": "Remove this file from the order?",
+    "removeBody": "{name} will no longer be in the order, and {bureau} will not see it any more. A translation it was sent from stays in your history.",
+    "removeNotMine": "Only a translation you added can be removed here. Other files belong to the bureau.",
+    "removeSignedOut": "Your sign-in has ended. Sign in again, then remove it once more.",
+    "removeError": "Could not remove the file. Please try again in a moment.",
+    "forOrder": "Order #{number} · {bureau}",
+    "forOrderHint": "This is the bureau's file. Translate it like any document of your own. When the translation is ready, you can send it to the order.",
+    "backToOrder": "Back to the order",
+    "fetchingFile": "Getting the file from your order…",
+    "fileNeedsSignIn": "Sign in to open the file from your order.",
+    "fileNotInOrder": "This file is no longer in the order.",
+    "fileTooLargeToTranslate": "This file is over {max} MB, the most that can be translated here.",
+    "fileNotFetched": "Could not get the file from the order. Please try again in a moment.",
+    "sendHint": "When the translation is ready, send it to the bureau from here.",
+    "sentAs": "Sent to the order as {name}.",
+    "send": "Send to order",
+    "sendAgain": "Send again",
+    "sendTitle": "Send to order #{number}",
+    "sendIntro": "{bureau} will find the file among the order's files. It is sent as it stands in the editor now, with your edits.",
+    "sendFormat": "Send as",
+    "formatDocx": "Word document",
+    "formatPdf": "PDF",
+    "formatSrt": "Subtitles (SRT)",
+    "sending": "Sending…",
+    "cancel": "Cancel",
+    "sendDone": "Sent to the order.",
+    "sendTooLarge": "The file is too large for the bureau's storage.",
+    "sendGone": "This document is no longer assigned to you, so the file was not sent.",
+    "sendSignedOut": "Your sign-in has ended. Sign in again, then send it once more.",
+    "sendError": "Could not send the file. Please try again in a moment.",
+    "notLinkedTitle": "No bureau has added you as a translator yet.",
+    "notLinkedBody": "A bureau adds you from its Suliko Office account, under Translators, by choosing this suliko.ge account. The documents it assigns to you then appear here.",
     "order": "Order #{id}",
     "client": "Client",
     "due": "Due",
     "noDue": "No due date",
     "ordered": "Ordered",
     "documents": "Documents",
-    "pages": "{count} pages",
-    "files": "Files",
+    "pages": "{count, plural, one {# page} other {# pages}}",
+    "pagesInOrder": "{count, plural, one {# page} other {# pages}} in the order",
+    "statusNotStarted": "Not started",
+    "statusInProgress": "In progress",
+    "statusSent": "Sent",
+    "sentOf": "{sent} of {total} sent",
+    "allSent": "All sent",
+    "dueIn": "Due in {days, plural, one {# day} other {# days}}",
+    "dueToday": "Due today",
+    "dueTomorrow": "Due tomorrow",
+    "overdueBy": "Overdue by {days, plural, one {# day} other {# days}}",
+    "dueOn": "Due {date}",
     "noFiles": "No files yet",
     "download": "Download",
     "back": "Back to orders",
-    "fileGone": "No longer available — ask the bureau",
+    "fileGone": "No longer available. Ask the bureau.",
     "filesUnavailable": "File storage is temporarily unavailable",
     "notFound": "This order was not found",
     "bureau": "Bureau",
     "open": "Open",
     "fromBureau": "From the bureau",
-    "mine": "Uploaded by you"
+    "yourTranslations": "Your translations",
+    "nothingSent": "Nothing sent yet.",
+    "preview": "Preview",
+    "closePreview": "Close preview",
+    "compare": "Compare",
+    "compareWithOriginal": "Compare with the original",
+    "compareTitle": "Original and translation",
+    "original": "Original",
+    "translation": "Translation",
+    "closeCompare": "Close comparison",
+    "scrollTogether": "Scroll together",
+    "edit": "Edit",
+    "editHint": "Saving replaces this file in the order.",
+    "saveToOrder": "Save to order",
+    "savingToOrder": "Saving…",
+    "saveDone": "Saved. The order now has the corrected file.",
+    "saveDoneBoth": "Saved. The order and your history now have the corrected version.",
+    "historyDiffers": "The copy in your history has other changes, so it was left as it is.",
+    "historyFailed": "The copy in your history could not be updated.",
+    "saveKeptEarlier": "Saved as a new file, but the earlier one could not be removed. Remove it on the order page.",
+    "discardTitle": "Close without saving?",
+    "discardBody": "Your corrections will be lost. The file in the order stays as it was.",
+    "discard": "Close without saving",
+    "previewLoading": "Opening the file…",
+    "previewFailed": "Could not open this file here. You can still download it."
   }
 }
