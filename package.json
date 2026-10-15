@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "vercel-build": "next build",
+    "test:unit": "node --test src/features/editor/*.test.mjs",
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:debug": "playwright test --debug"
@@ -28,6 +29,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "@radix-ui/react-tabs": "^1.1.11",
     "@react-oauth/google": "^0.13.4",
+    "@syncfusion/ej2-react-documenteditor": "34.1.30",
     "@tailwindcss/typography": "^0.5.16",
     "@tiptap/extension-color": "^3.22.4",
     "@tiptap/extension-font-family": "^3.22.4",

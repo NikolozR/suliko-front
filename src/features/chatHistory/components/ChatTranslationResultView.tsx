@@ -8,13 +8,13 @@ import CopyButton from "@/features/translation/components/CopyButton";
 import DownloadButton from "@/features/translation/components/DownloadButton";
 import ChatSuggestionsPanel from './ChatSuggestionsPanel';
 import SuggestionsJumpButton from "@/features/translation/components/SuggestionsJumpButton";
-import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
+import TranslationEditor, { type TranslationEditorHandle } from "@/features/editor/TranslationEditor";
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { FileText, File, Download, X, Eye, EyeOff,  FileDown } from "lucide-react";
 import React from "react";
-import { updateChatDocumentContent } from "../services/chatService";
+import { getChatDocument, saveChatDocument, updateChatDocumentContent } from "../services/chatService";
 import SaveButton from "@/features/translation/components/SaveButton";
 import toast from "react-hot-toast";
 import { SendToOrder, type OrderExportFormat } from "@/features/orders/components/SendToOrder";
@@ -26,7 +26,7 @@ import { originalPageSetup } from "@/features/translation/utils/originalPage";
  * up: the same content the user sees and what copy-paste into Word uses, so the
  * formatting is right. Otherwise what was loaded, converted if it is Markdown.
  */
-function translationHtml(editor: NewEditorHandle | null, loaded: string): string {
+function translationHtml(editor: TranslationEditorHandle | null, loaded: string): string {
   const editorHtml = editor?.getHTML();
   if (editorHtml && editorHtml !== "<p></p>") return editorHtml;
   return translationAsHtml(loaded);
@@ -40,6 +40,8 @@ interface ChatTranslationResultViewProps {
   onRemoveFile?: () => void;
   onEdit: (content: string) => void;
   isSuggestionsLoading: boolean;
+  /** The Word editor has saved a Word file for this translation that is still current: it opens from that. */
+  hasSavedDocument?: boolean;
 }
 
 const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
@@ -50,6 +52,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   onRemoveFile,
   onEdit,
   isSuggestionsLoading,
+  hasSavedDocument = false,
 }) => {
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
@@ -58,7 +61,9 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
-  const editorRef = useRef<NewEditorHandle>(null) as RefObject<NewEditorHandle>;
+  const editorRef = useRef<TranslationEditorHandle>(null) as RefObject<TranslationEditorHandle>;
+  // The Word editor scrolls its own pages; the simple editor is scrolled by the box around it.
+  const [wordScroller, setWordScroller] = useState<HTMLElement | null>(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
@@ -77,7 +82,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     const documentContainer =
       documentPreviewRef.current?.querySelector(".overflow-y-auto");
     const markdownContainer =
-      markdownPreviewRef.current?.querySelector(".overflow-y-auto");
+      wordScroller ?? markdownPreviewRef.current?.querySelector(".overflow-y-auto");
 
     if (!documentContainer || !markdownContainer || !translatedMarkdown) return;
 
@@ -109,15 +114,49 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
       documentContainer.removeEventListener("scroll", handleDocumentScroll);
       markdownContainer.removeEventListener("scroll", handleMarkdownScroll);
     };
-  }, [translatedMarkdown]);
+  }, [translatedMarkdown, wordScroller]);
 
+
+  /**
+   * Saved to the translation's chat. The Word editor's document goes as the Word file with the
+   * HTML written beside it, so it opens again as it was left; the simple editor's as HTML.
+   */
+  const saveToChat = async (): Promise<void> => {
+    const word = editorRef.current?.toDocx();
+    if (word) {
+      await saveChatDocument(chatId, translationHtml(editorRef.current, translatedMarkdown), await word);
+      return;
+    }
+    await updateChatDocumentContent(chatId, translatedMarkdown);
+  };
+
+  const saveToChatRef = useRef(saveToChat);
+  saveToChatRef.current = saveToChat;
+
+  /**
+   * The PDF. From the Word file, by the server, where the Word editor is in use: laid out as Word
+   * lays it out, not a picture of a web page. From the HTML here when there is no Word file, or
+   * when the server cannot (a licence it does not have, a busy minute).
+   */
+  const pdfBlob = async (name: string): Promise<Blob> => {
+    const made = editorRef.current?.toPdf();
+    if (made) {
+      try {
+        return await made;
+      } catch (error) {
+        console.warn("The server could not make the PDF; making it here.", error);
+      }
+    }
+    const { generatePdfBlobFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+    return generatePdfBlobFromHtml(translationHtml(editorRef.current, translatedMarkdown), name);
+  };
 
   useEffect(() => {
     if (remainingSeconds <= 0) return;
 
     const autosaveInterval = setInterval(async () => {
       try {
-        await updateChatDocumentContent(chatId, translatedMarkdown);
+        await saveToChatRef.current();
         toast.success("Autosaved.", { id: "autosave", duration: 1500 });
       } catch {
         toast.error("Autosave failed.", { id: "autosave" });
@@ -162,12 +201,13 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     if (format === "srt") return new DomFile([translatedMarkdown], name, { type: "text/srt" });
     const html = translationHtml(editorRef.current, translatedMarkdown);
     if (format === "docx") {
-      return new DomFile([await wordBlob(html, await originalPageSetup(currentFile))], name, {
+      // The Word editor writes the Word file itself; the simple editor's HTML is put in one.
+      const blob = (await editorRef.current?.toDocx()) ?? (await wordBlob(html, await originalPageSetup(currentFile)));
+      return new DomFile([blob], name, {
         type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
       });
     }
-    const { generatePdfBlobFromHtml } = await import("@/features/translation/utils/html2pdf-client");
-    return new DomFile([await generatePdfBlobFromHtml(html, name)], name, { type: "application/pdf" });
+    return new DomFile([await pdfBlob(name)], name, { type: "application/pdf" });
   };
 
   useEffect(() => {
@@ -188,8 +228,9 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        const page = await originalPageSetup(currentFile);
-        const blob = await wordBlob(translationHtml(editorRef.current, translatedMarkdown), page);
+        const blob =
+          (await editorRef.current?.toDocx()) ??
+          (await wordBlob(translationHtml(editorRef.current, translatedMarkdown), await originalPageSetup(currentFile)));
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -200,9 +241,29 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
         try {
-          const htmlContent = translationHtml(editorRef.current, translatedMarkdown);
-          const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
-          await generatePdfFromHtml(htmlContent, fileName);
+          const made = editorRef.current?.toPdf();
+          let sent = false;
+          if (made) {
+            try {
+              const blob = await made;
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = fileName;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              sent = true;
+            } catch (error) {
+              console.warn("The server could not make the PDF; making it here.", error);
+            }
+          }
+          if (!sent) {
+            const htmlContent = translationHtml(editorRef.current, translatedMarkdown);
+            const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+            await generatePdfFromHtml(htmlContent, fileName);
+          }
         } catch (err) {
           console.error("PDF export failed:", err);
           alert("Failed to generate PDF");
@@ -217,7 +278,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
 
   const handleSaveDocument = async (): Promise<void> => {
     try {
-      await updateChatDocumentContent(chatId, translatedMarkdown);
+      await saveToChat();
       toast.success("Changes saved successfully.");
     } catch (error: unknown) {
       const message =
@@ -350,11 +411,16 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
             </div>
           </div>
           <div className="min-h-[300px] h-[50vh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
-            <NewEditor
+            <TranslationEditor
               ref={editorRef}
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}
               hoveredText={hoveredSuggestionOriginalText}
+              file={currentFile}
+              forceSimple={isOriginalFileSrt()}
+              onScroller={setWordScroller}
+              openDocument={hasSavedDocument ? () => getChatDocument(chatId) : undefined}
+              className="h-full"
             />
           </div>
         </div>

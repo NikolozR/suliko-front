@@ -20,7 +20,7 @@ import { formatDate } from "../display";
 import { useOrderFile, type OrderFileBytes } from "../orderFileBytes";
 import { useScrollTogether } from "../scrollTogether";
 import type { OrderFile } from "../types";
-import { OrderTranslationEditor, editablePageOf } from "./OrderTranslationEditor";
+import { OrderTranslationEditor, editableSourceOf, type EditableSource } from "./OrderTranslationEditor";
 
 export type CompareTarget = {
   slug: string;
@@ -223,19 +223,19 @@ function TranslationPane({
   const loaded = useOrderFile(target.slug, target.orderId, target.documentId, file);
   const bytes = loaded.status === "ok" ? loaded.file : null;
 
-  // The page the file's text is, where it is a file that can be corrected here.
-  const [page, setPage] = useState<{ of: File; html: string | null } | null>(null);
+  // What the file is opened from, where it is a file that can be corrected here.
+  const [opened, setOpened] = useState<{ of: File; source: EditableSource | null } | null>(null);
   useEffect(() => {
     if (!bytes) return;
     let cancelled = false;
-    editablePageOf(bytes).then((html) => {
-      if (!cancelled) setPage({ of: bytes, html });
+    editableSourceOf(bytes).then((source) => {
+      if (!cancelled) setOpened({ of: bytes, source });
     });
     return () => {
       cancelled = true;
     };
   }, [bytes]);
-  const editable = bytes && page?.of === bytes ? page.html : null;
+  const editable = bytes && opened?.of === bytes ? opened.source : null;
 
   // Which file is open for corrections.
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -276,7 +276,7 @@ function TranslationPane({
           orderId={target.orderId}
           documentId={target.documentId}
           file={file}
-          page={editable}
+          source={editable}
           onScroller={onScroller}
           onEdited={onEdited}
           onCancel={() => setEditingId(null)}
