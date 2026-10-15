@@ -39,34 +39,44 @@ export const withHtml2CanvasBaselineFix = async <T,>(draw: () => Promise<T>): Pr
 };
 
 /**
+ * The look of a generated PDF. Every rule names `.pdf-document`, the box the content is drawn in:
+ * html2pdf puts that box into the live page for the length of the drawing, so a rule for `body`
+ * or `*` would restyle the whole site while a PDF is being made.
+ *
+ * Text is dark unless the document gives it a colour of its own (red text stays red).
+ * `hr.page-break` is where the original document's page ended: the next page starts a new sheet.
+ */
+const PDF_STYLES = `
+  .pdf-document {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #111;
+    background-color: #fff;
+  }
+  .pdf-document, .pdf-document * { box-sizing: border-box; }
+  .pdf-document hr.page-break {
+    page-break-before: always;
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    border: none;
+  }
+  .pdf-document :is(h1, h2, h3, h4, h5, h6) { page-break-after: avoid; }
+  .pdf-document :is(p, li, blockquote, pre) { orphans: 3; widows: 3; }
+  .pdf-document :is(table, figure, img) { page-break-inside: avoid; }
+`;
+
+/**
  * Styling and layout for generated PDFs.
  *
  * Shared by the single-file download and the bulk zip so a document exported on its own and
  * the same document exported inside a batch come out identical.
  */
 const buildPdfDocument = (htmlContent: string, filename: string) => {
-  const styles = `
-    <style>
-      * { box-sizing: border-box; color: #111 !important; }
-      body {
-        font-family: Georgia, 'Times New Roman', serif;
-        font-size: 13px;
-        line-height: 1.6;
-        color: #111;
-        background-color: #fff;
-      }
-      hr.page-break {
-        page-break-before: always;
-        visibility: hidden;
-        height: 0;
-        margin: 0;
-        border: none;
-      }
-      h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
-      p, li, blockquote, pre { orphans: 3; widows: 3; }
-      table, figure, img { page-break-inside: avoid; }
-    </style>
-  `;
+  // html2pdf sanitizes the HTML it is given, and a style at the very start of it is thrown away
+  // there. Inside the box it is kept.
+  const source = `<div class="pdf-document"><style>${PDF_STYLES}</style>${htmlContent}</div>`;
 
   const options = {
     margin: [15, 12, 15, 12] as const,
@@ -105,7 +115,7 @@ const buildPdfDocument = (htmlContent: string, filename: string) => {
     },
   };
 
-  return { options, source: styles + htmlContent };
+  return { options, source };
 };
 
 export const generatePdfFromHtml = async (

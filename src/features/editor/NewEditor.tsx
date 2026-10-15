@@ -3,7 +3,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
-import { useEditor, EditorContent } from "@tiptap/react";
+import { useEditor, EditorContent, Extension } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import TextAlign from "@tiptap/extension-text-align";
@@ -23,6 +23,29 @@ import Superscript from "@tiptap/extension-superscript";
 import "./editor.css";
 import "./editor-pro.css";
 import ToolbarPro from "./ToolbarPro";
+
+/**
+ * A translation marks where a page of the original ended with `<hr class="page-break">`, and the
+ * PDF starts the next page on a new sheet there. A plain horizontal rule loses the class, so the
+ * mark would be gone from the PDF and from the saved translation.
+ */
+const PageBreakMark = Extension.create({
+  name: "pageBreakMark",
+  addGlobalAttributes() {
+    return [
+      {
+        types: ["horizontalRule"],
+        attributes: {
+          pageBreak: {
+            default: false,
+            parseHTML: (element) => element.classList.contains("page-break"),
+            renderHTML: (attributes) => (attributes.pageBreak ? { class: "page-break" } : {}),
+          },
+        },
+      },
+    ];
+  },
+});
 
 export interface NewEditorHandle {
   /** Returns the editor's current content as HTML (same as what copy-paste produces). */
@@ -49,6 +72,7 @@ const NewEditor = forwardRef<NewEditorHandle, NewEditorProps>(function NewEditor
       StarterKit.configure({
         heading: { levels: [1, 2, 3, 4, 5, 6] },
       }),
+      PageBreakMark,
       Underline,
       TextStyle,
       FontFamily,
