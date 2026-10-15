@@ -39,34 +39,71 @@ export const withHtml2CanvasBaselineFix = async <T,>(draw: () => Promise<T>): Pr
 };
 
 /**
+ * The look of a generated PDF. Every rule names `.pdf-document`, the box the content is drawn in:
+ * html2pdf puts that box into the live page for the length of the drawing, so a rule for `body`
+ * or `*` would restyle the whole site while a PDF is being made.
+ *
+ * Text is dark unless the document gives it a colour of its own (red text stays red). Georgia
+ * has no Georgian letters: those come from the site's own font.
+ * `hr.page-break` is where the original document's page ended: the next page starts a new sheet.
+ *
+ * The site's CSS reset takes from headings, paragraphs and lists what makes them look like a
+ * document (headings came out as plain text in the site's titling face, lists without bullets or
+ * numbers). They get it back here as the editor shows them.
+ */
+const PDF_STYLES = `
+  .pdf-document {
+    font-family: Georgia, 'Times New Roman', 'Secondary Font', serif;
+    font-size: 13px;
+    line-height: 1.6;
+    color: #111;
+    background-color: #fff;
+  }
+  .pdf-document, .pdf-document * { box-sizing: border-box; }
+  .pdf-document hr.page-break {
+    page-break-before: always;
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    border: none;
+  }
+  .pdf-document :is(h1, h2, h3, h4, h5, h6) { page-break-after: avoid; }
+  .pdf-document :is(p, li, blockquote, pre) { orphans: 3; widows: 3; }
+  .pdf-document :is(table, figure, img) { page-break-inside: avoid; }
+
+  .pdf-document :is(h1, h2, h3, h4, h5, h6) { font-family: inherit; font-weight: 700; }
+  .pdf-document h1 { font-size: 2em; margin: 0.67em 0; }
+  .pdf-document h2 { font-size: 1.5em; margin: 0.83em 0; }
+  .pdf-document h3 { font-size: 1.17em; margin: 1em 0; }
+  .pdf-document h4 { font-size: 1em; margin: 1.33em 0; }
+  .pdf-document h5 { font-size: 0.83em; margin: 1.67em 0; }
+  .pdf-document h6 { font-size: 0.67em; margin: 2.33em 0; }
+  .pdf-document p { margin: 0.5em 0; }
+  .pdf-document ul { list-style: disc; padding-left: 1.5em; margin: 0.5em 0; }
+  .pdf-document ol { list-style: decimal; padding-left: 1.5em; margin: 0.5em 0; }
+  .pdf-document li { margin: 0.25em 0; }
+  .pdf-document blockquote { border-left: 3px solid #ccc; margin: 0.5em 0; padding-left: 1em; color: #555; }
+`;
+
+/** What `<ol type>` means. CSS cannot tell "a" from "A" in it, so it is set on each list. */
+const LIST_NUMBERING: Record<string, string> = {
+  "1": "decimal",
+  a: "lower-alpha",
+  A: "upper-alpha",
+  i: "lower-roman",
+  I: "upper-roman",
+};
+
+/**
  * Styling and layout for generated PDFs.
  *
  * Shared by the single-file download and the bulk zip so a document exported on its own and
  * the same document exported inside a batch come out identical.
  */
 const buildPdfDocument = (htmlContent: string, filename: string) => {
-  const styles = `
-    <style>
-      * { box-sizing: border-box; color: #111 !important; }
-      body {
-        font-family: Georgia, 'Times New Roman', serif;
-        font-size: 13px;
-        line-height: 1.6;
-        color: #111;
-        background-color: #fff;
-      }
-      hr.page-break {
-        page-break-before: always;
-        visibility: hidden;
-        height: 0;
-        margin: 0;
-        border: none;
-      }
-      h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
-      p, li, blockquote, pre { orphans: 3; widows: 3; }
-      table, figure, img { page-break-inside: avoid; }
-    </style>
-  `;
+  // html2pdf sanitizes the HTML it is given, and a style at the very start of it is thrown away
+  // there. Inside the box it is kept.
+  const source = `<div class="pdf-document"><style>${PDF_STYLES}</style>${htmlContent}</div>`;
 
   const options = {
     margin: [15, 12, 15, 12] as const,
@@ -88,6 +125,10 @@ const buildPdfDocument = (htmlContent: string, filename: string) => {
           'style',
           'background-color:#fff !important; color:#111 !important;'
         );
+        clonedDoc.querySelectorAll<HTMLOListElement>(".pdf-document ol[type]").forEach((list) => {
+          const numbering = LIST_NUMBERING[list.getAttribute("type") ?? ""];
+          if (numbering) list.style.listStyleType = numbering;
+        });
       },
     },
     jsPDF: {
@@ -105,7 +146,7 @@ const buildPdfDocument = (htmlContent: string, filename: string) => {
     },
   };
 
-  return { options, source: styles + htmlContent };
+  return { options, source };
 };
 
 export const generatePdfFromHtml = async (
