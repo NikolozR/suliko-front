@@ -22,7 +22,8 @@ test.describe('Admin login page (UI only)', () => {
   });
 
   test('SULIKO brand heading is visible', async ({ page }) => {
-    await expect(page.getByText('SULIKO')).toBeVisible({ timeout: 8_000 });
+    // The admin layout's sidebar shows the brand too, and so does the <title>.
+    await expect(page.getByRole('main').getByText('SULIKO', { exact: true })).toBeVisible({ timeout: 8_000 });
   });
 
   test('Admin Access label is visible', async ({ page }) => {
