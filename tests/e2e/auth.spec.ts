@@ -34,12 +34,20 @@ test.describe('Sign-in form validation', () => {
   });
 
   test('wrong credentials show an error and leave the visitor signed out', async ({ page }) => {
-    // A number that is not registered: the backend answers with an error, nothing is created.
+    // The backend's answer is stubbed: a live login from a CI runner depends on the
+    // backend's latency and on its own throttling, which is not what is under test.
+    let loginCalls = 0;
+    await page.route('**/api/session/login', async (route) => {
+      loginCalls++;
+      await route.fulfill({ status: 401, contentType: 'application/json', body: '{"error":"invalid_credentials"}' });
+    });
+
     await page.locator('input[name="identifier"]').fill('500000001');
     await page.locator('input[name="password"]').fill('Not-The-Password-1');
     await page.locator('button[type="submit"]').first().click();
 
-    await expect(formAlert(page)).toBeVisible({ timeout: 30_000 });
+    await expect(formAlert(page)).toBeVisible({ timeout: 10_000 });
+    expect(loginCalls).toBe(1);
     await expect(page).toHaveURL(/\/sign-in/);
     expect(await page.evaluate(() => document.cookie)).not.toMatch(/(?:^|;\s*)token=/);
   });
