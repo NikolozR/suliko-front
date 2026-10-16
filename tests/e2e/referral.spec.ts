@@ -4,24 +4,23 @@ test.describe('Referral page', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/en/referral', { waitUntil: 'domcontentloaded' });
-    await page.locator('form').first().waitFor({ state: 'visible', timeout: 10_000 });
+    await page.locator('input[name="name"]').waitFor({ state: 'visible', timeout: 15_000 });
   });
 
-  test('form is visible', async ({ page }) => {
-    await expect(page.locator('form').first()).toBeVisible();
+  test('form has name and phone inputs', async ({ page }) => {
+    await expect(page.locator('input[name="name"]')).toBeVisible();
+    await expect(page.locator('input[name="phone"]')).toBeVisible();
     await expect(page.locator('body')).not.toContainText('Application error');
   });
 
-  test('phone input is visible', async ({ page }) => {
-    await expect(page.locator('input[type="tel"], input[name*="phone"]').first()).toBeVisible();
-  });
+  test('submit is disabled until the form is filled in', async ({ page }) => {
+    // Never submitted: that would register a real referral.
+    const submit = page.getByRole('button', { name: 'Submit', exact: true });
+    await expect(submit).toBeDisabled();
 
-  test('name input is visible', async ({ page }) => {
-    await expect(page.locator('input[type="text"]').first()).toBeVisible();
-  });
-
-  test('submit button is visible', async ({ page }) => {
-    await expect(page.locator('button[type="submit"]').first()).toBeVisible();
+    await page.locator('input[name="name"]').fill('Test Person');
+    await page.locator('input[name="phone"]').fill('591234567');
+    await expect(submit).toBeEnabled();
   });
 
 });

@@ -8,17 +8,19 @@ test.describe('Pricing page', () => {
   });
 
   test('page heading renders', async ({ page }) => {
-    await expect(page.locator('h1').first()).toBeVisible();
+    await expect(page.locator('h1').first()).toHaveText('Pricing Packages');
   });
 
-  test('Starter and Professional plans are visible', async ({ page }) => {
-    await expect(page.locator('text=Starter').first()).toBeVisible({ timeout: 8_000 });
-    await expect(page.locator('text=Professional').first()).toBeVisible({ timeout: 8_000 });
+  test('all three plans are listed', async ({ page }) => {
+    for (const plan of ['Starter', 'Professional', 'Pay as you go']) {
+      await expect(page.getByRole('heading', { name: plan }), plan).toBeVisible({ timeout: 8_000 });
+    }
   });
 
-  test('plan CTA buttons are present', async ({ page }) => {
-    const cta = page.locator('a[href*="sign-in"], button:has-text("Get")').first();
-    await expect(cta).toBeVisible({ timeout: 8_000 });
+  test('every plan has a Buy Credits button', async ({ page }) => {
+    const buttons = page.getByRole('button', { name: 'Buy Credits' });
+    await expect(buttons).toHaveCount(3);
+    await expect(buttons.first()).toBeEnabled();
   });
 
 });
