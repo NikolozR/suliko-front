@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-// Uses storageState set by tests/admin.setup.ts
+// Uses storageState set by tests/admin.setup.ts, which is skipped (and writes no
+// state file) when the admin credentials are not provided.
+test.skip(
+  !process.env.TEST_ADMIN_PHONE || !process.env.TEST_ADMIN_PASSWORD,
+  'TEST_ADMIN_PHONE and TEST_ADMIN_PASSWORD env vars are not set',
+);
+
 test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.describe('Admin login page (UI only)', () => {

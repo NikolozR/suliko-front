@@ -43,7 +43,7 @@ jobs:
   # These exercise live infrastructure beyond the frontend:
   #   - api:           the API's blog and passport-template endpoints
   #   - authenticated: user pages, needs the auth backend + TEST_USER_* account
-  #   - admin:         admin panel, needs the auth backend + the 579737737 account
+  #   - admin:         admin panel, needs the auth backend + the TEST_ADMIN_* account
   #
   # Kept non-blocking (continue-on-error) so an API outage or a slow/invalid
   # login can't turn the whole suite red — the `public` job above is the gate.
@@ -51,7 +51,7 @@ jobs:
   # make this a required signal too:
   #   1. The API serves the blog and passport templates (its database has the
   #      AddBlogAndPassportTemplates migration).
-  #   2. The TEST_USER_* and admin (579737737) accounts exist on content.api24.ge.
+  #   2. The TEST_USER_* and TEST_ADMIN_* accounts exist on content.api24.ge.
   extended:
     name: API + authenticated (non-blocking)
     runs-on: ubuntu-latest
@@ -77,6 +77,8 @@ jobs:
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           TEST_USER_PHONE: ${{ secrets.TEST_USER_PHONE }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          TEST_ADMIN_PHONE: ${{ secrets.TEST_ADMIN_PHONE }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
 
       - name: Upload report
         if: always()

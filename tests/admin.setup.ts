@@ -11,11 +11,19 @@ const adminCookiePresent = () => /(?:^|;\s*)adminAllowed=1\b/.test(document.cook
 setup('authenticate as admin', async ({ page }) => {
   setup.setTimeout(90_000);
 
+  const phone = process.env.TEST_ADMIN_PHONE;
+  const password = process.env.TEST_ADMIN_PASSWORD;
+
+  setup.skip(
+    !phone || !password,
+    'TEST_ADMIN_PHONE and TEST_ADMIN_PASSWORD env vars are not set, skipping admin authentication',
+  );
+
   await page.goto('/en/admin/login', { waitUntil: 'domcontentloaded' });
   await page.locator('input[placeholder="579 737 737"]').waitFor({ state: 'visible', timeout: 20_000 });
 
-  await page.locator('input[placeholder="579 737 737"]').fill('579 737 737');
-  await page.locator('input[type="password"]').fill('M.t.2002');
+  await page.locator('input[placeholder="579 737 737"]').fill(phone!);
+  await page.locator('input[type="password"]').fill(password!);
   await page.locator('button[type="submit"]').click();
 
   // Whichever resolves first ends the wait: adminAllowed cookie (success), a
@@ -32,7 +40,7 @@ setup('authenticate as admin', async ({ page }) => {
     const errorMsg = await page.locator('[style*="fca5a5"]').textContent().catch(() => null);
     throw new Error(
       `Admin login failed: "${errorMsg ?? 'no error shown — the auth backend is likely slow/unreachable or the account is invalid'}". ` +
-      `The account "579737737" must exist on the live backend with password "M.t.2002".`
+      `Check that TEST_ADMIN_PHONE / TEST_ADMIN_PASSWORD belong to an admin account on the live backend.`
     );
   }
 
