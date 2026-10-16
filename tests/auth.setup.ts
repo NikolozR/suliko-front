@@ -10,6 +10,11 @@ const authFile = path.join('playwright', '.auth', 'user.json');
 // fetch client has no timeout, so a slow backend used to eat the full 120s.
 const tokenPresent = () => /(?:^|;\s*)token=[^;]+/.test(document.cookie);
 
+// Next.js keeps an always-present, empty `role="alert"` route announcer in the page;
+// it counts as visible, so waiting on a bare [role="alert"] ends the race before the
+// login has even finished. Only the form's own API error alert is of interest.
+const apiErrorAlert = '[role="alert"]:not(#__next-route-announcer__)';
+
 setup('authenticate as test user', async ({ page }) => {
   setup.setTimeout(90_000);
 
@@ -32,7 +37,7 @@ setup('authenticate as test user', async ({ page }) => {
   await Promise.race([
     page.waitForFunction(tokenPresent, undefined, { timeout: 45_000 }),
     page.waitForURL(url => !url.toString().includes('/sign-in'), { timeout: 45_000 }),
-    page.locator('[role="alert"]').waitFor({ state: 'visible', timeout: 45_000 }),
+    page.locator(apiErrorAlert).waitFor({ state: 'visible', timeout: 45_000 }),
     page.locator('p[data-slot="form-message"]').waitFor({ state: 'visible', timeout: 45_000 }),
   ]).catch(() => {});
 
@@ -40,14 +45,14 @@ setup('authenticate as test user', async ({ page }) => {
   const loggedIn = await page.evaluate(tokenPresent);
 
   if (!loggedIn) {
-    const validationError = await page.locator('p[data-slot="form-message"]').first().textContent().catch(() => null);
+    const validationError = await page.locator('p[data-slot="form-message"]').first().textContent({ timeout: 2_000 }).catch(() => null);
     if (validationError) {
       throw new Error(
         `Login blocked by form validation: "${validationError}". ` +
         `TEST_USER_PHONE must be exactly 9 digits starting with 5, no spaces (e.g. "591234567").`
       );
     }
-    const apiError = await page.locator('[role="alert"]').textContent().catch(() => null);
+    const apiError = await page.locator(apiErrorAlert).first().textContent({ timeout: 2_000 }).catch(() => null);
     throw new Error(
       `Login failed: "${apiError ?? 'no error shown — the auth backend is likely slow/unreachable or the test account is invalid'}". ` +
       `Verify the test account exists on the live backend with phone="${phone}" and the correct password.`

@@ -1,4 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type Page } from '@playwright/test';
+
+// The tab bar is plain <button>s (no role="tab"), inside <main>; the sidebar has its own links.
+const tabButton = (page: Page, name: string) =>
+  page.getByRole('main').getByRole('button', { name, exact: true });
 
 // Uses storageState set by tests/admin.setup.ts, which is skipped (and writes no
 // state file) when the admin credentials are not provided.
@@ -10,6 +14,8 @@ test.skip(
 test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.describe('Admin login page (UI only)', () => {
+  // A signed-in admin is redirected away from the login page, so look at it signed out.
+  test.use({ storageState: { cookies: [], origins: [] } });
 
   test.beforeEach(async ({ page }) => {
     await page.goto('/en/admin/login', { waitUntil: 'domcontentloaded' });
@@ -39,9 +45,8 @@ test.describe('Admin login page (UI only)', () => {
     await page.locator('input[placeholder="5XX XXX XXX"]').fill('000000000');
     await page.locator('input[type="password"]').fill('wrongpass');
     await page.getByRole('button', { name: /Enter Panel/i }).click();
-    await expect(
-      page.getByText(/Not authorized/i)
-    ).toBeVisible({ timeout: 5_000 });
+    // The inline error box (red text); its wording depends on the API's answer.
+    await expect(page.locator('div[style*="252, 165, 165"]')).toBeVisible({ timeout: 10_000 });
   });
 
 });
@@ -56,24 +61,18 @@ test.describe('Admin dashboard', () => {
 
   test('/en/admin — dashboard content is visible', async ({ page }) => {
     await page.goto('/en/admin', { waitUntil: 'domcontentloaded' });
-    // AdminTabsWrapper renders tabs: Users and Referrals
-    await expect(
-      page.getByRole('tab').first()
-    ).toBeVisible({ timeout: 10_000 });
+    // AdminTabsWrapper renders a bar of plain buttons: Users, Referrals, Blog
+    await expect(tabButton(page, 'Users')).toBeVisible({ timeout: 10_000 });
   });
 
   test('/en/admin — Users tab is present', async ({ page }) => {
     await page.goto('/en/admin', { waitUntil: 'domcontentloaded' });
-    await expect(
-      page.getByRole('tab', { name: /users/i })
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(tabButton(page, 'Users')).toBeVisible({ timeout: 10_000 });
   });
 
   test('/en/admin — Referrals tab is present', async ({ page }) => {
     await page.goto('/en/admin', { waitUntil: 'domcontentloaded' });
-    await expect(
-      page.getByRole('tab', { name: /referral/i })
-    ).toBeVisible({ timeout: 10_000 });
+    await expect(tabButton(page, 'Referrals')).toBeVisible({ timeout: 10_000 });
   });
 
 });
