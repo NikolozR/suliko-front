@@ -20,9 +20,11 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   projects: [
-    // Setup projects — run first (as dependencies), write auth state to disk
-    { name: 'setup-user',  testMatch: /auth\.setup\.ts/,  testDir: './tests' },
-    { name: 'setup-admin', testMatch: /admin\.setup\.ts/, testDir: './tests' },
+    // Setup projects — run first (as dependencies), write auth state to disk.
+    // They type real credentials, which a trace records verbatim (and CI uploads the
+    // report as an artifact), so no trace or video for them.
+    { name: 'setup-user',  testMatch: /auth\.setup\.ts/,  testDir: './tests', use: { trace: 'off', video: 'off' } },
+    { name: 'setup-admin', testMatch: /admin\.setup\.ts/, testDir: './tests', use: { trace: 'off', video: 'off' } },
 
     // Public frontend smoke tests — no auth, no Supabase needed to pass.
     // This is the reliable "is the app healthy" signal and runs as its own CI job.

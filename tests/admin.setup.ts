@@ -40,7 +40,7 @@ setup('authenticate as admin', async ({ page }) => {
   const loggedIn = await page.evaluate(adminCookiePresent);
 
   if (!loggedIn) {
-    const errorMsg = await page.locator(errorBox).textContent().catch(() => null);
+    const errorMsg = await page.locator(errorBox).first().textContent({ timeout: 2_000 }).catch(() => null);
     throw new Error(
       `Admin login failed: "${errorMsg ?? 'no error shown — the auth backend is likely slow/unreachable or the account is invalid'}". ` +
       `Check that TEST_ADMIN_PHONE / TEST_ADMIN_PASSWORD belong to an admin account on the live backend.`

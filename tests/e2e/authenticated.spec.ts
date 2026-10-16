@@ -38,9 +38,10 @@ test.describe('Authenticated pages', () => {
 
   test('/en/projects — shows project list or empty state', async ({ page }) => {
     await page.goto('/en/projects', { waitUntil: 'domcontentloaded' });
-    // Either project cards or the empty state "+" icon renders
+    // Either project cards or the empty state "+" icon renders. Scoped to <main>:
+    // the first svg in the page is a hidden one in the sidebar.
     await expect(
-      page.locator('[class*="card"], [class*="Card"], svg').first()
+      page.getByRole('main').locator('[class*="card"], [class*="Card"], svg').first()
     ).toBeVisible({ timeout: 10_000 });
   });
 
