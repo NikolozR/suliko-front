@@ -24,7 +24,7 @@ test.describe('Admin login page (UI only)', () => {
   });
 
   test('phone input is visible', async ({ page }) => {
-    await expect(page.locator('input[placeholder="579 737 737"]')).toBeVisible();
+    await expect(page.locator('input[placeholder="5XX XXX XXX"]')).toBeVisible();
   });
 
   test('password input is visible', async ({ page }) => {
@@ -36,7 +36,7 @@ test.describe('Admin login page (UI only)', () => {
   });
 
   test('wrong credentials show error message', async ({ page }) => {
-    await page.locator('input[placeholder="579 737 737"]').fill('000000000');
+    await page.locator('input[placeholder="5XX XXX XXX"]').fill('000000000');
     await page.locator('input[type="password"]').fill('wrongpass');
     await page.getByRole('button', { name: /Enter Panel/i }).click();
     await expect(
