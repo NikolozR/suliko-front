@@ -74,4 +74,26 @@ test.describe('Authenticated pages', () => {
     ).toBeVisible({ timeout: 10_000 });
   });
 
+  test('/en/orders — loads without error', async ({ page }) => {
+    await page.goto('/en/orders', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('main')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('body')).not.toContainText('Application error');
+    await expect(page).toHaveURL(/\/en\/orders/);
+  });
+
+  test('/en/history — redirects to the projects page', async ({ page }) => {
+    await page.goto('/en/history', { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/en\/projects/, { timeout: 15_000 });
+  });
+
+  test('sidebar links navigate to their pages', async ({ page }) => {
+    await page.goto('/en/document', { waitUntil: 'networkidle' });
+    const sidebar = page.getByRole('complementary');
+    for (const [name, path] of [['Orders', '/en/orders'], ['Profile', '/en/profile'], ['Projects', '/en/projects']]) {
+      await sidebar.getByRole('link', { name, exact: true }).click();
+      await expect(page, name).toHaveURL(new RegExp(`${path}$`), { timeout: 15_000 });
+      await expect(page.locator('body')).not.toContainText('Application error');
+    }
+  });
+
 });

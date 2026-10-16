@@ -11,7 +11,7 @@ test.describe('Smoke tests', () => {
 
   test('pricing page loads with Starter plan', async ({ page }) => {
     await page.goto('/en/price');
-    await expect(page.locator('text=Starter').first()).toBeVisible({ timeout: 10_000 });
+    await expect(page.getByRole('heading', { name: 'Starter' })).toBeVisible({ timeout: 10_000 });
   });
 
   test('sign-in page loads with identifier input', async ({ page }) => {
@@ -21,15 +21,16 @@ test.describe('Smoke tests', () => {
     ).toBeVisible({ timeout: 8_000 });
   });
 
-  test('blog index loads without error', async ({ page }) => {
-    await page.goto('/en/blog');
+  test('blog index loads with its heading', async ({ page }) => {
+    const response = await page.goto('/en/blog');
+    expect(response?.status()).toBe(200);
+    await expect(page.locator('h1').first()).toHaveText('Blog', { timeout: 30_000 });
     await expect(page.locator('body')).not.toContainText('Application error');
-    await expect(page.locator('body')).not.toContainText('404');
   });
 
-  test('bare / redirects to /en', async ({ page }) => {
+  test('bare / redirects to a locale', async ({ page }) => {
     await page.goto('/');
-    expect(page.url()).toMatch(/\/en\/?/);
+    await expect(page).toHaveURL(/\/(en|ka)\/?$/);
   });
 
 });

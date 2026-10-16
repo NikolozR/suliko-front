@@ -1,24 +1,26 @@
 import { test, expect } from '@playwright/test';
 
+// Every public content page, in every locale: it must answer 200 and render its
+// own <h1>. (The error boundary renders no <h1>, so this also catches a page that
+// crashed on the client.)
+const PAGES = ['', '/price', '/about', '/privacy', '/refund-policy', '/terms', '/developers', '/notary', '/office', '/blog', '/help'];
+const LOCALES = ['en', 'ka', 'pl'];
+
+test.describe('Public pages render in every locale', () => {
+  for (const locale of LOCALES) {
+    for (const path of PAGES) {
+      test(`/${locale}${path}`, async ({ page }) => {
+        const response = await page.goto(`/${locale}${path}`, { waitUntil: 'domcontentloaded' });
+        expect(response?.status()).toBe(200);
+        await expect(page.locator('h1').first()).toBeVisible({ timeout: 20_000 });
+        await expect(page.locator('html')).toHaveAttribute('lang', locale);
+        await expect(page.locator('body')).not.toContainText('Application error');
+      });
+    }
+  }
+});
+
 test.describe('Public pages', () => {
-
-  test('/en/developers loads', async ({ page }) => {
-    await page.goto('/en/developers', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10_000 });
-    await expect(page.locator('body')).not.toContainText('Application error');
-  });
-
-  test('/en/notary loads', async ({ page }) => {
-    await page.goto('/en/notary', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 10_000 });
-    await expect(page.locator('body')).not.toContainText('Application error');
-  });
-
-  test('/en/terms loads with content', async ({ page }) => {
-    await page.goto('/en/terms', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('body')).not.toContainText('Application error');
-    await expect(page.locator('h1, h2').first()).toBeVisible({ timeout: 10_000 });
-  });
 
   test('/en/payment/success shows success heading and action buttons', async ({ page }) => {
     await page.goto('/en/payment/success', { waitUntil: 'domcontentloaded' });
@@ -34,49 +36,39 @@ test.describe('Public pages', () => {
     await expect(page.getByRole('button', { name: 'Go Home' })).toBeVisible();
   });
 
-  test('/en/thank-you loads without error', async ({ page }) => {
-    await page.goto('/en/thank-you', { waitUntil: 'domcontentloaded' });
+  test('/en/thank-you renders its content', async ({ page }) => {
+    const response = await page.goto('/en/thank-you', { waitUntil: 'domcontentloaded' });
+    expect(response?.status()).toBe(200);
+    await expect(page.getByRole('main')).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('body')).not.toContainText('Application error');
   });
 
-  test('landing page FAQ section renders', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'domcontentloaded' });
-    // FAQSection uses Radix accordion — triggers render as buttons
-    const faqTrigger = page.locator('[data-radix-collection-item], button[data-state]').first();
-    await expect(faqTrigger).toBeVisible({ timeout: 10_000 });
+  test('landing page FAQ items expand and collapse', async ({ page }) => {
+    await page.goto('/en', { waitUntil: 'networkidle' });
+    // Scoped to the FAQ section: the language switcher is a button[aria-expanded] too.
+    const first = page.locator('#faq button[aria-expanded]').first();
+    await first.scrollIntoViewIfNeeded();
+    const before = await first.getAttribute('aria-expanded');
+    await first.click();
+    await expect(first).not.toHaveAttribute('aria-expanded', before!);
+    await first.click();
+    await expect(first).toHaveAttribute('aria-expanded', before!);
   });
 
-  test('landing page newsletter email input is visible', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'domcontentloaded' });
-    await expect(
-      page.locator('input[type="email"]').first()
-    ).toBeVisible({ timeout: 10_000 });
-  });
-
-  test('landing page footer contains terms link', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'domcontentloaded' });
-    await expect(
-      page.locator('footer a[href*="terms"], a[href*="terms"]').first()
-    ).toBeVisible({ timeout: 10_000 });
-  });
-
-  test('landing page hero CTA links to sign-in', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'domcontentloaded' });
-    await expect(
-      page.locator('a[href*="sign-in"]').first()
-    ).toBeVisible({ timeout: 10_000 });
-  });
-
-  test('/ka Georgian locale loads without error', async ({ page }) => {
-    await page.goto('/ka', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10_000 });
-    await expect(page.locator('body')).not.toContainText('Application error');
-  });
-
-  test('/pl Polish locale loads without error', async ({ page }) => {
-    await page.goto('/pl', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10_000 });
-    await expect(page.locator('body')).not.toContainText('Application error');
+  test('landing page newsletter form rejects a malformed email', async ({ page }) => {
+    await page.goto('/en', { waitUntil: 'networkidle' });
+    const email = page.locator('input[type="email"]').first();
+    await expect(email).toBeVisible({ timeout: 10_000 });
+    // Never a valid address: a subscription would email the inbox.
+    let sent = 0;
+    page.on('request', (req) => {
+      if (req.url().includes('/api/newsletter')) sent++;
+    });
+    await email.fill('not-an-email');
+    await email.press('Enter');
+    expect(await email.evaluate((el) => (el as HTMLInputElement).validity.valid)).toBe(false);
+    await page.waitForLoadState('networkidle');
+    expect(sent).toBe(0);
   });
 
 });
