@@ -1,6 +1,12 @@
 import { test, expect } from '@playwright/test';
 
-// Uses storageState set by tests/admin.setup.ts
+// Uses storageState set by tests/admin.setup.ts, which is skipped (and writes no
+// state file) when the admin credentials are not provided.
+test.skip(
+  !process.env.TEST_ADMIN_PHONE || !process.env.TEST_ADMIN_PASSWORD,
+  'TEST_ADMIN_PHONE and TEST_ADMIN_PASSWORD env vars are not set',
+);
+
 test.use({ storageState: 'playwright/.auth/admin.json' });
 
 test.describe('Admin login page (UI only)', () => {
@@ -18,7 +24,7 @@ test.describe('Admin login page (UI only)', () => {
   });
 
   test('phone input is visible', async ({ page }) => {
-    await expect(page.locator('input[placeholder="579 737 737"]')).toBeVisible();
+    await expect(page.locator('input[placeholder="5XX XXX XXX"]')).toBeVisible();
   });
 
   test('password input is visible', async ({ page }) => {
@@ -30,7 +36,7 @@ test.describe('Admin login page (UI only)', () => {
   });
 
   test('wrong credentials show error message', async ({ page }) => {
-    await page.locator('input[placeholder="579 737 737"]').fill('000000000');
+    await page.locator('input[placeholder="5XX XXX XXX"]').fill('000000000');
     await page.locator('input[type="password"]').fill('wrongpass');
     await page.getByRole('button', { name: /Enter Panel/i }).click();
     await expect(
