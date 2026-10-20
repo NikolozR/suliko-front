@@ -191,7 +191,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
         <div className={`flex items-center h-20 ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-3`}>
           {!effectiveIsCollapsed && (
             <Link
-              href="/"
+              href="/translate"
               className="transition-all duration-300 cursor-pointer"
               aria-label="Go to landing page"
             >

@@ -7,21 +7,23 @@ const DOMAIN_PL = "https://suliko.ge"; // pl uses path prefix: /pl/
 
 // The legal pages are listed so a card processor's review — and a search engine —
 // can find them without walking the footer.
+//
+// The bare address is not listed: it redirects to Suliko Office, and a sitemap
+// should hold only pages that answer 200. Each product has its own landing page.
 const staticPages = [
-  "",
-  "/blog",
   "/office",
+  "/translate",
+  "/blog",
   "/about",
   "/terms",
   "/privacy",
   "/refund-policy",
 ] as const;
 
-/** The landing page is the entry point; the legal pages are reference material. */
+/** The two product landing pages are the entry points; the legal pages are reference material. */
 function priorityFor(path: string): number {
-  if (path === "") return 1.0;
+  if (path === "/office" || path === "/translate") return 1.0;
   if (path === "/blog") return 0.8;
-  if (path === "/office") return 0.8;
   return 0.4;
 }
 
@@ -40,7 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const localePages: MetadataRoute.Sitemap = staticPages.map((path) => ({
     url: `${DOMAIN_KA}${path}`,
     lastModified: new Date(),
-    changeFrequency: path === "" || path === "/blog" ? "weekly" : "yearly",
+    changeFrequency: path === "/translate" || path === "/office" || path === "/blog" ? "weekly" : "yearly",
     priority: priorityFor(path),
     alternates: {
       languages: {

@@ -2,8 +2,8 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Smoke tests', () => {
 
-  test('landing page loads with hero heading', async ({ page }) => {
-    await page.goto('/en');
+  test('Translate landing page loads with hero heading', async ({ page }) => {
+    await page.goto('/en/translate');
     await expect(page.locator('h1').first()).toBeVisible({ timeout: 10_000 });
     await expect(page.locator('body')).not.toContainText('Application error');
     await expect(page.locator('body')).not.toContainText('Internal Server Error');
@@ -28,9 +28,9 @@ test.describe('Smoke tests', () => {
     await expect(page.locator('body')).not.toContainText('Application error');
   });
 
-  test('bare / redirects to a locale', async ({ page }) => {
+  test('bare / redirects to a locale, on to Suliko Office', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveURL(/\/(en|ka)\/?$/);
+    await expect(page).toHaveURL(/\/(en|ka)\/office$/);
   });
 
 });

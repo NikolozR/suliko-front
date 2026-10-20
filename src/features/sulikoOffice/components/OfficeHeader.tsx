@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowLeft, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { officeSignInUrl } from "../lib/officeLinks";
 import { NAV_SECTIONS, type NavSection } from "./sections";
@@ -66,18 +66,18 @@ export default function OfficeHeader() {
         <nav aria-label="Main" className="hidden items-center gap-6 md:flex xl:gap-4 2xl:gap-6">
           {/* From lg up: at md the header is full and the link crowds the logo. */}
           <Link
-            href="/"
+            href="/translate"
             className="hidden items-center gap-1.5 px-1 py-3 text-base whitespace-nowrap text-muted-foreground hover:text-foreground lg:flex"
           >
-            <ArrowLeft className="h-4 w-4" aria-hidden />
-            {t("backToSuliko")}
+            {t("toTranslate")}
+            <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
           <LanguageToggle label={t("language")} />
-          <a href="#demo" className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-suliko-default-color">
-            {t("demo")}
-          </a>
-          <a href={signInUrl} className={`${PRIMARY_BUTTON} h-[46px] px-[22px] text-base whitespace-nowrap`}>
+          <a href={signInUrl} className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-suliko-default-color">
             {t("login")}
+          </a>
+          <a href="#demo" className={`${PRIMARY_BUTTON} h-[46px] px-[22px] text-base whitespace-nowrap`}>
+            {t("demo")}
           </a>
         </nav>
 
@@ -115,20 +115,19 @@ export default function OfficeHeader() {
                 </a>
               ))}
             </div>
-            <Link href="/" className="flex h-11 items-center gap-2 rounded-lg px-3 text-base text-muted-foreground">
-              <ArrowLeft className="h-4 w-4" aria-hidden />
-              {t("backToSuliko")}
+            <Link href="/translate" className="flex h-11 items-center gap-2 rounded-lg px-3 text-base text-muted-foreground">
+              {t("toTranslate")}
+              <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
             <LanguageToggle label={t("language")} />
             <a
-              href="#demo"
-              onClick={() => setMenuOpen(false)}
+              href={signInUrl}
               className="flex h-12 items-center rounded-xl border border-border px-4 text-base text-foreground"
             >
-              {t("demo")}
-            </a>
-            <a href={signInUrl} className={`${PRIMARY_BUTTON} h-12 text-base`}>
               {t("login")}
+            </a>
+            <a href="#demo" onClick={() => setMenuOpen(false)} className={`${PRIMARY_BUTTON} h-12 text-base`}>
+              {t("demo")}
             </a>
           </div>
         </nav>

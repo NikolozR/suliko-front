@@ -9,8 +9,8 @@ import { test, expect } from '@playwright/test';
  * Never submits a valid demo request: that would email the sales inbox.
  */
 
-const HERO_EN = 'Run your translation bureau from one screen';
-const HERO_KA = 'მართეთ მთელი ბიურო ერთი სისტემიდან';
+const HERO_EN = 'Stop chasing orders and payments. Run your bureau.';
+const HERO_KA = 'აღარ ეძებოთ შეკვეთები და გადახდები. მართეთ ბიურო.';
 
 test.describe('Suliko Office landing', () => {
   test('/en/office renders hero, journey, FAQ and demo form', async ({ page }) => {
@@ -18,7 +18,7 @@ test.describe('Suliko Office landing', () => {
 
     await expect(page.locator('h1')).toHaveText(HERO_EN);
     await expect(page.locator('#journey li')).toHaveCount(7);
-    await expect(page.locator('details')).toHaveCount(4);
+    await expect(page.locator('details')).toHaveCount(5);
     await expect(page.locator('#demo input[name="email"]')).toBeVisible();
     await expect(page.locator('body')).not.toContainText('Application error');
   });
@@ -56,8 +56,15 @@ test.describe('Suliko Office landing', () => {
     await expect(page.locator('#demo [role="alert"]')).toHaveText('Please fill in your name, company and email.');
   });
 
-  test('main landing page links to /office', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'domcontentloaded' });
+  test('the hero books a demo and the proposal section leads to the form', async ({ page }) => {
+    await page.goto('/en/office', { waitUntil: 'domcontentloaded' });
+    await expect(page.locator('main a[href="#demo"]').first()).toHaveText('Book a demo');
+    await expect(page.locator('#offer a[href="#demo"]')).toBeAttached();
+    await expect(page.locator('#offer h3')).toHaveCount(4);
+  });
+
+  test('the Translate landing page links to /office', async ({ page }) => {
+    await page.goto('/en/translate', { waitUntil: 'domcontentloaded' });
     await expect(page.locator('a[href$="/office"]').first()).toBeAttached({ timeout: 15_000 });
   });
 });

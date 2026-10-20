@@ -56,7 +56,7 @@ export default async function BlogPage({
           {/* Page Header */}
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-10">
             <Link
-              href="/"
+              href="/translate"
               className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors mb-6"
             >
               <ChevronLeft className="h-4 w-4" />

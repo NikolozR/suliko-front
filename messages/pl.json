@@ -912,11 +912,11 @@
     "close": "Zamknij"
   },
   "Landing": {
-    "title": "Tłumacz dokumenty w minutach.",
-    "description": "Prześlij dokument i skróć czas tłumaczenia o 70%.",
-    "badge": "Narzędzie CAT",
-    "cta": "Zacznij tłumaczyć",
-    "viewPricing": "Uzyskaj tłumaczenie notarialne",
+    "title": "Tłumacz dokumenty w minuty, nie w godziny.",
+    "description": "Prześlij umowę, zaświadczenie lub raport i otrzymaj tłumaczenie obok oryginału, z zachowanym układem. Skróć czas tłumaczenia o 70%. Pierwsze 10 stron jest za darmo.",
+    "badge": "Pierwsze 10 stron za darmo",
+    "cta": "Przetłumacz 10 stron za darmo",
+    "viewPricing": "Zamów tłumaczenie notarialne",
     "trustedBy": "Zaufane przez profesjonalistów na całym świecie",
     "documentsTranslated": "Przetłumaczone dokumenty",
     "languagesSupported": "Obsługiwane języki",
@@ -946,9 +946,10 @@
     "contact": "Kontakt",
     "blog": "Blog",
     "notary": "Notarialne",
-    "getStarted": "Zacznij",
+    "getStarted": "Tłumacz za darmo",
     "bookDemo": "Zamów demo",
-    "loading": "Ładowanie..."
+    "loading": "Ładowanie...",
+    "forBureaus": "Dla biur"
   },
   "AboutSection": {
     "title": "Dlaczego Suliko?",
@@ -1040,7 +1041,7 @@
     "eyebrow": "Klienci"
   },
   "LandingFooter": {
-    "description": "Najbardziej zaawansowana na świecie platforma tłumaczeniowa oparta na AI. Zburzenie barier językowych z precyzją, szybkością i niezawodnością.",
+    "description": "Tłumaczenie dokumentów na ponad 50 języków, dopracowane pod język gruziński. A do tego Suliko Office, system, na którym działa nasze własne biuro tłumaczeń.",
     "email": "Info@suliko.ge",
     "phone": "+995 591 729 911",
     "location": "Tbilisi, Georgia",
@@ -1740,12 +1741,11 @@
   },
   "SulikoOffice": {
     "meta": {
-      "title": "Suliko Office: Translation Management System for Bureaus & LSPs",
-      "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. Backed by a 90-day money-back guarantee. Book a demo."
+      "title": "Suliko Office: Translation Bureau Software with a 90-Day Money-Back Guarantee",
+      "description": "Stop chasing statuses, payments and prices across Excel and WhatsApp. Suliko Office puts orders, translators, notaries and finances in one system, built and used daily by a working bureau. Try it on real orders for 90 days or get your money back."
     },
     "nav": {
       "home": "Suliko Office home",
-      "backToSuliko": "Suliko",
       "language": "Language",
       "login": "Sign in",
       "demo": "Book a demo",
@@ -1758,15 +1758,16 @@
         "finance": "Finance",
         "reports": "Reports",
         "faq": "FAQ"
-      }
+      },
+      "toTranslate": "Suliko Translate"
     },
     "hero": {
-      "eyebrow": "Translation management system for bureaus",
-      "title": "Run your translation bureau from one screen",
-      "sub": "Orders, translators, notaries, payments and clients in one system. Built and used daily by a working bureau.",
-      "primary": "Sign in",
+      "eyebrow": "For translation bureaus and LSPs",
+      "title": "Stop chasing orders and payments. Run your bureau.",
+      "sub": "Suliko Office puts orders, translators, notaries, prices and finances in one system. Your team stops asking “where is this document?” and you see the profit on every order. Built and used daily by a working translation bureau.",
+      "primary": "Book a demo",
       "secondary": "See how it works",
-      "guarantee": "90-day money-back guarantee",
+      "guarantee": "90-day money-back guarantee. If it is not right for your bureau, you get your money back.",
       "badge1Title": "Notary fee",
       "badge1Text": "14.44 ₾",
       "badge2Title": "Translator assigned",
@@ -1813,43 +1814,43 @@
       "done": "Handed over, payouts due"
     },
     "pains": {
-      "kicker": "Sound familiar?",
+      "kicker": "Sound familiar? Each of these costs your bureau time and money.",
       "p1": "“Where is this document right now?”",
-      "a1": "Every order shows its live status.",
+      "a1": "Everyone sees the live status of every order, so nobody has to ask.",
       "p2": "“Did we pay the translator and the notary?”",
-      "a2": "Payouts are tracked on every order.",
-      "p3": "“Why did two staff quote different prices?”",
-      "a3": "One price list, calculated the same way every time."
+      "a2": "Every payout is recorded on the order: you see what is paid and what is still owed.",
+      "p3": "“Why did two people quote different prices?”",
+      "a3": "One price list, calculated the same way every time, so money stops slipping away on wrong quotes."
     },
     "journey": {
-      "kicker": "How it works",
-      "title": "One order, from the counter to pickup",
-      "sub": "Everyone on the team sees the same status, so nobody has to ask where a document is."
+      "kicker": "How an order moves",
+      "title": "From the first call to handover, nobody has to ask",
+      "sub": "The whole team sees the same status. Clients get answers faster, and your staff get their time back."
     },
     "feat": {
-      "kicker": "What's inside",
-      "title": "Everything a bureau runs on, in one system",
-      "f1t": "Orders & statuses",
+      "kicker": "Everything in one system",
+      "title": "Everything a bureau runs on, in one place",
+      "f1t": "Orders that never get lost",
       "f1d": "Every order from first request to pickup, with a status the whole team can see.",
-      "f2t": "Translators & notaries",
+      "f2t": "The right translator, every time",
       "f2d": "Your translators and notaries with their language pairs, so each order goes to the right person.",
-      "f3t": "Automatic pricing",
+      "f3t": "Prices that always match",
       "f3d": "Translation and notary costs are calculated from the language pair, document type, pages, urgency and copies.",
       "tagPair": "KA → EN",
       "tagDoc": "Diploma",
       "tagUrg": "Urgent",
       "tagCopies": "2 copies",
-      "f4t": "Finance",
+      "f4t": "Profit you can see",
       "f4d": "Client payments, translator and notary payouts, expenses and profit reports.",
-      "f5t": "Clients & lead sources",
-      "f5d": "Individual and business clients, a client portal, and where each client came from.",
+      "f5t": "Clients and where they come from",
+      "f5d": "Individual and business clients, a client portal, and the source of every client.",
       "tagPortal": "Client portal",
-      "f6t": "Team & roles",
+      "f6t": "Your team, your rules",
       "f6d": "Five roles, and staff don't see margins. Two-factor login and a full audit log.",
       "tagRoles": "5 roles",
       "tag2fa": "2FA",
       "tagAudit": "Audit log",
-      "f7t": "Built-in AI translation by Suliko",
+      "f7t": "A first draft in seconds",
       "f7d": "Get a first draft from Suliko AI without leaving the system, then hand it to your translator to finish."
     },
     "sec": {
@@ -1872,21 +1873,19 @@
       "q3": "Which languages does it support?",
       "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers, and you set the pairs for each translator.",
       "q4": "How much does it cost?",
-      "a4": "The price depends on how many orders your bureau handles: packages for up to 50, up to 100, and over 100 orders. Contact us and we'll put together an offer for you. Every plan comes with a 90-day money-back guarantee."
+      "a4": "The price depends on how many orders your bureau handles: packages for up to 50, up to 100, and over 100 orders. Book a demo or send us your monthly volume and we will put together an offer for you. Every plan comes with a 90-day money-back guarantee.",
+      "q5": "What if it does not work for us?",
+      "a5": "You are covered by a 90-day money-back guarantee. Use Suliko Office on your real orders, and if it is not right for your bureau, we return your money."
     },
     "signIn": {
-      "title": "Sign in to Suliko Office",
-      "sub": "Your orders, translators, notaries and payments in one place.",
+      "title": "Already using Suliko Office?",
+      "sub": "Sign in and carry on with your orders, translators, notaries and payments.",
       "button": "Sign in"
-    },
-    "demoPrompt": {
-      "text": "Not using Suliko Office yet?",
-      "link": "Book a demo"
     },
     "form": {
       "kicker": "Book a demo",
-      "title": "See Suliko Office on a call",
-      "sub": "Tell us a little about your bureau and we'll get in touch to pick a time.",
+      "title": "See your bureau running on Suliko Office",
+      "sub": "Tell us a little about your bureau. We will get in touch to pick a time and show you the system on orders like yours.",
       "onCall": "On the call",
       "e1": "A walkthrough of one order, from request to pickup",
       "e2": "How your current Excel and WhatsApp setup would move across",
@@ -1956,25 +1955,25 @@
     },
     "spot": {
       "pricing": {
-        "kicker": "Automatic pricing",
-        "title": "Translation and notary costs, worked out for you",
-        "body": "Enter the document, language pair, pages and number of documents. Suliko Office prices the translation from your price list and adds the notary fee, so you can give the client the full total straight away.",
+        "kicker": "Quote in seconds",
+        "title": "Give the client the full price while they are still on the phone",
+        "body": "Enter the document, language pair, pages and copies. Suliko Office prices the translation from your own price list, adds the notary fee and gives you one total to say out loud. No calculator, no guessing.",
         "p1": "Your own prices for every language pair",
-        "p2": "Notary fees calculated by pages and documents",
-        "p3": "Every staff member quotes the same price"
+        "p2": "Notary fees worked out by pages and documents",
+        "p3": "Every colleague quotes the same price, so wrong quotes stop costing you money"
       },
       "payouts": {
         "kicker": "Finance",
-        "title": "Know who has paid, and who you owe",
-        "body": "Every order records the client's payment and what goes to the translator and the notary, so your monthly totals add up on their own.",
+        "title": "Know who has paid you, and who you owe",
+        "body": "Each order records what the client paid and what goes to the translator and the notary. At month end the totals are already there, and you see the profit on every order.",
         "p1": "Client payments and refunds",
         "p2": "Translator and notary payouts on every order",
         "p3": "Profit per order and per month"
       },
       "reports": {
         "kicker": "Reports",
-        "title": "Weekly and monthly reports, with charts",
-        "body": "See revenue, profit and translation volume at a glance, and how each compares with the previous period. Then break it down by language pair, by where orders come from and by client type.",
+        "title": "See what makes you money, and what does not",
+        "body": "Revenue, profit and volume by week and by month, compared with the previous period. Then see which language pairs, which sources and which clients bring in the most.",
         "p1": "Revenue and profit, by week and by month",
         "p2": "Orders and translated pages, with the trend",
         "p3": "Your busiest language pairs and where orders come from"
@@ -2002,13 +2001,52 @@
       "other": "Other",
       "individuals": "Individuals",
       "companies": "Companies"
+    },
+    "signInPrompt": {
+      "text": "Already using Suliko Office?",
+      "link": "Sign in"
+    },
+    "compare": {
+      "kicker": "The difference",
+      "title": "Excel and WhatsApp, or one system",
+      "now": "Today: Excel and WhatsApp",
+      "with": "With Suliko Office",
+      "r1a": "Ask a colleague or scroll a chat to find an order",
+      "r1b": "A live status on every order",
+      "r2a": "Everyone quotes a price from memory",
+      "r2b": "One price list, one calculation",
+      "r3a": "You try to remember who has been paid",
+      "r3b": "Every payout recorded on its order",
+      "r4a": "Profit worked out at month end, if at all",
+      "r4b": "Profit visible per order, per week, per month"
+    },
+    "offer": {
+      "kicker": "Your proposal",
+      "title": "What you get when you start with Suliko Office",
+      "sub": "A working system for your bureau, not just a login and a manual.",
+      "o1t": "We set it up for you",
+      "o1d": "We configure your bureau, import your clients, translators and price list, and walk your team through the system.",
+      "o2t": "Your own prices",
+      "o2d": "Your price for every language pair and your notary fees, so quotes are right from the first day.",
+      "o3t": "Priced by your volume",
+      "o3d": "Packages for up to 50, up to 100 and over 100 orders a month. You pay for the size of bureau you are.",
+      "o4t": "90 days, money back",
+      "o4d": "Use it on real orders for 90 days. If it is not right for your bureau, we return your money.",
+      "cta": "Get your offer",
+      "note": "Tell us how many orders you handle a month and we will prepare an offer for your bureau."
+    },
+    "translateBand": {
+      "kicker": "Not a bureau?",
+      "title": "Need a document translated? Try Suliko Translate",
+      "body": "Upload a file and see the translation next to the original in minutes. Your first 10 pages are free.",
+      "cta": "Open Suliko Translate"
     }
   },
   "OfficePromo": {
-    "heading": "Prowadzisz biuro tłumaczeń? Poznaj Suliko Office",
-    "subheading": "Zamówienia, tłumacze, notariusze i płatności w jednym systemie. Na nim działa nasze biuro.",
-    "cta": "Poznaj Suliko Office",
-    "heroLink": "Prowadzisz biuro tłumaczeń? Zobacz, na czym pracujemy"
+    "heading": "Prowadzisz biuro tłumaczeń? Zarządzaj nim z jednego ekranu",
+    "subheading": "Suliko Office łączy zamówienia, tłumaczy, notariuszy i płatności w jednym systemie. Na nim działa nasze biuro, a Ty masz 90 dni na zwrot pieniędzy.",
+    "cta": "Zobacz Suliko Office",
+    "heroLink": "Prowadzisz biuro? Zobacz Suliko Office"
   },
   "HeroDemo": {
     "original": "Oryginał · angielski",
@@ -2027,19 +2065,19 @@
   },
   "HowItWorks": {
     "eyebrow": "Jak to działa",
-    "title": "Od przesłania do gotowego pliku w trzech krokach",
+    "title": "Trzy kroki od pliku do gotowego tłumaczenia",
     "steps": {
       "upload": {
-        "title": "Prześlij",
-        "body": "Wgraj plik PNG, JPG, PDF, DOCX lub TXT. Suliko go odczyta i zachowa układ."
+        "title": "Wgraj plik",
+        "body": "PNG, JPG, PDF, DOCX lub TXT. Suliko odczyta go i zachowa nagłówki, tabele i układ."
       },
       "translate": {
-        "title": "Tłumacz i sprawdzaj",
-        "body": "Oryginał i tłumaczenie obok siebie, z inteligentnymi podpowiedziami dla każdego segmentu."
+        "title": "Sprawdź obok oryginału",
+        "body": "Oryginał i tłumaczenie obok siebie, z podpowiedzią dla każdego segmentu. Ostateczny tekst zatwierdzasz Ty."
       },
       "export": {
-        "title": "Eksportuj",
-        "body": "Pobierz plik w formacie Word, PDF lub jako zwykły tekst, sformatowany jak przesłany dokument."
+        "title": "Pobierz gotowy plik",
+        "body": "Otrzymasz Word, PDF lub zwykły tekst sformatowany jak oryginał, gotowy do wysłania."
       }
     },
     "dropHint": "Upuść plik, aby zacząć",
@@ -2054,8 +2092,8 @@
   },
   "Features": {
     "eyebrow": "Dlaczego Suliko",
-    "title": "Asystent tłumacza, nie jego zastępca",
-    "subtitle": "Inteligentny asystent, który pomaga tłumaczom pracować szybciej, a firmom się rozwijać, bez utraty jakości.",
+    "title": "Stworzone dla dokumentów i dla języka gruzińskiego",
+    "subtitle": "Oszczędzaj godziny przy każdym dokumencie i zachowaj pełną kontrolę nad ostatecznym tekstem.",
     "copilot": {
       "title": "Kopilot tłumacza",
       "body": "Zarabiaj 3–10x więcej, przyspieszając pracę, którą już wykonujesz, z podpowiedziami dla każdego segmentu.",
@@ -2069,10 +2107,10 @@
     },
     "georgian": {
       "title": "Stworzony dla gruzińskiego",
-      "body": "Dostrojony na gruzińskich tekstach prawniczych, medycznych i biznesowych."
+      "body": "Dostrojony na gruzińskich tekstach prawniczych, medycznych i biznesowych, dzięki czemu umowy i zaświadczenia brzmią tak, jak powinny."
     },
     "privacy": {
-      "title": "Prywatność domyślnie",
+      "title": "Twoje dokumenty zostają Twoje",
       "body": "Szyfrowanie podczas przesyłania (TLS 1.3) i przechowywania. Twoje dokumenty nigdy nie służą do trenowania naszych modeli.",
       "yourFile": "Twój plik",
       "encrypted": "Zaszyfrowany",
@@ -2087,10 +2125,10 @@
     "notaryCta": "Zamów tłumaczenie notarialne"
   },
   "ClosingCta": {
-    "title": "Pierwsze 10 stron na nasz koszt",
-    "subtitle": "Prześlij dokument teraz i już po kilku minutach zobacz tłumaczenie obok oryginału.",
-    "cta": "Zacznij tłumaczyć",
-    "bookDemo": "Umów demo"
+    "title": "Pierwsze 10 stron jest za darmo. Zobacz efekt, zanim cokolwiek zapłacisz.",
+    "subtitle": "Prześlij dokument, a po kilku minutach zobaczysz tłumaczenie obok oryginału. Jeśli to nie to, czego potrzebujesz, nic nie tracisz.",
+    "cta": "Przetłumacz 10 stron za darmo",
+    "bookDemo": "Umów demo dla swojego zespołu"
   },
   "Coupon": {
     "title": "Masz kupon?",
@@ -2233,5 +2271,9 @@
     "discard": "Zamknij bez zapisywania",
     "previewLoading": "Otwieranie pliku…",
     "previewFailed": "Nie udało się otworzyć pliku tutaj. Nadal możesz go pobrać."
+  },
+  "TranslateMeta": {
+    "title": "Suliko Translate: tłumaczenie dokumentów w kilka minut, pierwsze 10 stron za darmo",
+    "description": "Tłumacz umowy, zaświadczenia i dokumenty firmowe na ponad 50 języków w kilka minut. Układ dokumentu zostaje bez zmian, a oryginał leży obok tłumaczenia. Dopracowane pod język gruziński. Pierwsze 10 stron jest za darmo."
   }
 }

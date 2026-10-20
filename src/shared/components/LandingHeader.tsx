@@ -178,6 +178,9 @@ export default function LandingHeader() {
 
   // Notary navigation item
   const notaryNavItem = { id: 'notary', label: t("notary"), href: '/notary' };
+
+  // The other product: Suliko Office, for translation bureaus
+  const officeNavItem = { id: 'office', label: t("forBureaus"), href: '/office' };
   const isNotaryPage = pathname.includes('/notary');
 
   // Handle navigation click
@@ -185,7 +188,7 @@ export default function LandingHeader() {
     const cleanSectionId = sectionId.replace('#', '');
     setIsMobileMenuOpen(false);
 
-    if (pathname === "/") {
+    if (pathname === "/translate") {
       const targetSection = document.getElementById(cleanSectionId);
       if (targetSection) {
         targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -194,7 +197,7 @@ export default function LandingHeader() {
       }
     }
 
-    router.push(`/#${cleanSectionId}`);
+    router.push(`/translate#${cleanSectionId}`);
   };
 
   // Toggle mobile menu
@@ -244,7 +247,7 @@ export default function LandingHeader() {
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
           
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 relative z-50">
+          <Link href="/translate" className="flex items-center space-x-2 relative z-50">
             <Image
               src={resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
               alt="Suliko"
@@ -273,7 +276,7 @@ export default function LandingHeader() {
           */}
           <div className="hidden xl:flex items-center justify-center flex-1">
             {/* Navigation Items */}
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-6 2xl:space-x-8">
               {navItems.map((item) => (
                 <NavItem
                   key={item.id}
@@ -291,6 +294,15 @@ export default function LandingHeader() {
                     : "text-foreground/80 hover:text-foreground"
                 }`}>
                   {blogNavItem.label}
+                </button>
+              </Link>
+              <Link href={officeNavItem.href}>
+                <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+                  isBlogPage
+                    ? "text-white/90 hover:text-white"
+                    : "text-foreground/80 hover:text-foreground"
+                }`}>
+                  {officeNavItem.label}
                 </button>
               </Link>
               <Link href={notaryNavItem.href}>
@@ -401,6 +413,15 @@ export default function LandingHeader() {
                         : "text-foreground/80 hover:text-foreground hover:bg-accent"
                     }`}>
                       {blogNavItem.label}
+                    </button>
+                  </Link>
+                  <Link href={officeNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
+                      isBlogPage
+                        ? "text-white/90 hover:text-white hover:bg-white/10"
+                        : "text-foreground/80 hover:text-foreground hover:bg-accent"
+                    }`}>
+                      {officeNavItem.label}
                     </button>
                   </Link>
                   <Link href={notaryNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>

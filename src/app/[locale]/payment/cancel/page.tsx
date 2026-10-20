@@ -52,7 +52,7 @@ export default function PaymentCancelPage() {
                   <Button 
                     variant="outline"
                     className="w-full sm:w-1/2 h-12 sm:h-14 text-sm sm:text-base border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium"
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push('/translate')}
                   >
                     Go Home
                   </Button>

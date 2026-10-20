@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { ArrowRight, Facebook, Linkedin, Mail, MapPin, Phone } from "lucide-react";
 import { NOTARY_PHONE_DISPLAY } from "@/shared/constants/notary";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
@@ -27,6 +27,8 @@ export default function LandingFooter() {
   const tLanding = useTranslations("Landing");
   const tHeader = useTranslations("LandingHeader");
   const locale = useLocale();
+  // The logo goes to the product the visitor is on; the bare address is neither.
+  const home = usePathname().startsWith("/office") ? "/office" : "/translate";
 
   return (
     <footer id="contact" className="dark relative overflow-hidden bg-slate-950 text-foreground">
@@ -39,7 +41,7 @@ export default function LandingFooter() {
         {/* Brand + newsletter */}
         <div className="grid grid-cols-1 gap-10 border-b border-border py-12 lg:grid-cols-2 lg:items-end">
           <div className="flex max-w-md flex-col gap-4">
-            <Link href="/" className="inline-flex items-center" aria-label="Suliko">
+            <Link href={home} className="inline-flex items-center" aria-label="Suliko">
               <Image src="/Suliko_logo_white.svg" alt="" width={148} height={38} className="h-9 w-auto" />
             </Link>
             <p className="text-sm leading-relaxed text-muted-foreground">{t("description")}</p>
@@ -84,7 +86,7 @@ export default function LandingFooter() {
                 </Link>
               </li>
               <li>
-                <Link href={{ pathname: "/", hash: "pricing" }} className={LINK}>
+                <Link href={{ pathname: "/translate", hash: "pricing" }} className={LINK}>
                   {t("links.pricing")}
                 </Link>
               </li>
@@ -107,12 +109,12 @@ export default function LandingFooter() {
                 </Link>
               </li>
               <li>
-                <Link href={{ pathname: "/", hash: "testimonials" }} className={LINK}>
+                <Link href={{ pathname: "/translate", hash: "testimonials" }} className={LINK}>
                   {t("testimonials")}
                 </Link>
               </li>
               <li>
-                <Link href={{ pathname: "/", hash: "faq" }} className={LINK}>
+                <Link href={{ pathname: "/translate", hash: "faq" }} className={LINK}>
                   {tHeader("faq")}
                 </Link>
               </li>

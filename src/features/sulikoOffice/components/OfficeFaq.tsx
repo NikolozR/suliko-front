@@ -3,7 +3,7 @@ import { Minus, Plus } from "lucide-react";
 import { SECTION_ANCHOR, revealDelay } from "./sections";
 import { CONTAINER, KICKER } from "./tones";
 
-export const FAQ_KEYS = [1, 2, 3, 4] as const;
+export const FAQ_KEYS = [1, 2, 3, 4, 5] as const;
 
 /** Native <details>, so the answers work and stay indexable without any JS. */
 export default function OfficeFaq() {

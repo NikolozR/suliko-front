@@ -34,7 +34,7 @@ export default function NotaryThankYouPage() {
         </div>
 
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push("/translate")}
           className="inline-flex items-center gap-2 bg-linear-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium px-6 py-3 rounded-lg shadow-lg transition-all duration-200 transform hover:scale-[1.02]"
         >
           <ArrowLeft className="w-4 h-4" />

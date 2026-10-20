@@ -150,7 +150,7 @@ export default function NotaryHeader() {
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
 
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 relative z-50">
+          <Link href="/translate" className="flex items-center space-x-2 relative z-50">
             <Image
               src={
                 resolvedTheme === "dark"
@@ -188,7 +188,7 @@ export default function NotaryHeader() {
             <LanguageSwitcher />
             <ThemeToggle />
             {/* SULIKO back button */}
-            <Link href="/">
+            <Link href="/translate">
               <button
                 type="button"
                 className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md text-sm font-semibold border border-suliko-default-color text-suliko-default-color hover:bg-suliko-default-color hover:text-white transition-colors duration-200"
@@ -257,7 +257,7 @@ export default function NotaryHeader() {
                     <ThemeToggle />
                   </div>
                   <Link
-                    href="/"
+                    href="/translate"
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="block w-full"
                   >
