@@ -77,8 +77,8 @@ test.describe('Page metadata', () => {
     });
   }
 
-  test('the landing page declares an alternate for every locale', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'domcontentloaded' });
+  test('the Translate landing page declares an alternate for every locale', async ({ page }) => {
+    await page.goto('/en/translate', { waitUntil: 'domcontentloaded' });
     const langs = await page.locator('link[rel="alternate"][hreflang]').evaluateAll((els) =>
       els.map((e) => e.getAttribute('hreflang')),
     );

@@ -9,6 +9,9 @@ import OfficeFaq from "./OfficeFaq";
 import OfficeSignInBand from "./OfficeSignInBand";
 import OfficeDemoSection from "./OfficeDemoSection";
 import OfficeSpotlight from "./OfficeSpotlight";
+import OfficeCompare from "./OfficeCompare";
+import OfficeOffer from "./OfficeOffer";
+import OfficeTranslateBand from "./OfficeTranslateBand";
 import NewOrderDemo from "./demo/NewOrderDemo";
 import PayoutsDemo from "./demo/PayoutsDemo";
 import ReportsDemo from "./demo/ReportsDemo";
@@ -31,10 +34,13 @@ export default function SulikoOfficePage() {
         <OfficeFeatures />
         <OfficeSpotlight id="payouts" demo={<PayoutsDemo />} reverse />
         <OfficeSpotlight id="reports" demo={<ReportsDemo />} band />
+        <OfficeCompare />
         <OfficeSecurity />
+        <OfficeOffer />
         <OfficeFaq />
-        <OfficeSignInBand />
         <OfficeDemoSection />
+        <OfficeTranslateBand />
+        <OfficeSignInBand />
       </main>
       <LandingFooter />
       <ScrollReveal />

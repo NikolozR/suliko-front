@@ -40,6 +40,7 @@ export default defineConfig({
         /blog\.spec\.ts/,
         /auth\.spec\.ts/,
         /office\.spec\.ts/,
+        /product-split\.spec\.ts/,
         /route-progress\.spec\.ts/,
         /seo\.spec\.ts/,
         /access\.spec\.ts/,

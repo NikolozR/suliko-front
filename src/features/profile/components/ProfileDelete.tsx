@@ -45,7 +45,7 @@ export const ProfileDeleteAccount: React.FC = () => {
 
       // You MUST clear auth state here in real life.
       // Redirecting alone is not enough.
-      window.location.href = "/";
+      window.location.href = "/translate";
     } catch (err) {
       const msg =
         err instanceof Error

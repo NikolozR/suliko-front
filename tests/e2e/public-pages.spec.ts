@@ -44,7 +44,7 @@ test.describe('Public pages', () => {
   });
 
   test('landing page FAQ items expand and collapse', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' });
+    await page.goto('/en/translate', { waitUntil: 'networkidle' });
     // Scoped to the FAQ section: the language switcher is a button[aria-expanded] too.
     const first = page.locator('#faq button[aria-expanded]').first();
     await first.scrollIntoViewIfNeeded();
@@ -56,7 +56,7 @@ test.describe('Public pages', () => {
   });
 
   test('landing page newsletter form rejects a malformed email', async ({ page }) => {
-    await page.goto('/en', { waitUntil: 'networkidle' });
+    await page.goto('/en/translate', { waitUntil: 'networkidle' });
     const email = page.locator('input[type="email"]').first();
     await expect(email).toBeVisible({ timeout: 10_000 });
     // Never a valid address: a subscription would email the inbox.
