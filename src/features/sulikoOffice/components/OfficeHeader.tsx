@@ -33,7 +33,7 @@ export default function OfficeHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className={`${CONTAINER} flex h-[72px] items-center justify-between gap-4 lg:h-[84px]`}>
-        <a href="#top" aria-label={t("home")} className="flex items-center gap-3">
+        <a href="#top" aria-label={t("home")} className="flex shrink-0 items-center gap-3">
           <Image src="/Suliko_logo_black.svg" alt="" width={148} height={38} priority className="h-8 w-auto lg:h-[38px] dark:hidden" />
           <Image src="/Suliko_logo_white.svg" alt="" width={148} height={38} priority className="hidden h-8 w-auto lg:h-[38px] dark:block" />
           <span className="rounded-lg bg-[#eef1fe] px-2.5 pt-[7px] pb-1.5 text-base leading-none text-suliko-default-color lg:text-lg dark:bg-[#3b59f3]/20 dark:text-[#c3ceff]">
