@@ -14,6 +14,7 @@ import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 
 // Theme toggle component
 function ThemeToggle() {
+  const t = useTranslations("LandingHeader");
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -28,7 +29,7 @@ function ThemeToggle() {
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       className="relative p-2 rounded-md hover:bg-accent transition-colors"
       type="button"
-      aria-label="Toggle theme"
+      aria-label={t("toggleTheme")}
     >
       <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -170,8 +171,11 @@ export default function LandingHeader() {
     { id: 'about', label: t("about") },
     { id: 'pricing', label: t("pricing") },
     { id: 'faq', label: t("faq") },
-    { id: 'contact', label: t("contact") },
   ];
+
+  // The footer holds contact details and the blog link; the bar keeps to the
+  // sections a first-time visitor decides on. The menu has room for both.
+  const contactNavItem = { id: 'contact', label: t("contact") };
 
   // Blog navigation item (separate from scroll items)
   const blogNavItem = { id: 'blog', label: t("blog"), href: '/blog' };
@@ -287,15 +291,6 @@ export default function LandingHeader() {
                   <span className="cursor-pointer">{item.label}</span>
                 </NavItem>
               ))}
-              <Link href={blogNavItem.href}>
-                <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
-                  isBlogPage
-                    ? "text-white/90 hover:text-white"
-                    : "text-foreground/80 hover:text-foreground"
-                }`}>
-                  {blogNavItem.label}
-                </button>
-              </Link>
               <Link href={officeNavItem.href}>
                 <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
                   isBlogPage
@@ -340,15 +335,34 @@ export default function LandingHeader() {
             </Link>
           </div>
 
+          {/* Below xl the nav collapses into the menu, but the main action stays in the bar */}
+          <div className="xl:hidden flex items-center gap-2 relative z-50">
+          <Link
+            href="/document"
+            prefetch={true}
+            onMouseEnter={handleMouseEnter}
+            onClick={handleGetStartedClick}
+          >
+            <LoadingButton
+              size="sm"
+              className="text-sm whitespace-nowrap"
+              isLoading={isNavigating}
+              loadingText={t("loading") || "Loading..."}
+            >
+              {t("getStarted")}
+            </LoadingButton>
+          </Link>
+
           {/* Hamburger Menu Button */}
           <button
-            className={`xl:hidden p-2 rounded-md transition-colors relative z-50 ${
+            className={`p-2 rounded-md transition-colors ${
               isBlogPage
                 ? "text-white hover:bg-white/20 bg-white/10"
                 : "text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
             }`}
             onClick={toggleMobileMenu}
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={isMobileMenuOpen ? t("closeMenu") : t("openMenu")}
+            aria-expanded={isMobileMenuOpen}
             type="button"
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
@@ -369,6 +383,7 @@ export default function LandingHeader() {
               />
             </div>
           </button>
+          </div>
         </div>
 
         {/* Mobile Navigation Overlay */}
@@ -385,10 +400,11 @@ export default function LandingHeader() {
               <div className="flex flex-col h-full bg-inherit">
                 {/* Menu Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border bg-inherit">
-                  <h2 className="text-lg font-semibold text-foreground">Menu</h2>
+                  <h2 className="text-lg font-semibold text-foreground">{t("menu")}</h2>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="p-2 rounded-md hover:bg-accent transition-colors"
+                    aria-label={t("closeMenu")}
                     type="button"
                   >
                     <X className="h-5 w-5" />
@@ -406,6 +422,12 @@ export default function LandingHeader() {
                       {item.label}
                     </MobileNavItem>
                   ))}
+                  <MobileNavItem
+                    onClick={() => handleNavClick(`#${contactNavItem.id}`)}
+                    isBlogPage={isBlogPage}
+                  >
+                    {contactNavItem.label}
+                  </MobileNavItem>
                   <Link href={blogNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
                     <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
                       isBlogPage
@@ -440,9 +462,10 @@ export default function LandingHeader() {
                 {/* Menu Footer */}
                 <div className="p-4 border-t border-border space-y-4 bg-inherit">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-foreground/60">Theme</span>
+                    <span className="text-sm text-foreground/60">{t("theme")}</span>
                     <ThemeToggle />
                   </div>
+                  <LanguageSwitcher />
                   
                   <Link 
                     href="/document" 
