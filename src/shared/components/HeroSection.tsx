@@ -114,7 +114,7 @@ export default function HeroSection() {
               {[
                 { value: "50K+", label: t("documentsTranslated") },
                 { value: "50+", label: t("languagesSupported") },
-                { value: "98%", label: t("accuracyRate") },
+                { value: "5", label: t("fileFormats") },
               ].map((stat, i) => (
                 <div key={i} className="flex flex-col gap-0.5">
                   <dd className="text-2xl font-bold text-white">{stat.value}</dd>
