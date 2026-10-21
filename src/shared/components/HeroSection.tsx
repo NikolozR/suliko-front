@@ -2,8 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
-import { Button } from "@/features/ui";
-import { ArrowRight, LayoutDashboard, Zap } from "lucide-react";
+import { ArrowRight, Zap } from "lucide-react";
 import { useState } from "react";
 import { LoadingButton } from "@/features/ui/components/loading";
 import HeroDemo from "@/shared/components/landing/HeroDemo";
@@ -65,7 +64,7 @@ export default function HeroSection() {
             </p>
 
             {/* CTAs */}
-            <div className="mb-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
+            <div className="mb-6 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:items-center">
               <Link
                 href="/document"
                 prefetch
@@ -76,7 +75,7 @@ export default function HeroSection() {
                   size="lg"
                   className="w-full sm:w-auto group"
                   isLoading={isNavigating}
-                  loadingText="Loading…"
+                  loadingText={t("loading")}
                 >
                   <span className="flex items-center gap-2">
                     {t("cta")}
@@ -87,33 +86,28 @@ export default function HeroSection() {
                   </span>
                 </LoadingButton>
               </Link>
-              <Link href="/notary">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="w-full border-slate-700 text-slate-300 hover:border-slate-500 hover:bg-slate-800 hover:text-white sm:w-auto"
-                >
-                  {t("viewPricing")}
-                </Button>
-              </Link>
             </div>
 
             {/*
-              For translation bureaus: the way into Suliko Office, the TMS. The demo
-              booking line that sat above it moved out to keep the hero calm; booking
-              stays one click away in BookDemoBubble and the footer.
+              The other two ways in, kept quiet so the free-trial button stays the one
+              obvious action: notarised translations, and Suliko Office for bureaus.
             */}
-            <Link
-              href="/office"
-              className="group mb-14 inline-flex max-w-full items-center gap-2 rounded-2xl border border-slate-700 bg-slate-900/60 py-1.5 pr-3.5 pl-1.5 text-sm text-slate-300 transition-colors hover:border-slate-500 hover:text-white"
-            >
-              <span className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full bg-suliko-default-color px-2 py-0.5 text-xs font-medium text-white">
-                <LayoutDashboard className="h-3 w-3" aria-hidden="true" />
-                Suliko Office
-              </span>
-              <span className="min-w-0 leading-snug sm:truncate">{tOffice("heroLink")}</span>
-              <ArrowRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-            </Link>
+            <div className="mb-14 flex flex-col gap-x-6 gap-y-2 text-sm text-slate-400 sm:flex-row sm:flex-wrap">
+              <Link
+                href="/notary"
+                className="group inline-flex items-center gap-1.5 transition-colors hover:text-white"
+              >
+                {t("viewPricing")}
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+              <Link
+                href="/office"
+                className="group inline-flex items-center gap-1.5 transition-colors hover:text-white"
+              >
+                {tOffice("heroLink")}
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </Link>
+            </div>
 
             {/* Stats */}
             <dl className="grid grid-cols-3 gap-6">

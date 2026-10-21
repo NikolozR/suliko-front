@@ -913,7 +913,7 @@
   },
   "Landing": {
     "title": "Tłumacz dokumenty w minuty, nie w godziny.",
-    "description": "Prześlij umowę, zaświadczenie lub raport i otrzymaj tłumaczenie obok oryginału, z zachowanym układem. Skróć czas tłumaczenia o 70%. Pierwsze 10 stron jest za darmo.",
+    "description": "Prześlij umowę, zaświadczenie lub raport i otrzymaj tłumaczenie obok oryginału, z zachowanymi nagłówkami, tabelami i układem. Pobierz je jako PDF lub DOCX.",
     "badge": "Pierwsze 10 stron za darmo",
     "cta": "Przetłumacz 10 stron za darmo",
     "viewPricing": "Zamów tłumaczenie notarialne",
