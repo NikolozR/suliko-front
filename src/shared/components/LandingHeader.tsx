@@ -173,8 +173,8 @@ export default function LandingHeader() {
     { id: 'faq', label: t("faq") },
   ];
 
-  // The footer holds contact details and the blog link; the bar keeps to the
-  // sections a first-time visitor decides on. The menu has room for both.
+  // The footer holds the contact details; the bar keeps to the sections a
+  // first-time visitor decides on. The menu has room for both.
   const contactNavItem = { id: 'contact', label: t("contact") };
 
   // Blog navigation item (separate from scroll items)
@@ -291,6 +291,15 @@ export default function LandingHeader() {
                   <span className="cursor-pointer">{item.label}</span>
                 </NavItem>
               ))}
+              <Link href={blogNavItem.href}>
+                <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+                  isBlogPage
+                    ? "text-white/90 hover:text-white"
+                    : "text-foreground/80 hover:text-foreground"
+                }`}>
+                  {blogNavItem.label}
+                </button>
+              </Link>
               <Link href={officeNavItem.href}>
                 <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
                   isBlogPage
