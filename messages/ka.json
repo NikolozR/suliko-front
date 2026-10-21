@@ -722,6 +722,18 @@
     "jumpToSuggestions": "იხილეთ შემოთავაზებები ქვემოთ"
   },
   "Pricing": {
+    "landing": {
+      "individuals": "კერძო პირებისთვის",
+      "starterCta": "100 გვერდის შეძენა",
+      "professionalCta": "500 გვერდის შეძენა",
+      "payAsYouGoCta": "გვერდების შეძენა",
+      "businessCta": "კრედიტების შეძენა",
+      "starterPerPage": "0.20 ₾ თითო გვერდზე",
+      "professionalPerPage": "0.10 ₾ თითო გვერდზე",
+      "professionalDescription": "იდეალურია რეგულარული თარგმნისთვის",
+      "includedAll": "ყველა პაკეტი მოიცავს 50-ზე მეტ ენას და ფაილის ფორმატებს: PNG, JPG, JPEG, PDF, DOCX, TXT.",
+      "notSure": "ჯერ არ ხარ დარწმუნებული?"
+    },
     "paymentModal": {
       "title": "გადახდა მალე დაემატება",
       "description": "გადახდის სისტემა მალე დაემატება. გთხოვთ დაგვიკავშირდით",
