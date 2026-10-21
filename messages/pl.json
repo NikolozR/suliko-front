@@ -1264,7 +1264,7 @@
     "items": {
       "quality": {
         "question": "Jak dokładne są tłumaczenia?",
-        "answer": "Suliko używa zaawansowanych modeli AI wytrenowanych na profesjonalnych korpusach tłumaczeniowych. Wskaźnik dokładności wynosi 98% dla obsługiwanych par językowych, a edytor pozwala przeglądać i dopracowywać każdy segment."
+        "answer": "Suliko używa modeli AI wytrenowanych na profesjonalnych tekstach tłumaczeniowych. Każdy segment widać obok oryginału, więc możesz sprawdzić i poprawić tłumaczenie przed pobraniem dokumentu."
       },
       "languages": {
         "question": "Które języki są obsługiwane?",
@@ -1276,7 +1276,7 @@
       },
       "pricing": {
         "question": "Czy jest bezpłatny plan?",
-        "answer": "Tak. Każdy nowy użytkownik otrzymuje 10 bezpłatnych stron do przetłumaczenia. Następnie możesz wybrać plan miesięczny (Starter, Professional) lub opcję pay-as-you-go."
+        "answer": "Tak. Każdy nowy użytkownik otrzymuje 10 bezpłatnych stron do przetłumaczenia. Potem możesz kupić pakiet stron bez terminu ważności (Starter lub Professional) albo płacić 1 ₾ za stronę. Plany miesięczne dla firm znajdziesz w zakładce Dla firm."
       },
       "security": {
         "question": "Czy moje dane dokumentów są bezpieczne?",
@@ -1284,11 +1284,15 @@
       },
       "georgian": {
         "question": "Dlaczego Suliko jest szczególnie dobre dla języka gruzińskiego?",
-        "answer": "Gruziński jest morfologicznie złożonym językiem, z którym ogólne systemy AI radzą sobie słabo. Modele Suliko są dostrojone na gruzińskich tekstach prawniczych, medycznych i biznesowych."
+        "answer": "Gruziński jest morfologicznie złożonym językiem, z którym ogólne systemy AI radzą sobie słabo. Modele Suliko są dostrojone na gruzińskich tekstach prawniczych, medycznych i biznesowych, dzięki czemu umowy i zaświadczenia brzmią tak, jak powinny."
+      },
+      "notary": {
+        "question": "Czy mogę zamówić tłumaczenie poświadczone lub notarialne?",
+        "answer": "Tłumaczenie pobrane z edytora nie jest poświadczone. Jeśli urząd lub sąd wymaga tłumaczenia poświadczonego lub notarialnego, zamów je w naszej usłudze notarialnej."
       },
       "api": {
         "question": "Czy oferujecie API lub integracje biznesowe?",
-        "answer": "Tak. Plany Business i Enterprise obejmują dostęp do API, dzięki czemu możesz zintegrować Suliko bezpośrednio z własnymi procesami. Skontaktuj się z naszym zespołem sprzedaży w sprawie cen."
+        "answer": "Tak. Suliko Business obejmuje podstawowy dostęp do API, a Suliko Enterprise dodaje zaawansowane API z SLA, zarządzanie wieloma użytkownikami i dedykowanego opiekuna konta. Skontaktuj się z nami w sprawie cen dla większych wolumenów."
       }
     }
   },

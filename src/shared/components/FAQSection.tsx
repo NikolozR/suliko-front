@@ -7,16 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/features/ui";
-
-const FAQ_KEYS = [
-  "quality",
-  "languages",
-  "formats",
-  "pricing",
-  "security",
-  "georgian",
-  "api",
-] as const;
+import { FAQ_KEYS } from "@/shared/constants/faqKeys";
 
 export default function FAQSection() {
   const t = useTranslations("FAQ");

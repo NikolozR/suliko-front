@@ -1264,7 +1264,7 @@
     "items": {
       "quality": {
         "question": "How accurate are the translations?",
-        "answer": "Suliko uses advanced AI models trained on professional translation corpora. Our accuracy rate is 98% for supported language pairs, and the editor lets you review and refine every segment before finalising your document."
+        "answer": "Suliko uses AI models trained on professional translation texts. Every segment appears next to the original, so you can review and correct the translation before you download the document."
       },
       "languages": {
         "question": "Which languages are supported?",
@@ -1276,7 +1276,7 @@
       },
       "pricing": {
         "question": "Is there a free tier?",
-        "answer": "Yes. Every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow."
+        "answer": "Yes. Every new user receives 10 free pages to translate. After that you can buy a package of pages that never expire (Starter or Professional), or pay 1 ₾ per page. Monthly plans for companies are under For businesses."
       },
       "security": {
         "question": "Is my document data secure?",
@@ -1284,11 +1284,15 @@
       },
       "georgian": {
         "question": "Why is Suliko especially good for Georgian?",
-        "answer": "Georgian is a morphologically complex language that most general-purpose AI systems handle poorly. Suliko's models are fine-tuned on Georgian legal, medical, and business texts, resulting in significantly better output than generic translation services."
+        "answer": "Georgian is a morphologically complex language that most general-purpose AI systems handle poorly. Suliko's models are fine-tuned on Georgian legal, medical and business texts, so contracts and certificates read the way they should."
+      },
+      "notary": {
+        "question": "Can I get a certified or notarised translation?",
+        "answer": "The translation you download from the editor is not certified. If an office or a court needs a certified or notarised translation, order it from our notary service."
       },
       "api": {
         "question": "Do you offer an API or business integrations?",
-        "answer": "Yes. Our Business and Enterprise plans include API access so you can integrate Suliko directly into your own workflows and applications. Contact our sales team for custom volume pricing and SLA options."
+        "answer": "Yes. Suliko Business includes basic API access, and Suliko Enterprise adds an advanced API with SLA, multi-user management and a dedicated account manager. Contact us for custom volume pricing."
       }
     }
   },
