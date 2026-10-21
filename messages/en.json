@@ -926,10 +926,11 @@
     "videoUnavailable": "Video unavailable"
   },
   "VideoSection": {
-    "title": "See Suliko in Action",
-    "description": "Watch how our AI-powered translation platform works and discover why professionals worldwide trust Suliko for their translation needs.",
+    "title": "See how Suliko works in under a minute",
+    "description": "A short walkthrough of translating a document with Suliko. The video is in Georgian, with Georgian subtitles.",
     "browserNotSupported": "Your browser does not support the video tag.",
-    "videoUnavailable": "Video unavailable"
+    "videoUnavailable": "Video unavailable",
+    "playVideo": "Play video"
   },
   "DemoBubble": {
     "title": "Want a walkthrough?",

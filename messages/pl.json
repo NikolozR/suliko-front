@@ -926,10 +926,11 @@
     "videoUnavailable": "Wideo niedostępne"
   },
   "VideoSection": {
-    "title": "Zobacz Suliko w akcji",
-    "description": "Obejrzyj, jak działa nasza platforma tłumaczeniowa oparta na AI i dowiedz się, dlaczego profesjonaliści na całym świecie ufają Suliko w swoich potrzebach tłumaczeniowych.",
+    "title": "Zobacz, jak działa Suliko, w niecałą minutę",
+    "description": "Krótki film pokazujący, jak przetłumaczyć dokument w Suliko. Film jest po gruzińsku, z gruzińskimi napisami.",
     "browserNotSupported": "Twoja przeglądarka nie obsługuje tagu wideo.",
-    "videoUnavailable": "Wideo niedostępne"
+    "videoUnavailable": "Wideo niedostępne",
+    "playVideo": "Odtwórz film"
   },
   "DemoBubble": {
     "title": "Wolisz prezentację?",

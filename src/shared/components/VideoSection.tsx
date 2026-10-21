@@ -2,12 +2,14 @@
 
 import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, Maximize, ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
 import { useAutoplay } from "@/shared/components/landing/useAutoplay";
 
 export default function VideoSection() {
   const t = useTranslations("VideoSection");
+  const tLanding = useTranslations("Landing");
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressRef = useRef<HTMLInputElement>(null);
   const { ref: sectionRef, running } = useAutoplay<HTMLElement>();
@@ -145,7 +147,7 @@ export default function VideoSection() {
               {!isPlaying && (
                 <button
                   onClick={togglePlay}
-                  aria-label="Play video"
+                  aria-label={t("playVideo")}
                   className="absolute inset-0 flex items-center justify-center group"
                 >
                   <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-white/30 transition-colors">
@@ -236,6 +238,18 @@ export default function VideoSection() {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <Link href="/document" prefetch>
+              <Button size="lg" className="group">
+                {tLanding("cta")}
+                <ArrowRight
+                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
