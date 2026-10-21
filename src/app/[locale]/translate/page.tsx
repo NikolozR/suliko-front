@@ -138,8 +138,8 @@ export default function TranslatePage() {
           <VideoSection />
           <TestimonialsSection />
           <PricingSection />
-          <ProductsSection />
           <FAQSection />
+          <ProductsSection />
           <ClosingCtaSection />
         </main>
         <LandingFooter />

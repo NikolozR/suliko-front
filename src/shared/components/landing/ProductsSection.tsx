@@ -26,7 +26,8 @@ const lightChip = (status: StatusKey) =>
 const FIRST_COUNT = 124;
 
 /**
- * Suliko Office and notarised translation side by side, each with a small
+ * Notarised translation (for this page's visitors) and Suliko Office (for
+ * bureaus) side by side, the notary card first, each with a small
  * live preview: orders arriving in the Office feed, a stamp landing on a page.
  * Replaces the separate OfficePromo and NotaryPromo bands on the landing.
  */
@@ -60,6 +61,7 @@ export default function ProductsSection() {
           <article
             data-reveal
             className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl border border-[#dbe2f5] bg-[#f2f5ff] p-6 sm:grid-cols-[minmax(0,1fr)_260px] sm:p-7 dark:border-slate-800 dark:bg-slate-900/60"
+            style={{ ["--reveal-delay" as string]: "100ms" }}
           >
             <div className="flex flex-col justify-between gap-6">
               <div className="flex flex-col gap-3">
@@ -106,8 +108,7 @@ export default function ProductsSection() {
           {/* Notary */}
           <article
             data-reveal
-            className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl bg-slate-900 p-6 text-white sm:grid-cols-[minmax(0,1fr)_220px] sm:p-7 dark:bg-slate-950 dark:ring-1 dark:ring-slate-800"
-            style={{ ["--reveal-delay" as string]: "100ms" }}
+            className="order-first grid grid-cols-1 gap-6 overflow-hidden rounded-3xl bg-slate-900 p-6 text-white sm:grid-cols-[minmax(0,1fr)_220px] sm:p-7 dark:bg-slate-950 dark:ring-1 dark:ring-slate-800"
           >
             <div className="flex flex-col justify-between gap-6">
               <div className="flex flex-col gap-3">
