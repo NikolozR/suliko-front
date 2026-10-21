@@ -2,7 +2,9 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Upload } from "lucide-react";
+import { ArrowRight, Upload } from "lucide-react";
+import { Link } from "@/i18n/navigation";
+import { Button } from "@/features/ui";
 import { useAutoplay, useTicker } from "./useAutoplay";
 
 const STEPS = ["upload", "translate", "export"] as const;
@@ -15,6 +17,7 @@ const STEP_MS = 4000;
  */
 export default function HowItWorksSection() {
   const t = useTranslations("HowItWorks");
+  const tLanding = useTranslations("Landing");
   const { ref, running } = useAutoplay<HTMLElement>();
   const [step, setStep] = useState(0);
   // Bumped on every manual pick so the ticker and progress bar restart.
@@ -88,6 +91,16 @@ export default function HowItWorksSection() {
               );
             })}
           </div>
+
+          <Link href="/document" prefetch className="self-start">
+            <Button size="lg" className="group">
+              {tLanding("cta")}
+              <ArrowRight
+                className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                aria-hidden="true"
+              />
+            </Button>
+          </Link>
         </div>
 
         <div
