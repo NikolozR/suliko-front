@@ -949,7 +949,12 @@
     "getStarted": "თარგმნე უფასოდ",
     "bookDemo": "შეხვედრის ჩანიშვნა",
     "loading": "იტვირთება...",
-    "forBureaus": "ბიუროებისთვის"
+    "forBureaus": "ბიუროებისთვის",
+    "menu": "მენიუ",
+    "openMenu": "მენიუს გახსნა",
+    "closeMenu": "მენიუს დახურვა",
+    "toggleTheme": "თემის შეცვლა",
+    "theme": "თემა"
   },
   "AboutSection": {
     "title": "რატომ სულიკო?",

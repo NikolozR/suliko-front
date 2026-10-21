@@ -949,7 +949,12 @@
     "getStarted": "Tłumacz za darmo",
     "bookDemo": "Zamów demo",
     "loading": "Ładowanie...",
-    "forBureaus": "Dla biur"
+    "forBureaus": "Dla biur",
+    "menu": "Menu",
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu",
+    "toggleTheme": "Zmień motyw",
+    "theme": "Motyw"
   },
   "AboutSection": {
     "title": "Dlaczego Suliko?",

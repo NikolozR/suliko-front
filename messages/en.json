@@ -949,7 +949,12 @@
     "getStarted": "Translate free",
     "bookDemo": "Book a Demo",
     "loading": "Loading...",
-    "forBureaus": "For bureaus"
+    "forBureaus": "For bureaus",
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "toggleTheme": "Toggle theme",
+    "theme": "Theme"
   },
   "AboutSection": {
     "title": "Why Choose Suliko?",
