@@ -15,7 +15,7 @@ const TESTIMONIALS = [
 type Testimonial = (typeof TESTIMONIALS)[number];
 
 const ROW_A: Testimonial[] = [TESTIMONIALS[0], TESTIMONIALS[2], TESTIMONIALS[4]];
-const ROW_B: Testimonial[] = [TESTIMONIALS[1], TESTIMONIALS[3], TESTIMONIALS[0]];
+const ROW_B: Testimonial[] = [TESTIMONIALS[1], TESTIMONIALS[3]];
 
 /**
  * Customer quotes in two rows drifting in opposite directions; hovering pauses
@@ -75,16 +75,6 @@ export default function TestimonialsSection() {
           <h2 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>
           <p className="max-w-xl text-base leading-relaxed text-muted-foreground">{t("subtitle")}</p>
         </div>
-        <dl data-reveal className="flex gap-10">
-          <div className="flex flex-col-reverse">
-            <dt className="text-xs text-muted-foreground">{t("stats.averageRating")}</dt>
-            <dd className="text-2xl font-bold text-suliko-default-color dark:text-blue-300">4.9/5</dd>
-          </div>
-          <div className="flex flex-col-reverse">
-            <dt className="text-xs text-muted-foreground">{t("stats.customerSatisfaction")}</dt>
-            <dd className="text-2xl font-bold text-suliko-default-color dark:text-blue-300">98%</dd>
-          </div>
-        </dl>
       </div>
 
       <div className="lp-pause-on-hover relative flex flex-col gap-4">
