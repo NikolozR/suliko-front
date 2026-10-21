@@ -2098,10 +2098,10 @@
   "Features": {
     "eyebrow": "Dlaczego Suliko",
     "title": "Stworzone dla dokumentów i dla języka gruzińskiego",
-    "subtitle": "Oszczędzaj godziny przy każdym dokumencie i zachowaj pełną kontrolę nad ostatecznym tekstem.",
+    "subtitle": "Pierwszą wersję dostajesz w minuty, a nad ostatecznym tekstem zachowujesz pełną kontrolę.",
     "copilot": {
-      "title": "Kopilot tłumacza",
-      "body": "Zarabiaj 3–10x więcej, przyspieszając pracę, którą już wykonujesz, z podpowiedziami dla każdego segmentu.",
+      "title": "Ostatnie słowo należy do Ciebie",
+      "body": "Każdy segment ma podpowiedź i zgodność z glosariuszem. Zaakceptuj ją, popraw lub zastąp. Tłumacze pracują szybciej, a ostateczny tekst zostaje Twój.",
       "segment": "Segment 4 z 12",
       "glossary": "Zgodne z glosariuszem",
       "consistent": "Spójna terminologia"
