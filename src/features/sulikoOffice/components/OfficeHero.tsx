@@ -1,6 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowDown, ArrowRight, Calculator, ShieldCheck, UserCheck } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import OverviewDemo from "./demo/OverviewDemo";
 import OfficeSignInPrompt from "./OfficeSignInPrompt";
 import { CONTAINER, GHOST_BUTTON, PRIMARY_BUTTON } from "./tones";
@@ -40,11 +41,16 @@ export default function OfficeHero() {
             {t("primary")}
             <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
           </a>
-          <a href="#journey" className={`${GHOST_BUTTON} group h-14 w-full px-6 text-lg sm:w-auto`}>
-            {t("secondary")}
-            <ArrowDown className="h-5 w-5 shrink-0 transition-transform group-hover:translate-y-0.5" aria-hidden />
-          </a>
+          {/* Visitors who knew Suliko as the translation site land here too: keep their way in as a co-CTA. */}
+          <Link href="/document" className={`${GHOST_BUTTON} group h-14 w-full px-6 text-lg sm:w-auto`}>
+            {t("translate")}
+            <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
+          </Link>
         </div>
+        <a href="#journey" className="group inline-flex items-center gap-2 self-start text-base text-muted-foreground office-enter hover:text-foreground" style={delay(300)}>
+          {t("secondary")}
+          <ArrowDown className="h-4 w-4 shrink-0 transition-transform group-hover:translate-y-0.5" aria-hidden />
+        </a>
         <p className="inline-flex items-center gap-2 self-start text-[15px] font-medium text-[#1e7440] office-enter dark:text-emerald-300" style={delay(330)}>
           <span aria-hidden className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e7f6ec] dark:bg-emerald-400/15">
             <ShieldCheck className="h-4 w-4" />
