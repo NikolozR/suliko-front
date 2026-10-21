@@ -722,6 +722,18 @@
     "previewTitle": "Podgląd sugestii"
   },
   "Pricing": {
+    "landing": {
+      "individuals": "Dla osób prywatnych",
+      "starterCta": "Kup 100 stron",
+      "professionalCta": "Kup 500 stron",
+      "payAsYouGoCta": "Kup strony",
+      "businessCta": "Kup kredyty",
+      "starterPerPage": "0,20 ₾ za stronę",
+      "professionalPerPage": "0,10 ₾ za stronę",
+      "professionalDescription": "Idealny do regularnych tłumaczeń",
+      "includedAll": "Każdy pakiet obejmuje ponad 50 języków i formaty plików: PNG, JPG, JPEG, PDF, DOCX, TXT.",
+      "notSure": "Nie masz pewności?"
+    },
     "paymentModal": {
       "title": "Płatność wkrótce",
       "description": "System płatności zostanie wkrótce dodany. Proszę skontaktować się z nami",

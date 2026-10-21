@@ -722,6 +722,18 @@
     "jumpToSuggestions": "Jump to the suggestions below"
   },
   "Pricing": {
+    "landing": {
+      "individuals": "For individuals",
+      "starterCta": "Get 100 pages",
+      "professionalCta": "Get 500 pages",
+      "payAsYouGoCta": "Buy pages",
+      "businessCta": "Buy Credits",
+      "starterPerPage": "0.20 ₾ per page",
+      "professionalPerPage": "0.10 ₾ per page",
+      "professionalDescription": "Ideal for regular translation work",
+      "includedAll": "Every package includes all 50+ languages and the file formats PNG, JPG, JPEG, PDF, DOCX and TXT.",
+      "notSure": "Not sure yet?"
+    },
     "paymentModal": {
       "title": "Payment Coming Soon",
       "description": "Payment system will be added soon. Please contact us at",

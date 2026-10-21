@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
 import { Check, Star, Zap, Building2, Users, Sparkles, Clock, Mail, Phone, MessageCircle, X, CreditCard } from "lucide-react";
@@ -29,6 +29,7 @@ interface Plan {
 
 export default function PricingSection() {
   const t = useTranslations("Pricing");
+  const tLanding = useTranslations("Landing");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'translators' | 'businesses'>('translators');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -56,10 +57,9 @@ export default function PricingSection() {
       icon: Star,
       features: [
         t("starter.features.0"),
-        t("starter.features.1"),
-        t("starter.features.2")
+        t("landing.starterPerPage"),
       ],
-      cta: t("starter.cta"),
+      cta: t("landing.starterCta"),
       action: "buyCredits",
       popular: false,
     },
@@ -67,14 +67,13 @@ export default function PricingSection() {
       name: t("professional.title"),
       price: formatPriceFromString(t("professional.price")),
       period: t("professional.period"),
-      description: t("professional.description"),
+      description: t("landing.professionalDescription"),
       icon: Zap,
       features: [
         t("professional.features.0"),
-        t("professional.features.1"),
-        t("professional.features.2"),
+        t("landing.professionalPerPage"),
       ],
-      cta: t("professional.cta"),
+      cta: t("landing.professionalCta"),
       action: "buyCredits",
       popular: true,
       discount: true
@@ -88,11 +87,8 @@ export default function PricingSection() {
       features: [
         t("payAsYouGo.features.0"),
         t("payAsYouGo.features.1"),
-        t("payAsYouGo.features.2"),
-        t("payAsYouGo.features.3")
-        // t("payAsYouGo.features.4")
       ],
-      cta: t("payAsYouGo.cta"),
+      cta: t("landing.payAsYouGoCta"),
       // Matches today's live behaviour: this CTA reads "Buy Credits" and routes
       // to /price. Switch to "payAsYouGo" to open PayAsYouGoModal instead.
       action: "buyCredits",
@@ -113,7 +109,7 @@ export default function PricingSection() {
         t("business.features.2"),
         t("business.features.3")
       ],
-      cta: t("business.cta"),
+      cta: t("landing.businessCta"),
       action: "buyCredits",
       popular: true,
       discount: true
@@ -170,7 +166,7 @@ export default function PricingSection() {
                     : 'text-muted-foreground hover:text-foreground'
                   }`}
               >
-                {t("forTranslators")}
+                {t("landing.individuals")}
               </button>
               <button
                 onClick={() => setActiveTab('businesses')}
@@ -283,8 +279,22 @@ export default function PricingSection() {
         </div>
 
 
+        {activeTab === 'translators' && (
+          <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground">
+            {t("landing.includedAll")}
+          </p>
+        )}
+
+        {/* Soft exit for visitors who are not ready to pay */}
+        <p className="mt-6 text-center text-muted-foreground">
+          {t("landing.notSure")}{" "}
+          <Link href="/document" className="font-medium text-primary hover:text-primary/80">
+            {tLanding("cta")}
+          </Link>
+        </p>
+
         {/* Contact Info */}
-        <div className="mt-12 text-center">
+        <div className="mt-8 text-center">
           <p className="text-muted-foreground mb-2">
             {t("needCustomSolution")}
           </p>
