@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
-import { Check, Star, Zap, Building2, Users, Sparkles, Clock, Mail, Phone, MessageCircle, X, CreditCard } from "lucide-react";
+import { Check, Star, Zap, Building2, Users, Sparkles, Mail, Phone, MessageCircle, X, CreditCard } from "lucide-react";
 import { PayAsYouGoModal } from "@/features/pricing/components/PayAsYouGoModal";
 import { formatPriceFromString } from "@/shared/utils/domainUtils";
 import { NOTARY_PHONE, NOTARY_WHATSAPP } from "@/shared/constants/notary";
@@ -24,7 +24,6 @@ interface Plan {
   cta: string;
   action: PlanAction;
   popular: boolean;
-  discount?: boolean;
 }
 
 export default function PricingSection() {
@@ -76,7 +75,6 @@ export default function PricingSection() {
       cta: t("landing.professionalCta"),
       action: "buyCredits",
       popular: true,
-      discount: true
     },
     {
       name: t("payAsYouGo.title"),
@@ -112,7 +110,6 @@ export default function PricingSection() {
       cta: t("landing.businessCta"),
       action: "buyCredits",
       popular: true,
-      discount: true
     },
     {
       name: t("enterpriseBusiness.title"),
@@ -211,36 +208,14 @@ export default function PricingSection() {
                   {plan.name}
                 </CardTitle>
                 <div className="mt-4">
-                  {plan.discount ? (
-                    <div className="flex flex-col items-center">
-                      <div className="flex items-baseline gap-2">
-                        <span className="text-2xl text-muted-foreground line-through">
-                          {(() => {
-                            const numericPrice = plan.price.replace(/[₾€$€\s]/g, '').trim();
-                            if (numericPrice === "50") return formatPriceFromString("62");
-                            if (numericPrice === "500") return formatPriceFromString("625");
-                            return plan.price;
-                          })()}
-                        </span>
-                        <span className="text-4xl font-bold text-foreground">
-                          {plan.price}
-                        </span>
-                      </div>
-                      <span className="mt-2 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300">
-                        <Clock className="h-3 w-3" aria-hidden />
-                        {t("discount")} · {t("limitedTime")}
-                      </span>
-                    </div>
-                  ) : (
-                    <div className="flex items-baseline justify-center">
-                      <span className="text-4xl font-bold text-foreground">
-                        {plan.price}
-                      </span>
-                      <span className="text-muted-foreground ml-1">
-                        {plan.period}
-                      </span>
-                    </div>
-                  )}
+                  <div className="flex items-baseline justify-center">
+                    <span className="text-4xl font-bold text-foreground">
+                      {plan.price}
+                    </span>
+                    <span className="text-muted-foreground ml-1">
+                      {plan.period}
+                    </span>
+                  </div>
                 </div>
                 <p className="text-muted-foreground mt-2">
                   {plan.description}
