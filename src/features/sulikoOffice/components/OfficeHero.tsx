@@ -1,9 +1,10 @@
 import type { CSSProperties, ReactNode } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { ArrowDown, ArrowRight, Calculator, ShieldCheck, UserCheck } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import OverviewDemo from "./demo/OverviewDemo";
 import OfficeSignInPrompt from "./OfficeSignInPrompt";
+import { officeSignInUrl } from "../lib/officeLinks";
 import { CONTAINER, GHOST_BUTTON, PRIMARY_BUTTON } from "./tones";
 
 /**
@@ -15,6 +16,7 @@ const delay = (ms: number): CSSProperties => ({ animationDelay: `${ms}ms` });
 
 export default function OfficeHero() {
   const t = useTranslations("SulikoOffice.hero");
+  const officeUrl = officeSignInUrl(useLocale());
 
   return (
     <section className={`${CONTAINER} grid items-center gap-14 pt-14 pb-20 lg:pt-[88px] lg:pb-[104px] xl:grid-cols-[minmax(0,560px)_minmax(0,1fr)] xl:gap-16`}>
@@ -37,7 +39,7 @@ export default function OfficeHero() {
           {t("sub")}
         </p>
         <div className="flex flex-wrap gap-3 office-enter" style={delay(270)}>
-          <a href="#demo" className={`${PRIMARY_BUTTON} group h-14 w-full px-7 text-lg sm:w-auto`}>
+          <a href={officeUrl} className={`${PRIMARY_BUTTON} group h-14 w-full px-7 text-lg sm:w-auto`}>
             {t("primary")}
             <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
           </a>
