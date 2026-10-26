@@ -1,14 +1,42 @@
 import { useTranslations } from "next-intl";
 import { Check } from "lucide-react";
 import { formatPriceFromString } from "@/shared/utils/domainUtils";
+import { cn } from "@/shared/lib/utils";
 
 interface PricingCardProps {
   type: 'starter' | 'professional' | 'payAsYouGo' | 'custom' | 'business' | 'enterpriseBusiness';
   onSelect: () => void;
+  /** The one plan the page recommends: a border in the brand colour, a badge and the filled button. */
+  highlighted?: boolean;
+  /** What the package saves, in GEL, against buying the same pages one by one. */
+  savingsGel?: number;
 }
 
-export function PricingCard({ type, onSelect }: PricingCardProps) {
+export function PricingCard({ type, onSelect, highlighted = false, savingsGel }: PricingCardProps) {
   const t = useTranslations("Pricing");
+
+  // Only what differs between the plans. The file formats and the 50+ languages are the
+  // same in all of them, so they are said once under the cards, not in each.
+  const differences = (): string[] => {
+    const lines: string[] = [];
+    if (type === 'starter') lines.push(t("landing.starterPerPage"));
+    if (type === 'professional') lines.push(t("landing.professionalPerPage"));
+    if (savingsGel && savingsGel > 0) {
+      lines.push(
+        t("landing.savesVsPayAsYouGo", {
+          amount: savingsGel,
+          plan: t("payAsYouGo.title"),
+        })
+      );
+    }
+    if (type === 'professional') {
+      lines.push(t("professional.features.3"), t("professional.features.4"));
+    }
+    if (type === 'payAsYouGo') {
+      lines.push(t("payAsYouGo.features.0"), t("payAsYouGo.features.1"));
+    }
+    return lines;
+  };
 
   const renderCardContent = () => {
     if (type === 'custom') {
@@ -30,7 +58,7 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
           {t(`${type}.title`)}
         </h3>
         <div className="mb-6 text-center">
-          <span className="text-4xl font-bold text-card-foreground">
+          <span className="text-4xl font-semibold text-card-foreground">
             {formatPriceFromString(t(`${type}.price`))}
           </span>
           <span className="text-muted-foreground">
@@ -47,20 +75,10 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
             {t(`${type}.description`)}
           </p>
           <ul className="space-y-2">
-
-            {/* type === 'starter' ? 3 : 
-                     type === 'professional' ? 3 : 
-                     type === 'payAsYouGo' ? 2 : 3 
-             */}
-
-            {Array.from({
-              length: type === 'payAsYouGo' ? 4 : 3
-            }, (_, i) => (
-              <li key={i} className="flex items-center text-sm">
-                <Check className="h-4 w-4 text-green-500 mr-2 shrink-0" />
-                <span className="text-muted-foreground">
-                  {t(`${type}.features.${i}`)}
-                </span>
+            {differences().map((line) => (
+              <li key={line} className="flex items-start text-sm">
+                <Check className="mt-0.5 h-4 w-4 text-green-500 mr-2 shrink-0" />
+                <span className="text-muted-foreground">{line}</span>
               </li>
             ))}
           </ul>
@@ -70,20 +88,32 @@ export function PricingCard({ type, onSelect }: PricingCardProps) {
   };
 
   return (
-    <div className="bg-card rounded-2xl shadow-sm p-8 border border-border/60 flex flex-col h-full hover:border-primary/30 hover:shadow-md transition-[border-color,box-shadow] duration-200">
+    <div
+      className={cn(
+        "relative bg-card rounded-2xl p-8 flex flex-col h-full transition-[border-color] duration-200",
+        highlighted
+          ? "border-2 border-suliko-default-color"
+          : "border border-border/60 hover:border-primary/30"
+      )}
+    >
+      {highlighted && (
+        <span className="suliko-default-bg absolute -top-3 left-1/2 -translate-x-1/2 rounded-full px-3 py-1 text-xs font-semibold text-white whitespace-nowrap">
+          {t("mostPopular")}
+        </span>
+      )}
       {renderCardContent()}
       <div className="mt-auto pt-8">
         <button
           onClick={onSelect}
-          className="w-full cursor-pointer bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-3 px-6 rounded-xl transition duration-200"
+          className={cn(
+            "w-full cursor-pointer font-semibold py-3 px-6 rounded-xl transition duration-200",
+            highlighted
+              ? "suliko-default-bg text-white hover:opacity-90"
+              : "border border-border bg-transparent text-foreground hover:bg-muted"
+          )}
         >
           {t(`${type}.cta`)}
         </button>
-        {/* {(type === 'starter' || type === 'professional') && (
-          <p className="text-xs text-muted-foreground text-center mt-2">
-            {t('billedMonthly')}
-          </p>
-        )} */}
       </div>
     </div>
   );

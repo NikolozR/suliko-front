@@ -17,6 +17,7 @@ export async function generateMetadata({
 
 export default function PricePackages() {
   const t = useTranslations("Pricing");
+  const tCoupon = useTranslations("Coupon");
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -25,9 +26,17 @@ export default function PricePackages() {
         <p className="text-muted-foreground text-lg">{t("description")}</p>
       </div>
       
-      <CouponRedeemCard className="max-w-xl mx-auto mb-10" />
-
       <PricingGrid />
+
+      {/* Below the plans: it is for people who already have a code, and
+          it used to sit above the plans and be the first thing on the page.
+          Renders nothing when signed out, so the fold is empty then too. */}
+      <details className="group mx-auto mt-10 max-w-xl">
+        <summary className="cursor-pointer text-center text-sm text-muted-foreground underline-offset-4 hover:text-foreground hover:underline">
+          {tCoupon("title")}
+        </summary>
+        <CouponRedeemCard className="mt-4" />
+      </details>
 
       <CompanyLegalInfo className="mt-12 text-center" />
     </div>

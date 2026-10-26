@@ -741,6 +741,7 @@
       "professionalPerPage": "0.10 ₾ თითო გვერდზე",
       "professionalDescription": "იდეალურია რეგულარული თარგმნისთვის",
       "includedAll": "ყველა პაკეტი მოიცავს 50-ზე მეტ ენას და ფაილის ფორმატებს: PNG, JPG, JPEG, PDF, DOCX, TXT.",
+      "savesVsPayAsYouGo": "ზოგავთ {amount} ₾-ს „{plan}“ ტარიფთან შედარებით",
       "notSure": "ჯერ არ ხარ დარწმუნებული?"
     },
     "paymentModal": {
