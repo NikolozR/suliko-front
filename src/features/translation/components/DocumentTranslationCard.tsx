@@ -44,7 +44,7 @@ import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
 // import { extractPagesFromDocument } from "../utils/extractPages";
 import { saveFileToStorage, getFileFromStorage, clearFileFromStorage, getMetadataFromStorage, saveOriginalFileForChat, type DocumentMetadata } from "@/shared/utils/fileStorage";
-import { MAX_DOCUMENT_UPLOAD_BYTES, formatBytes } from "../constants/uploadLimits";
+import { MAX_DOCUMENT_UPLOAD_BYTES, formatBytes, isAcceptedDocumentName } from "../constants/uploadLimits";
 import { prepareDocumentUpload, PrepareUploadError } from "../services/prepareUploadService";
 import type { PrepareUploadResponse } from "../types/types.Translation";
 import LanguageSelect from "./LanguageSelect";
@@ -544,6 +544,13 @@ const DocumentTranslationCard = () => {
     if (!event.target.files || event.target.files.length === 0) return;
 
     const file = event.target.files[0];
+
+    // The picker filters by type; a drop does not, so check here too.
+    if (!isAcceptedDocumentName(file.name)) {
+      toaster.error(t("unsupportedFile", { name: file.name }), { duration: 6000 });
+      event.target.value = "";
+      return;
+    }
 
     if (file.size > MAX_DOCUMENT_UPLOAD_BYTES) {
       toaster.error(
@@ -1267,6 +1274,7 @@ const DocumentTranslationCard = () => {
                       }
                       busy={submitStage !== null}
                       uploadPercent={submitStage === "uploading" ? uploadPercent : null}
+                      hasFile={!!hasFile}
                       onSubmitDisabled={
                         isLoading || isDetectingNames || (token ? !hasFile : false)
                       }

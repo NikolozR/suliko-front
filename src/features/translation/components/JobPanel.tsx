@@ -524,6 +524,12 @@ interface QuoteProps {
    * the file is uploading and being measured. Falls back to "counting".
    */
   pendingLabel?: string | null;
+  /**
+   * False before any file is chosen. There is nothing to read or count yet, so
+   * the figures stay as dashes and the button says what to do, instead of
+   * showing placeholders and "Reading the page count…" as if work was running.
+   */
+  hasFile?: boolean;
 }
 
 /**
@@ -544,6 +550,7 @@ export function QuoteBlock({
   busy = false,
   uploadPercent = null,
   pendingLabel = null,
+  hasFile = true,
 }: QuoteProps) {
   const t = useTranslations("DocumentTranslationCard.quote");
 
@@ -554,7 +561,13 @@ export function QuoteBlock({
   const leftAfter = resolved ? available - pageCount : 0;
 
   const figure = (v: React.ReactNode) =>
-    resolved ? v : <span className="inline-block h-4 w-8 animate-pulse rounded bg-white/20" />;
+    resolved ? (
+      v
+    ) : !hasFile ? (
+      <span aria-hidden>–</span>
+    ) : (
+      <span className="inline-block h-4 w-8 animate-pulse rounded bg-white/20" />
+    );
 
   return (
     // Pinned to the foot of the screen while the panel above it scrolls: the
@@ -626,7 +639,9 @@ export function QuoteBlock({
                 className="relative size-[18px] shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
               />
             )}
-            <span className="relative">{resolved ? submitLabel : pendingLabel ?? t("counting")}</span>
+            <span className="relative">
+              {resolved ? submitLabel : !hasFile ? t("chooseFile") : pendingLabel ?? t("counting")}
+            </span>
           </button>
         )}
 

@@ -372,7 +372,8 @@
     },
     "dragAndDrop": "Przeciągnij i upuść plik lub kliknij, aby wybrać",
     "dropFiles": "Upuść pliki tutaj",
-    "supportedFormats": "Obsługiwane typy plików: PDF, DOCX, TXT, JPEG, PNG, JPG, itp.",
+    "supportedFormats": "Obsługiwane: PDF, DOCX, DOC, TXT, MD, SRT, JPG, PNG. Do {max}.",
+    "dropRejected": "Ten typ pliku nie jest obsługiwany",
     "pasteFromClipboard": "lub naciśnij Ctrl+V, aby wkleić obraz ze schowka",
     "pageCountWarning": "⚠️ Dokumenty powyżej 4 stron mogą powodować problemy z przetwarzaniem i saldem; nie wszystkie strony mogą zostać przetłumaczone. Zalecamy podzielić plik na części do 3 stron i przesyłać je osobno.",
     "warningDialog": {
@@ -423,7 +424,7 @@
       "loadError": "Nie udało się załadować zawartości pliku",
       "loadErrorSubtitle": "Nie udało się załadować pliku napisów",
       "loadErrorWord": "Nie udało się załadować dokumentu Word",
-      "loadErrorPdf": "Nie udało się załadować PDF. Sprawdź konsolę, aby uzyskać szczegóły.",
+      "loadErrorPdf": "Nie można wyświetlić podglądu tego PDF. Nadal możesz go przetłumaczyć.",
       "noPreview": "Nie wybrano dokumentu lub podgląd nie jest dostępny.",
       "noPdfPreview": "Brak pliku PDF dostępnego do podglądu.",
       "subtitlePreview": "Podgląd napisów",
@@ -528,10 +529,12 @@
       "translateCta": "{count, plural, one {Przetłumacz # stronę} few {Przetłumacz # strony} many {Przetłumacz # stron} other {Przetłumacz # stron}}",
       "topUpCta": "{count, plural, one {Doładuj # stronę} few {Doładuj # strony} many {Doładuj # stron} other {Doładuj # stron}}",
       "counting": "Odczytuję liczbę stron…",
+      "chooseFile": "Wybierz plik do przetłumaczenia",
       "usuallyReady": "Zwykle gotowe w {min}–{max} min"
     },
     "ocrOnly": "Tylko OCR",
     "fileTooLarge": "„{name}” jest za duży ({size}). Maksymalny rozmiar pliku to {max}.",
+    "unsupportedFile": "„{name}” nie jest obsługiwanym typem pliku. Użyj PDF, DOCX, DOC, TXT, MD, SRT, JPG lub PNG.",
     "submitStage": {
       "detectingNames": "Szukam nazw…",
       "uploading": "Wysyłanie {percent}%",
