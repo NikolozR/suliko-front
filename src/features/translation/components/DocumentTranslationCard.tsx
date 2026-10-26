@@ -1163,7 +1163,8 @@ const DocumentTranslationCard = () => {
                       type="button"
                       variant="outline"
                       size="icon"
-                      className="h-11 w-11 rounded-full border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
+                      aria-label={t("swapLanguages")}
+                      className="h-11 w-11 shrink-0 rounded-full border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
                       disabled={currentSourceLanguageId === 0}
                       onClick={() => {
                         if (currentSourceLanguageId !== 0) {

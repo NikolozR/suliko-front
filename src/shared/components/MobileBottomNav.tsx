@@ -65,7 +65,7 @@ export default function MobileBottomNav() {
               }`}
             >
               <Icon className={`h-5 w-5 ${active ? "text-suliko-default-color" : ""}`} />
-              <span className="truncate max-w-[64px]">{label}</span>
+              <span className="max-w-full truncate px-1 text-[11px] leading-tight">{label}</span>
             </Link>
           );
         })}

@@ -137,6 +137,8 @@ export function NamesBlock({ enabled, onToggle, savedCount, projectName, project
           onClick={onToggle}
           className={cn(
             "relative mt-0.5 inline-flex h-[30px] w-[52px] shrink-0 items-center rounded-full transition-colors",
+            // The look stays 30px; the tappable area is 44px.
+            "before:absolute before:inset-x-0 before:-inset-y-[7px] before:content-['']",
             "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50",
             enabled ? "bg-suliko-default-color" : "bg-muted-foreground/35"
           )}
@@ -218,7 +220,7 @@ function ClampedText({ text, more, less }: { text: string; more: string; less: s
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
-          className="mt-0.5 text-[13px] font-semibold text-suliko-default-color hover:underline"
+          className="relative mt-0.5 text-[13px] font-semibold text-suliko-default-color hover:underline before:absolute before:-inset-x-3 before:-inset-y-3 before:content-['']"
         >
           {open ? less : more}
         </button>
@@ -255,7 +257,7 @@ function Disclosure({
         onClick={onToggle}
         aria-expanded={open}
         className={cn(
-          "flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2 text-left text-[13px] transition-colors",
+          "flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2 text-left text-[13px] transition-colors pointer-coarse:min-h-11",
           "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50",
           tone === "ask"
             ? "bg-amber-50 text-amber-900 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-300 dark:hover:bg-amber-950/60"
@@ -388,7 +390,7 @@ export function BriefBlock({
                         aria-checked={answer === option}
                         onClick={() => onAnswer(index, answer === option ? "" : option)}
                         className={cn(
-                          "rounded-full border px-3 py-1 text-[12px] transition-colors",
+                          "rounded-full border px-3 py-1 text-[12px] transition-colors pointer-coarse:min-h-11 pointer-coarse:px-4",
                           answer === option
                             ? "border-suliko-default-color bg-suliko-default-color/10 font-semibold text-foreground"
                             : "border-border text-muted-foreground hover:bg-muted/60"
@@ -448,7 +450,7 @@ export function BriefBlock({
                   type="button"
                   onClick={() => onTermRemove(index)}
                   aria-label={t("removeTerm", { term: term.original })}
-                  className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground pointer-coarse:p-3"
                 >
                   <X className="size-3.5" aria-hidden />
                 </button>
@@ -492,7 +494,7 @@ export function InstructionsBlock({ value, onChange }: InstructionsProps) {
         rows={3}
         placeholder={t("placeholder")}
         className={cn(
-          "mt-3 w-full resize-y rounded-[10px] border border-border bg-background px-3 py-2.5 text-[14px] leading-relaxed",
+          "mt-3 w-full resize-y rounded-[10px] border border-border bg-background px-3 py-2.5 text-base leading-relaxed md:text-[14px]",
           "placeholder:text-muted-foreground/70",
           "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
         )}

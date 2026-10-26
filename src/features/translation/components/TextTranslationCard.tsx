@@ -423,7 +423,7 @@ const TextTranslationCard = () => {
                   <div className="h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full">
                     <Textarea
                       ref={textareaRef}
-                      className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
+                      className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-base md:text-sm"
                       placeholder={t('textIputPlaceholder')}
                       value={currentTextValue}
                       onChange={(e) => {
@@ -483,7 +483,7 @@ const TextTranslationCard = () => {
                     </div>
                     <Textarea
                       ref={translatedRef}
-                      className="w-full flex-1 h-[300px] max-h-[300px] border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm md:text-base bg-slate-50 dark:bg-input/30 border-slate-200 dark:border-slate-700"
+                      className="w-full flex-1 h-[300px] max-h-[300px] border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-base bg-slate-50 dark:bg-input/30 border-slate-200 dark:border-slate-700"
                       value={translatedText}
                       onChange={(e) => {
                         setTranslatedText(e.target.value);

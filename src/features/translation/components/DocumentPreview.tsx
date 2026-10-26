@@ -385,7 +385,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
             type="button"
             onClick={handleZoomOut}
             disabled={scale <= minScale}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -398,7 +398,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
             type="button"
             onClick={handleZoomIn}
             disabled={scale >= maxScale}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -408,7 +408,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
             type="button"
             onClick={handleResetZoom}
             disabled={scale === 1.0}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <RotateCcw className="h-4 w-4" />
           </Button>
@@ -640,7 +640,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
             type="button"
             onClick={handleZoomOut}
             disabled={scale <= minScale || isRendering}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -653,7 +653,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
             type="button"
             onClick={handleZoomIn}
             disabled={scale >= maxScale || isRendering}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -663,7 +663,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
             type="button"
             onClick={handleResetZoom}
             disabled={scale === 1.0 || isRendering}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <RotateCcw className="h-4 w-4" />
           </Button>
@@ -784,7 +784,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
             type="button"
             onClick={handleZoomOut}
             disabled={scale <= minScale}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -797,7 +797,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
             type="button"
             onClick={handleZoomIn}
             disabled={scale >= maxScale}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -807,7 +807,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
             type="button"
             onClick={handleResetZoom}
             disabled={scale === 1.0}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <RotateCcw className="h-4 w-4" />
           </Button>

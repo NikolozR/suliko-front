@@ -363,6 +363,7 @@
     "simpleEditorNotice": "Nie udało się otworzyć edytora w stylu Worda, dlatego widać prosty edytor. Twoje tłumaczenie pozostaje bez zmian."
   },
   "DocumentTranslationCard": {
+    "swapLanguages": "Zamień języki",
     "title": "Prześlij dokument",
     "description": "Prześlij dokument do tłumaczenia",
     "addingToProject": "Dodawanie do projektu: {name}",
