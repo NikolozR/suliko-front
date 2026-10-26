@@ -512,6 +512,7 @@
       "usuallyReady": "Usually ready in {min}–{max} minutes"
     },
     "fileTooLarge": "\"{name}\" is too large ({size}). The maximum file size is {max}.",
+    "swapLanguages": "Swap languages",
     "submitStage": {
       "detectingNames": "Finding names…",
       "uploading": "Uploading {percent}%",

@@ -532,6 +532,7 @@
       "usuallyReady": "ჩვეულებრივ მზადდება {min}–{max} წუთში"
     },
     "fileTooLarge": "\"{name}\" ძალიან დიდია ({size}). მაქსიმალური ზომაა {max}.",
+    "swapLanguages": "ენების გაცვლა",
     "submitStage": {
       "detectingNames": "სახელების მოძიება…",
       "uploading": "იტვირთება {percent}%",

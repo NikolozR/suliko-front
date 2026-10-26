@@ -532,6 +532,7 @@
     },
     "ocrOnly": "Tylko OCR",
     "fileTooLarge": "„{name}” jest za duży ({size}). Maksymalny rozmiar pliku to {max}.",
+    "swapLanguages": "Zamień języki",
     "submitStage": {
       "detectingNames": "Szukam nazw…",
       "uploading": "Wysyłanie {percent}%",
