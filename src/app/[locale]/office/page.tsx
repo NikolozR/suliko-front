@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import SulikoOfficePage from "@/features/sulikoOffice/components/SulikoOfficePage";
+import OfficeMetaPixel from "@/features/sulikoOffice/components/OfficeMetaPixel";
 import { FAQ_KEYS } from "@/features/sulikoOffice/components/OfficeFaq";
 import { canonicalFor } from "@/shared/utils/legalPageMeta";
 
@@ -90,6 +91,7 @@ export default async function OfficeLandingPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }}
       />
+      {locale === "ka" && <OfficeMetaPixel />}
       <SulikoOfficePage />
     </>
   );

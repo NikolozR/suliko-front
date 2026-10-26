@@ -166,7 +166,9 @@ export default async function LocaleLayout({
 
   fbq('init', ${JSON.stringify(metaPixelId)});
 
-  fbq('track', 'PageView', {
+  // trackSingle: the Office page registers a second pixel, and a plain track
+  // would count this PageView on that one too depending on script order.
+  fbq('trackSingle', ${JSON.stringify(metaPixelId)}, 'PageView', {
     content_name: 'Suliko Landing Page',
     content_category: 'AI Translation Service'
   });
