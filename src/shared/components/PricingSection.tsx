@@ -139,7 +139,7 @@ export default function PricingSection() {
     <section id="pricing" className="scroll-mt-24 py-20 sm:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div data-reveal className="max-w-4xl mx-auto text-center mb-16">
-          <h2 className="text-3xl sm:text-4xl lg:text-4xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl lg:text-4xl font-semibold text-foreground mb-6">
             {t("title")}
           </h2>
           <p className="text-xl text-muted-foreground leading-relaxed mb-8">
@@ -185,8 +185,8 @@ export default function PricingSection() {
               key={index}
               data-reveal
               style={{ ["--reveal-delay" as string]: `${index * 90}ms` }}
-              className={`relative flex h-full flex-col transition-shadow duration-300 hover:shadow-lg ${
-                plan.popular ? "ring-2 ring-suliko-default-color shadow-xl" : ""
+              className={`relative flex h-full flex-col transition-shadow duration-300 hover:shadow-float-2 ${
+                plan.popular ? "ring-2 ring-suliko-default-color shadow-float-3" : ""
               }`}
             >
               {plan.popular && (
@@ -204,12 +204,12 @@ export default function PricingSection() {
                     <plan.icon className="h-7 w-7" aria-hidden />
                   </div>
                 </div>
-                <CardTitle className="text-2xl font-bold text-foreground">
+                <CardTitle className="text-2xl font-semibold text-foreground">
                   {plan.name}
                 </CardTitle>
                 <div className="mt-4">
                   <div className="flex items-baseline justify-center">
-                    <span className="text-4xl font-bold text-foreground">
+                    <span className="text-4xl font-semibold text-foreground">
                       {plan.price}
                     </span>
                     <span className="text-muted-foreground ml-1">
@@ -285,7 +285,7 @@ export default function PricingSection() {
       {/* Contact Modal */}
       {isContactModalOpen && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-          <div className="bg-background rounded-lg shadow-xl max-w-md w-full p-6 relative">
+          <div className="bg-background rounded-lg shadow-float-3 max-w-md w-full p-6 relative">
             <button
               onClick={(e) => {
                 e.preventDefault();
@@ -299,7 +299,7 @@ export default function PricingSection() {
             </button>
 
             <div className="text-center mb-6">
-              <h3 className="text-2xl font-bold text-foreground mb-2">
+              <h3 className="text-2xl font-semibold text-foreground mb-2">
                 {t("contactModal.title")}
               </h3>
               <p className="text-muted-foreground">

@@ -21,7 +21,7 @@ export default function NotaryTestimonialsSection() {
             <Star className="h-3.5 w-3.5 fill-current" />
             {t("sectionBadge")}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground mb-4">
             {t("heading")}
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
@@ -45,7 +45,7 @@ export default function NotaryTestimonialsSection() {
                 &ldquo;{t(textKey)}&rdquo;
               </p>
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-suliko-default-color text-white text-sm font-bold shrink-0">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-suliko-default-color text-white text-sm font-semibold shrink-0">
                   {initials}
                 </div>
                 <div>

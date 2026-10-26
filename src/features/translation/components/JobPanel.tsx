@@ -602,7 +602,7 @@ export function QuoteBlock({
             </dt>
             <dd
               className={cn(
-                "text-[17px] font-bold tabular-nums",
+                "text-[17px] font-semibold tabular-nums",
                 isShort ? "text-[#fca5a5]" : "text-[#7ee2b8]"
               )}
             >
@@ -614,7 +614,7 @@ export function QuoteBlock({
         {isShort ? (
           <Link
             href="/price"
-            className="suliko-default-bg mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-base font-bold text-white transition-opacity hover:opacity-90"
+            className="suliko-default-bg mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-base font-semibold text-white transition-opacity hover:opacity-90"
           >
             <Wallet className="size-[18px]" aria-hidden />
             {t("topUpCta", { count: shortBy })}
@@ -623,7 +623,7 @@ export function QuoteBlock({
           <button
             type="submit"
             disabled={onSubmitDisabled || !resolved}
-            className="suliko-default-bg relative mt-3 flex h-12 w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] px-4 text-base font-bold leading-tight text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+            className="suliko-default-bg relative mt-3 flex h-12 w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] px-4 text-base font-semibold leading-tight text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {/* A real fill, and only while real bytes are moving. Every other
                 stage gets a spinner and a name — there is nothing honest to

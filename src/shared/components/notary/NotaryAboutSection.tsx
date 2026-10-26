@@ -21,7 +21,7 @@ export default function NotaryAboutSection() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary font-medium mb-4">
             {t("sectionBadge")}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground mb-4">
             {t("heading")}
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
@@ -55,7 +55,7 @@ export default function NotaryAboutSection() {
             { value: "20+", label: t("stat3Label") },
           ].map(({ value, label }) => (
             <div key={value} className="text-center py-4 px-2 rounded-xl border border-border bg-card">
-              <p className="text-2xl font-extrabold text-suliko-default-color">{value}</p>
+              <p className="text-2xl font-semibold text-suliko-default-color">{value}</p>
               <p className="text-xs text-muted-foreground mt-1 leading-tight">{label}</p>
             </div>
           ))}

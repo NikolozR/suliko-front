@@ -38,7 +38,7 @@ export default function FeaturesSection() {
             <span className="font-mono text-xs tracking-[0.08em] text-suliko-default-color uppercase">
               {t("eyebrow")}
             </span>
-            <h2 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>
+            <h2 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>
           </div>
           <p className="max-w-sm text-base leading-relaxed text-muted-foreground">{t("subtitle")}</p>
         </div>
@@ -47,19 +47,19 @@ export default function FeaturesSection() {
           {/* Copilot */}
           <article
             data-reveal
-            className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl border border-[#dbe2f5] bg-[#f2f5ff] p-6 sm:grid-cols-[minmax(0,260px)_minmax(0,1fr)] sm:p-7 md:col-span-2 dark:border-slate-800 dark:bg-slate-900/60"
+            className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl border border-landing-line bg-landing-tint p-6 sm:grid-cols-[minmax(0,260px)_minmax(0,1fr)] sm:p-7 md:col-span-2 dark:border-slate-800 dark:bg-slate-900/60"
           >
             <div className="flex flex-col justify-end gap-2">
-              <h3 className="text-xl font-bold text-foreground">{t("copilot.title")}</h3>
+              <h3 className="text-xl font-semibold text-foreground">{t("copilot.title")}</h3>
               <p className="text-[15px] leading-relaxed text-muted-foreground">{t("copilot.body")}</p>
             </div>
             <div
               aria-hidden="true"
-              className="flex min-w-0 flex-col gap-3 rounded-2xl border border-[#dbe2f5] bg-white p-5 text-slate-900 dark:border-slate-700"
+              className="flex min-w-0 flex-col gap-3 rounded-2xl border border-landing-line bg-white p-5 text-slate-900 dark:border-slate-700"
             >
               <div className="flex text-[11px] font-semibold tracking-[0.08em] text-slate-400 uppercase">
                 <span className="flex-1">{t("copilot.segment")}</span>
-                <span className="text-[#2f49d6]">EN → KA</span>
+                <span className="text-brand-strong">EN → KA</span>
               </div>
               <p className="text-sm leading-relaxed text-slate-600">
                 Payment is due within 10 business days of delivery.
@@ -69,7 +69,7 @@ export default function FeaturesSection() {
                 ანაზღაურება ხორციელდება ჩაბარებიდან 10 სამუშაო დღეში.
               </p>
               <div className="mt-1 flex flex-wrap gap-2">
-                <span className="lp-chip rounded-lg bg-[#eef1fe] px-2.5 py-1.5 text-xs font-semibold text-[#2f49d6]">
+                <span className="lp-chip rounded-lg bg-landing-tint-soft px-2.5 py-1.5 text-xs font-semibold text-brand-strong">
                   {t("copilot.glossary")} · ანაზღაურება
                 </span>
                 <span
@@ -85,14 +85,14 @@ export default function FeaturesSection() {
           {/* Languages */}
           <article
             data-reveal
-            className="relative flex min-h-[360px] flex-col justify-end gap-2 overflow-hidden rounded-3xl border border-[#dbe2f5] bg-[#f2f5ff] p-6 sm:p-7 dark:border-slate-800 dark:bg-slate-900/60"
+            className="relative flex min-h-[360px] flex-col justify-end gap-2 overflow-hidden rounded-3xl border border-landing-line bg-landing-tint p-6 sm:p-7 dark:border-slate-800 dark:bg-slate-900/60"
             style={{ ["--reveal-delay" as string]: "100ms" }}
           >
             <div aria-hidden="true" className="absolute left-1/2 top-[124px] h-0 w-0">
               <div className="lp-orbit absolute -left-[90px] -top-[90px] h-[180px] w-[180px] rounded-full border border-dashed border-[#b3c0f7] dark:border-slate-600">
                 {OUTER_ORBIT.map((code, i) => (
                   <span key={code} className="absolute -translate-x-1/2 -translate-y-1/2" style={onCircle(i, OUTER_ORBIT.length, 90)}>
-                    <span className="lp-orbit-counter inline-block rounded-full border border-[#dbe2f5] bg-white px-2.5 py-1 text-xs font-semibold text-slate-900">
+                    <span className="lp-orbit-counter inline-block rounded-full border border-landing-line bg-white px-2.5 py-1 text-xs font-semibold text-slate-900">
                       {code}
                     </span>
                   </span>
@@ -107,11 +107,11 @@ export default function FeaturesSection() {
                   </span>
                 ))}
               </div>
-              <span className="absolute -left-6 -top-6 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-lg font-bold text-white dark:bg-white dark:text-slate-900">
+              <span className="absolute -left-6 -top-6 flex h-12 w-12 items-center justify-center rounded-full bg-slate-900 text-lg font-semibold text-white dark:bg-white dark:text-slate-900">
                 S
               </span>
             </div>
-            <h3 className="relative text-xl font-bold text-foreground">{t("languages.title")}</h3>
+            <h3 className="relative text-xl font-semibold text-foreground">{t("languages.title")}</h3>
             <p className="relative text-[15px] leading-relaxed text-muted-foreground">{t("languages.body")}</p>
           </article>
 
@@ -122,7 +122,7 @@ export default function FeaturesSection() {
           >
             <div
               aria-hidden="true"
-              className="absolute inset-x-0 top-7 flex flex-col gap-1.5 text-5xl leading-tight font-bold whitespace-nowrap"
+              className="absolute inset-x-0 top-7 flex flex-col gap-1.5 text-5xl leading-tight font-semibold whitespace-nowrap"
             >
               <div className="lp-marquee flex w-max" style={{ ["--lp-marquee" as string]: "26s" }}>
                 <span className="pr-6">{GEORGIAN_A}</span>
@@ -133,23 +133,23 @@ export default function FeaturesSection() {
                 <span className="pr-6">{GEORGIAN_B}</span>
               </div>
             </div>
-            <h3 className="relative text-xl font-bold text-white">{t("georgian.title")}</h3>
+            <h3 className="relative text-xl font-semibold text-white">{t("georgian.title")}</h3>
             <p className="relative text-[15px] leading-relaxed text-slate-300">{t("georgian.body")}</p>
           </article>
 
           {/* Privacy */}
           <article
             data-reveal
-            className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl border border-[#dbe2f5] bg-[#f2f5ff] p-6 sm:grid-cols-[minmax(0,260px)_minmax(0,1fr)] sm:p-7 md:col-span-2 dark:border-slate-800 dark:bg-slate-900/60"
+            className="grid grid-cols-1 gap-6 overflow-hidden rounded-3xl border border-landing-line bg-landing-tint p-6 sm:grid-cols-[minmax(0,260px)_minmax(0,1fr)] sm:p-7 md:col-span-2 dark:border-slate-800 dark:bg-slate-900/60"
             style={{ ["--reveal-delay" as string]: "100ms" }}
           >
             <div className="flex flex-col justify-end gap-2">
-              <h3 className="text-xl font-bold text-foreground">{t("privacy.title")}</h3>
+              <h3 className="text-xl font-semibold text-foreground">{t("privacy.title")}</h3>
               <p className="text-[15px] leading-relaxed text-muted-foreground">{t("privacy.body")}</p>
             </div>
             <div aria-hidden="true" className="flex items-center justify-center py-4">
               <div className="flex flex-col items-center gap-2">
-                <span className="flex h-[72px] w-14 items-center justify-center rounded-xl border border-[#dbe2f5] bg-white text-suliko-default-color dark:border-slate-700">
+                <span className="flex h-[72px] w-14 items-center justify-center rounded-xl border border-landing-line bg-white text-suliko-default-color dark:border-slate-700">
                   <FileText className="h-6 w-6" />
                 </span>
                 <span className="text-xs text-muted-foreground">{t("privacy.yourFile")}</span>
@@ -167,7 +167,7 @@ export default function FeaturesSection() {
               </div>
               <Track delay="900ms" />
               <div className="flex flex-col items-center gap-2">
-                <span className="flex h-[72px] w-14 items-center justify-center rounded-xl border border-[#dbe2f5] bg-white text-emerald-700 dark:border-slate-700">
+                <span className="flex h-[72px] w-14 items-center justify-center rounded-xl border border-landing-line bg-white text-emerald-700 dark:border-slate-700">
                   <FileCheck2 className="h-6 w-6" />
                 </span>
                 <span className="text-xs text-muted-foreground">{t("privacy.onlyYou")}</span>

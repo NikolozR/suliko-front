@@ -140,7 +140,7 @@ export default function NotaryHeader() {
   return (
     <div
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled
-          ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
+          ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-float-2"
           : resolvedTheme === "dark"
             ? "bg-background/95 backdrop-blur-md md:bg-transparent"
             : "bg-white! backdrop-blur-md md:bg-transparent"
@@ -229,7 +229,7 @@ export default function NotaryHeader() {
               className="absolute inset-0 bg-black/50 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-2xl z-[61]">
+            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-float-3 z-[61]">
               <div className="flex flex-col h-full bg-inherit">
                 <div className="flex items-center justify-between p-4 border-b border-border bg-inherit">
                   <h2 className="text-lg font-semibold text-foreground">Menu</h2>

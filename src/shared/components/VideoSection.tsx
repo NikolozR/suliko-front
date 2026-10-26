@@ -119,7 +119,7 @@ export default function VideoSection() {
     <section id="video" ref={sectionRef} className="scroll-mt-24 py-20 sm:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div data-reveal className="max-w-4xl mx-auto text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground mb-6">
             {t("title")}
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
@@ -128,7 +128,7 @@ export default function VideoSection() {
         </div>
 
         <div data-reveal className="max-w-5xl mx-auto">
-          <div className="relative bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
+          <div className="relative bg-black rounded-2xl overflow-hidden shadow-float-3 ring-1 ring-black/5">
             <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
               <video
                 ref={videoRef}

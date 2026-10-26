@@ -29,7 +29,7 @@ export default function TestimonialsSection() {
     <figure
       key={`${item.key}-${index}`}
       aria-hidden={hidden || undefined}
-      className="flex w-[300px] shrink-0 flex-col gap-4 rounded-2xl border border-[#dbe2f5] bg-card p-5 sm:w-[380px] sm:p-6 dark:border-slate-800"
+      className="flex w-[300px] shrink-0 flex-col gap-4 rounded-2xl border border-landing-line bg-card p-5 sm:w-[380px] sm:p-6 dark:border-slate-800"
     >
       <div className="flex gap-0.5">
         {Array.from({ length: 5 }, (_, i) => (
@@ -65,14 +65,14 @@ export default function TestimonialsSection() {
       id="testimonials"
       ref={ref}
       data-paused={!running || undefined}
-      className="scroll-mt-24 overflow-hidden bg-[#f2f5ff] py-20 sm:py-24 dark:bg-slate-950"
+      className="scroll-mt-24 overflow-hidden bg-landing-tint py-20 sm:py-24 dark:bg-slate-950"
     >
       <div className="container mx-auto mb-10 flex flex-col justify-between gap-6 px-4 sm:px-6 lg:flex-row lg:items-end lg:px-8">
         <div data-reveal className="flex flex-col gap-3">
           <span className="font-mono text-xs tracking-[0.08em] text-suliko-default-color uppercase">
             {t("eyebrow")}
           </span>
-          <h2 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>
+          <h2 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>
           <p className="max-w-xl text-base leading-relaxed text-muted-foreground">{t("subtitle")}</p>
         </div>
       </div>
@@ -89,11 +89,11 @@ export default function TestimonialsSection() {
         </div>
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-linear-to-r from-[#f2f5ff] to-transparent sm:w-32 dark:from-slate-950"
+          className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-linear-to-r from-landing-tint to-transparent sm:w-32 dark:from-slate-950"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-linear-to-l from-[#f2f5ff] to-transparent sm:w-32 dark:from-slate-950"
+          className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-linear-to-l from-landing-tint to-transparent sm:w-32 dark:from-slate-950"
         />
       </div>
     </section>

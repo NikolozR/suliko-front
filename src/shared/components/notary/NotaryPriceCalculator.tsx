@@ -432,7 +432,7 @@ export default function NotaryPriceCalculator() {
                   }`}
                 >
                   {level.label}
-                  {surcharge > 0 && <span className="ml-1 font-bold">+{surcharge}%</span>}
+                  {surcharge > 0 && <span className="ml-1 font-semibold">+{surcharge}%</span>}
                 </button>
               );
             })}
@@ -462,7 +462,7 @@ export default function NotaryPriceCalculator() {
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
             transition={{ type: "spring", damping: 26, stiffness: 220 }}
-            className="flex max-h-[88vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl bg-card shadow-2xl md:rounded-2xl"
+            className="flex max-h-[88vh] w-full max-w-md flex-col overflow-hidden rounded-t-2xl bg-card shadow-float-3 md:rounded-2xl"
             onTouchStart={(e) => setTouchStart(e.touches[0].clientY)}
             onTouchMove={(e) => setTouchEnd(e.touches[0].clientY)}
             onTouchEnd={handleTouchEnd}
@@ -472,7 +472,7 @@ export default function NotaryPriceCalculator() {
             </div>
 
             <div className="flex shrink-0 items-center justify-between border-b border-border px-4 py-4 sm:px-6">
-              <h3 className="text-lg font-bold text-foreground sm:text-xl">
+              <h3 className="text-lg font-semibold text-foreground sm:text-xl">
                 {t("translationDetails")}
               </h3>
               <button
@@ -494,7 +494,7 @@ export default function NotaryPriceCalculator() {
                       <span className="text-sm font-semibold text-foreground">
                         {t("document")} #{index + 1}: {line.pages} {t("pagesShort")}
                       </span>
-                      <span className="text-sm font-bold text-suliko-default-color">
+                      <span className="text-sm font-semibold text-suliko-default-color">
                         {money(line.subtotal)}
                       </span>
                     </div>
@@ -516,7 +516,7 @@ export default function NotaryPriceCalculator() {
                 </div>
               )}
 
-              <div className="flex justify-between border-t border-border pt-3 text-xl font-bold">
+              <div className="flex justify-between border-t border-border pt-3 text-xl font-semibold">
                 <span className="text-foreground">{t("totalPrice")}</span>
                 <span className="text-suliko-default-color">{money(result.total)}</span>
               </div>

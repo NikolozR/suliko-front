@@ -59,7 +59,7 @@ export default function NotaryQuotePathsSection() {
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
             {t("sectionBadge")}
           </div>
-          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
+          <h2 className="text-2xl font-semibold text-foreground sm:text-3xl">
             {t("heading")}{" "}
             <span className="font-normal text-muted-foreground">{t("headingSub")}</span>
           </h2>
@@ -85,7 +85,7 @@ export default function NotaryQuotePathsSection() {
                     {title}
                   </span>
                   {badge && (
-                    <span className="inline-flex items-center rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-bold tracking-wide text-green-700 dark:text-green-300">
+                    <span className="inline-flex items-center rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-semibold tracking-wide text-green-700 dark:text-green-300">
                       {badge}
                     </span>
                   )}

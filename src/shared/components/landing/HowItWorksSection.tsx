@@ -35,7 +35,7 @@ export default function HowItWorksSection() {
       id="how-it-works"
       ref={ref}
       data-paused={!running || undefined}
-      className="scroll-mt-24 bg-[#f2f5ff] py-20 dark:bg-slate-950 sm:py-24"
+      className="scroll-mt-24 bg-landing-tint py-20 dark:bg-slate-950 sm:py-24"
     >
       <div className="container mx-auto grid grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:gap-20 lg:px-8">
         <div data-reveal className="flex flex-col gap-7">
@@ -43,7 +43,7 @@ export default function HowItWorksSection() {
             <span className="font-mono text-xs tracking-[0.08em] text-suliko-default-color uppercase">
               {t("eyebrow")}
             </span>
-            <h2 className="text-3xl font-bold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>
+            <h2 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>
           </div>
 
           <div className="flex flex-col gap-2">
@@ -63,10 +63,10 @@ export default function HowItWorksSection() {
                 >
                   <span className="flex items-center gap-3">
                     <span
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-bold transition-colors ${
+                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-sm font-semibold transition-colors ${
                         active
                           ? "bg-suliko-default-color text-white"
-                          : "bg-[#e3e8fb] text-[#2f49d6] dark:bg-slate-800 dark:text-blue-300"
+                          : "bg-[#e3e8fb] text-brand-strong dark:bg-slate-800 dark:text-blue-300"
                       }`}
                     >
                       {i + 1}
@@ -78,7 +78,7 @@ export default function HowItWorksSection() {
                       <span className="lp-enter pl-11 text-[15px] leading-relaxed text-muted-foreground">
                         {t(`steps.${key}.body`)}
                       </span>
-                      <span className="ml-11 block h-[3px] overflow-hidden rounded-full bg-[#dbe2f5] dark:bg-slate-700">
+                      <span className="ml-11 block h-[3px] overflow-hidden rounded-full bg-landing-line dark:bg-slate-700">
                         <span
                           key={`${step}-${round}`}
                           className="lp-fill block h-full bg-suliko-default-color"
@@ -106,7 +106,7 @@ export default function HowItWorksSection() {
         <div
           data-reveal
           aria-hidden="true"
-          className="relative h-[380px] overflow-hidden rounded-3xl border border-[#dbe2f5] bg-white text-slate-900 shadow-[0_30px_60px_rgba(30,50,140,0.12)] sm:h-[460px] dark:border-slate-700"
+          className="relative h-[380px] overflow-hidden rounded-3xl border border-landing-line bg-white text-slate-900 shadow-[0_30px_60px_rgba(30,50,140,0.12)] sm:h-[460px] dark:border-slate-700"
           style={{ ["--reveal-delay" as string]: "120ms" }}
         >
           {step === 0 && <UploadScene t={t} />}
@@ -134,7 +134,7 @@ function UploadScene({ t }: { t: T }) {
           {files.map((f, i) => (
             <span
               key={f.label}
-              className={`lp-drop flex h-20 w-16 items-end justify-center rounded-xl border border-slate-200 bg-white pb-3 text-xs font-bold shadow-[0_8px_20px_rgba(15,23,42,0.08)] sm:h-24 sm:w-20 ${f.color}`}
+              className={`lp-drop flex h-20 w-16 items-end justify-center rounded-xl border border-slate-200 bg-white pb-3 text-xs font-semibold shadow-[0_8px_20px_rgba(15,23,42,0.08)] sm:h-24 sm:w-20 ${f.color}`}
               style={{ animationDelay: `${i * 250}ms` }}
             >
               {f.label}
@@ -178,11 +178,11 @@ function ReviewScene({ t }: { t: T }) {
           დანართ 1-ში ჩამოთვლილ დოკუმენტებს.
         </p>
         <div
-          className="lp-pop flex w-full max-w-[230px] flex-col gap-2 self-end rounded-xl border border-[#dbe2f5] bg-white p-3 shadow-[0_16px_32px_rgba(15,23,42,0.14)]"
+          className="lp-pop flex w-full max-w-[230px] flex-col gap-2 self-end rounded-xl border border-landing-line bg-white p-3 shadow-[0_16px_32px_rgba(15,23,42,0.14)]"
           style={{ animationDelay: "900ms" }}
         >
-          <span className="text-xs font-semibold text-[#2f49d6]">{t("suggestion")}</span>
-          <span className="rounded-lg bg-[#eef1fe] px-2 py-1.5 text-[13px]">ვალდებულია თარგმნოს</span>
+          <span className="text-xs font-semibold text-brand-strong">{t("suggestion")}</span>
+          <span className="rounded-lg bg-landing-tint-soft px-2 py-1.5 text-[13px]">ვალდებულია თარგმნოს</span>
           <span className="rounded-lg bg-slate-50 px-2 py-1.5 text-[13px]">უზრუნველყოფს თარგმნას</span>
         </div>
         <span className="block h-2.5 w-[84%] rounded-md bg-slate-100" />
@@ -205,11 +205,11 @@ function ExportScene({ t }: { t: T }) {
           <div
             key={f.key}
             className={`lp-pop flex w-24 flex-col items-center gap-2.5 rounded-2xl py-5 sm:w-32 ${
-              f.selected ? "border-2 border-suliko-default-color bg-[#eef1fe]" : "border border-slate-200 bg-white"
+              f.selected ? "border-2 border-suliko-default-color bg-landing-tint-soft" : "border border-slate-200 bg-white"
             }`}
             style={{ animationDelay: `${i * 100}ms` }}
           >
-            <span className={`flex h-14 w-11 items-center justify-center rounded-lg text-sm font-bold text-white ${f.bg}`}>
+            <span className={`flex h-14 w-11 items-center justify-center rounded-lg text-sm font-semibold text-white ${f.bg}`}>
               {f.badge}
             </span>
             <span className="text-sm font-semibold">{t(f.key)}</span>

@@ -30,7 +30,7 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
 
   const buttonClassName = `w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-all duration-300 text-sm md:text-base ${
     isHighlighted
-      ? "animate-pulse ring-4 ring-suliko-default-color/30 shadow-lg shadow-suliko-default-color/25 brightness-110"
+      ? "animate-pulse ring-4 ring-suliko-default-color/30 shadow-float-2 shadow-suliko-default-color/25 brightness-110"
       : ""
   }`;
 

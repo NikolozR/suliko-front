@@ -32,7 +32,7 @@ export const PageWarningModal: React.FC<PageWarningModalProps> = ({ isOpen, onCl
         <div className="mt-4 text-center space-y-3">
           <p className="text-muted-foreground">
             {t("warningDialog.pageCountInfo")}
-            <span className="font-bold underline mx-1">
+            <span className="font-semibold underline mx-1">
               {pageCount} {t(pageCount === 1 ? "pageCount.page" : "pageCount.pages")}
             </span>
           </p>

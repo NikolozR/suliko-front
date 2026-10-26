@@ -13,7 +13,7 @@ export default function NotaryContactSection() {
     <section id="contact" className="bg-muted/30 py-20">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mx-auto mb-12 max-w-2xl text-center">
-          <h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">
+          <h2 className="mb-4 text-3xl font-semibold text-foreground sm:text-4xl">
             {t("heading")}
           </h2>
           <p className="text-lg text-muted-foreground">{t("subheading")}</p>
@@ -25,7 +25,7 @@ export default function NotaryContactSection() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackCta("whatsapp", "footer")}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-6 py-3 text-base font-semibold text-white shadow-lg transition-colors duration-200 hover:bg-[#1ebe5d] sm:w-auto"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-6 py-3 text-base font-semibold text-white shadow-float-2 transition-colors duration-200 hover:bg-[#1ebe5d] sm:w-auto"
           >
             <MessageCircle className="h-5 w-5" />
             {t("whatsapp")}

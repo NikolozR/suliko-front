@@ -534,7 +534,7 @@ export default function NotaryOrderWizard() {
           <div className="flex min-w-0 items-start gap-2.5">
             <StepIcon className="mt-0.5 h-6 w-6 shrink-0" />
             <div className="min-w-0">
-              <h4 className="text-lg font-bold leading-tight">{stepTitles[step - 1]}</h4>
+              <h4 className="text-lg font-semibold leading-tight">{stepTitles[step - 1]}</h4>
               <p className="mt-0.5 text-xs text-white/80">{stepSubtitles[step - 1]}</p>
             </div>
           </div>
@@ -630,7 +630,7 @@ export default function NotaryOrderWizard() {
         {step > 1 && (
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">{t("estimatedTotal")}</span>
-            <span className="font-bold text-suliko-default-color">
+            <span className="font-semibold text-suliko-default-color">
               {formatMoney(estimate.total, estimate.currency)}
             </span>
           </div>

@@ -192,7 +192,7 @@ export function Tile({
           {title}
         </span>
         {badge && (
-          <span className="ml-auto shrink-0 rounded-full bg-suliko-default-color/15 px-2 py-0.5 text-[10px] font-bold text-suliko-default-color">
+          <span className="ml-auto shrink-0 rounded-full bg-suliko-default-color/15 px-2 py-0.5 text-[10px] font-semibold text-suliko-default-color">
             {badge}
           </span>
         )}

@@ -54,7 +54,7 @@ export default function HeroSection() {
             </div>
 
             {/* Heading */}
-            <h1 className="mb-5 max-w-xl text-balance text-[2.75rem] font-bold leading-[1.1] tracking-tight text-white sm:text-5xl xl:text-6xl">
+            <h1 className="mb-5 max-w-xl text-balance text-[2.75rem] font-semibold leading-[1.1] tracking-tight text-white sm:text-5xl xl:text-6xl">
               {t("title")}
             </h1>
 
@@ -117,7 +117,7 @@ export default function HeroSection() {
                 { value: "5", label: t("fileFormats") },
               ].map((stat, i) => (
                 <div key={i} className="flex flex-col gap-0.5">
-                  <dd className="text-2xl font-bold text-white">{stat.value}</dd>
+                  <dd className="text-2xl font-semibold text-white">{stat.value}</dd>
                   <dt className="text-xs leading-snug text-slate-500">{stat.label}</dt>
                 </div>
               ))}

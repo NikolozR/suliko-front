@@ -522,7 +522,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
         backdrop-blur-xl backdrop-saturate-150
         bg-white/65 dark:bg-white/[0.06]
         border border-white/60 dark:border-white/[0.12]
-        rounded-2xl shadow-2xl dark:shadow-black/40
+        rounded-2xl shadow-float-3 dark:shadow-black/40
         py-8 px-6 sm:px-8
       ">
         <Form {...form}>
@@ -588,7 +588,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                   name="referralCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold dark:text-white">
+                      <FormLabel className="font-semibold dark:text-white">
                         {t("referralCode")} <span className="text-muted-foreground text-xs ml-1">({t("optional")})</span>
                       </FormLabel>
                       <FormControl>
@@ -638,7 +638,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                     name="identifier"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-bold dark:text-white">
+                        <FormLabel className="font-semibold dark:text-white">
                           {t("phoneNumberOrEmail") || "Phone Number or Email"}{" "}
                           <span className="text-red-500">*</span>
                         </FormLabel>
