@@ -741,6 +741,7 @@
       "professionalPerPage": "0.10 ₾ per page",
       "professionalDescription": "Ideal for regular translation work",
       "includedAll": "Every package includes all 50+ languages and the file formats PNG, JPG, JPEG, PDF, DOCX and TXT.",
+      "savesVsPayAsYouGo": "Saves {amount} ₾ vs {plan}",
       "notSure": "Not sure yet?"
     },
     "paymentModal": {

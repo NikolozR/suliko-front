@@ -15,6 +15,15 @@ import { Input } from "@/features/ui/components/ui/input";
 import { Label } from "@/features/ui/components/ui/label";
 
 
+/** What each one-time package costs and gives. Pay as you go is 1 GEL a page. */
+const PACKAGES = {
+  starter: { pages: 100, price: 20 },
+  professional: { pages: 500, price: 50 },
+} as const;
+const PAY_AS_YOU_GO_PER_PAGE = 1;
+const savingsGel = (p: { pages: number; price: number }) =>
+  Math.max(0, p.pages * PAY_AS_YOU_GO_PER_PAGE - p.price);
+
 // interface PricingGridProps {
 //   autoOpenContactModal?: boolean;
 // }
@@ -51,8 +60,8 @@ export function PricingGrid() {
   };
 
   const handleSelectPackage = (amount: number) => startCheckout(amount);
-  const handleStarterPackage = () => startCheckout(20);
-  const handleProfessionalPackage = () => startCheckout(50);
+  const handleStarterPackage = () => startCheckout(PACKAGES.starter.price);
+  const handleProfessionalPackage = () => startCheckout(PACKAGES.professional.price);
   const handleSelectPayAsYouGo = () => {
     if (!token) {
       toast.error(t("signInToPay"));
@@ -72,11 +81,23 @@ export function PricingGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <PricingCard type="starter" onSelect={handleStarterPackage} />
-        <PricingCard type="professional" onSelect={handleProfessionalPackage} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto pt-3">
+        <PricingCard
+          type="starter"
+          onSelect={handleStarterPackage}
+          savingsGel={savingsGel(PACKAGES.starter)}
+        />
+        <PricingCard
+          type="professional"
+          onSelect={handleProfessionalPackage}
+          savingsGel={savingsGel(PACKAGES.professional)}
+          highlighted
+        />
         <PricingCard type="payAsYouGo" onSelect={handleSelectPayAsYouGo} />
       </div>
+      <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-muted-foreground">
+        {t("landing.includedAll")}
+      </p>
 
       <PaymentModal
         isOpen={showPaymentModal}
@@ -102,13 +123,16 @@ export function PricingGrid() {
               </Label>
               <Input
                 id="payasyougo-amount"
-                type="number"
-                min={1}
-                step={1}
+                // Text with a numeric keypad, not type="number": a whole number of
+                // pages needs no spinner, no "e", and no wheel that changes it.
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="off"
                 value={payAsYouGoAmount}
                 onChange={(e) => {
-                  const val = Math.max(1, Math.floor(Number(e.target.value)));
-                  setPayAsYouGoAmount(isNaN(val) ? 1 : val);
+                  const val = Math.max(1, Number(e.target.value.replace(/\D/g, "")) || 1);
+                  setPayAsYouGoAmount(val);
                 }}
                 className="mt-2"
               />
