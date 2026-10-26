@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import "../globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -9,6 +9,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Toaster } from "react-hot-toast";
 import RouteTransitionProgress from "@/shared/components/RouteTransitionProgress";
 import WebVitalsMonitor from "@/shared/components/WebVitalsMonitor";
+import RegisterServiceWorker from "@/shared/components/RegisterServiceWorker";
 
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
@@ -88,11 +89,17 @@ export async function generateMetadata({
       description: "Fast, accurate, and secure document translations in 50+ languages.",
       images: ["/Suliko_logo_black.svg"],
     },
+    // What makes Chrome offer "Install app" instead of only "Create shortcut".
+    manifest: "/manifest.webmanifest",
     icons: {
       icon: '/favicon.ico',
+      apple: '/icons/apple-touch-icon.png',
     },
+    appleWebApp: { capable: true, title: "Suliko" },
   };
 }
+
+export const viewport: Viewport = { themeColor: "#3b59f3" };
 
 // Keeps the machine-readable identity the same as the one printed on the legal
 // pages and registered with the payment provider. See constants/company.ts.
@@ -288,6 +295,7 @@ export default async function LocaleLayout({
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
       >
+        <RegisterServiceWorker />
         {/* Organization structured data */}
         <script
           type="application/ld+json"
