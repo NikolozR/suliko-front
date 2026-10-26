@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useTranslations } from "next-intl";
-import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles, FileWarning } from 'lucide-react';
 import { Button } from '@/features/ui/components/ui/button';
 import { useDocumentTranslationStore } from '@/features/translation/store/documentTranslationStore';
 import { Skeleton } from '@/features/ui/components/ui/skeleton';
@@ -610,8 +610,9 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
           onLoadError={onDocumentLoadError}
           loading={<PreviewLoadingState stage={stage || t('loadingPdf')} />}
           error={
-            <div className="flex justify-center items-center h-full text-red-500">
-              <p>{t('loadErrorPdf')}</p>
+            <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-muted-foreground">
+              <FileWarning className="h-8 w-8" aria-hidden />
+              <p className="text-sm">{t('loadErrorPdf')}</p>
             </div>
           }
         >
