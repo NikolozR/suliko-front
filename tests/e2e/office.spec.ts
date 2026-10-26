@@ -56,9 +56,12 @@ test.describe('Suliko Office landing', () => {
     await expect(page.locator('#demo [role="alert"]')).toHaveText('Please fill in your name, company and email.');
   });
 
-  test('the hero books a demo and the proposal section leads to the form', async ({ page }) => {
+  test('the hero opens Office, a demo can still be booked, and the proposal section leads to the form', async ({ page }) => {
     await page.goto('/en/office', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('main a[href="#demo"]').first()).toHaveText('Book a demo');
+    // The hero's main button manages orders (it opens Office); "Book a demo" moved to
+    // the header and the proposal section, and both lead to the form.
+    await expect(page.locator('main a', { hasText: 'Manage orders' }).first()).toBeAttached();
+    await expect(page.locator('a[href="#demo"]', { hasText: 'Book a demo' }).first()).toBeAttached();
     await expect(page.locator('#offer a[href="#demo"]')).toBeAttached();
     await expect(page.locator('#offer h3')).toHaveCount(4);
   });
