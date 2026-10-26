@@ -234,10 +234,10 @@ export default function LandingHeader() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isBlogPage
           ? isScrolled
-            ? "bg-slate-900/95 backdrop-blur-lg border-b border-slate-700 shadow-xl"
+            ? "bg-slate-900/95 backdrop-blur-lg border-b border-slate-700 shadow-float-3"
             : "bg-slate-900/80 backdrop-blur-md"
           : isScrolled
-            ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
+            ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-float-2"
             : resolvedTheme === 'dark' ? "bg-background/95 backdrop-blur-md md:bg-transparent" : "bg-background/95 backdrop-blur-md"
       } ${
         isHeaderVisible ? "translate-y-0" : "-translate-y-full"
@@ -405,7 +405,7 @@ export default function LandingHeader() {
             />
             
             {/* Menu Panel */}
-            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-2xl transform transition-transform duration-300 ease-in-out z-[61]">
+            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-float-3 transform transition-transform duration-300 ease-in-out z-[61]">
               <div className="flex flex-col h-full bg-inherit">
                 {/* Menu Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border bg-inherit">

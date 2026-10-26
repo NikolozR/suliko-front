@@ -121,7 +121,7 @@ export default function HeroDemo() {
         <div className="flex items-center gap-3 border-b border-slate-200 px-4 py-3 sm:px-5">
           <FileText className="h-4 w-4 shrink-0 text-suliko-default-color" />
           <span className="truncate text-sm font-semibold">service_agreement.pdf</span>
-          <span className="shrink-0 rounded-full bg-[#eef1fe] px-2 py-0.5 font-mono text-[11px] font-semibold text-[#2f49d6]">
+          <span className="shrink-0 rounded-full bg-landing-tint-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-brand-strong">
             EN → {target.code}
           </span>
           <span className="flex-1" />
@@ -145,7 +145,7 @@ export default function HeroDemo() {
                 key={i}
                 className={`rounded-lg px-2 py-2 text-[13px] leading-snug transition-colors duration-300 ${
                   HEADING[i] ? "font-semibold" : ""
-                } ${step === UPLOAD_TICKS + i ? "bg-[#eef1fe]" : ""}`}
+                } ${step === UPLOAD_TICKS + i ? "bg-landing-tint-soft" : ""}`}
               >
                 {line}
               </p>
@@ -164,7 +164,7 @@ export default function HeroDemo() {
                   key={i}
                   className={`rounded-lg px-2 py-2 transition-colors duration-300 ${
                     HEADING[i] ? "min-h-[36px]" : "min-h-[54px]"
-                  } ${active ? "bg-[#eef1fe]" : ""}`}
+                  } ${active ? "bg-landing-tint-soft" : ""}`}
                 >
                   {isDone ? (
                     <p
@@ -220,7 +220,7 @@ export default function HeroDemo() {
           <div className="absolute inset-x-0 bottom-0 top-[46px] flex items-center justify-center bg-[#f8faff]/95 px-6">
             <div className="lp-pop w-full max-w-[320px] space-y-3.5 rounded-2xl border-2 border-dashed border-[#9fb0f8] bg-white p-5">
               <div className="flex items-center gap-3">
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-100 text-[10px] font-bold text-red-700">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-100 text-[10px] font-semibold text-red-700">
                   PDF
                 </span>
                 <div className="min-w-0">

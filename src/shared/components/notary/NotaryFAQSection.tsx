@@ -52,7 +52,7 @@ export default function NotaryFAQSection() {
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-sm font-medium text-primary">
             {t("sectionBadge")}
           </div>
-          <h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">
+          <h2 className="mb-4 text-3xl font-semibold text-foreground sm:text-4xl">
             {t("heading")}
           </h2>
           <p className="text-lg leading-relaxed text-muted-foreground">

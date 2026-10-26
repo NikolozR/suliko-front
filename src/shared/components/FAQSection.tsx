@@ -19,7 +19,7 @@ export default function FAQSection() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary font-medium mb-4">
             FAQ
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground mb-4">
             {t("title")}
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">

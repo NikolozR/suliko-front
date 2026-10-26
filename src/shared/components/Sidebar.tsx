@@ -184,7 +184,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
           ? "w-20"
           : "w-48 md:w-56 lg:w-64"
           } ${!effectiveIsCollapsed
-            ? "md:shadow-none shadow-xl"
+            ? "md:shadow-none shadow-float-3"
             : "md:shadow-none"
           }`}
       >

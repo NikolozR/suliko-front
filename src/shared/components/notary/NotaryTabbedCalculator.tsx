@@ -43,7 +43,7 @@ export default function NotaryTabbedCalculator() {
 
   return (
     <motion.div
-      className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
+      className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-float-3"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -89,7 +89,7 @@ export default function NotaryTabbedCalculator() {
               transition={{ duration: 0.25 }}
             >
               <div className="mb-5 text-center">
-                <h3 className="text-xl font-bold text-foreground sm:text-2xl">
+                <h3 className="text-xl font-semibold text-foreground sm:text-2xl">
                   {t("calcTitle")}
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t("calcSub")}</p>

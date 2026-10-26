@@ -50,7 +50,7 @@ export default function CrispChatButton() {
         backdrop-blur-xl backdrop-saturate-150
         bg-white/70 dark:bg-white/[0.09]
         border border-white/60 dark:border-white/[0.15]
-        shadow-lg dark:shadow-black/40
+        shadow-float-2 dark:shadow-black/40
         text-sm font-medium text-foreground
         hover:bg-white/90 dark:hover:bg-white/[0.14]
         transition-all duration-200 hover:scale-105 active:scale-95

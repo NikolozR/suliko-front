@@ -63,7 +63,7 @@ export default async function LegalDocumentPage({
               {t("backToHome")}
             </Link>
 
-            <h1 className="text-3xl sm:text-4xl font-bold text-foreground mb-3">
+            <h1 className="text-3xl sm:text-4xl font-semibold text-foreground mb-3">
               {title}
             </h1>
             <p className="text-xs text-muted-foreground">

@@ -158,7 +158,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
               <span className="text-xs font-medium bg-white/20 rounded-full px-2 py-0.5">
                 {t("priceBadge")}
               </span>
-              <DialogTitle className="text-base font-bold mt-2 leading-snug">
+              <DialogTitle className="text-base font-semibold mt-2 leading-snug">
                 {t("title")}
               </DialogTitle>
               <p className="text-xs text-blue-100 mt-0.5">{t("subtitle")}</p>

@@ -32,6 +32,27 @@
   --text-6xl--line-height: 1.05;
 }
 
+/* ---------------------------------------------------------------------------
+   Design tokens, the ones the pages kept writing out by hand.
+
+   Floating things (menus, popups, sticky bars, sheets) get one of three shadows,
+   a tight contact shadow under a soft ambient one, lit from above, deeper the
+   higher the thing floats. Cards and panels do not float: a border, no shadow.
+
+   The landing's pale-blue palette was `[#dbe2f5]`, `[#f2f5ff]`, `[#eef1fe]`
+   and `[#2f49d6]` typed into class names 29 times.
+   --------------------------------------------------------------------------- */
+@theme {
+  --shadow-float-1: 0 1px 2px rgb(0 0 0 / 0.12), 0 4px 12px -2px rgb(0 0 0 / 0.08);
+  --shadow-float-2: 0 2px 4px rgb(0 0 0 / 0.12), 0 8px 24px -4px rgb(0 0 0 / 0.12);
+  --shadow-float-3: 0 4px 8px rgb(0 0 0 / 0.14), 0 16px 40px -8px rgb(0 0 0 / 0.18);
+
+  --color-landing-line: #dbe2f5;
+  --color-landing-tint: #f2f5ff;
+  --color-landing-tint-soft: #eef1fe;
+  --color-brand-strong: #2f49d6;
+}
+
 @keyframes marquee {
   from { transform: translateX(0); }
   to   { transform: translateX(-50%); }

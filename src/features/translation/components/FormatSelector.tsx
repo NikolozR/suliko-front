@@ -67,7 +67,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
             onClick={() => setIsOpen(false)}
           />
           
-          <div className="absolute top-full left-0 mt-1 w-56 bg-background border border-border rounded-md shadow-lg z-50 py-1">
+          <div className="absolute top-full left-0 mt-1 w-56 bg-background border border-border rounded-md shadow-float-2 z-50 py-1">
             <div className="px-3 py-2 text-xs font-medium text-muted-foreground border-b border-border">
               {headerText}
             </div>

@@ -110,7 +110,7 @@ const TermsSection: React.FC<TermsSectionProps> = ({ form }) => {
                   <DialogContent className="max-w-3xl max-h-[85vh] flex flex-col p-0 gap-0">
                     {/* Header */}
                     <div className="px-8 py-5 border-b border-gray-100 bg-white rounded-t-lg">
-                      <DialogTitle className="text-xl font-bold text-gray-900">
+                      <DialogTitle className="text-xl font-semibold text-gray-900">
                         {t("termsAndPrivacy")}
                       </DialogTitle>
                       <p className="text-xs text-gray-500 mt-1">{entityName} · ID: {COMPANY_ID}</p>
