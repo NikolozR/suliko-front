@@ -34,6 +34,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   className = "",
   size = "sm",
   variant = "outline",
+  label,
 }) => {
   const [downloaded, setDownloaded] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
@@ -104,9 +105,9 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   const isLoading = isConverting;
   
   const buttonIcon = downloaded ? (
-    <Check className="h-4 w-4 mr-1" />
+    <Check className={`h-4 w-4 ${label ? "sm:mr-1.5" : "mr-1"}`} />
   ) : (
-    <Download className="h-4 w-4 mr-1" />
+    <Download className={`h-4 w-4 ${label ? "sm:mr-1.5" : "mr-1"}`} />
   );
 
   return (
@@ -117,8 +118,10 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       onClick={handleDownload}
       className={`transition-all duration-200 ${className}`}
       disabled={!content.trim() || isLoading}
+      aria-label={label}
     >
       {buttonIcon}
+      {label && <span className="hidden sm:inline">{label}</span>}
     </Button>
   );
 };

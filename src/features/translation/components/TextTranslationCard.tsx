@@ -471,13 +471,17 @@ const TextTranslationCard = () => {
                           onClick={() => setShowDownloadModal(true)}
                           className="transition-all duration-200"
                           title={tButton('download')}
+                          aria-label={tButton('download')}
                         >
                           <Download className="h-4 w-4" />
+                          <span className="hidden sm:ml-1.5 sm:inline">{tButton('download')}</span>
                         </Button>
                         <CopyButton
                           content={translatedText}
                           size="sm"
                           variant="outline"
+                          label={tButton('copy')}
+                          copiedLabel={tButton('copied')}
                         />
                       </div>
                     </div>
