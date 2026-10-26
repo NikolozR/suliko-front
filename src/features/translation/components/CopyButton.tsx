@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import markdownToTxt from 'markdown-to-txt'
+import { useComboText } from "@/shared/components/Kbd";
 
 interface CopyButtonProps {
   content: string;
@@ -23,6 +24,8 @@ const CopyButton: React.FC<CopyButtonProps> = ({
   copiedLabel,
 }) => {
   const [copied, setCopied] = useState(false);
+  const shortcutText = useComboText(["Alt", "Shift", "C"]);
+  const shortcutHint = label ? `${label} (${shortcutText})` : shortcutText;
 
   const toPlainText = (value: string): string => {
     const source = value || "";
@@ -69,6 +72,8 @@ const CopyButton: React.FC<CopyButtonProps> = ({
       variant={variant}
       size={size}
       onClick={handleCopy}
+      data-shortcut="copy"
+      title={shortcutHint}
       className={`transition-all duration-200 ${className}`}
       disabled={!content.trim()}
       aria-label={copied ? copiedLabel ?? label : label}

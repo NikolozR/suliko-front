@@ -1,6 +1,7 @@
 "use client";
 import { LoadingButton } from "@/features/ui/components/loading";
 import { useTranslations } from "next-intl";
+import { useModLabel } from "@/shared/components/Kbd";
 
 interface TranslationSubmitButtonProps {
   isLoading: boolean;
@@ -27,6 +28,7 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
 }) => {
   const t = useTranslations('TranslationButton');
   const tTextCard = useTranslations('TextTranslationCard');
+  const modLabel = useModLabel();
 
   const buttonClassName = `w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-all duration-300 text-sm md:text-base ${
     isHighlighted
@@ -71,6 +73,10 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
             {tTextCard('orPress')}{' '}
             <kbd className="px-1 py-0.5 bg-muted border border-border rounded text-xs font-mono">
               Shift + Enter
+            </kbd>
+            <span aria-hidden>/</span>
+            <kbd className="px-1 py-0.5 bg-muted border border-border rounded text-xs font-mono">
+              {modLabel} + Enter
             </kbd>
           </span>
         </div>
