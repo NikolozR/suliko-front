@@ -59,7 +59,6 @@ import { useOrderHandOffStore, useOrderOfFile, useOrderSource } from "@/features
 import { noteOrderTranslation } from "@/features/orders/orderTranslations";
 import { OrderSourceBanner } from "@/features/orders/components/OrderSourceBanner";
 import PageCountDisplay from "./PageCountDisplay";
-import { useDocumentLoadingProgress } from "@/features/translation/hooks/useDocumentLoadingProgress";
 import { estimateMinutes } from "@/features/translation/utils/translationEta";
 import { useCountdown } from "@/hooks";
 import { ocrToHtml } from "@/features/translation/services/conversionsService";
@@ -164,9 +163,6 @@ const DocumentTranslationCard = () => {
     currentSourceLanguageId,
     setCurrentSourceLanguageId,
     estimatedPageCount,
-    estimatedMinutes,
-    estimatedCost,
-    estimatedWordCount,
     selectedPageRange,
     // DISABLED: Unused setter - Splitting functionality is kept in repository but not used
     // setSelectedPageRange,
@@ -297,16 +293,6 @@ const DocumentTranslationCard = () => {
   }, [projectId]);
   const currentFileObj = hasFile ? currentFile[0] : null;
 
-  const { loadingProgress, loadingMessage, setManualProgress, reset } =
-    useDocumentLoadingProgress({
-      isLoading,
-      t,
-      currentFile: currentFileObj,
-      estimatedPageCount,
-      estimatedMinutes,
-      estimatedCost,
-      estimatedWordCount,
-    });
 
   // Shared with the progress bar and the wait page, so the same document is
   // never quoted two different durations in one session.
@@ -793,12 +779,9 @@ const DocumentTranslationCard = () => {
 
     try {
       setIsLoading(true);
-      setManualProgress(5, t("progress.uploading"));
 
       // Handle OCR Only mode
       if (isOcrOnly) {
-        setManualProgress(0, t("progress.starting"));
-        setManualProgress(10, "Processing OCR...");
         const fileToOcr = data.currentFile[0];
 
         // DISABLED: Extract pages if page range is selected (for OCR mode too)
@@ -821,14 +804,8 @@ const DocumentTranslationCard = () => {
         //   fileToOcr = extractedFile;
         // }
 
-        setManualProgress(30, "Running OCR...");
         const htmlContent = await ocrToHtml(fileToOcr);
-
-        setManualProgress(90, "Loading result...");
         setTranslatedMarkdown(htmlContent);
-
-        setManualProgress(100, t("progress.complete"));
-        await new Promise((resolve) => setTimeout(resolve, 500));
         return;
       }
 
@@ -947,7 +924,6 @@ const DocumentTranslationCard = () => {
       setIsLoading(false);
       setSubmitStage(null);
       setUploadPercent(0);
-      reset();
     }
   };
 
@@ -1305,37 +1281,19 @@ const DocumentTranslationCard = () => {
                 />
               )}
 
-              {/* Progress bar + step indicator */}
-              {isLoading && (
-                <div className="mt-4 space-y-3">
-                  {/* Step indicator */}
-                  <div className="flex items-center justify-between text-xs text-muted-foreground">
-                    {[
-                      { label: t("progress.stepUploading"), threshold: 0 },
-                      { label: t("progress.stepTranslating"), threshold: 15 },
-                      { label: t("progress.stepReady"), threshold: 90 },
-                    ].map((step, i, arr) => {
-                      const isActive = loadingProgress >= step.threshold && (i === arr.length - 1 || loadingProgress < arr[i + 1].threshold);
-                      const isDone = i < arr.length - 1 && loadingProgress >= arr[i + 1].threshold;
-                      return (
-                        <div key={step.label} className="flex items-center gap-1">
-                          <span className={`w-2 h-2 rounded-full transition-colors duration-500 ${isDone ? "bg-green-500" : isActive ? "bg-suliko-default-color animate-pulse" : "bg-border"}`} />
-                          <span className={isDone || isActive ? "text-foreground font-medium" : ""}>{step.label}</span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {/* Progress bar */}
+              {/* OCR-only is one request with nothing to report, so it gets a bar that
+                  does not pretend to know how far along it is. (Its toggle is switched
+                  off in the header today.) Every other mode reports through the button
+                  and the in-place job view. */}
+              {isLoading && isOcrOnly && (
+                <div className="mt-4" role="status" aria-live="polite">
                   <ProgressBar
-                    value={loadingProgress}
+                    indeterminate
+                    value={0}
                     size="sm"
                     tone="brand"
-                    label={t("progress.stepUploading")}
+                    label={t("progress.starting")}
                   />
-                  {/* Status message */}
-                  {loadingMessage && (
-                    <p className="text-xs text-center text-muted-foreground truncate">{loadingMessage}</p>
-                  )}
                 </div>
               )}
             </form>
