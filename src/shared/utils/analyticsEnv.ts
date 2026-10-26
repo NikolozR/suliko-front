@@ -77,3 +77,15 @@ export function getMetaPixelId(): string | undefined {
 export function isAnalyticsEnabled(): boolean {
   return isProductionDeployment() && Boolean(getMetaPixelId())
 }
+
+/**
+ * Pixel dedicated to the Georgian Suliko Office landing page (/ka/office).
+ *
+ * It is a separate pixel from the main Suliko one so the office campaign has its
+ * own audiences. Events for it must use `trackSingle` so they never reach the
+ * main pixel. The id is a public identifier, not a secret; the env var only
+ * exists so a staging pixel can be swapped in without a code change.
+ */
+export function getOfficePixelId(): string {
+  return process.env.NEXT_PUBLIC_META_OFFICE_PIXEL_ID || '1559465735747665'
+}
