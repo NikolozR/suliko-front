@@ -374,19 +374,22 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                   <>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="default"
                       size="sm"
                       onClick={() => setShowDownloadModal(true)}
-                      className="transition-all duration-200"
+                      className="suliko-default-bg text-white transition-all duration-200 hover:opacity-90"
                       title={tButton('download')}
                       aria-label={tButton('download')}
                     >
                       <Download className="h-4 w-4" />
+                      <span className="hidden sm:ml-1.5 sm:inline">{tButton('download')}</span>
                     </Button>
                     <CopyButton
                       content={translatedMarkdown}
                       size="sm"
                       variant="outline"
+                      label={tButton('copy')}
+                      copiedLabel={tButton('copied')}
                     />
                   </>
                 )}

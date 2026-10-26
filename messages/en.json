@@ -325,6 +325,10 @@
     "loading": "Loading...",
     "download": "Download",
     "copy": "Copy",
+    "copied": "Copied",
+    "save": "Save",
+    "saved": "Saved",
+    "saving": "Saving…",
     "retry": "Retry"
   },
   "DownloadFormats": {

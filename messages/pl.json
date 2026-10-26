@@ -345,6 +345,10 @@
     "loading": "Ładowanie...",
     "download": "Pobierz",
     "copy": "Kopiuj",
+    "copied": "Skopiowano",
+    "save": "Zapisz",
+    "saved": "Zapisano",
+    "saving": "Zapisywanie…",
     "retry": "Spróbuj ponownie"
   },
   "DownloadFormats": {
