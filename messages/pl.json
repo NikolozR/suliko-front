@@ -549,7 +549,8 @@
       "stagesLabel": "Postęp",
       "startingUp": "Uruchamiam…",
       "openFullView": "Otwórz pełny widok",
-      "failed": "Tłumaczenie nie powiodło się. Spróbuj ponownie."
+      "failed": "Tłumaczenie nie powiodło się. Spróbuj ponownie.",
+      "openingResult": "Gotowe. Otwieramy tłumaczenie…"
     }
   },
   "Profile": {

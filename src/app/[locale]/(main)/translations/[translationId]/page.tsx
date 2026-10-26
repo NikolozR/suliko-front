@@ -550,7 +550,10 @@ export default function TranslationDetailPage() {
       ? `✅ ${tabFileName}`
       : tabStatus === "Failed"
         ? `⚠️ ${tabFileName}`
-        : `⏳ ${Math.round(displayProgress)}% · ${tabFileName}`;
+        : jobStage
+          // A named stage is real; the simulated percentage next to it is not.
+          ? `⏳ ${t(`stage.${jobStage}`)} · ${tabFileName}`
+          : `⏳ ${Math.round(displayProgress)}% · ${tabFileName}`;
   useDocumentTitle(tabTitle);
 
   // --- RENDER ---
@@ -678,7 +681,11 @@ export default function TranslationDetailPage() {
         {/* Status + timer + progress bar */}
         <Card className="p-6">
           <div className="flex flex-wrap items-center gap-3 mb-5">
-            <Loader2 className="h-4 w-4 animate-spin text-suliko-default-color shrink-0" />
+            {jobStage === "ready" ? (
+              <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" aria-hidden />
+            ) : (
+              <Loader2 className="h-4 w-4 animate-spin text-suliko-default-color shrink-0" />
+            )}
             <span className="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 shrink-0">
               {/* The backend's own stage is more specific than the coarse
                   status, so prefer it. Older jobs report no stage and fall
@@ -703,7 +710,11 @@ export default function TranslationDetailPage() {
               <div className="text-4xl font-semibold tabular-nums leading-none text-suliko-default-color">
                 {isIndeterminate ? "–" : `${Math.round(displayProgress)}%`}
               </div>
-              <p className="mt-2 text-sm text-muted-foreground truncate">{progressMsg}</p>
+              {/* The message ladder is driven by the simulated curve, so beside a
+                  real stage it can name a different step than the list below. */}
+              {!jobStage && (
+                <p className="mt-2 text-sm text-muted-foreground truncate">{progressMsg}</p>
+              )}
             </div>
             {/* `estimatedTimeWithValue` already reads "Estimated time: about N
                 minutes", so it needs no separate label above it. */}
@@ -723,7 +734,7 @@ export default function TranslationDetailPage() {
             indeterminate={isIndeterminate}
             size="md"
             tone="brand"
-            label={progressMsg}
+            label={jobStage ? t(`stage.${jobStage}`) : progressMsg}
             className="mb-3"
           />
 

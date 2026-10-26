@@ -529,7 +529,8 @@
       "stagesLabel": "Progress",
       "startingUp": "Starting up…",
       "openFullView": "Open full view",
-      "failed": "The translation failed. Please try again."
+      "failed": "The translation failed. Please try again.",
+      "openingResult": "Done. Opening your translation…"
     }
   },
   "TranslationLoadingOverlay": {
