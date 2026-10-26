@@ -363,6 +363,7 @@
     "simpleEditorNotice": "Word-ის მსგავსი რედაქტორი ვერ გაიხსნა, ამიტომ ნაჩვენებია მარტივი რედაქტორი. თქვენი თარგმანი უცვლელია."
   },
   "DocumentTranslationCard": {
+    "swapLanguages": "ენების გაცვლა",
     "title": "ატვირთე დოკუმენტი",
     "description": "ატვირთე დოკუმენტი თარგმნისთვის",
     "addingToProject": "ემატება პროექტს: {name}",
@@ -532,7 +533,6 @@
       "usuallyReady": "ჩვეულებრივ მზადდება {min}–{max} წუთში"
     },
     "fileTooLarge": "\"{name}\" ძალიან დიდია ({size}). მაქსიმალური ზომაა {max}.",
-    "swapLanguages": "ენების გაცვლა",
     "submitStage": {
       "detectingNames": "სახელების მოძიება…",
       "uploading": "იტვირთება {percent}%",

@@ -343,6 +343,7 @@
     "simpleEditorNotice": "The Word-style editor could not be opened, so the simple editor is shown. Your translation is unchanged."
   },
   "DocumentTranslationCard": {
+    "swapLanguages": "Swap languages",
     "title": "Upload document",
     "description": "Upload document for translation",
     "addingToProject": "Adding to project: {name}",
@@ -512,7 +513,6 @@
       "usuallyReady": "Usually ready in {min}–{max} minutes"
     },
     "fileTooLarge": "\"{name}\" is too large ({size}). The maximum file size is {max}.",
-    "swapLanguages": "Swap languages",
     "submitStage": {
       "detectingNames": "Finding names…",
       "uploading": "Uploading {percent}%",
