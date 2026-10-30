@@ -742,7 +742,14 @@
       "professionalDescription": "Idealny do regularnych tłumaczeń",
       "includedAll": "Każdy pakiet obejmuje ponad 50 języków i formaty plików: PNG, JPG, JPEG, PDF, DOCX, TXT.",
       "savesVsPayAsYouGo": "Oszczędzasz {amount} ₾ w porównaniu z „{plan}”",
-      "notSure": "Nie masz pewności?"
+      "notSure": "Nie masz pewności?",
+      "title": "Płacisz raz, bez abonamentu",
+      "subtitle": "Im więcej stron kupisz, tym taniej wychodzi każda. Pierwsze 10 stron jest za darmo.",
+      "free10": "Pierwsze 10 stron za darmo",
+      "languages": "50+ języków",
+      "formats": "PDF, DOCX, PNG, JPG, TXT",
+      "layout": "Układ dokumentu zachowany",
+      "payAsYouGoPeriod": "za stronę"
     },
     "paymentModal": {
       "title": "Płatność wkrótce",

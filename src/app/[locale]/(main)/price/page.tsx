@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
@@ -26,7 +27,10 @@ export default function PricePackages() {
         <p className="text-muted-foreground text-lg">{t("description")}</p>
       </div>
       
-      <PricingGrid />
+      {/* useSearchParams in the grid needs a boundary; the grid has no content of its own to wait for. */}
+      <Suspense>
+        <PricingGrid />
+      </Suspense>
 
       {/* Below the plans: it is for people who already have a code, and
           it used to sit above the plans and be the first thing on the page.

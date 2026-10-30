@@ -5,11 +5,12 @@ import { useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
-import { Check, Star, Zap, Building2, Users, Sparkles, Mail, Phone, MessageCircle, X, CreditCard } from "lucide-react";
+import { Check, Star, Zap, Building2, Users, Sparkles, Mail, Phone, MessageCircle, X, CreditCard, Gift, Languages, FileText, LayoutTemplate } from "lucide-react";
 import { PayAsYouGoModal } from "@/features/pricing/components/PayAsYouGoModal";
 import { formatPriceFromString } from "@/shared/utils/domainUtils";
 import { NOTARY_PHONE, NOTARY_WHATSAPP } from "@/shared/constants/notary";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
+import { PACKAGES, savingsGel, type PlanKey } from "@/features/pricing/packages";
 
 /** What a plan's CTA does, independent of its translated label. */
 type PlanAction = "buyCredits" | "payAsYouGo" | "bookDemo";
@@ -24,12 +25,16 @@ interface Plan {
   cta: string;
   action: PlanAction;
   popular: boolean;
+  /** Sent to /price as ?plan=, so the plan picked here is the one shown there. */
+  planKey?: PlanKey;
+  /** The price of one page, said big under the price (packages only). */
+  perPage?: string;
   color: "blue" | "purple" | "green" | "gold";
 }
 
 export default function PricingSection() {
   const t = useTranslations("Pricing");
-  const tLanding = useTranslations("Landing");
+  const tClosing = useTranslations("ClosingCta");
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<'translators' | 'businesses'>('translators');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -38,13 +43,13 @@ export default function PricingSection() {
   // Choose email based on current hostname: use info@suliko.io for suliko.io, otherwise use info@suliko.ge
   const email = typeof window !== 'undefined' && window.location.hostname.endsWith('suliko.io') ? 'info@suliko.io' : 'info@suliko.ge';
 
-  const handleButtonClick = (action: PlanAction) => {
+  const handleButtonClick = (action: PlanAction, planKey?: PlanKey) => {
     if (action === "bookDemo") {
       window.open(BOOK_DEMO_URL, "_blank", "noopener,noreferrer");
     } else if (action === "payAsYouGo") {
       setIsPayAsYouGoModalOpen(true);
     } else {
-      router.push("/price");
+      router.push(planKey ? `/price?plan=${planKey}` : "/price");
     }
   };
 
@@ -57,10 +62,12 @@ export default function PricingSection() {
       icon: Star,
       features: [
         t("starter.features.0"),
-        t("landing.starterPerPage"),
+        t("landing.savesVsPayAsYouGo", { amount: savingsGel(PACKAGES.starter), plan: t("payAsYouGo.title") }),
       ],
+      perPage: t("landing.starterPerPage"),
       cta: t("landing.starterCta"),
       action: "buyCredits",
+      planKey: "starter",
       popular: false,
       color: "blue",
     },
@@ -72,17 +79,19 @@ export default function PricingSection() {
       icon: Zap,
       features: [
         t("professional.features.0"),
-        t("landing.professionalPerPage"),
+        t("landing.savesVsPayAsYouGo", { amount: savingsGel(PACKAGES.professional), plan: t("payAsYouGo.title") }),
       ],
+      perPage: t("landing.professionalPerPage"),
       cta: t("landing.professionalCta"),
       action: "buyCredits",
+      planKey: "professional",
       popular: true,
       color: "purple",
     },
     {
       name: t("payAsYouGo.title"),
       price: formatPriceFromString(t("payAsYouGo.price")),
-      period: t("payAsYouGo.period"),
+      period: t("landing.payAsYouGoPeriod"),
       description: t("payAsYouGo.description"),
       icon: CreditCard,
       features: [
@@ -93,6 +102,7 @@ export default function PricingSection() {
       // Matches today's live behaviour: this CTA reads "Buy Credits" and routes
       // to /price. Switch to "payAsYouGo" to open PayAsYouGoModal instead.
       action: "buyCredits",
+      planKey: "payAsYouGo",
       popular: false,
       color: "green",
     }
@@ -142,7 +152,7 @@ export default function PricingSection() {
   const getColorClasses = (popular: boolean) => {
     const baseClasses = "relative transition-all duration-300 hover:shadow-lg";
     const popularClasses =
-      "ring-2 ring-primary shadow-xl scale-105 bg-linear-to-br from-background to-muted/20 before:absolute before:inset-0 before:rounded-lg before:bg-linear-to-r before:from-primary/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none";
+      "ring-2 ring-primary shadow-xl bg-linear-to-br from-background to-muted/20 before:absolute before:inset-0 before:rounded-lg before:bg-linear-to-r before:from-primary/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none";
     return `${baseClasses} ${popular ? popularClasses : ""}`;
   };
 
@@ -166,10 +176,10 @@ export default function PricingSection() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div data-reveal className="max-w-4xl mx-auto text-center mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-4xl font-semibold text-foreground mb-6">
-            {t("title")}
+            {t("landing.title")}
           </h2>
           <p className="text-xl text-muted-foreground leading-relaxed mb-8">
-            {t("description")}
+            {t("landing.subtitle")}
           </p>
 
           {/* Tabs */}
@@ -184,7 +194,7 @@ export default function PricingSection() {
             <div className="bg-muted p-1 rounded-lg inline-flex max-w-full">
               <button
                 onClick={() => setActiveTab('translators')}
-                className={`flex-1 px-3 sm:px-6 py-3 rounded-md font-medium text-sm sm:text-base transition-all ${activeTab === 'translators'
+                className={`flex-1 px-3 sm:px-6 py-3 rounded-md font-medium text-sm sm:text-base sm:whitespace-nowrap transition-all ${activeTab === 'translators'
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -193,7 +203,7 @@ export default function PricingSection() {
               </button>
               <button
                 onClick={() => setActiveTab('businesses')}
-                className={`flex-1 px-3 sm:px-6 py-3 rounded-md font-medium text-sm sm:text-base transition-all ${activeTab === 'businesses'
+                className={`flex-1 px-3 sm:px-6 py-3 rounded-md font-medium text-sm sm:text-base sm:whitespace-nowrap transition-all ${activeTab === 'businesses'
                     ? 'bg-background text-foreground shadow-sm'
                     : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -202,6 +212,30 @@ export default function PricingSection() {
               </button>
             </div>
           </div>
+
+          {/* What every package has, said once and before the buttons, where it is read */}
+          {activeTab === 'translators' && (
+            <ul className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-2 text-sm">
+              {([
+                { icon: Gift, label: t("landing.free10"), accent: true },
+                { icon: Languages, label: t("landing.languages"), accent: false },
+                { icon: FileText, label: t("landing.formats"), accent: false },
+                { icon: LayoutTemplate, label: t("landing.layout"), accent: false },
+              ] as const).map(({ icon: Icon, label, accent }) => (
+                <li
+                  key={label}
+                  className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 font-medium ${
+                    accent
+                      ? "border-primary/40 bg-primary/10 text-foreground"
+                      : "border-border bg-muted/40 text-foreground/80"
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0 text-primary" aria-hidden />
+                  {label}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/*
@@ -245,6 +279,9 @@ export default function PricingSection() {
                     </span>
                   </div>
                 </div>
+                {plan.perPage && (
+                  <p className="mt-2 text-lg font-semibold text-green-600 dark:text-green-400">{plan.perPage}</p>
+                )}
                 <p className="text-muted-foreground mt-2">
                   {plan.description}
                 </p>
@@ -261,12 +298,17 @@ export default function PricingSection() {
                 </ul>
 
                 <Button
-                  className="w-full mt-auto bg-primary hover:bg-primary/90"
+                  className={`w-full mt-auto ${
+                    plan.popular
+                      ? "bg-suliko-default-color text-white hover:bg-suliko-default-hover-color"
+                      : ""
+                  }`}
+                  variant={plan.popular ? "default" : "outline"}
                   size="lg"
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    handleButtonClick(plan.action);
+                    handleButtonClick(plan.action, plan.planKey);
                   }}
                   type="button"
                 >
@@ -278,32 +320,28 @@ export default function PricingSection() {
         </div>
 
 
-        {activeTab === 'translators' && (
-          <p className="mx-auto mt-10 max-w-2xl text-center text-sm text-muted-foreground">
-            {t("landing.includedAll")}
-          </p>
+        {/*
+          One closing line, with a button. It used to be three small muted lines
+          (what is included, a "not sure yet" link, a contact address) that
+          nobody reached. Individuals get the free pages; businesses get the
+          contact address, which is theirs alone.
+        */}
+        {activeTab === 'translators' ? (
+          <div className="mx-auto mt-14 flex max-w-3xl flex-col items-center gap-4 rounded-2xl border border-primary/30 bg-primary/5 px-6 py-6 text-center sm:flex-row sm:text-left">
+            <Gift className="hidden h-8 w-8 shrink-0 text-primary sm:block" aria-hidden />
+            <p className="grow text-base font-medium text-foreground">{tClosing("title")}</p>
+            <Button asChild size="lg" className="shrink-0 bg-suliko-default-color text-white hover:bg-suliko-default-hover-color">
+              <Link href="/document">{tClosing("cta")}</Link>
+            </Button>
+          </div>
+        ) : (
+          <div className="mx-auto mt-14 max-w-3xl rounded-2xl border border-border bg-muted/30 px-6 py-6 text-center">
+            <p className="mb-2 text-muted-foreground">{t("needCustomSolution")}</p>
+            <a href={`mailto:${email}`} className="text-lg font-semibold text-primary hover:text-primary/80">
+              {email}
+            </a>
+          </div>
         )}
-
-        {/* Soft exit for visitors who are not ready to pay */}
-        <p className="mt-6 text-center text-muted-foreground">
-          {t("landing.notSure")}{" "}
-          <Link href="/document" className="font-medium text-primary hover:text-primary/80">
-            {tLanding("cta")}
-          </Link>
-        </p>
-
-        {/* Contact Info */}
-        <div className="mt-8 text-center">
-          <p className="text-muted-foreground mb-2">
-            {t("needCustomSolution")}
-          </p>
-          <a
-            href={`mailto:${email}`}
-            className="text-primary hover:text-primary/80 font-medium"
-          >
-            {email}
-          </a>
-        </div>
       </div>
 
       {/* Contact Modal */}
