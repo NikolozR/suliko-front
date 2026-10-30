@@ -742,7 +742,14 @@
       "professionalDescription": "Ideal for regular translation work",
       "includedAll": "Every package includes all 50+ languages and the file formats PNG, JPG, JPEG, PDF, DOCX and TXT.",
       "savesVsPayAsYouGo": "Saves {amount} ₾ vs {plan}",
-      "notSure": "Not sure yet?"
+      "notSure": "Not sure yet?",
+      "title": "Pay once, no subscription",
+      "subtitle": "The more pages you buy, the less each one costs. Your first 10 pages are free.",
+      "free10": "First 10 pages free",
+      "languages": "50+ languages",
+      "formats": "PDF, DOCX, PNG, JPG, TXT",
+      "layout": "Original layout kept",
+      "payAsYouGoPeriod": "per page"
     },
     "paymentModal": {
       "title": "Payment Coming Soon",
@@ -765,7 +772,7 @@
     "title": "Pricing Packages",
     "description": "Choose a package that suits you",
     "forTranslators": "For Translators",
-    "forBusinesses": "For Businesses",
+    "forBusinesses": "For businesses",
     "discount": "Save 20%",
     "limitedTime": "Limited Time",
     "mostPopular": "Most Popular",
