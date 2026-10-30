@@ -134,9 +134,10 @@ export default function PricingSection() {
       icon: Building2,
       features: [
         t("business.features.0"),
+        t("business.features.3"),
+        t("business.features.4"),
         t("business.features.1"),
         t("business.features.2"),
-        t("business.features.3")
       ],
       priceGel: parseInt(t("business.price"), 10),
       cta: t("landing.businessCta"),
