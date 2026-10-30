@@ -24,6 +24,7 @@ interface Plan {
   cta: string;
   action: PlanAction;
   popular: boolean;
+  color: "blue" | "purple" | "green" | "gold";
 }
 
 export default function PricingSection() {
@@ -61,6 +62,7 @@ export default function PricingSection() {
       cta: t("landing.starterCta"),
       action: "buyCredits",
       popular: false,
+      color: "blue",
     },
     {
       name: t("professional.title"),
@@ -75,6 +77,7 @@ export default function PricingSection() {
       cta: t("landing.professionalCta"),
       action: "buyCredits",
       popular: true,
+      color: "purple",
     },
     {
       name: t("payAsYouGo.title"),
@@ -91,6 +94,7 @@ export default function PricingSection() {
       // to /price. Switch to "payAsYouGo" to open PayAsYouGoModal instead.
       action: "buyCredits",
       popular: false,
+      color: "green",
     }
   ];
 
@@ -110,6 +114,7 @@ export default function PricingSection() {
       cta: t("landing.businessCta"),
       action: "buyCredits",
       popular: true,
+      color: "blue",
     },
     {
       name: t("enterpriseBusiness.title"),
@@ -130,8 +135,29 @@ export default function PricingSection() {
       cta: t("enterpriseBusiness.cta"),
       action: "bookDemo",
       popular: false,
+      color: "gold",
     }
   ];
+
+  const getColorClasses = (popular: boolean) => {
+    const baseClasses = "relative transition-all duration-300 hover:shadow-lg";
+    const popularClasses =
+      "ring-2 ring-primary shadow-xl scale-105 bg-linear-to-br from-background to-muted/20 before:absolute before:inset-0 before:rounded-lg before:bg-linear-to-r before:from-primary/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none";
+    return `${baseClasses} ${popular ? popularClasses : ""}`;
+  };
+
+  const getIconColor = (color: Plan["color"]) => {
+    switch (color) {
+      case "blue":
+        return "text-blue-500";
+      case "purple":
+        return "text-purple-500";
+      case "gold":
+        return "text-yellow-500";
+      case "green":
+        return "text-green-500";
+    }
+  };
 
   const currentPlans = activeTab === 'translators' ? translatorPlans : businessPlans;
 
@@ -178,20 +204,22 @@ export default function PricingSection() {
           </div>
         </div>
 
-        <div className={`grid gap-8 max-w-7xl mx-auto ${activeTab === 'translators' ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1 lg:grid-cols-2'
+        {/*
+          One reveal for the whole grid. It stays mounted when the tab changes, so
+          it is revealed once. A reveal on each card left a card that appeared only
+          after a tab switch (Pay as you go) stuck invisible: the reveal script
+          looks for new cards on page load only.
+        */}
+        <div data-reveal className={`grid gap-8 max-w-7xl mx-auto ${activeTab === 'translators' ? 'grid-cols-1 lg:grid-cols-3' : 'grid-cols-1 lg:grid-cols-2'
           }`}>
           {currentPlans.map((plan, index) => (
             <Card
               key={index}
-              data-reveal
-              style={{ ["--reveal-delay" as string]: `${index * 90}ms` }}
-              className={`relative flex h-full flex-col transition-shadow duration-300 hover:shadow-float-2 ${
-                plan.popular ? "ring-2 ring-suliko-default-color shadow-float-3" : ""
-              }`}
+              className={`${getColorClasses(plan.popular)} flex h-full flex-col`}
             >
               {plan.popular && (
-                <div className="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2">
-                  <div className="flex items-center gap-1 rounded-full bg-suliko-default-color px-3.5 py-1 text-xs font-semibold whitespace-nowrap text-white shadow-md">
+                <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2">
+                  <div className="flex items-center gap-1 rounded-full bg-linear-to-r from-orange-500 to-red-500 px-4 py-1 text-sm font-bold whitespace-nowrap text-white shadow-lg">
                     <Sparkles className="h-3 w-3" aria-hidden />
                     {t("mostPopular")}
                   </div>
@@ -200,16 +228,16 @@ export default function PricingSection() {
 
               <CardHeader className="text-center pb-4">
                 <div className="flex justify-center mb-4">
-                  <div className="rounded-2xl bg-suliko-default-color/10 p-3 text-suliko-default-color dark:text-blue-300">
-                    <plan.icon className="h-7 w-7" aria-hidden />
+                  <div className={`rounded-full bg-primary/10 p-3 ${getIconColor(plan.color)}`}>
+                    <plan.icon className="h-8 w-8" aria-hidden />
                   </div>
                 </div>
-                <CardTitle className="text-2xl font-semibold text-foreground">
+                <CardTitle className="text-2xl font-bold text-foreground">
                   {plan.name}
                 </CardTitle>
                 <div className="mt-4">
                   <div className="flex items-baseline justify-center">
-                    <span className="text-4xl font-semibold text-foreground">
+                    <span className="text-4xl font-bold text-foreground">
                       {plan.price}
                     </span>
                     <span className="text-muted-foreground ml-1">
@@ -226,18 +254,14 @@ export default function PricingSection() {
                 <ul className="space-y-3 mb-8 grow">
                   {plan.features.map((feature, featureIndex) => (
                     <li key={featureIndex} className="flex items-start">
-                      <Check className="h-5 w-5 text-suliko-default-color dark:text-blue-300 mr-3 mt-0.5 shrink-0" aria-hidden />
+                      <Check className="h-5 w-5 text-green-500 mr-3 mt-0.5 shrink-0" aria-hidden />
                       <span className="text-muted-foreground">{feature}</span>
                     </li>
                   ))}
                 </ul>
 
                 <Button
-                  className={`w-full mt-auto ${
-                    plan.popular
-                      ? "bg-suliko-default-color text-white hover:bg-suliko-default-hover-color"
-                      : "bg-primary hover:bg-primary/90"
-                  }`}
+                  className="w-full mt-auto bg-primary hover:bg-primary/90"
                   size="lg"
                   onClick={(e) => {
                     e.preventDefault();
