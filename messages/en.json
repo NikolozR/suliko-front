@@ -774,12 +774,30 @@
       "okay": "Okay"
     },
     "title": "Pricing Packages",
-    "description": "Choose a package that suits you",
+    "description": "Pay once, no subscription. Pages never expire.",
     "forTranslators": "For Translators",
     "forBusinesses": "For businesses",
     "discount": "Save 20%",
     "limitedTime": "Limited Time",
     "mostPopular": "Most Popular",
+    "noExpiry": "Pages never expire",
+    "balance": "You have {pages} pages on your balance",
+    "trust": {
+      "refund": "Unused pages refundable within 14 days",
+      "payment": "Secure card payment on the Bank of Georgia page",
+      "refundLink": "Refund policy"
+    },
+    "faq": {
+      "title": "Questions before you buy",
+      "expiryQ": "Do pages expire?",
+      "expiryA": "No. Pages stay on your balance until you use them. There is no subscription and no recurring charge.",
+      "pageQ": "What counts as a page?",
+      "pageA": "One standard page of translated text.",
+      "refundQ": "Can I get my money back?",
+      "refundA": "Yes. Unused pages are refundable in full within 14 days of purchase. If a translation fails on our side, its pages return to your balance automatically.",
+      "moreQ": "Need more than 500 pages, or invoices for your company?",
+      "moreA": "Suliko Business gives 900 pages every month with company invoices and VAT receipts. Write to <mail>{email}</mail>."
+    },
     "contactModal": {
       "title": "Get Started Today",
       "subtitle": "Contact us to begin your translation journey",
@@ -805,7 +823,7 @@
         "1": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
-      "cta": "Buy Credits"
+      "cta": "Buy 100 pages"
     },
     "professional": {
       "title": "Professional",
@@ -820,7 +838,7 @@
         "3": "Priority email & chat support",
         "4": "Team collaboration tools"
       },
-      "cta": "Buy Credits",
+      "cta": "Buy 500 pages",
       "popular": "Most Popular"
     },
     "custom": {
@@ -865,16 +883,16 @@
     "payAsYouGo": {
       "title": "Pay as you go",
       "price": "1 ₾",
-      "period": "→ 1 page",
-      "documents": "1 page per GEL",
+      "period": " per page",
+      "documents": "Choose how many pages",
       "description": "Perfect for occasional translations",
       "features": {
-        "0": "1 page = 1 GEL",
+        "0": "Pages never expire",
         "1": "No monthly commitment",
         "2": "Photo file formats (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "3": "Language support: Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and 50+ languages"
       },
-      "cta": "Buy Credits"
+      "cta": "Choose pages"
     },
     "payAsYouGoModal": {
       "title": "Custom Purchase",

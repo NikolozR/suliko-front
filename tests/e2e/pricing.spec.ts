@@ -17,10 +17,20 @@ test.describe('Pricing page', () => {
     }
   });
 
-  test('every plan has a Buy Credits button', async ({ page }) => {
-    const buttons = page.getByRole('button', { name: 'Buy Credits' });
-    await expect(buttons).toHaveCount(3);
-    await expect(buttons.first()).toBeEnabled();
+  test('every plan has a button that names what it buys', async ({ page }) => {
+    for (const name of ['Buy 100 pages', 'Buy 500 pages', 'Choose pages']) {
+      await expect(page.getByRole('button', { name }), name).toBeEnabled();
+    }
+  });
+
+  test('says pages never expire and links the refund policy', async ({ page }) => {
+    await expect(page.getByText('Pages never expire').first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Refund policy' })).toBeVisible();
+  });
+
+  test('answers the questions before you buy', async ({ page }) => {
+    await expect(page.getByRole('heading', { name: 'Questions before you buy' })).toBeVisible();
+    await expect(page.getByText('Do pages expire?')).toBeVisible();
   });
 
 });
