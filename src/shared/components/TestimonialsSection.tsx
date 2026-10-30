@@ -12,7 +12,7 @@ const TESTIMONIALS = [
   { key: "translationHouse", avatar: "თს", color: "bg-suliko-default-color", logo: "/testimonials/translation-house.png" },
   { key: "irakliVekua", avatar: "ივ", color: "bg-teal-700", logo: null },
   { key: "iuristi", avatar: "IG", color: "bg-violet-600", logo: "/testimonials/iuristi.png" },
-  { key: "nebulaAI", avatar: "NA", color: "bg-amber-700", logo: null },
+  { key: "nebulaAI", avatar: "NA", color: "bg-amber-700", logo: "/testimonials/nebula.png" },
   { key: "api24", avatar: "A24", color: "bg-pink-700", logo: "/testimonials/api24.png" },
 ] as const;
 
