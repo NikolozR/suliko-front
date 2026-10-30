@@ -736,7 +736,7 @@
       "starterCta": "Get 100 pages",
       "professionalCta": "Get 500 pages",
       "payAsYouGoCta": "Buy pages",
-      "businessCta": "Buy Credits",
+      "businessCta": "Get Business",
       "starterPerPage": "0.20 ₾ per page",
       "professionalPerPage": "0.10 ₾ per page",
       "professionalDescription": "Ideal for regular translation work",
@@ -749,7 +749,11 @@
       "languages": "50+ languages",
       "formats": "PDF, DOCX, PNG, JPG, TXT",
       "layout": "Original layout kept",
-      "payAsYouGoPeriod": "per page"
+      "payAsYouGoPeriod": "per page",
+      "payAsYouGoPagesLabel": "How many pages?",
+      "payAsYouGoTotal": "Total: {amount} ₾",
+      "payAsYouGoBuy": "{count, plural, one {Buy # page} other {Buy # pages}}",
+      "cheaperHint": "{plan} is cheaper: {pages} pages for {price} ₾."
     },
     "paymentModal": {
       "title": "Payment Coming Soon",

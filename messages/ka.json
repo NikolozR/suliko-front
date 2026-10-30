@@ -736,7 +736,7 @@
       "starterCta": "100 გვერდის შეძენა",
       "professionalCta": "500 გვერდის შეძენა",
       "payAsYouGoCta": "გვერდების შეძენა",
-      "businessCta": "კრედიტების შეძენა",
+      "businessCta": "აირჩიე Business",
       "starterPerPage": "0.20 ₾ თითო გვერდზე",
       "professionalPerPage": "0.10 ₾ თითო გვერდზე",
       "professionalDescription": "იდეალურია რეგულარული თარგმნისთვის",
@@ -749,7 +749,11 @@
       "languages": "50+ ენა",
       "formats": "PDF, DOCX, PNG, JPG, TXT",
       "layout": "ორიგინალის ფორმატირება შენარჩუნებულია",
-      "payAsYouGoPeriod": "გვერდზე"
+      "payAsYouGoPeriod": "გვერდზე",
+      "payAsYouGoPagesLabel": "რამდენი გვერდი?",
+      "payAsYouGoTotal": "ჯამი: {amount} ₾",
+      "payAsYouGoBuy": "იყიდე {count} გვერდი",
+      "cheaperHint": "„{plan}“ უფრო იაფია: {pages} გვერდი {price} ₾-ად."
     },
     "paymentModal": {
       "title": "გადახდა მალე დაემატება",
