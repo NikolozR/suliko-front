@@ -852,12 +852,13 @@
       "title": "Suliko Business",
       "price": "500 ₾",
       "period": "/miesiąc",
-      "description": "Idealny dla rozwijających się firm",
+      "description": "Dla firm, które tłumaczą co miesiąc",
       "features": {
-        "0": "900 stron miesięcznie",
+        "0": "900 stron co miesiąc, bez doładowań",
         "1": "Priorytetowe wsparcie e-mailowe",
         "2": "Wszystkie formaty plików (PDF, DOCX, TXT, PNG, JPEG, JPG)",
-        "3": "Podstawowy dostęp do API"
+        "3": "Podstawowy dostęp do API dla Twoich systemów",
+        "4": "Faktury VAT dla firm"
       },
       "cta": "Rozpocznij bezpłatny okres próbny"
     },
