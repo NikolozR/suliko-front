@@ -3,6 +3,8 @@ import MobileBottomNav from "@/shared/components/MobileBottomNav";
 import { cookies } from "next/headers";
 import { getUserProfile } from "@/features/auth/services/userService";
 import ResponsiveMainContent from "@/shared/components/ResponsiveMainContent";
+import ShortcutsDialog from "@/shared/components/ShortcutsDialog";
+import { ShortcutsProvider } from "@/shared/shortcuts/ShortcutsProvider";
 
 export default async function MainLayout({
   children,
@@ -32,12 +34,15 @@ export default async function MainLayout({
   }
 
   return (
-    <div className="relative">
-      <Sidebar initialUserProfile={userProfile} />
-      <ResponsiveMainContent>
-        {children}
-      </ResponsiveMainContent>
-      <MobileBottomNav />
-    </div>
+    <ShortcutsProvider>
+      <div className="relative">
+        <Sidebar initialUserProfile={userProfile} />
+        <ResponsiveMainContent>
+          {children}
+        </ResponsiveMainContent>
+        <MobileBottomNav />
+      </div>
+      <ShortcutsDialog />
+    </ShortcutsProvider>
   );
 } 

@@ -8,6 +8,7 @@ import {
   CardContent,
 } from "@/features/ui/components/ui/card";
 import { Type } from "lucide-react";
+import { useComboText } from "@/shared/components/Kbd";
 import { Textarea } from "@/features/ui/components/ui/textarea";
 import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationSubmitButton from "./TranslationSubmitButton";
@@ -54,6 +55,7 @@ type DownloadFormatOption = { value: string; label: string; extension: string; i
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
   const tButton = useTranslations('TranslationButton');
+  const downloadKeys = useComboText(["Alt", "Shift", "D"]);
   const translatedSuffix = useTranslatedSuffix();
   const [textLoading, setTextLoading] = useState(false);
   const router = useRouter();
@@ -423,6 +425,7 @@ const TextTranslationCard = () => {
                   <div className="h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full">
                     <Textarea
                       ref={textareaRef}
+                      data-shortcut="input"
                       className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-base md:text-sm"
                       placeholder={t('textIputPlaceholder')}
                       value={currentTextValue}
@@ -432,7 +435,7 @@ const TextTranslationCard = () => {
                         clearErrors("currentTextValue");
                       }}
                       onKeyDown={(e) => {
-                        if (e.shiftKey && e.key === "Enter") {
+                        if ((e.shiftKey || e.ctrlKey || e.metaKey) && e.key === "Enter") {
                           e.preventDefault();
                           handleSubmit(onSubmit, handleFormError)();
                         }
@@ -470,8 +473,9 @@ const TextTranslationCard = () => {
                           size="sm"
                           onClick={() => setShowDownloadModal(true)}
                           className="transition-all duration-200"
-                          title={tButton('download')}
+                          title={`${tButton('download')} (${downloadKeys})`}
                           aria-label={tButton('download')}
+                          data-shortcut="download"
                         >
                           <Download className="h-4 w-4" />
                           <span className="hidden sm:ml-1.5 sm:inline">{tButton('download')}</span>

@@ -27,9 +27,13 @@ import {
   FileText,
   Briefcase,
   ClipboardList,
+  Keyboard,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
+import { KbdCombo } from "@/shared/components/Kbd";
+import { GO_TARGETS } from "@/shared/shortcuts/definitions";
+import { useShortcuts } from "@/shared/shortcuts/ShortcutsProvider";
 import { useLocale, useTranslations } from "next-intl";
 import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
 import { signOutEverywhere } from "@/features/auth/services/signOut";
@@ -79,6 +83,31 @@ const NAV_ITEMS = [
   },
 ];
 
+/**
+ * The Alt+digit hint of a sidebar link: shown on hover and focus, and on every
+ * link at once while Alt is held, so the digits can be read off the sidebar.
+ * Not when collapsed, where the link's title carries it.
+ */
+function ShortcutHint({ href }: { href: string }) {
+  const { altHeld } = useShortcuts();
+  const target = GO_TARGETS.find((entry) => entry.href === href);
+  if (!target) return null;
+  return (
+    <KbdCombo
+      keys={["Alt", target.digit]}
+      className={`ml-auto hidden shrink-0 transition-opacity md:inline-flex ${
+        altHeld ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+      }`}
+    />
+  );
+}
+
+/** "Passport (Alt 3)" for a link that has a digit, else just the name. */
+function hintTitle(name: string, href: string): string {
+  const target = GO_TARGETS.find((entry) => entry.href === href);
+  return target ? `${name} (Alt ${target.digit})` : name;
+}
+
 interface SidebarProps {
   initialUserProfile?: UserProfile | null;
 }
@@ -109,6 +138,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
   const t = useTranslations('Sidebar');
   const locale = useLocale();
+  const { setHelpOpen } = useShortcuts();
 
   // Until the browser has read its own token, go by what the server saw: the
   // profile it fetched with the token cookie. Otherwise every page load would
@@ -241,6 +271,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   } ${effectiveIsCollapsed ? "justify-center" : ""}`
                 }
                 aria-current={isActive(href) ? "page" : undefined}
+                title={effectiveIsCollapsed ? hintTitle(t(label), href) : undefined}
               >
                 <div className="relative flex items-center">
                   <Icon
@@ -256,10 +287,12 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                     <span className="whitespace-nowrap">
                       {t(label)}
                     </span>
-                    {needsEmailReminder && label === "profile" && (
+                    {needsEmailReminder && label === "profile" ? (
                       <span className="ml-auto text-[11px] font-medium text-amber-700 bg-amber-100 py-0.5 px-2 rounded-full shrink-0 animate-flicker">
                         {t("completeEmail")}
                       </span>
+                    ) : (
+                      <ShortcutHint href={href} />
                     )}
                   </>
                 )}
@@ -287,7 +320,10 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   <Clock className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
                     } group-hover:scale-105`} />
                   {!effectiveIsCollapsed && (
-                    <span className="whitespace-nowrap truncate">{t("projects")}</span>
+                    <>
+                      <span className="whitespace-nowrap truncate">{t("projects")}</span>
+                      <ShortcutHint href="/projects" />
+                    </>
                   )}
                 </Link>
                 {!effectiveIsCollapsed && (
@@ -316,6 +352,17 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
         </nav>
 
         <div className="mt-auto flex flex-col gap-2 p-3">
+          {!effectiveIsCollapsed && (
+            <button
+              type="button"
+              onClick={() => setHelpOpen(true)}
+              className="sidebar-item group hidden items-center gap-3 rounded-md px-3 py-2 text-xs md:flex"
+            >
+              <Keyboard className="h-4 w-4" aria-hidden />
+              <span className="whitespace-nowrap">{t("keyboardShortcuts")}</span>
+              <KbdCombo keys={["?"]} className="ml-auto" />
+            </button>
+          )}
           {token ? (
             <>
               {userProfile && (

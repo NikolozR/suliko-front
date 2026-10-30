@@ -139,7 +139,33 @@
     "login": "Zaloguj się",
     "close": "Zamknij"
   },
+  "Shortcuts": {
+    "title": "Skróty klawiszowe",
+    "description": "Pojedyncze klawisze działają, gdy nie piszesz w polu.",
+    "groups": {
+      "navigation": "Przejdź do",
+      "translation": "Tłumaczenie",
+      "general": "Ogólne"
+    },
+    "items": {
+      "goText": "Nowe tłumaczenie tekstu",
+      "goDocument": "Nowe tłumaczenie dokumentu",
+      "goPassport": "Paszport",
+      "goProjects": "Projekty",
+      "goProfile": "Profil",
+      "goOrders": "Zlecenia",
+      "translate": "Tłumacz",
+      "focusInput": "Przejdź do pola tekstu",
+      "targetLanguage": "Wybierz język docelowy",
+      "swap": "Zamień języki",
+      "copy": "Skopiuj tłumaczenie",
+      "download": "Pobierz tłumaczenie",
+      "help": "Pokaż tę listę",
+      "close": "Zamknij okno"
+    }
+  },
   "Sidebar": {
+    "keyboardShortcuts": "Skróty klawiszowe",
     "newTranslation": "Nowe tłumaczenie",
     "history": "Historia",
     "projects": "Projekty",

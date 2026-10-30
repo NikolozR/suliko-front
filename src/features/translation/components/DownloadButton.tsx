@@ -6,6 +6,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { saveAs } from "file-saver";
 import { wordBlob } from "@/features/translation/utils/wordPage";
 import { generatePdfFromHtml } from "@/features/translation/utils/html2pdf-client";
+import { useComboText } from "@/shared/components/Kbd";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 
 
@@ -39,6 +40,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   const [downloaded, setDownloaded] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const translatedSuffix = useTranslatedSuffix();
+  const shortcutText = useComboText(["Alt", "Shift", "D"]);
 
   const getMimeType = (type: string) => {
     switch (type) {
@@ -116,6 +118,8 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       variant={variant}
       size={size}
       onClick={handleDownload}
+      data-shortcut="download"
+      title={label ? `${label} (${shortcutText})` : shortcutText}
       className={`transition-all duration-200 ${className}`}
       disabled={!content.trim() || isLoading}
       aria-label={label}
