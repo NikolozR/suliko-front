@@ -3,7 +3,7 @@
  * function (4.5 MB request cap) straight to a private Blob store, and hands back
  * the address the notary routes then read it from.
  */
-import { upload } from '@vercel/blob/client';
+import { uploadPresigned } from '@vercel/blob/client';
 
 /** Under Vercel's 4.5 MB body cap with room for the other form fields. */
 export const DIRECT_UPLOAD_LIMIT_BYTES = 4 * 1024 * 1024;
@@ -20,7 +20,7 @@ export function needsBlobUpload(files: File[]): boolean {
 export async function uploadToNotaryBlob(file: File): Promise<UploadedBlob> {
   // The store gets an address-safe name; the visitor's own name travels beside it.
   const safeName = file.name.replace(/[^\w.-]+/g, '_').slice(-80);
-  const result = await upload(`notary/${safeName}`, file, {
+  const result = await uploadPresigned(`notary/${safeName}`, file, {
     access: 'private',
     handleUploadUrl: '/api/notary-upload/blob',
     multipart: file.size > 8 * 1024 * 1024,
