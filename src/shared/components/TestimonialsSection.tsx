@@ -1,16 +1,19 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 import { useAutoplay } from "@/shared/components/landing/useAutoplay";
 
+// `logo` is the company's own mark (public/testimonials, taken from its website).
+// Without one, or for a person, the card shows initials on a colour.
 const TESTIMONIALS = [
-  { key: "translationHouse", avatar: "თს", color: "bg-suliko-default-color" },
-  { key: "irakliVekua", avatar: "ივ", color: "bg-teal-700" },
-  { key: "iuristi", avatar: "IG", color: "bg-violet-600" },
-  { key: "nebulaAI", avatar: "NA", color: "bg-amber-700" },
-  { key: "api24", avatar: "A24", color: "bg-pink-700" },
+  { key: "translationHouse", avatar: "თს", color: "bg-suliko-default-color", logo: "/testimonials/translation-house.png" },
+  { key: "irakliVekua", avatar: "ივ", color: "bg-teal-700", logo: null },
+  { key: "iuristi", avatar: "IG", color: "bg-violet-600", logo: "/testimonials/iuristi.png" },
+  { key: "nebulaAI", avatar: "NA", color: "bg-amber-700", logo: null },
+  { key: "api24", avatar: "A24", color: "bg-pink-700", logo: "/testimonials/api24.png" },
 ] as const;
 
 type Testimonial = (typeof TESTIMONIALS)[number];
@@ -64,11 +67,23 @@ export default function TestimonialsSection() {
         &ldquo;{t(`testimonials.${item.key}.content`)}&rdquo;
       </blockquote>
       <figcaption className="mt-auto flex items-center gap-3">
-        <span
-          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${item.color}`}
-        >
-          {item.avatar}
-        </span>
+        {item.logo ? (
+          <Image
+            src={item.logo}
+            alt=""
+            width={36}
+            height={36}
+            // Already 96 px (crisp at 2x): no need to route 3 KB files through the optimizer.
+            unoptimized
+            className="h-9 w-9 shrink-0 rounded-full bg-white object-cover ring-1 ring-black/10"
+          />
+        ) : (
+          <span
+            className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-xs font-semibold text-white ${item.color}`}
+          >
+            {item.avatar}
+          </span>
+        )}
         <span className="min-w-0">
           <span className="block truncate text-sm font-semibold text-foreground">
             {t(`testimonials.${item.key}.name`)}
