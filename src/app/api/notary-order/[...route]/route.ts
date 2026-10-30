@@ -16,6 +16,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
+import { cleanFileName, deleteNotaryBlobs, isNotaryBlobUrl, loadNotaryBlob } from '@/lib/notaryBlob';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -123,10 +124,16 @@ async function handleOrders(request: NextRequest, key: string) {
 }
 
 async function handleFiles(request: NextRequest, key: string) {
-  const contentType = request.headers.get('content-type') ?? '';
-  if (!contentType.toLowerCase().startsWith('multipart/form-data')) {
+  const requestType = request.headers.get('content-type') ?? '';
+  const isJson = requestType.toLowerCase().startsWith('application/json');
+  if (!isJson && !requestType.toLowerCase().startsWith('multipart/form-data')) {
     return json({ success: false, error: 'Expected multipart/form-data.' }, 415);
   }
+
+  // A function here refuses request bodies over 4.5 MB, so a bigger file goes
+  // to a private Blob store straight from the browser, and arrives here as a
+  // JSON note of where it is. It is read back and forwarded like any other.
+  const blobUrls: string[] = [];
 
   // The body is buffered, not streamed: a streamed body goes upstream chunked
   // without a Content-Length, and PHP's multipart parser cannot be relied on to
@@ -134,51 +141,88 @@ async function handleFiles(request: NextRequest, key: string) {
   // receive time and upstream time are measured separately below. That split is
   // what tells a slow client link apart from a slow partner.
   const receiveStart = Date.now();
-  const buffer = await request.arrayBuffer();
+  let buffer: ArrayBuffer;
+  let contentType = requestType;
+  if (isJson) {
+    const note = (await request.json().catch(() => null)) as {
+      order_id?: unknown;
+      document_id?: unknown;
+      blob_url?: unknown;
+      name?: unknown;
+    } | null;
+    if (
+      !note ||
+      !/^\d{1,18}$/.test(String(note.order_id ?? '')) ||
+      !/^\d{1,18}$/.test(String(note.document_id ?? '')) ||
+      !isNotaryBlobUrl(note.blob_url)
+    ) {
+      return json({ success: false, error: 'Expected order_id, document_id and blob_url.' }, 400);
+    }
+    blobUrls.push(note.blob_url);
+    const loaded = await loadNotaryBlob({ url: note.blob_url, name: cleanFileName(note.name) });
+    if (!loaded) {
+      return json({ success: false, error: 'The uploaded file expired. Please add it again.' }, 410);
+    }
+    // Built here so the multipart boundary and the Content-Length are ours.
+    const form = new FormData();
+    form.append('order_id', String(note.order_id));
+    form.append('document_id', String(note.document_id));
+    form.append('file', new Blob([new Uint8Array(loaded.buffer)], { type: loaded.contentType }), loaded.name);
+    const encoded = new Response(form);
+    contentType = encoded.headers.get('content-type') ?? contentType;
+    buffer = await encoded.arrayBuffer();
+  } else {
+    buffer = await request.arrayBuffer();
+  }
   const receiveMs = Date.now() - receiveStart;
 
   if (buffer.byteLength > MAX_UPLOAD_BYTES) {
     console.warn(`[notary-order] upload rejected — ${buffer.byteLength} bytes over cap`);
+    await deleteNotaryBlobs(blobUrls.map((url) => ({ url, name: '' })));
     return json({ success: false, error: 'File is too large.' }, 413);
   }
 
-  const upstreamStart = Date.now();
-  let upstream: Response;
   try {
-    upstream = await fetch(`${UPSTREAM_BASE}/${ROUTES.files.upstream}`, {
-      method: 'POST',
-      headers: {
-        'X-Api-Key': key,
-        // Forwarded verbatim — the multipart boundary lives in this header, and
-        // re-encoding the form here would only risk corrupting it.
-        'Content-Type': contentType,
-        Accept: 'application/json',
-      },
-      body: buffer,
-      // Without this the fetch can hang indefinitely while the browser gives up
-      // on its own — a failure mode that logs nothing at all.
-      signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
-    });
-  } catch (error) {
-    if (error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError')) {
-      console.error(
-        `[notary-order] file upload timeout — ${buffer.byteLength} bytes, ` +
-          `${receiveMs}ms receive, ${Date.now() - upstreamStart}ms upstream`
-      );
-      return json({ success: false, error: 'File storage did not respond in time.' }, 504);
+    const upstreamStart = Date.now();
+    let upstream: Response;
+    try {
+      upstream = await fetch(`${UPSTREAM_BASE}/${ROUTES.files.upstream}`, {
+        method: 'POST',
+        headers: {
+          'X-Api-Key': key,
+          // Forwarded verbatim — the multipart boundary lives in this header, and
+          // re-encoding the form here would only risk corrupting it.
+          'Content-Type': contentType,
+          Accept: 'application/json',
+        },
+        body: buffer,
+        // Without this the fetch can hang indefinitely while the browser gives up
+        // on its own — a failure mode that logs nothing at all.
+        signal: AbortSignal.timeout(UPSTREAM_TIMEOUT_MS),
+      });
+    } catch (error) {
+      if (error instanceof Error && (error.name === 'TimeoutError' || error.name === 'AbortError')) {
+        console.error(
+          `[notary-order] file upload timeout — ${buffer.byteLength} bytes, ` +
+            `${receiveMs}ms receive, ${Date.now() - upstreamStart}ms upstream`
+        );
+        return json({ success: false, error: 'File storage did not respond in time.' }, 504);
+      }
+      throw error;
     }
-    throw error;
+
+    const upstreamMs = Date.now() - upstreamStart;
+    // Logged on success as well as failure: a silent function is
+    // indistinguishable from a hung one, which is the case worth diagnosing.
+    console.log(
+      `[notary-order] file upload ${upstream.status} — ${buffer.byteLength} bytes, ` +
+        `${receiveMs}ms receive, ${upstreamMs}ms upstream`
+    );
+
+    return passThrough(upstream);
+  } finally {
+    await deleteNotaryBlobs(blobUrls.map((url) => ({ url, name: '' })));
   }
-
-  const upstreamMs = Date.now() - upstreamStart;
-  // Logged on success as well as failure: a silent function is
-  // indistinguishable from a hung one, which is the case worth diagnosing.
-  console.log(
-    `[notary-order] file upload ${upstream.status} — ${buffer.byteLength} bytes, ` +
-      `${receiveMs}ms receive, ${upstreamMs}ms upstream`
-  );
-
-  return passThrough(upstream);
 }
 
 // ---------------------------------------------------------------------------
