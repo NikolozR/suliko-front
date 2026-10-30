@@ -30,7 +30,10 @@ export function PricingGrid() {
   const router = useRouter();
   const t = useTranslations("Pricing");
   // A link from the landing page names the plan the visitor picked there.
-  const requested = useSearchParams().get("plan");
+  const params = useSearchParams();
+  const requested = params.get("plan");
+  // The landing page's Pay as you go card sends how many pages the visitor chose.
+  const requestedPages = Math.min(5000, Math.max(1, Number(params.get("pages")) || 1));
   const highlighted = isPlanKey(requested) ? requested : "professional";
 
 
@@ -64,7 +67,7 @@ export function PricingGrid() {
       router.push("/sign-in");
       return;
     }
-    setPayAsYouGoAmount(1);
+    setPayAsYouGoAmount(requestedPages);
     setShowAmountDialog(true);
   };
 

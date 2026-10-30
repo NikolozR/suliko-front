@@ -736,7 +736,7 @@
       "starterCta": "Kup 100 stron",
       "professionalCta": "Kup 500 stron",
       "payAsYouGoCta": "Kup strony",
-      "businessCta": "Kup kredyty",
+      "businessCta": "Wybierz Business",
       "starterPerPage": "0,20 ₾ za stronę",
       "professionalPerPage": "0,10 ₾ za stronę",
       "professionalDescription": "Idealny do regularnych tłumaczeń",
@@ -749,7 +749,11 @@
       "languages": "50+ języków",
       "formats": "PDF, DOCX, PNG, JPG, TXT",
       "layout": "Układ dokumentu zachowany",
-      "payAsYouGoPeriod": "za stronę"
+      "payAsYouGoPeriod": "za stronę",
+      "payAsYouGoPagesLabel": "Ile stron?",
+      "payAsYouGoTotal": "Razem: {amount} ₾",
+      "payAsYouGoBuy": "{count, plural, one {Kup # stronę} few {Kup # strony} many {Kup # stron} other {Kup # strony}}",
+      "cheaperHint": "„{plan}” wychodzi taniej: {pages} stron za {price} ₾."
     },
     "paymentModal": {
       "title": "Płatność wkrótce",

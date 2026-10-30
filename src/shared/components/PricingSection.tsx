@@ -1,16 +1,17 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui";
 import { Button } from "@/features/ui";
-import { Check, Star, Zap, Building2, Users, Sparkles, Mail, Phone, MessageCircle, X, CreditCard, Gift, Languages, FileText, LayoutTemplate } from "lucide-react";
+import { Check, Star, Zap, Building2, Users, Sparkles, Mail, Phone, MessageCircle, X, CreditCard, Gift, Languages, FileText, LayoutTemplate, Minus, Plus } from "lucide-react";
 import { PayAsYouGoModal } from "@/features/pricing/components/PayAsYouGoModal";
 import { formatPriceFromString } from "@/shared/utils/domainUtils";
 import { NOTARY_PHONE, NOTARY_WHATSAPP } from "@/shared/constants/notary";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
-import { PACKAGES, savingsGel, type PlanKey } from "@/features/pricing/packages";
+import { PACKAGES, PAY_AS_YOU_GO_PER_PAGE, savingsGel, type PlanKey } from "@/features/pricing/packages";
+import { approxPrice } from "@/shared/utils/approxPrice";
 
 /** What a plan's CTA does, independent of its translated label. */
 type PlanAction = "buyCredits" | "payAsYouGo" | "bookDemo";
@@ -29,6 +30,10 @@ interface Plan {
   planKey?: PlanKey;
   /** The price of one page, said big under the price (packages only). */
   perPage?: string;
+  /** How much cheaper one page is than Pay as you go, in percent (packages only). */
+  cheaperPct?: number;
+  /** The lari price as a number, for the rough price in another currency. */
+  priceGel?: number;
   color: "blue" | "purple" | "green" | "gold";
 }
 
@@ -36,12 +41,17 @@ export default function PricingSection() {
   const t = useTranslations("Pricing");
   const tClosing = useTranslations("ClosingCta");
   const router = useRouter();
+  const locale = useLocale();
   const [activeTab, setActiveTab] = useState<'translators' | 'businesses'>('translators');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isPayAsYouGoModalOpen, setIsPayAsYouGoModalOpen] = useState(false);
+  const [payPages, setPayPages] = useState(10);
 
   // Choose email based on current hostname: use info@suliko.io for suliko.io, otherwise use info@suliko.ge
   const email = typeof window !== 'undefined' && window.location.hostname.endsWith('suliko.io') ? 'info@suliko.io' : 'info@suliko.ge';
+
+  const cheaperPct = (p: { pages: number; price: number }) =>
+    Math.round((1 - p.price / p.pages / PAY_AS_YOU_GO_PER_PAGE) * 100);
 
   const handleButtonClick = (action: PlanAction, planKey?: PlanKey) => {
     if (action === "bookDemo") {
@@ -49,7 +59,8 @@ export default function PricingSection() {
     } else if (action === "payAsYouGo") {
       setIsPayAsYouGoModalOpen(true);
     } else {
-      router.push(planKey ? `/price?plan=${planKey}` : "/price");
+      const pages = planKey === "payAsYouGo" ? `&pages=${payPages}` : "";
+      router.push(planKey ? `/price?plan=${planKey}${pages}` : "/price");
     }
   };
 
@@ -65,6 +76,8 @@ export default function PricingSection() {
         t("landing.savesVsPayAsYouGo", { amount: savingsGel(PACKAGES.starter), plan: t("payAsYouGo.title") }),
       ],
       perPage: t("landing.starterPerPage"),
+      cheaperPct: cheaperPct(PACKAGES.starter),
+      priceGel: PACKAGES.starter.price,
       cta: t("landing.starterCta"),
       action: "buyCredits",
       planKey: "starter",
@@ -80,8 +93,12 @@ export default function PricingSection() {
       features: [
         t("professional.features.0"),
         t("landing.savesVsPayAsYouGo", { amount: savingsGel(PACKAGES.professional), plan: t("payAsYouGo.title") }),
+        t("professional.features.3"),
+        t("professional.features.4"),
       ],
       perPage: t("landing.professionalPerPage"),
+      cheaperPct: cheaperPct(PACKAGES.professional),
+      priceGel: PACKAGES.professional.price,
       cta: t("landing.professionalCta"),
       action: "buyCredits",
       planKey: "professional",
@@ -121,6 +138,7 @@ export default function PricingSection() {
         t("business.features.2"),
         t("business.features.3")
       ],
+      priceGel: parseInt(t("business.price"), 10),
       cta: t("landing.businessCta"),
       action: "buyCredits",
       popular: true,
@@ -142,6 +160,7 @@ export default function PricingSection() {
         t("enterpriseBusiness.features.6"),
         t("enterpriseBusiness.features.7")
       ],
+      priceGel: parseInt(t("enterpriseBusiness.price"), 10),
       cta: t("enterpriseBusiness.cta"),
       action: "bookDemo",
       popular: false,
@@ -149,8 +168,21 @@ export default function PricingSection() {
     }
   ];
 
+  const getTopBorder = (color: Plan["color"]) => {
+    switch (color) {
+      case "blue":
+        return "border-t-4 border-t-blue-500/70";
+      case "purple":
+        return "border-t-4 border-t-purple-500/70";
+      case "gold":
+        return "border-t-4 border-t-yellow-500/70";
+      case "green":
+        return "border-t-4 border-t-green-500/70";
+    }
+  };
+
   const getColorClasses = (popular: boolean) => {
-    const baseClasses = "relative transition-all duration-300 hover:shadow-lg";
+    const baseClasses = "relative transition-all duration-300 hover:-translate-y-1 hover:shadow-lg";
     const popularClasses =
       "ring-2 ring-primary shadow-xl bg-linear-to-br from-background to-muted/20 before:absolute before:inset-0 before:rounded-lg before:bg-linear-to-r before:from-primary/10 before:to-transparent before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300 before:pointer-events-none";
     return `${baseClasses} ${popular ? popularClasses : ""}`;
@@ -249,7 +281,9 @@ export default function PricingSection() {
           {currentPlans.map((plan, index) => (
             <Card
               key={index}
-              className={`${getColorClasses(plan.popular)} flex h-full flex-col`}
+              className={`${getColorClasses(plan.popular)} ${getTopBorder(plan.color)} flex h-full flex-col ${
+                plan.popular ? "order-first lg:order-none" : ""
+              }`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 z-10 -translate-x-1/2">
@@ -278,9 +312,19 @@ export default function PricingSection() {
                       {plan.period}
                     </span>
                   </div>
+                  {plan.priceGel && plan.planKey !== "payAsYouGo" && approxPrice(plan.priceGel, locale) && (
+                    <p className="mt-1 text-sm text-muted-foreground">{approxPrice(plan.priceGel, locale)}</p>
+                  )}
                 </div>
                 {plan.perPage && (
-                  <p className="mt-2 text-lg font-semibold text-green-600 dark:text-green-400">{plan.perPage}</p>
+                  <p className="mt-2 flex items-center justify-center gap-2 text-lg font-semibold text-green-600 dark:text-green-400">
+                    {plan.perPage}
+                    {plan.cheaperPct ? (
+                      <span className="rounded-full bg-green-500/15 px-2 py-0.5 text-sm font-bold">
+                        &minus;{plan.cheaperPct}%
+                      </span>
+                    ) : null}
+                  </p>
                 )}
                 <p className="text-muted-foreground mt-2">
                   {plan.description}
@@ -297,6 +341,59 @@ export default function PricingSection() {
                   ))}
                 </ul>
 
+                {plan.planKey === "payAsYouGo" && (
+                  <div className="mb-6 space-y-3 rounded-xl border border-border bg-muted/30 p-4">
+                    <label htmlFor="landing-payg-pages" className="block text-sm font-medium text-foreground">
+                      {t("landing.payAsYouGoPagesLabel")}
+                    </label>
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        aria-label="−"
+                        onClick={() => setPayPages((n) => Math.max(1, n - 1))}
+                      >
+                        <Minus className="h-4 w-4" aria-hidden />
+                      </Button>
+                      <input
+                        id="landing-payg-pages"
+                        // Text with a numeric keypad, as in the checkout dialog: whole pages only.
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        autoComplete="off"
+                        value={payPages}
+                        onChange={(e) =>
+                          setPayPages(Math.min(5000, Math.max(1, Number(e.target.value.replace(/\D/g, "")) || 1)))
+                        }
+                        className="h-10 w-full min-w-0 rounded-md border border-input bg-background px-3 text-center text-base font-semibold text-foreground"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        aria-label="+"
+                        onClick={() => setPayPages((n) => Math.min(5000, n + 1))}
+                      >
+                        <Plus className="h-4 w-4" aria-hidden />
+                      </Button>
+                    </div>
+                    <p className="text-center text-sm font-semibold text-foreground">
+                      {t("landing.payAsYouGoTotal", { amount: payPages * PAY_AS_YOU_GO_PER_PAGE })}
+                    </p>
+                    {payPages > PACKAGES.starter.price && (
+                      <p className="text-center text-sm text-green-600 dark:text-green-400">
+                        {t("landing.cheaperHint", {
+                          plan: payPages <= PACKAGES.starter.pages ? t("starter.title") : t("professional.title"),
+                          pages: payPages <= PACKAGES.starter.pages ? PACKAGES.starter.pages : PACKAGES.professional.pages,
+                          price: payPages <= PACKAGES.starter.pages ? PACKAGES.starter.price : PACKAGES.professional.price,
+                        })}
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <Button
                   className={`w-full mt-auto ${
                     plan.popular
@@ -312,7 +409,7 @@ export default function PricingSection() {
                   }}
                   type="button"
                 >
-                  {plan.cta}
+                  {plan.planKey === "payAsYouGo" ? t("landing.payAsYouGoBuy", { count: payPages }) : plan.cta}
                 </Button>
               </CardContent>
             </Card>
