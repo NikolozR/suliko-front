@@ -1,6 +1,13 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 import { NOTARY_WHATSAPP } from '@/shared/constants/notary';
+import {
+  MAX_NOTARY_ATTACHMENT_BYTES,
+  deleteNotaryBlobs,
+  loadNotaryBlob,
+  parseBlobFiles,
+  type NotaryBlobFile,
+} from '@/lib/notaryBlob';
 
 const INBOX = 'info@th.com.ge';
 const FROM = 'Suliko <noreply@th.com.ge>';
@@ -13,6 +20,7 @@ export async function POST(request: NextRequest) {
   }
 
   const resend = new Resend(apiKey);
+  let blobFiles: NotaryBlobFile[] = [];
 
   try {
     const formData = await request.formData();
@@ -26,22 +34,38 @@ export async function POST(request: NextRequest) {
     // stands on its own, so those submissions do not need an attachment.
     const orderSummary = (formData.get('order_summary') as string) || '';
     const fileEntries = formData.getAll('files') as File[];
+    // Files too big to come through this function (Vercel refuses bodies over
+    // 4.5 MB) go to a private Blob store straight from the browser; the form
+    // then names them here, and they are read back from the store.
+    blobFiles = parseBlobFiles(formData.get('blob_files'));
 
     if (!name || !email) {
       return NextResponse.json({ error: 'Missing required fields: name, email' }, { status: 400 });
     }
-    if (fileEntries.length === 0 && !orderSummary) {
+    if (fileEntries.length === 0 && blobFiles.length === 0 && !orderSummary) {
       return NextResponse.json({ error: 'At least one file is required' }, { status: 400 });
     }
 
-    const attachments = await Promise.all(
+    const attachments: { filename: string; content: Buffer }[] = await Promise.all(
       fileEntries.map(async (file) => ({
         filename: file.name,
         content: Buffer.from(await file.arrayBuffer()),
       }))
     );
+    for (const file of blobFiles) {
+      const loaded = await loadNotaryBlob(file);
+      if (!loaded) {
+        return NextResponse.json({ error: `The upload of ${file.name} expired. Please send it again.` }, { status: 410 });
+      }
+      attachments.push({ filename: loaded.name, content: loaded.buffer });
+    }
 
-    const fileList = fileEntries.map((f) => f.name).join(', ') || 'None';
+    const attachedBytes = attachments.reduce((sum, a) => sum + a.content.length, 0);
+    if (attachedBytes > MAX_NOTARY_ATTACHMENT_BYTES) {
+      return NextResponse.json({ error: 'The files are too large to send together.' }, { status: 413 });
+    }
+
+    const fileList = attachments.map((a) => a.filename).join(', ') || 'None';
 
     // 1. Forward to inbox with all details + attachments
     const inboxResult = await resend.emails.send({
@@ -90,6 +114,8 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[notary-upload] unexpected error:', err);
     return NextResponse.json({ error: String(err) }, { status: 500 });
+  } finally {
+    await deleteNotaryBlobs(blobFiles);
   }
 }
 

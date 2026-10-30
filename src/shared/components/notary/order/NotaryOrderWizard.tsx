@@ -33,6 +33,7 @@ import {
 import { formatMoney } from "@/shared/utils/notaryEstimate";
 import { trackCta, triggerHotjarEvent } from "@/shared/utils/notaryTracking";
 import OrderStepConfigure from "./OrderStepConfigure";
+import { appendNotaryFiles } from "@/shared/utils/notaryBlobUpload";
 import OrderStepUpload from "./OrderStepUpload";
 import OrderStepReview from "./OrderStepReview";
 import OrderStepDetails from "./OrderStepDetails";
@@ -244,9 +245,9 @@ export default function NotaryOrderWizard() {
           .filter(Boolean)
           .join("\n")
       );
-      files.forEach((file) => form.append("files", file));
 
       try {
+        await appendNotaryFiles(form, files);
         const response = await fetch("/api/notary-upload", { method: "POST", body: form });
         return response.ok;
       } catch {
@@ -356,7 +357,11 @@ export default function NotaryOrderWizard() {
         .join("\n")
     );
 
-    state.documents.forEach((doc) => doc.files.forEach((file) => form.append("files", file)));
+    try {
+      await appendNotaryFiles(form, state.documents.flatMap((doc) => doc.files));
+    } catch {
+      throw new OrderApiError("Could not upload the files.", { kind: "network" });
+    }
 
     const response = await fetch("/api/notary-upload", { method: "POST", body: form });
     if (!response.ok) {
