@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Star } from "lucide-react";
 import { useAutoplay } from "@/shared/components/landing/useAutoplay";
@@ -19,16 +20,38 @@ const ROW_B: Testimonial[] = [TESTIMONIALS[1], TESTIMONIALS[3]];
 
 /**
  * Customer quotes in two rows drifting in opposite directions; hovering pauses
- * both. Cards size to their quote, so long ones never scroll inside a card.
+ * both. Every card in both rows is as tall as the tallest quote (measured, so
+ * a long Georgian or Polish quote never scrolls or clips inside a card).
  */
 export default function TestimonialsSection() {
   const t = useTranslations("TestimonialsSection");
   const { ref, running } = useAutoplay<HTMLElement>();
 
+  // Cards are measured at their natural height, then all given the largest, so
+  // the rows read as one grid whatever the language or screen width.
+  useEffect(() => {
+    const section = ref.current;
+    if (!section) return;
+    const cards = () => Array.from(section.querySelectorAll<HTMLElement>("figure[data-testimonial]"));
+    const equalize = () => {
+      if (section.offsetWidth === 0) return; // hidden: nothing to measure; resizing re-runs this
+      const all = cards();
+      all.forEach((el) => (el.style.height = "auto"));
+      const tallest = Math.max(0, ...all.map((el) => el.offsetHeight));
+      if (tallest > 0) all.forEach((el) => (el.style.height = `${tallest}px`));
+    };
+    equalize();
+    const observer = new ResizeObserver(equalize);
+    observer.observe(section);
+    void document.fonts?.ready.then(equalize);
+    return () => observer.disconnect();
+  }, [ref, t]);
+
   const card = (item: Testimonial, index: number, hidden: boolean) => (
     <figure
       key={`${item.key}-${index}`}
       aria-hidden={hidden || undefined}
+      data-testimonial
       className="flex w-[300px] shrink-0 flex-col gap-4 rounded-2xl border border-landing-line bg-card p-5 sm:w-[380px] sm:p-6 dark:border-slate-800"
     >
       <div className="flex gap-0.5">
@@ -78,11 +101,11 @@ export default function TestimonialsSection() {
       </div>
 
       <div className="lp-pause-on-hover relative flex flex-col gap-4">
-        <div className="lp-marquee flex w-max items-start gap-4" style={{ ["--lp-marquee" as string]: "60s" }}>
+        <div className="lp-marquee flex w-max items-stretch gap-4" style={{ ["--lp-marquee" as string]: "60s" }}>
           {row(ROW_A)}
         </div>
         <div
-          className="lp-marquee-reverse -ml-40 flex w-max items-start gap-4"
+          className="lp-marquee-reverse -ml-40 flex w-max items-stretch gap-4"
           style={{ ["--lp-marquee" as string]: "70s" }}
         >
           {row(ROW_B)}
