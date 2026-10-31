@@ -2320,5 +2320,26 @@
   "TranslateMeta": {
     "title": "Suliko Translate: tłumaczenie dokumentów w kilka minut, pierwsze 10 stron za darmo",
     "description": "Tłumacz umowy, zaświadczenia i dokumenty firmowe na ponad 50 języków w kilka minut. Układ dokumentu zostaje bez zmian, a oryginał leży obok tłumaczenia. Dopracowane pod język gruziński. Pierwsze 10 stron jest za darmo."
+  },
+  "A11y": {
+    "close": "Zamknij",
+    "back": "Wstecz",
+    "zoomIn": "Powiększ",
+    "zoomOut": "Pomniejsz",
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło",
+    "clearSearch": "Wyczyść wyszukiwanie",
+    "skipToContent": "Przejdź do treści",
+    "play": "Odtwórz",
+    "pause": "Pauza",
+    "mute": "Wycisz",
+    "unmute": "Włącz dźwięk",
+    "fullscreen": "Pełny ekran",
+    "videoProgress": "Postęp wideo",
+    "videoVolume": "Głośność",
+    "balanceAndPlans": "Saldo i plany",
+    "textToTranslate": "Tekst do przetłumaczenia",
+    "translatedText": "Przetłumaczony tekst",
+    "passportFile": "Prześlij zdjęcie paszportu lub PDF"
   }
 }

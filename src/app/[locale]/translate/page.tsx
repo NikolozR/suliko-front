@@ -90,7 +90,7 @@ export default async function TranslatePage({
       />
       <div id="top" className="min-h-screen bg-background">
         <LandingHeader />
-        <main>
+        <main id="main-content">
           <HeroSection />
           <HowItWorksSection />
           <FeaturesSection />

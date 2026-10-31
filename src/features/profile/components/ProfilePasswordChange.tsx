@@ -14,6 +14,7 @@ import ErrorAlert from "@/shared/components/ErrorAlert";
 
 export const ProfilePasswordChange: React.FC = () => {
   const t = useTranslations("Profile");
+  const tA = useTranslations("A11y");
   const { token } = useAuthStore();
   const { userProfile } = useUserStore();
   
@@ -136,6 +137,8 @@ export const ProfilePasswordChange: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                aria-label={showCurrentPassword ? tA("hidePassword") : tA("showPassword")}
+                aria-pressed={showCurrentPassword}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 disabled={isLoading}
               >
@@ -161,6 +164,8 @@ export const ProfilePasswordChange: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
+                aria-label={showNewPassword ? tA("hidePassword") : tA("showPassword")}
+                aria-pressed={showNewPassword}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 disabled={isLoading}
               >
@@ -186,6 +191,8 @@ export const ProfilePasswordChange: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={showConfirmPassword ? tA("hidePassword") : tA("showPassword")}
+                aria-pressed={showConfirmPassword}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 disabled={isLoading}
               >

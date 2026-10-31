@@ -11,6 +11,7 @@ interface Props {
 
 export default function PassportUpload({ file, onFileSelect, disabled }: Props) {
   const t = useTranslations("Passport");
+  const tA = useTranslations("A11y");
   const [dragOver, setDragOver] = useState(false);
 
   const handleDrop = useCallback(
@@ -48,7 +49,7 @@ export default function PassportUpload({ file, onFileSelect, disabled }: Props) 
           }}
           onDragLeave={() => setDragOver(false)}
           onDrop={handleDrop}
-          className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer ${
+          className={`relative border-2 border-dashed rounded-xl p-8 text-center transition-colors cursor-pointer has-[input:focus-visible]:ring-2 has-[input:focus-visible]:ring-ring ${
             dragOver
               ? "border-primary bg-primary/5"
               : "border-muted-foreground/20 hover:border-primary/50"
@@ -59,6 +60,7 @@ export default function PassportUpload({ file, onFileSelect, disabled }: Props) 
             accept=".jpg,.jpeg,.png,.pdf"
             onChange={handleChange}
             disabled={disabled}
+            aria-label={tA("passportFile")}
             className="absolute inset-0 opacity-0 cursor-pointer"
           />
           <Upload className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />

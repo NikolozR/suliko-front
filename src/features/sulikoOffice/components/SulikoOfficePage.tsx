@@ -26,7 +26,7 @@ export default function SulikoOfficePage() {
   return (
     <div id="top" className="office-page min-h-screen overflow-x-clip text-foreground">
       <OfficeHeader />
-      <main>
+      <main id="main-content">
         <OfficeHero />
         <OfficePains />
         <OfficeSpotlight id="pricing" demo={<NewOrderDemo />} />

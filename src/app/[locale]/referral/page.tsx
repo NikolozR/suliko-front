@@ -255,7 +255,7 @@ export default function ReferralPage() {
         <LandingHeader />
       
         {/* Main Content */}
-        <main className="pt-20 sm:pt-24 pb-16 flex flex-col items-center justify-center min-h-screen">
+        <main id="main-content" className="pt-20 sm:pt-24 pb-16 flex flex-col items-center justify-center min-h-screen">
           {/* Centered Logo and Text */}
           <div className="flex flex-col items-center mb-6 sm:mb-8">
             <SulikoLogo 
