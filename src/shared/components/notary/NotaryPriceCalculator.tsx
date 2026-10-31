@@ -302,11 +302,12 @@ export default function NotaryPriceCalculator() {
               {/* Document type + pages */}
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                  <label htmlFor={`notary-doc-type-${doc.id}`} className="mb-1 block text-xs font-medium text-muted-foreground">
                     {t("documentType")}
                   </label>
                   <div className="relative">
                     <select
+                      id={`notary-doc-type-${doc.id}`}
                       value={doc.documentType === "" ? "" : String(doc.documentType)}
                       onChange={(e) =>
                         patch(doc.id, {
@@ -329,10 +330,11 @@ export default function NotaryPriceCalculator() {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                  <label htmlFor={`notary-pages-${doc.id}`} className="mb-1 block text-xs font-medium text-muted-foreground">
                     {t("pageCount")}
                   </label>
                   <input
+                    id={`notary-pages-${doc.id}`}
                     type="number"
                     min={1}
                     inputMode="numeric"
