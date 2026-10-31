@@ -24,7 +24,7 @@ export default function NotaryFloatingChannels() {
   const t = useTranslations("NotaryPage.contact");
 
   return (
-    <div className="fixed right-4 top-16 z-40 flex flex-row gap-2 sm:right-6 sm:top-20 lg:right-8 lg:top-24">
+    <div className="fixed right-4 top-16 z-40 hidden flex-row gap-2 sm:right-6 sm:flex sm:top-20 lg:right-8 lg:top-24">
       <a
         href={`https://wa.me/${NOTARY_WHATSAPP}`}
         target="_blank"
