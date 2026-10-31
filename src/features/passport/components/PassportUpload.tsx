@@ -80,6 +80,7 @@ export default function PassportUpload({ file, onFileSelect, disabled }: Props) 
           <button
             onClick={() => onFileSelect(null)}
             disabled={disabled}
+            aria-label={tA("removeFile")}
             className="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors"
           >
             <X className="h-4 w-4" />

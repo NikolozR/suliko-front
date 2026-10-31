@@ -2355,6 +2355,12 @@
     "textToTranslate": "Tekst do przetłumaczenia",
     "translatedText": "Przetłumaczony tekst",
     "passportFile": "Prześlij zdjęcie paszportu lub PDF",
-    "emailAddress": "Adres e-mail"
+    "emailAddress": "Adres e-mail",
+    "digitOf": "Cyfra {n} z {total}",
+    "removeFile": "Usuń plik",
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu",
+    "menu": "Menu",
+    "toggleTheme": "Zmień motyw"
   }
 }
