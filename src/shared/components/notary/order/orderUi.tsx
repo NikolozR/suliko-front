@@ -22,9 +22,25 @@ export function FieldLabel({
   );
 }
 
-export function FieldError({ message }: { message?: string }) {
+/**
+ * A field's error. `id` is what the field's aria-describedby points at. `alert` is for
+ * errors with no field to focus (tile groups, the terms box): they announce themselves.
+ */
+export function FieldError({
+  message,
+  id,
+  alert,
+}: {
+  message?: string;
+  id?: string;
+  alert?: boolean;
+}) {
   if (!message) return null;
-  return <p className="mt-1 text-xs text-red-700 dark:text-red-400">{message}</p>;
+  return (
+    <p id={id} role={alert ? "alert" : undefined} className="mt-1 text-xs text-red-700 dark:text-red-400">
+      {message}
+    </p>
+  );
 }
 
 const inputClass = (invalid?: boolean) =>
@@ -53,6 +69,7 @@ export function TextField({
   autoComplete?: string;
 }) {
   const id = useId();
+  const errorId = `${id}-error`;
   return (
     <div>
       <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
@@ -64,9 +81,10 @@ export function TextField({
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={Boolean(error)}
+        aria-describedby={error ? errorId : undefined}
         className={inputClass(Boolean(error))}
       />
-      <FieldError message={error} />
+      <FieldError id={errorId} message={error} />
     </div>
   );
 }
@@ -89,6 +107,7 @@ export function NumberField({
   required?: boolean;
 }) {
   const id = useId();
+  const errorId = `${id}-error`;
   return (
     <div>
       <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
@@ -109,9 +128,10 @@ export function NumberField({
           else if (parsed > max) onChange(max);
         }}
         aria-invalid={Boolean(error)}
+        aria-describedby={error ? errorId : undefined}
         className={inputClass(Boolean(error))}
       />
-      <FieldError message={error} />
+      <FieldError id={errorId} message={error} />
     </div>
   );
 }
@@ -136,6 +156,7 @@ export function SelectField({
   disabled?: boolean;
 }) {
   const id = useId();
+  const errorId = `${id}-error`;
   return (
     <div>
       <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
@@ -146,6 +167,7 @@ export function SelectField({
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
           aria-invalid={Boolean(error)}
+        aria-describedby={error ? errorId : undefined}
           style={{ backgroundImage: "none" }}
           className={`${inputClass(Boolean(error))} appearance-none pr-9 disabled:opacity-50 disabled:cursor-not-allowed`}
         >
@@ -158,7 +180,7 @@ export function SelectField({
         </select>
         <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       </div>
-      <FieldError message={error} />
+      <FieldError id={errorId} message={error} />
     </div>
   );
 }
