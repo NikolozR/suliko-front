@@ -2341,6 +2341,7 @@
     "balanceAndPlans": "Balance and plans",
     "textToTranslate": "Text to translate",
     "translatedText": "Translated text",
-    "passportFile": "Upload a passport image or PDF"
+    "passportFile": "Upload a passport image or PDF",
+    "emailAddress": "Email address"
   }
 }

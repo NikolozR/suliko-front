@@ -48,19 +48,21 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
                 </button>
               )}
             </div>
-            <FormControl>
-              <div className="relative w-full">
+            {/* FormControl must wrap the input itself: it carries the id the label points at. */}
+            <div className="relative w-full">
                 <Lock
                   size={15}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                 />
-                <Input
-                  className="border-2 shadow-md dark:border-slate-600 pl-9 pr-10"
-                  type={isPasswordVisible ? "text" : "password"}
-                  autoComplete={isLoginMode ? "current-password" : "new-password"}
-                  placeholder={t("passwordPlaceholder")}
-                  {...field}
-                />
+                <FormControl>
+                  <Input
+                    className="border-2 shadow-md dark:border-slate-600 pl-9 pr-10"
+                    type={isPasswordVisible ? "text" : "password"}
+                    autoComplete={isLoginMode ? "current-password" : "new-password"}
+                    placeholder={t("passwordPlaceholder")}
+                    {...field}
+                  />
+                </FormControl>
                 <button
                   type="button"
                   tabIndex={-1}
@@ -72,7 +74,6 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
                   {isPasswordVisible ? <Eye size={16} /> : <EyeOff size={16} />}
                 </button>
               </div>
-            </FormControl>
             <FormMessage />
             {!isLoginMode && (
               <ul className="mt-2 flex flex-col gap-1">
@@ -103,19 +104,20 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
               <FormLabel className="font-semibold dark:text-white">
                 {t("confirmPassword")} <span className="text-red-500">*</span>
               </FormLabel>
-              <FormControl>
-                <div className="relative w-full">
+              <div className="relative w-full">
                   <Lock
                     size={15}
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                   />
-                  <Input
-                    className="border-2 shadow-md dark:border-slate-600 pl-9 pr-10"
-                    type={isConfirmPasswordVisible ? "text" : "password"}
-                    autoComplete="new-password"
-                    placeholder={t("confirmPasswordPlaceholder")}
-                    {...field}
-                  />
+                  <FormControl>
+                    <Input
+                      className="border-2 shadow-md dark:border-slate-600 pl-9 pr-10"
+                      type={isConfirmPasswordVisible ? "text" : "password"}
+                      autoComplete="new-password"
+                      placeholder={t("confirmPasswordPlaceholder")}
+                      {...field}
+                    />
+                  </FormControl>
                   <button
                     type="button"
                     tabIndex={-1}
@@ -127,7 +129,6 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
                     {isConfirmPasswordVisible ? <Eye size={16} /> : <EyeOff size={16} />}
                   </button>
                 </div>
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}

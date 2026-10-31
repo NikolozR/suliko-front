@@ -2341,6 +2341,7 @@
     "balanceAndPlans": "ბალანსი და გეგმები",
     "textToTranslate": "ტექსტი სათარგმნად",
     "translatedText": "ნათარგმნი ტექსტი",
-    "passportFile": "პასპორტის სურათის ან PDF-ის ატვირთვა"
+    "passportFile": "პასპორტის სურათის ან PDF-ის ატვირთვა",
+    "emailAddress": "ელფოსტის მისამართი"
   }
 }
