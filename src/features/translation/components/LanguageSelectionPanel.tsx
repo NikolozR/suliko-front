@@ -60,7 +60,7 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
             type="button"
             variant="outline"
             size="icon"
-            className="h-11 w-11 shrink-0 border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
+            className="h-11 w-11 shrink-0 border-2 hover:border-suliko-default-color hover:text-accent-text transition-colors"
             disabled={sourceLanguageId === 0}
             onClick={handleSwapLanguages}
             aria-label={tCard('swapLanguages')}

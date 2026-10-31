@@ -100,7 +100,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ isSuggestionsLoadin
   return (
     <div className="mt-6">
       <div className="flex items-center justify-between gap-2 mb-2">
-        <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+        <div className="font-semibold text-accent-text text-sm md:text-base">
           {t("SuggestionsPanel.title", { default: "Suggestions" })}
         </div>
         {suggestions.some((s: Suggestion) => exactMatchIds.has(s.id)) && (
@@ -205,7 +205,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ isSuggestionsLoadin
                 await settingUpSuggestions(jobId);
                 setSuggestionsLoading(false);
               }}
-              className="text-suliko-default-color font-semibold text-sm md:text-base shadow-sm hover:bg-suliko-default-color/10 transition-all duration-200 focus:outline-none cursor-pointer"
+              className="text-accent-text font-semibold text-sm md:text-base shadow-sm hover:bg-suliko-default-color/10 transition-all duration-200 focus:outline-none cursor-pointer"
             >
               {t("SuggestionsPanel.retrySuggestions")}
             </button>
@@ -218,7 +218,7 @@ const SuggestionsPanel: React.FC<SuggestionsPanelProps> = ({ isSuggestionsLoadin
           type="button"
           onClick={handleGenerateMore}
           disabled={isGeneratingMore || !jobId || (suggestions.length === 0 && !suggestionAccepted) || hasGeneratedMore}
-          className="w-full sm:min-w-[260px] sm:max-w-[360px] flex flex-col items-center justify-center bg-white dark:bg-slate-900 border-2 border-dashed border-suliko-default-color/40 rounded-lg p-3 text-suliko-default-color font-semibold text-sm md:text-base shadow-sm hover:bg-suliko-default-color/10 transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+          className="w-full sm:min-w-[260px] sm:max-w-[360px] flex flex-col items-center justify-center bg-white dark:bg-slate-900 border-2 border-dashed border-suliko-default-color/40 rounded-lg p-3 text-accent-text font-semibold text-sm md:text-base shadow-sm hover:bg-suliko-default-color/10 transition-all duration-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
         >
           {isGeneratingMore ? (
             <div className="flex items-center gap-2">

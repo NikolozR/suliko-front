@@ -312,7 +312,7 @@ export default function LandingHeader() {
               <Link href={notaryNavItem.href}>
                 <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
                   isNotaryPage
-                    ? "text-suliko-default-color"
+                    ? "text-accent-text"
                     : isBlogPage
                       ? "text-white/90 hover:text-white"
                       : "text-foreground/80 hover:text-foreground"

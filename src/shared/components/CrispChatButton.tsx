@@ -63,7 +63,7 @@ export default function CrispChatButton() {
         height="16"
         viewBox="0 0 16 16"
         fill="none"
-        className="shrink-0 text-suliko-default-color"
+        className="shrink-0 text-accent-text"
         aria-hidden="true"
       >
         <path

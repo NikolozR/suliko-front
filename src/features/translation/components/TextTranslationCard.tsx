@@ -418,7 +418,7 @@ const TextTranslationCard = () => {
               />
               <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8 items-stretch md:items-start" : undefined}>
                 <div className="w-full flex-1 min-w-0">
-                  <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
+                  <div className="font-semibold mb-2 text-accent-text text-sm md:text-base">
                     {t('yourText')}
                   </div>
                   <div className="h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full">
@@ -454,7 +454,7 @@ const TextTranslationCard = () => {
                   )}
                   {/* Cost display for input text */}
                   {currentTextValue && currentTextValue.length > 0 && (
-                    <div className="mt-2 text-suliko-default-color font-semibold text-sm">
+                    <div className="mt-2 text-accent-text font-semibold text-sm">
                       Pages to be used: {(currentTextValue.length / 2500).toFixed(2)}
                     </div>
                   )}
@@ -462,7 +462,7 @@ const TextTranslationCard = () => {
                 {translatedText && (
                   <div className="w-full flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                      <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                      <div className="font-semibold text-accent-text text-sm md:text-base">
                         {t('result')}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -510,7 +510,7 @@ const TextTranslationCard = () => {
                     )}
                     {/* Spacer to match "Pages to be used" height in input section */}
                     {currentTextValue && currentTextValue.length > 0 && (
-                      <div className="mt-2 text-suliko-default-color font-semibold text-sm opacity-0 pointer-events-none">
+                      <div className="mt-2 text-accent-text font-semibold text-sm opacity-0 pointer-events-none">
                         Pages to be used: 0.00
                       </div>
                     )}

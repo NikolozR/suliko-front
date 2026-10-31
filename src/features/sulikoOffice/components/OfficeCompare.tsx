@@ -35,7 +35,7 @@ export default function OfficeCompare() {
             style={revealDelay(120)}
             className="flex flex-col gap-1 rounded-2xl border border-suliko-default-color/30 bg-[#eef1fe] p-7 shadow-[0_20px_50px_-30px_rgba(17,40,156,0.35)] dark:bg-[#3b59f3]/15"
           >
-            <h3 className="pb-3 text-lg font-bold text-suliko-default-color dark:text-[#c3ceff]">{t("with")}</h3>
+            <h3 className="pb-3 text-lg font-bold text-accent-text dark:text-[#c3ceff]">{t("with")}</h3>
             <ul className="flex flex-col divide-y divide-suliko-default-color/15">
               {ROWS.map((n) => (
                 <li key={n} className="flex items-start gap-3 py-4 text-base leading-normal text-foreground">

@@ -39,7 +39,7 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
       <button
         type="button"
         onClick={onTranslateMore}
-        className="w-full mt-4 flex items-center justify-center gap-2 rounded-md border-2 border-dashed border-suliko-default-color/40 text-suliko-default-color hover:border-suliko-default-color hover:bg-suliko-default-color/5 transition-all duration-200 py-2.5 text-sm md:text-base font-medium"
+        className="w-full mt-4 flex items-center justify-center gap-2 rounded-md border-2 border-dashed border-suliko-default-color/40 text-accent-text hover:border-suliko-default-color hover:bg-suliko-default-color/5 transition-all duration-200 py-2.5 text-sm md:text-base font-medium"
       >
         <span>+</span>
         {t('translateMore')}
@@ -77,7 +77,7 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
       )}
       
       {formError && (
-        <div className="text-red-500 text-sm mt-2">{formError}</div>
+        <div className="text-red-700 dark:text-red-400 text-sm mt-2">{formError}</div>
       )}
     </>
   );

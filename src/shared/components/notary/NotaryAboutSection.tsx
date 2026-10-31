@@ -37,7 +37,7 @@ export default function NotaryAboutSection() {
               className="flex items-start gap-4 px-5 py-5 bg-card border border-border/50 rounded-2xl hover:bg-primary/5 transition-colors duration-200"
             >
               <div className="shrink-0 mt-0.5 flex h-10 w-10 items-center justify-center rounded-xl bg-suliko-default-color/10">
-                <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-suliko-default-color" />
+                <Icon className="h-4 w-4 sm:h-5 sm:w-5 text-accent-text" />
               </div>
               <div>
                 <h3 className="text-sm sm:text-base font-semibold text-foreground mb-1">{t(titleKey)}</h3>
@@ -55,7 +55,7 @@ export default function NotaryAboutSection() {
             { value: "20+", label: t("stat3Label") },
           ].map(({ value, label }) => (
             <div key={value} className="text-center py-4 px-2 rounded-xl border border-border bg-card">
-              <p className="text-2xl font-semibold text-suliko-default-color">{value}</p>
+              <p className="text-2xl font-semibold text-accent-text">{value}</p>
               <p className="text-xs text-muted-foreground mt-1 leading-tight">{label}</p>
             </div>
           ))}

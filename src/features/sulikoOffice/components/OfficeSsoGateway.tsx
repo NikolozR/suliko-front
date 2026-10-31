@@ -95,7 +95,7 @@ export default function OfficeSsoGateway() {
     <div className="z-[2] w-[92%] max-w-[420px] rounded-2xl border border-white/60 bg-white/65 px-6 py-8 text-center shadow-2xl backdrop-blur-xl dark:border-white/[0.12] dark:bg-white/[0.06] sm:px-8">
       {phase === "checking" || phase === "redirecting" ? (
         <div className="flex flex-col items-center gap-3" role="status" aria-live="polite">
-          <Loader2 className="h-6 w-6 animate-spin text-suliko-default-color" aria-hidden />
+          <Loader2 className="h-6 w-6 animate-spin text-accent-text" aria-hidden />
           <p className="text-sm text-muted-foreground">{t("redirecting")}</p>
         </div>
       ) : (

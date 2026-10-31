@@ -30,7 +30,7 @@ export function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-md mx-auto p-6">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center text-suliko-default-color mb-4">
+          <DialogTitle className="text-xl font-bold text-center text-accent-text mb-4">
             {t('paymentModal.title')}
           </DialogTitle>
         </DialogHeader>

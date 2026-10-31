@@ -685,7 +685,7 @@ export default function TranslationDetailPage() {
             {jobStage === "ready" ? (
               <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" aria-hidden />
             ) : (
-              <Loader2 className="h-4 w-4 animate-spin text-suliko-default-color shrink-0" />
+              <Loader2 className="h-4 w-4 animate-spin text-accent-text shrink-0" />
             )}
             <span className="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 shrink-0">
               {/* The backend's own stage is more specific than the coarse
@@ -708,7 +708,7 @@ export default function TranslationDetailPage() {
           */}
           <div className="flex items-end justify-between gap-4 mb-2">
             <div className="min-w-0">
-              <div className="text-4xl font-semibold tabular-nums leading-none text-suliko-default-color">
+              <div className="text-4xl font-semibold tabular-nums leading-none text-accent-text">
                 {isIndeterminate ? "–" : `${Math.round(displayProgress)}%`}
               </div>
               {/* The message ladder is driven by the simulated curve, so beside a

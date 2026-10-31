@@ -106,7 +106,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
   return (
     <div className="mt-6">
       <div className="flex items-center justify-between gap-2 mb-2">
-        <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+        <div className="font-semibold text-accent-text text-sm md:text-base">
           {t("SuggestionsPanel.title", { default: "Suggestions" })}
         </div>
         {suggestions.some((s: Suggestion) => exactMatchIds.has(s.id)) && (

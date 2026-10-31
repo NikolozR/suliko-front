@@ -52,7 +52,7 @@ interface Props {
 
 /** Icons keyed on the partner's own `copy_type` codes, with a safe default. */
 const COPY_TYPE_ICONS: Record<string, ReactNode> = {
-  original: <FileText className="h-5 w-5 text-suliko-default-color" />,
+  original: <FileText className="h-5 w-5 text-accent-text" />,
   plain: <Copy className="h-5 w-5 text-teal-500" />,
   notary_original: <Stamp className="h-5 w-5 text-amber-500" />,
   notary_copy: <FileStack className="h-5 w-5 text-amber-500" />,
@@ -60,7 +60,7 @@ const COPY_TYPE_ICONS: Record<string, ReactNode> = {
 };
 
 const URGENCY_ICONS: Record<string, ReactNode> = {
-  standard: <CalendarDays className="h-5 w-5 text-suliko-default-color" />,
+  standard: <CalendarDays className="h-5 w-5 text-accent-text" />,
   express: <Truck className="h-5 w-5 text-amber-500" />,
   urgent: <Zap className="h-5 w-5 text-red-500" />,
 };
@@ -125,7 +125,7 @@ export default function OrderStepConfigure({
             {/* Card header */}
             <div className="mb-4 flex items-center justify-between border-b border-border pb-3">
               <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <FileText className="h-4 w-4 text-suliko-default-color" />
+                <FileText className="h-4 w-4 text-accent-text" />
                 {t("document")} {index + 1}
               </span>
               {state.documents.length > 1 && (
@@ -197,7 +197,7 @@ export default function OrderStepConfigure({
                 <IconTile
                   selected={doc.serviceType === "regular"}
                   onClick={() => handleServiceTypeChange(doc, "regular")}
-                  icon={<Languages className="h-5 w-5 text-suliko-default-color" />}
+                  icon={<Languages className="h-5 w-5 text-accent-text" />}
                   title={t("serviceRegular")}
                   caption={t("serviceRegularHint")}
                 />
@@ -226,7 +226,7 @@ export default function OrderStepConfigure({
                     onClick={() => onPatchDocument(doc.id, { copyType: copyType.value })}
                     icon={
                       COPY_TYPE_ICONS[copyType.value] ?? (
-                        <FileText className="h-5 w-5 text-suliko-default-color" />
+                        <FileText className="h-5 w-5 text-accent-text" />
                       )
                     }
                     title={copyType.label}
@@ -244,7 +244,7 @@ export default function OrderStepConfigure({
         <button
           type="button"
           onClick={onAddDocument}
-          className="inline-flex items-center gap-2 rounded-full border border-suliko-default-color/50 bg-card px-5 py-2 text-sm font-semibold text-suliko-default-color transition-colors hover:bg-suliko-default-color/10"
+          className="inline-flex items-center gap-2 rounded-full border border-suliko-default-color/50 bg-card px-5 py-2 text-sm font-semibold text-accent-text transition-colors hover:bg-suliko-default-color/10"
         >
           <Plus className="h-4 w-4" />
           {t("addDocument")}
@@ -254,7 +254,7 @@ export default function OrderStepConfigure({
 
       {/* Delivery speed */}
       <div className="border-t border-border pt-6">
-        <IconHeading icon={<Clock className="h-5 w-5 text-suliko-default-color" />}>
+        <IconHeading icon={<Clock className="h-5 w-5 text-accent-text" />}>
           {t("urgency")}
         </IconHeading>
         <div
@@ -272,7 +272,7 @@ export default function OrderStepConfigure({
                 onClick={() => onSetUrgency(level.value)}
                 icon={
                   URGENCY_ICONS[level.value] ?? (
-                    <Clock className="h-5 w-5 text-suliko-default-color" />
+                    <Clock className="h-5 w-5 text-accent-text" />
                   )
                 }
                 title={title}
@@ -287,7 +287,7 @@ export default function OrderStepConfigure({
 
       {/* Delivery service */}
       <div className="border-t border-border pt-6">
-        <IconHeading icon={<Truck className="h-5 w-5 text-suliko-default-color" />}>
+        <IconHeading icon={<Truck className="h-5 w-5 text-accent-text" />}>
           {t("handover")}
         </IconHeading>
         <div className="space-y-0.5">

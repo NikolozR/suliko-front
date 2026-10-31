@@ -55,7 +55,7 @@ export default function OrderStepReview({ state, reference, estimate }: Props) {
                     {copyLabel ? ` · ${copyLabel}` : ""}
                   </p>
                 </div>
-                <span className="shrink-0 text-sm font-semibold text-suliko-default-color">
+                <span className="shrink-0 text-sm font-semibold text-accent-text">
                   {money(line.subtotal)}
                 </span>
               </div>
@@ -95,7 +95,7 @@ export default function OrderStepReview({ state, reference, estimate }: Props) {
 
         <div className="flex justify-between border-t border-border pt-2 text-base font-semibold">
           <span className="text-foreground">{t("estimatedTotal")}</span>
-          <span className="text-suliko-default-color">{money(estimate.total)}</span>
+          <span className="text-accent-text">{money(estimate.total)}</span>
         </div>
       </div>
 

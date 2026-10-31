@@ -77,7 +77,7 @@ const FormatSelector: React.FC<FormatSelectorProps> = ({
                 onClick={() => handleFormatSelect(format)}
                 className={cn(
                   "w-full px-3 py-2 text-left hover:bg-muted transition-colors flex items-center gap-3",
-                  selectedFormat.value === format.value && "bg-muted text-suliko-default-color"
+                  selectedFormat.value === format.value && "bg-muted text-accent-text"
                 )}
               >
                 <div className="shrink-0">

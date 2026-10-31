@@ -19,10 +19,10 @@ export default function OfficeFaq() {
       <div className="flex flex-col border-t border-border">
         {FAQ_KEYS.map((n) => (
           <details key={n} open={n === 1} data-reveal style={revealDelay(n * 70)} className="group border-b border-border">
-            <summary className="flex min-h-[72px] cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg leading-[1.4] text-foreground hover:text-suliko-default-color lg:text-xl [&::-webkit-details-marker]:hidden">
+            <summary className="flex min-h-[72px] cursor-pointer list-none items-center justify-between gap-6 py-5 text-lg leading-[1.4] text-foreground hover:text-accent-text lg:text-xl [&::-webkit-details-marker]:hidden">
               <span>{t(`q${n}`)}</span>
-              <Plus className="h-[22px] w-[22px] shrink-0 text-suliko-default-color group-open:hidden" aria-hidden />
-              <Minus className="hidden h-[22px] w-[22px] shrink-0 text-suliko-default-color group-open:block" aria-hidden />
+              <Plus className="h-[22px] w-[22px] shrink-0 text-accent-text group-open:hidden" aria-hidden />
+              <Minus className="hidden h-[22px] w-[22px] shrink-0 text-accent-text group-open:block" aria-hidden />
             </summary>
             <p className="pb-6 text-[17px] leading-[1.6] text-muted-foreground lg:pr-16">{t(`a${n}`)}</p>
           </details>

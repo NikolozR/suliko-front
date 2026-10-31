@@ -1080,7 +1080,7 @@ const DocumentTranslationCard = () => {
                   {t("description")}
                 </CardDescription>
                 {projectId && projectName && !translatedMarkdown && (
-                  <p className="text-sm text-suliko-default-color font-medium mt-1">
+                  <p className="text-sm text-accent-text font-medium mt-1">
                     {t("addingToProject", { name: projectName })}
                   </p>
                 )}
@@ -1140,7 +1140,7 @@ const DocumentTranslationCard = () => {
                       variant="outline"
                       size="icon"
                       aria-label={t("swapLanguages")}
-                      className="h-11 w-11 shrink-0 rounded-full border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
+                      className="h-11 w-11 shrink-0 rounded-full border-2 hover:border-suliko-default-color hover:text-accent-text transition-colors"
                       disabled={currentSourceLanguageId === 0}
                       onClick={() => {
                         if (currentSourceLanguageId !== 0) {

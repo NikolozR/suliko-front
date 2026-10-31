@@ -575,6 +575,7 @@ html.dark .aurora-orb-4 { opacity: 0.85; }
 @theme inline {
   --color-background: var(--background);
   --color-suliko-default-color: var(--suliko-default-color);
+  --color-accent-text: var(--accent-text);
   --color-suliko-default-hover-color: var(--suliko-default-hover-color);
   --color-suliko-main-content-bg-color: var(--suliko-main-content-bg-color);
   --color-foreground: var(--foreground);
@@ -672,6 +673,9 @@ body {
 
 :root {
   --suliko-default-color: #3b59f3;
+  /* The brand blue as TEXT. #3b59f3 is 5.4:1 on white but 3.5:1 on the dark page, so
+     text takes this role token and fills keep --suliko-default-color. */
+  --accent-text: #3b59f3;
   --suliko-default-hover-color: #11289c;
   /* Cooler, lighter page ground. #e6e6e7 is a warm mid-grey that reads muddy
      against the white cards sitting on it. */
@@ -768,6 +772,7 @@ body {
 } */
 
 .dark {
+  --accent-text: #8da2ff; /* 7.9:1 on #111, 6.9:1 on cards */
   --background: #0a0a0a;
   --foreground: #fafafa;
 

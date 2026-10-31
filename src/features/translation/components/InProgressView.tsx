@@ -48,7 +48,7 @@ export default function InProgressView({
         <div className="rounded-xl border border-border bg-background p-6">
           <div className="flex items-start gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-[9px] bg-suliko-default-color/10">
-              <FileText className="size-5 text-suliko-default-color" aria-hidden />
+              <FileText className="size-5 text-accent-text" aria-hidden />
             </span>
             <div className="min-w-0 flex-1">
               <h2 className="truncate text-[15px] font-semibold">{fileName}</h2>
@@ -58,7 +58,7 @@ export default function InProgressView({
             </div>
             {ready && <Check className="size-5 shrink-0 text-emerald-600" strokeWidth={3} aria-hidden />}
             {!failed && !ready && (
-              <Loader2 className="size-5 shrink-0 animate-spin text-suliko-default-color" aria-hidden />
+              <Loader2 className="size-5 shrink-0 animate-spin text-accent-text" aria-hidden />
             )}
           </div>
 

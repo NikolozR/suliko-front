@@ -17,14 +17,14 @@ export function FieldLabel({
   return (
     <label htmlFor={htmlFor} className="block text-xs font-medium text-muted-foreground mb-1">
       {children}
-      {required && <span className="text-red-500 ml-0.5">*</span>}
+      {required && <span className="text-red-700 dark:text-red-400 ml-0.5">*</span>}
     </label>
   );
 }
 
 export function FieldError({ message }: { message?: string }) {
   if (!message) return null;
-  return <p className="mt-1 text-xs text-red-500">{message}</p>;
+  return <p className="mt-1 text-xs text-red-700 dark:text-red-400">{message}</p>;
 }
 
 const inputClass = (invalid?: boolean) =>
@@ -194,13 +194,13 @@ export function Tile({
         {icon}
         <span
           className={`text-sm font-semibold leading-tight ${
-            selected ? "text-suliko-default-color" : "text-foreground"
+            selected ? "text-accent-text" : "text-foreground"
           }`}
         >
           {title}
         </span>
         {badge && (
-          <span className="ml-auto shrink-0 rounded-full bg-suliko-default-color/15 px-2 py-0.5 text-xs font-semibold text-suliko-default-color">
+          <span className="ml-auto shrink-0 rounded-full bg-suliko-default-color/15 px-2 py-0.5 text-xs font-semibold text-accent-text">
             {badge}
           </span>
         )}

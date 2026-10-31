@@ -173,7 +173,7 @@ const STATUS_META: Record<
   },
   Running: {
     icon: Loader2,
-    className: "text-suliko-default-color",
+    className: "text-accent-text",
     labelKey: "statusRunning",
   },
   Completed: {

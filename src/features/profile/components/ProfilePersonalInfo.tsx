@@ -91,7 +91,7 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({
                   className={errors.firstName ? "border-red-500 focus-visible:ring-red-500" : ""}
                 />
                 {errors.firstName && (
-                  <p className="text-sm text-red-500">{errors.firstName.message}</p>
+                  <p className="text-sm text-red-700 dark:text-red-400">{errors.firstName.message}</p>
                 )}
               </div>
             ) : (
@@ -117,7 +117,7 @@ export const ProfilePersonalInfo: React.FC<ProfilePersonalInfoProps> = ({
                   className={errors.lastName ? "border-red-500 focus-visible:ring-red-500" : ""}
                 />
                 {errors.lastName && (
-                  <p className="text-sm text-red-500">{errors.lastName.message}</p>
+                  <p className="text-sm text-red-700 dark:text-red-400">{errors.lastName.message}</p>
                 )}
               </div>
             ) : (

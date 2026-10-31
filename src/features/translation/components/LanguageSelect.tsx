@@ -248,12 +248,12 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
         )}
       >
         {showPin ? (
-          <Star className="size-3.5 shrink-0 fill-suliko-default-color text-suliko-default-color" />
+          <Star className="size-3.5 shrink-0 fill-suliko-default-color text-accent-text" />
         ) : (
           <span className="size-3.5 shrink-0" />
         )}
         <span className="flex-1 truncate">{opt.label}</span>
-        {selected && <Check className="size-4 shrink-0 text-suliko-default-color" />}
+        {selected && <Check className="size-4 shrink-0 text-accent-text" />}
       </div>
     );
   };
