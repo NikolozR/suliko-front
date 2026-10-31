@@ -1,14 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { X, Moon, Sun } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTheme } from "next-themes";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 
 function ThemeToggle() {
+  const tA = useTranslations("A11y");
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -23,7 +25,7 @@ function ThemeToggle() {
       onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
       className="relative p-2 rounded-md hover:bg-accent transition-colors"
       type="button"
-      aria-label="Toggle theme"
+      aria-label={tA("toggleTheme")}
     >
       <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -69,6 +71,7 @@ function MobileNavItem({
 
 export default function NotaryHeader() {
   const t = useTranslations("NotaryHeader");
+  const tA = useTranslations("A11y");
   // const pathname = usePathname();
   const { resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -76,6 +79,7 @@ export default function NotaryHeader() {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -95,16 +99,6 @@ export default function NotaryHeader() {
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
-
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === "Escape" && isMobileMenuOpen) {
-        setIsMobileMenuOpen(false);
-      }
-    };
-    document.addEventListener("keydown", handleEscape);
-    return () => document.removeEventListener("keydown", handleEscape);
-  }, [isMobileMenuOpen]);
 
   const navItems = [
     { id: "services", label: t("services") },
@@ -200,9 +194,12 @@ export default function NotaryHeader() {
 
           {/* Hamburger */}
           <button
+            ref={menuButtonRef}
             className="lg:hidden p-2 rounded-md transition-colors relative z-50 text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={isMobileMenuOpen ? tA("closeMenu") : tA("openMenu")}
+            aria-expanded={isMobileMenuOpen}
+            aria-haspopup="dialog"
             type="button"
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
@@ -223,23 +220,28 @@ export default function NotaryHeader() {
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="lg:hidden fixed inset-0 z-[60]">
-            <div
-              className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-              onClick={() => setIsMobileMenuOpen(false)}
-            />
-            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-float-3 z-[61]">
+        <DialogPrimitive.Root open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <DialogPrimitive.Portal>
+            <DialogPrimitive.Overlay className="lg:hidden fixed inset-0 z-[60] bg-black/50 backdrop-blur-sm" />
+            <DialogPrimitive.Content
+              aria-describedby={undefined}
+              onCloseAutoFocus={(e) => {
+                e.preventDefault();
+                menuButtonRef.current?.focus();
+              }}
+              className="lg:hidden fixed top-0 right-0 z-[61] h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-float-3 outline-none"
+            >
               <div className="flex flex-col h-full bg-inherit">
                 <div className="flex items-center justify-between p-4 border-b border-border bg-inherit">
-                  <h2 className="text-lg font-semibold text-foreground">Menu</h2>
-                  <button
-                    onClick={() => setIsMobileMenuOpen(false)}
+                  <DialogPrimitive.Title className="text-lg font-semibold text-foreground">
+                    {tA("menu")}
+                  </DialogPrimitive.Title>
+                  <DialogPrimitive.Close
+                    aria-label={tA("closeMenu")}
                     className="p-2 rounded-md hover:bg-accent transition-colors"
-                    type="button"
                   >
                     <X className="h-5 w-5" />
-                  </button>
+                  </DialogPrimitive.Close>
                 </div>
                 <nav className="flex-1 px-4 py-6 space-y-2 bg-inherit">
                   {navItems.map((item) => (
@@ -253,7 +255,7 @@ export default function NotaryHeader() {
                 </nav>
                 <div className="p-4 border-t border-border space-y-4 bg-inherit">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-foreground/60">Theme</span>
+                    <span className="text-sm text-foreground/60">{tA("toggleTheme")}</span>
                     <ThemeToggle />
                   </div>
                   <Link
@@ -270,9 +272,9 @@ export default function NotaryHeader() {
                   </Link>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
+            </DialogPrimitive.Content>
+          </DialogPrimitive.Portal>
+        </DialogPrimitive.Root>
       </nav>
     </div>
   );
