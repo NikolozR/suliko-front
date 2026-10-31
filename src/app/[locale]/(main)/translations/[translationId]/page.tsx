@@ -114,6 +114,7 @@ export default function TranslationDetailPage() {
    */
   const [jobStage, setJobStage] = useState<JobStage | null>(null);
   const t = useTranslations("Translation");
+  const tA = useTranslations("A11y");
   const tProgress = useTranslations("DocumentTranslationCard.progress");
   const tOverlay = useTranslations("TranslationLoadingOverlay");
   const router = useRouter();
@@ -583,7 +584,7 @@ export default function TranslationDetailPage() {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full">
             <ArrowLeft className="h-6 w-6" />
           </Button>
           <h1 className="text-2xl font-semibold">{chat.originalFileName}</h1>
@@ -603,7 +604,7 @@ export default function TranslationDetailPage() {
   if (error && !chat) {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
-        <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full mb-4">
+        <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full mb-4">
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <div className="flex items-center gap-3 p-4 rounded-xl border border-destructive/30 bg-destructive/5">
@@ -617,7 +618,7 @@ export default function TranslationDetailPage() {
   if (!chat) {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
-        <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full mb-4">
+        <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full mb-4">
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <div className="text-muted-foreground">{t("notFound")}</div>
@@ -630,7 +631,7 @@ export default function TranslationDetailPage() {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-[1600px]">
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full">
             <ArrowLeft className="h-6 w-6" />
           </Button>
           <div className="flex items-center gap-4 flex-wrap">
@@ -671,7 +672,7 @@ export default function TranslationDetailPage() {
   return (
     <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
       <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
+        <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full">
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-2xl font-semibold truncate">{chat.originalFileName}</h1>

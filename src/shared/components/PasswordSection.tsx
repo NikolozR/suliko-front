@@ -14,6 +14,7 @@ interface PasswordSectionProps {
 
 const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectionProps) => {
   const t = useTranslations("Authorization");
+  const tA = useTranslations("A11y");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
@@ -63,7 +64,8 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
                 <button
                   type="button"
                   tabIndex={-1}
-                  aria-label={isPasswordVisible ? "Hide password" : "Show password"}
+                  aria-label={isPasswordVisible ? tA("hidePassword") : tA("showPassword")}
+                  aria-pressed={isPasswordVisible}
                   className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                   onClick={() => setIsPasswordVisible((p) => !p)}
                 >
@@ -117,7 +119,8 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
                   <button
                     type="button"
                     tabIndex={-1}
-                    aria-label={isConfirmPasswordVisible ? "Hide password" : "Show password"}
+                    aria-label={isConfirmPasswordVisible ? tA("hidePassword") : tA("showPassword")}
+                    aria-pressed={isConfirmPasswordVisible}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
                     onClick={() => setIsConfirmPasswordVisible((p) => !p)}
                   >

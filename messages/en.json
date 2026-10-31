@@ -2320,5 +2320,26 @@
   "TranslateMeta": {
     "title": "Suliko Translate: Translate Documents in Minutes, First 10 Pages Free",
     "description": "Translate contracts, certificates and business documents into 50+ languages in minutes. The layout stays as it was and the original sits beside the translation. Built for Georgian. Your first 10 pages are free."
+  },
+  "A11y": {
+    "close": "Close",
+    "back": "Back",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "clearSearch": "Clear search",
+    "skipToContent": "Skip to content",
+    "play": "Play",
+    "pause": "Pause",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "fullscreen": "Full screen",
+    "videoProgress": "Video progress",
+    "videoVolume": "Volume",
+    "balanceAndPlans": "Balance and plans",
+    "textToTranslate": "Text to translate",
+    "translatedText": "Translated text",
+    "passportFile": "Upload a passport image or PDF"
   }
 }

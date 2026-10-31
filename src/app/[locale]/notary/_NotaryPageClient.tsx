@@ -136,7 +136,7 @@ export default function NotaryPageClient({ posts }: Props) {
       <div style={{ position: "relative", zIndex: 1 }}>
         <NotaryHeader />
 
-        <main>
+        <main id="main-content">
           {/* 1. Hero */}
           <NotaryHeroSection ref={heroRef} />
 

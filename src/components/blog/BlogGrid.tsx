@@ -12,6 +12,7 @@ interface BlogGridProps {
 
 export default function BlogGrid({ posts }: BlogGridProps) {
   const t = useTranslations("Blog.grid");
+  const tA = useTranslations("A11y");
   const [query, setQuery] = useState("");
   const [activeTag, setActiveTag] = useState<string | null>(null);
 
@@ -59,7 +60,9 @@ export default function BlogGrid({ posts }: BlogGridProps) {
           />
           {query && (
             <button
+              type="button"
               onClick={() => setQuery("")}
+              aria-label={tA("clearSearch")}
               className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
             >
               <X className="h-4 w-4" />

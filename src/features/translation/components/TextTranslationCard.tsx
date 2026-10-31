@@ -54,6 +54,7 @@ type DownloadFormatOption = { value: string; label: string; extension: string; i
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
   const tButton = useTranslations('TranslationButton');
+  const tA = useTranslations('A11y');
   const translatedSuffix = useTranslatedSuffix();
   const [textLoading, setTextLoading] = useState(false);
   const router = useRouter();
@@ -424,6 +425,7 @@ const TextTranslationCard = () => {
                     <Textarea
                       ref={textareaRef}
                       className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-base md:text-sm"
+                      aria-label={tA('textToTranslate')}
                       placeholder={t('textIputPlaceholder')}
                       value={currentTextValue}
                       onChange={(e) => {
@@ -492,6 +494,7 @@ const TextTranslationCard = () => {
                       onChange={(e) => {
                         setTranslatedText(e.target.value);
                       }}
+                      aria-label={tA('translatedText')}
                       placeholder={t('result')}
                     />
                     {/* Character and word count display for translated text */}
@@ -579,6 +582,7 @@ const TextTranslationCard = () => {
               size="sm"
               className="absolute top-2 right-2"
               onClick={() => setShowDownloadModal(false)}
+              aria-label={tA("close")}
             >
               <X className="h-4 w-4" />
             </Button>

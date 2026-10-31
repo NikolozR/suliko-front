@@ -28,7 +28,7 @@ export default function PaymentSuccessPage() {
         <LandingHeader />
       
         {/* Main Content */}
-        <main className="pt-20 sm:pt-24 pb-16 flex flex-col items-center justify-center min-h-screen">
+        <main id="main-content" className="pt-20 sm:pt-24 pb-16 flex flex-col items-center justify-center min-h-screen">
           <div className="container mx-auto px-4 py-4 sm:py-8 max-w-md">
             <Card className="overflow-hidden">
               <CardContent className="p-6 sm:p-8 overflow-hidden">

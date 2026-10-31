@@ -15,6 +15,7 @@ import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
+import SkipLink from "@/shared/components/SkipLink";
 import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
 import { GoogleOAuthProvider } from '@react-oauth/google';
 import {
@@ -332,6 +333,7 @@ export default async function LocaleLayout({
             <WebVitalsMonitor />
             {/* <OneTimeOfferModal /> */}
             <SessionRefreshProvider />
+            <SkipLink />
             <TopRightControls />
             {/* <BetaBanner /> */}
             {children}

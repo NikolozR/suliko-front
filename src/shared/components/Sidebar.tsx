@@ -108,6 +108,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   }, []);
 
   const t = useTranslations('Sidebar');
+  const tA = useTranslations('A11y');
   const locale = useLocale();
 
   // Until the browser has read its own token, go by what the server saw: the
@@ -321,8 +322,8 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               {userProfile && (
                 <div className={`flex items-center gap-3 p-3 rounded-lg mb-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 ${effectiveIsCollapsed ? "justify-center" : ""
                   }`}>
-                  <Link href='/price'>
-                    <Wallet className="h-5 w-5 cursor-pointer text-emerald-600 dark:text-emerald-400 shrink-0" />
+                  <Link href='/price' aria-label={tA('balanceAndPlans')}>
+                    <Wallet className="h-5 w-5 cursor-pointer text-emerald-600 dark:text-emerald-400 shrink-0" aria-hidden="true" />
                   </Link>
                   {!effectiveIsCollapsed && (
                     <Link href="/price" className="flex flex-col min-w-0 w-full hover:opacity-80 transition-opacity">
