@@ -775,12 +775,30 @@
       "okay": "OK"
     },
     "title": "Pakiety cenowe",
-    "description": "Wybierz pakiet, który Ci odpowiada",
+    "description": "Zapłać raz, bez subskrypcji. Strony nie wygasają.",
     "forTranslators": "Dla tłumaczy",
     "forBusinesses": "Dla firm",
     "discount": "Oszczędź 20%",
     "limitedTime": "Ograniczony czas",
     "mostPopular": "Najpopularniejszy",
+    "noExpiry": "Strony nie wygasają",
+    "balance": "Masz na koncie {pages} stron",
+    "trust": {
+      "refund": "Niewykorzystane strony można zwrócić w ciągu 14 dni",
+      "payment": "Bezpieczna płatność kartą na stronie Banku Gruzji",
+      "refundLink": "Zasady zwrotów"
+    },
+    "faq": {
+      "title": "Pytania przed zakupem",
+      "expiryQ": "Czy strony wygasają?",
+      "expiryA": "Nie. Strony pozostają na koncie, dopóki ich nie wykorzystasz. Nie ma subskrypcji ani cyklicznych opłat.",
+      "pageQ": "Co liczy się jako strona?",
+      "pageA": "Jedna standardowa strona przetłumaczonego tekstu.",
+      "refundQ": "Czy mogę odzyskać pieniądze?",
+      "refundA": "Tak. Niewykorzystane strony zwracamy w całości w ciągu 14 dni od zakupu. Jeśli tłumaczenie nie uda się z naszej winy, strony wrócą na Twoje konto automatycznie.",
+      "moreQ": "Potrzebujesz więcej niż 500 stron albo faktur dla firmy?",
+      "moreA": "Suliko Business daje 900 stron co miesiąc, z fakturami firmowymi i potwierdzeniami VAT. Napisz na <mail>{email}</mail>."
+    },
     "contactModal": {
       "title": "Zacznij już dziś",
       "subtitle": "Skontaktuj się z nami, aby rozpocząć swoją podróż tłumaczeniową",
@@ -806,7 +824,7 @@
         "1": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "2": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
-      "cta": "Kup kredyty"
+      "cta": "Kup 100 stron"
     },
     "professional": {
       "title": "Profesjonalny",
@@ -821,7 +839,7 @@
         "3": "Priorytetowe wsparcie e-mailowe i czatowe",
         "4": "Narzędzia współpracy zespołowej"
       },
-      "cta": "Kup kredyty",
+      "cta": "Kup 500 stron",
       "popular": "Najpopularniejszy"
     },
     "custom": {
@@ -866,16 +884,16 @@
     "payAsYouGo": {
       "title": "Płać za użycie",
       "price": "1 ₾",
-      "period": "→ 1 strona",
-      "documents": "1 strona za GEL",
+      "period": " za stronę",
+      "documents": "Wybierz, ile stron potrzebujesz",
       "description": "Idealny do sporadycznych tłumaczeń",
       "features": {
-        "0": "1 strona = 1 GEL",
+        "0": "Strony nie wygasają",
         "1": "Brak miesięcznego zobowiązania",
         "2": "Formaty plików graficznych (PNG, JPG, JPEG, PDF, DOCX, TXT)",
         "3": "Wsparcie języków: gruziński, angielski, francuski, turecki, polski, ukraiński, arabski i 50+ języków"
       },
-      "cta": "Kup kredyty"
+      "cta": "Wybierz liczbę stron"
     },
     "payAsYouGoModal": {
       "title": "Niestandardowy zakup",
