@@ -2355,6 +2355,12 @@
     "textToTranslate": "ტექსტი სათარგმნად",
     "translatedText": "ნათარგმნი ტექსტი",
     "passportFile": "პასპორტის სურათის ან PDF-ის ატვირთვა",
-    "emailAddress": "ელფოსტის მისამართი"
+    "emailAddress": "ელფოსტის მისამართი",
+    "digitOf": "ციფრი {n} / {total}",
+    "removeFile": "ფაილის წაშლა",
+    "openMenu": "მენიუს გახსნა",
+    "closeMenu": "მენიუს დახურვა",
+    "menu": "მენიუ",
+    "toggleTheme": "თემის შეცვლა"
   }
 }

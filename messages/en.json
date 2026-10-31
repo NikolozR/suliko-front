@@ -2355,6 +2355,12 @@
     "textToTranslate": "Text to translate",
     "translatedText": "Translated text",
     "passportFile": "Upload a passport image or PDF",
-    "emailAddress": "Email address"
+    "emailAddress": "Email address",
+    "digitOf": "Digit {n} of {total}",
+    "removeFile": "Remove file",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menu": "Menu",
+    "toggleTheme": "Switch theme"
   }
 }

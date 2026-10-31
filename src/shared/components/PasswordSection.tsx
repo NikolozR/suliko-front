@@ -65,10 +65,9 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
                 </FormControl>
                 <button
                   type="button"
-                  tabIndex={-1}
                   aria-label={isPasswordVisible ? tA("hidePassword") : tA("showPassword")}
                   aria-pressed={isPasswordVisible}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md text-muted-foreground hover:text-foreground transition-colors"
                   onClick={() => setIsPasswordVisible((p) => !p)}
                 >
                   {isPasswordVisible ? <Eye size={16} /> : <EyeOff size={16} />}
@@ -120,10 +119,9 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
                   </FormControl>
                   <button
                     type="button"
-                    tabIndex={-1}
-                    aria-label={isConfirmPasswordVisible ? tA("hidePassword") : tA("showPassword")}
+                      aria-label={isConfirmPasswordVisible ? tA("hidePassword") : tA("showPassword")}
                     aria-pressed={isConfirmPasswordVisible}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md text-muted-foreground hover:text-foreground transition-colors"
                     onClick={() => setIsConfirmPasswordVisible((p) => !p)}
                   >
                     {isConfirmPasswordVisible ? <Eye size={16} /> : <EyeOff size={16} />}
