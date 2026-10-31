@@ -1,19 +1,21 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 
 /** Shared field + tile primitives for the order wizard steps. */
 
 export function FieldLabel({
   children,
   required,
+  htmlFor,
 }: {
   children: ReactNode;
   required?: boolean;
+  htmlFor?: string;
 }) {
   return (
-    <label className="block text-xs font-medium text-muted-foreground mb-1">
+    <label htmlFor={htmlFor} className="block text-xs font-medium text-muted-foreground mb-1">
       {children}
       {required && <span className="text-red-500 ml-0.5">*</span>}
     </label>
@@ -50,10 +52,12 @@ export function TextField({
   placeholder?: string;
   autoComplete?: string;
 }) {
+  const id = useId();
   return (
     <div>
-      <FieldLabel required={required}>{label}</FieldLabel>
+      <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
       <input
+        id={id}
         type={type}
         value={value}
         placeholder={placeholder}
@@ -84,10 +88,12 @@ export function NumberField({
   max: number;
   required?: boolean;
 }) {
+  const id = useId();
   return (
     <div>
-      <FieldLabel required={required}>{label}</FieldLabel>
+      <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
       <input
+        id={id}
         type="number"
         inputMode="numeric"
         min={min}
@@ -129,11 +135,13 @@ export function SelectField({
   required?: boolean;
   disabled?: boolean;
 }) {
+  const id = useId();
   return (
     <div>
-      <FieldLabel required={required}>{label}</FieldLabel>
+      <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
       <div className="relative">
         <select
+          id={id}
           value={value}
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
