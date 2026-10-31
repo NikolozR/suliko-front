@@ -615,7 +615,20 @@
       "confirmDelete": "დარწმუნებული ხარ?",
       "cancelDelete": "გაუქმება",
       "addCard": "ბარათის დამატება"
-    }
+    },
+    "allFieldsRequired": "ყველა ველი სავალდებულოა",
+    "passwordsDontMatch": "ახალი პაროლები არ ემთხვევა",
+    "passwordTooShort": "ახალი პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო",
+    "passwordSameAsOld": "ახალი პაროლი უნდა განსხვავდებოდეს მიმდინარე პაროლისგან",
+    "accountDataNotFound": "მომხმარებლის მონაცემები ვერ მოიძებნა",
+    "passwordChangeFailed": "პაროლის შეცვლა ვერ მოხერხდა",
+    "firstNameRequired": "სახელი სავალდებულოა",
+    "emailRequired": "ელ.ფოსტა სავალდებულოა",
+    "emailInvalid": "არასწორი ელ.ფოსტის ფორმატი",
+    "updateFailed": "პროფილის განახლებისას მოხდა შეცდომა. გთხოვთ, სცადეთ თავიდან.",
+    "deleteAccountFailed": "ანგარიშის წაშლა ვერ მოხერხდა",
+    "profileNotFound": "პროფილი ვერ მოიძებნა",
+    "profileNotFoundBody": "მომხმარებლის ინფორმაცია ვერ მოიძებნა"
   },
   "LanguageSwitcher": {
     "english": "English",
