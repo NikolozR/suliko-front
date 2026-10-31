@@ -642,20 +642,21 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                           {t("phoneNumberOrEmail") || "Phone Number or Email"}{" "}
                           <span className="text-red-500">*</span>
                         </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <User
-                              size={15}
-                              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                            />
+                        {/* FormControl must wrap the input itself: it carries the id the label points at. */}
+                        <div className="relative">
+                          <User
+                            size={15}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                          />
+                          <FormControl>
                             <Input
                               placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"}
                               className="border-2 shadow-md dark:border-slate-600 pl-9"
                               autoComplete="username"
                               {...field}
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                         {switchedToLoginNote && (
                           <div

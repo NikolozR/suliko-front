@@ -2354,6 +2354,7 @@
     "balanceAndPlans": "Saldo i plany",
     "textToTranslate": "Tekst do przetłumaczenia",
     "translatedText": "Przetłumaczony tekst",
-    "passportFile": "Prześlij zdjęcie paszportu lub PDF"
+    "passportFile": "Prześlij zdjęcie paszportu lub PDF",
+    "emailAddress": "Adres e-mail"
   }
 }
