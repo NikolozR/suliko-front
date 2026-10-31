@@ -13,7 +13,7 @@ export default function OfficeSignInPrompt({ className = "", style }: { classNam
   return (
     <p className={`flex flex-wrap gap-1.5 text-[15px] text-muted-foreground ${className}`} style={style}>
       <span>{t("text")}</span>
-      <a href={officeSignInUrl(locale)} className="text-suliko-default-color underline-offset-2 hover:underline dark:text-[#8fa2ff]">
+      <a href={officeSignInUrl(locale)} className="text-accent-text underline-offset-2 hover:underline dark:text-[#8fa2ff]">
         {t("link")}
       </a>
     </p>

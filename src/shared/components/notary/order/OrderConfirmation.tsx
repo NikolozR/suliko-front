@@ -87,7 +87,7 @@ export default function OrderConfirmation({
             <p className="text-xs text-muted-foreground">
               {estimateOnly ? t("estimatedTotal") : t("confirmedTotal")}
             </p>
-            <p className="mt-0.5 text-base font-semibold text-suliko-default-color">
+            <p className="mt-0.5 text-base font-semibold text-accent-text">
               {formatMoney(Number(order.total), order.currency)}
             </p>
           </div>
@@ -109,7 +109,7 @@ export default function OrderConfirmation({
       {/* Upload state */}
       {phase === "uploading" && (
         <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
-          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-suliko-default-color" />
+          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-accent-text" />
           <div className="min-w-0">
             <p className="text-sm font-medium text-foreground">
               {t("uploadingCount", { done: progress.done + 1, total: progress.total })}
@@ -172,7 +172,7 @@ export default function OrderConfirmation({
                   href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
                     `Order #${order.order_id}: files`
                   )}`}
-                  className="text-xs font-medium text-suliko-default-color underline underline-offset-2"
+                  className="text-xs font-medium text-accent-text underline underline-offset-2"
                 >
                   {t("emailFilesInstead", {
                     email: SUPPORT_EMAIL,

@@ -161,7 +161,7 @@ export function NamesBlock({ enabled, onToggle, savedCount, projectName, project
           {projectId && (
             <Link
               href={`/projects/${projectId}`}
-              className="shrink-0 text-[13px] font-semibold text-suliko-default-color hover:underline"
+              className="shrink-0 text-[13px] font-semibold text-accent-text hover:underline"
             >
               {t("editGlossary")}
             </Link>
@@ -220,7 +220,7 @@ function ClampedText({ text, more, less }: { text: string; more: string; less: s
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
-          className="relative mt-0.5 text-[13px] font-semibold text-suliko-default-color hover:underline before:absolute before:-inset-x-3 before:-inset-y-3 before:content-['']"
+          className="relative mt-0.5 text-[13px] font-semibold text-accent-text hover:underline before:absolute before:-inset-x-3 before:-inset-y-3 before:content-['']"
         >
           {open ? less : more}
         </button>

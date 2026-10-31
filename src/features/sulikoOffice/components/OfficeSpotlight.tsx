@@ -33,7 +33,7 @@ export default function OfficeSpotlight({
           <ul className="mt-2 flex flex-col gap-3.5">
             {(["p1", "p2", "p3"] as const).map((key) => (
               <li key={key} className="flex items-start gap-3 text-base leading-normal text-[#3a4466] dark:text-slate-300">
-                <Check className="mt-0.5 h-5 w-5 shrink-0 text-suliko-default-color dark:text-[#8fa2ff]" aria-hidden />
+                <Check className="mt-0.5 h-5 w-5 shrink-0 text-accent-text dark:text-[#8fa2ff]" aria-hidden />
                 <span>{t(key)}</span>
               </li>
             ))}

@@ -100,7 +100,7 @@ function FloatingCard({
   const iconTone =
     tone === "green"
       ? "bg-[#e7f6ec] text-[#1e7440] dark:bg-emerald-400/15 dark:text-emerald-300"
-      : "bg-[#eef1fe] text-suliko-default-color dark:bg-[#3b59f3]/20 dark:text-[#aebcff]";
+      : "bg-[#eef1fe] text-accent-text dark:bg-[#3b59f3]/20 dark:text-[#aebcff]";
 
   return (
     <div aria-hidden className={`absolute z-20 hidden xl:block ${className}`}>

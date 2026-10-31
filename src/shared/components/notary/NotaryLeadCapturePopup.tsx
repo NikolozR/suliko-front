@@ -215,7 +215,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                       }}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${fromLang === lang
                         ? "bg-suliko-default-color text-white border-suliko-default-color"
-                        : "border-border text-foreground hover:border-suliko-default-color hover:text-suliko-default-color"
+                        : "border-border text-foreground hover:border-suliko-default-color hover:text-accent-text"
                         }`}
                     >
                       {nameOf(lang)}
@@ -243,7 +243,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                       onClick={() => setToLang(lang)}
                       className={`px-3 py-1.5 rounded-lg text-sm font-medium border transition-all duration-150 ${toLang === lang
                         ? "bg-suliko-default-color text-white border-suliko-default-color"
-                        : "border-border text-foreground hover:border-suliko-default-color hover:text-suliko-default-color"
+                        : "border-border text-foreground hover:border-suliko-default-color hover:text-accent-text"
                         }`}
                     >
                       {nameOf(lang)}
@@ -268,7 +268,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                     type="button"
                     onClick={() => { setNotary(true); goNext(); }}
                     className={`flex items-center gap-3 px-4 py-3.5 rounded-xl border text-sm font-medium transition-all duration-150 text-left ${notary === true
-                      ? "bg-suliko-default-color/10 border-suliko-default-color text-suliko-default-color"
+                      ? "bg-suliko-default-color/10 border-suliko-default-color text-accent-text"
                       : "border-border text-foreground hover:border-suliko-default-color"
                       }`}
                   >
@@ -313,7 +313,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
                       <span>{nameOf(fromLang)}</span>
                       <span>→</span>
                       <span>{nameOf(toLang)}</span>
-                      {notary && <span className="ml-1 text-suliko-default-color">• Notary</span>}
+                      {notary && <span className="ml-1 text-accent-text">• Notary</span>}
                     </div>
 
                     {contactMethod === "callback" ? (

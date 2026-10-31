@@ -31,7 +31,7 @@ export default function NotaryFloatingChannels() {
         rel="noopener noreferrer"
         aria-label={t("whatsapp")}
         onClick={() => trackCta("whatsapp", "floating")}
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#25D366] text-white shadow-float-2 transition-transform duration-200 hover:scale-105 active:scale-95 sm:h-12 sm:w-12"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#0e7a63] text-white shadow-float-2 transition-transform duration-200 hover:scale-105 active:scale-95 sm:h-12 sm:w-12"
       >
         <MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
       </a>
@@ -41,7 +41,7 @@ export default function NotaryFloatingChannels() {
         rel="noopener noreferrer"
         aria-label={t("telegram")}
         onClick={() => trackCta("telegram", "floating")}
-        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#229ED9] text-white shadow-float-2 transition-transform duration-200 hover:scale-105 active:scale-95 sm:h-12 sm:w-12"
+        className="flex h-11 w-11 items-center justify-center rounded-full bg-[#1a82b3] text-white shadow-float-2 transition-transform duration-200 hover:scale-105 active:scale-95 sm:h-12 sm:w-12"
       >
         <Send className="h-[18px] w-[18px] sm:h-5 sm:w-5" />
       </a>

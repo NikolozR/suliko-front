@@ -60,11 +60,11 @@ export default function MobileBottomNav() {
               onClick={onClick}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-xs transition-colors ${
                 active
-                  ? "text-suliko-default-color font-medium"
+                  ? "text-accent-text font-medium"
                   : "text-muted-foreground"
               }`}
             >
-              <Icon className={`h-5 w-5 ${active ? "text-suliko-default-color" : ""}`} />
+              <Icon className={`h-5 w-5 ${active ? "text-accent-text" : ""}`} />
               <span className="max-w-full truncate px-1 text-xs leading-tight">{label}</span>
             </Link>
           );

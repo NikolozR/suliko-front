@@ -635,7 +635,7 @@ export default function NotaryOrderWizard() {
         {step > 1 && (
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">{t("estimatedTotal")}</span>
-            <span className="font-semibold text-suliko-default-color">
+            <span className="font-semibold text-accent-text">
               {formatMoney(estimate.total, estimate.currency)}
             </span>
           </div>

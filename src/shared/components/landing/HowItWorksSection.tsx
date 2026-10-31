@@ -40,7 +40,7 @@ export default function HowItWorksSection() {
       <div className="container mx-auto grid grid-cols-1 items-center gap-12 px-4 sm:px-6 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:gap-20 lg:px-8">
         <div data-reveal className="flex flex-col gap-7">
           <div className="flex flex-col gap-3">
-            <span className="font-mono text-xs tracking-[0.08em] text-suliko-default-color uppercase dark:text-blue-400">
+            <span className="font-mono text-xs tracking-[0.08em] text-accent-text uppercase dark:text-blue-400">
               {t("eyebrow")}
             </span>
             <h2 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>
@@ -142,7 +142,7 @@ function UploadScene({ t }: { t: T }) {
           ))}
         </div>
         <div className="lp-hover flex flex-col items-center gap-1.5 text-center">
-          <Upload className="h-7 w-7 text-suliko-default-color" />
+          <Upload className="h-7 w-7 text-accent-text" />
           <span className="text-base font-semibold">{t("dropHint")}</span>
           <span className="text-sm text-slate-500">{t("formats")}</span>
         </div>

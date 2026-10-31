@@ -40,9 +40,9 @@ const RegistrationStepper = ({ currentStep }: RegistrationStepperProps) => {
               <span
                 className={`text-xs font-medium whitespace-nowrap ${
                   isActive
-                    ? "text-suliko-default-color"
+                    ? "text-accent-text"
                     : isDone
-                    ? "text-suliko-default-color"
+                    ? "text-accent-text"
                     : "text-muted-foreground"
                 }`}
               >

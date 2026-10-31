@@ -36,13 +36,13 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
             {/* Label row — Forgot password link sits inline on the right (login only) */}
             <div className="flex items-center justify-between">
               <FormLabel className="font-semibold dark:text-white">
-                {t("password")} <span className="text-red-500">*</span>
+                {t("password")} <span className="text-red-700 dark:text-red-400">*</span>
               </FormLabel>
               {isLoginMode && onForgotPassword && (
                 <button
                   type="button"
                   onClick={onForgotPassword}
-                  className="text-xs font-medium text-suliko-default-color dark:text-blue-300 hover:underline cursor-pointer"
+                  className="text-xs font-medium text-accent-text dark:text-blue-300 hover:underline cursor-pointer"
                 >
                   {t("forgotPassword")}
                 </button>
@@ -102,7 +102,7 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
           render={({ field }) => (
             <FormItem>
               <FormLabel className="font-semibold dark:text-white">
-                {t("confirmPassword")} <span className="text-red-500">*</span>
+                {t("confirmPassword")} <span className="text-red-700 dark:text-red-400">*</span>
               </FormLabel>
               <div className="relative w-full">
                   <Lock

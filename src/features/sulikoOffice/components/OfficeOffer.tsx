@@ -33,7 +33,7 @@ export default function OfficeOffer() {
             style={revealDelay(i * 90)}
             className="flex flex-col gap-3.5 rounded-2xl border border-border bg-background p-7"
           >
-            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#eef1fe] text-suliko-default-color dark:bg-[#3b59f3]/20 dark:text-[#aebcff]">
+            <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#eef1fe] text-accent-text dark:bg-[#3b59f3]/20 dark:text-[#aebcff]">
               <Icon className="h-6 w-6" aria-hidden />
             </span>
             <h3 className="text-xl leading-[1.3] text-foreground">{t(`${key}t`)}</h3>

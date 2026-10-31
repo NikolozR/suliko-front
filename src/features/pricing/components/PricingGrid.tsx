@@ -116,7 +116,7 @@ export function PricingGrid() {
       <Dialog open={showAmountDialog} onOpenChange={setShowAmountDialog}>
         <DialogContent className="max-w-sm mx-auto p-6">
           <DialogHeader>
-            <DialogTitle className="text-center text-suliko-default-color">
+            <DialogTitle className="text-center text-accent-text">
               {t("payAsYouGoModal.title")}
             </DialogTitle>
           </DialogHeader>

@@ -21,7 +21,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
 
   const variantClasses = {
     default: 'text-muted-foreground',
-    primary: 'text-suliko-default-color',
+    primary: 'text-accent-text',
     secondary: 'text-foreground'
   };
 
