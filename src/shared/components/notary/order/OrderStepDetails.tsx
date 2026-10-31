@@ -140,7 +140,7 @@ export default function OrderStepDetails({
           onToggle={() => onPatchContact({ terms: !contact.terms })}
           title={t("terms")}
         />
-        <FieldError message={errors.terms} />
+        <FieldError alert message={errors.terms} />
       </div>
     </div>
   );

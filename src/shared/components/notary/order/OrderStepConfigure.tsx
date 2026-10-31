@@ -233,7 +233,7 @@ export default function OrderStepConfigure({
                   />
                 ))}
               </div>
-              <FieldError message={errors[`${prefix}.copyType`]} />
+              <FieldError alert message={errors[`${prefix}.copyType`]} />
             </div>
           </div>
         );
@@ -317,7 +317,7 @@ export default function OrderStepConfigure({
             );
           })}
         </div>
-        <FieldError message={errors.handover} />
+        <FieldError alert message={errors.handover} />
       </div>
     </div>
   );
