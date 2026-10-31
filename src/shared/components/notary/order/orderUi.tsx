@@ -192,7 +192,7 @@ export function Tile({
           {title}
         </span>
         {badge && (
-          <span className="ml-auto shrink-0 rounded-full bg-suliko-default-color/15 px-2 py-0.5 text-[10px] font-semibold text-suliko-default-color">
+          <span className="ml-auto shrink-0 rounded-full bg-suliko-default-color/15 px-2 py-0.5 text-xs font-semibold text-suliko-default-color">
             {badge}
           </span>
         )}
@@ -253,7 +253,7 @@ export function CheckTile({
         <span className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground">{title}</span>
           {badge && (
-            <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+            <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
               {badge}
             </span>
           )}
@@ -340,7 +340,7 @@ export function IconTile({
       )}
       {badge && (
         <span
-          className={`mt-1 rounded-md px-2 py-0.5 text-[11px] font-semibold ${BADGE_TONES[badgeTone]}`}
+          className={`mt-1 rounded-md px-2 py-0.5 text-xs font-semibold ${BADGE_TONES[badgeTone]}`}
         >
           {badge}
         </span>

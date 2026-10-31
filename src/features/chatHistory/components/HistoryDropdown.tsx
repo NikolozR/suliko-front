@@ -107,7 +107,7 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
                   <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
                     <Clock className="h-3 w-3" />
                     <span>{new Date(chat.lastActivityAt).toLocaleDateString()}</span>
-                    <span className="uppercase text-[10px] bg-primary/10 text-primary px-1 rounded">
+                    <span className="uppercase text-xs bg-primary/10 text-primary px-1 rounded">
                       {chat.fileType}
                     </span>
                   </div>

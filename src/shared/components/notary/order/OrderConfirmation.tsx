@@ -100,7 +100,7 @@ export default function OrderConfirmation({
         )}
 
         {!estimateOnly && (
-          <p className="mt-3 text-[11px] text-muted-foreground/80">
+          <p className="mt-3 text-xs text-muted-foreground/80">
             {t("reference")}: <span className="font-mono">{externalReference}</span>
           </p>
         )}

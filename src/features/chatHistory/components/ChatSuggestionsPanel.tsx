@@ -144,14 +144,14 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
                 <div className="flex gap-1 items-center">
                   {exactMatchIds.has(s.id) ? (
                     <span
-                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 whitespace-nowrap"
+                      className="text-xs font-semibold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 whitespace-nowrap"
                       title={t("SuggestionsPanel.indicatorExact", { default: "Quick apply" })}
                     >
                       {t("SuggestionsPanel.instant", { default: "Instant" })}
                     </span>
                   ) : (
                     <span
-                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 whitespace-nowrap"
+                      className="text-xs font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 whitespace-nowrap"
                       title={t("SuggestionsPanel.indicatorNonExact", { default: "Server apply" })}
                     >
                       {t("SuggestionsPanel.review", { default: "Review" })}

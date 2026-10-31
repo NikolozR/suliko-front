@@ -620,7 +620,7 @@ export default function NotaryOrderWizard() {
                 </ul>
               )}
               {submitError.reference && (
-                <p className="mt-2 text-[11px] text-muted-foreground">
+                <p className="mt-2 text-xs text-muted-foreground">
                   {t("reference")}:{" "}
                   <span className="font-mono">{submitError.reference}</span>
                 </p>

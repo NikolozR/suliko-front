@@ -1,6 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import { MotionConfig } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import NotaryHeader from "@/shared/components/NotaryHeader";
 import NotaryHeroSection from "@/shared/components/notary/NotaryHeroSection";
@@ -132,6 +133,7 @@ export default function NotaryPageClient({ posts }: Props) {
   };
 
   return (
+    <MotionConfig reducedMotion="user">
     <div className="min-h-screen">
       <div style={{ position: "relative", zIndex: 1 }}>
         <NotaryHeader />
@@ -207,5 +209,6 @@ export default function NotaryPageClient({ posts }: Props) {
         <NotaryLeadCapturePopup isOpen={showPopup} onClose={handlePopupClose} />
       </div>
     </div>
+    </MotionConfig>
   );
 }

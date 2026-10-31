@@ -35,7 +35,7 @@ export default function FeaturesSection() {
       <div className="container mx-auto flex flex-col gap-10 px-4 sm:px-6 lg:px-8">
         <div data-reveal className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div className="flex max-w-2xl flex-col gap-3">
-            <span className="font-mono text-xs tracking-[0.08em] text-suliko-default-color uppercase">
+            <span className="font-mono text-xs tracking-[0.08em] text-suliko-default-color uppercase dark:text-blue-400">
               {t("eyebrow")}
             </span>
             <h2 className="text-3xl font-semibold leading-tight text-foreground sm:text-4xl">{t("title")}</h2>

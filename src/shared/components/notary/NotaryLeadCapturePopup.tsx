@@ -181,7 +181,7 @@ export default function NotaryLeadCapturePopup({ isOpen, onClose }: Props) {
               transition={{ duration: 0.3 }}
             />
           </div>
-          <p className="text-right text-[11px] text-blue-100 mt-1">
+          <p className="text-right text-xs text-blue-100 mt-1">
             {t('stepOf', { current: step, total: TOTAL_STEPS })}
           </p>
         </div>
