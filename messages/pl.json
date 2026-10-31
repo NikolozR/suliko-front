@@ -559,7 +559,8 @@
       "openFullView": "Otwórz pełny widok",
       "failed": "Tłumaczenie nie powiodło się. Spróbuj ponownie.",
       "openingResult": "Gotowe. Otwieramy tłumaczenie…"
-    }
+    },
+    "originalUnavailable": "Oryginalny plik nie jest już dostępny dla tego tłumaczenia. Nadal możesz czytać, edytować i pobrać przetłumaczony tekst."
   },
   "Profile": {
     "fullName": "Pełne imię i nazwisko",

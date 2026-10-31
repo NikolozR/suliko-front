@@ -38,7 +38,7 @@ const RegistrationStepper = ({ currentStep }: RegistrationStepperProps) => {
                 {isDone ? <Check size={14} strokeWidth={3} /> : step}
               </div>
               <span
-                className={`text-[10px] font-medium whitespace-nowrap ${
+                className={`text-xs font-medium whitespace-nowrap ${
                   isActive
                     ? "text-suliko-default-color"
                     : isDone

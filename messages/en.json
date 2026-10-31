@@ -539,7 +539,8 @@
       "openFullView": "Open full view",
       "failed": "The translation failed. Please try again.",
       "openingResult": "Done. Opening your translation…"
-    }
+    },
+    "originalUnavailable": "The original file is no longer available for this translation. You can still read, edit and download the translated text."
   },
   "TranslationLoadingOverlay": {
     "progress": "Progress",

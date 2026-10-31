@@ -25,7 +25,7 @@ function isWideField(key: string) {
 function ConfidenceBadge({ score, empty }: { score?: number; empty?: boolean }) {
   if (empty) {
     return (
-      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30">
+      <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-xs font-medium border bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30">
         <AlertCircle className="h-2.5 w-2.5" />
       </span>
     );
@@ -40,7 +40,7 @@ function ConfidenceBadge({ score, empty }: { score?: number; empty?: boolean }) 
       : { label: `${score}%`, classes: "bg-red-500/15 text-red-600 dark:text-red-400 border-red-500/30" };
 
   return (
-    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium border ${classes}`}>
+    <span className={`inline-flex items-center px-1.5 py-0.5 rounded text-xs font-medium border ${classes}`}>
       {label}
     </span>
   );
@@ -86,7 +86,7 @@ export default function PassportFieldsForm({
             <ConfidenceBadge score={overallConfidence} />
           )}
           {judgeIterations !== undefined && judgeIterations > 0 && (
-            <span className="text-[10px] text-muted-foreground">
+            <span className="text-xs text-muted-foreground">
               {t("reviewedTimes", { count: judgeIterations })}
             </span>
           )}

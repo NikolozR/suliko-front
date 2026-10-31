@@ -750,7 +750,7 @@ export default function TranslationDetailPage() {
               return (
                 <span
                   key={STAGE_LABELS_EN[index]}
-                  className={`text-[11px] px-2.5 py-1 rounded-full border transition-all duration-300 inline-flex items-center gap-1 ${
+                  className={`text-xs px-2.5 py-1 rounded-full border transition-all duration-300 inline-flex items-center gap-1 ${
                     isDone
                       ? "bg-green-50 border-green-200 text-green-700 dark:bg-green-950/40 dark:border-green-800/40 dark:text-green-400"
                       : isCurrent

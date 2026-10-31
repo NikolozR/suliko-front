@@ -257,7 +257,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                       {t(label)}
                     </span>
                     {needsEmailReminder && label === "profile" && (
-                      <span className="ml-auto text-[11px] font-medium text-amber-700 bg-amber-100 py-0.5 px-2 rounded-full shrink-0 animate-flicker">
+                      <span className="ml-auto text-xs font-medium text-amber-700 bg-amber-100 py-0.5 px-2 rounded-full shrink-0 animate-flicker">
                         {t("completeEmail")}
                       </span>
                     )}

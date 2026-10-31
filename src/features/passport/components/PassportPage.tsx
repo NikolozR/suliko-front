@@ -324,7 +324,7 @@ export default function PassportPage() {
                     >
                       <ZoomOut className="h-3.5 w-3.5 text-muted-foreground" />
                     </button>
-                    <span className="text-[10px] text-muted-foreground w-8 text-center">
+                    <span className="text-xs text-muted-foreground w-8 text-center">
                       {Math.round(imgZoom * 100)}%
                     </span>
                     <button

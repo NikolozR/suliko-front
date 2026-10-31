@@ -41,7 +41,7 @@ function PanelCard({ children, className }: { children: React.ReactNode; classNa
 
 function MicroLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+    <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.05em] text-muted-foreground">
       {children}
     </span>
   );
