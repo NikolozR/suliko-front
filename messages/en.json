@@ -615,7 +615,20 @@
       "confirmDelete": "Sure?",
       "cancelDelete": "Cancel",
       "addCard": "Add Card"
-    }
+    },
+    "allFieldsRequired": "All fields are required.",
+    "passwordsDontMatch": "The new passwords do not match.",
+    "passwordTooShort": "Choose a new password with at least 6 characters.",
+    "passwordSameAsOld": "The new password must be different from the current one.",
+    "accountDataNotFound": "Account details not found. Sign in again and retry.",
+    "passwordChangeFailed": "Unable to change the password. Try again.",
+    "firstNameRequired": "First name is required.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Enter an email address like name@example.com.",
+    "updateFailed": "Unable to update your profile. Try again.",
+    "deleteAccountFailed": "Unable to delete the account. Try again.",
+    "profileNotFound": "Profile not found",
+    "profileNotFoundBody": "Account information not found."
   },
   "LanguageSwitcher": {
     "english": "English",

@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
+import { useTranslations } from "next-intl";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import {
@@ -25,15 +26,18 @@ import { ProfileDeleteAccount } from "./ProfileDelete";
 import { ProfileSavedCards } from "./";
 import { CouponRedeemCard } from "@/features/promoCodes";
 
-const profileUpdateSchema = z.object({
-  firstName: z.string().min(1, "სახელი სავალდებულოა"),
-  lastName: z.string().optional(),
-  email: z.string().min(1, "ელ.ფოსტა სავალდებულოა").email("არასწორი ელ.ფოსტის ფორმატი"),
-});
+const makeProfileUpdateSchema = (t: (key: "firstNameRequired" | "emailRequired" | "emailInvalid") => string) =>
+  z.object({
+    firstName: z.string().min(1, t("firstNameRequired")),
+    lastName: z.string().optional(),
+    email: z.string().min(1, t("emailRequired")).email(t("emailInvalid")),
+  });
 
-type ProfileFormData = z.infer<typeof profileUpdateSchema>;
+type ProfileFormData = z.infer<ReturnType<typeof makeProfileUpdateSchema>>;
 
 export default function ProfileClient() {
+  const t = useTranslations("Profile");
+  const profileUpdateSchema = useMemo(() => makeProfileUpdateSchema(t), [t]);
   const { token } = useAuthStore();
   const {
     userProfile,
@@ -115,7 +119,7 @@ export default function ProfileClient() {
       setIsEditing(false);
     } catch (error: unknown) {
       setUserProfile(prevUserProfile);
-      let message = "პროფილის განახლებისას მოხდა შეცდომა. გთხოვთ, სცადეთ თავიდან.";
+      let message = t("updateFailed");
       if (
         error &&
         typeof error === "object" &&

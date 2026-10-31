@@ -35,27 +35,27 @@ export const ProfilePasswordChange: React.FC = () => {
 
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setError("ყველა ველი სავალდებულოა");
+      setError(t("allFieldsRequired"));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("ახალი პაროლები არ ემთხვევა");
+      setError(t("passwordsDontMatch"));
       return;
     }
 
     if (newPassword.length < 6) {
-      setError("ახალი პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო");
+      setError(t("passwordTooShort"));
       return;
     }
 
     if (currentPassword === newPassword) {
-      setError("ახალი პაროლი უნდა განსხვავდებოდეს მიმდინარე პაროლისგან");
+      setError(t("passwordSameAsOld"));
       return;
     }
 
     if (!token || !userProfile) {
-      setError("მომხმარებლის მონაცემები ვერ მოიძებნა");
+      setError(t("accountDataNotFound"));
       return;
     }
 
@@ -77,7 +77,7 @@ export const ProfilePasswordChange: React.FC = () => {
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "პაროლის შეცვლა ვერ მოხერხდა";
+      const errorMessage = err instanceof Error ? err.message : t("passwordChangeFailed");
       setError(errorMessage);
     } finally {
       setIsLoading(false);

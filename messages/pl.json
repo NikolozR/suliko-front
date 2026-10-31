@@ -615,7 +615,20 @@
       "confirmDelete": "Na pewno?",
       "cancelDelete": "Anuluj",
       "addCard": "Dodaj kartę"
-    }
+    },
+    "allFieldsRequired": "Wszystkie pola są wymagane.",
+    "passwordsDontMatch": "Nowe hasła nie są zgodne.",
+    "passwordTooShort": "Nowe hasło musi mieć co najmniej 6 znaków.",
+    "passwordSameAsOld": "Nowe hasło musi różnić się od obecnego.",
+    "accountDataNotFound": "Nie znaleziono danych konta. Zaloguj się ponownie i spróbuj jeszcze raz.",
+    "passwordChangeFailed": "Nie udało się zmienić hasła. Spróbuj ponownie.",
+    "firstNameRequired": "Imię jest wymagane.",
+    "emailRequired": "Adres e-mail jest wymagany.",
+    "emailInvalid": "Podaj adres e-mail, np. name@example.com.",
+    "updateFailed": "Nie udało się zaktualizować profilu. Spróbuj ponownie.",
+    "deleteAccountFailed": "Nie udało się usunąć konta. Spróbuj ponownie.",
+    "profileNotFound": "Nie znaleziono profilu",
+    "profileNotFoundBody": "Nie znaleziono informacji o koncie."
   },
   "LanguageSwitcher": {
     "english": "English",
