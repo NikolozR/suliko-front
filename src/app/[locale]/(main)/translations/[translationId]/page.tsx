@@ -649,6 +649,7 @@ export default function TranslationDetailPage() {
         />
         <ChatTranslationResultView
           currentFile={reconstructedFile}
+          outputFormat={chat.translationResult?.outputFormat}
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
           onRemoveFile={handleRemoveFile}
