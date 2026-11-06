@@ -2,6 +2,7 @@
   "buildCommand": "npm run vercel-build",
   "outputDirectory": ".next",
   "framework": "nextjs",
+  "regions": ["fra1"],
   "functions": {
     "src/app/api/**/*.ts": {
       "maxDuration": 30
