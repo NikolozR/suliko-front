@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { setUserBalance, deleteUser } from "@/features/auth/services/userService";
+import { setUserBalance, deleteUser, sendPasswordResetEmail } from "@/features/auth/services/userService";
 import { listPaidTotals, type UserPaidTotal } from "@/features/adminPayments/services/adminPaymentsService";
 import PaymentHistory, { money } from "./payment-history";
 
@@ -25,6 +25,7 @@ export type User = {
 
 type SaveState = "idle" | "confirm" | "saving" | "saved";
 type DeleteState = "idle" | "confirm" | "deleting";
+type ResetState = "idle" | "confirm" | "sending" | "sent";
 
 const SortIcon = ({ dir }: { dir: "none" | "asc" | "desc" }) => (
   <span style={{ marginLeft: 4, opacity: dir === "none" ? 0.35 : 1, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>
@@ -50,6 +51,8 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   const [dateFilter, setDateFilter] = useState<{ from?: string; to?: string }>({});
   const [showRoleId, setShowRoleId] = useState(false);
   const [deleteStates, setDeleteStates] = useState<Record<string, DeleteState>>({});
+  const [resetStates, setResetStates] = useState<Record<string, ResetState>>({});
+  const [notice, setNotice] = useState<string | null>(null);
   const [paidSort, setPaidSort] = useState<"none" | "asc" | "desc">("none");
   const [openPayments, setOpenPayments] = useState<string | null>(null);
   // What each user has paid, per currency, from confirmed card payments.
@@ -134,6 +137,35 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   };
 
   const handleCancelDelete = (id: string) => setDeleteState(id, "idle");
+
+  const getResetState = (id: string): ResetState => resetStates[id] ?? "idle";
+  const setResetState = (id: string, state: ResetState) =>
+    setResetStates((prev) => ({ ...prev, [id]: state }));
+
+  // Two presses, like Save and Delete: the first asks, the second changes the password and mails it.
+  const handleResetClick = async (row: User) => {
+    const current = getResetState(row.id);
+    if (current === "idle") {
+      setResetState(row.id, "confirm");
+      return;
+    }
+    if (current === "confirm") {
+      setError(null);
+      setNotice(null);
+      setResetState(row.id, "sending");
+      try {
+        const sentTo = await sendPasswordResetEmail(row.id);
+        setResetState(row.id, "sent");
+        setNotice(`New password sent to ${sentTo || row.email || "the user"}.`);
+        setTimeout(() => setResetState(row.id, "idle"), 3000);
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : "Failed to send the password email");
+        setResetState(row.id, "idle");
+      }
+    }
+  };
+
+  const handleCancelReset = (id: string) => setResetState(id, "idle");
 
   const toggleSort = (current: "none" | "asc" | "desc"): "none" | "asc" | "desc" =>
     current === "none" ? "asc" : current === "asc" ? "desc" : "none";
@@ -443,6 +475,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
           {error}
         </div>
       )}
+      {notice && (
+        <div role="status" style={{ padding: "10px 16px", background: "rgba(34,197,94,0.08)", color: "#86efac", fontSize: 13 }}>
+          {notice}
+        </div>
+      )}
 
       {/* Table */}
       <div style={{ overflowX: "auto" }}>
@@ -641,6 +678,59 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       >
                         {state === "saving" ? "Saving…" : state === "saved" ? "✓ Saved" : state === "confirm" ? "Confirm?" : "Save"}
                       </button>
+                      {(() => {
+                        const rs = getResetState(u.id);
+                        const noEmail = !u.email;
+                        return (
+                          <>
+                            {rs === "confirm" && (
+                              <button
+                                onClick={() => handleCancelReset(u.id)}
+                                style={{
+                                  background: "transparent",
+                                  border: "1px solid #2a2d3a",
+                                  borderRadius: 6,
+                                  padding: "5px 10px",
+                                  color: "#64748b",
+                                  fontSize: 12,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            )}
+                            <button
+                              disabled={rs === "sending" || noEmail}
+                              title={noEmail ? "This user has no email address" : "Set a new password and email it to the user"}
+                              onClick={() => handleResetClick(u)}
+                              style={{
+                                background:
+                                  rs === "sent" ? "rgba(34,197,94,0.15)" : rs === "confirm" ? "#38bdf8" : "rgba(56,189,248,0.08)",
+                                border: `1px solid ${
+                                  rs === "sent" ? "rgba(34,197,94,0.4)" : rs === "confirm" ? "#38bdf8" : "rgba(56,189,248,0.25)"
+                                }`,
+                                borderRadius: 6,
+                                padding: "5px 12px",
+                                color: rs === "sent" ? "#86efac" : rs === "confirm" ? "#0f1117" : "#7dd3fc",
+                                fontSize: 12,
+                                fontWeight: rs === "confirm" ? 700 : 500,
+                                cursor: rs === "sending" || noEmail ? "not-allowed" : "pointer",
+                                transition: "all 0.15s",
+                                opacity: rs === "sending" || noEmail ? 0.5 : 1,
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {rs === "sending"
+                                ? "Sending…"
+                                : rs === "sent"
+                                  ? "✓ Email sent"
+                                  : rs === "confirm"
+                                    ? "Send now?"
+                                    : "Send password reset email"}
+                            </button>
+                          </>
+                        );
+                      })()}
                       {(() => {
                         const ds = getDeleteState(u.id);
                         return (
