@@ -82,11 +82,18 @@ export class ApiClient {
       }
 
       let data: T;
+      const body = await response.text();
       try {
-        data = await response.json();
+        data = JSON.parse(body);
       } catch {
-        // If JSON parsing fails, it might be a CORS issue
         if (!response.ok) {
+          // The API answers some failures with a plain-text message ("Invalid or expired
+          // verification code"). That is the real reason: show it, not a made-up CORS error.
+          // Only an empty or markup body (a proxy or error page) is reported as a connection problem.
+          const text = body.trim();
+          if (text && !text.startsWith('<') && text.length <= 300) {
+            throw new ApiError(text, response.status, response.statusText, false);
+          }
           throw new ApiError(
             'CORS error: Server response could not be parsed. This might be due to CORS restrictions.',
             response.status,
