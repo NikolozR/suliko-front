@@ -82,15 +82,15 @@ export class ApiClient {
       }
 
       let data: T;
-      const body = await response.text();
+      const rawBody = await response.text();
       try {
-        data = JSON.parse(body);
+        data = JSON.parse(rawBody);
       } catch {
         if (!response.ok) {
           // The API answers some failures with a plain-text message ("Invalid or expired
           // verification code"). That is the real reason: show it, not a made-up CORS error.
           // Only an empty or markup body (a proxy or error page) is reported as a connection problem.
-          const text = body.trim();
+          const text = rawBody.trim();
           if (text && !text.startsWith('<') && text.length <= 300) {
             throw new ApiError(text, response.status, response.statusText, false);
           }
