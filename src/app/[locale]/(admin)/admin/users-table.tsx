@@ -33,6 +33,11 @@ const SortIcon = ({ dir }: { dir: "none" | "asc" | "desc" }) => (
   </span>
 );
 
+/** A phone sign-up has no address, so the API stores a made-up one: phone_{number}_{guid}@example.com. */
+function hasRealEmail(email?: string): boolean {
+  return !!email && !/^phone_.*@example\.com$/i.test(email);
+}
+
 /** GEL paid by one user, from confirmed card payments: the figure the Paid column sorts by. */
 function gelPaid(totals: Map<string, UserPaidTotal[]> | null, id: string): number {
   return totals?.get(id)?.find((t) => t.currency === "GEL")?.total ?? 0;
@@ -158,6 +163,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
         setResetState(row.id, "sent");
         setNotice(`New password sent to ${sentTo || row.email || "the user"}.`);
         setTimeout(() => setResetState(row.id, "idle"), 3000);
+        setTimeout(() => setNotice(null), 8000);
       } catch (e: unknown) {
         setError(e instanceof Error ? e.message : "Failed to send the password email");
         setResetState(row.id, "idle");
@@ -625,7 +631,8 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       {u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleDateString() : "–"}
                     </span>
                   </td>
-                  <td style={{ ...tdStyle, textAlign: "right" }}>
+                  {/* No width cap here: tdStyle's 180px clipped the buttons. */}
+                  <td style={{ ...tdStyle, textAlign: "right", maxWidth: "none", overflow: "visible" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
                       {state === "confirm" && (
                         <button
@@ -680,7 +687,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       </button>
                       {(() => {
                         const rs = getResetState(u.id);
-                        const noEmail = !u.email;
+                        const noEmail = !hasRealEmail(u.email);
                         return (
                           <>
                             {rs === "confirm" && (
@@ -701,7 +708,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                             )}
                             <button
                               disabled={rs === "sending" || noEmail}
-                              title={noEmail ? "This user has no email address" : "Set a new password and email it to the user"}
+                              title={noEmail ? "This user signed up with a phone number and has no email address" : "Set a new password and email it to the user"}
                               onClick={() => handleResetClick(u)}
                               style={{
                                 background:
@@ -726,7 +733,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                                   ? "✓ Email sent"
                                   : rs === "confirm"
                                     ? "Send now?"
-                                    : "Send password reset email"}
+                                    : "Email password reset"}
                             </button>
                           </>
                         );
