@@ -13,7 +13,7 @@ export function ProfileSectionNav({ active, onChange }: { active: ProfileSection
   const t = useTranslations("Profile.sections");
 
   return (
-    <nav aria-label={t("label")} className="-mx-4 flex gap-1 overflow-x-auto px-4 pb-2 md:mx-0 md:w-48 md:shrink-0 md:flex-col md:overflow-visible md:px-0 md:pb-0">
+    <nav aria-label={t("label")} className="-mx-4 flex gap-1 overflow-x-auto px-4 pb-2 md:mx-0 md:sticky md:top-6 md:w-52 md:shrink-0 md:flex-col md:self-start md:overflow-visible md:px-0 md:pb-0">
       {PROFILE_SECTIONS.map((id) => {
         const Icon = ICONS[id];
         const isActive = id === active;
@@ -23,7 +23,7 @@ export function ProfileSectionNav({ active, onChange }: { active: ProfileSection
             type="button"
             onClick={() => onChange(id)}
             aria-current={isActive ? "page" : undefined}
-            className={`flex shrink-0 items-center gap-2 rounded-lg px-3 py-2 text-sm transition-colors ${
+            className={`flex shrink-0 items-center gap-2 whitespace-nowrap rounded-lg px-3 py-2 text-left text-sm transition-colors ${
               isActive ? "bg-primary/10 font-medium text-primary" : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
             }`}
           >
