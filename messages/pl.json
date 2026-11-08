@@ -164,7 +164,26 @@
       "close": "Zamknij okno"
     }
   },
+  "Payments": {
+    "title": "Historia płatności",
+    "topUp": "Doładuj",
+    "empty": "Brak płatności.",
+    "error": "Nie udało się załadować historii płatności.",
+    "payment": "Płatność",
+    "pages": "stron",
+    "status": {
+      "success": "Opłacono",
+      "pending": "Oczekuje",
+      "failed": "Nieudana",
+      "refunded": "Zwrócono"
+    },
+    "link": "Historia płatności"
+  },
   "Sidebar": {
+    "topUp": "Doładuj",
+    "expiresIn": "Wygasa za {days, plural, one {# dzień} other {# dni}}",
+    "expired": "Kredyty wygasły",
+    "validOneMonth": "Kredyty są ważne przez 1 miesiąc",
     "keyboardShortcuts": "Skróty klawiszowe",
     "newTranslation": "Nowe tłumaczenie",
     "history": "Historia",
@@ -589,6 +608,9 @@
     "originalUnavailable": "Oryginalny plik nie jest już dostępny dla tego tłumaczenia. Nadal możesz czytać, edytować i pobrać przetłumaczony tekst."
   },
   "Profile": {
+    "expiresIn": "Wygasa za {days, plural, one {# dzień} other {# dni}}",
+    "expired": "Kredyty wygasły",
+    "validOneMonth": "Kredyty są ważne przez 1 miesiąc",
     "fullName": "Pełne imię i nazwisko",
     "name": "Imię",
     "surname": "Nazwisko",
@@ -668,6 +690,12 @@
     "loading": "Ładowanie historii"
   },
   "Projects": {
+    "assignTitle": "Dodać to tłumaczenie do projektu?",
+    "assignedTo": "Dodano do „{name}”",
+    "assignNew": "Nowy projekt",
+    "assignCreateAdd": "Utwórz i dodaj",
+    "assignSkip": "Nie teraz",
+    "assignError": "Nie udało się zapisać. Spróbuj ponownie.",
     "title": "Projekty",
     "noProjects": "Brak folderów. Utwórz projekt, aby uporządkować swoje tłumaczenia.",
     "noTranslations": "Brak tłumaczeń. Prześlij dokument i kliknij Tłumacz, aby rozpocząć.",

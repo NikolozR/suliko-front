@@ -164,7 +164,26 @@
       "close": "Close a window"
     }
   },
+  "Payments": {
+    "title": "Payment history",
+    "topUp": "Top up",
+    "empty": "No payments yet.",
+    "error": "Couldn't load payment history.",
+    "payment": "Payment",
+    "pages": "pages",
+    "status": {
+      "success": "Paid",
+      "pending": "Pending",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "link": "Payment history"
+  },
   "Sidebar": {
+    "topUp": "Top up",
+    "expiresIn": "Expires in {days, plural, one {# day} other {# days}}",
+    "expired": "Credits expired",
+    "validOneMonth": "Credits are valid for 1 month",
     "keyboardShortcuts": "Keyboard shortcuts",
     "newTranslation": "New Translation",
     "history": "History",
@@ -589,6 +608,9 @@
     "stageFinalize": "Finalizing"
   },
   "Profile": {
+    "expiresIn": "Expires in {days, plural, one {# day} other {# days}}",
+    "expired": "Credits expired",
+    "validOneMonth": "Credits are valid for 1 month",
     "fullName": "Full Name",
     "name": "Name",
     "surname": "Surname",
@@ -668,6 +690,12 @@
     "loading": "Loading history"
   },
   "Projects": {
+    "assignTitle": "Add this translation to a project?",
+    "assignedTo": "Added to “{name}”",
+    "assignNew": "New project",
+    "assignCreateAdd": "Create & add",
+    "assignSkip": "Not now",
+    "assignError": "Couldn't save. Try again.",
     "title": "Projects",
     "noProjects": "No folders yet. Create a project to organize your translations.",
     "noTranslations": "No translations yet. Upload a document and click Translate to get started.",

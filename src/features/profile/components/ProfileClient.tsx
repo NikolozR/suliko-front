@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import {
@@ -37,6 +38,7 @@ type ProfileFormData = z.infer<ReturnType<typeof makeProfileUpdateSchema>>;
 
 export default function ProfileClient() {
   const t = useTranslations("Profile");
+  const tPay = useTranslations("Payments");
   const profileUpdateSchema = useMemo(() => makeProfileUpdateSchema(t), [t]);
   const { token } = useAuthStore();
   const {
@@ -250,6 +252,13 @@ export default function ProfileClient() {
           </div>
         )}
 
+        <Link
+          href="/payments"
+          className="flex items-center justify-between rounded-2xl border border-border/60 bg-card px-6 py-4 shadow-sm hover:bg-muted/50 transition-colors font-medium"
+        >
+          <span>{tPay("link")}</span>
+          <span aria-hidden>→</span>
+        </Link>
         <ProfileSavedCards />
         <ProfileDeleteAccount />
       </div>
