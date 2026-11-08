@@ -34,7 +34,7 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
     } else {
       root.style.setProperty('--sidebar-width', '12rem'); // w-48
       root.style.setProperty('--sidebar-width-md', '14rem'); // md:w-56
-      root.style.setProperty('--sidebar-width-lg', '16rem'); // lg:w-64
+      root.style.setProperty('--sidebar-width-lg', '15rem'); // lg:w-60
     }
   }, [isCollapsed, isMounted]);
 
