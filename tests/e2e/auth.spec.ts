@@ -67,3 +67,16 @@ test.describe('Sign-in form validation', () => {
   });
 
 });
+
+// The page is visible before it is interactive. A submit in that gap is a plain GET of
+// the form, which would put the typed password in the address bar, so the server HTML
+// must already have the button disabled and the form pointed at POST.
+test.describe('Sign-in form before the page is interactive', () => {
+  test('is served with a disabled submit button and method=post', async ({ request }) => {
+    const html = await (await request.get('/en/sign-in')).text();
+    const form = html.match(/<form[^>]*>[\s\S]*?<\/form>/)?.[0] ?? '';
+    expect(form, 'the sign-in form is in the server HTML').toContain('name="password"');
+    expect(form).toMatch(/<form[^>]*method="post"/i);
+    expect(form).toMatch(/<button[^>]*type="submit"[^>]*disabled|<button[^>]*disabled[^>]*type="submit"/i);
+  });
+});
