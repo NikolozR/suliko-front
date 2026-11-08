@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import {
@@ -18,13 +17,16 @@ import {
 } from "./";
 import { UpdateUserProfile } from "@/features/auth/types/types.User";
 import { updateUserProfile } from "@/features/auth/services/userService";
-import { cancelSubscription } from "@/features/pricing/services/subscriptionService";
 import ErrorAlert from "@/shared/components/ErrorAlert";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ProfileDeleteAccount } from "./ProfileDelete";
 import { ProfileSavedCards } from "./";
+import { ProfileSectionNav, PROFILE_SECTIONS, type ProfileSection } from "./ProfileSectionNav";
+import { ProfileBalanceCard } from "./ProfileBalanceCard";
+import { ProfileRecentPayments } from "./ProfileRecentPayments";
+import { ProfileSubscription } from "./ProfileSubscription";
 import { CouponRedeemCard } from "@/features/promoCodes";
 
 const makeProfileUpdateSchema = (t: (key: "firstNameRequired" | "emailRequired" | "emailInvalid") => string) =>
@@ -36,9 +38,31 @@ const makeProfileUpdateSchema = (t: (key: "firstNameRequired" | "emailRequired" 
 
 type ProfileFormData = z.infer<ReturnType<typeof makeProfileUpdateSchema>>;
 
+/** The open section lives in the URL hash (#billing) so it can be linked and survives a reload. */
+function useSectionFromHash(): [ProfileSection, (s: ProfileSection) => void] {
+  const [section, setSectionState] = useState<ProfileSection>("account");
+
+  useEffect(() => {
+    const read = () => {
+      const h = window.location.hash.slice(1);
+      setSectionState((PROFILE_SECTIONS as readonly string[]).includes(h) ? (h as ProfileSection) : "account");
+    };
+    read();
+    window.addEventListener("hashchange", read);
+    return () => window.removeEventListener("hashchange", read);
+  }, []);
+
+  const setSection = useCallback((next: ProfileSection) => {
+    setSectionState(next);
+    window.history.replaceState(null, "", `#${next}`);
+  }, []);
+
+  return [section, setSection];
+}
+
 export default function ProfileClient() {
   const t = useTranslations("Profile");
-  const tPay = useTranslations("Payments");
+  const [section, setSection] = useSectionFromHash();
   const profileUpdateSchema = useMemo(() => makeProfileUpdateSchema(t), [t]);
   const { token } = useAuthStore();
   const {
@@ -51,7 +75,6 @@ export default function ProfileClient() {
   const [isEditing, setIsEditing] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
-  const [isCanceling, setIsCanceling] = useState(false);
   const form = useForm<ProfileFormData>({
     resolver: zodResolver(profileUpdateSchema),
     defaultValues: {
@@ -164,7 +187,7 @@ export default function ProfileClient() {
   const validationErrors = form.formState.errors;
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
+    <div className="container mx-auto px-4 py-8 max-w-5xl">
       {updateError && (
         <ErrorAlert
           message={updateError}
@@ -172,95 +195,59 @@ export default function ProfileClient() {
         />
       )}
       <ProfileHero userProfile={currentUserProfile} />
-      <div className="space-y-6">
-        <ProfileLanguageAndHelp />
-        <ProfilePersonalInfo
-          userProfile={currentUserProfile}
-          isEditing={isEditing}
-          onChange={handleChange}
-          onEdit={handleEdit}
-          onSave={handleSave}
-          onCancel={handleCancel}
-          isUpdating={isUpdating}
-          errors={validationErrors}
-        />
-        <ProfileContactInfo
-          userProfile={currentUserProfile}
-          isEditing={isEditing}
-          onChange={handleChange}
-          onEdit={handleEdit}
-          onSave={handleSave}
-          onCancel={handleCancel}
-          isUpdating={isUpdating}
-          errors={validationErrors}
-        />
-        <CouponRedeemCard />
-        {userProfile.referralCode && (
-          <ProfileReferral referralCode={userProfile.referralCode} />
-        )}
-        <ProfilePasswordChange />
+      <div className="flex flex-col gap-6 md:flex-row md:items-start">
+        <ProfileSectionNav active={section} onChange={setSection} />
+        <div className="min-w-0 flex-1 space-y-6">
+          {section === "account" && (
+            <>
+              <ProfilePersonalInfo
+                userProfile={currentUserProfile}
+                isEditing={isEditing}
+                onChange={handleChange}
+                onEdit={handleEdit}
+                onSave={handleSave}
+                onCancel={handleCancel}
+                isUpdating={isUpdating}
+                errors={validationErrors}
+              />
+              {/* One form, one Edit: Save and Cancel live on the card above. */}
+              <ProfileContactInfo
+                userProfile={currentUserProfile}
+                isEditing={isEditing}
+                onChange={handleChange}
+                isUpdating={isUpdating}
+                errors={validationErrors}
+              />
+            </>
+          )}
 
-        {/* Subscription section */}
-        {userProfile.subscription && (
-          <div className="bg-card rounded-2xl border border-border/60 shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4 text-card-foreground">Subscription</h2>
-            <div className="flex flex-col gap-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Plan</span>
-                <span className="font-medium capitalize">{userProfile.subscription.planName}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Status</span>
-                <span className={`font-medium ${userProfile.subscription.status === 'Active' ? 'text-green-600' : userProfile.subscription.status === 'PastDue' ? 'text-amber-600' : 'text-red-600'}`}>
-                  {userProfile.subscription.status}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Pages used</span>
-                <span className="font-medium">
-                  {userProfile.subscription.pagesUsed} / {userProfile.subscription.monthlyPageLimit ?? '∞'}
-                </span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">
-                  {userProfile.subscription.autoRenew ? 'Renews on' : 'Access until'}
-                </span>
-                <span className="font-medium">
-                  {new Date(userProfile.subscription.currentPeriodEnd).toLocaleDateString()}
-                </span>
-              </div>
-              {userProfile.subscription.autoRenew && (
-                <button
-                  onClick={async () => {
-                    setIsCanceling(true);
-                    try {
-                      await cancelSubscription();
-                      await originalFetchUserProfile();
-                    } catch {
-                      /* error shown by toast in production */
-                    } finally {
-                      setIsCanceling(false);
-                    }
-                  }}
-                  disabled={isCanceling}
-                  className="mt-2 text-sm text-red-500 hover:text-red-600 underline disabled:opacity-50 text-left"
-                >
-                  {isCanceling ? 'Canceling…' : 'Cancel subscription'}
-                </button>
+          {section === "billing" && (
+            <>
+              <ProfileBalanceCard userProfile={userProfile} />
+              <ProfileRecentPayments />
+              {userProfile.subscription && (
+                <ProfileSubscription subscription={userProfile.subscription} onChanged={originalFetchUserProfile} />
               )}
-            </div>
-          </div>
-        )}
+              <ProfileSavedCards />
+              <CouponRedeemCard />
+            </>
+          )}
 
-        <Link
-          href="/payments"
-          className="flex items-center justify-between rounded-2xl border border-border/60 bg-card px-6 py-4 shadow-sm hover:bg-muted/50 transition-colors font-medium"
-        >
-          <span>{tPay("link")}</span>
-          <span aria-hidden>→</span>
-        </Link>
-        <ProfileSavedCards />
-        <ProfileDeleteAccount />
+          {section === "security" && (
+            <>
+              <ProfilePasswordChange />
+              <ProfileDeleteAccount />
+            </>
+          )}
+
+          {section === "preferences" && <ProfileLanguageAndHelp />}
+
+          {section === "invite" && (
+            userProfile.referralCode
+              ? <ProfileReferral referralCode={userProfile.referralCode} />
+              : null
+          )}
+        </div>
       </div>
     </div>
   );

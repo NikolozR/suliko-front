@@ -165,6 +165,7 @@
     }
   },
   "Payments": {
+    "viewAll": "View all",
     "title": "Payment history",
     "topUp": "Top up",
     "empty": "No payments yet.",
@@ -610,6 +611,8 @@
     "stageFinalize": "Finalizing"
   },
   "Profile": {
+    "sections": {"label": "Profile sections", "account": "Account", "billing": "Billing", "security": "Security", "preferences": "Preferences", "invite": "Invite friends"},
+    "subscription": {"title": "Subscription", "plan": "Plan", "status": "Status", "pagesUsed": "Pages used", "renewsOn": "Renews on", "accessUntil": "Access until", "cancel": "Cancel subscription", "canceling": "Canceling…", "statuses": {"Active": "Active", "PastDue": "Past due", "Canceled": "Canceled", "Expired": "Expired"}},
     "theme": "Theme",
     "expiresIn": "Expires in {days, plural, one {# day} other {# days}}",
     "expired": "Credits expired",
