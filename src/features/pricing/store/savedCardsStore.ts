@@ -27,8 +27,10 @@ export const useSavedCardsStore = create<SavedCardsState>((set, get) => ({
     try {
       const cards = await getSavedCards();
       set({ cards, loading: false });
-    } catch (err) {
-      set({ error: err instanceof Error ? err.message : "Failed to load cards", loading: false });
+    } catch {
+      // Saved cards are not available yet (the endpoint 404s), and a failed list is nothing
+      // the user can act on: show the empty state, not a red "Request failed" banner.
+      set({ cards: [], loading: false });
     }
   },
 
