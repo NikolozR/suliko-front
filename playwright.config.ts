@@ -47,6 +47,7 @@ export default defineConfig({
         /site-api\.spec\.ts/,
         /a11y-basics\.spec\.ts/,
         /checkout\.spec\.ts/,
+        /translate-flow\.spec\.ts/,
       ],
     },
 
