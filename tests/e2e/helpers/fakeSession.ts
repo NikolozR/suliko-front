@@ -25,10 +25,16 @@ export const FAKE_PROFILE = {
 export type ApiCall = { method: string; path: string; auth: string | null; body: string | null };
 
 export async function signInAs(page: Page, context: BrowserContext, baseURL: string) {
+  // Where web sessions are on (production), the page trades its stored marker for a
+  // fresh access token from this site's own /api/session/refresh. Answer it, or the
+  // real route rejects the fake session and the visitor is signed out.
+  await page.route('**/api/session/refresh', (route) =>
+    route.fulfill({ json: { token: FAKE_TOKEN, refreshToken: 'httponly-cookie' } }),
+  );
   await page.addInitScript((token) => {
     localStorage.setItem(
       'auth-storage',
-      JSON.stringify({ state: { token, refreshToken: 'e2e-refresh' }, version: 0 }),
+      JSON.stringify({ state: { token, refreshToken: 'httponly-cookie' }, version: 0 }),
     );
   }, FAKE_TOKEN);
   await context.addCookies([{ name: 'token', value: FAKE_TOKEN, url: baseURL }]);
