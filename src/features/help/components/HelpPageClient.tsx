@@ -118,7 +118,8 @@ export default function HelpPageClient() {
                 <video
                   ref={videoRef}
                   className="absolute inset-0 w-full h-full object-cover"
-                  poster="/video-poster.png"
+                  poster="/video-poster.webp"
+                  preload="none"
                 >
                   <source src="/api/video2" type="video/mp4" />
                   Your browser does not support the video tag.

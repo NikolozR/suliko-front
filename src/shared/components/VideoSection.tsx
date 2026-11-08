@@ -134,11 +134,11 @@ export default function VideoSection() {
               <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full object-cover"
-                poster="/video-poster.png"
+                poster="/video-poster.webp"
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
               >
                 <source src="/api/video2" type="video/mp4" />
                 {t("browserNotSupported")}
