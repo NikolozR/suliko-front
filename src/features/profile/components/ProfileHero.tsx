@@ -1,85 +1,23 @@
 "use client";
-import { Button } from "@/features/ui/components/ui/button";
 import { Avatar, AvatarFallback } from "@/features/ui/components/ui/avatar";
-import { Plus, LogOut } from "lucide-react";
-import { UserProfile } from "@/features/auth/types/types.User";
+import type { UserProfile } from "@/features/auth/types/types.User";
 import { useUser } from "@/features/auth/hooks/useUser";
-import { useLocale, useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { formatBalance } from "@/shared/utils/domainUtils";
-import { getBalanceExpiry, EXPIRY_TEXT_CLASS } from "@/shared/utils/balanceExpiry";
-import { signOutEverywhere } from "@/features/auth/services/signOut";
 
-interface ProfileHeroProps {
-  userProfile: UserProfile;
-}
-
-export const ProfileHero = ({ userProfile }: ProfileHeroProps) => {
+/** Who is signed in. Balance lives under Billing; logout is in the sidebar. */
+export const ProfileHero = ({ userProfile }: { userProfile: UserProfile }) => {
   const { displayName, initials } = useUser();
-  const t = useTranslations("Profile");
-  const locale = useLocale();
-
-  const handleLogout = () => {
-    signOutEverywhere(locale);
-  };
 
   return (
-    <div className="rounded-2xl border border-primary/20 bg-linear-to-br from-card via-card to-primary/5 p-6 md:p-8 mb-8 shadow-sm space-y-6">
-      {/* Row 1: Avatar, name, username, logout */}
-      <div className="flex items-center gap-6 md:gap-8">
-        <Avatar className="h-20 w-20 sm:h-24 sm:w-24 border-2 border-primary/30 shrink-0">
-          <AvatarFallback className="bg-primary/15 text-primary text-2xl sm:text-3xl font-semibold">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
-        <div className="flex-1 min-w-0 space-y-1">
-          <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-foreground truncate">
-            {displayName}
-          </h1>
-          <p className="text-muted-foreground font-medium">
-            @{userProfile.userName}
-          </p>
-        </div>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={handleLogout}
-          className="shrink-0 border-destructive/40 text-destructive hover:bg-destructive hover:text-white hover:border-destructive gap-2 transition-colors"
-        >
-          <LogOut size={15} />
-          {t("logout")}
-        </Button>
-      </div>
-
-      {/* Row 2: Balance and Fill Balance */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-4 border-t border-primary/10">
-        <div className="flex items-center justify-between sm:flex-col sm:items-start gap-2 px-4 py-3 rounded-xl bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/60 dark:border-emerald-800/50 sm:min-w-[180px]">
-          <span className="text-xs font-medium text-emerald-700 dark:text-emerald-400 uppercase tracking-wider">
-            {t("currentBalance")}
-          </span>
-          <Link
-            href="/price"
-            className="text-lg font-semibold text-emerald-700 dark:text-emerald-300 hover:text-emerald-800 dark:hover:text-emerald-200 transition-colors"
-          >
-            {formatBalance(userProfile.balance || 0)} {t("pages")}
-          </Link>
-          {(() => {
-            const exp = getBalanceExpiry(userProfile.balanceExpiresAt);
-            const text = !exp || !(userProfile.balance > 0)
-              ? t("validOneMonth")
-              : exp.level === "expired" ? t("expired") : t("expiresIn", { days: exp.daysLeft });
-            return <span className={`text-xs ${EXPIRY_TEXT_CLASS[exp?.level ?? "ok"]}`}>{text}</span>;
-          })()}
-        </div>
-        <Link href="/price" className="shrink-0">
-          <Button
-            size="sm"
-            className="w-full sm:w-auto h-10 px-4 gap-2 font-medium bg-emerald-600 hover:bg-emerald-700 text-white border-0"
-          >
-            <Plus className="h-4 w-4" />
-            {t("fillBalance")}
-          </Button>
-        </Link>
+    <div className="mb-6 flex items-center gap-4">
+      <Avatar className="h-16 w-16 shrink-0 border-2 border-primary/30">
+        <AvatarFallback className="bg-primary/15 text-xl font-semibold text-primary">{initials}</AvatarFallback>
+      </Avatar>
+      <div className="min-w-0">
+        <h1 className="truncate text-2xl font-semibold tracking-tight text-foreground">{displayName}</h1>
+        <p className="truncate text-sm text-muted-foreground">
+          @{userProfile.userName}
+          {userProfile.email ? ` · ${userProfile.email}` : ""}
+        </p>
       </div>
     </div>
   );

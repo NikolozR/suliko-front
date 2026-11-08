@@ -165,6 +165,7 @@
     }
   },
   "Payments": {
+    "viewAll": "Zobacz wszystko",
     "title": "Historia płatności",
     "topUp": "Doładuj",
     "empty": "Brak płatności.",
@@ -610,6 +611,8 @@
     "originalUnavailable": "Oryginalny plik nie jest już dostępny dla tego tłumaczenia. Nadal możesz czytać, edytować i pobrać przetłumaczony tekst."
   },
   "Profile": {
+    "sections": {"label": "Sekcje profilu", "account": "Konto", "billing": "Płatności", "security": "Bezpieczeństwo", "preferences": "Preferencje", "invite": "Zaproś znajomych"},
+    "subscription": {"title": "Subskrypcja", "plan": "Plan", "status": "Status", "pagesUsed": "Wykorzystane strony", "renewsOn": "Odnowienie", "accessUntil": "Dostęp do", "cancel": "Anuluj subskrypcję", "canceling": "Anulowanie…", "statuses": {"Active": "Aktywna", "PastDue": "Zaległa", "Canceled": "Anulowana", "Expired": "Wygasła"}},
     "theme": "Motyw",
     "expiresIn": "Wygasa za {days, plural, one {# dzień} other {# dni}}",
     "expired": "Kredyty wygasły",
