@@ -180,6 +180,8 @@
     "link": "Payment history"
   },
   "Sidebar": {
+    "translate": "Translate",
+    "products": "Suliko products",
     "topUp": "Top up",
     "expiresIn": "Expires in {days, plural, one {# day} other {# days}}",
     "expired": "Credits expired",
@@ -691,6 +693,9 @@
     "loading": "Loading history"
   },
   "Projects": {
+    "statusDone": "Done",
+    "statusFailed": "Failed",
+    "statusProcessing": "In progress",
     "assignTitle": "Add this translation to a project?",
     "assignedTo": "Added to “{name}”",
     "assignNew": "New project",

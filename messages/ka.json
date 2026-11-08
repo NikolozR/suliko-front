@@ -180,6 +180,8 @@
     "link": "გადახდების ისტორია"
   },
   "Sidebar": {
+    "translate": "თარგმანი",
+    "products": "Suliko-ს პროდუქტები",
     "topUp": "შევსება",
     "expiresIn": "ვადა იწურება {days} დღეში",
     "expired": "კრედიტების ვადა ამოიწურა",
@@ -691,6 +693,9 @@
     "loading": "ისტორიის ჩატვირთვა"
   },
   "Projects": {
+    "statusDone": "დასრულებულია",
+    "statusFailed": "ვერ შესრულდა",
+    "statusProcessing": "მიმდინარეობს",
     "assignTitle": "დავამატოთ ეს თარგმანი პროექტში?",
     "assignedTo": "დაემატა „{name}“-ში",
     "assignNew": "ახალი პროექტი",

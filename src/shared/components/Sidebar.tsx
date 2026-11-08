@@ -3,6 +3,7 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
+import { useUser } from "@/features/auth/hooks/useUser";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
@@ -11,8 +12,7 @@ import { HistoryDropdown } from "@/features/chatHistory/components/HistoryDropdo
 import { SidebarLanguageSelector } from "./SidebarLanguageSelector";
 import {
   Plus,
-  PlusCircle,
-  Clock,
+  FolderOpen,
   HelpCircle,
   MessageSquare,
   User,
@@ -109,6 +109,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const pathname = usePathname();
   const { token } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
+  const { initials } = useUser();
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
@@ -179,6 +180,8 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   // On screens < 680px, always treat as collapsed regardless of stored preference
   const effectiveIsCollapsed = !isClient ? false : (isMobile || storeIsCollapsed);
 
+  const officeHref = `${OFFICE_URL}/${officeLocale(locale)}/dashboard`;
+
   const needsEmailReminder = Boolean(
     userProfile?.email && userProfile.email.toLowerCase().includes("example.com")
   );
@@ -203,7 +206,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     <>
       {/* {renderOverlay()} */}
       <aside
-        className={`sidebar-main hidden md:flex flex-col h-[100dvh] overflow-auto fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
+        className={`sidebar-main hidden md:flex flex-col h-[100dvh] overflow-hidden fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
           ? "w-20"
           : "w-48 md:w-56 lg:w-64"
           } ${!effectiveIsCollapsed
@@ -230,7 +233,35 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
           </button>
         </div>
 
-        <nav className="flex-1 px-2 pt-2 space-y-1">
+        {token && (
+          <div className="shrink-0 px-2 pb-1">
+            {effectiveIsCollapsed ? (
+              <a
+                href={officeHref}
+                title={t("office")}
+                aria-label={t("office")}
+                className="sidebar-item group flex items-center justify-center rounded-md px-3 py-2.5 transition-colors"
+              >
+                <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
+              </a>
+            ) : (
+              <div role="group" aria-label={t("products")} className="flex gap-1 rounded-lg bg-muted/60 p-1 text-sm">
+                <span aria-current="true" className="flex-1 rounded-md bg-background px-2 py-1 text-center font-medium shadow-sm">
+                  {t("translate")}
+                </span>
+                <a
+                  href={officeHref}
+                  className="flex flex-1 items-center justify-center gap-1 rounded-md px-2 py-1 text-center text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  {t("office")}
+                  <ExternalLink className="h-3 w-3 opacity-70" aria-hidden />
+                </a>
+              </div>
+            )}
+          </div>
+        )}
+
+        <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 pt-1 space-y-1">
           {visibleNavItems.map(({ label, href, icon: Icon, disabled }) => (
             disabled ? (
               <span
@@ -280,23 +311,6 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
             )
           ))}
 
-          {token && (
-            <a
-              href={`${OFFICE_URL}/${officeLocale(locale)}/dashboard`}
-              title={effectiveIsCollapsed ? t("office") : undefined}
-              aria-label={t("office")}
-              className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""}`}
-            >
-              <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
-              {!effectiveIsCollapsed && (
-                <>
-                  <span className="whitespace-nowrap">{t("office")}</span>
-                  <ExternalLink className="ml-auto h-3.5 w-3.5 opacity-60" aria-hidden />
-                </>
-              )}
-            </a>
-          )}
-
           {!signedIn && (
             <div className="w-full">
               <SidebarLanguageSelector isCollapsed={effectiveIsCollapsed} />
@@ -315,8 +329,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/") ? "page" : undefined}
                   title={effectiveIsCollapsed ? t("projects") : undefined}
                 >
-                  <Clock className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                    } group-hover:scale-105`} />
+                  <FolderOpen className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
                   {!effectiveIsCollapsed && (
                     <>
                       <span className="whitespace-nowrap truncate">{t("projects")}</span>
@@ -340,93 +353,63 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
         </nav>
 
-        <div className="mt-auto flex flex-col gap-2 p-3">
-          <div className={`flex gap-2 ${effectiveIsCollapsed ? "flex-col items-center" : "items-center"}`}>
-          {!effectiveIsCollapsed && (
-            <button
-              type="button"
-              onClick={() => setHelpOpen(true)}
-              className="sidebar-item group hidden items-center gap-3 rounded-md px-3 py-2 text-xs md:flex"
-            >
-              <Keyboard className="h-4 w-4" aria-hidden />
-              <span className="whitespace-nowrap">{t("keyboardShortcuts")}</span>
-              <KbdCombo keys={["?"]} className="ml-auto" />
-            </button>
-          )}
-          <ThemeToggle />
-          </div>
+        <div className="shrink-0 flex flex-col gap-2 border-t border-sidebar-border p-3">
           {token ? (
             <>
               {userProfile && <SidebarBalanceCard profile={userProfile} collapsed={effectiveIsCollapsed} />}
-              <Link
-                href="/price"
-                title={t("topUp")}
-                className={`flex items-center justify-center gap-2 rounded-md py-2 text-sm font-semibold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors ${effectiveIsCollapsed ? "px-0" : "px-3"}`}
-              >
-                <PlusCircle className="h-4 w-4 shrink-0" />
-                {!effectiveIsCollapsed && <span>{t("topUp")}</span>}
-              </Link>
-              {/* <Link href="/price" className="block">
-                <Button
-                  variant="outline"
-                  className={`w-full flex items-center gap-3 text-white bg-emerald-600 hover:bg-emerald-700 border-0 py-2.5 rounded transition-all group ${
-                    effectiveIsCollapsed ? "justify-center px-0" : "justify-start px-3"
-                  }`}
-                >
-                  <PlusCircle
-                    className={`transition-transform duration-200 h-5 w-5 group-hover:scale-105`}
-                  />
-                  {!effectiveIsCollapsed && (
-                    <span className="whitespace-nowrap">
-                      {t('fillBalance')}
-                    </span>
-                  )}
-                </Button>
-              </Link> */}
-              <div className={`flex gap-2 ${effectiveIsCollapsed ? "flex-col items-center" : "items-center"}`}>
+              <div className={`flex gap-1 ${effectiveIsCollapsed ? "flex-col items-center" : "items-center"}`}>
                 <Link
                   href="/profile"
                   aria-label={t("profile")}
                   title={effectiveIsCollapsed ? t("profile") : undefined}
                   aria-current={pathname === "/profile" ? "page" : undefined}
-                  className={`group relative flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors text-xs sm:text-sm lg:text-base ${pathname === "/profile" ? "suliko-default-bg text-primary-foreground font-medium dark:text-white" : "sidebar-item"} ${effectiveIsCollapsed ? "justify-center" : "flex-1 min-w-0"}`}
+                  className={`group relative flex min-w-0 items-center gap-2.5 rounded-md px-2 py-1.5 transition-colors text-sm ${pathname === "/profile" ? "suliko-default-bg text-primary-foreground font-medium dark:text-white" : "sidebar-item"} ${effectiveIsCollapsed ? "justify-center" : "flex-1"}`}
                 >
-                  <User className="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:scale-105" />
+                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
+                    {initials || <User className="h-4 w-4" />}
+                  </span>
                   {needsEmailReminder && (
-                    <span className="absolute top-1.5 left-6 h-2 w-2 rounded-full bg-amber-500 animate-flicker" />
+                    <span className="absolute top-1 left-7 h-2 w-2 rounded-full bg-amber-500 animate-flicker" />
                   )}
                   {!effectiveIsCollapsed && <span className="truncate">{t("profile")}</span>}
                 </Link>
+                {!effectiveIsCollapsed && (
+                  <button
+                    type="button"
+                    onClick={() => setHelpOpen(true)}
+                    title={`${t("keyboardShortcuts")} (?)`}
+                    aria-label={t("keyboardShortcuts")}
+                    className="sidebar-button hidden h-8 w-8 shrink-0 items-center justify-center rounded-md cursor-pointer transition-colors md:flex"
+                  >
+                    <Keyboard className="h-4 w-4" aria-hidden />
+                  </button>
+                )}
                 <button
                   type="button"
                   title={t("logout")}
                   aria-label={t("logout")}
-                  className="sidebar-button shrink-0 flex items-center justify-center h-10 w-10 rounded-md cursor-pointer transition-colors"
+                  className="sidebar-button flex h-8 w-8 shrink-0 items-center justify-center rounded-md cursor-pointer transition-colors"
                   onClick={() => {
                     resetTextTranslation();
                     resetDocumentTranslation();
                     signOutEverywhere(locale);
                   }}
                 >
-                  <LogOut className="h-5 w-5" />
+                  <LogOut className="h-4 w-4" />
                 </button>
               </div>
             </>
           ) : (
-            <Link
-              href="/sign-in"
-              className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""
-                }`}
-            >
-              <User
-                className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"} group-hover:scale-105`}
-              />
-              {!effectiveIsCollapsed && (
-                <span className="whitespace-nowrap">
-                  {t('login')}
-                </span>
-              )}
-            </Link>
+            <div className={`flex gap-2 ${effectiveIsCollapsed ? "flex-col items-center" : "items-center"}`}>
+              <Link
+                href="/sign-in"
+                className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : "flex-1"}`}
+              >
+                <User className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
+                {!effectiveIsCollapsed && <span className="whitespace-nowrap">{t("login")}</span>}
+              </Link>
+              <ThemeToggle />
+            </div>
           )}
         </div>
       </aside>

@@ -180,6 +180,8 @@
     "link": "Historia płatności"
   },
   "Sidebar": {
+    "translate": "Tłumaczenia",
+    "products": "Produkty Suliko",
     "topUp": "Doładuj",
     "expiresIn": "Wygasa za {days, plural, one {# dzień} other {# dni}}",
     "expired": "Kredyty wygasły",
@@ -691,6 +693,9 @@
     "loading": "Ładowanie historii"
   },
   "Projects": {
+    "statusDone": "Gotowe",
+    "statusFailed": "Nieudane",
+    "statusProcessing": "W toku",
     "assignTitle": "Dodać to tłumaczenie do projektu?",
     "assignedTo": "Dodano do „{name}”",
     "assignNew": "Nowy projekt",
