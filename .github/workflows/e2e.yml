@@ -6,7 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  deployments: read
+
 jobs:
+  # On a pull request the tests run against that PR's Vercel preview, on main
+  # against production (see scripts/resolve-deploy-url.sh).
+  #
   # Reliable signal: does the deployed app's public surface work? No auth, no
   # backend data needed — this job going green means the frontend code is healthy.
   public:
@@ -26,10 +33,19 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
+      - name: Find the deployment to test
+        id: target
+        run: |
+          url=$(scripts/resolve-deploy-url.sh)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
       - name: Run public Playwright tests
         run: npx playwright test --project=public --project=mobile
         env:
-          DEPLOYMENT_URL: https://suliko-front-five.vercel.app
+          DEPLOYMENT_URL: ${{ steps.target.outputs.url }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 
       - name: Upload report
@@ -70,10 +86,19 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
+      - name: Find the deployment to test
+        id: target
+        run: |
+          url=$(scripts/resolve-deploy-url.sh)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
       - name: Run API + authenticated + admin Playwright tests
         run: npx playwright test --project=api --project=authenticated --project=admin
         env:
-          DEPLOYMENT_URL: https://suliko-front-five.vercel.app
+          DEPLOYMENT_URL: ${{ steps.target.outputs.url }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           TEST_USER_PHONE: ${{ secrets.TEST_USER_PHONE }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
