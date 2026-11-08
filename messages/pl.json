@@ -608,6 +608,7 @@
     "originalUnavailable": "Oryginalny plik nie jest już dostępny dla tego tłumaczenia. Nadal możesz czytać, edytować i pobrać przetłumaczony tekst."
   },
   "Profile": {
+    "theme": "Motyw",
     "expiresIn": "Wygasa za {days, plural, one {# dzień} other {# dni}}",
     "expired": "Kredyty wygasły",
     "validOneMonth": "Kredyty są ważne przez 1 miesiąc",

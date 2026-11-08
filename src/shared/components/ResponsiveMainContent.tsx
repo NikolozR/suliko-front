@@ -28,9 +28,9 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
       root.style.setProperty('--sidebar-width-md', '0');
       root.style.setProperty('--sidebar-width-lg', '0');
     } else if (isCollapsed) {
-      root.style.setProperty('--sidebar-width', '4rem');
-      root.style.setProperty('--sidebar-width-md', '4rem');
-      root.style.setProperty('--sidebar-width-lg', '4rem');
+      root.style.setProperty('--sidebar-width', '5rem');
+      root.style.setProperty('--sidebar-width-md', '5rem');
+      root.style.setProperty('--sidebar-width-lg', '5rem');
     } else {
       root.style.setProperty('--sidebar-width', '12rem'); // w-48
       root.style.setProperty('--sidebar-width-md', '14rem'); // md:w-56
@@ -41,7 +41,7 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
   if (!isMounted) {
     // Server-side render with collapsed state to prevent layout shift
     return (
-      <main id="main-content" className="sidebar-content pt-10" style={{ marginLeft: '4rem', transition: 'margin-left 300ms ease' }}>
+      <main id="main-content" className="sidebar-content pt-10" style={{ marginLeft: '5rem', transition: 'margin-left 300ms ease' }}>
         {children}
       </main>
     );

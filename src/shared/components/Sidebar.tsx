@@ -9,8 +9,6 @@ import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { HistoryDropdown } from "@/features/chatHistory/components/HistoryDropdown";
 import { SidebarLanguageSelector } from "./SidebarLanguageSelector";
-import { formatBalance } from "@/shared/utils/domainUtils";
-import { getBalanceExpiry, EXPIRY_TEXT_CLASS } from "@/shared/utils/balanceExpiry";
 import {
   Plus,
   PlusCircle,
@@ -21,16 +19,17 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
-  Wallet,
   ChevronDown,
   ChevronUp,
   FileText,
   Briefcase,
+  ExternalLink,
   ClipboardList,
   Keyboard,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import SulikoLogo from "./SulikoLogo";
+import { SidebarBalanceCard } from "./SidebarBalanceCard";
 import { KbdCombo } from "@/shared/components/Kbd";
 import { GO_TARGETS } from "@/shared/shortcuts/definitions";
 import { useShortcuts } from "@/shared/shortcuts/ShortcutsProvider";
@@ -131,7 +130,6 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   }, []);
 
   const t = useTranslations('Sidebar');
-  const tA = useTranslations('A11y');
   const locale = useLocale();
   const { setHelpOpen } = useShortcuts();
 
@@ -285,10 +283,17 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
           {token && (
             <a
               href={`${OFFICE_URL}/${officeLocale(locale)}/dashboard`}
+              title={effectiveIsCollapsed ? t("office") : undefined}
+              aria-label={t("office")}
               className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""}`}
             >
               <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
-              {!effectiveIsCollapsed && <span className="whitespace-nowrap">{t("office")}</span>}
+              {!effectiveIsCollapsed && (
+                <>
+                  <span className="whitespace-nowrap">{t("office")}</span>
+                  <ExternalLink className="ml-auto h-3.5 w-3.5 opacity-60" aria-hidden />
+                </>
+              )}
             </a>
           )}
 
@@ -308,6 +313,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                     : ""
                     } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                   aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/") ? "page" : undefined}
+                  title={effectiveIsCollapsed ? t("projects") : undefined}
                 >
                   <Clock className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
                     } group-hover:scale-105`} />
@@ -351,63 +357,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
           </div>
           {token ? (
             <>
-              {userProfile && (
-                <div className={`flex items-center gap-3 p-3 rounded-lg mb-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 ${effectiveIsCollapsed ? "justify-center" : ""
-                  }`}>
-                  <Link href='/price' aria-label={tA('balanceAndPlans')}>
-                    <Wallet className="h-5 w-5 cursor-pointer text-emerald-600 dark:text-emerald-400 shrink-0" aria-hidden="true" />
-                  </Link>
-                  {!effectiveIsCollapsed && (
-                    <Link href="/price" className="flex flex-col min-w-0 w-full hover:opacity-80 transition-opacity">
-                      {userProfile.subscription?.status === 'Active' ? (
-                        <>
-                          <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70 capitalize">{userProfile.subscription.planName}</span>
-                          <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
-                            {userProfile.subscription.pagesUsed} / {userProfile.subscription.monthlyPageLimit ?? '∞'} {t('pages')}
-                            <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
-                          </span>
-                          {(() => {
-                            const limit = userProfile.subscription.monthlyPageLimit;
-                            const pct = limit ? Math.min(100, (userProfile.subscription.pagesUsed / limit) * 100) : 0;
-                            const barColor = pct < 60 ? "bg-emerald-500" : pct < 85 ? "bg-amber-500" : "bg-red-500";
-                            return (
-                              <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
-                                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
-                              </div>
-                            );
-                          })()}
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70">{t('balance')}</span>
-                          <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
-                            {formatBalance(userProfile.balance || 0)} {t('pages')}
-                            
-                          </span>
-                          {(() => {
-                            const pct = Math.min(100, ((userProfile.balance || 0) / 50) * 100);
-                            const barColor = pct > 40 ? "bg-emerald-500" : pct > 10 ? "bg-amber-500" : "bg-red-500";
-                            return (
-                              <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
-                                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
-                              </div>
-                            );
-                          })()}
-                          {(() => {
-                            const exp = getBalanceExpiry(userProfile.balanceExpiresAt);
-                            if (!exp || !(userProfile.balance > 0)) return null;
-                            return (
-                              <span className={`mt-1 text-[11px] ${EXPIRY_TEXT_CLASS[exp.level]}`}>
-                                {exp.level === "expired" ? t("expired") : t("expiresIn", { days: exp.daysLeft })}
-                              </span>
-                            );
-                          })()}
-                        </>
-                      )}
-                    </Link>
-                  )}
-                </div>
-              )}
+              {userProfile && <SidebarBalanceCard profile={userProfile} collapsed={effectiveIsCollapsed} />}
               <Link
                 href="/price"
                 title={t("topUp")}

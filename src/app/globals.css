@@ -555,7 +555,7 @@ html.dark .aurora-orb-4 { opacity: 0.85; }
 
   /* Sidebar layout utilities */
   .sidebar-content {
-    margin-left: var(--sidebar-width, 4rem);
+    margin-left: var(--sidebar-width, 5rem);
     transition: margin-left 300ms ease;
   }
 
