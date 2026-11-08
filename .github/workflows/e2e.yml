@@ -43,7 +43,7 @@ jobs:
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
 
       - name: Run public Playwright tests
-        run: npx playwright test --project=public
+        run: npx playwright test --project=public --project=mobile
         env:
           DEPLOYMENT_URL: ${{ steps.target.outputs.url }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
