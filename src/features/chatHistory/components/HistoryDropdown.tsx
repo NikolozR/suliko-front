@@ -3,13 +3,13 @@
 import { useEffect, useState } from "react";
 import { getChatHistory } from "@/features/chatHistory";
 import type { Chat } from "@/features/chatHistory";
-import { FileIcon, Clock } from "lucide-react";
+import { FileIcon } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/shared/lib/utils";
 
 /** How many recent translations the sidebar lists; the rest are under "View all". */
-const RECENT_COUNT = 4;
+const RECENT_COUNT = 3;
 
 interface HistoryDropdownProps {
   isCollapsed: boolean;
@@ -81,50 +81,38 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
   }
 
   return (
-    <div className={cn(
-      "overflow-hidden transition-all duration-200",
-      isCollapsed ? "w-0" : "w-full"
-    )}>
-      <div className="space-y-1 p-2">
-        {chats.map((chat) => (
-          <Link
-            key={chat.chatId}
-            href={`/translations/${chat.chatId}`}
-            className="block w-full text-left px-2 py-2 rounded-lg hover:bg-muted/50 transition-colors group"
-          >
-            <div className="flex items-center gap-2">
-              <div className="relative p-1 bg-primary/10 rounded">
-                <FileIcon className="h-4 w-4 text-primary" />
-                <span className={`absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full border border-background ${
-                  chat.status === "Completed"
-                    ? "bg-emerald-500"
-                    : chat.hasError || chat.status === "Failed"
-                      ? "bg-red-500"
-                      : "bg-blue-500 animate-pulse"
-                }`} />
-              </div>
-              {!isCollapsed && (
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium truncate">{chat.originalFileName}</h4>
-                  <div className="flex items-center gap-1 text-xs text-muted-foreground mt-0.5">
-                    <Clock className="h-3 w-3" />
-                    <span>{new Date(chat.lastActivityAt).toLocaleDateString()}</span>
-                    <span className="uppercase text-xs bg-primary/10 text-primary px-1 rounded">
-                      {chat.fileType}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-          </Link>
-        ))}
-        <Link
-          href="/projects"
-          className="block w-full text-left px-2 py-2 rounded-lg hover:bg-muted/50 transition-colors text-sm font-medium text-primary"
-        >
-          {!isCollapsed && t("viewAll")}
-        </Link>
-      </div>
+    <div className="w-full">
+      <ul className="flex flex-col pl-6 pr-1 py-1">
+        {chats.map((chat) => {
+          const failed = chat.hasError || chat.status === "Failed";
+          const done = chat.status === "Completed";
+          return (
+            <li key={chat.chatId}>
+              <Link
+                href={`/translations/${chat.chatId}`}
+                title={chat.originalFileName}
+                className="flex items-center gap-2 rounded-md px-2 py-1.5 text-[13px] text-muted-foreground hover:bg-muted/50 hover:text-foreground transition-colors"
+              >
+                <span
+                  role="img"
+                  aria-label={done ? t("statusDone") : failed ? t("statusFailed") : t("statusProcessing")}
+                  className={cn(
+                    "h-2 w-2 shrink-0 rounded-full",
+                    done ? "bg-emerald-500" : failed ? "bg-red-500" : "bg-blue-500 animate-pulse"
+                  )}
+                />
+                <span className="truncate">{chat.originalFileName}</span>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      <Link
+        href="/projects"
+        className="block rounded-md py-1 pl-8 pr-2 text-[13px] font-medium text-primary hover:underline"
+      >
+        {t("viewAll")}
+      </Link>
     </div>
   );
-} 
+}
