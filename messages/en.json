@@ -139,7 +139,33 @@
     "login": "Login",
     "close": "Close"
   },
+  "Shortcuts": {
+    "title": "Keyboard shortcuts",
+    "description": "Single keys work when you are not typing in a field.",
+    "groups": {
+      "navigation": "Go to",
+      "translation": "Translation",
+      "general": "General"
+    },
+    "items": {
+      "goText": "New text translation",
+      "goDocument": "New document translation",
+      "goPassport": "Passport",
+      "goProjects": "Projects",
+      "goProfile": "Profile",
+      "goOrders": "Orders",
+      "translate": "Translate",
+      "focusInput": "Focus the text box",
+      "targetLanguage": "Choose the target language",
+      "swap": "Swap languages",
+      "copy": "Copy the translation",
+      "download": "Download the translation",
+      "help": "Show this list",
+      "close": "Close a window"
+    }
+  },
   "Sidebar": {
+    "keyboardShortcuts": "Keyboard shortcuts",
     "newTranslation": "New Translation",
     "history": "History",
     "projects": "Projects",
