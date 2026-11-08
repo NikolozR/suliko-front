@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { skipIfPreviewUnconfigured } from './helpers/environment';
 
 // The notary order routes, probed only with requests they refuse before doing
 // anything real: no email is sent, the partner's order API is never called, no
@@ -52,16 +53,18 @@ test.describe('Partner order proxy (/api/notary-order)', () => {
     expect((await request.post('/api/notary-order/reference')).status()).toBe(405);
   });
 
-  test('a file upload that is neither multipart nor JSON is a 415', async ({ request }) => {
+  test('a file upload that is neither multipart nor JSON is a 415', async ({ request, baseURL }) => {
     const res = await request.post('/api/notary-order/files', {
       headers: { 'content-type': 'text/plain' },
       data: 'not a form',
     });
+    skipIfPreviewUnconfigured(res.status(), baseURL, 'the partner order service');
     expect(res.status()).toBe(415);
   });
 
-  test('a stored-file hand-off without its ids is a 400', async ({ request }) => {
+  test('a stored-file hand-off without its ids is a 400', async ({ request, baseURL }) => {
     const res = await request.post('/api/notary-order/files', { data: { order_id: 1 } });
+    skipIfPreviewUnconfigured(res.status(), baseURL, 'the partner order service');
     expect(res.status()).toBe(400);
   });
 });

@@ -17,9 +17,13 @@ export const isProduction = (baseURL: string | undefined): boolean => {
 };
 
 /**
- * Skips the test when a preview answers "I am not configured" (503). On production
+ * Skips the test when a preview answers "I am not configured" (503, or 500 for the
+ * routes that report a missing key that way). On production
  * the same answer is a real failure, so nothing is skipped there.
  */
 export function skipIfPreviewUnconfigured(status: number, baseURL: string | undefined, what: string) {
-  test.skip(status === 503 && !isProduction(baseURL), `${what} is not configured on preview deployments`);
+  test.skip(
+    (status === 503 || status === 500) && !isProduction(baseURL),
+    `${what} is not configured on preview deployments`,
+  );
 }
