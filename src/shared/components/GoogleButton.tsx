@@ -1,5 +1,5 @@
 "use client";
-import { GoogleLogin } from "@react-oauth/google";
+import { GoogleLogin, GoogleOAuthProvider } from "@react-oauth/google";
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 
@@ -53,13 +53,15 @@ export default function GoogleButton({
         to fill the container so the entire button area is clickable.
       */}
       <div className="absolute inset-0 opacity-0 overflow-hidden rounded-lg [&_div]:!w-full [&_div]:!h-full [&_iframe]:!w-full [&_iframe]:!h-full">
-        <GoogleLogin
-          onSuccess={onSuccess}
-          onError={onError}
-          useOneTap={false}
-          width="100%"
-          size="large"
-        />
+        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
+          <GoogleLogin
+            onSuccess={onSuccess}
+            onError={onError}
+            useOneTap={false}
+            width="100%"
+            size="large"
+          />
+        </GoogleOAuthProvider>
       </div>
     </div>
   );

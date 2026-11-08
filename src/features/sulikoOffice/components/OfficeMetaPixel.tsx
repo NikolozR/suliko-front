@@ -24,7 +24,7 @@ export default function OfficeMetaPixel() {
     <>
       <Script
         id="meta-pixel-office"
-        strategy="afterInteractive"
+        strategy="lazyOnload"
         dangerouslySetInnerHTML={{
           __html: `(function(){
   if(${JSON.stringify(ANALYTICS_ALLOWED_HOSTS)}.indexOf(window.location.hostname.toLowerCase())===-1)return;

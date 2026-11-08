@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import Script from "next/script";
 import "../globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/features/ui";
@@ -17,7 +16,8 @@ import { routing } from "@/i18n/routing";
 import TopRightControls from "@/shared/components/TopRightControls";
 import SkipLink from "@/shared/components/SkipLink";
 import SessionRefreshProvider from "@/shared/components/SessionRefreshProvider";
-import { GoogleOAuthProvider } from '@react-oauth/google';
+import DeferredScripts from "@/shared/components/DeferredScripts";
+import { getDeferredTrackers } from "@/shared/utils/deferredTrackers";
 import {
   COMPANY_ADDRESS_EN,
   COMPANY_EMAIL,
@@ -26,7 +26,6 @@ import {
   COMPANY_PHONE,
 } from "@/shared/constants/company";
 import {
-  ANALYTICS_ALLOWED_HOSTS,
   getMetaPixelId,
   isAnalyticsEnabled,
 } from "@/shared/utils/analyticsEnv";
@@ -148,155 +147,12 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <head>
-        {/*
-          Meta Pixel. Rendered only on a production deployment (server half of the
-          guard); the snippet itself refuses to define fbq or fetch fbevents.js
-          unless the browser is on an allowed host (client half). See
-          shared/utils/analyticsEnv.ts.
-        */}
-        {metaPixelId && (
-          <Script
-            id="meta-pixel"
-            strategy="afterInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `(function(){
-  if(${JSON.stringify(ANALYTICS_ALLOWED_HOSTS)}.indexOf(window.location.hostname.toLowerCase())===-1)return;
-
-  !function(f,b,e,v,n,t,s){
-  if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-  n.queue=[];t=b.createElement(e);t.async=!0;
-  t.src=v;s=b.getElementsByTagName(e)[0];
-  s.parentNode.insertBefore(t,s)}(window, document,'script',
-  'https://connect.facebook.net/en_US/fbevents.js');
-
-  fbq('init', ${JSON.stringify(metaPixelId)});
-
-  // trackSingle: the Office page registers a second pixel, and a plain track
-  // would count this PageView on that one too depending on script order.
-  fbq('trackSingle', ${JSON.stringify(metaPixelId)}, 'PageView', {
-    content_name: 'Suliko Landing Page',
-    content_category: 'AI Translation Service'
-  });
-})();`,
-            }}
-          />
-        )}
-        {/* Hotjar Tracking Code for Suliko AI NEW */}
-        <Script
-          id="hotjar"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(h,o,t,j,a,r){
-                h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-                h._hjSettings={hjid:5128056,hjsv:6};
-                a=o.getElementsByTagName('head')[0];
-                r=o.createElement('script');r.async=1;
-                r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-                a.appendChild(r);
-              })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
-            `,
-          }}
-        />
-
-        {/* Crisp Chat Widget */}
-        <Script
-          id="crisp-chat"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              window.$crisp=[];
-              window.CRISP_WEBSITE_ID="b6b29d3c-ed85-4bf6-bfce-b95961ccf6dc";
-              window.CRISP_READY_TRIGGER=function(){
-                if(window.innerWidth<768){
-                  setTimeout(function(){
-                    // The launcher is a fixed box near the bottom-right corner. Found once.
-                    var launcher=[];
-                    var all=document.querySelectorAll("*");
-                    for(var i=0;i<all.length;i++){
-                      var s=window.getComputedStyle(all[i]);
-                      if(s.position==="fixed"&&parseInt(s.bottom)<40&&parseInt(s.right)<40&&parseInt(s.zIndex)>1000){
-                        launcher.push(all[i]);
-                      }
-                    }
-                    // Inside the app (it has a bottom bar and a sticky Translate button) the
-                    // corner and the middle of the right edge both cover content: it sits in the
-                    // empty band at the top right. On the public pages it keeps Crisp's corner.
-                    // Asked again every second, so moving between the two follows.
-                    function place(){
-                      var app=!!document.querySelector("nav.fixed.bottom-0");
-                      for(var j=0;j<launcher.length;j++){
-                        var st=launcher[j].style;
-                        if(app){
-                          st.setProperty("bottom","auto","important");
-                          st.setProperty("top","0.5rem","important");
-                          st.setProperty("right","0.75rem","important");
-                        }else{
-                          st.removeProperty("top");
-                          st.removeProperty("bottom");
-                          st.removeProperty("right");
-                        }
-                        st.removeProperty("transform");
-                      }
-                    }
-                    place();
-                    setInterval(place,1000);
-                  },1000);
-                }
-              };
-              (function(){
-                d=document;
-                s=d.createElement("script");
-                s.src="https://client.crisp.chat/l.js";
-                s.async=1;
-                d.getElementsByTagName("head")[0].appendChild(s);
-              })();
-            `,
-          }}
-        />
-
-        {/* Yandex.Metrika counter */}
-        <Script
-          id="yandex-metrika"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(m,e,t,r,i,k,a){
-                m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-                m[i].l=1*new Date();
-                for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-              })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=104728476', 'ym');
-
-              ym(104728476, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
-            `,
-          }}
-        />
-        <Script
-          id="yandex-metrika-2"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function(m,e,t,r,i,k,a){
-                m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-                m[i].l=1*new Date();
-                for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-                k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)
-              })(window, document,'script','https://mc.yandex.ru/metrika/tag.js?id=105466504', 'ym');
-
-              ym(105466504, 'init', {ssr:true, webvisor:true, clickmap:true, ecommerce:"dataLayer", accurateTrackBounce:true, trackLinks:true});
-            `,
-          }}
-        />
-      </head>
       <body
         suppressHydrationWarning
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
       >
         <RegisterServiceWorker />
+        <DeferredScripts scripts={getDeferredTrackers(metaPixelId)} />
         {/* Organization structured data */}
         <script
           type="application/ld+json"
@@ -326,7 +182,6 @@ export default async function LocaleLayout({
             <img src="https://mc.yandex.ru/watch/105466504" style={{ position: 'absolute', left: '-9999px' }} alt="" />
           </div>
         </noscript>
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
         <NextIntlClientProvider>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
             <RouteTransitionProgress />
@@ -342,24 +197,6 @@ export default async function LocaleLayout({
             <SpeedInsights />
           </ThemeProvider>
         </NextIntlClientProvider>
-        </GoogleOAuthProvider>
-
-        {/* Brevo Tracker */}
-        <Script
-          src="https://cdn.brevo.com/js/sdk-loader.js"
-          strategy="afterInteractive"
-        />
-        <Script id="brevo-init" strategy="afterInteractive">
-          {`
-            window.Brevo = window.Brevo || [];
-            Brevo.push([
-              "init",
-              {
-                client_key: "k9gjme1efnz6rcx1wtl5w9oy",
-              }
-            ]);
-          `}
-        </Script>
       </body>
     </html>
   );
