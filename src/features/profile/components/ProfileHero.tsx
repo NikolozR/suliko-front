@@ -7,6 +7,7 @@ import { useUser } from "@/features/auth/hooks/useUser";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { formatBalance } from "@/shared/utils/domainUtils";
+import { getBalanceExpiry, EXPIRY_TEXT_CLASS } from "@/shared/utils/balanceExpiry";
 import { signOutEverywhere } from "@/features/auth/services/signOut";
 
 interface ProfileHeroProps {
@@ -62,6 +63,13 @@ export const ProfileHero = ({ userProfile }: ProfileHeroProps) => {
           >
             {formatBalance(userProfile.balance || 0)} {t("pages")}
           </Link>
+          {(() => {
+            const exp = getBalanceExpiry(userProfile.balanceExpiresAt);
+            const text = !exp || !(userProfile.balance > 0)
+              ? t("validOneMonth")
+              : exp.level === "expired" ? t("expired") : t("expiresIn", { days: exp.daysLeft });
+            return <span className={`text-xs ${EXPIRY_TEXT_CLASS[exp?.level ?? "ok"]}`}>{text}</span>;
+          })()}
         </div>
         <Link href="/price" className="shrink-0">
           <Button

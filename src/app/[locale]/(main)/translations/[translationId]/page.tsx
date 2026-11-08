@@ -23,6 +23,7 @@ import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { useChatEditingStore } from "@/features/chatHistory/store/chatEditingStore";
 import { useChatSuggestionsStore } from "@/features/chatHistory/store/chatSuggestionsStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
+import { AssignToProjectBanner } from "@/features/projects/components/AssignToProjectBanner";
 import ChatTranslationResultView from "@/features/chatHistory/components/ChatTranslationResultView";
 import AutoFixesPanel from "@/features/chatHistory/components/AutoFixesPanel";
 import ProgressBar from "@/shared/components/ProgressBar";
@@ -646,6 +647,11 @@ export default function TranslationDetailPage() {
           verification={verification}
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
+        />
+        <AssignToProjectBanner
+          chatId={chat.chatId}
+          projectId={chat.projectId}
+          onAssigned={(id) => setChat((prev) => (prev ? { ...prev, projectId: id } : prev))}
         />
         <ChatTranslationResultView
           currentFile={reconstructedFile}
