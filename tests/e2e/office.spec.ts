@@ -35,7 +35,8 @@ test.describe('Suliko Office landing', () => {
     await expect(page.locator('h1')).toHaveText(HERO_EN);
   });
 
-  test('language switch moves between KA and EN', async ({ page }) => {
+  test('language switch moves between KA and EN', async ({ page, isMobile }) => {
+    test.skip(isMobile, 'on a phone the language switch is inside the menu');
     await page.goto('/en/office', { waitUntil: 'networkidle' });
     await page.getByRole('button', { name: 'KA', pressed: false }).first().click();
     await expect(page).toHaveURL(/\/ka\/office/);
