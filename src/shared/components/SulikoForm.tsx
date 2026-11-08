@@ -7,6 +7,7 @@ import { Button } from "@/features/ui/components/ui/button";
 import { Input } from "@/features/ui/components/ui/input";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import { useHydrated } from "@/shared/hooks/useHydrated";
 import { Loader2, User } from "lucide-react";
 import {
   register,
@@ -84,6 +85,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
   // Office's "create an account" send people to. Once, on arrival.
   const openedInMode = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const hydrated = useHydrated();
   const [registrationStep, setRegistrationStep] = useState<RegistrationStep>(1);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
@@ -621,6 +623,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
 
             {/* Form */}
             <form
+              method="post"
               onSubmit={(e) => {
                 e.preventDefault();
                 form.handleSubmit(
@@ -679,7 +682,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                   <Button
                     className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !hydrated}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
@@ -859,7 +862,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                     <Button
                       className="flex-1 bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !hydrated}
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2">
