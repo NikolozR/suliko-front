@@ -1,6 +1,8 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 import { NOTARY_WHATSAPP } from '@/shared/constants/notary';
+import { escapeHtml, singleLine } from '@/lib/escapeHtml';
+import { clientIp, createRateLimiter } from '@/lib/rateLimit';
 import {
   MAX_NOTARY_ATTACHMENT_BYTES,
   deleteNotaryBlobs,
@@ -11,6 +13,10 @@ import {
 
 const INBOX = 'info@th.com.ge';
 const FROM = 'Suliko <noreply@th.com.ge>';
+
+// 10 sends per IP address per 10 minutes. Only submissions that pass validation count.
+const limiter = createRateLimiter(10, 10 * 60 * 1000);
+const EMAIL_PATTERN = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
 
 export async function POST(request: NextRequest) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -42,8 +48,15 @@ export async function POST(request: NextRequest) {
     if (!name || !email) {
       return NextResponse.json({ error: 'Missing required fields: name, email' }, { status: 400 });
     }
+    if (!EMAIL_PATTERN.test(email.trim())) {
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
+    }
     if (fileEntries.length === 0 && blobFiles.length === 0 && !orderSummary) {
       return NextResponse.json({ error: 'At least one file is required' }, { status: 400 });
+    }
+
+    if (limiter.hit(clientIp(request))) {
+      return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
     }
 
     const attachments: { filename: string; content: Buffer }[] = await Promise.all(
@@ -72,20 +85,20 @@ export async function POST(request: NextRequest) {
       from: FROM,
       to: INBOX,
       replyTo: email,
-      subject: `[Suliko] New Notary Submission from ${name}`,
+      subject: `[Suliko] New Notary Submission from ${singleLine(name)}`,
       html: `
         <h2>New Notary File Submission</h2>
         <h3>www.suliko.ge</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Source Language:</strong> ${sourceLanguage}</p>
-        <p><strong>Target Language:</strong> ${targetLanguage}</p>
-        <p><strong>Notarial Certification:</strong> ${notarialCertification}</p>
-        <p><strong>Files:</strong> ${fileList}</p>
+        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+        <p><strong>Source Language:</strong> ${escapeHtml(sourceLanguage)}</p>
+        <p><strong>Target Language:</strong> ${escapeHtml(targetLanguage)}</p>
+        <p><strong>Notarial Certification:</strong> ${escapeHtml(notarialCertification)}</p>
+        <p><strong>Files:</strong> ${escapeHtml(fileList)}</p>
         ${
           orderSummary
-            ? `<h3>Order details</h3><pre style="font-family:monospace;white-space:pre-wrap">${orderSummary}</pre>`
+            ? `<h3>Order details</h3><pre style="font-family:monospace;white-space:pre-wrap">${escapeHtml(orderSummary)}</pre>`
             : ''
         }
       `,

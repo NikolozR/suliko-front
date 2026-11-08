@@ -11,6 +11,21 @@ test.describe('Notary upload route (/api/notary-upload)', () => {
     expect((await res.json()).error).toMatch(/name, email/i);
   });
 
+  test('refuses an email address that is not one', async ({ request }) => {
+    const res = await request.post('/api/notary-upload', {
+      multipart: { name: 'E2E Tester', email: 'not-an-email', order_summary: 'x' },
+    });
+    expect(res.status()).toBe(400);
+    expect((await res.json()).error).toMatch(/email/i);
+  });
+
+  test('refuses an email address built to break out of the message', async ({ request }) => {
+    const res = await request.post('/api/notary-upload', {
+      multipart: { name: 'E2E Tester', email: 'a@b.co><img src=x>', order_summary: 'x' },
+    });
+    expect(res.status()).toBe(400);
+  });
+
   test('refuses a submission with no file and no order summary', async ({ request }) => {
     const res = await request.post('/api/notary-upload', {
       multipart: { name: 'E2E Tester', email: 'e2e@suliko-test.dev' },
