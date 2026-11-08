@@ -13,6 +13,9 @@ test.describe('Sign-in form validation', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/en/sign-in', { waitUntil: 'domcontentloaded' });
     await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 30_000 });
+    // Submitting before the page has hydrated is a plain GET of the form, which puts
+    // the typed password in the address bar and never runs the validation.
+    await page.waitForLoadState('networkidle');
   });
 
   test('empty submit asks for both fields and stays on sign-in', async ({ page }) => {
