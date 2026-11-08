@@ -51,6 +51,23 @@ export default defineConfig({
       ],
     },
 
+    // The same public pages on a phone: a narrow screen, touch, a mobile user agent.
+    // Only specs that make no desktop-layout assumptions (no sidebar or header-link
+    // lookups) are listed here.
+    {
+      name: 'mobile',
+      use: { ...devices['Pixel 7'] },
+      testMatch: [
+        /smoke\.spec\.ts/,
+        /public-pages\.spec\.ts/,
+        /pricing\.spec\.ts/,
+        /blog\.spec\.ts/,
+        /auth\.spec\.ts/,
+        /office\.spec\.ts/,
+        /a11y-basics\.spec\.ts/,
+      ],
+    },
+
     // The API's blog and passport-template endpoints — isolated so an API
     // outage doesn't take down the public suite.
     {
