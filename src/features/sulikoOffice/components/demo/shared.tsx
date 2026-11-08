@@ -203,7 +203,7 @@ export function FakeCursor({
 export function OrderLine({ id, doc, pair }: { id: string; doc: string; pair: string }) {
   return (
     <div className="grid grid-cols-[50px_minmax(0,1fr)_auto] items-center gap-2 text-xs text-[#3a4466] dark:text-slate-300">
-      <span className="text-[#7a8299] dark:text-slate-400">{id}</span>
+      <span className="text-[#5b6479] dark:text-slate-400">{id}</span>
       <span className="truncate text-foreground">{doc}</span>
       <span>{pair}</span>
     </div>

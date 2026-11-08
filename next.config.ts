@@ -10,6 +10,10 @@ const withNextIntl = createNextIntlPlugin();
 const api = new URL(API_BASE_URL);
 
 const nextConfig: NextConfig = {
+  // Page title, description and canonical go in the <head> of the first chunk for
+  // every visitor. Streamed metadata arrived ~100 KB into the document, where
+  // PageSpeed and some crawlers do not see it.
+  htmlLimitedBots: /.*/,
   webpack: (config) => {
     config.resolve.alias.canvas = false;
     return config;

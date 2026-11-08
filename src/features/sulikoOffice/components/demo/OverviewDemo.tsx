@@ -200,7 +200,7 @@ export default function OverviewDemo() {
               i < rows.length - 1 ? "border-b border-border/60" : ""
             } ${o.id === fresh ? "bg-[#eef1fe] office-enter dark:bg-[#3b59f3]/10" : ""}`}
           >
-            <span className="text-[#7a8299] dark:text-slate-400">#{o.id}</span>
+            <span className="text-[#5b6479] dark:text-slate-400">#{o.id}</span>
             <span className="truncate">{t(`dash.${TEMPLATES[o.tpl].doc}`)}</span>
             <span>{TEMPLATES[o.tpl].pair}</span>
             <span
