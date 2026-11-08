@@ -872,6 +872,14 @@ body {
   color: var(--sidebar-accent-foreground) !important;
 }
 
+/* Current page: a soft tint and an accent edge. The solid gradient stays reserved
+   for the one primary action ("New translation"), so the two never look alike. */
+.sidebar-item.sidebar-item-active:not(.suliko-default-bg) {
+  background-color: color-mix(in oklab, var(--suliko-default-color) 18%, transparent) !important;
+  color: var(--sidebar-foreground) !important;
+  box-shadow: inset 3px 0 0 var(--suliko-default-color);
+}
+
 .sidebar-item-disabled {
   color: var(--sidebar-foreground) !important;
 }

@@ -245,16 +245,19 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
               </a>
             ) : (
-              <div role="group" aria-label={t("products")} className="flex gap-1 rounded-lg bg-muted/60 p-1 text-sm">
-                <span aria-current="true" className="flex-1 rounded-md bg-background px-2 py-1 text-center font-medium shadow-sm">
+              <div role="group" aria-label={t("products")} className="grid grid-cols-2 gap-1 rounded-lg bg-black/5 p-1 text-sm dark:bg-white/5">
+                <span
+                  aria-current="true"
+                  className="flex items-center justify-center whitespace-nowrap rounded-md bg-primary/15 px-2 py-1.5 font-medium text-primary"
+                >
                   {t("translate")}
                 </span>
                 <a
                   href={officeHref}
-                  className="flex flex-1 items-center justify-center gap-1 rounded-md px-2 py-1 text-center text-muted-foreground transition-colors hover:text-foreground"
+                  className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md px-2 py-1.5 text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
                 >
-                  {t("office")}
-                  <ExternalLink className="h-3 w-3 opacity-70" aria-hidden />
+                  {t("officeShort")}
+                  <ExternalLink className="h-3 w-3 shrink-0 opacity-70" aria-hidden />
                 </a>
               </div>
             )}
@@ -286,7 +289,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 className={label === "newTranslation"
                   ? `group text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center" : ""}`
                   : `sidebar-item group text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${isActive(href)
-                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                    ? "sidebar-item-active font-medium"
                     : ""
                   } ${effectiveIsCollapsed ? "justify-center" : ""}`
                 }
@@ -323,7 +326,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 <Link
                   href="/projects"
                   className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/")
-                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                    ? "sidebar-item-active font-medium"
                     : ""
                     } ${effectiveIsCollapsed ? "justify-center" : ""}`}
                   aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/") ? "page" : undefined}
@@ -363,7 +366,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   aria-label={t("profile")}
                   title={effectiveIsCollapsed ? t("profile") : undefined}
                   aria-current={pathname === "/profile" ? "page" : undefined}
-                  className={`group relative flex min-w-0 items-center gap-2.5 rounded-md px-2 py-1.5 transition-colors text-sm ${pathname === "/profile" ? "suliko-default-bg text-primary-foreground font-medium dark:text-white" : "sidebar-item"} ${effectiveIsCollapsed ? "justify-center" : "flex-1"}`}
+                  className={`group relative flex min-w-0 items-center gap-2.5 rounded-md px-2 py-1.5 transition-colors text-sm ${pathname === "/profile" ? "sidebar-item sidebar-item-active font-medium" : "sidebar-item"} ${effectiveIsCollapsed ? "justify-center" : "flex-1"}`}
                 >
                   <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
                     {initials || <User className="h-4 w-4" />}
