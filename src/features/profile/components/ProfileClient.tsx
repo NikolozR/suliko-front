@@ -187,7 +187,7 @@ export default function ProfileClient() {
   const validationErrors = form.formState.errors;
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-8">
+    <div className="mx-auto w-full max-w-3xl px-4 py-8">
       {updateError && (
         <ErrorAlert
           message={updateError}
@@ -195,9 +195,9 @@ export default function ProfileClient() {
         />
       )}
       <ProfileHero userProfile={currentUserProfile} />
-      <div className="flex flex-col gap-6 md:flex-row md:items-start">
-        <ProfileSectionNav active={section} onChange={setSection} />
-        <div className="min-w-0 max-w-2xl flex-1 space-y-6">
+      <ProfileSectionNav active={section} onChange={setSection} />
+      <div>
+        <div className="space-y-6">
           {section === "account" && (
             <>
               <ProfilePersonalInfo
