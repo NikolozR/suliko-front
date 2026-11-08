@@ -608,6 +608,7 @@
     "stageFinalize": "Finalizing"
   },
   "Profile": {
+    "theme": "Theme",
     "expiresIn": "Expires in {days, plural, one {# day} other {# days}}",
     "expired": "Credits expired",
     "validOneMonth": "Credits are valid for 1 month",

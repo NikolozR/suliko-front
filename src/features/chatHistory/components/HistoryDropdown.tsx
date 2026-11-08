@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import { getChatHistory } from "@/features/chatHistory";
 import type { Chat } from "@/features/chatHistory";
 import { FileIcon, Clock } from "lucide-react";
-import { useRouter, Link } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/shared/lib/utils";
+
+/** How many recent translations the sidebar lists; the rest are under "View all". */
+const RECENT_COUNT = 4;
 
 interface HistoryDropdownProps {
   isCollapsed: boolean;
@@ -17,16 +20,14 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const router = useRouter();
   const t = useTranslations("Projects");
 
   useEffect(() => {
     const fetchHistory = async () => {
       try {
         setLoading(true);
-        const response = await getChatHistory();
-        response.data.chats.pop();
-        setChats(response.data.chats);
+        const response = await getChatHistory({ pageSize: RECENT_COUNT });
+        setChats(response.data.chats.slice(0, RECENT_COUNT));
         setError(null);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load history");
@@ -51,7 +52,8 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  // Nothing fits in the collapsed rail, and its messages would be cut off.
+  if (!isOpen || isCollapsed) return null;
 
   if (loading) {
     return (
@@ -85,10 +87,10 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
     )}>
       <div className="space-y-1 p-2">
         {chats.map((chat) => (
-          <button
+          <Link
             key={chat.chatId}
-            onClick={() => router.push(`/translations/${chat.chatId}`)}
-            className="w-full text-left px-2 py-2 rounded-lg hover:bg-muted/50 transition-colors group"
+            href={`/translations/${chat.chatId}`}
+            className="block w-full text-left px-2 py-2 rounded-lg hover:bg-muted/50 transition-colors group"
           >
             <div className="flex items-center gap-2">
               <div className="relative p-1 bg-primary/10 rounded">
@@ -114,7 +116,7 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
                 </div>
               )}
             </div>
-          </button>
+          </Link>
         ))}
         <Link
           href="/projects"

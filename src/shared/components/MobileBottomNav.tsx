@@ -2,9 +2,10 @@
 
 import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { Plus, FolderOpen, HelpCircle, User, ClipboardList } from "lucide-react";
+import { Plus, FolderOpen, HelpCircle, User, ClipboardList, Briefcase } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 
@@ -12,6 +13,7 @@ export default function MobileBottomNav() {
   const pathname = usePathname();
   const { token } = useAuthStore();
   const t = useTranslations("Sidebar");
+  const locale = useLocale();
   const resetTextTranslation = useTextTranslationStore((s) => s.reset);
   const resetDocumentTranslation = useDocumentTranslationStore((s) => s.reset);
 
@@ -69,6 +71,15 @@ export default function MobileBottomNav() {
             </Link>
           );
         })}
+        {token && (
+          <a
+            href={`${OFFICE_URL}/${officeLocale(locale)}/dashboard`}
+            className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-xs text-muted-foreground transition-colors"
+          >
+            <Briefcase className="h-5 w-5" />
+            <span className="max-w-full truncate px-1 text-xs leading-tight">{t("office")}</span>
+          </a>
+        )}
       </div>
     </nav>
   );
