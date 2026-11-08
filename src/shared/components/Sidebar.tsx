@@ -208,7 +208,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
       <aside
         className={`sidebar-main hidden md:flex flex-col h-[100dvh] overflow-hidden fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
           ? "w-20"
-          : "w-48 md:w-56 lg:w-64"
+          : "w-48 md:w-56 lg:w-60"
           } ${!effectiveIsCollapsed
             ? "md:shadow-none shadow-float-3"
             : "md:shadow-none"
@@ -240,7 +240,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                 href={officeHref}
                 title={t("office")}
                 aria-label={t("office")}
-                className="sidebar-item group flex items-center justify-center rounded-md px-3 py-2.5 transition-colors"
+                className="sidebar-item group flex items-center justify-center rounded-md px-3 py-2 transition-colors"
               >
                 <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
               </a>
@@ -266,7 +266,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
             disabled ? (
               <span
                 key={href}
-                className={`sidebar-item-disabled group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 opacity-50 cursor-not-allowed select-none ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                className={`sidebar-item-disabled group text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 opacity-50 cursor-not-allowed select-none ${effectiveIsCollapsed ? "justify-center" : ""}`}
                 aria-disabled="true"
                 tabIndex={-1}
               >
@@ -284,8 +284,8 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   resetDocumentTranslation();
                 } : undefined}
                 className={label === "newTranslation"
-                  ? `group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center" : ""}`
-                  : `sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
+                  ? `group text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center" : ""}`
+                  : `sidebar-item group text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${isActive(href)
                     ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
                     : ""
                   } ${effectiveIsCollapsed ? "justify-center" : ""}`
@@ -322,7 +322,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               <div className="flex items-center">
                 <Link
                   href="/projects"
-                  className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/")
+                  className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/")
                     ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
                     : ""
                     } ${effectiveIsCollapsed ? "justify-center" : ""}`}
@@ -403,7 +403,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
             <div className={`flex gap-2 ${effectiveIsCollapsed ? "flex-col items-center" : "items-center"}`}>
               <Link
                 href="/sign-in"
-                className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : "flex-1"}`}
+                className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${effectiveIsCollapsed ? "justify-center" : "flex-1"}`}
               >
                 <User className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
                 {!effectiveIsCollapsed && <span className="whitespace-nowrap">{t("login")}</span>}
