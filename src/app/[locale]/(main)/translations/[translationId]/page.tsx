@@ -114,6 +114,7 @@ export default function TranslationDetailPage() {
    */
   const [jobStage, setJobStage] = useState<JobStage | null>(null);
   const t = useTranslations("Translation");
+  const tA = useTranslations("A11y");
   const tProgress = useTranslations("DocumentTranslationCard.progress");
   const tOverlay = useTranslations("TranslationLoadingOverlay");
   const router = useRouter();
@@ -583,7 +584,7 @@ export default function TranslationDetailPage() {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full">
             <ArrowLeft className="h-6 w-6" />
           </Button>
           <h1 className="text-2xl font-semibold">{chat.originalFileName}</h1>
@@ -603,7 +604,7 @@ export default function TranslationDetailPage() {
   if (error && !chat) {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
-        <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full mb-4">
+        <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full mb-4">
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <div className="flex items-center gap-3 p-4 rounded-xl border border-destructive/30 bg-destructive/5">
@@ -617,7 +618,7 @@ export default function TranslationDetailPage() {
   if (!chat) {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
-        <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full mb-4">
+        <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full mb-4">
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <div className="text-muted-foreground">{t("notFound")}</div>
@@ -630,7 +631,7 @@ export default function TranslationDetailPage() {
     return (
       <div className="container mx-auto p-3 sm:p-6 max-w-[1600px]">
         <div className="flex items-center gap-4 mb-8">
-          <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
+          <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full">
             <ArrowLeft className="h-6 w-6" />
           </Button>
           <div className="flex items-center gap-4 flex-wrap">
@@ -671,7 +672,7 @@ export default function TranslationDetailPage() {
   return (
     <div className="container mx-auto p-3 sm:p-6 max-w-4xl">
       <div className="flex items-center gap-4 mb-8">
-        <Button variant="ghost" size="icon" onClick={() => router.back()} className="rounded-full">
+        <Button variant="ghost" size="icon" onClick={() => router.back()} aria-label={tA("back")} className="rounded-full">
           <ArrowLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-2xl font-semibold truncate">{chat.originalFileName}</h1>
@@ -684,7 +685,7 @@ export default function TranslationDetailPage() {
             {jobStage === "ready" ? (
               <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" aria-hidden />
             ) : (
-              <Loader2 className="h-4 w-4 animate-spin text-suliko-default-color shrink-0" />
+              <Loader2 className="h-4 w-4 animate-spin text-accent-text shrink-0" />
             )}
             <span className="px-2 py-0.5 rounded text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 shrink-0">
               {/* The backend's own stage is more specific than the coarse
@@ -707,7 +708,7 @@ export default function TranslationDetailPage() {
           */}
           <div className="flex items-end justify-between gap-4 mb-2">
             <div className="min-w-0">
-              <div className="text-4xl font-semibold tabular-nums leading-none text-suliko-default-color">
+              <div className="text-4xl font-semibold tabular-nums leading-none text-accent-text">
                 {isIndeterminate ? "–" : `${Math.round(displayProgress)}%`}
               </div>
               {/* The message ladder is driven by the simulated curve, so beside a
@@ -750,7 +751,7 @@ export default function TranslationDetailPage() {
               return (
                 <span
                   key={STAGE_LABELS_EN[index]}
-                  className={`text-[11px] px-2.5 py-1 rounded-full border transition-all duration-300 inline-flex items-center gap-1 ${
+                  className={`text-xs px-2.5 py-1 rounded-full border transition-all duration-300 inline-flex items-center gap-1 ${
                     isDone
                       ? "bg-green-50 border-green-200 text-green-700 dark:bg-green-950/40 dark:border-green-800/40 dark:text-green-400"
                       : isCurrent

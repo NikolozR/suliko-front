@@ -74,13 +74,13 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileCli
             <FileX className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-destructive" aria-hidden />
           ) : (
             <Upload className={`mx-auto h-8 w-8 sm:h-12 sm:w-12 transition-all duration-200 ${
-              isDragOver ? "text-suliko-default-color -translate-y-1" : "text-muted-foreground"
+              isDragOver ? "text-accent-text -translate-y-1" : "text-muted-foreground"
             }`} />
           )}
           <p
             aria-live="polite"
             className={`mt-4 text-sm transition-colors ${
-              isRejected ? "text-destructive" : isDragOver ? "text-suliko-default-color" : "text-muted-foreground"
+              isRejected ? "text-destructive" : isDragOver ? "text-accent-text" : "text-muted-foreground"
             }`}
           >
             {isRejected ? t('dropRejected') : isDragOver ? t('dropFiles') : t('dragAndDrop')}

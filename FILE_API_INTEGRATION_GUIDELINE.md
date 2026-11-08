@@ -32,6 +32,36 @@ need a Gemini key of your own.
 
 ---
 
+## File size: call content.api24.ge directly
+
+Send files to **`https://content.api24.ge/api/Document/prepare-upload`**. It takes
+files up to **20 MB**.
+
+If your uploads stop at about 4 MB with `413 FUNCTION_PAYLOAD_TOO_LARGE`, the
+request is going through a Vercel server function, and Vercel refuses request
+bodies over 4.5 MB before Suliko's code runs. Nothing on Suliko's side can raise
+that limit for a function. Check the address you call:
+
+| Address | Limit |
+|---|---|
+| `https://content.api24.ge/api/Document/prepare-upload` | 20 MB. Use this. |
+| `https://www.suliko.ge/api/gemini-upload` | 20 MB (passed straight through to the API; deprecated, see below) |
+| Any other `suliko.ge/api/...` address that is not listed in this guide | About 4.5 MB. Do not upload files there. |
+
+Rules that avoid the usual traps:
+
+1. Use the full host `www.suliko.ge`, never `suliko.ge`. The bare host redirects,
+   and HTTP clients drop the `Authorization` header when a redirect changes host.
+2. Send the file as `multipart/form-data`, field `File`, with the part's content
+   type set (`application/pdf`, not `application/octet-stream`).
+3. Do not send the file as base64 inside JSON. That grows it by a third and
+   counts against the same limits.
+4. A file over 20 MB is refused by the API. Split or compress it first. The body
+   of `FUNCTION_PAYLOAD_TOO_LARGE` (a plain-text page naming a function) tells
+   you the request hit a Vercel function instead.
+
+---
+
 ## 1. Prepare the upload
 
 ```http

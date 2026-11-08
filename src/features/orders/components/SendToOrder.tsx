@@ -94,7 +94,7 @@ export function SendToOrder({
   return (
     <>
       <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-xl border border-suliko-default-color/30 bg-suliko-default-color/[0.04] p-4">
-        <ClipboardList className="h-5 w-5 shrink-0 text-suliko-default-color" aria-hidden />
+        <ClipboardList className="h-5 w-5 shrink-0 text-accent-text" aria-hidden />
         <div className="min-w-0 flex-1 basis-56 text-sm">
           <Link href={orderHref} className="font-medium text-foreground hover:underline">
             {t("forOrder", { number: note.orderNumber ?? "", bureau: note.organization })}

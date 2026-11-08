@@ -12,6 +12,7 @@ import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
 export default function HelpPageClient() {
   const t = useTranslations("HelpPage");
   const videoT = useTranslations("VideoSection");
+  const tA = useTranslations("A11y");
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressRef = useRef<HTMLInputElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -134,6 +135,7 @@ export default function HelpPageClient() {
                       max={duration || 0}
                       value={currentTime}
                       onChange={handleProgressChange}
+                      aria-label={tA("videoProgress")}
                       className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
                       style={{
                         background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${(currentTime / duration) * 100}%, rgba(255,255,255,0.3) ${(currentTime / duration) * 100}%, rgba(255,255,255,0.3) 100%)`
@@ -149,6 +151,7 @@ export default function HelpPageClient() {
                         variant="ghost"
                         size="sm"
                         onClick={togglePlay}
+                        aria-label={isPlaying ? tA("pause") : tA("play")}
                         className="text-white hover:bg-white/20 p-2"
                       >
                         {isPlaying ? (
@@ -170,6 +173,7 @@ export default function HelpPageClient() {
                         variant="ghost"
                         size="sm"
                         onClick={toggleMute}
+                        aria-label={isMuted || volume === 0 ? tA("unmute") : tA("mute")}
                         className="text-white hover:bg-white/20 p-2"
                       >
                         {isMuted || volume === 0 ? (
@@ -186,6 +190,7 @@ export default function HelpPageClient() {
                         step="0.1"
                         value={volume}
                         onChange={handleVolumeChange}
+                        aria-label={tA("videoVolume")}
                         className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer slider"
                         style={{
                           background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${volume * 100}%, rgba(255,255,255,0.3) ${volume * 100}%, rgba(255,255,255,0.3) 100%)`
@@ -197,6 +202,7 @@ export default function HelpPageClient() {
                         variant="ghost"
                         size="sm"
                         onClick={toggleFullscreen}
+                        aria-label={tA("fullscreen")}
                         className="text-white hover:bg-white/20 p-2"
                       >
                         <Maximize className="h-5 w-5" />

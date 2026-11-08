@@ -105,7 +105,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
       <LandingHeader />
       
       {/* Main Blog Post Page with Stars Background */}
-      <main className="min-h-screen blog-stars-background">
+      <main id="main-content" className="min-h-screen blog-stars-background">
         {/* Stars Background Layer */}
         <div className="fixed inset-0 -z-10">
           <div className="absolute inset-0 stars-layer-1" />

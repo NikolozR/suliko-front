@@ -33,6 +33,7 @@ import {
 import { formatMoney } from "@/shared/utils/notaryEstimate";
 import { trackCta, triggerHotjarEvent } from "@/shared/utils/notaryTracking";
 import OrderStepConfigure from "./OrderStepConfigure";
+import { appendNotaryFiles } from "@/shared/utils/notaryBlobUpload";
 import OrderStepUpload from "./OrderStepUpload";
 import OrderStepReview from "./OrderStepReview";
 import OrderStepDetails from "./OrderStepDetails";
@@ -91,6 +92,27 @@ export default function NotaryOrderWizard() {
   /** Generated once per order attempt and kept, so an ambiguous timeout is reconcilable. */
   const externalReferenceRef = useRef<string>("");
   const nextDocumentId = useRef(2);
+
+  // Keyboard and screen-reader flow: a failed Continue or submit moves focus to the first
+  // invalid field (its aria-describedby then reads the error); a new step moves focus to its
+  // heading, so the change is announced.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const stepMounted = useRef(false);
+
+  useEffect(() => {
+    if (failedAttempts === 0) return;
+    rootRef.current?.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus();
+  }, [failedAttempts]);
+
+  useEffect(() => {
+    if (!stepMounted.current) {
+      stepMounted.current = true;
+      return;
+    }
+    headingRef.current?.focus();
+  }, [step]);
 
   // -------------------------------------------------------------------------
   // Reference data
@@ -191,7 +213,10 @@ export default function NotaryOrderWizard() {
     if (step === 1) {
       const stepErrors = validateConfigure(state, reference, t);
       setErrors(stepErrors);
-      if (Object.keys(stepErrors).length > 0) return;
+      if (Object.keys(stepErrors).length > 0) {
+        setFailedAttempts((n) => n + 1);
+        return;
+      }
       triggerHotjarEvent("order_configured");
     }
 
@@ -244,9 +269,9 @@ export default function NotaryOrderWizard() {
           .filter(Boolean)
           .join("\n")
       );
-      files.forEach((file) => form.append("files", file));
 
       try {
+        await appendNotaryFiles(form, files);
         const response = await fetch("/api/notary-upload", { method: "POST", body: form });
         return response.ok;
       } catch {
@@ -356,7 +381,11 @@ export default function NotaryOrderWizard() {
         .join("\n")
     );
 
-    state.documents.forEach((doc) => doc.files.forEach((file) => form.append("files", file)));
+    try {
+      await appendNotaryFiles(form, state.documents.flatMap((doc) => doc.files));
+    } catch {
+      throw new OrderApiError("Could not upload the files.", { kind: "network" });
+    }
 
     const response = await fetch("/api/notary-upload", { method: "POST", body: form });
     if (!response.ok) {
@@ -379,7 +408,10 @@ export default function NotaryOrderWizard() {
 
     const stepErrors = validateDetails(state, reference, t);
     setErrors(stepErrors);
-    if (Object.keys(stepErrors).length > 0) return;
+    if (Object.keys(stepErrors).length > 0) {
+      setFailedAttempts((n) => n + 1);
+      return;
+    }
 
     setSubmitting(true);
     setSubmitError(null);
@@ -527,14 +559,20 @@ export default function NotaryOrderWizard() {
   const StepIcon = [FileText, Upload, Receipt, UserRound][step - 1] ?? FileText;
 
   return (
-    <div className="space-y-5">
+    <div ref={rootRef} className="space-y-5">
       {/* Step header — title, what this step is for, and where you are. */}
       <div className="-mx-3 -mt-4 mb-1 bg-linear-to-r from-suliko-default-color to-indigo-600 px-5 py-4 text-white sm:-mx-5 sm:-mt-6 md:-mx-6 md:-mt-8">
         <div className="flex items-start justify-between gap-3">
           <div className="flex min-w-0 items-start gap-2.5">
             <StepIcon className="mt-0.5 h-6 w-6 shrink-0" />
             <div className="min-w-0">
-              <h4 className="text-lg font-semibold leading-tight">{stepTitles[step - 1]}</h4>
+              <h4
+                ref={headingRef}
+                tabIndex={-1}
+                className="text-lg font-semibold leading-tight outline-none"
+              >
+                {stepTitles[step - 1]}
+              </h4>
               <p className="mt-0.5 text-xs text-white/80">{stepSubtitles[step - 1]}</p>
             </div>
           </div>
@@ -597,7 +635,7 @@ export default function NotaryOrderWizard() {
 
       {/* Submit error */}
       {submitError && (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
+        <div role="alert" className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3">
           <div className="flex items-start gap-3">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-red-500" />
             <div className="min-w-0">
@@ -615,7 +653,7 @@ export default function NotaryOrderWizard() {
                 </ul>
               )}
               {submitError.reference && (
-                <p className="mt-2 text-[11px] text-muted-foreground">
+                <p className="mt-2 text-xs text-muted-foreground">
                   {t("reference")}:{" "}
                   <span className="font-mono">{submitError.reference}</span>
                 </p>
@@ -630,7 +668,7 @@ export default function NotaryOrderWizard() {
         {step > 1 && (
           <div className="flex items-center justify-between text-sm">
             <span className="text-muted-foreground">{t("estimatedTotal")}</span>
-            <span className="font-semibold text-suliko-default-color">
+            <span className="font-semibold text-accent-text">
               {formatMoney(estimate.total, estimate.currency)}
             </span>
           </div>

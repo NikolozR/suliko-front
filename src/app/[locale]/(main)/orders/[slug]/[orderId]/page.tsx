@@ -502,7 +502,7 @@ function FileRow({
             aria-label={t("preview")}
             aria-pressed={previewed}
             title={t("preview")}
-            className={cn(ICON_ACTION, previewed && "text-suliko-default-color")}
+            className={cn(ICON_ACTION, previewed && "text-accent-text")}
           >
             <Eye />
           </Button>

@@ -39,7 +39,7 @@ export const ProfileReferral: React.FC<ProfileReferralProps> = ({ referralCode }
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Gift className="h-5 w-5 text-suliko-default-color" />
+          <Gift className="h-5 w-5 text-accent-text" />
           {t("referral")}
         </CardTitle>
       </CardHeader>

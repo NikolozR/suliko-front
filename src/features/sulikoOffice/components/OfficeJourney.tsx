@@ -37,7 +37,7 @@ export default function OfficeJourney() {
                 <li key={key} data-reveal style={revealDelay(i * 70)} className="flex gap-4 lg:flex-col lg:gap-3.5">
                   <span
                     className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border-2 border-suliko-default-color text-xs ${
-                      last ? "bg-suliko-default-color text-white" : "bg-background text-suliko-default-color dark:text-[#aebcff]"
+                      last ? "bg-suliko-default-color text-white" : "bg-background text-accent-text dark:text-[#aebcff]"
                     }`}
                   >
                     {last ? <Check className="h-3.5 w-3.5" aria-hidden /> : i + 1}

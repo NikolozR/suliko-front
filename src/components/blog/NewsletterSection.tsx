@@ -6,6 +6,7 @@ import { Button } from '@/features/ui';
 
 export default function NewsletterSection() {
   const t = useTranslations('Blog.newsletter');
+  const tA = useTranslations('A11y');
 
   return (
     <div className="bg-card/80 backdrop-blur-sm rounded-lg p-6 border border-border/50 shadow-sm">
@@ -27,6 +28,7 @@ export default function NewsletterSection() {
           <input
             type="email"
             placeholder={t('placeholder')}
+            aria-label={tA('emailAddress')}
             className="flex-1 px-3 py-2 rounded-md border border-border bg-background text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
           />
           <Button size="sm" className="px-4 py-2">

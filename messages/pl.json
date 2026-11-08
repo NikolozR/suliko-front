@@ -585,7 +585,8 @@
       "openFullView": "Otwórz pełny widok",
       "failed": "Tłumaczenie nie powiodło się. Spróbuj ponownie.",
       "openingResult": "Gotowe. Otwieramy tłumaczenie…"
-    }
+    },
+    "originalUnavailable": "Oryginalny plik nie jest już dostępny dla tego tłumaczenia. Nadal możesz czytać, edytować i pobrać przetłumaczony tekst."
   },
   "Profile": {
     "fullName": "Pełne imię i nazwisko",
@@ -640,7 +641,20 @@
       "confirmDelete": "Na pewno?",
       "cancelDelete": "Anuluj",
       "addCard": "Dodaj kartę"
-    }
+    },
+    "allFieldsRequired": "Wszystkie pola są wymagane.",
+    "passwordsDontMatch": "Nowe hasła nie są zgodne.",
+    "passwordTooShort": "Nowe hasło musi mieć co najmniej 6 znaków.",
+    "passwordSameAsOld": "Nowe hasło musi różnić się od obecnego.",
+    "accountDataNotFound": "Nie znaleziono danych konta. Zaloguj się ponownie i spróbuj jeszcze raz.",
+    "passwordChangeFailed": "Nie udało się zmienić hasła. Spróbuj ponownie.",
+    "firstNameRequired": "Imię jest wymagane.",
+    "emailRequired": "Adres e-mail jest wymagany.",
+    "emailInvalid": "Podaj adres e-mail, np. name@example.com.",
+    "updateFailed": "Nie udało się zaktualizować profilu. Spróbuj ponownie.",
+    "deleteAccountFailed": "Nie udało się usunąć konta. Spróbuj ponownie.",
+    "profileNotFound": "Nie znaleziono profilu",
+    "profileNotFoundBody": "Nie znaleziono informacji o koncie."
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -762,13 +776,24 @@
       "starterCta": "Kup 100 stron",
       "professionalCta": "Kup 500 stron",
       "payAsYouGoCta": "Kup strony",
-      "businessCta": "Kup kredyty",
+      "businessCta": "Wybierz Business",
       "starterPerPage": "0,20 ₾ za stronę",
       "professionalPerPage": "0,10 ₾ za stronę",
       "professionalDescription": "Idealny do regularnych tłumaczeń",
       "includedAll": "Każdy pakiet obejmuje ponad 50 języków i formaty plików: PNG, JPG, JPEG, PDF, DOCX, TXT.",
       "savesVsPayAsYouGo": "Oszczędzasz {amount} ₾ w porównaniu z „{plan}”",
-      "notSure": "Nie masz pewności?"
+      "notSure": "Nie masz pewności?",
+      "title": "Płacisz raz, bez abonamentu",
+      "subtitle": "Im więcej stron kupisz, tym taniej wychodzi każda. Pierwsze 10 stron jest za darmo.",
+      "free10": "Pierwsze 10 stron za darmo",
+      "languages": "50+ języków",
+      "formats": "PDF, DOCX, PNG, JPG, TXT",
+      "layout": "Układ dokumentu zachowany",
+      "payAsYouGoPeriod": "za stronę",
+      "payAsYouGoPagesLabel": "Ile stron?",
+      "payAsYouGoTotal": "Razem: {amount} ₾",
+      "payAsYouGoBuy": "{count, plural, one {Kup # stronę} few {Kup # strony} many {Kup # stron} other {Kup # strony}}",
+      "cheaperHint": "„{plan}” wychodzi taniej: {pages} stron za {price} ₾."
     },
     "paymentModal": {
       "title": "Płatność wkrótce",
@@ -867,12 +892,13 @@
       "title": "Suliko Business",
       "price": "500 ₾",
       "period": "/miesiąc",
-      "description": "Idealny dla rozwijających się firm",
+      "description": "Dla firm, które tłumaczą co miesiąc",
       "features": {
-        "0": "900 stron miesięcznie",
+        "0": "900 stron co miesiąc, bez doładowań",
         "1": "Priorytetowe wsparcie e-mailowe",
         "2": "Wszystkie formaty plików (PDF, DOCX, TXT, PNG, JPEG, JPG)",
-        "3": "Podstawowy dostęp do API"
+        "3": "Podstawowy dostęp do API dla Twoich systemów",
+        "4": "Faktury VAT dla firm"
       },
       "cta": "Rozpocznij bezpłatny okres próbny"
     },
@@ -2334,5 +2360,33 @@
   "TranslateMeta": {
     "title": "Suliko Translate: tłumaczenie dokumentów w kilka minut, pierwsze 10 stron za darmo",
     "description": "Tłumacz umowy, zaświadczenia i dokumenty firmowe na ponad 50 języków w kilka minut. Układ dokumentu zostaje bez zmian, a oryginał leży obok tłumaczenia. Dopracowane pod język gruziński. Pierwsze 10 stron jest za darmo."
+  },
+  "A11y": {
+    "close": "Zamknij",
+    "back": "Wstecz",
+    "zoomIn": "Powiększ",
+    "zoomOut": "Pomniejsz",
+    "showPassword": "Pokaż hasło",
+    "hidePassword": "Ukryj hasło",
+    "clearSearch": "Wyczyść wyszukiwanie",
+    "skipToContent": "Przejdź do treści",
+    "play": "Odtwórz",
+    "pause": "Pauza",
+    "mute": "Wycisz",
+    "unmute": "Włącz dźwięk",
+    "fullscreen": "Pełny ekran",
+    "videoProgress": "Postęp wideo",
+    "videoVolume": "Głośność",
+    "balanceAndPlans": "Saldo i plany",
+    "textToTranslate": "Tekst do przetłumaczenia",
+    "translatedText": "Przetłumaczony tekst",
+    "passportFile": "Prześlij zdjęcie paszportu lub PDF",
+    "emailAddress": "Adres e-mail",
+    "digitOf": "Cyfra {n} z {total}",
+    "removeFile": "Usuń plik",
+    "openMenu": "Otwórz menu",
+    "closeMenu": "Zamknij menu",
+    "menu": "Menu",
+    "toggleTheme": "Zmień motyw"
   }
 }

@@ -48,7 +48,7 @@ export default async function BlogPage({
       <LandingHeader />
 
       {/* Main Blog Page */}
-      <main className="min-h-screen">
+      <main id="main-content" className="min-h-screen">
         <AuroraBackground />
 
         {/* Content */}

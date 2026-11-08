@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { NOTARY_PHONE } from "@/shared/constants/notary";
+import { appendNotaryFiles } from "@/shared/utils/notaryBlobUpload";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const MAX_FILES = 5;
@@ -53,7 +54,7 @@ export default function NotaryFileUploadForm() {
       formData.append("name", name);
       formData.append("email", email);
       formData.append("phone", phone || "N/A");
-      files.forEach((file) => formData.append("files", file, file.name));
+      await appendNotaryFiles(formData, files);
 
       const res = await fetch("/api/notary-upload", {
         method: "POST",

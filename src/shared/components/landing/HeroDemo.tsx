@@ -119,7 +119,7 @@ export default function HeroDemo() {
       <div aria-hidden="true">
         {/* Toolbar */}
         <div className="flex items-center gap-3 border-b border-slate-200 px-4 py-3 sm:px-5">
-          <FileText className="h-4 w-4 shrink-0 text-suliko-default-color" />
+          <FileText className="h-4 w-4 shrink-0 text-accent-text" />
           <span className="truncate text-sm font-semibold">service_agreement.pdf</span>
           <span className="shrink-0 rounded-full bg-landing-tint-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-brand-strong">
             EN → {target.code}

@@ -575,7 +575,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                 <button
                   type="button"
                   onClick={() => setShowReferral(true)}
-                  className="cursor-pointer text-sm text-suliko-default-color underline-offset-4 hover:underline"
+                  className="cursor-pointer text-sm text-accent-text underline-offset-4 hover:underline"
                 >
                   {t("haveReferralCode")}
                 </button>
@@ -640,22 +640,23 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                       <FormItem>
                         <FormLabel className="font-semibold dark:text-white">
                           {t("phoneNumberOrEmail") || "Phone Number or Email"}{" "}
-                          <span className="text-red-500">*</span>
+                          <span className="text-red-700 dark:text-red-400">*</span>
                         </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <User
-                              size={15}
-                              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                            />
+                        {/* FormControl must wrap the input itself: it carries the id the label points at. */}
+                        <div className="relative">
+                          <User
+                            size={15}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                          />
+                          <FormControl>
                             <Input
                               placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"}
                               className="border-2 shadow-md dark:border-slate-600 pl-9"
                               autoComplete="username"
                               {...field}
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                         {switchedToLoginNote && (
                           <div
@@ -762,7 +763,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                             setVerificationMethod(null);
                             form.setValue("mobile", "");
                           }}
-                          className="text-sm text-muted-foreground hover:text-suliko-default-color transition-colors underline"
+                          className="text-sm text-muted-foreground hover:text-accent-text transition-colors underline"
                         >
                           {t("changeVerificationMethod")}
                         </button>
@@ -790,7 +791,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                             setVerificationMethod(null);
                             form.setValue("email", "");
                           }}
-                          className="text-sm text-muted-foreground hover:text-suliko-default-color transition-colors underline"
+                          className="text-sm text-muted-foreground hover:text-accent-text transition-colors underline"
                         >
                           {t("changeVerificationMethod")}
                         </button>

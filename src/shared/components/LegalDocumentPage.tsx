@@ -50,7 +50,7 @@ export default async function LegalDocumentPage({
     <>
       <LandingHeader />
 
-      <main className="min-h-screen">
+      <main id="main-content" className="min-h-screen">
         <AuroraBackground />
 
         <div className="relative z-10 pt-24">

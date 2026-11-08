@@ -36,7 +36,7 @@ export default function NotaryTrustStrip() {
         <div className="mx-auto grid max-w-4xl grid-cols-2 gap-4 md:grid-cols-4">
           {items.map(({ key, icon: Icon, value, label }) => (
             <div key={key} className="flex flex-col items-center gap-1 text-center">
-              <Icon className="mb-1 h-5 w-5 text-suliko-default-color" />
+              <Icon className="mb-1 h-5 w-5 text-accent-text" />
               <p className="text-xl font-semibold leading-none text-foreground sm:text-2xl">
                 {value}
               </p>

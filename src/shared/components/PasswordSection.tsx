@@ -14,6 +14,7 @@ interface PasswordSectionProps {
 
 const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectionProps) => {
   const t = useTranslations("Authorization");
+  const tA = useTranslations("A11y");
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 
@@ -35,42 +36,43 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
             {/* Label row — Forgot password link sits inline on the right (login only) */}
             <div className="flex items-center justify-between">
               <FormLabel className="font-semibold dark:text-white">
-                {t("password")} <span className="text-red-500">*</span>
+                {t("password")} <span className="text-red-700 dark:text-red-400">*</span>
               </FormLabel>
               {isLoginMode && onForgotPassword && (
                 <button
                   type="button"
                   onClick={onForgotPassword}
-                  className="text-xs font-medium text-suliko-default-color dark:text-blue-300 hover:underline cursor-pointer"
+                  className="text-xs font-medium text-accent-text dark:text-blue-300 hover:underline cursor-pointer"
                 >
                   {t("forgotPassword")}
                 </button>
               )}
             </div>
-            <FormControl>
-              <div className="relative w-full">
+            {/* FormControl must wrap the input itself: it carries the id the label points at. */}
+            <div className="relative w-full">
                 <Lock
                   size={15}
                   className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                 />
-                <Input
-                  className="border-2 shadow-md dark:border-slate-600 pl-9 pr-10"
-                  type={isPasswordVisible ? "text" : "password"}
-                  autoComplete={isLoginMode ? "current-password" : "new-password"}
-                  placeholder={t("passwordPlaceholder")}
-                  {...field}
-                />
+                <FormControl>
+                  <Input
+                    className="border-2 shadow-md dark:border-slate-600 pl-9 pr-10"
+                    type={isPasswordVisible ? "text" : "password"}
+                    autoComplete={isLoginMode ? "current-password" : "new-password"}
+                    placeholder={t("passwordPlaceholder")}
+                    {...field}
+                  />
+                </FormControl>
                 <button
                   type="button"
-                  tabIndex={-1}
-                  aria-label={isPasswordVisible ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label={isPasswordVisible ? tA("hidePassword") : tA("showPassword")}
+                  aria-pressed={isPasswordVisible}
+                  className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md text-muted-foreground hover:text-foreground transition-colors"
                   onClick={() => setIsPasswordVisible((p) => !p)}
                 >
                   {isPasswordVisible ? <Eye size={16} /> : <EyeOff size={16} />}
                 </button>
               </div>
-            </FormControl>
             <FormMessage />
             {!isLoginMode && (
               <ul className="mt-2 flex flex-col gap-1">
@@ -99,32 +101,32 @@ const PasswordSection = ({ form, isLoginMode, onForgotPassword }: PasswordSectio
           render={({ field }) => (
             <FormItem>
               <FormLabel className="font-semibold dark:text-white">
-                {t("confirmPassword")} <span className="text-red-500">*</span>
+                {t("confirmPassword")} <span className="text-red-700 dark:text-red-400">*</span>
               </FormLabel>
-              <FormControl>
-                <div className="relative w-full">
+              <div className="relative w-full">
                   <Lock
                     size={15}
                     className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
                   />
-                  <Input
-                    className="border-2 shadow-md dark:border-slate-600 pl-9 pr-10"
-                    type={isConfirmPasswordVisible ? "text" : "password"}
-                    autoComplete="new-password"
-                    placeholder={t("confirmPasswordPlaceholder")}
-                    {...field}
-                  />
+                  <FormControl>
+                    <Input
+                      className="border-2 shadow-md dark:border-slate-600 pl-9 pr-10"
+                      type={isConfirmPasswordVisible ? "text" : "password"}
+                      autoComplete="new-password"
+                      placeholder={t("confirmPasswordPlaceholder")}
+                      {...field}
+                    />
+                  </FormControl>
                   <button
                     type="button"
-                    tabIndex={-1}
-                    aria-label={isConfirmPasswordVisible ? "Hide password" : "Show password"}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                      aria-label={isConfirmPasswordVisible ? tA("hidePassword") : tA("showPassword")}
+                    aria-pressed={isConfirmPasswordVisible}
+                    className="absolute right-1 top-1/2 -translate-y-1/2 p-2 rounded-md text-muted-foreground hover:text-foreground transition-colors"
                     onClick={() => setIsConfirmPasswordVisible((p) => !p)}
                   >
                     {isConfirmPasswordVisible ? <Eye size={16} /> : <EyeOff size={16} />}
                   </button>
                 </div>
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}

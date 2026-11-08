@@ -565,7 +565,8 @@
       "openFullView": "Open full view",
       "failed": "The translation failed. Please try again.",
       "openingResult": "Done. Opening your translation…"
-    }
+    },
+    "originalUnavailable": "The original file is no longer available for this translation. You can still read, edit and download the translated text."
   },
   "TranslationLoadingOverlay": {
     "progress": "Progress",
@@ -640,7 +641,20 @@
       "confirmDelete": "Sure?",
       "cancelDelete": "Cancel",
       "addCard": "Add Card"
-    }
+    },
+    "allFieldsRequired": "All fields are required.",
+    "passwordsDontMatch": "The new passwords do not match.",
+    "passwordTooShort": "Choose a new password with at least 6 characters.",
+    "passwordSameAsOld": "The new password must be different from the current one.",
+    "accountDataNotFound": "Account details not found. Sign in again and retry.",
+    "passwordChangeFailed": "Unable to change the password. Try again.",
+    "firstNameRequired": "First name is required.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Enter an email address like name@example.com.",
+    "updateFailed": "Unable to update your profile. Try again.",
+    "deleteAccountFailed": "Unable to delete the account. Try again.",
+    "profileNotFound": "Profile not found",
+    "profileNotFoundBody": "Account information not found."
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -762,13 +776,24 @@
       "starterCta": "Get 100 pages",
       "professionalCta": "Get 500 pages",
       "payAsYouGoCta": "Buy pages",
-      "businessCta": "Buy Credits",
+      "businessCta": "Get Business",
       "starterPerPage": "0.20 ₾ per page",
       "professionalPerPage": "0.10 ₾ per page",
       "professionalDescription": "Ideal for regular translation work",
       "includedAll": "Every package includes all 50+ languages and the file formats PNG, JPG, JPEG, PDF, DOCX and TXT.",
       "savesVsPayAsYouGo": "Saves {amount} ₾ vs {plan}",
-      "notSure": "Not sure yet?"
+      "notSure": "Not sure yet?",
+      "title": "Pay once, no subscription",
+      "subtitle": "The more pages you buy, the less each one costs. Your first 10 pages are free.",
+      "free10": "First 10 pages free",
+      "languages": "50+ languages",
+      "formats": "PDF, DOCX, PNG, JPG, TXT",
+      "layout": "Original layout kept",
+      "payAsYouGoPeriod": "per page",
+      "payAsYouGoPagesLabel": "How many pages?",
+      "payAsYouGoTotal": "Total: {amount} ₾",
+      "payAsYouGoBuy": "{count, plural, one {Buy # page} other {Buy # pages}}",
+      "cheaperHint": "{plan} is cheaper: {pages} pages for {price} ₾."
     },
     "paymentModal": {
       "title": "Payment Coming Soon",
@@ -791,7 +816,7 @@
     "title": "Pricing Packages",
     "description": "Choose a package that suits you",
     "forTranslators": "For Translators",
-    "forBusinesses": "For Businesses",
+    "forBusinesses": "For businesses",
     "discount": "Save 20%",
     "limitedTime": "Limited Time",
     "mostPopular": "Most Popular",
@@ -867,12 +892,13 @@
       "title": "Suliko Business",
       "price": "500 ₾",
       "period": "/month",
-      "description": "Perfect for growing businesses",
+      "description": "For companies that translate every month",
       "features": {
-        "0": "900 pages per month",
+        "0": "900 pages every month, nothing to top up",
         "1": "Priority email support",
         "2": "All file formats (PDF, DOCX, TXT, PNG, JPEG, JPG)",
-        "3": "Basic API access"
+        "3": "Basic API access for your own systems",
+        "4": "Company invoices and VAT receipts"
       },
       "cta": "Buy Credits"
     },
@@ -2334,5 +2360,33 @@
   "TranslateMeta": {
     "title": "Suliko Translate: Translate Documents in Minutes, First 10 Pages Free",
     "description": "Translate contracts, certificates and business documents into 50+ languages in minutes. The layout stays as it was and the original sits beside the translation. Built for Georgian. Your first 10 pages are free."
+  },
+  "A11y": {
+    "close": "Close",
+    "back": "Back",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "clearSearch": "Clear search",
+    "skipToContent": "Skip to content",
+    "play": "Play",
+    "pause": "Pause",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "fullscreen": "Full screen",
+    "videoProgress": "Video progress",
+    "videoVolume": "Volume",
+    "balanceAndPlans": "Balance and plans",
+    "textToTranslate": "Text to translate",
+    "translatedText": "Translated text",
+    "passportFile": "Upload a passport image or PDF",
+    "emailAddress": "Email address",
+    "digitOf": "Digit {n} of {total}",
+    "removeFile": "Remove file",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menu": "Menu",
+    "toggleTheme": "Switch theme"
   }
 }

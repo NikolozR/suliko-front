@@ -246,7 +246,7 @@ export default function NotaryPriceCalculator() {
                   <button
                     type="button"
                     onClick={() => removeDocument(doc.id)}
-                    className="flex items-center gap-1 text-xs text-red-500 transition-colors hover:text-red-600"
+                    className="flex items-center gap-1 text-xs text-red-700 dark:text-red-400 transition-colors hover:text-red-800 dark:hover:text-red-300"
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                     {t("removeDocument")}
@@ -302,11 +302,12 @@ export default function NotaryPriceCalculator() {
               {/* Document type + pages */}
               <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                  <label htmlFor={`notary-doc-type-${doc.id}`} className="mb-1 block text-xs font-medium text-muted-foreground">
                     {t("documentType")}
                   </label>
                   <div className="relative">
                     <select
+                      id={`notary-doc-type-${doc.id}`}
                       value={doc.documentType === "" ? "" : String(doc.documentType)}
                       onChange={(e) =>
                         patch(doc.id, {
@@ -329,10 +330,11 @@ export default function NotaryPriceCalculator() {
                 </div>
 
                 <div>
-                  <label className="mb-1 block text-xs font-medium text-muted-foreground">
+                  <label htmlFor={`notary-pages-${doc.id}`} className="mb-1 block text-xs font-medium text-muted-foreground">
                     {t("pageCount")}
                   </label>
                   <input
+                    id={`notary-pages-${doc.id}`}
                     type="number"
                     min={1}
                     inputMode="numeric"
@@ -389,7 +391,7 @@ export default function NotaryPriceCalculator() {
                       aria-pressed={doc.copyType === form.value}
                       className={`rounded-lg border px-3 py-2 text-left text-xs font-medium transition-colors ${
                         doc.copyType === form.value
-                          ? "border-suliko-default-color bg-suliko-default-color/10 text-suliko-default-color"
+                          ? "border-suliko-default-color bg-suliko-default-color/10 text-accent-text"
                           : "border-border bg-card text-foreground hover:border-suliko-default-color/40"
                       }`}
                     >
@@ -405,7 +407,7 @@ export default function NotaryPriceCalculator() {
         <button
           type="button"
           onClick={addDocument}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-suliko-default-color/50 hover:text-suliko-default-color"
+          className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border py-3 text-sm font-medium text-muted-foreground transition-colors hover:border-suliko-default-color/50 hover:text-accent-text"
         >
           <Plus className="h-4 w-4" />
           {t("addDocument")}
@@ -427,7 +429,7 @@ export default function NotaryPriceCalculator() {
                   aria-pressed={urgency === level.value}
                   className={`rounded-lg border px-3 py-2 text-left text-xs font-medium transition-colors ${
                     urgency === level.value
-                      ? "border-suliko-default-color bg-suliko-default-color/10 text-suliko-default-color"
+                      ? "border-suliko-default-color bg-suliko-default-color/10 text-accent-text"
                       : "border-border bg-card text-foreground hover:border-suliko-default-color/40"
                   }`}
                 >
@@ -494,7 +496,7 @@ export default function NotaryPriceCalculator() {
                       <span className="text-sm font-semibold text-foreground">
                         {t("document")} #{index + 1}: {line.pages} {t("pagesShort")}
                       </span>
-                      <span className="text-sm font-semibold text-suliko-default-color">
+                      <span className="text-sm font-semibold text-accent-text">
                         {money(line.subtotal)}
                       </span>
                     </div>
@@ -518,7 +520,7 @@ export default function NotaryPriceCalculator() {
 
               <div className="flex justify-between border-t border-border pt-3 text-xl font-semibold">
                 <span className="text-foreground">{t("totalPrice")}</span>
-                <span className="text-suliko-default-color">{money(result.total)}</span>
+                <span className="text-accent-text">{money(result.total)}</span>
               </div>
 
               {/*

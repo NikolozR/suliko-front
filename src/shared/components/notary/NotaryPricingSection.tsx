@@ -94,7 +94,7 @@ export default function NotaryPricingSection() {
                     <span className="text-sm text-foreground">
                       {src} <span className="text-muted-foreground">→</span> {to}
                     </span>
-                    <span className="text-sm font-semibold text-suliko-default-color">
+                    <span className="text-sm font-semibold text-accent-text">
                       {price} {symbol}
                     </span>
                   </div>
@@ -111,7 +111,7 @@ export default function NotaryPricingSection() {
           <div className="flex flex-col gap-6">
             <div className="rounded-2xl border border-border bg-card p-6">
               <h3 className="mb-4 flex items-center gap-2 text-base font-semibold text-foreground">
-                <Zap className="h-4 w-4 text-suliko-default-color" />
+                <Zap className="h-4 w-4 text-accent-text" />
                 {t("urgencyTitle")}
               </h3>
               <div className="space-y-2">

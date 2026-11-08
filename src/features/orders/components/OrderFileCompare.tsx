@@ -95,7 +95,7 @@ export function OrderFileCompare({
             className={cn(
               "shrink-0 hover:bg-muted",
               scroll.together
-                ? "text-suliko-default-color hover:text-suliko-default-color"
+                ? "text-accent-text hover:text-accent-text"
                 : "text-muted-foreground hover:text-foreground",
             )}
           >

@@ -61,7 +61,7 @@ const DocumentPreviewColumn = React.memo(function DocumentPreviewColumn({
   return (
     <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-        <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+        <div className="font-semibold text-accent-text text-sm md:text-base">
           {t("originalDocument")}
         </div>
         <Button
@@ -327,8 +327,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           <div className="mb-4 border-b border-border pb-2">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2 flex-wrap">
-                <Pencil className="h-4 w-4 text-suliko-default-color" aria-hidden="true" />
-                <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                <Pencil className="h-4 w-4 text-accent-text" aria-hidden="true" />
+                <div className="font-semibold text-accent-text text-sm md:text-base">
                   {t('translatedText')}
                 </div>
                 {/* {remainingSeconds > 0 ? (

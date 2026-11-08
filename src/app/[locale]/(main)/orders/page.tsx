@@ -60,7 +60,7 @@ export default function OrdersPage() {
         <div className="flex flex-col items-center gap-3 py-16 text-center text-muted-foreground">
           <ClipboardList className="h-10 w-10" />
           <p className="text-sm font-medium text-foreground">{t("signedOut")}</p>
-          <Link href="/sign-in" className="text-sm font-medium text-suliko-default-color hover:underline">
+          <Link href="/sign-in" className="text-sm font-medium text-accent-text hover:underline">
             {tSidebar("login")}
           </Link>
         </div>

@@ -106,11 +106,11 @@ export default function AutoFixesPanel({ autoFixes, verification, translatedMark
                 </div>
                 <div className="mt-2 grid gap-1 text-[13px] sm:grid-cols-2 sm:gap-3">
                   <p className="rounded bg-red-500/[0.06] px-2 py-1">
-                    <span className="mr-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{t("before")}</span>
+                    <span className="mr-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("before")}</span>
                     <span className="line-through decoration-red-500/60">{fix.originalText}</span>
                   </p>
                   <p className="rounded bg-emerald-500/[0.08] px-2 py-1">
-                    <span className="mr-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">{t("after")}</span>
+                    <span className="mr-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">{t("after")}</span>
                     {fix.fixedText}
                   </p>
                 </div>

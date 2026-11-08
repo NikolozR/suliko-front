@@ -1,28 +1,46 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
-import type { ReactNode } from "react";
+import { useId, type ReactNode } from "react";
 
 /** Shared field + tile primitives for the order wizard steps. */
 
 export function FieldLabel({
   children,
   required,
+  htmlFor,
 }: {
   children: ReactNode;
   required?: boolean;
+  htmlFor?: string;
 }) {
   return (
-    <label className="block text-xs font-medium text-muted-foreground mb-1">
+    <label htmlFor={htmlFor} className="block text-xs font-medium text-muted-foreground mb-1">
       {children}
-      {required && <span className="text-red-500 ml-0.5">*</span>}
+      {required && <span className="text-red-700 dark:text-red-400 ml-0.5">*</span>}
     </label>
   );
 }
 
-export function FieldError({ message }: { message?: string }) {
+/**
+ * A field's error. `id` is what the field's aria-describedby points at. `alert` is for
+ * errors with no field to focus (tile groups, the terms box): they announce themselves.
+ */
+export function FieldError({
+  message,
+  id,
+  alert,
+}: {
+  message?: string;
+  id?: string;
+  alert?: boolean;
+}) {
   if (!message) return null;
-  return <p className="mt-1 text-xs text-red-500">{message}</p>;
+  return (
+    <p id={id} role={alert ? "alert" : undefined} className="mt-1 text-xs text-red-700 dark:text-red-400">
+      {message}
+    </p>
+  );
 }
 
 const inputClass = (invalid?: boolean) =>
@@ -50,19 +68,23 @@ export function TextField({
   placeholder?: string;
   autoComplete?: string;
 }) {
+  const id = useId();
+  const errorId = `${id}-error`;
   return (
     <div>
-      <FieldLabel required={required}>{label}</FieldLabel>
+      <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
       <input
+        id={id}
         type={type}
         value={value}
         placeholder={placeholder}
         autoComplete={autoComplete}
         onChange={(e) => onChange(e.target.value)}
         aria-invalid={Boolean(error)}
+        aria-describedby={error ? errorId : undefined}
         className={inputClass(Boolean(error))}
       />
-      <FieldError message={error} />
+      <FieldError id={errorId} message={error} />
     </div>
   );
 }
@@ -84,10 +106,13 @@ export function NumberField({
   max: number;
   required?: boolean;
 }) {
+  const id = useId();
+  const errorId = `${id}-error`;
   return (
     <div>
-      <FieldLabel required={required}>{label}</FieldLabel>
+      <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
       <input
+        id={id}
         type="number"
         inputMode="numeric"
         min={min}
@@ -103,9 +128,10 @@ export function NumberField({
           else if (parsed > max) onChange(max);
         }}
         aria-invalid={Boolean(error)}
+        aria-describedby={error ? errorId : undefined}
         className={inputClass(Boolean(error))}
       />
-      <FieldError message={error} />
+      <FieldError id={errorId} message={error} />
     </div>
   );
 }
@@ -129,15 +155,19 @@ export function SelectField({
   required?: boolean;
   disabled?: boolean;
 }) {
+  const id = useId();
+  const errorId = `${id}-error`;
   return (
     <div>
-      <FieldLabel required={required}>{label}</FieldLabel>
+      <FieldLabel required={required} htmlFor={id}>{label}</FieldLabel>
       <div className="relative">
         <select
+          id={id}
           value={value}
           disabled={disabled}
           onChange={(e) => onChange(e.target.value)}
           aria-invalid={Boolean(error)}
+        aria-describedby={error ? errorId : undefined}
           style={{ backgroundImage: "none" }}
           className={`${inputClass(Boolean(error))} appearance-none pr-9 disabled:opacity-50 disabled:cursor-not-allowed`}
         >
@@ -150,7 +180,7 @@ export function SelectField({
         </select>
         <ChevronDown className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
       </div>
-      <FieldError message={error} />
+      <FieldError id={errorId} message={error} />
     </div>
   );
 }
@@ -186,13 +216,13 @@ export function Tile({
         {icon}
         <span
           className={`text-sm font-semibold leading-tight ${
-            selected ? "text-suliko-default-color" : "text-foreground"
+            selected ? "text-accent-text" : "text-foreground"
           }`}
         >
           {title}
         </span>
         {badge && (
-          <span className="ml-auto shrink-0 rounded-full bg-suliko-default-color/15 px-2 py-0.5 text-[10px] font-semibold text-suliko-default-color">
+          <span className="ml-auto shrink-0 rounded-full bg-suliko-default-color/15 px-2 py-0.5 text-xs font-semibold text-accent-text">
             {badge}
           </span>
         )}
@@ -253,7 +283,7 @@ export function CheckTile({
         <span className="flex items-center gap-2">
           <span className="text-sm font-medium text-foreground">{title}</span>
           {badge && (
-            <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-semibold text-muted-foreground">
+            <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-xs font-semibold text-muted-foreground">
               {badge}
             </span>
           )}
@@ -340,7 +370,7 @@ export function IconTile({
       )}
       {badge && (
         <span
-          className={`mt-1 rounded-md px-2 py-0.5 text-[11px] font-semibold ${BADGE_TONES[badgeTone]}`}
+          className={`mt-1 rounded-md px-2 py-0.5 text-xs font-semibold ${BADGE_TONES[badgeTone]}`}
         >
           {badge}
         </span>

@@ -33,7 +33,7 @@ export default function NotaryQuotePathsSection() {
     {
       key: "order",
       icon: ClipboardList,
-      iconColor: "text-suliko-default-color",
+      iconColor: "text-accent-text",
       iconBg: "bg-suliko-default-color/10",
       title: t("orderTitle"),
       desc: t("orderDesc"),
@@ -43,7 +43,7 @@ export default function NotaryQuotePathsSection() {
     {
       key: "calculator",
       icon: Calculator,
-      iconColor: "text-suliko-default-color",
+      iconColor: "text-accent-text",
       iconBg: "bg-suliko-default-color/10",
       title: t("calculatorTitle"),
       desc: t("calculatorDesc"),

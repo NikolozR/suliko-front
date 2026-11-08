@@ -321,7 +321,13 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
             >
               <div className="space-y-4 h-full flex flex-col">
                 <div className="flex-1 min-h-0">
-                  <DocumentPreview file={currentFile} />
+                  {currentFile ? (
+                    <DocumentPreview file={currentFile} />
+                  ) : (
+                    <p className="rounded-lg border border-dashed border-border p-4 text-sm text-muted-foreground">
+                      {t('originalUnavailable')}
+                    </p>
+                  )}
                 </div>
                 {currentFile && (
                   <FileInfoDisplay
@@ -418,7 +424,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
               )}
             </div>
           </div>
-          <div className="min-h-[300px] h-[50vh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
+          <div className="min-h-[300px] h-[70dvh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
             <TranslationEditor
               ref={editorRef}
               translatedMarkdown={translatedMarkdown}

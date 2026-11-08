@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Input } from "@/features/ui/components/ui/input";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/shared/lib/utils";
+import { useTranslations } from "next-intl";
 
 const verificationInputVariants = cva(
   "w-12 h-12 text-center text-lg font-semibold border-2",
@@ -39,6 +40,7 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({
   isInvalid,
   disabled = false,
 }) => {
+  const tA = useTranslations("A11y");
   const [individualDigits, setIndividualDigits] = useState<string[]>(Array(6).fill(''));
   const inputRefs = useRef<(HTMLInputElement | null)[]>(Array(6).fill(null));
 
@@ -109,6 +111,8 @@ const VerificationCodeInput: React.FC<VerificationCodeInputProps> = ({
           type="text"
           inputMode="numeric"
           maxLength={1}
+          aria-label={tA("digitOf", { n: index + 1, total: individualDigits.length })}
+          autoComplete={index === 0 ? "one-time-code" : "off"}
           value={digit}
           disabled={disabled}
           onChange={(e) => handleDigitChange(index, e.target.value)}

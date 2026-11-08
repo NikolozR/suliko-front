@@ -36,7 +36,7 @@ export default function OfficeHeader() {
         <a href="#top" aria-label={t("home")} className="flex shrink-0 items-center gap-3">
           <Image src="/Suliko_logo_black.svg" alt="" width={148} height={38} priority className="h-8 w-auto lg:h-[38px] dark:hidden" />
           <Image src="/Suliko_logo_white.svg" alt="" width={148} height={38} priority className="hidden h-8 w-auto lg:h-[38px] dark:block" />
-          <span className="rounded-lg bg-[#eef1fe] px-2.5 pt-[7px] pb-1.5 text-base leading-none text-suliko-default-color lg:text-lg dark:bg-[#3b59f3]/20 dark:text-[#c3ceff]">
+          <span className="rounded-lg bg-[#eef1fe] px-2.5 pt-[7px] pb-1.5 text-base leading-none text-accent-text lg:text-lg dark:bg-[#3b59f3]/20 dark:text-[#c3ceff]">
             Office
           </span>
         </a>
@@ -73,7 +73,7 @@ export default function OfficeHeader() {
             <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
           <LanguageToggle label={t("language")} />
-          <a href={signInUrl} className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-suliko-default-color">
+          <a href={signInUrl} className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-accent-text">
             {t("login")}
           </a>
           <a href="#demo" className={`${PRIMARY_BUTTON} h-[46px] px-[22px] text-base whitespace-nowrap`}>

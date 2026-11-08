@@ -55,7 +55,7 @@ export default function TranslationStageList({ stage, className }: Props) {
               className={cn(
                 "flex size-[18px] shrink-0 items-center justify-center rounded-full",
                 done && "bg-emerald-600/10 text-emerald-600",
-                active && "text-suliko-default-color",
+                active && "text-accent-text",
                 !done && !active && "border-[1.5px] border-muted-foreground/40 opacity-50"
               )}
             >

@@ -106,7 +106,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
   return (
     <div className="mt-6">
       <div className="flex items-center justify-between gap-2 mb-2">
-        <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+        <div className="font-semibold text-accent-text text-sm md:text-base">
           {t("SuggestionsPanel.title", { default: "Suggestions" })}
         </div>
         {suggestions.some((s: Suggestion) => exactMatchIds.has(s.id)) && (
@@ -144,14 +144,14 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
                 <div className="flex gap-1 items-center">
                   {exactMatchIds.has(s.id) ? (
                     <span
-                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 whitespace-nowrap"
+                      className="text-xs font-semibold px-1.5 py-0.5 rounded-full bg-green-100 text-green-700 dark:bg-green-900/40 dark:text-green-400 whitespace-nowrap"
                       title={t("SuggestionsPanel.indicatorExact", { default: "Quick apply" })}
                     >
                       {t("SuggestionsPanel.instant", { default: "Instant" })}
                     </span>
                   ) : (
                     <span
-                      className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 whitespace-nowrap"
+                      className="text-xs font-semibold px-1.5 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-400 whitespace-nowrap"
                       title={t("SuggestionsPanel.indicatorNonExact", { default: "Server apply" })}
                     >
                       {t("SuggestionsPanel.review", { default: "Review" })}

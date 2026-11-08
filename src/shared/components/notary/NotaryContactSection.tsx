@@ -25,7 +25,7 @@ export default function NotaryContactSection() {
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => trackCta("whatsapp", "footer")}
-            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-6 py-3 text-base font-semibold text-white shadow-float-2 transition-colors duration-200 hover:bg-[#1ebe5d] sm:w-auto"
+            className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#0e7a63] px-6 py-3 text-base font-semibold text-white shadow-float-2 transition-colors duration-200 hover:bg-[#0a6350] sm:w-auto"
           >
             <MessageCircle className="h-5 w-5" />
             {t("whatsapp")}

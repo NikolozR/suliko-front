@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { PACKAGES, isPlanKey, savingsGel } from "../packages";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
@@ -15,15 +17,6 @@ import { Input } from "@/features/ui/components/ui/input";
 import { Label } from "@/features/ui/components/ui/label";
 
 
-/** What each one-time package costs and gives. Pay as you go is 1 GEL a page. */
-const PACKAGES = {
-  starter: { pages: 100, price: 20 },
-  professional: { pages: 500, price: 50 },
-} as const;
-const PAY_AS_YOU_GO_PER_PAGE = 1;
-const savingsGel = (p: { pages: number; price: number }) =>
-  Math.max(0, p.pages * PAY_AS_YOU_GO_PER_PAGE - p.price);
-
 // interface PricingGridProps {
 //   autoOpenContactModal?: boolean;
 // }
@@ -36,6 +29,12 @@ export function PricingGrid() {
   const { token } = useAuthStore();
   const router = useRouter();
   const t = useTranslations("Pricing");
+  // A link from the landing page names the plan the visitor picked there.
+  const params = useSearchParams();
+  const requested = params.get("plan");
+  // The landing page's Pay as you go card sends how many pages the visitor chose.
+  const requestedPages = Math.min(5000, Math.max(1, Number(params.get("pages")) || 1));
+  const highlighted = isPlanKey(requested) ? requested : "professional";
 
 
   /**
@@ -68,7 +67,7 @@ export function PricingGrid() {
       router.push("/sign-in");
       return;
     }
-    setPayAsYouGoAmount(1);
+    setPayAsYouGoAmount(requestedPages);
     setShowAmountDialog(true);
   };
 
@@ -86,14 +85,19 @@ export function PricingGrid() {
           type="starter"
           onSelect={handleStarterPackage}
           savingsGel={savingsGel(PACKAGES.starter)}
+          highlighted={highlighted === "starter"}
         />
         <PricingCard
           type="professional"
           onSelect={handleProfessionalPackage}
           savingsGel={savingsGel(PACKAGES.professional)}
-          highlighted
+          highlighted={highlighted === "professional"}
         />
-        <PricingCard type="payAsYouGo" onSelect={handleSelectPayAsYouGo} />
+        <PricingCard
+          type="payAsYouGo"
+          onSelect={handleSelectPayAsYouGo}
+          highlighted={highlighted === "payAsYouGo"}
+        />
       </div>
       <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-muted-foreground">
         {t("landing.includedAll")}
@@ -112,7 +116,7 @@ export function PricingGrid() {
       <Dialog open={showAmountDialog} onOpenChange={setShowAmountDialog}>
         <DialogContent className="max-w-sm mx-auto p-6">
           <DialogHeader>
-            <DialogTitle className="text-center text-suliko-default-color">
+            <DialogTitle className="text-center text-accent-text">
               {t("payAsYouGoModal.title")}
             </DialogTitle>
           </DialogHeader>

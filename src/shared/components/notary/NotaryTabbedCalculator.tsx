@@ -37,8 +37,8 @@ export default function NotaryTabbedCalculator() {
   const tabClass = (tab: Tab) =>
     `flex-1 px-3 py-3 sm:px-4 sm:py-4 text-sm sm:text-base font-semibold transition-all duration-300 ${
       activeTab === tab
-        ? "border-b-2 border-suliko-default-color text-suliko-default-color bg-card"
-        : "text-muted-foreground hover:text-suliko-default-color hover:bg-card/50"
+        ? "border-b-2 border-suliko-default-color text-accent-text bg-card"
+        : "text-muted-foreground hover:text-accent-text hover:bg-card/50"
     }`;
 
   return (

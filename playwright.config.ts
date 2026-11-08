@@ -45,6 +45,7 @@ export default defineConfig({
         /seo\.spec\.ts/,
         /access\.spec\.ts/,
         /site-api\.spec\.ts/,
+        /a11y-basics\.spec\.ts/,
       ],
     },
 

@@ -68,7 +68,7 @@ export default function OfficeSignOut() {
         </div>
       ) : (
         <div className="flex flex-col items-center gap-3" role="status" aria-live="polite">
-          <Loader2 className="h-6 w-6 animate-spin text-suliko-default-color" aria-hidden />
+          <Loader2 className="h-6 w-6 animate-spin text-accent-text" aria-hidden />
           <p className="text-sm text-muted-foreground">{t("signingOut")}</p>
         </div>
       )}
