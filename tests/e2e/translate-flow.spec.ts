@@ -35,10 +35,13 @@ type Seen = { method: string; path: string; auth: string | null; body: string | 
 
 async function stubBackend(page: Page, baseURL: string, translate: (seen: Seen) => { status: number; body: unknown }) {
   const seen: Seen[] = [];
+  await page.route('**/api/session/refresh', (route) =>
+    route.fulfill({ json: { token: TOKEN, refreshToken: 'httponly-cookie' } }),
+  );
   await page.addInitScript((token) => {
     localStorage.setItem(
       'auth-storage',
-      JSON.stringify({ state: { token, refreshToken: 'e2e-refresh' }, version: 0 }),
+      JSON.stringify({ state: { token, refreshToken: 'httponly-cookie' }, version: 0 }),
     );
   }, TOKEN);
   await page.context().addCookies([{ name: 'token', value: TOKEN, url: baseURL }]);
@@ -67,6 +70,9 @@ async function stubBackend(page: Page, baseURL: string, translate: (seen: Seen) 
 async function openText(page: Page) {
   await page.goto('/en/text', { waitUntil: 'domcontentloaded' });
   await expect(page.getByLabel('Text to translate')).toBeVisible({ timeout: 20_000 });
+  // Typing before the page has hydrated gets wiped by React; the balance showing
+  // means the session loaded and the page is live.
+  await expect(page.getByText('100 Pages')).toBeVisible({ timeout: 20_000 });
 }
 
 async function chooseTarget(page: Page, name: string) {
@@ -99,7 +105,6 @@ test.describe('Text translation flow (stubbed backend)', () => {
     await openText(page);
 
     await page.getByLabel('Text to translate').fill('Hello');
-    await expect(page.getByText('100 Pages')).toBeVisible({ timeout: 15_000 }); // profile loaded
     await page.getByLabel('Text to translate').press('Control+Enter');
 
     await expect(page.getByLabel('Translated text')).toHaveValue('Bonjour', { timeout: 15_000 });
