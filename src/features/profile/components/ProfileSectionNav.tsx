@@ -16,8 +16,8 @@ export function ProfileSectionNav({ active, onChange }: { active: ProfileSection
   const t = useTranslations("Profile.sections");
 
   return (
-    <nav aria-label={t("label")} className="-mx-4 mb-6 overflow-x-auto border-b border-border px-4 sm:mx-0 sm:px-0">
-      <ul className="flex min-w-max gap-1">
+    <nav aria-label={t("label")} className="-mx-4 mb-6 overflow-x-auto border-b border-border px-4 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+      <ul className="flex min-w-max">
         {PROFILE_SECTIONS.map((id) => {
           const Icon = ICONS[id];
           const isActive = id === active;
@@ -27,7 +27,7 @@ export function ProfileSectionNav({ active, onChange }: { active: ProfileSection
                 type="button"
                 onClick={() => onChange(id)}
                 aria-current={isActive ? "page" : undefined}
-                className={`-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 px-3 py-2.5 text-sm transition-colors ${
+                className={`-mb-px flex items-center gap-2 whitespace-nowrap border-b-2 px-2.5 py-2.5 text-sm transition-colors ${
                   isActive
                     ? "border-primary font-medium text-foreground"
                     : "border-transparent text-muted-foreground hover:border-border hover:text-foreground"
