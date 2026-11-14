@@ -5,7 +5,21 @@
  * (`/sso/office`) and to sign out (`/sso/signout`), and suliko.ge's own sign-out
  * passes through Office's, so leaving either leaves both.
  */
-export const OFFICE_URL = "https://office.suliko.ge";
+/**
+ * The path Suliko Office is served under on this site ("/app"), when it is: see
+ * next.config.ts. Empty while Office has its own address.
+ */
+const OFFICE_PATH = (process.env.NEXT_PUBLIC_OFFICE_PATH ?? "").replace(/\/$/, "");
+
+/** Office's own address, from before it was served here. */
+const OWN_OFFICE_URL = "https://office.suliko.ge";
+
+/**
+ * Where Office is: a path on this site, or its own address. Use it in a plain
+ * `<a href>` or `window.location`, never in next-intl's `Link`, which would put
+ * this site's locale in front of the path.
+ */
+export const OFFICE_URL = OFFICE_PATH || OWN_OFFICE_URL;
 
 /**
  * Where Office lived before it moved to office.suliko.ge. Still recognised, so a
@@ -14,10 +28,17 @@ export const OFFICE_URL = "https://office.suliko.ge";
 const FORMER_OFFICE_URL = "https://app.suliko.ge";
 
 /** Where a sign-out may send the browser on to afterwards. */
-export const OFFICE_ORIGINS: readonly string[] =
-  process.env.NODE_ENV === "development"
-    ? [OFFICE_URL, FORMER_OFFICE_URL, "http://localhost:3000"]
-    : [OFFICE_URL, FORMER_OFFICE_URL];
+export const OFFICE_ORIGINS: readonly string[] = [
+  OWN_OFFICE_URL,
+  FORMER_OFFICE_URL,
+  // Served here, Office's addresses are this site's own.
+  ...(OFFICE_PATH
+    ? ["https://suliko.ge", "https://www.suliko.ge", "https://suliko.io", "https://www.suliko.io"]
+    : []),
+  ...(process.env.NODE_ENV === "development"
+    ? ["http://localhost:3000", ...(OFFICE_PATH && typeof window !== "undefined" ? [window.location.origin] : [])]
+    : []),
+];
 
 /** Office's locales; anything else (pl) opens it in Georgian. */
 export function officeLocale(locale: string): "en" | "ka" {

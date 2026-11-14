@@ -6,6 +6,17 @@ import createNextIntlPlugin from 'next-intl/plugin';
 // TypeScript it imports.
 const API_BASE_URL = "https://content.api24.ge/api";
 
+/**
+ * Suliko Office as a part of this site. With both set, every address under
+ * OFFICE_PATH ("/app") is passed on to the Office deployment, which answers
+ * under the same path (its NEXT_PUBLIC_BASE_PATH), so the browser never leaves
+ * suliko.ge. With either unset nothing is passed on and Office keeps its own
+ * address. Keep OFFICE_PATH the same as in src/features/sulikoOffice/lib/officeLinks.ts.
+ */
+const OFFICE_PATH = (process.env.NEXT_PUBLIC_OFFICE_PATH ?? "").replace(/\/$/, "");
+const OFFICE_ZONE_URL = (process.env.OFFICE_ZONE_URL ?? "").replace(/\/$/, "");
+const officeZone = Boolean(OFFICE_PATH && OFFICE_ZONE_URL);
+
 const withNextIntl = createNextIntlPlugin();
 const api = new URL(API_BASE_URL);
 
@@ -42,6 +53,12 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       { source: "/api/gemini-upload", destination: `${API_BASE_URL}/Document/gemini-upload` },
+      ...(officeZone
+        ? [
+            { source: OFFICE_PATH, destination: `${OFFICE_ZONE_URL}${OFFICE_PATH}` },
+            { source: `${OFFICE_PATH}/:path*`, destination: `${OFFICE_ZONE_URL}${OFFICE_PATH}/:path*` },
+          ]
+        : []),
     ];
   },
   // The Suliko Office landing page was /tms until October 2026. Old links,
@@ -55,7 +72,9 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
-        source: "/(.*)",
+        // Not under /app: Suliko Office answers there and sends its own,
+        // stricter policy. Two values for one header cancel each other.
+        source: "/((?!app/|app$).*)",
         headers: [
           {
             key: "Cross-Origin-Opener-Policy",
