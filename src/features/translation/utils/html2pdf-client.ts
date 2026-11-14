@@ -70,7 +70,10 @@ const PDF_STYLES = `
   }
   .pdf-document :is(h1, h2, h3, h4, h5, h6) { page-break-after: avoid; }
   .pdf-document :is(p, li, blockquote, pre) { orphans: 3; widows: 3; }
-  .pdf-document :is(table, figure, img) { page-break-inside: avoid; }
+  /* A table is not kept whole: one taller than a sheet would jump to the next and leave a blank
+     page behind it. Its rows stay whole (`tr` is in the pagebreak list below). */
+  .pdf-document :is(figure, img) { page-break-inside: avoid; }
+  .pdf-document table { border-collapse: collapse; }
 
   .pdf-document :is(h1, h2, h3, h4, h5, h6) { font-family: inherit; font-weight: 700; line-height: 1.2; }
   .pdf-document h1 { font-size: 16pt; margin: 12pt 0 4pt; }
