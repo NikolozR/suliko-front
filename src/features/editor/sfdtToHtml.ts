@@ -232,10 +232,42 @@ function headingLevel(paragraph: Json): number {
   return match ? Number(match[1]) : 0;
 }
 
+const BORDER_SIDES = ["top", "right", "bottom", "left"] as const;
+
+/** A cell's borders as CSS (`border-top:0.5pt solid #000`), only the sides that have a line. */
+function borderStyle(borders: Json): string[] {
+  const css: string[] = [];
+  for (const side of BORDER_SIDES) {
+    const border = obj(borders[side]);
+    const style = str(border.lineStyle);
+    const width = num(border.lineWidth);
+    if (style && style !== "None" && style !== "Cleared" && width > 0) {
+      css.push(`border-${side}:${width}pt solid ${cssColor(border.color) ?? "#000000"}`);
+    }
+  }
+  return css;
+}
+
 function serializeTable(table: Json, context: Context): string {
-  let html = "<table><tbody>";
+  // The column widths the editor lays the table out on (points). They keep a table at the width it
+  // has in the editor: without them a table shrinks to fit its text.
+  const grid = (Array.isArray(table.grid) ? (table.grid as unknown[]) : []).map(num).filter((w) => w > 0);
+  const total = grid.reduce((sum, w) => sum + w, 0);
+  const cellMargins = obj(table.tableFormat);
+  let html = "<table";
+  if (grid.length > 0) {
+    // A table wider than a page's text column fills it, the others keep their width.
+    const width = total >= 400 ? "100%" : `${Math.round(total)}pt`;
+    html += ` style="border-collapse:collapse;table-layout:fixed;width:${width}"><colgroup>`;
+    for (const w of grid) html += `<col style="width:${((w / total) * 100).toFixed(2)}%">`;
+    html += "</colgroup>";
+  } else {
+    html += ">";
+  }
+  html += "<tbody>";
   for (const row of arr(table.rows)) {
-    html += "<tr>";
+    const height = num(obj(row.rowFormat).height);
+    html += height > 0 ? `<tr style="height:${Math.round(height)}pt">` : "<tr>";
     for (const cell of arr(row.cells)) {
       const format = obj(cell.cellFormat);
       const span = num(format.columnSpan);
@@ -243,8 +275,20 @@ function serializeTable(table: Json, context: Context): string {
       const attributes: string[] = [];
       if (span > 1) attributes.push(`colspan="${span}"`);
       if (rowSpan > 1) attributes.push(`rowspan="${rowSpan}"`);
+      const css: string[] = [];
       const background = cssColor(obj(format.shading).backgroundColor);
-      if (background && background !== "#ffffff") attributes.push(`style="background-color:${background}"`);
+      if (background && background !== "#ffffff") css.push(`background-color:${background}`);
+      if (grid.length > 0) {
+        const left = num(format.leftMargin) || num(cellMargins.leftMargin);
+        const right = num(format.rightMargin) || num(cellMargins.rightMargin);
+        const top = num(format.topMargin) || num(cellMargins.topMargin);
+        const bottom = num(format.bottomMargin) || num(cellMargins.bottomMargin);
+        css.push(`padding:${top}pt ${right || 5.4}pt ${bottom}pt ${left || 5.4}pt`);
+        const align = str(format.verticalAlignment);
+        css.push(`vertical-align:${align === "Center" ? "middle" : align === "Bottom" ? "bottom" : "top"}`);
+        css.push(...borderStyle(obj(format.borders)));
+      }
+      if (css.length > 0) attributes.push(`style="${css.join(";")}"`);
       html += `<td${attributes.length > 0 ? " " + attributes.join(" ") : ""}>${serializeBlocks(arr(cell.blocks), context)}</td>`;
     }
     html += "</tr>";
