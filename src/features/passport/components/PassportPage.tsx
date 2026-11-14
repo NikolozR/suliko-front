@@ -310,8 +310,8 @@ export default function PassportPage() {
             </div>
 
             {/* Col 2: sticky panel — stays in view while user scrolls fields */}
-            <div className="lg:col-span-1 lg:sticky lg:top-4 lg:self-start">
-              <div className="space-y-4 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto lg:pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-thumb:hover]:bg-muted-foreground/40">
+            <div className="lg:col-span-1 lg:sticky lg:top-[4.5rem] lg:self-start">
+              <div className="space-y-4 lg:max-h-[calc(100vh-9.5rem)] lg:overflow-y-auto lg:pr-1 [&::-webkit-scrollbar]:w-1 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-muted-foreground/20 [&::-webkit-scrollbar-thumb:hover]:bg-muted-foreground/40">
               {/* Original uploaded document */}
               <div className="rounded-xl border bg-muted/30 overflow-hidden">
                 <div className="flex items-center justify-between px-3 py-2 border-b bg-background/60">

@@ -203,7 +203,12 @@
     "completeEmail": "Add your email",
     "passport": "Passport",
     "office": "Suliko Office",
-    "orders": "Orders"
+    "orders": "Orders",
+    "toggleSidebar": "Collapse or expand the menu",
+    "home": "Home: new translation",
+    "userMenu": "Account menu",
+    "themeLight": "Light theme",
+    "themeDark": "Dark theme"
   },
   "Passport": {
     "title": "Passport Translation",

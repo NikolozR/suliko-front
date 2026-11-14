@@ -1,4 +1,5 @@
 import Sidebar from "@/shared/components/Sidebar";
+import Topbar from "@/shared/components/shell/Topbar";
 import MobileBottomNav from "@/shared/components/MobileBottomNav";
 import { cookies } from "next/headers";
 import { getUserProfile } from "@/features/auth/services/userService";
@@ -36,6 +37,7 @@ export default async function MainLayout({
   return (
     <ShortcutsProvider>
       <div className="relative">
+        <Topbar initiallySignedIn={Boolean(userProfile)} />
         <Sidebar initialUserProfile={userProfile} />
         <ResponsiveMainContent>
           {children}

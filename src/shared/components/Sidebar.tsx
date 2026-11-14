@@ -3,10 +3,8 @@ import { Link, usePathname } from "@/i18n/navigation";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
-import { useUser } from "@/features/auth/hooks/useUser";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
-import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { HistoryDropdown } from "@/features/chatHistory/components/HistoryDropdown";
 import { SidebarLanguageSelector } from "./SidebarLanguageSelector";
@@ -15,27 +13,19 @@ import {
   FolderOpen,
   HelpCircle,
   MessageSquare,
-  User,
-  ChevronLeft,
-  ChevronRight,
-  LogOut,
   ChevronDown,
   ChevronUp,
   FileText,
   Briefcase,
-  ExternalLink,
   ClipboardList,
-  Keyboard,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
-import SulikoLogo from "./SulikoLogo";
 import { SidebarBalanceCard } from "./SidebarBalanceCard";
 import { KbdCombo } from "@/shared/components/Kbd";
 import { GO_TARGETS } from "@/shared/shortcuts/definitions";
 import { useShortcuts } from "@/shared/shortcuts/ShortcutsProvider";
 import { useLocale, useTranslations } from "next-intl";
 import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
-import { signOutEverywhere } from "@/features/auth/services/signOut";
 
 const NAV_ITEMS = [
   {
@@ -109,7 +99,6 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const pathname = usePathname();
   const { token } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
-  const { initials } = useUser();
   const { reset: resetTextTranslation } = useTextTranslationStore();
   const { reset: resetDocumentTranslation } = useDocumentTranslationStore();
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
@@ -132,7 +121,6 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
   const t = useTranslations('Sidebar');
   const locale = useLocale();
-  const { setHelpOpen } = useShortcuts();
 
   // Until the browser has read its own token, go by what the server saw: the
   // profile it fetched with the token cookie. Otherwise every page load would
@@ -146,9 +134,6 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     }
   }, [initialUserProfile, userProfile, setUserProfile]);
 
-  const handleCollapseToggle = () => {
-    storeSetIsCollapsed(!storeIsCollapsed);
-  };
 
   useEffect(() => {
     if (isMobile) {
@@ -182,9 +167,6 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
   const officeHref = `${OFFICE_URL}/${officeLocale(locale)}/dashboard`;
 
-  const needsEmailReminder = Boolean(
-    userProfile?.email && userProfile.email.toLowerCase().includes("example.com")
-  );
 
   // const renderOverlay = () => {
   //   if (isMobile) {
@@ -205,75 +187,25 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   return (
     <>
       {/* {renderOverlay()} */}
+      {/* The same frame as Suliko Office's sidebar: under the 56px top bar,
+          4rem collapsed, 14rem at md, 16rem at lg. The mark, the switch that
+          folds it and the product switch are in the top bar (shell/Topbar). */}
       <aside
-        className={`sidebar-main hidden md:flex flex-col h-[100dvh] overflow-hidden fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
-          ? "w-20"
-          : "w-48 md:w-56 lg:w-60"
-          } ${!effectiveIsCollapsed
-            ? "md:shadow-none shadow-float-3"
-            : "md:shadow-none"
+        className={`sidebar-main hidden md:flex flex-col fixed inset-y-0 left-0 z-40 overflow-hidden border-r pt-14 print:hidden ${effectiveIsCollapsed
+          ? "w-16"
+          : "w-56 lg:w-64"
           }`}
       >
-        <div className={`flex items-center h-20 shrink-0 ${effectiveIsCollapsed ? "justify-center" : "justify-between"} px-4`}>
-          {!effectiveIsCollapsed && (
-            <Link
-              href="/translate"
-              className="flex items-center transition-all duration-300 cursor-pointer"
-              aria-label="Go to landing page"
-            >
-              <SulikoLogo />
-            </Link>
-          )}
-          <button
-            onClick={handleCollapseToggle}
-            className={`sidebar-button shrink-0 items-center justify-center h-9 w-9 rounded-lg cursor-pointer transition-colors ${isMobile ? "hidden" : "flex"}`}
-            aria-label={effectiveIsCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-          >
-            {effectiveIsCollapsed ? <ChevronRight className="h-5 w-5" /> : <ChevronLeft className="h-5 w-5" />}
-          </button>
-        </div>
-
-        {token && (
-          <div className="shrink-0 px-2 pb-1">
-            {effectiveIsCollapsed ? (
-              <a
-                href={officeHref}
-                title={t("office")}
-                aria-label={t("office")}
-                className="sidebar-item group flex items-center justify-center rounded-md px-3 py-2 transition-colors"
-              >
-                <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
-              </a>
-            ) : (
-              <div role="group" aria-label={t("products")} className="grid grid-cols-2 gap-1 rounded-lg bg-black/5 p-1 text-sm dark:bg-white/5">
-                <span
-                  aria-current="true"
-                  className="flex items-center justify-center whitespace-nowrap rounded-md bg-primary/15 px-2 py-1.5 font-medium text-primary"
-                >
-                  {t("translate")}
-                </span>
-                <a
-                  href={officeHref}
-                  className="flex items-center justify-center gap-1 whitespace-nowrap rounded-md px-2 py-1.5 text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground dark:hover:bg-white/10"
-                >
-                  {t("officeShort")}
-                  <ExternalLink className="h-3 w-3 shrink-0 opacity-70" aria-hidden />
-                </a>
-              </div>
-            )}
-          </div>
-        )}
-
-        <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 pt-1 space-y-1">
+        <nav className="custom_scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 py-4 space-y-0.5">
           {visibleNavItems.map(({ label, href, icon: Icon, disabled }) => (
             disabled ? (
               <span
                 key={href}
-                className={`sidebar-item-disabled group text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 opacity-50 cursor-not-allowed select-none ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                className={`sidebar-item-disabled group text-sm font-medium flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 opacity-50 cursor-not-allowed select-none ${effectiveIsCollapsed ? "justify-center px-0" : ""}`}
                 aria-disabled="true"
                 tabIndex={-1}
               >
-                <Icon className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"}`} />
+                <Icon className="size-4 shrink-0" />
                 {!effectiveIsCollapsed && (
                   <span className="whitespace-nowrap">{t(label)}</span>
                 )}
@@ -287,19 +219,18 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   resetDocumentTranslation();
                 } : undefined}
                 className={label === "newTranslation"
-                  ? `group text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center" : ""}`
-                  : `sidebar-item group text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${isActive(href)
+                  ? `group text-sm font-medium flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center px-0" : ""}`
+                  : `sidebar-item group text-sm font-medium flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 transition-colors ${isActive(href)
                     ? "sidebar-item-active font-medium"
                     : ""
-                  } ${effectiveIsCollapsed ? "justify-center" : ""}`
+                  } ${effectiveIsCollapsed ? "justify-center px-0" : ""}`
                 }
                 aria-current={isActive(href) ? "page" : undefined}
                 title={effectiveIsCollapsed ? hintTitle(t(label), href) : undefined}
               >
                 <div className="relative flex items-center">
                   <Icon
-                    className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                      } group-hover:scale-105`}
+                    className="size-4 shrink-0"
                   />
                 </div>
                 {!effectiveIsCollapsed && (
@@ -325,14 +256,14 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               <div className="flex items-center">
                 <Link
                   href="/projects"
-                  className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/")
+                  className={`sidebar-item group flex-1 min-w-0 text-sm font-medium flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/")
                     ? "sidebar-item-active font-medium"
                     : ""
-                    } ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                    } ${effectiveIsCollapsed ? "justify-center px-0" : ""}`}
                   aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/") ? "page" : undefined}
                   title={effectiveIsCollapsed ? t("projects") : undefined}
                 >
-                  <FolderOpen className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
+                  <FolderOpen className="size-4 shrink-0" />
                   {!effectiveIsCollapsed && (
                     <>
                       <span className="whitespace-nowrap truncate">{t("projects")}</span>
@@ -356,65 +287,23 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
         </nav>
 
-        <div className="shrink-0 flex flex-col gap-2 border-t border-sidebar-border p-3">
-          {token ? (
-            <>
-              {userProfile && <SidebarBalanceCard profile={userProfile} collapsed={effectiveIsCollapsed} />}
-              <div className={`flex gap-1 ${effectiveIsCollapsed ? "flex-col items-center" : "items-center"}`}>
-                <Link
-                  href="/profile"
-                  aria-label={t("profile")}
-                  title={effectiveIsCollapsed ? t("profile") : undefined}
-                  aria-current={pathname === "/profile" ? "page" : undefined}
-                  className={`group relative flex min-w-0 items-center gap-2.5 rounded-md px-2 py-1.5 transition-colors text-sm ${pathname === "/profile" ? "sidebar-item sidebar-item-active font-medium" : "sidebar-item"} ${effectiveIsCollapsed ? "justify-center" : "flex-1"}`}
-                >
-                  <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-primary/15 text-xs font-semibold text-primary">
-                    {initials || <User className="h-4 w-4" />}
-                  </span>
-                  {needsEmailReminder && (
-                    <span className="absolute top-1 left-7 h-2 w-2 rounded-full bg-amber-500 animate-flicker" />
-                  )}
-                  {!effectiveIsCollapsed && <span className="truncate">{t("profile")}</span>}
-                </Link>
-                {!effectiveIsCollapsed && (
-                  <button
-                    type="button"
-                    onClick={() => setHelpOpen(true)}
-                    title={`${t("keyboardShortcuts")} (?)`}
-                    aria-label={t("keyboardShortcuts")}
-                    className="sidebar-button hidden h-8 w-8 shrink-0 items-center justify-center rounded-md cursor-pointer transition-colors md:flex"
-                  >
-                    <Keyboard className="h-4 w-4" aria-hidden />
-                  </button>
-                )}
-                <button
-                  type="button"
-                  title={t("logout")}
-                  aria-label={t("logout")}
-                  className="sidebar-button flex h-8 w-8 shrink-0 items-center justify-center rounded-md cursor-pointer transition-colors"
-                  onClick={() => {
-                    resetTextTranslation();
-                    resetDocumentTranslation();
-                    signOutEverywhere(locale);
-                  }}
-                >
-                  <LogOut className="h-4 w-4" />
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className={`flex gap-2 ${effectiveIsCollapsed ? "flex-col items-center" : "items-center"}`}>
-              <Link
-                href="/sign-in"
-                className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2 transition-colors ${effectiveIsCollapsed ? "justify-center" : "flex-1"}`}
-              >
-                <User className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
-                {!effectiveIsCollapsed && <span className="whitespace-nowrap">{t("login")}</span>}
-              </Link>
-              <ThemeToggle />
-            </div>
-          )}
-        </div>
+        {/* The foot, as in Office: this product's meter (the page balance, where
+            Office shows the month's orders) and the way to the other product.
+            Profile, the shortcuts and Sign out are in the top bar's user menu. */}
+        {token && (
+          <div className="shrink-0 space-y-1 border-t border-sidebar-border px-2 py-3">
+            {userProfile && <SidebarBalanceCard profile={userProfile} collapsed={effectiveIsCollapsed} />}
+            <a
+              href={officeHref}
+              title={effectiveIsCollapsed ? t("office") : undefined}
+              aria-label={effectiveIsCollapsed ? t("office") : undefined}
+              className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 text-sm font-medium transition-colors ${effectiveIsCollapsed ? "justify-center px-0" : ""}`}
+            >
+              <Briefcase className="size-4 shrink-0" aria-hidden />
+              {!effectiveIsCollapsed && <span className="truncate">{t("office")}</span>}
+            </a>
+          </div>
+        )}
       </aside>
     </>
   );

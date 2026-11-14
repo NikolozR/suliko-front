@@ -203,7 +203,12 @@
     "completeEmail": "Uzupełnij e-mail",
     "passport": "Paszport",
     "office": "Suliko Office",
-    "orders": "Zamówienia"
+    "orders": "Zamówienia",
+    "toggleSidebar": "Zwiń lub rozwiń menu",
+    "home": "Start: nowe tłumaczenie",
+    "userMenu": "Menu konta",
+    "themeLight": "Jasny motyw",
+    "themeDark": "Ciemny motyw"
   },
   "Passport": {
     "title": "Tłumaczenie paszportu",

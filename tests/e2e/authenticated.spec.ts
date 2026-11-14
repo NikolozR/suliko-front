@@ -89,11 +89,19 @@ test.describe('Authenticated pages', () => {
   test('sidebar links navigate to their pages', async ({ page }) => {
     await page.goto('/en/document', { waitUntil: 'networkidle' });
     const sidebar = page.getByRole('complementary');
-    for (const [name, path] of [['Orders', '/en/orders'], ['Profile', '/en/profile'], ['Projects', '/en/projects']]) {
+    for (const [name, path] of [['Orders', '/en/orders'], ['Projects', '/en/projects']]) {
       await sidebar.getByRole('link', { name, exact: true }).click();
       await expect(page, name).toHaveURL(new RegExp(`${path}$`), { timeout: 15_000 });
       await expect(page.locator('body')).not.toContainText('Application error');
     }
+  });
+
+  test('the account menu in the top bar leads to Profile', async ({ page }) => {
+    await page.goto('/en/document', { waitUntil: 'networkidle' });
+    await page.getByRole('banner').getByRole('button', { name: 'Account menu' }).click();
+    await page.getByRole('banner').getByRole('link', { name: 'Profile' }).click();
+    await expect(page).toHaveURL(/\/en\/profile$/, { timeout: 15_000 });
+    await expect(page.locator('body')).not.toContainText('Application error');
   });
 
 });
