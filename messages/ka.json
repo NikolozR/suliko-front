@@ -203,7 +203,12 @@
     "completeEmail": "დაარედაქტირეთ ელფოსტა",
     "passport": "პასპორტი",
     "office": "Suliko Office",
-    "orders": "შეკვეთები"
+    "orders": "შეკვეთები",
+    "toggleSidebar": "მენიუს ჩაკეცვა ან გაშლა",
+    "home": "მთავარი: ახალი თარგმანი",
+    "userMenu": "ანგარიშის მენიუ",
+    "themeLight": "ნათელი თემა",
+    "themeDark": "მუქი თემა"
   },
   "Passport": {
     "title": "პასპორტის თარგმანი",

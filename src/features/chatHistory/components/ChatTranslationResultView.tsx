@@ -316,7 +316,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
               </Button>
             </div>
             <div
-              className="min-h-[300px] h-[50vh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] flex flex-col w-full"
+              className="min-h-[300px] h-[50vh] md:h-[calc(100vh-256px)] md:max-h-[calc(100vh-256px)] flex flex-col w-full"
               ref={documentPreviewRef}
             >
               <div className="space-y-4 h-full flex flex-col">
@@ -424,7 +424,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
               )}
             </div>
           </div>
-          <div className="min-h-[300px] h-[70dvh] md:h-[calc(100vh-240px)] md:max-h-[calc(100vh-240px)] overflow-y-auto" ref={markdownPreviewRef}>
+          <div className="min-h-[300px] h-[70dvh] md:h-[calc(100vh-256px)] md:max-h-[calc(100vh-256px)] overflow-y-auto" ref={markdownPreviewRef}>
             <TranslationEditor
               ref={editorRef}
               translatedMarkdown={translatedMarkdown}
