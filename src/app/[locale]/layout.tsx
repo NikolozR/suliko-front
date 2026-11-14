@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "../globals.css";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import { ThemeProvider } from "@/features/ui";
 // import BetaBanner from "@/shared/components/BetaBanner";
 import { Analytics } from '@vercel/analytics/next';
@@ -31,9 +32,24 @@ import {
 } from "@/shared/utils/analyticsEnv";
 // import OneTimeOfferModal from "@/shared/components/OneTimeOfferModal";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+/*
+ * BPG Arial (text) and BPG Mrgvlovani Caps (h1 to h4): the same two WOFF2 files
+ * Suliko Office loads, subset to Latin, Cyrillic, Georgian and punctuation
+ * (23 KB + 20 KB where the TTFs are 149 KB + 95 KB). next/font preloads them.
+ * A glyph outside the subset falls back to the system font.
+ */
+const bodyFont = localFont({
+  src: "../../../fonts/bpg_arial_2009.woff2",
+  weight: "400",
+  display: "swap",
+  variable: "--font-body",
+});
+
+const displayFont = localFont({
+  src: "../../../fonts/bpg_mrgvlovani_caps_2010.woff2",
+  weight: "400",
+  display: "swap",
+  variable: "--font-display",
 });
 
 const geistMono = Geist_Mono({
@@ -149,7 +165,7 @@ export default async function LocaleLayout({
     <html lang={locale} suppressHydrationWarning>
       <body
         suppressHydrationWarning
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
+        className={`${bodyFont.variable} ${displayFont.variable} ${geistMono.variable} antialiased bg-suliko-main-content-bg-color`}
       >
         <RegisterServiceWorker />
         <DeferredScripts scripts={getDeferredTrackers(metaPixelId)} />

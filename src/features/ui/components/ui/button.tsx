@@ -8,9 +8,13 @@ const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-[transform,box-shadow,background-color,color,opacity] duration-150 active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive cursor-pointer",
   {
     variants: {
+      // The same set as Suliko Office's Button. `brand` is the Suliko blue, for
+      // the ONE main action on a screen; `default` is the neutral near-black.
       variant: {
+        brand:
+          "bg-suliko-default-color text-white hover:bg-suliko-default-hover-color dark:text-white",
         default:
-          "bg-primary text-primary-foreground shadow-xs",
+          "bg-primary text-primary-foreground shadow-xs hover:bg-primary/90",
         destructive:
           "bg-destructive text-white shadow-xs dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
         outline:
@@ -18,8 +22,8 @@ const buttonVariants = cva(
         secondary:
           "bg-secondary text-secondary-foreground shadow-xs hover:bg-secondary/80",
         ghost:
-          "",
-        link: "text-primary underline-offset-4 hover:underline",
+          "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
+        link: "text-link underline-offset-4 hover:underline",
       },
       // Touch: 44 / 48 / 52px. Mouse (pointer: fine): 32 / 36 / 40px, see
       // globals.css "Control density". On touch nothing here may sit below 44px: `sm` is the app's
@@ -31,6 +35,7 @@ const buttonVariants = cva(
         sm: "h-(--btn-h-sm) rounded-md gap-1.5 px-(--btn-px-sm) has-[>svg]:px-3",
         lg: "h-(--btn-h-lg) rounded-md px-(--btn-px-lg) has-[>svg]:px-5",
         icon: "size-(--btn-icon)",
+        "icon-sm": "size-(--btn-h-sm)",
       },
     },
     defaultVariants: {
