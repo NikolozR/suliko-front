@@ -64,5 +64,7 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: '/((?!api|trpc|_next|_vercel|payment|.*\\..*).*)'
+  // `app`: Suliko Office, served under /app by the Office deployment (see
+  // next.config.ts). It has its own locales and sign-in gate.
+  matcher: '/((?!api|trpc|_next|_vercel|payment|app/|app$|.*\\..*).*)'
 };
