@@ -613,6 +613,20 @@ html.dark .aurora-orb-4 { opacity: 0.85; }
   }
 }
 
+/* ---------------------------------------------------------------------------
+   Focus indicator, the same rule as Suliko Office: one solid 2px ring in the
+   brand blue on everything a keyboard can reach (5.37:1 on white, 7.47:1 in
+   dark). Unlayered on purpose: it has to win over the components' faint
+   `focus-visible:ring-ring/50` and `outline-none` utilities, which live in
+   Tailwind's layers. Elements focused only by script (tabindex="-1") are left
+   alone.
+   --------------------------------------------------------------------------- */
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex='-1'])):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
 /* Sidebar styles to prevent flashing */
 .sidebar-main {
   background-color: var(--sidebar) !important;
