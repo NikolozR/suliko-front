@@ -103,12 +103,19 @@
    the text face: they are used here as card and section labels, which is
    exactly the small-size role the caps face reads badly at.
    --------------------------------------------------------------------------- */
+/* The subset WOFF2 from next/font (see the layout), as in Suliko Office. A
+   glyph it leaves out (an emoji, Greek) goes to the system font. The full TTFs
+   above are NOT in this stack on purpose: one emoji on a page made the browser
+   fetch both (244 KB) looking for it. They load only for what names them, the
+   PDF export's own stylesheet. */
 body {
-  font-family: 'Secondary Font', sans-serif;
+  font-family: var(--font-body), sans-serif;
 }
 
 :is(h1, h2, h3, h4) {
-  font-family: 'Main Font', sans-serif;
+  font-family: var(--font-display), sans-serif;
+  /* The titling face has one weight. Faked bold smears its Mkhedruli strokes. */
+  font-synthesis-weight: none;
 }
 
 /* ---------------------------------------------------------------------------
@@ -172,7 +179,7 @@ html[lang='ka'] h4 {
 }
 
 .ck *{
-  font-family: 'Secondary Font', sans-serif;
+  font-family: var(--font-body), sans-serif;
 }
 
 @custom-variant dark (&:is(.dark *));
@@ -576,7 +583,7 @@ html.dark .aurora-orb-4 { opacity: 0.85; }
 /* Colour, radius and easing tokens, and the bridge that turns them into
    utility classes, are in tokens.css: one file shared with Suliko Office. */
 @theme inline {
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-body), sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
