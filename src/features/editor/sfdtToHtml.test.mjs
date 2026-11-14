@@ -138,6 +138,37 @@ test("a table with a merged cell, a shaded cell and a paragraph in a cell", () =
   );
 });
 
+test("a table keeps its column widths, cell padding, borders and row height", () => {
+  const html = sfdtToHtml(
+    document([
+      {
+        grid: [300, 200],
+        rows: [
+          {
+            rowFormat: { height: 30 },
+            cells: [
+              {
+                blocks: [paragraph([run("a")])],
+                cellFormat: {
+                  verticalAlignment: "Center",
+                  borders: { bottom: { lineStyle: "Single", lineWidth: 0.5, color: "#000000" }, top: { lineStyle: "None", lineWidth: 0 } },
+                },
+              },
+              { blocks: [paragraph([run("b")])], cellFormat: {} },
+            ],
+          },
+        ],
+      },
+    ]),
+  );
+  assert.equal(
+    html,
+    '<table style="border-collapse:collapse;table-layout:fixed;width:100%"><colgroup><col style="width:60.00%"><col style="width:40.00%"></colgroup><tbody>' +
+      '<tr style="height:30pt"><td style="padding:0pt 5.4pt 0pt 5.4pt;vertical-align:middle;border-bottom:0.5pt solid #000000"><p>a</p></td>' +
+      '<td style="padding:0pt 5.4pt 0pt 5.4pt;vertical-align:top"><p>b</p></td></tr></tbody></table>',
+  );
+});
+
 test("a link is the field it is made of", () => {
   const html = sfdtToHtml(
     document([
