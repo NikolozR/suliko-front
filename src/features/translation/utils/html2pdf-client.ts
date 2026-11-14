@@ -43,8 +43,9 @@ export const withHtml2CanvasBaselineFix = async <T,>(draw: () => Promise<T>): Pr
  * html2pdf puts that box into the live page for the length of the drawing, so a rule for `body`
  * or `*` would restyle the whole site while a PDF is being made.
  *
- * Text is dark unless the document gives it a colour of its own (red text stays red). Georgia
- * has no Georgian letters: those come from the site's own font.
+ * Text is Calibri 11 pt (what the Word editor and the Word file use; Carlito stands in where
+ * Calibri is not installed), dark unless the document gives it a colour of its own. Calibri has
+ * no Georgian letters: those come from the site's own font.
  * `hr.page-break` is where the original document's page ended: the next page starts a new sheet.
  *
  * The site's CSS reset takes from headings, paragraphs and lists what makes them look like a
@@ -53,9 +54,9 @@ export const withHtml2CanvasBaselineFix = async <T,>(draw: () => Promise<T>): Pr
  */
 const PDF_STYLES = `
   .pdf-document {
-    font-family: Georgia, 'Times New Roman', 'Secondary Font', serif;
-    font-size: 13px;
-    line-height: 1.6;
+    font-family: Calibri, Carlito, 'Segoe UI', Arial, 'Secondary Font', sans-serif;
+    font-size: 11pt;
+    line-height: 1.22;
     color: #111;
     background-color: #fff;
   }
@@ -71,17 +72,15 @@ const PDF_STYLES = `
   .pdf-document :is(p, li, blockquote, pre) { orphans: 3; widows: 3; }
   .pdf-document :is(table, figure, img) { page-break-inside: avoid; }
 
-  .pdf-document :is(h1, h2, h3, h4, h5, h6) { font-family: inherit; font-weight: 700; }
-  .pdf-document h1 { font-size: 2em; margin: 0.67em 0; }
-  .pdf-document h2 { font-size: 1.5em; margin: 0.83em 0; }
-  .pdf-document h3 { font-size: 1.17em; margin: 1em 0; }
-  .pdf-document h4 { font-size: 1em; margin: 1.33em 0; }
-  .pdf-document h5 { font-size: 0.83em; margin: 1.67em 0; }
-  .pdf-document h6 { font-size: 0.67em; margin: 2.33em 0; }
-  .pdf-document p { margin: 0.5em 0; }
-  .pdf-document ul { list-style: disc; padding-left: 1.5em; margin: 0.5em 0; }
-  .pdf-document ol { list-style: decimal; padding-left: 1.5em; margin: 0.5em 0; }
-  .pdf-document li { margin: 0.25em 0; }
+  .pdf-document :is(h1, h2, h3, h4, h5, h6) { font-family: inherit; font-weight: 700; line-height: 1.2; }
+  .pdf-document h1 { font-size: 16pt; margin: 12pt 0 4pt; }
+  .pdf-document h2 { font-size: 14pt; margin: 10pt 0 4pt; }
+  .pdf-document h3 { font-size: 12pt; margin: 8pt 0 4pt; }
+  .pdf-document :is(h4, h5, h6) { font-size: 11pt; margin: 6pt 0 4pt; }
+  .pdf-document p { margin: 0 0 4pt; }
+  .pdf-document ul { list-style: disc; padding-left: 0.5in; margin: 0 0 4pt; }
+  .pdf-document ol { list-style: decimal; padding-left: 0.5in; margin: 0 0 4pt; }
+  .pdf-document li { margin: 0; }
   .pdf-document blockquote { border-left: 3px solid #ccc; margin: 0.5em 0; padding-left: 1em; color: #555; }
 `;
 
@@ -106,7 +105,8 @@ const buildPdfDocument = (htmlContent: string, filename: string) => {
   const source = `<div class="pdf-document"><style>${PDF_STYLES}</style>${htmlContent}</div>`;
 
   const options = {
-    margin: [15, 12, 15, 12] as const,
+    // One inch on every side: the Word editor's page.
+    margin: [25.4, 25.4, 25.4, 25.4] as const,
     filename,
     image: {
       type: "jpeg" as const,
