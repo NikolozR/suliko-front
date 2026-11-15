@@ -4,15 +4,33 @@ import { useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { Link, usePathname } from "@/i18n/navigation";
-import { ArrowRight, Facebook, Linkedin, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Mail, MapPin, Phone } from "lucide-react";
 import { NOTARY_PHONE_DISPLAY } from "@/shared/constants/notary";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 import CompanyLegalInfo from "@/shared/components/CompanyLegalInfo";
 import { COMPANY_ADDRESS_EN, COMPANY_ADDRESS_KA } from "@/shared/constants/company";
 
+/* lucide-react 1.x no longer ships brand marks, so the two are drawn here. */
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+function LinkedinIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden>
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
+    </svg>
+  );
+}
+
 const SOCIAL_LINKS = [
-  { icon: Facebook, href: "https://www.facebook.com/profile.php?id=61564358761003", label: "Facebook" },
-  { icon: Linkedin, href: "https://www.linkedin.com/company/suliko-ai/?viewAsMember=true", label: "LinkedIn" },
+  { icon: FacebookIcon, href: "https://www.facebook.com/profile.php?id=61564358761003", label: "Facebook" },
+  { icon: LinkedinIcon, href: "https://www.linkedin.com/company/suliko-ai/?viewAsMember=true", label: "LinkedIn" },
 ];
 
 const LINK = "text-sm text-muted-foreground transition-colors hover:text-foreground";

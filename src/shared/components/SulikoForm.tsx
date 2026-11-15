@@ -1,7 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/features/ui/components/ui/form";
 import { Button } from "@/features/ui/components/ui/button";
 import { Input } from "@/features/ui/components/ui/input";
@@ -114,7 +113,9 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
   );
 
   const form = useForm<LoginFormData | RegisterFormData>({
-    resolver: zodResolver(formSchema as z.ZodType<LoginFormData | RegisterFormData>),
+    // zod 4 types a union of two schemas apart from react-hook-form's single
+    // value type; the schema itself is unchanged.
+    resolver: zodResolver(formSchema as never) as unknown as Resolver<LoginFormData | RegisterFormData>,
     defaultValues: {
       identifier: "",
       mobile: "",
