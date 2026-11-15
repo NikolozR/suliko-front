@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { CLEAN_NAMES } from "./office/i18n/office-path";
+import { CLEAN_NAMES, enabledLocalModules, MOVED_MODULES } from "./office/i18n/office-path";
 
 /**
  * Suliko Office's addresses on this site (/app/...), during phase 3 of making
@@ -14,18 +14,13 @@ import { CLEAN_NAMES } from "./office/i18n/office-path";
  */
 
 /** Modules whose pages are in src/app/app/[locale]/(office). Add one per move. */
-const MOVED_MODULES = ["calculator", "clients", "notaries", "translators", "finances", "reports", "settings", "billing", "users", "dashboard", "notifications", "account", "translations"] as const;
+// The moved modules and the switch: office/i18n/office-path.ts.
 
 const OFFICE_LOCALES = ["ka", "en"];
 const SESSION_COOKIE = "suliko_session";
 
 function enabledModules(): Set<string> {
-  return new Set(
-    (process.env.OFFICE_LOCAL_MODULES ?? "")
-      .split(",")
-      .map((m) => m.trim())
-      .filter(Boolean),
-  );
+  return new Set(enabledLocalModules());
 }
 
 /** /app/ka/calculator/x -> { locale: "ka", module: "calculator" } */

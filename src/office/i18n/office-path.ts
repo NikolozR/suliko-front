@@ -8,12 +8,34 @@ declare global {
 
 const LOCALES = ["ka", "en"];
 
+/**
+ * Office modules whose code has moved into this app (pages in
+ * src/app/app/[locale]/(office) and (editor)). Add one per move.
+ */
+export const MOVED_MODULES = [
+  "calculator", "clients", "notaries", "translators", "finances", "reports", "settings",
+  "billing", "users", "dashboard", "notifications", "account", "translations",
+] as const;
+
+/**
+ * The moved modules this deployment serves: those of MOVED_MODULES that
+ * OFFICE_LOCAL_MODULES switches on. A name in the variable whose code has not
+ * moved yet is ignored, so the variable can hold the final list from the start.
+ * Server only (the browser reads window.__sulikoLocal, written from this).
+ */
+export function enabledLocalModules(): string[] {
+  const listed = new Set(
+    (process.env.OFFICE_LOCAL_MODULES ?? "")
+      .split(",")
+      .map((m) => m.trim())
+      .filter(Boolean),
+  );
+  return MOVED_MODULES.filter((m) => listed.has(m));
+}
+
 export function localModules(): string[] {
   if (typeof window !== "undefined") return window.__sulikoLocal ?? [];
-  return (process.env.OFFICE_LOCAL_MODULES ?? "")
-    .split(",")
-    .map((m) => m.trim())
-    .filter(Boolean);
+  return enabledLocalModules();
 }
 
 /** "/clients/2?x=1" (or an already prefixed path) -> "/ka/clients/2?x=1" or "/app/ka/...". */
