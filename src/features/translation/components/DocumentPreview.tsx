@@ -484,7 +484,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
     import("react-pdf")
       .then((mod) => {
         mod.pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-          "pdfjs-dist/build/pdf.worker.min.mjs",
+          /* react-pdf's own pdfjs version (package.json pins pdfjs-dist-react-pdf to it): the top-level pdfjs-dist is Office's newer one, and a worker of another version refuses every PDF. */ "pdfjs-dist-react-pdf/build/pdf.worker.min.mjs",
           import.meta.url
         ).toString();
         if (!cancelled) {

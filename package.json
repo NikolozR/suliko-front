@@ -77,6 +77,7 @@
     "page-count": "^0.0.4",
     "pdf-lib": "^1.17.1",
     "pdfjs-dist": "^5.7.284",
+    "pdfjs-dist-react-pdf": "npm:pdfjs-dist@4.8.69",
     "radix-ui": "^1.8.1",
     "react": "^19.1.0",
     "react-documents": "^1.2.1",
