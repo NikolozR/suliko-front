@@ -15,6 +15,7 @@ const LOCALES = ["ka", "en"];
 export const MOVED_MODULES = [
   "calculator", "clients", "notaries", "translators", "finances", "reports", "settings",
   "billing", "users", "dashboard", "notifications", "account", "translations",
+  "service-pages", "website-translations",
 ] as const;
 
 /**
