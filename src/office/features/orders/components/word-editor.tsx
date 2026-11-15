@@ -16,21 +16,49 @@ import { useCallback, useEffect, useImperativeHandle, useRef, type Ref } from "r
 // ever imported where the editor is shown, never for the rest of the app.
 // The Fluent 2 theme, which is Office's own look and, unlike Material, fetches
 // no web font from Google (the page's content security policy would refuse it).
-import "@syncfusion/ej2-base/styles/fluent2.css";
-import "@syncfusion/ej2-buttons/styles/fluent2.css";
-import "@syncfusion/ej2-inputs/styles/fluent2.css";
-import "@syncfusion/ej2-popups/styles/fluent2.css";
-import "@syncfusion/ej2-lists/styles/fluent2.css";
-import "@syncfusion/ej2-navigations/styles/fluent2.css";
-import "@syncfusion/ej2-splitbuttons/styles/fluent2.css";
-import "@syncfusion/ej2-dropdowns/styles/fluent2.css";
-import "@syncfusion/ej2-calendars/styles/fluent2.css";
-import "@syncfusion/ej2-notifications/styles/fluent2.css";
-import "@syncfusion/ej2-ribbon/styles/fluent2.css";
-import "@syncfusion/ej2-documenteditor/styles/fluent2.css";
+import "@syncfusion/ej2-fluent2-theme/styles/base/base.css";
+import "@syncfusion/ej2-fluent2-theme/styles/button/button.css";
+import "@syncfusion/ej2-fluent2-theme/styles/check-box/check-box.css";
+import "@syncfusion/ej2-fluent2-theme/styles/radio-button/radio-button.css";
+import "@syncfusion/ej2-fluent2-theme/styles/switch/switch.css";
+import "@syncfusion/ej2-fluent2-theme/styles/input/input.css";
+import "@syncfusion/ej2-fluent2-theme/styles/textbox/textbox.css";
+import "@syncfusion/ej2-fluent2-theme/styles/textarea/textarea.css";
+import "@syncfusion/ej2-fluent2-theme/styles/numerictextbox/numerictextbox.css";
+import "@syncfusion/ej2-fluent2-theme/styles/maskedtextbox/maskedtextbox.css";
+import "@syncfusion/ej2-fluent2-theme/styles/popup/popup.css";
+import "@syncfusion/ej2-fluent2-theme/styles/spinner/spinner.css";
+import "@syncfusion/ej2-fluent2-theme/styles/dialog/dialog.css";
+import "@syncfusion/ej2-fluent2-theme/styles/tooltip/tooltip.css";
+import "@syncfusion/ej2-fluent2-theme/styles/drop-down-base/drop-down-base.css";
+import "@syncfusion/ej2-fluent2-theme/styles/drop-down-list/drop-down-list.css";
+import "@syncfusion/ej2-fluent2-theme/styles/combo-box/combo-box.css";
+import "@syncfusion/ej2-fluent2-theme/styles/auto-complete/auto-complete.css";
+import "@syncfusion/ej2-fluent2-theme/styles/multi-select/multi-select.css";
+import "@syncfusion/ej2-fluent2-theme/styles/list-view/list-view.css";
+import "@syncfusion/ej2-fluent2-theme/styles/list-box/list-box.css";
+import "@syncfusion/ej2-fluent2-theme/styles/calendar/calendar.css";
+import "@syncfusion/ej2-fluent2-theme/styles/datepicker/datepicker.css";
+import "@syncfusion/ej2-fluent2-theme/styles/timepicker/timepicker.css";
+import "@syncfusion/ej2-fluent2-theme/styles/color-picker/color-picker.css";
+import "@syncfusion/ej2-fluent2-theme/styles/slider/slider.css";
+import "@syncfusion/ej2-fluent2-theme/styles/toolbar/toolbar.css";
+import "@syncfusion/ej2-fluent2-theme/styles/tab/tab.css";
+import "@syncfusion/ej2-fluent2-theme/styles/menu/menu.css";
+import "@syncfusion/ej2-fluent2-theme/styles/context-menu/context-menu.css";
+import "@syncfusion/ej2-fluent2-theme/styles/drop-down-button/drop-down-button.css";
+import "@syncfusion/ej2-fluent2-theme/styles/split-button/split-button.css";
+import "@syncfusion/ej2-fluent2-theme/styles/button-group/button-group.css";
+import "@syncfusion/ej2-fluent2-theme/styles/h-scroll/h-scroll.css";
+import "@syncfusion/ej2-fluent2-theme/styles/v-scroll/v-scroll.css";
+import "@syncfusion/ej2-fluent2-theme/styles/toast/toast.css";
+import "@syncfusion/ej2-fluent2-theme/styles/message/message.css";
+import "@syncfusion/ej2-fluent2-theme/styles/ribbon/ribbon.css";
+import "@syncfusion/ej2-fluent2-theme/styles/document-editor/document-editor.css";
+import "@syncfusion/ej2-fluent2-theme/styles/document-editor-container/document-editor-container.css";
 
 // The licence key is version-specific (it must be for the major version
-// installed, 34) and is meant to be in the browser's code: it is a public
+// installed, 35) and is meant to be in the browser's code: it is a public
 // build-time setting, not a secret. Without one the editor runs in evaluation
 // mode and says so on the page.
 const licenseKey = process.env.NEXT_PUBLIC_SYNCFUSION_LICENSE_KEY;
