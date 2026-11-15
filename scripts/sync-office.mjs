@@ -70,6 +70,8 @@ function destFor(rel) {
 const OWNED = new Set([
   // The one sidebar: Translate's section above Office's (shared/nav/workspace.ts).
   "src/office/shared/components/shell/sidebar.tsx",
+  // The one phone bar: Translate's slot (Dashboard, Translate | + | Orders, Clients).
+  "src/office/shared/components/shell/bottom-bar.tsx",
 ]);
 
 // ── copy ────────────────────────────────────────────────────────────────────

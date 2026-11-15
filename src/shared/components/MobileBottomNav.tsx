@@ -8,8 +8,10 @@ import { useLocale, useTranslations } from "next-intl";
 import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
+import type { OfficeContext } from "@/shared/nav/officeNav";
+import { OfficeBottomBar } from "./shell/OfficeBottomBar";
 
-export default function MobileBottomNav() {
+export default function MobileBottomNav({ office = null }: { office?: OfficeContext | null }) {
   const pathname = usePathname();
   const { token } = useAuthStore();
   const t = useTranslations("Sidebar");
@@ -45,6 +47,9 @@ export default function MobileBottomNav() {
           { label: t("login"), href: "/sign-in" as const, icon: User },
         ]),
   ];
+
+  // Signed in to Office: the one phone bar, the same as on Office's screens.
+  if (office && token) return <OfficeBottomBar office={office} />;
 
   return (
     <nav

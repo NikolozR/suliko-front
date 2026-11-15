@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { Keyboard, LogOut, Moon, PanelLeft, Sun, User } from "lucide-react";
+import { Keyboard, LogOut, MessageCircle, Moon, PanelLeft, Sun, User } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { useAuthStore } from "@/features/auth/store/authStore";
@@ -48,6 +48,8 @@ export default function Topbar({ initiallySignedIn, office = null }: TopbarProps
   const [isClient, setIsClient] = useState(false);
   const isCollapsed = useSidebarStore((state) => state.isCollapsed!);
   const setIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
+  const mobileOpen = useSidebarStore((state) => state.mobileOpen);
+  const setMobileOpen = useSidebarStore((state) => state.setMobileOpen);
 
   useEffect(() => setIsClient(true), []);
 
@@ -57,13 +59,17 @@ export default function Topbar({ initiallySignedIn, office = null }: TopbarProps
 
   return (
     <header className="suliko-default-bg fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-2 px-3 text-white print:hidden">
-      {/* The sidebar is a desktop thing; a phone has the bottom bar. */}
+      {/* Folds the sidebar on a desktop; opens it as a drawer on a phone, as
+          on Office's bar. A visitor's phone has no sidebar to open. */}
       <button
         type="button"
-        onClick={() => setIsCollapsed(!isCollapsed)}
+        onClick={() => {
+          if (window.matchMedia("(max-width: 767px)").matches) setMobileOpen(!mobileOpen);
+          else setIsCollapsed(!isCollapsed);
+        }}
         aria-label={t("toggleSidebar")}
         aria-pressed={!isCollapsed}
-        className={`${BAR_BUTTON} hidden size-9 md:inline-flex`}
+        className={`${BAR_BUTTON} ${signedIn ? "inline-flex" : "hidden md:inline-flex"} size-9 pointer-coarse:size-11`}
       >
         <PanelLeft className="size-[1.1rem]" aria-hidden />
       </button>
@@ -214,6 +220,21 @@ function UserMenu() {
             >
               <Keyboard className="size-4 shrink-0" aria-hidden />
               <span className="flex-1 truncate">{t("keyboardShortcuts")}</span>
+            </button>
+            {/* On a phone the chat's launcher is hidden inside the app (every edge
+                is taken; see deferredTrackers.ts): it opens from here instead. */}
+            <button
+              type="button"
+              onClick={() => {
+                setOpen(false);
+                const crisp = (window as unknown as { $crisp?: unknown[][] }).$crisp;
+                crisp?.push(["do", "chat:show"]);
+                crisp?.push(["do", "chat:open"]);
+              }}
+              className={`${MENU_ITEM} md:hidden`}
+            >
+              <MessageCircle className="size-4 shrink-0" aria-hidden />
+              <span className="flex-1 truncate">{t("chat")}</span>
             </button>
             <button type="button" onClick={() => setTheme(dark ? "light" : "dark")} className={MENU_ITEM}>
               {dark ? <Sun className="size-4 shrink-0" aria-hidden /> : <Moon className="size-4 shrink-0" aria-hidden />}

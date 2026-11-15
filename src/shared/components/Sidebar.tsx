@@ -116,7 +116,8 @@ export default function Sidebar({ initialUserProfile, office = null }: SidebarPr
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
 
   const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed!);
-  const storeSetIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
+  const mobileOpen = useSidebarStore((state) => state.mobileOpen);
+  const setMobileOpen = useSidebarStore((state) => state.setMobileOpen);
   const [isClient, setIsClient] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -147,11 +148,10 @@ export default function Sidebar({ initialUserProfile, office = null }: SidebarPr
   }, [initialUserProfile, userProfile, setUserProfile]);
 
 
+  // The phone drawer closes on every navigation, and when the screen grows.
   useEffect(() => {
-    if (isMobile) {
-      storeSetIsCollapsed(true);
-    }
-  }, [isMobile, storeSetIsCollapsed]);
+    setMobileOpen(false);
+  }, [pathname, isMobile, setMobileOpen]);
 
   const isActive = (href: string) => {
     if (href === '/text') {
@@ -175,7 +175,8 @@ export default function Sidebar({ initialUserProfile, office = null }: SidebarPr
 
   // Determine effective collapsed state for rendering to prevent hydration mismatch
   // On screens < 680px, always treat as collapsed regardless of stored preference
-  const effectiveIsCollapsed = !isClient ? false : (isMobile || storeIsCollapsed);
+  // On a phone the drawer is drawn full (never folded) while it is open.
+  const effectiveIsCollapsed = !isClient ? false : isMobile ? !mobileOpen : storeIsCollapsed;
 
   const officeHref = `${OFFICE_URL}/${officeLocale(locale)}/dashboard`;
 
@@ -202,8 +203,12 @@ export default function Sidebar({ initialUserProfile, office = null }: SidebarPr
       {/* The same frame as Suliko Office's sidebar: under the 56px top bar,
           4rem collapsed, 14rem at md, 16rem at lg. The mark, the switch that
           folds it and the product switch are in the top bar (shell/Topbar). */}
+      {/* Scrim behind the phone drawer. */}
+      {isMobile && mobileOpen && (
+        <div aria-hidden className="fixed inset-0 top-14 z-30 bg-black/50 md:hidden" onClick={() => setMobileOpen(false)} />
+      )}
       <aside
-        className={`sidebar-main hidden md:flex flex-col fixed inset-y-0 left-0 z-40 overflow-hidden border-r pt-14 print:hidden ${effectiveIsCollapsed
+        className={`sidebar-main ${isMobile && mobileOpen ? "flex pb-16 shadow-float-3" : "hidden"} md:flex md:pb-0 flex-col fixed inset-y-0 left-0 z-40 overflow-hidden border-r pt-14 print:hidden ${effectiveIsCollapsed
           ? "w-16"
           : "w-56 lg:w-64"
           }`}
