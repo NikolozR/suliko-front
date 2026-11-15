@@ -98,7 +98,11 @@ export function officeZone(request: NextRequest): NextResponse | null {
     const { locale, module } = parse(pathname);
     // The bare /app and /app/ka: Office's home, the dashboard. (The bare /app
     // has answered 404 since a moved module gave this app an /app folder.)
-    if (!module) {
+    // Only the exact /app, /app/ka, /app/en: everything else without a locale
+    // (/app/api/..., /app/_next/..., /app/manifest.webmanifest) is the Office
+    // deployment's and must pass. (Matching on `!module` alone sent the sign-in
+    // callback and file downloads to the dashboard.)
+    if (/^\/app(?:\/(?:ka|en))?\/?$/.test(pathname)) {
       const lang = locale ?? "ka";
       if (enabledModules().has("dashboard")) return NextResponse.redirect(new URL(`/${lang}/dashboard${search}`, request.url), 307);
       if (!locale) return NextResponse.redirect(new URL(`/app/ka${search}`, request.url), 307);
