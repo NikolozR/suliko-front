@@ -52,7 +52,7 @@ export default async function MainLayout({
         <ResponsiveMainContent>
           {children}
         </ResponsiveMainContent>
-        <MobileBottomNav />
+        <MobileBottomNav office={office} />
       </div>
       <ShortcutsDialog />
     </ShortcutsProvider>

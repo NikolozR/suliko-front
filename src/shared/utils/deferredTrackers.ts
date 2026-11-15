@@ -45,24 +45,26 @@ window.CRISP_READY_TRIGGER=function(){
           launcher.push(all[i]);
         }
       }
-      // Inside the app (it has a bottom bar and a sticky Translate button) the
-      // corner and the middle of the right edge both cover content: it sits in the
-      // empty band at the top right. On the public pages it keeps Crisp's corner.
-      // Asked again every second, so moving between the two follows.
+      // Inside the app (it has a bottom bar) every edge of a phone screen is
+      // taken: the top bar's account menu, the bottom bar, the sticky Translate
+      // button. The launcher is hidden there and "Chat with us" in the account
+      // menu opens the chat (it shows the launcher while the chat is open). On the
+      // public pages it keeps Crisp's corner. Asked again every second, so
+      // moving between the two follows.
+      window.__sulikoChatOpen=false;
+      window.$crisp.push(["on","chat:opened",function(){window.__sulikoChatOpen=true;place();}]);
+      window.$crisp.push(["on","chat:closed",function(){window.__sulikoChatOpen=false;place();}]);
       function place(){
         var app=!!document.querySelector("nav.fixed.bottom-0");
+        var hide=app&&!window.__sulikoChatOpen;
         for(var j=0;j<launcher.length;j++){
           var st=launcher[j].style;
-          if(app){
-            st.setProperty("bottom","auto","important");
-            st.setProperty("top","0.5rem","important");
-            st.setProperty("right","0.75rem","important");
-          }else{
-            st.removeProperty("top");
-            st.removeProperty("bottom");
-            st.removeProperty("right");
-          }
+          st.removeProperty("top");
+          st.removeProperty("bottom");
+          st.removeProperty("right");
           st.removeProperty("transform");
+          if(hide) st.setProperty("display","none","important");
+          else st.removeProperty("display");
         }
       }
       place();

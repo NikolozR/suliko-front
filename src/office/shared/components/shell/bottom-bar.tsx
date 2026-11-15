@@ -1,8 +1,8 @@
 "use client";
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
+// Moved from Suliko Office (app.suliko.ge), then changed here for the one phone
+// bar (Translate's slot). Owned by suliko-front: scripts/sync-office.mjs leaves it alone.
 
-import { Plus } from "lucide-react";
+import { Languages, Plus } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 
 import { Link, usePathname } from "@office/i18n/navigation";
@@ -12,12 +12,16 @@ import { Button } from "@office/shared/components/ui/button";
 import { activeSection, NAVIGATION, type NavItem } from "@office/shared/config/navigation";
 import { HUE_CLASSES } from "@office/shared/lib/hues";
 import { cn } from "@office/shared/lib/utils";
+import { officeLocaleOf, WORKSPACE_SECTIONS, workspaceLocale } from "@/shared/nav/workspace";
 
 /**
  * The sidebar entries a thumb reaches for most, in bar order. Everything
  * else stays in the drawer, one tap away behind the top bar's button.
  */
-const BAR_ITEMS = ["dashboard", "translations", "clients", "notifications"];
+// The one phone bar, the same on Translate's screens: Dashboard and Translate,
+// New order in the middle, Orders and Clients. Notifications have the bell in
+// the top bar on every screen.
+const BAR_ITEMS = ["dashboard", "translations", "clients"];
 
 interface BottomBarProps {
   permissions: readonly Permission[];
@@ -57,7 +61,19 @@ export function BottomBar({ permissions, plan, unreadCount = 0, hidden = false }
   );
   const canCreate = permissions.includes("orders.write");
   // New order sits in the middle: after the second of four entries.
-  const half = Math.ceil(items.length / 2);
+  // Translate's slot, second: another root layout, so a plain link.
+  const translateLabel = WORKSPACE_SECTIONS.translate[workspaceLocale(locale)];
+  const translateEntry = (
+    <li key="translate" className="min-w-0 flex-1 basis-0">
+      <a
+        href={`/${officeLocaleOf(locale)}/text`}
+        className="text-muted-foreground relative flex h-full flex-col items-center justify-center gap-0.5 rounded-lg text-[0.625rem] leading-tight transition-colors"
+      >
+        <Languages className="text-suliko-default-color size-5" aria-hidden />
+        <span className="max-w-full truncate">{translateLabel}</span>
+      </a>
+    </li>
+  );
 
   const entry = (item: NavItem) => {
     const isActive = active === item.href;
@@ -111,7 +127,8 @@ export function BottomBar({ permissions, plan, unreadCount = 0, hidden = false }
       {/* The padding is room for an entry's focus ring, which the edge of
           the screen would otherwise cut off. */}
       <ul className="mx-auto flex h-full max-w-lg p-1">
-        {items.slice(0, half).map(entry)}
+        {items.slice(0, 1).map(entry)}
+        {translateEntry}
         {canCreate && (
           <li className="flex flex-none items-center">
             <Button
@@ -126,7 +143,7 @@ export function BottomBar({ permissions, plan, unreadCount = 0, hidden = false }
             </Button>
           </li>
         )}
-        {items.slice(half).map(entry)}
+        {items.slice(1).map(entry)}
       </ul>
     </nav>
   );
