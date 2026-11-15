@@ -98,6 +98,8 @@ export default async function LocaleLayout({
       <body className="antialiased">
         <RegisterServiceWorker />
         <ZoneGuard owns={{ only: moved }} />
+        {/* Which Office modules have clean addresses here (office/i18n/navigation.ts), before anything renders. */}
+        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: `window.__sulikoLocal=${JSON.stringify(moved)}` }} />
         <ThemeProvider nonce={nonce}>
           {/* Only the shared messages; each section's layout adds its own. */}
           <ClientMessages locale={locale}>

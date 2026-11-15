@@ -1,26 +1,46 @@
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
-import { createNavigation } from "next-intl/navigation";
+// Moved from Suliko Office (app.suliko.ge), then rewritten here for clean
+// addresses. Owned by suliko-front: scripts/sync-office.mjs leaves it alone.
 
-import { routing } from "./routing";
-
-/** Locale-aware replacements for next/link and next/navigation. Always use these. */
-export const { Link, redirect, usePathname, useRouter, getPathname } =
-  createNavigation(routing);
+import NextLink from "next/link";
+import { redirect as nextRedirect } from "next/navigation";
+import { useLocale } from "next-intl";
+import { createElement, forwardRef, type ComponentProps } from "react";
 
 /**
- * `redirect` that TypeScript knows terminates.
+ * Addresses of Office's screens on suliko.ge.
  *
- * Next.js implements redirects by throwing a special NEXT_REDIRECT error, so
- * nothing after the call ever runs — but next-intl types it as returning
- * `void`, which leaves TypeScript believing execution continues. That produces
- * spurious "possibly null" errors after a guard clause, and tempts people into
- * silencing them with `!`.
+ * A module that has moved into this app (and is switched on, OFFICE_LOCAL_MODULES)
+ * has a clean address: /ka/clients. One still answered by the Office deployment
+ * keeps /app/ka/orders until it moves. Office's code writes locale-less paths
+ * ("/clients/2") and these helpers put the right prefix in front, as next-intl's
+ * did before; they replace createNavigation, whose prefix is the same for every
+ * page.
  *
- * The throw below is genuinely unreachable; it exists only to give this
- * function the `never` return type the runtime behaviour deserves.
+ * Which modules have moved: on the server from the environment, in the browser
+ * from `window.__sulikoLocal`, which Office's root layout writes before anything
+ * renders (so server and browser agree on every link).
  */
+
+export { localModules, officePath } from "./office-path";
+export { usePathname, useRouter } from "./navigation-hooks";
+import { officePath } from "./office-path";
+
+type LinkProps = Omit<ComponentProps<typeof NextLink>, "href"> & { href: string; locale?: string };
+
+export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link({ href, locale, ...props }, ref) {
+  const current = useLocale();
+  return createElement(NextLink, { ...props, ref, href: officePath(href, locale ?? current) });
+});
+
+export function getPathname({ href, locale }: { href: string; locale: string }): string {
+  return officePath(href, locale);
+}
+
+export function redirect({ href, locale }: { href: string; locale: string }): never {
+  nextRedirect(officePath(href, locale));
+}
+
+/** `redirect` that TypeScript knows terminates. */
 export function redirectTo(href: string, locale: string): never {
   redirect({ href, locale });
-  throw new Error(`unreachable: redirect to ${href} did not throw`);
 }

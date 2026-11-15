@@ -72,6 +72,8 @@ const OWNED = new Set([
   "src/office/shared/components/shell/sidebar.tsx",
   // The one phone bar: Translate's slot (Dashboard, Translate | + | Orders, Clients).
   "src/office/shared/components/shell/bottom-bar.tsx",
+  // Clean addresses: /ka/clients for a moved module, /app/ka/... for the rest.
+  "src/office/i18n/navigation.ts",
 ]);
 
 // ── copy ────────────────────────────────────────────────────────────────────
@@ -138,7 +140,7 @@ adapt("src/app/app/[locale]/layout.tsx", [
   // Office's build owns every module except the moved ones; this one owns
   // only the moved ones that are switched on (OFFICE_LOCAL_MODULES).
   ['(process.env.OFFICE_MOVED_MODULES ?? "")', '(process.env.OFFICE_LOCAL_MODULES ?? "")'],
-  ["<ZoneGuard owns={{ except: moved }} />", "<ZoneGuard owns={{ only: moved }} />"],
+  ["<ZoneGuard owns={{ except: moved }} />", "<ZoneGuard owns={{ only: moved }} />\n        {/* Which Office modules have clean addresses here (office/i18n/navigation.ts), before anything renders. */}\n        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: `window.__sulikoLocal=${JSON.stringify(moved)}` }} />"],
 ]);
 adapt("src/office/shared/lib/revalidate.ts", [
   // The cached pages are /app/ka/..., not /ka/... (which are Translate's).

@@ -47,6 +47,8 @@ export default async function MainLayout({
     <ShortcutsProvider>
       <div className="relative">
         <ZoneGuard owns={{ only: localOffice }} />
+        {/* Which Office modules have clean addresses here (office/i18n/navigation.ts), before anything renders. */}
+        <script dangerouslySetInnerHTML={{ __html: `window.__sulikoLocal=${JSON.stringify(localOffice)}` }} />
         <Topbar initiallySignedIn={Boolean(userProfile)} office={office} />
         <Sidebar initialUserProfile={userProfile} office={office?.nav ?? null} />
         <ResponsiveMainContent>
