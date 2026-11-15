@@ -34,7 +34,7 @@ export function OrderSourceBanner({
           <p className="mt-1 text-muted-foreground">
             {t("forOrderHint")}{" "}
             <Link
-              href={`/orders/${linked.slug}/${linked.orderId}`}
+              href={`/assignments/${linked.slug}/${linked.orderId}`}
               className="text-primary hover:underline"
             >
               {t("backToOrder")}

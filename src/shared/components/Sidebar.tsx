@@ -47,7 +47,7 @@ const NAV_ITEMS = [
     // What bureaus have assigned to this person. Always there for someone
     // signed in: the page itself says so when no bureau has added them yet.
     label: "orders",
-    href: "/orders",
+    href: "/assignments",
     icon: ClipboardList,
     requiresAuth: true,
   },
@@ -157,8 +157,8 @@ export default function Sidebar({ initialUserProfile, office = null }: SidebarPr
     if (href === '/text') {
       return pathname === '/text' || pathname === '/document';
     }
-    if (href === '/orders') {
-      return pathname === '/orders' || pathname.startsWith('/orders/');
+    if (href === '/assignments') {
+      return pathname === '/assignments' || pathname.startsWith('/assignments/');
     }
     return pathname === href;
   };

@@ -101,7 +101,7 @@ function OrderRow({ order }: { order: AssignedOrder }) {
   const counted = order.documents.every((document) => typeof document.my_translations === "number");
   const sent = order.documents.filter((document) => (document.my_translations ?? 0) > 0).length;
   return (
-    <Link href={`/orders/${order.organization.slug}/${order.order_id}`} className="block">
+    <Link href={`/assignments/${order.organization.slug}/${order.order_id}`} className="block">
       <Card className="p-4 border border-border/60 hover:border-border transition-colors">
         <div className="flex items-center gap-4">
           {/* On a phone the badges sit under the order, not squeezed beside it. */}

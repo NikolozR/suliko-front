@@ -17,6 +17,16 @@ export function localModules(): string[] {
 }
 
 /** "/clients/2?x=1" (or an already prefixed path) -> "/ka/clients/2?x=1" or "/app/ka/...". */
+/**
+ * Modules whose clean address is not their name. Office calls the bureau's
+ * orders "translations" (its folder, its links); on suliko.ge that word is
+ * Translate's results (/ka/translations/<id>), so orders are /ka/orders.
+ */
+export const CLEAN_NAMES: Record<string, string> = { translations: "orders" };
+const MODULE_OF_CLEAN: Record<string, string> = Object.fromEntries(
+  Object.entries(CLEAN_NAMES).map(([module, clean]) => [clean, module]),
+);
+
 export function officePath(href: string, locale: string): string {
   if (!href.startsWith("/")) return href; // absolute URL, mailto:, #anchor, relative
   // Already prefixed (a pathname read back from the address bar): take it apart.
@@ -26,7 +36,16 @@ export function officePath(href: string, locale: string): string {
     href = href.slice(prefixed[0].length) || "/";
   }
   const lang = LOCALES.includes(locale) ? locale : "ka";
-  const name = href.split(/[/?#]/)[1] ?? "";
+  let name = href.split(/[/?#]/)[1] ?? "";
+  // Read back from a clean address: /orders/12 is the module "translations".
+  if (prefixed && !href.startsWith("/app") && MODULE_OF_CLEAN[name]) {
+    href = `/${MODULE_OF_CLEAN[name]}${href.slice(name.length + 1)}`;
+    name = MODULE_OF_CLEAN[name];
+  }
   const tail = href === "/" ? "" : href;
-  return name && localModules().includes(name) ? `/${lang}${tail}` : `/app/${lang}${tail}`;
+  if (name && localModules().includes(name)) {
+    const clean = CLEAN_NAMES[name];
+    return `/${lang}${clean ? `/${clean}${tail.slice(name.length + 1)}` : tail}`;
+  }
+  return `/app/${lang}${tail}`;
 }

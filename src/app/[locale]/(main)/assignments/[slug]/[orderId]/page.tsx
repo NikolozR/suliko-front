@@ -130,7 +130,7 @@ export default function AssignedOrderPage({
     // Wider while a file is open, so the order keeps its width beside it.
     <div className={cn("container mx-auto p-6", previewed ? "max-w-6xl" : "max-w-3xl")}>
       <Link
-        href="/orders"
+        href="/assignments"
         className="inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground mb-6"
       >
         <ArrowLeft className="h-4 w-4" />

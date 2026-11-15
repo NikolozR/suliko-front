@@ -43,7 +43,9 @@ const nextConfig: NextConfig = {
   experimental: {
     mdxRs: false, // Disable MDX RS to avoid build issues
     serverActions: {
-      bodySizeLimit: "11mb",
+      // 50 MB as on Suliko Office, whose order screens moved here: documents go
+      // through a server action on their way to the API, which sets the real limit.
+      bodySizeLimit: "50mb",
     },
   },
   // The upload address of the first File API guide, still used by integrations.

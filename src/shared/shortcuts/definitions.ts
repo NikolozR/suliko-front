@@ -29,7 +29,7 @@ export const GO_TARGETS: readonly GoTarget[] = [
   { digit: "3", href: "/passport", labelKey: "goPassport", requiresAuth: true },
   { digit: "4", href: "/projects", labelKey: "goProjects", requiresAuth: true },
   { digit: "5", href: "/profile", labelKey: "goProfile", requiresAuth: true },
-  { digit: "6", href: "/orders", labelKey: "goOrders", requiresAuth: true },
+  { digit: "6", href: "/assignments", labelKey: "goOrders", requiresAuth: true },
 ];
 
 /**
