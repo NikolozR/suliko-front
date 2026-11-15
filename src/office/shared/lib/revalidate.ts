@@ -17,7 +17,7 @@ import { routing } from "@office/i18n/routing";
  */
 export function revalidateRoute(path: string, type?: "page" | "layout"): void {
   for (const locale of routing.locales) {
-    const localised = path === "/" ? `/${locale}` : `/${locale}${path}`;
+    const localised = path === "/" ? `/app/${locale}` : `/app/${locale}${path}`;
     if (type) revalidatePath(localised, type);
     else revalidatePath(localised);
   }
