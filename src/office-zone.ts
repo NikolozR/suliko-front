@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { CLEAN_NAMES, enabledLocalModules, MOVED_MODULES } from "./office/i18n/office-path";
+import { CLEAN_NAMES, enabledLocalModules, moduleOfClean, MOVED_MODULES } from "./office/i18n/office-path";
 
 /**
  * Suliko Office's addresses on this site (/app/...), during phase 3 of making
@@ -58,10 +58,6 @@ function buildCsp(nonce: string, isDev: boolean): string {
 }
 
 /** /ka/clients/2 -> { locale: "ka", module: "clients" }; also pl, which Office lacks. */
-/** Clean address segment -> Office module: "orders" -> "translations". */
-const MODULE_OF_CLEAN: Record<string, string> = Object.fromEntries(
-  Object.entries(CLEAN_NAMES).map(([module, clean]) => [clean, module]),
-);
 /** Office module -> its clean segment: "translations" -> "orders", else itself. */
 const cleanName = (module: string) => CLEAN_NAMES[module] ?? module;
 
@@ -69,10 +65,14 @@ const cleanName = (module: string) => CLEAN_NAMES[module] ?? module;
 function parseClean(pathname: string): { locale: string | null; module: string | null } {
   const [, locale, segment] = pathname.split("/");
   if (!["ka", "en", "pl"].includes(locale)) return { locale: null, module: null };
+  // A clean address that is not the module's name: /ka/orders/12 (translations),
+  // /ka/admin/workspaces/billing (admin).
+  const read = moduleOfClean(pathname.slice(locale.length + 2));
+  if (read) return { locale, module: read.module };
   // An Office module's own name is no clean address when it has another one:
-  // /ka/translations/<id> is Translate's result page.
+  // /ka/translations/<id> is Translate's result page, /ka/admin Translate's admin.
   if (segment && CLEAN_NAMES[segment]) return { locale, module: null };
-  return { locale, module: segment ? (MODULE_OF_CLEAN[segment] ?? segment) : null };
+  return { locale, module: segment ?? null };
 }
 
 /**

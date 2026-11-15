@@ -15,7 +15,7 @@ const LOCALES = ["ka", "en"];
 export const MOVED_MODULES = [
   "calculator", "clients", "notaries", "translators", "finances", "reports", "settings",
   "billing", "users", "dashboard", "notifications", "account", "translations",
-  "service-pages", "website-translations",
+  "service-pages", "website-translations", "admin",
 ] as const;
 
 /**
@@ -45,10 +45,25 @@ export function localModules(): string[] {
  * orders "translations" (its folder, its links); on suliko.ge that word is
  * Translate's results (/ka/translations/<id>), so orders are /ka/orders.
  */
-export const CLEAN_NAMES: Record<string, string> = { translations: "orders" };
-const MODULE_OF_CLEAN: Record<string, string> = Object.fromEntries(
-  Object.entries(CLEAN_NAMES).map(([module, clean]) => [clean, module]),
-);
+export const CLEAN_NAMES: Record<string, string> = {
+  translations: "orders",
+  // Office's platform console (workspaces, platform billing). /ka/admin is
+  // Translate's admin (blog, templates, promo codes): Office's sits inside it.
+  admin: "admin/workspaces",
+};
+
+/**
+ * The module a clean address belongs to, and its clean prefix: "orders/12" ->
+ * translations, "admin/workspaces/billing" -> admin. Null for anything else.
+ */
+export function moduleOfClean(path: string): { module: string; clean: string } | null {
+  for (const [module, clean] of Object.entries(CLEAN_NAMES)) {
+    if (path === clean || path.startsWith(`${clean}/`) || path.startsWith(`${clean}?`) || path.startsWith(`${clean}#`)) {
+      return { module, clean };
+    }
+  }
+  return null;
+}
 
 export function officePath(href: string, locale: string): string {
   if (!href.startsWith("/")) return href; // absolute URL, mailto:, #anchor, relative
@@ -60,10 +75,12 @@ export function officePath(href: string, locale: string): string {
   }
   const lang = LOCALES.includes(locale) ? locale : "ka";
   let name = href.split(/[/?#]/)[1] ?? "";
-  // Read back from a clean address: /orders/12 is the module "translations".
-  if (prefixed && !href.startsWith("/app") && MODULE_OF_CLEAN[name]) {
-    href = `/${MODULE_OF_CLEAN[name]}${href.slice(name.length + 1)}`;
-    name = MODULE_OF_CLEAN[name];
+  // Read back from a clean address: /orders/12 is the module "translations",
+  // /admin/workspaces/billing the module "admin".
+  const read = prefixed && !href.startsWith("/app") ? moduleOfClean(href.slice(1)) : null;
+  if (read) {
+    href = `/${read.module}${href.slice(read.clean.length + 1)}`;
+    name = read.module;
   }
   const tail = href === "/" ? "" : href;
   if (name && localModules().includes(name)) {
