@@ -6,6 +6,7 @@ import { getUserProfile } from "@/features/auth/services/userService";
 import ResponsiveMainContent from "@/shared/components/ResponsiveMainContent";
 import { officeContext } from "@/shared/nav/officeNav";
 import { ZoneGuard } from "@office/shared/components/zone-guard";
+import { enabledLocalModules } from "@office/i18n/office-path";
 import { getLocale } from "next-intl/server";
 import ShortcutsDialog from "@/shared/components/ShortcutsDialog";
 import { ShortcutsProvider } from "@/shared/shortcuts/ShortcutsProvider";
@@ -41,7 +42,7 @@ export default async function MainLayout({
   const office = userProfile ? await officeContext(await getLocale()) : null;
   // Office's modules this app serves (office-zone.ts). A navigation from here
   // to any other /app page is a page load: the Office deployment answers it.
-  const localOffice = (process.env.OFFICE_LOCAL_MODULES ?? "").split(",").map((m) => m.trim()).filter(Boolean);
+  const localOffice = enabledLocalModules();
 
   return (
     <ShortcutsProvider>

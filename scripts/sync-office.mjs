@@ -153,7 +153,12 @@ adapt("src/app/app/[locale]/layout.tsx", [
 adapt("src/app/app/[locale]/layout.tsx", [
   // Office's build owns every module except the moved ones; this one owns
   // only the moved ones that are switched on (OFFICE_LOCAL_MODULES).
-  ['(process.env.OFFICE_MOVED_MODULES ?? "")', '(process.env.OFFICE_LOCAL_MODULES ?? "")'],
+  // Only modules whose code has moved: office/i18n/office-path.ts.
+  [
+    'const moved = (process.env.OFFICE_MOVED_MODULES ?? "")\n    .split(",")\n    .map((m) => m.trim())\n    .filter(Boolean);',
+    "const moved = enabledLocalModules();",
+  ],
+  ['import { ZoneGuard } from "@office/shared/components/zone-guard";', 'import { ZoneGuard } from "@office/shared/components/zone-guard";\nimport { enabledLocalModules } from "@office/i18n/office-path";'],
   ["<ZoneGuard owns={{ except: moved }} />", "<ZoneGuard owns={{ only: moved }} />\n        {/* Which Office modules have clean addresses here (office/i18n/navigation.ts), before anything renders. */}\n        <script nonce={nonce} dangerouslySetInnerHTML={{ __html: `window.__sulikoLocal=${JSON.stringify(moved)}` }} />"],
 ]);
 adapt("src/office/shared/lib/revalidate.ts", [

@@ -13,6 +13,7 @@ import { RegisterServiceWorker } from "@office/shared/components/register-servic
 import { ThemeProvider } from "@office/shared/components/theme-provider";
 import { Toaster } from "@office/shared/components/ui/sonner";
 import { ZoneGuard } from "@office/shared/components/zone-guard";
+import { enabledLocalModules } from "@office/i18n/office-path";
 
 import "@office/styles/globals.css";
 import { withBasePath } from "@office/shared/lib/base-path";
@@ -82,10 +83,7 @@ export default async function LocaleLayout({
   // Modules already moved into suliko.ge's own app (phase 3): every page of
   // them is answered there, so this build must not navigate to them in place.
   // Keep it the same as OFFICE_LOCAL_MODULES on suliko-front.
-  const moved = (process.env.OFFICE_LOCAL_MODULES ?? "")
-    .split(",")
-    .map((m) => m.trim())
-    .filter(Boolean);
+  const moved = enabledLocalModules();
 
   return (
     // `lang` is what activates the Georgian line-height rules in globals.css.
