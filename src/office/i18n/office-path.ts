@@ -15,8 +15,17 @@ const LOCALES = ["ka", "en"];
 export const MOVED_MODULES = [
   "calculator", "clients", "notaries", "translators", "finances", "reports", "settings",
   "billing", "users", "dashboard", "notifications", "account", "translations",
-  "service-pages", "website-translations", "admin",
+  "service-pages", "website-translations", "admin", "platform",
+  // Sign-in screens (PUBLIC_MODULES) and the first-run screens.
+  "login", "choose-account", "signup", "two-factor", "forgot-password", "reset-password",
+  "verify-email", "accept-invite", "onboarding", "welcome",
 ] as const;
+
+/** Office's screens reachable without a session (its middleware's PUBLIC_PATHS). */
+export const PUBLIC_MODULES: readonly string[] = [
+  "login", "choose-account", "signup", "two-factor", "forgot-password", "reset-password",
+  "verify-email", "accept-invite",
+];
 
 /**
  * The moved modules this deployment serves: those of MOVED_MODULES that
