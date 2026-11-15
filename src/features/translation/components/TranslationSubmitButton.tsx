@@ -1,6 +1,7 @@
 "use client";
 import { LoadingButton } from "@/features/ui/components/loading";
 import { useTranslations } from "next-intl";
+import { useModLabel } from "@/shared/components/Kbd";
 
 interface TranslationSubmitButtonProps {
   isLoading: boolean;
@@ -27,10 +28,11 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
 }) => {
   const t = useTranslations('TranslationButton');
   const tTextCard = useTranslations('TextTranslationCard');
+  const modLabel = useModLabel();
 
   const buttonClassName = `w-full mt-4 text-white suliko-default-bg hover:opacity-90 transition-all duration-300 text-sm md:text-base ${
     isHighlighted
-      ? "animate-pulse ring-4 ring-suliko-default-color/30 shadow-lg shadow-suliko-default-color/25 brightness-110"
+      ? "animate-pulse ring-4 ring-suliko-default-color/30 shadow-float-2 shadow-suliko-default-color/25 brightness-110"
       : ""
   }`;
 
@@ -39,7 +41,7 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
       <button
         type="button"
         onClick={onTranslateMore}
-        className="w-full mt-4 flex items-center justify-center gap-2 rounded-md border-2 border-dashed border-suliko-default-color/40 text-suliko-default-color hover:border-suliko-default-color hover:bg-suliko-default-color/5 transition-all duration-200 py-2.5 text-sm md:text-base font-medium"
+        className="w-full mt-4 flex items-center justify-center gap-2 rounded-md border-2 border-dashed border-suliko-default-color/40 text-accent-text hover:border-suliko-default-color hover:bg-suliko-default-color/5 transition-all duration-200 py-2.5 text-sm md:text-base font-medium"
       >
         <span>+</span>
         {t('translateMore')}
@@ -72,12 +74,16 @@ const TranslationSubmitButton: React.FC<TranslationSubmitButtonProps> = ({
             <kbd className="px-1 py-0.5 bg-muted border border-border rounded text-xs font-mono">
               Shift + Enter
             </kbd>
+            <span aria-hidden>/</span>
+            <kbd className="px-1 py-0.5 bg-muted border border-border rounded text-xs font-mono">
+              {modLabel} + Enter
+            </kbd>
           </span>
         </div>
       )}
       
       {formError && (
-        <div className="text-red-500 text-sm mt-2">{formError}</div>
+        <div className="text-red-700 dark:text-red-400 text-sm mt-2">{formError}</div>
       )}
     </>
   );

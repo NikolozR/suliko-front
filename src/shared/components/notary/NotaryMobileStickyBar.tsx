@@ -41,7 +41,7 @@ export default function NotaryMobileStickyBar({ heroRef }: Props) {
         visible ? "translate-y-0" : "translate-y-full"
       }`}
     >
-      <div className="flex gap-2 border-t border-border bg-background/95 px-4 py-3 shadow-xl backdrop-blur-md">
+      <div className="flex gap-2 border-t border-border bg-background/95 px-4 py-3 shadow-float-3 backdrop-blur-md">
         <button
           type="button"
           onClick={() => scrollToPanelTab("order")}

@@ -1,30 +1,22 @@
 import { isAdminRequest } from "@/lib/admin-auth";
 import { redirect } from "next/navigation";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getAdminPassportTemplates } from "@/lib/site-content-admin";
 import PassportTemplatesTable from "./PassportTemplatesTable";
-import type { PassportTemplate } from "@/lib/passport-types";
 
 export default async function AdminPassportTemplatesPage() {
   if (!(await isAdminRequest())) redirect("/en/admin/login");
 
-  const { data, error } = await supabaseAdmin
-    .from("passport_templates")
-    .select("*")
-    .order("created_at", { ascending: false });
+  const templates = await getAdminPassportTemplates();
 
-  if (error) {
+  if (!templates) {
     return (
       <div style={{ padding: 32 }}>
         <p style={{ color: "#f87171", fontFamily: "monospace", fontSize: 13, background: "#1a0a0a", padding: 16, borderRadius: 8, border: "1px solid #7f1d1d" }}>
-          ⚠ Supabase error: {error.message}<br />
-          Code: {error.code}<br />
-          Details: {JSON.stringify(error.details)}
+          ⚠ The templates could not be loaded from the API. Reload the page to try again.
         </p>
       </div>
     );
   }
-
-  const templates: PassportTemplate[] = (data as PassportTemplate[]) ?? [];
 
   return <PassportTemplatesTable initialTemplates={templates} />;
 }

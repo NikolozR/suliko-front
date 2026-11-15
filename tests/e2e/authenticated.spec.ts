@@ -38,9 +38,10 @@ test.describe('Authenticated pages', () => {
 
   test('/en/projects — shows project list or empty state', async ({ page }) => {
     await page.goto('/en/projects', { waitUntil: 'domcontentloaded' });
-    // Either project cards or the empty state "+" icon renders
+    // Either project cards or the empty state "+" icon renders. Scoped to <main>:
+    // the first svg in the page is a hidden one in the sidebar.
     await expect(
-      page.locator('[class*="card"], [class*="Card"], svg').first()
+      page.getByRole('main').locator('[class*="card"], [class*="Card"], svg').first()
     ).toBeVisible({ timeout: 10_000 });
   });
 
@@ -71,6 +72,36 @@ test.describe('Authenticated pages', () => {
     await expect(
       page.locator('button, select, [role="combobox"], input[type="file"]').first()
     ).toBeVisible({ timeout: 10_000 });
+  });
+
+  test('/en/orders — loads without error', async ({ page }) => {
+    await page.goto('/en/orders', { waitUntil: 'domcontentloaded' });
+    await expect(page.getByRole('main')).toBeVisible({ timeout: 15_000 });
+    await expect(page.locator('body')).not.toContainText('Application error');
+    await expect(page).toHaveURL(/\/en\/orders/);
+  });
+
+  test('/en/history — redirects to the projects page', async ({ page }) => {
+    await page.goto('/en/history', { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/en\/projects/, { timeout: 15_000 });
+  });
+
+  test('sidebar links navigate to their pages', async ({ page }) => {
+    await page.goto('/en/document', { waitUntil: 'networkidle' });
+    const sidebar = page.getByRole('complementary');
+    for (const [name, path] of [['Orders', '/en/orders'], ['Projects', '/en/projects']]) {
+      await sidebar.getByRole('link', { name, exact: true }).click();
+      await expect(page, name).toHaveURL(new RegExp(`${path}$`), { timeout: 15_000 });
+      await expect(page.locator('body')).not.toContainText('Application error');
+    }
+  });
+
+  test('the account menu in the top bar leads to Profile', async ({ page }) => {
+    await page.goto('/en/document', { waitUntil: 'networkidle' });
+    await page.getByRole('banner').getByRole('button', { name: 'Account menu' }).click();
+    await page.getByRole('banner').getByRole('link', { name: 'Profile' }).click();
+    await expect(page).toHaveURL(/\/en\/profile$/, { timeout: 15_000 });
+    await expect(page.locator('body')).not.toContainText('Application error');
   });
 
 });

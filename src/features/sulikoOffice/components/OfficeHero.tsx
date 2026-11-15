@@ -1,7 +1,10 @@
 import type { CSSProperties, ReactNode } from "react";
-import { useTranslations } from "next-intl";
-import { ArrowDown, ArrowRight, Calculator, UserCheck } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+import { ArrowDown, ArrowRight, Calculator, ShieldCheck, UserCheck } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import OverviewDemo from "./demo/OverviewDemo";
+import OfficeSignInPrompt from "./OfficeSignInPrompt";
+import { officeSignInUrl } from "../lib/officeLinks";
 import { CONTAINER, GHOST_BUTTON, PRIMARY_BUTTON } from "./tones";
 
 /**
@@ -13,6 +16,7 @@ const delay = (ms: number): CSSProperties => ({ animationDelay: `${ms}ms` });
 
 export default function OfficeHero() {
   const t = useTranslations("SulikoOffice.hero");
+  const officeUrl = officeSignInUrl(useLocale());
 
   return (
     <section className={`${CONTAINER} grid items-center gap-14 pt-14 pb-20 lg:pt-[88px] lg:pb-[104px] xl:grid-cols-[minmax(0,560px)_minmax(0,1fr)] xl:gap-16`}>
@@ -35,21 +39,27 @@ export default function OfficeHero() {
           {t("sub")}
         </p>
         <div className="flex flex-wrap gap-3 office-enter" style={delay(270)}>
-          <a href="#demo" className={`${PRIMARY_BUTTON} group h-14 w-full px-7 text-lg sm:w-auto`}>
+          <a href={officeUrl} className={`${PRIMARY_BUTTON} group h-14 w-full px-7 text-lg sm:w-auto`}>
             {t("primary")}
             <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
           </a>
-          <a href="#journey" className={`${GHOST_BUTTON} group h-14 w-full px-6 text-lg sm:w-auto`}>
-            {t("secondary")}
-            <ArrowDown className="h-5 w-5 shrink-0 transition-transform group-hover:translate-y-0.5" aria-hidden />
-          </a>
+          {/* Visitors who knew Suliko as the translation site land here too: keep their way in as a co-CTA. */}
+          <Link href="/document" className={`${GHOST_BUTTON} group h-14 w-full px-6 text-lg sm:w-auto`}>
+            {t("translate")}
+            <ArrowRight className="h-5 w-5 shrink-0 transition-transform group-hover:translate-x-1" aria-hidden />
+          </Link>
         </div>
-        <p className="flex flex-wrap gap-1.5 text-[15px] text-muted-foreground office-enter" style={delay(360)}>
-          <span>{t("already")}</span>
-          <a href="https://app.suliko.ge" className="text-suliko-default-color underline-offset-2 hover:underline dark:text-[#8fa2ff]">
-            {t("login")}
-          </a>
+        <a href="#journey" className="group inline-flex items-center gap-2 self-start text-base text-muted-foreground office-enter hover:text-foreground" style={delay(300)}>
+          {t("secondary")}
+          <ArrowDown className="h-4 w-4 shrink-0 transition-transform group-hover:translate-y-0.5" aria-hidden />
+        </a>
+        <p className="inline-flex items-center gap-2 self-start text-[15px] font-medium text-[#1e7440] office-enter dark:text-emerald-300" style={delay(330)}>
+          <span aria-hidden className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#e7f6ec] dark:bg-emerald-400/15">
+            <ShieldCheck className="h-4 w-4" />
+          </span>
+          {t("guarantee")}
         </p>
+        <OfficeSignInPrompt className="office-enter" style={delay(360)} />
       </div>
 
       <div className="relative w-full max-w-3xl office-enter xl:max-w-none" style={delay(200)}>
@@ -90,7 +100,7 @@ function FloatingCard({
   const iconTone =
     tone === "green"
       ? "bg-[#e7f6ec] text-[#1e7440] dark:bg-emerald-400/15 dark:text-emerald-300"
-      : "bg-[#eef1fe] text-suliko-default-color dark:bg-[#3b59f3]/20 dark:text-[#aebcff]";
+      : "bg-[#eef1fe] text-accent-text dark:bg-[#3b59f3]/20 dark:text-[#aebcff]";
 
   return (
     <div aria-hidden className={`absolute z-20 hidden xl:block ${className}`}>

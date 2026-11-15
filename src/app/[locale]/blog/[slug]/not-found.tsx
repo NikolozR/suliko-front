@@ -15,7 +15,7 @@ export default function BlogPostNotFound() {
             <Button>View All Posts</Button>
           </Link>
           <div>
-            <Link href="/" className="text-primary hover:underline">
+            <Link href="/translate" className="text-primary hover:underline">
               Return to Home
             </Link>
           </div>

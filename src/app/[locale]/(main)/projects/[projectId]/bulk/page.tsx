@@ -47,7 +47,7 @@ export default function BulkTranslationPage() {
 
       <div className="mb-8 flex items-center gap-3">
         <div className="shrink-0 rounded-lg bg-suliko-default-color/10 p-2.5">
-          <Layers className="h-5 w-5 text-suliko-default-color" />
+          <Layers className="h-5 w-5 text-accent-text" />
         </div>
         <div className="min-w-0">
           <h1 className="truncate text-2xl font-semibold tracking-tight">

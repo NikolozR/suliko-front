@@ -42,7 +42,7 @@ export default function DevelopersPageClient() {
       {/* Hero Section */}
       <div className="text-center mb-12 pt-20 sm:pt-24">
         <div className="flex justify-center mb-4">
-          <Code className="h-12 w-12 text-suliko-default-color" />
+          <Code className="h-12 w-12 text-accent-text" />
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">
           {t("hero.title")}
@@ -56,7 +56,7 @@ export default function DevelopersPageClient() {
       <div className="grid md:grid-cols-3 gap-6 mb-12">
         <Card>
           <CardHeader>
-            <Zap className="h-8 w-8 text-suliko-default-color mb-2" />
+            <Zap className="h-8 w-8 text-accent-text mb-2" />
             <CardTitle>{t("features.speed.title")}</CardTitle>
           </CardHeader>
           <CardContent>
@@ -66,7 +66,7 @@ export default function DevelopersPageClient() {
 
         <Card>
           <CardHeader>
-            <Globe className="h-8 w-8 text-suliko-default-color mb-2" />
+            <Globe className="h-8 w-8 text-accent-text mb-2" />
             <CardTitle>{t("features.languages.title")}</CardTitle>
           </CardHeader>
           <CardContent>
@@ -76,7 +76,7 @@ export default function DevelopersPageClient() {
 
         <Card>
           <CardHeader>
-            <Lock className="h-8 w-8 text-suliko-default-color mb-2" />
+            <Lock className="h-8 w-8 text-accent-text mb-2" />
             <CardTitle>{t("features.security.title")}</CardTitle>
           </CardHeader>
           <CardContent>
@@ -89,7 +89,7 @@ export default function DevelopersPageClient() {
       <Card className="mb-12">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-suliko-default-color" />
+            <Zap className="h-6 w-6 text-accent-text" />
             {t("quickStart.title")}
           </CardTitle>
           <CardDescription>{t("quickStart.description")}</CardDescription>
@@ -130,7 +130,7 @@ export default function DevelopersPageClient() {
       <Card className="mb-12">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-suliko-default-color" />
+            <BookOpen className="h-6 w-6 text-accent-text" />
             {t("api.title")}
           </CardTitle>
           <CardDescription>{t("api.description")}</CardDescription>
@@ -162,15 +162,15 @@ export default function DevelopersPageClient() {
             </div>
             <div className="mt-4 space-y-2">
               <div className="flex gap-2">
-                <span className="font-mono text-sm font-semibold text-suliko-default-color">description:</span>
+                <span className="font-mono text-sm font-semibold text-accent-text">description:</span>
                 <span className="text-sm text-muted-foreground">{t("api.request.fields.description")}</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-mono text-sm font-semibold text-suliko-default-color">languageId:</span>
+                <span className="font-mono text-sm font-semibold text-accent-text">languageId:</span>
                 <span className="text-sm text-muted-foreground">{t("api.request.fields.languageId")}</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-mono text-sm font-semibold text-suliko-default-color">uniqueKey:</span>
+                <span className="font-mono text-sm font-semibold text-accent-text">uniqueKey:</span>
                 <span className="text-sm text-muted-foreground">{t("api.request.fields.uniqueKey")}</span>
               </div>
             </div>
@@ -196,7 +196,7 @@ export default function DevelopersPageClient() {
       <Card className="mb-12">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Zap className="h-6 w-6 text-suliko-default-color" />
+            <Zap className="h-6 w-6 text-accent-text" />
             {t("enhanceApi.title")}
           </CardTitle>
           <CardDescription>{t("enhanceApi.description")}</CardDescription>
@@ -229,19 +229,19 @@ export default function DevelopersPageClient() {
             </div>
             <div className="mt-4 space-y-2">
               <div className="flex gap-2">
-                <span className="font-mono text-sm font-semibold text-suliko-default-color">userInput:</span>
+                <span className="font-mono text-sm font-semibold text-accent-text">userInput:</span>
                 <span className="text-sm text-muted-foreground">{t("enhanceApi.request.fields.userInput")}</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-mono text-sm font-semibold text-suliko-default-color">translateOutput:</span>
+                <span className="font-mono text-sm font-semibold text-accent-text">translateOutput:</span>
                 <span className="text-sm text-muted-foreground">{t("enhanceApi.request.fields.translateOutput")}</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-mono text-sm font-semibold text-suliko-default-color">targetLanguageId:</span>
+                <span className="font-mono text-sm font-semibold text-accent-text">targetLanguageId:</span>
                 <span className="text-sm text-muted-foreground">{t("enhanceApi.request.fields.targetLanguageId")}</span>
               </div>
               <div className="flex gap-2">
-                <span className="font-mono text-sm font-semibold text-suliko-default-color">uniqueKey:</span>
+                <span className="font-mono text-sm font-semibold text-accent-text">uniqueKey:</span>
                 <span className="text-sm text-muted-foreground">{t("enhanceApi.request.fields.uniqueKey")}</span>
               </div>
             </div>
@@ -267,7 +267,7 @@ export default function DevelopersPageClient() {
       <Card className="mb-12">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Terminal className="h-6 w-6 text-suliko-default-color" />
+            <Terminal className="h-6 w-6 text-accent-text" />
             {t("examples.title")}
           </CardTitle>
           <CardDescription>{t("examples.description")}</CardDescription>
@@ -417,7 +417,7 @@ def enhance_translation(user_input, translate_output, target_language_id, unique
       <Card className="mb-12">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Globe className="h-6 w-6 text-suliko-default-color" />
+            <Globe className="h-6 w-6 text-accent-text" />
             {t("languages.title")}
           </CardTitle>
           <CardDescription>{t("languages.description")}</CardDescription>
@@ -445,7 +445,7 @@ def enhance_translation(user_input, translate_output, target_language_id, unique
                 <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                   {languagesList.map((lang) => (
                     <tr key={lang.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                      <td className="px-4 py-3 text-sm font-mono font-semibold text-suliko-default-color">{lang.id}</td>
+                      <td className="px-4 py-3 text-sm font-mono font-semibold text-accent-text">{lang.id}</td>
                       <td className="px-4 py-3 text-sm text-slate-900 dark:text-slate-100">{lang.name}</td>
                       <td className="px-4 py-3 text-sm text-slate-900 dark:text-slate-100">{lang.nameGeo}</td>
                     </tr>

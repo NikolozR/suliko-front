@@ -115,7 +115,7 @@
     "phoneWillBeAskedLater": "You can add and verify your phone number after registration",
     "phoneVerificationDescription": "We'll send a verification code to your phone number",
     "emailVerificationDescription": "We'll send a verification code to your email address",
-    "termsText": "1. General Provisions\n\nThese terms and conditions govern the use of the translation service (\"Service\") offered by {name}, identification code: {id} (hereinafter - \"Company\", \"we\"). By accessing or using the Service, you as a user (\"User\") agree to the terms of this document.\n\n2. User Obligations\n\nWhen using the Service, you are obligated to use it only for legal purposes and not violate applicable laws.\n\nIt is prohibited to use the Service to create, distribute, or transmit any harmful or illegal content.\n\n3. Intellectual Property\n\nYou retain ownership of the text you upload to the Service. By using the Service, you grant the Company a limited, non-exclusive license to process and use this text solely for performing and improving the translation service.\n\nThe Service, all its components, software, design, and other materials constitute the intellectual property of the Company and are protected by copyright.\n\n4. Limitation of Liability\n\nThe Service is provided \"as is\" without any warranty. The Company makes no guarantee that the Service will be uninterrupted, error-free, or secure.\n\nThe Company is not liable for any direct, indirect, incidental, or other damages caused by the use of the Service.\n\n5. Service Termination\n\nThe Company has the right to restrict or terminate user access to the Service at any time and for any reason if the user violates these terms and conditions.\n\n6. Changes\n\nThe Company reserves the right to make changes to these terms and conditions at any time. Changes take effect immediately upon posting on the website or application.\n\n7. Refund Policy\n\nUnused translation credits are refundable in full for 14 days from the date of purchase, refunded to the card used. Credits already spent on a completed translation are not refundable, because the service has been performed. If a translation fails for a technical reason on our side, its credits are returned to your balance.\n\nTo request a refund, email {email} from the address on your account with the date and amount. We reply within 3 business days and send approved refunds within 10 business days.\n\nThe full delivery, cancellation and refund policy is published at /refund-policy.\n\n8. Contact Information\n\nCompany: {name}\nIdentification Code: {id}\nEmail: {email}\nPhone: {phone}\nAddress: {address}",
+    "termsText": "1. General Provisions\n\nThese terms and conditions govern the use of the translation service (\"Service\") offered by {name}, identification code: {id} (hereinafter - \"Company\", \"we\"). By accessing or using the Service, you as a user (\"User\") agree to the terms of this document.\n\n2. User Obligations\n\nWhen using the Service, you are obligated to use it only for legal purposes and not violate applicable laws.\n\nIt is prohibited to use the Service to create, distribute, or transmit any harmful or illegal content.\n\n3. Intellectual Property\n\nYou retain ownership of the text you upload to the Service. By using the Service, you grant the Company a limited, non-exclusive license to process and use this text solely for performing and improving the translation service.\n\nThe Service, all its components, software, design, and other materials constitute the intellectual property of the Company and are protected by copyright.\n\n4. Limitation of Liability\n\nThe Service is provided \"as is\" without any warranty. The Company makes no guarantee that the Service will be uninterrupted, error-free, or secure.\n\nThe Company is not liable for any direct, indirect, incidental, or other damages caused by the use of the Service.\n\n5. Service Termination\n\nThe Company has the right to restrict or terminate user access to the Service at any time and for any reason if the user violates these terms and conditions.\n\n6. Changes\n\nThe Company reserves the right to make changes to these terms and conditions at any time. Changes take effect immediately upon posting on the website or application.\n\n7. Refund Policy\n\nUnused translation credits are refundable in full for 14 days from the date of purchase, refunded to the card used. Credits already spent on a completed translation are not refundable, because the service has been performed. If a translation fails for a technical reason on our side, its credits are returned to your balance.\n\nTo request a refund, email {email} from the address on your account with the date and amount. We reply within 3 business days and send approved refunds within 10 business days.\n\nThe full delivery, cancellation and refund policy is published at /refund-policy.\n\n8. Data Security and Encryption\n\nEverything you send to the Service, and everything it sends back, travels over encrypted connections (TLS). Our servers use encrypted connections in the same way when they pass a document to the providers that translate it.\n\nPasswords are stored only as a one-way cryptographic hash, so nobody, including the Company, can read them.\n\nCard payments are made on the payment page of Bank of Georgia. You enter your card details there, and they never reach our servers and are not stored by us.\n\nIn Suliko Office, each bureau's data is kept apart from every other bureau's. Two-factor sign-in secrets, and the passwords and keys a bureau saves for connected services, are encrypted with AES-256-GCM, with a separate key for each bureau.\n\nAccess to users' data is limited to the people who need it to operate the Service. Section 4 still applies: no system is completely secure, and these measures are not a guarantee.\n\n9. Contact Information\n\nCompany: {name}\nIdentification Code: {id}\nEmail: {email}\nPhone: {phone}\nAddress: {address}",
     "orContinueWith": "Continue with Google",
     "orWithCredentials": "or",
     "welcomeBack": "Welcome back! Sign in to your account.",
@@ -139,7 +139,56 @@
     "login": "Login",
     "close": "Close"
   },
+  "Shortcuts": {
+    "title": "Keyboard shortcuts",
+    "description": "Single keys work when you are not typing in a field.",
+    "groups": {
+      "navigation": "Go to",
+      "translation": "Translation",
+      "general": "General"
+    },
+    "items": {
+      "goText": "New text translation",
+      "goDocument": "New document translation",
+      "goPassport": "Passport",
+      "goProjects": "Projects",
+      "goProfile": "Profile",
+      "goOrders": "Orders",
+      "translate": "Translate",
+      "focusInput": "Focus the text box",
+      "targetLanguage": "Choose the target language",
+      "swap": "Swap languages",
+      "copy": "Copy the translation",
+      "download": "Download the translation",
+      "help": "Show this list",
+      "close": "Close a window"
+    }
+  },
+  "Payments": {
+    "viewAll": "View all",
+    "title": "Payment history",
+    "topUp": "Top up",
+    "empty": "No payments yet.",
+    "error": "Couldn't load payment history.",
+    "payment": "Payment",
+    "pages": "pages",
+    "status": {
+      "success": "Paid",
+      "pending": "Pending",
+      "failed": "Failed",
+      "refunded": "Refunded"
+    },
+    "link": "Payment history"
+  },
   "Sidebar": {
+    "officeShort": "Office",
+    "translate": "Translate",
+    "products": "Suliko products",
+    "topUp": "Top up",
+    "expiresIn": "Expires in {days, plural, one {# day} other {# days}}",
+    "expired": "Credits expired",
+    "validOneMonth": "Credits are valid for 1 month",
+    "keyboardShortcuts": "Keyboard shortcuts",
     "newTranslation": "New Translation",
     "history": "History",
     "projects": "Projects",
@@ -154,7 +203,13 @@
     "completeEmail": "Add your email",
     "passport": "Passport",
     "office": "Suliko Office",
-    "orders": "Orders"
+    "orders": "Bureau assignments",
+    "toggleSidebar": "Collapse or expand the menu",
+    "home": "Home: new translation",
+    "userMenu": "Account menu",
+    "themeLight": "Light theme",
+    "themeDark": "Dark theme",
+    "chat": "Chat with us"
   },
   "Passport": {
     "title": "Passport Translation",
@@ -325,7 +380,13 @@
     "loading": "Loading...",
     "download": "Download",
     "copy": "Copy",
-    "retry": "Retry"
+    "copied": "Copied",
+    "save": "Save",
+    "saved": "Saved",
+    "saving": "Saving…",
+    "retry": "Retry",
+    "savedAt": "Saved · {time}",
+    "saveFailed": "Could not save"
   },
   "DownloadFormats": {
     "chooseFormat": "Choose download format",
@@ -335,7 +396,18 @@
     "wordDocument": "Word Document",
     "downloaded": "Downloaded!"
   },
+  "WordEditor": {
+    "hint": "Edit it like a Word document",
+    "fullScreen": "Full screen",
+    "exitFullScreen": "Exit full screen",
+    "fullScreenTitle": "Translation",
+    "simpleEditorNotice": "The Word-style editor could not be opened, so the simple editor is shown. Your translation is unchanged.",
+    "original": "Original",
+    "showOriginal": "Show the original alongside",
+    "hideOriginal": "Hide the original"
+  },
   "DocumentTranslationCard": {
+    "swapLanguages": "Swap languages",
     "title": "Upload document",
     "description": "Upload document for translation",
     "addingToProject": "Adding to project: {name}",
@@ -345,7 +417,8 @@
     },
     "dragAndDrop": "Drag and drop file or click to select",
     "dropFiles": "Drop files here",
-    "supportedFormats": "Supported file types: PDF, DOCX, TXT, JPEG, PNG, JPG, etc.",
+    "supportedFormats": "Supported: PDF, DOCX, DOC, TXT, MD, SRT, JPG, PNG. Up to {max}.",
+    "dropRejected": "This file type is not supported",
     "pasteFromClipboard": "or press Ctrl+V to paste an image from clipboard",
     "pageCountWarning": "⚠️ Documents over 4 pages may cause processing and balance issues; some pages may not be translated. We recommend splitting your file into parts of up to 3 pages and uploading them separately.",
     "warningDialog": {
@@ -396,7 +469,7 @@
       "loadError": "Failed to load file content",
       "loadErrorSubtitle": "Failed to load subtitle file",
       "loadErrorWord": "Failed to load Word document",
-      "loadErrorPdf": "Failed to load PDF. Check console for details.",
+      "loadErrorPdf": "This PDF can't be previewed here. You can still translate it.",
       "noPreview": "No document selected or preview not available.",
       "noPdfPreview": "No PDF file available for preview.",
       "subtitlePreview": "Subtitle Preview",
@@ -502,9 +575,11 @@
       "translateCta": "{count, plural, one {Translate # page} other {Translate # pages}}",
       "topUpCta": "{count, plural, one {Top up # page} other {Top up # pages}}",
       "counting": "Reading the page count…",
+      "chooseFile": "Choose a file to translate",
       "usuallyReady": "Usually ready in {min}–{max} minutes"
     },
     "fileTooLarge": "\"{name}\" is too large ({size}). The maximum file size is {max}.",
+    "unsupportedFile": "\"{name}\" is not a supported file type. Use PDF, DOCX, DOC, TXT, MD, SRT, JPG or PNG.",
     "submitStage": {
       "detectingNames": "Finding names…",
       "uploading": "Uploading {percent}%",
@@ -522,8 +597,10 @@
       "stagesLabel": "Progress",
       "startingUp": "Starting up…",
       "openFullView": "Open full view",
-      "failed": "The translation failed. Please try again."
-    }
+      "failed": "The translation failed. Please try again.",
+      "openingResult": "Done. Opening your translation…"
+    },
+    "originalUnavailable": "The original file is no longer available for this translation. You can still read, edit and download the translated text."
   },
   "TranslationLoadingOverlay": {
     "progress": "Progress",
@@ -546,6 +623,12 @@
     "stageFinalize": "Finalizing"
   },
   "Profile": {
+    "sections": {"label": "Profile sections", "account": "Account", "billing": "Billing", "security": "Security", "preferences": "Preferences", "invite": "Invite friends"},
+    "subscription": {"title": "Subscription", "plan": "Plan", "status": "Status", "pagesUsed": "Pages used", "renewsOn": "Renews on", "accessUntil": "Access until", "cancel": "Cancel subscription", "canceling": "Canceling…", "statuses": {"Active": "Active", "PastDue": "Past due", "Canceled": "Canceled", "Expired": "Expired"}},
+    "theme": "Theme",
+    "expiresIn": "Expires in {days, plural, one {# day} other {# days}}",
+    "expired": "Credits expired",
+    "validOneMonth": "Credits are valid for 1 month",
     "fullName": "Full Name",
     "name": "Name",
     "surname": "Surname",
@@ -598,7 +681,20 @@
       "confirmDelete": "Sure?",
       "cancelDelete": "Cancel",
       "addCard": "Add Card"
-    }
+    },
+    "allFieldsRequired": "All fields are required.",
+    "passwordsDontMatch": "The new passwords do not match.",
+    "passwordTooShort": "Choose a new password with at least 6 characters.",
+    "passwordSameAsOld": "The new password must be different from the current one.",
+    "accountDataNotFound": "Account details not found. Sign in again and retry.",
+    "passwordChangeFailed": "Unable to change the password. Try again.",
+    "firstNameRequired": "First name is required.",
+    "emailRequired": "Email is required.",
+    "emailInvalid": "Enter an email address like name@example.com.",
+    "updateFailed": "Unable to update your profile. Try again.",
+    "deleteAccountFailed": "Unable to delete the account. Try again.",
+    "profileNotFound": "Profile not found",
+    "profileNotFoundBody": "Account information not found."
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -612,6 +708,15 @@
     "loading": "Loading history"
   },
   "Projects": {
+    "statusDone": "Done",
+    "statusFailed": "Failed",
+    "statusProcessing": "In progress",
+    "assignTitle": "Add this translation to a project?",
+    "assignedTo": "Added to “{name}”",
+    "assignNew": "New project",
+    "assignCreateAdd": "Create & add",
+    "assignSkip": "Not now",
+    "assignError": "Couldn't save. Try again.",
     "title": "Projects",
     "noProjects": "No folders yet. Create a project to organize your translations.",
     "noTranslations": "No translations yet. Upload a document and click Translate to get started.",
@@ -715,6 +820,30 @@
     "jumpToSuggestions": "Jump to the suggestions below"
   },
   "Pricing": {
+    "landing": {
+      "individuals": "For individuals",
+      "starterCta": "Get 100 pages",
+      "professionalCta": "Get 500 pages",
+      "payAsYouGoCta": "Buy pages",
+      "businessCta": "Get Business",
+      "starterPerPage": "0.20 ₾ per page",
+      "professionalPerPage": "0.10 ₾ per page",
+      "professionalDescription": "Ideal for regular translation work",
+      "includedAll": "Every package includes all 50+ languages and the file formats PNG, JPG, JPEG, PDF, DOCX and TXT.",
+      "savesVsPayAsYouGo": "Saves {amount} ₾ vs {plan}",
+      "notSure": "Not sure yet?",
+      "title": "Pay once, no subscription",
+      "subtitle": "The more pages you buy, the less each one costs. Your first 10 pages are free.",
+      "free10": "First 10 pages free",
+      "languages": "50+ languages",
+      "formats": "PDF, DOCX, PNG, JPG, TXT",
+      "layout": "Original layout kept",
+      "payAsYouGoPeriod": "per page",
+      "payAsYouGoPagesLabel": "How many pages?",
+      "payAsYouGoTotal": "Total: {amount} ₾",
+      "payAsYouGoBuy": "{count, plural, one {Buy # page} other {Buy # pages}}",
+      "cheaperHint": "{plan} is cheaper: {pages} pages for {price} ₾."
+    },
     "paymentModal": {
       "title": "Payment Coming Soon",
       "description": "Payment system will be added soon. Please contact us at",
@@ -736,7 +865,7 @@
     "title": "Pricing Packages",
     "description": "Choose a package that suits you",
     "forTranslators": "For Translators",
-    "forBusinesses": "For Businesses",
+    "forBusinesses": "For businesses",
     "discount": "Save 20%",
     "limitedTime": "Limited Time",
     "mostPopular": "Most Popular",
@@ -812,12 +941,13 @@
       "title": "Suliko Business",
       "price": "500 ₾",
       "period": "/month",
-      "description": "Perfect for growing businesses",
+      "description": "For companies that translate every month",
       "features": {
-        "0": "900 pages per month",
+        "0": "900 pages every month, nothing to top up",
         "1": "Priority email support",
         "2": "All file formats (PDF, DOCX, TXT, PNG, JPEG, JPG)",
-        "3": "Basic API access"
+        "3": "Basic API access for your own systems",
+        "4": "Company invoices and VAT receipts"
       },
       "cta": "Buy Credits"
     },
@@ -905,24 +1035,25 @@
     "close": "Close"
   },
   "Landing": {
-    "title": "Translate Documents in Minutes.",
-    "description": "Upload your document and cut translation time by 70%.",
-    "badge": "CAT Tool",
+    "title": "Translate documents in minutes, not hours.",
+    "description": "Upload a contract, certificate or report and get the translation next to the original, with headings, tables and layout kept. Download it as PDF or DOCX.",
+    "badge": "First 10 pages free",
     "cta": "Start translating",
-    "viewPricing": "Get Notarized Translation",
+    "viewPricing": "Get a notarized translation",
     "trustedBy": "Trusted by professionals worldwide",
     "documentsTranslated": "Documents Translated",
     "languagesSupported": "Languages Supported",
-    "accuracyRate": "Accuracy Rate",
+    "fileFormats": "File formats accepted",
     "supportAvailable": "Support Available",
     "loading": "Loading...",
     "videoUnavailable": "Video unavailable"
   },
   "VideoSection": {
-    "title": "See Suliko in Action",
-    "description": "Watch how our AI-powered translation platform works and discover why professionals worldwide trust Suliko for their translation needs.",
+    "title": "See how Suliko works in under a minute",
+    "description": "A short walkthrough of translating a document with Suliko. The video is in Georgian, with Georgian subtitles.",
     "browserNotSupported": "Your browser does not support the video tag.",
-    "videoUnavailable": "Video unavailable"
+    "videoUnavailable": "Video unavailable",
+    "playVideo": "Play video"
   },
   "DemoBubble": {
     "title": "Want a walkthrough?",
@@ -939,9 +1070,15 @@
     "contact": "Contact",
     "blog": "Blog",
     "notary": "Notary",
-    "getStarted": "Get Started",
+    "getStarted": "Translate free",
     "bookDemo": "Book a Demo",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "forBureaus": "For bureaus",
+    "menu": "Menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "toggleTheme": "Toggle theme",
+    "theme": "Theme"
   },
   "AboutSection": {
     "title": "Why Choose Suliko?",
@@ -976,7 +1113,7 @@
   },
   "TestimonialsSection": {
     "title": "What Our Customers Say",
-    "subtitle": "Join thousands of satisfied customers who trust Suliko for their translation needs",
+    "subtitle": "Translation agencies, legal teams and tech companies use Suliko for their documents.",
     "stats": {
       "averageRating": "Average Rating",
       "happyCustomers": "Happy Customers",
@@ -1033,7 +1170,7 @@
     "eyebrow": "Customers"
   },
   "LandingFooter": {
-    "description": "The world's most advanced translation platform. Breaking down language barriers with precision, speed, and reliability.",
+    "description": "Document translation in 50+ languages, built for Georgian. And Suliko Office, the system our own translation bureau runs on.",
     "email": "Info@suliko.ge",
     "phone": "+995 591 729 911",
     "location": "Tbilisi, Georgia",
@@ -1238,7 +1375,7 @@
     "items": {
       "quality": {
         "question": "How accurate are the translations?",
-        "answer": "Suliko uses advanced AI models trained on professional translation corpora. Our accuracy rate is 98% for supported language pairs, and the editor lets you review and refine every segment before finalising your document."
+        "answer": "Suliko uses AI models trained on professional translation texts. Every segment appears next to the original, so you can review and correct the translation before you download the document."
       },
       "languages": {
         "question": "Which languages are supported?",
@@ -1250,7 +1387,7 @@
       },
       "pricing": {
         "question": "Is there a free tier?",
-        "answer": "Yes. Every new user receives 10 free pages to translate. After that you can choose a monthly plan (Starter, Professional) or a pay-as-you-go option, whichever suits your workflow."
+        "answer": "Yes. Every new user receives 10 free pages to translate. After that you can buy a package of pages that never expire (Starter or Professional), or pay 1 ₾ per page. Monthly plans for companies are under For businesses."
       },
       "security": {
         "question": "Is my document data secure?",
@@ -1258,11 +1395,15 @@
       },
       "georgian": {
         "question": "Why is Suliko especially good for Georgian?",
-        "answer": "Georgian is a morphologically complex language that most general-purpose AI systems handle poorly. Suliko's models are fine-tuned on Georgian legal, medical, and business texts, resulting in significantly better output than generic translation services."
+        "answer": "Georgian is a morphologically complex language that most general-purpose AI systems handle poorly. Suliko's models are fine-tuned on Georgian legal, medical and business texts, so contracts and certificates read the way they should."
+      },
+      "notary": {
+        "question": "Can I get a certified or notarised translation?",
+        "answer": "The translation you download from the editor is not certified. If an office or a court needs a certified or notarised translation, order it from our notary service."
       },
       "api": {
         "question": "Do you offer an API or business integrations?",
-        "answer": "Yes. Our Business and Enterprise plans include API access so you can integrate Suliko directly into your own workflows and applications. Contact our sales team for custom volume pricing and SLA options."
+        "answer": "Yes. Suliko Business includes basic API access, and Suliko Enterprise adds an advanced API with SLA, multi-user management and a dedicated account manager. Contact us for custom volume pricing."
       }
     }
   },
@@ -1624,7 +1765,7 @@
     "backToHome": "Back to home",
     "pageTitle": "Terms & Conditions | Suliko",
     "pageDescription": "Read the full Terms and Conditions for the Suliko AI translation service.",
-    "lastUpdated": "Last updated: 9 September 2026"
+    "lastUpdated": "Last updated: 13 October 2026"
   },
   "BulkTranslation": {
     "title": "Bulk translation",
@@ -1733,14 +1874,13 @@
   },
   "SulikoOffice": {
     "meta": {
-      "title": "Suliko Office: Translation Management System for Bureaus & LSPs",
-      "description": "Orders, translators, notaries, pricing and payments in one system. Suliko Office runs the daily work of our own translation bureau. Book a demo."
+      "title": "Suliko Office: Translation Bureau Software with a 90-Day Money-Back Guarantee",
+      "description": "Stop chasing statuses, payments and prices across Excel and WhatsApp. Suliko Office puts orders, translators, notaries and finances in one system, built and used daily by a working bureau. Try it on real orders for 90 days or get your money back."
     },
     "nav": {
       "home": "Suliko Office home",
-      "backToSuliko": "Suliko",
       "language": "Language",
-      "login": "Log in",
+      "login": "Sign in",
       "demo": "Book a demo",
       "menu": "Open menu",
       "closeMenu": "Close menu",
@@ -1751,16 +1891,17 @@
         "finance": "Finance",
         "reports": "Reports",
         "faq": "FAQ"
-      }
+      },
+      "toTranslate": "Suliko Translate"
     },
     "hero": {
-      "eyebrow": "Translation management system for bureaus",
-      "title": "Run your translation bureau from one screen",
-      "sub": "Orders, translators, notaries, payments and clients in one system. Built and used daily by a working bureau.",
-      "primary": "Book a demo",
+      "eyebrow": "For translation bureaus and LSPs",
+      "title": "Stop chasing orders and payments. Run your bureau.",
+      "sub": "Suliko Office puts orders, translators, notaries, prices and finances in one system. Your team stops asking “where is this document?” and you see the profit on every order. Built and used daily by a working translation bureau.",
+      "primary": "Manage orders",
       "secondary": "See how it works",
-      "already": "Already using Suliko Office?",
-      "login": "Log in",
+      "translate": "Start translating",
+      "guarantee": "90-day money-back guarantee. If it is not right for your bureau, you get your money back.",
       "badge1Title": "Notary fee",
       "badge1Text": "14.44 ₾",
       "badge2Title": "Translator assigned",
@@ -1807,43 +1948,43 @@
       "done": "Handed over, payouts due"
     },
     "pains": {
-      "kicker": "Sound familiar?",
+      "kicker": "Sound familiar? Each of these costs your bureau time and money.",
       "p1": "“Where is this document right now?”",
-      "a1": "Every order shows its live status.",
+      "a1": "Everyone sees the live status of every order, so nobody has to ask.",
       "p2": "“Did we pay the translator and the notary?”",
-      "a2": "Payouts are tracked on every order.",
-      "p3": "“Why did two staff quote different prices?”",
-      "a3": "One price list, calculated the same way every time."
+      "a2": "Every payout is recorded on the order: you see what is paid and what is still owed.",
+      "p3": "“Why did two people quote different prices?”",
+      "a3": "One price list, calculated the same way every time, so money stops slipping away on wrong quotes."
     },
     "journey": {
-      "kicker": "How it works",
-      "title": "One order, from the counter to pickup",
-      "sub": "Everyone on the team sees the same status, so nobody has to ask where a document is."
+      "kicker": "How an order moves",
+      "title": "From the first call to handover, nobody has to ask",
+      "sub": "The whole team sees the same status. Clients get answers faster, and your staff get their time back."
     },
     "feat": {
-      "kicker": "What's inside",
-      "title": "Everything a bureau runs on, in one system",
-      "f1t": "Orders & statuses",
+      "kicker": "Everything in one system",
+      "title": "Everything a bureau runs on, in one place",
+      "f1t": "Orders that never get lost",
       "f1d": "Every order from first request to pickup, with a status the whole team can see.",
-      "f2t": "Translators & notaries",
+      "f2t": "The right translator, every time",
       "f2d": "Your translators and notaries with their language pairs, so each order goes to the right person.",
-      "f3t": "Automatic pricing",
+      "f3t": "Prices that always match",
       "f3d": "Translation and notary costs are calculated from the language pair, document type, pages, urgency and copies.",
       "tagPair": "KA → EN",
       "tagDoc": "Diploma",
       "tagUrg": "Urgent",
       "tagCopies": "2 copies",
-      "f4t": "Finance",
+      "f4t": "Profit you can see",
       "f4d": "Client payments, translator and notary payouts, expenses and profit reports.",
-      "f5t": "Clients & lead sources",
-      "f5d": "Individual and business clients, a client portal, and where each client came from.",
+      "f5t": "Clients and where they come from",
+      "f5d": "Individual and business clients, a client portal, and the source of every client.",
       "tagPortal": "Client portal",
-      "f6t": "Team & roles",
+      "f6t": "Your team, your rules",
       "f6d": "Five roles, and staff don't see margins. Two-factor login and a full audit log.",
       "tagRoles": "5 roles",
       "tag2fa": "2FA",
       "tagAudit": "Audit log",
-      "f7t": "Built-in AI translation by Suliko",
+      "f7t": "A first draft in seconds",
       "f7d": "Get a first draft from Suliko AI without leaving the system, then hand it to your translator to finish."
     },
     "sec": {
@@ -1866,16 +2007,23 @@
       "q3": "Which languages does it support?",
       "a3": "The system works in Georgian and English. Orders can use any language pair your bureau offers, and you set the pairs for each translator.",
       "q4": "How much does it cost?",
-      "a4": "Pricing is tailored to your bureau's size and needs, so let's talk. Book a demo and we'll put together an offer for you."
+      "a4": "The price depends on how many orders your bureau handles: packages for up to 50, up to 100, and over 100 orders. Book a demo or send us your monthly volume and we will put together an offer for you. Every plan comes with a 90-day money-back guarantee.",
+      "q5": "What if it does not work for us?",
+      "a5": "You are covered by a 90-day money-back guarantee. Use Suliko Office on your real orders, and if it is not right for your bureau, we return your money."
+    },
+    "signIn": {
+      "title": "Already using Suliko Office?",
+      "sub": "Sign in and carry on with your orders, translators, notaries and payments.",
+      "button": "Sign in"
     },
     "form": {
       "kicker": "Book a demo",
-      "title": "See Suliko Office on a call",
-      "sub": "Tell us a little about your bureau and we'll get in touch to pick a time.",
+      "title": "See your bureau running on Suliko Office",
+      "sub": "Tell us a little about your bureau. We will get in touch to pick a time and show you the system on orders like yours.",
       "onCall": "On the call",
       "e1": "A walkthrough of one order, from request to pickup",
       "e2": "How your current Excel and WhatsApp setup would move across",
-      "e3": "Pricing tailored to your bureau",
+      "e3": "Pricing for your bureau, with a 90-day money-back guarantee",
       "name": "Your name",
       "company": "Bureau / company",
       "email": "Email",
@@ -1941,25 +2089,25 @@
     },
     "spot": {
       "pricing": {
-        "kicker": "Automatic pricing",
-        "title": "Translation and notary costs, worked out for you",
-        "body": "Enter the document, language pair, pages and number of documents. Suliko Office prices the translation from your price list and adds the notary fee, so you can give the client the full total straight away.",
+        "kicker": "Quote in seconds",
+        "title": "Give the client the full price while they are still on the phone",
+        "body": "Enter the document, language pair, pages and copies. Suliko Office prices the translation from your own price list, adds the notary fee and gives you one total to say out loud. No calculator, no guessing.",
         "p1": "Your own prices for every language pair",
-        "p2": "Notary fees calculated by pages and documents",
-        "p3": "Every staff member quotes the same price"
+        "p2": "Notary fees worked out by pages and documents",
+        "p3": "Every colleague quotes the same price, so wrong quotes stop costing you money"
       },
       "payouts": {
         "kicker": "Finance",
-        "title": "Know who has paid, and who you owe",
-        "body": "Every order records the client's payment and what goes to the translator and the notary, so your monthly totals add up on their own.",
+        "title": "Know who has paid you, and who you owe",
+        "body": "Each order records what the client paid and what goes to the translator and the notary. At month end the totals are already there, and you see the profit on every order.",
         "p1": "Client payments and refunds",
         "p2": "Translator and notary payouts on every order",
         "p3": "Profit per order and per month"
       },
       "reports": {
         "kicker": "Reports",
-        "title": "Weekly and monthly reports, with charts",
-        "body": "See revenue, profit and translation volume at a glance, and how each compares with the previous period. Then break it down by language pair, by where orders come from and by client type.",
+        "title": "See what makes you money, and what does not",
+        "body": "Revenue, profit and volume by week and by month, compared with the previous period. Then see which language pairs, which sources and which clients bring in the most.",
         "p1": "Revenue and profit, by week and by month",
         "p2": "Orders and translated pages, with the trend",
         "p3": "Your busiest language pairs and where orders come from"
@@ -1987,13 +2135,52 @@
       "other": "Other",
       "individuals": "Individuals",
       "companies": "Companies"
+    },
+    "signInPrompt": {
+      "text": "Already using Suliko Office?",
+      "link": "Sign in"
+    },
+    "compare": {
+      "kicker": "The difference",
+      "title": "Excel and WhatsApp, or one system",
+      "now": "Today: Excel and WhatsApp",
+      "with": "With Suliko Office",
+      "r1a": "Ask a colleague or scroll a chat to find an order",
+      "r1b": "A live status on every order",
+      "r2a": "Everyone quotes a price from memory",
+      "r2b": "One price list, one calculation",
+      "r3a": "You try to remember who has been paid",
+      "r3b": "Every payout recorded on its order",
+      "r4a": "Profit worked out at month end, if at all",
+      "r4b": "Profit visible per order, per week, per month"
+    },
+    "offer": {
+      "kicker": "Your proposal",
+      "title": "What you get when you start with Suliko Office",
+      "sub": "A working system for your bureau, not just a login and a manual.",
+      "o1t": "We set it up for you",
+      "o1d": "We configure your bureau, import your clients, translators and price list, and walk your team through the system.",
+      "o2t": "Your own prices",
+      "o2d": "Your price for every language pair and your notary fees, so quotes are right from the first day.",
+      "o3t": "Priced by your volume",
+      "o3d": "Packages for up to 50, up to 100 and over 100 orders a month. You pay for the size of bureau you are.",
+      "o4t": "90 days, money back",
+      "o4d": "Use it on real orders for 90 days. If it is not right for your bureau, we return your money.",
+      "cta": "Get your offer",
+      "note": "Tell us how many orders you handle a month and we will prepare an offer for your bureau."
+    },
+    "translateBand": {
+      "kicker": "Not a bureau?",
+      "title": "Need a document translated? Try Suliko Translate",
+      "body": "Upload a file and see the translation next to the original in minutes. Your first 10 pages are free.",
+      "cta": "Open Suliko Translate"
     }
   },
   "OfficePromo": {
-    "heading": "Run a translation bureau? Meet Suliko Office",
-    "subheading": "Orders, translators, notaries and payments in one system. It's the one our own bureau runs on.",
-    "cta": "Explore Suliko Office",
-    "heroLink": "Run a translation bureau? See the system we run on"
+    "heading": "Run a translation bureau? Run it from one screen",
+    "subheading": "Suliko Office puts orders, translators, notaries and payments in one system. It is the one our own bureau runs on, with a 90-day money-back guarantee.",
+    "cta": "See Suliko Office",
+    "heroLink": "Run a bureau? See Suliko Office"
   },
   "HeroDemo": {
     "original": "Original · English",
@@ -2012,19 +2199,19 @@
   },
   "HowItWorks": {
     "eyebrow": "How it works",
-    "title": "From upload to finished file in three steps",
+    "title": "Three steps from a file to a finished translation",
     "steps": {
       "upload": {
-        "title": "Upload",
-        "body": "Drop in a PNG, JPG, PDF, DOCX or TXT file. Suliko reads it and keeps the layout."
+        "title": "Drop in your file",
+        "body": "PNG, JPG, PDF, DOCX or TXT. Suliko reads it and keeps your headings, tables and layout."
       },
       "translate": {
-        "title": "Translate & review",
-        "body": "Read the original and the translation side by side, with smart suggestions for every segment."
+        "title": "Check it side by side",
+        "body": "See the original and the translation next to each other, with a suggestion for every segment. You decide the final text."
       },
       "export": {
-        "title": "Export",
-        "body": "Download in Word, PDF or plain text, formatted like the file you uploaded."
+        "title": "Download it ready to use",
+        "body": "Get Word, PDF or plain text formatted like your original, ready to send."
       }
     },
     "dropHint": "Drop a file to start",
@@ -2039,11 +2226,11 @@
   },
   "Features": {
     "eyebrow": "Why Suliko",
-    "title": "An assistant for translators, not a replacement",
-    "subtitle": "The intelligent assistant that helps translators work faster and businesses scale, without sacrificing quality.",
+    "title": "Built for documents, and for Georgian",
+    "subtitle": "You get a first draft in minutes and keep full control of the final text.",
     "copilot": {
-      "title": "Translator's Copilot",
-      "body": "Earn 3–10x more by speeding up the work you already do, with suggestions on every segment.",
+      "title": "You have the last word",
+      "body": "Every segment comes with a suggestion and matches your glossary. Accept it, edit it or replace it. Translators work faster, and the final text stays yours.",
       "segment": "Segment 4 of 12",
       "glossary": "Glossary match",
       "consistent": "Terminology consistent"
@@ -2054,10 +2241,10 @@
     },
     "georgian": {
       "title": "Built for Georgian",
-      "body": "Fine-tuned on Georgian legal, medical and business texts."
+      "body": "Fine-tuned on Georgian legal, medical and business texts, so contracts and certificates read the way they should."
     },
     "privacy": {
-      "title": "Private by default",
+      "title": "Your documents stay yours",
       "body": "Encrypted in transit (TLS 1.3) and at rest. Your documents are never used to train our models.",
       "yourFile": "Your file",
       "encrypted": "Encrypted",
@@ -2072,10 +2259,10 @@
     "notaryCta": "Get a notarized translation"
   },
   "ClosingCta": {
-    "title": "Your first 10 pages are on us",
-    "subtitle": "Upload a document now and see the translation next to the original in a couple of minutes.",
-    "cta": "Start translating",
-    "bookDemo": "Book a demo"
+    "title": "Your first 10 pages are free. See the result before you pay anything.",
+    "subtitle": "Upload a document and in a couple of minutes you will see the translation next to the original. If it is not what you need, you have lost nothing.",
+    "cta": "Translate 10 pages free",
+    "bookDemo": "Book a demo for your team"
   },
   "Coupon": {
     "title": "Have a coupon?",
@@ -2205,6 +2392,7 @@
     "scrollTogether": "Scroll together",
     "edit": "Edit",
     "editHint": "Saving replaces this file in the order.",
+    "editUnavailable": "This file could not be opened in the editor. Download it to correct it in Word.",
     "saveToOrder": "Save to order",
     "savingToOrder": "Saving…",
     "saveDone": "Saved. The order now has the corrected file.",
@@ -2217,5 +2405,37 @@
     "discard": "Close without saving",
     "previewLoading": "Opening the file…",
     "previewFailed": "Could not open this file here. You can still download it."
+  },
+  "TranslateMeta": {
+    "title": "Suliko Translate: Translate Documents in Minutes, First 10 Pages Free",
+    "description": "Translate contracts, certificates and business documents into 50+ languages in minutes. The layout stays as it was and the original sits beside the translation. Built for Georgian. Your first 10 pages are free."
+  },
+  "A11y": {
+    "close": "Close",
+    "back": "Back",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "clearSearch": "Clear search",
+    "skipToContent": "Skip to content",
+    "play": "Play",
+    "pause": "Pause",
+    "mute": "Mute",
+    "unmute": "Unmute",
+    "fullscreen": "Full screen",
+    "videoProgress": "Video progress",
+    "videoVolume": "Volume",
+    "balanceAndPlans": "Balance and plans",
+    "textToTranslate": "Text to translate",
+    "translatedText": "Translated text",
+    "passportFile": "Upload a passport image or PDF",
+    "emailAddress": "Email address",
+    "digitOf": "Digit {n} of {total}",
+    "removeFile": "Remove file",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "menu": "Menu",
+    "toggleTheme": "Switch theme"
   }
 }

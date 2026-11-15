@@ -6,6 +6,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { NOTARY_PHONE } from "@/shared/constants/notary";
+import { appendNotaryFiles } from "@/shared/utils/notaryBlobUpload";
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 const MAX_FILES = 5;
@@ -53,7 +54,7 @@ export default function NotaryFileUploadForm() {
       formData.append("name", name);
       formData.append("email", email);
       formData.append("phone", phone || "N/A");
-      files.forEach((file) => formData.append("files", file, file.name));
+      await appendNotaryFiles(formData, files);
 
       const res = await fetch("/api/notary-upload", {
         method: "POST",
@@ -209,7 +210,7 @@ export default function NotaryFileUploadForm() {
             justify-center space-x-2 text-sm transition-all duration-300
             ${files.length === 0 || isSending
               ? "bg-gray-400 cursor-not-allowed"
-              : "bg-linear-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-lg transform hover:scale-[1.01]"
+              : "bg-linear-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 shadow-float-2 transform hover:scale-[1.01]"
             }`}
         >
           {isSending ? (
@@ -243,7 +244,7 @@ export default function NotaryFileUploadForm() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className={`fixed bottom-4 right-4 p-3 rounded-lg shadow-lg flex items-center space-x-2 max-w-xs z-50
+              className={`fixed bottom-4 right-4 p-3 rounded-lg shadow-float-2 flex items-center space-x-2 max-w-xs z-50
                 ${notification.type === "success" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
             >
               {notification.type === "success" ? <Check className="w-5 h-5" /> : <X className="w-5 h-5" />}

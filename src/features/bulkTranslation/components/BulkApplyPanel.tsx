@@ -45,7 +45,7 @@ export function BulkApplyPanel({
   return (
     <div className="space-y-4 rounded-lg border border-suliko-default-color/30 bg-suliko-default-color/5 p-4">
       <div className="flex items-center gap-2">
-        <Wand2 className="h-4 w-4 text-suliko-default-color" />
+        <Wand2 className="h-4 w-4 text-accent-text" />
         <p className="text-sm font-medium">
           {t("applyToDocuments", { count: selectedCount })}
         </p>

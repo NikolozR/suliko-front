@@ -52,6 +52,8 @@ export interface ChatTrnalsationResult {
     /** Corrections the verification pass made before delivery. Absent on older translations. */
     autoFixes?: AutoFix[];
     verification?: VerificationSummary | null;
+    /** Whether the Word editor has saved a Word file for this translation that is still current. */
+    hasEditedDocument?: boolean;
 }
 
 export interface ChatHistoryResponse {

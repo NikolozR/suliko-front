@@ -63,7 +63,7 @@ export default function OrderConfirmation({
       {/* Order accepted */}
       <div className="rounded-2xl border border-green-500/30 bg-green-500/10 p-5 text-center">
         <CheckCircle2 className="mx-auto mb-3 h-10 w-10 text-green-600 dark:text-green-400" />
-        <h3 className="text-lg font-bold text-foreground">{t("successTitle")}</h3>
+        <h3 className="text-lg font-semibold text-foreground">{t("successTitle")}</h3>
         <p className="mt-1 text-sm text-muted-foreground">
           {estimateOnly ? t("successBodyEmail") : t("successBody")}
         </p>
@@ -74,7 +74,7 @@ export default function OrderConfirmation({
               {estimateOnly ? t("reference") : t("orderNumber")}
             </p>
             <p
-              className={`mt-0.5 font-bold text-foreground ${
+              className={`mt-0.5 font-semibold text-foreground ${
                 estimateOnly ? "font-mono text-xs break-all" : "text-base"
               }`}
             >
@@ -87,7 +87,7 @@ export default function OrderConfirmation({
             <p className="text-xs text-muted-foreground">
               {estimateOnly ? t("estimatedTotal") : t("confirmedTotal")}
             </p>
-            <p className="mt-0.5 text-base font-bold text-suliko-default-color">
+            <p className="mt-0.5 text-base font-semibold text-accent-text">
               {formatMoney(Number(order.total), order.currency)}
             </p>
           </div>
@@ -100,7 +100,7 @@ export default function OrderConfirmation({
         )}
 
         {!estimateOnly && (
-          <p className="mt-3 text-[11px] text-muted-foreground/80">
+          <p className="mt-3 text-xs text-muted-foreground/80">
             {t("reference")}: <span className="font-mono">{externalReference}</span>
           </p>
         )}
@@ -109,7 +109,7 @@ export default function OrderConfirmation({
       {/* Upload state */}
       {phase === "uploading" && (
         <div className="flex items-center gap-3 rounded-xl border border-border bg-muted/30 px-4 py-3">
-          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-suliko-default-color" />
+          <Loader2 className="h-4 w-4 shrink-0 animate-spin text-accent-text" />
           <div className="min-w-0">
             <p className="text-sm font-medium text-foreground">
               {t("uploadingCount", { done: progress.done + 1, total: progress.total })}
@@ -172,7 +172,7 @@ export default function OrderConfirmation({
                   href={`mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(
                     `Order #${order.order_id}: files`
                   )}`}
-                  className="text-xs font-medium text-suliko-default-color underline underline-offset-2"
+                  className="text-xs font-medium text-accent-text underline underline-offset-2"
                 >
                   {t("emailFilesInstead", {
                     email: SUPPORT_EMAIL,

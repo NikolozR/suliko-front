@@ -27,14 +27,14 @@ export default function ClosingCtaSection() {
           style={{ animationDuration: "15s", animationDirection: "alternate-reverse" }}
         />
 
-        <h2 className="relative max-w-3xl text-balance text-3xl font-bold leading-tight text-white sm:text-5xl">
+        <h2 className="relative max-w-3xl text-balance text-3xl font-semibold leading-tight text-white sm:text-5xl">
           {t("title")}
         </h2>
         <p className="relative max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">{t("subtitle")}</p>
         <div className="relative mt-2 flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
           <Link
             href="/document"
-            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-white px-7 py-3.5 text-base font-semibold text-[#11289c] transition-colors hover:bg-blue-50"
+            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-white px-7 py-3.5 text-base font-semibold text-suliko-default-hover-color transition-colors hover:bg-blue-50"
           >
             <span
               aria-hidden="true"

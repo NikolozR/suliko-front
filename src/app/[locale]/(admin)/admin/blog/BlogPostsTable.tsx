@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Pencil, Trash2, Plus, Eye, EyeOff } from "lucide-react";
+import { deleteBlogPost } from "@/lib/site-content-client";
 
 interface Translation {
   locale: string;
@@ -33,8 +34,12 @@ export default function BlogPostsTable({ initialPosts }: Props) {
   async function handleDelete(id: string) {
     if (!confirm("Delete this post permanently?")) return;
     setDeleting(id);
-    await fetch(`/api/blog/${id}`, { method: "DELETE" });
-    setPosts((prev) => prev.filter((p) => p.id !== id));
+    try {
+      await deleteBlogPost(id);
+      setPosts((prev) => prev.filter((p) => p.id !== id));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to delete post");
+    }
     setDeleting(null);
   }
 

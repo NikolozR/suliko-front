@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useCallback } from "react";
 import { useRouter, useParams } from "next/navigation";
+import { saveBlogPost, uploadBlogImage } from "@/lib/site-content-client";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
@@ -249,11 +250,12 @@ export default function BlogPostForm({ initialData, mode }: Props) {
   };
 
   const uploadImage = useCallback(async (file: File): Promise<string> => {
-    const fd = new FormData();
-    fd.append("file", file);
-    const res = await fetch("/api/blog/upload", { method: "POST", body: fd });
-    const json = await res.json();
-    return json.url ?? "";
+    try {
+      return await uploadBlogImage(file);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to upload image");
+      return "";
+    }
   }, []);
 
   const handleCoverUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -261,7 +263,8 @@ export default function BlogPostForm({ initialData, mode }: Props) {
     if (!file) return;
     setCoverUploading(true);
     const url = await uploadImage(file);
-    setCoverImage(url);
+    // A failed upload keeps the cover there was.
+    if (url) setCoverImage(url);
     setCoverUploading(false);
   };
 
@@ -284,18 +287,10 @@ export default function BlogPostForm({ initialData, mode }: Props) {
       })).filter((t) => t.title || t.content),
     };
 
-    const url = mode === "edit" && initialData?.id ? `/api/blog/${initialData.id}` : "/api/blog";
-    const method = mode === "edit" ? "PUT" : "POST";
-
-    const res = await fetch(url, {
-      method,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      const json = await res.json();
-      setError(json.error ?? "Failed to save post");
+    try {
+      await saveBlogPost(mode === "edit" && initialData?.id ? initialData.id : null, payload);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to save post");
       setSaving(false);
       return;
     }

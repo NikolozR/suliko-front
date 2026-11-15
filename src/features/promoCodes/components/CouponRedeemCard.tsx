@@ -53,7 +53,7 @@ export function CouponRedeemCard({ className }: { className?: string }) {
     <Card className={className}>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          <Ticket className="h-5 w-5 text-suliko-default-color" />
+          <Ticket className="h-5 w-5 text-accent-text" />
           {t("title")}
         </CardTitle>
       </CardHeader>

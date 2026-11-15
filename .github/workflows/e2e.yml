@@ -6,12 +6,19 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  deployments: read
+
 jobs:
+  # On a pull request the tests run against that PR's Vercel preview, on main
+  # against production (see scripts/resolve-deploy-url.sh).
+  #
   # Reliable signal: does the deployed app's public surface work? No auth, no
-  # Supabase dependency — this job going green means the frontend code is healthy.
+  # backend data needed — this job going green means the frontend code is healthy.
   public:
     name: Public smoke tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
 
     steps:
@@ -26,10 +33,19 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
-      - name: Run public Playwright tests
-        run: npx playwright test --project=public
+      - name: Find the deployment to test
+        id: target
+        run: |
+          url=$(scripts/resolve-deploy-url.sh)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
         env:
-          DEPLOYMENT_URL: https://suliko-front-five.vercel.app
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+      - name: Run public Playwright tests
+        run: npx playwright test --project=public --project=mobile
+        env:
+          DEPLOYMENT_URL: ${{ steps.target.outputs.url }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
 
       - name: Upload report
@@ -41,19 +57,20 @@ jobs:
           retention-days: 14
 
   # These exercise live infrastructure beyond the frontend:
-  #   - api:           Supabase-backed API routes (/api/blog, /api/passport-templates)
+  #   - api:           the API's blog and passport-template endpoints
   #   - authenticated: user pages, needs the auth backend + TEST_USER_* account
-  #   - admin:         admin panel, needs the auth backend + the 579737737 account
+  #   - admin:         admin panel, needs the auth backend + the TEST_ADMIN_* account
   #
-  # Kept non-blocking (continue-on-error) so a Supabase outage or a slow/invalid
+  # Kept non-blocking (continue-on-error) so an API outage or a slow/invalid
   # login can't turn the whole suite red — the `public` job above is the gate.
   # Once both infra items below are healthy, flip continue-on-error to false to
   # make this a required signal too:
-  #   1. The deployment can reach Supabase (the two /api routes return 200, not 500).
-  #   2. The TEST_USER_* and admin (579737737) accounts exist on content.api24.ge.
+  #   1. The API serves the blog and passport templates (its database has the
+  #      AddBlogAndPassportTemplates migration).
+  #   2. The TEST_USER_* and TEST_ADMIN_* accounts exist on content.api24.ge.
   extended:
     name: API + authenticated (non-blocking)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     continue-on-error: true
 
@@ -69,13 +86,24 @@ jobs:
 
       - run: npx playwright install --with-deps chromium
 
+      - name: Find the deployment to test
+        id: target
+        run: |
+          url=$(scripts/resolve-deploy-url.sh)
+          echo "url=$url" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
       - name: Run API + authenticated + admin Playwright tests
         run: npx playwright test --project=api --project=authenticated --project=admin
         env:
-          DEPLOYMENT_URL: https://suliko-front-five.vercel.app
+          DEPLOYMENT_URL: ${{ steps.target.outputs.url }}
           VERCEL_AUTOMATION_BYPASS_SECRET: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
           TEST_USER_PHONE: ${{ secrets.TEST_USER_PHONE }}
           TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+          TEST_ADMIN_PHONE: ${{ secrets.TEST_ADMIN_PHONE }}
+          TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
 
       - name: Upload report
         if: always()

@@ -37,13 +37,13 @@ export default function NotaryTabbedCalculator() {
   const tabClass = (tab: Tab) =>
     `flex-1 px-3 py-3 sm:px-4 sm:py-4 text-sm sm:text-base font-semibold transition-all duration-300 ${
       activeTab === tab
-        ? "border-b-2 border-suliko-default-color text-suliko-default-color bg-card"
-        : "text-muted-foreground hover:text-suliko-default-color hover:bg-card/50"
+        ? "border-b-2 border-suliko-default-color text-accent-text bg-card"
+        : "text-muted-foreground hover:text-accent-text hover:bg-card/50"
     }`;
 
   return (
     <motion.div
-      className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-xl"
+      className="relative overflow-hidden rounded-2xl border border-border bg-card shadow-float-3"
       initial={{ opacity: 0, y: 30 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6 }}
@@ -89,7 +89,7 @@ export default function NotaryTabbedCalculator() {
               transition={{ duration: 0.25 }}
             >
               <div className="mb-5 text-center">
-                <h3 className="text-xl font-bold text-foreground sm:text-2xl">
+                <h3 className="text-xl font-semibold text-foreground sm:text-2xl">
                   {t("calcTitle")}
                 </h3>
                 <p className="mt-1 text-sm text-muted-foreground">{t("calcSub")}</p>

@@ -84,7 +84,7 @@ const SuggestionsJumpButton: React.FC<SuggestionsJumpButtonProps> = ({
           onClick={handleClick}
           title={label}
           aria-label={label}
-          className="animate-jumpDown pointer-events-auto flex cursor-pointer hover:[animation-play-state:paused] items-center gap-1 rounded-full border border-suliko-default-color/40 bg-background py-1.5 pl-2 pr-2.5 text-suliko-default-color shadow-md shadow-black/10 transition-colors hover:bg-suliko-default-color/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suliko-default-color/50"
+          className="animate-jumpDown pointer-events-auto flex cursor-pointer hover:[animation-play-state:paused] items-center gap-1 rounded-full border border-suliko-default-color/40 bg-background py-1.5 pl-2 pr-2.5 text-accent-text shadow-md shadow-black/10 transition-colors hover:bg-suliko-default-color/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-suliko-default-color/50"
         >
           <ChevronDown className="h-4 w-4" aria-hidden="true" />
           <span className="text-xs font-semibold leading-none tabular-nums">{count}</span>

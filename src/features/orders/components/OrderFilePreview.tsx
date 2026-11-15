@@ -69,7 +69,7 @@ export function OrderFilePreview({
   return (
     <aside
       aria-label={t("preview")}
-      className="fixed inset-0 z-50 flex flex-col bg-background lg:sticky lg:top-6 lg:z-auto lg:h-[calc(100vh-8rem)] lg:rounded-xl lg:border lg:border-border/60"
+      className="fixed inset-0 z-50 flex flex-col bg-background lg:sticky lg:top-20 lg:z-auto lg:h-[calc(100vh-11.5rem)] lg:rounded-xl lg:border lg:border-border/60"
     >
       <header className="flex items-center gap-2 border-b border-border/60 py-1 pl-4 pr-1">
         <p className="min-w-0 flex-1 truncate text-sm font-medium">{file.name}</p>

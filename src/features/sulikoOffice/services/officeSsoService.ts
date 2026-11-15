@@ -57,7 +57,12 @@ export async function requestOfficeCode(
     reset();
     return { ok: false, reason: "signed_out" };
   }
-  if (response.status === 400) return { ok: false, reason: "invalid_request" };
+  if (response.status === 400) {
+    // Say which check refused it (invalid_redirect_uri, invalid_code_challenge): the page can only say "bad link".
+    const detail = (await response.json().catch(() => null)) as { error?: unknown } | null;
+    console.error("[office-sso] code request refused:", detail?.error ?? "unknown");
+    return { ok: false, reason: "invalid_request" };
+  }
   if (!response.ok) return { ok: false, reason: "unavailable" };
 
   const data = (await response.json().catch(() => null)) as

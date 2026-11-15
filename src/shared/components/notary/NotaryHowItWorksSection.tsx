@@ -19,7 +19,7 @@ export default function NotaryHowItWorksSection() {
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-sm text-primary font-medium mb-4">
             {t("sectionBadge")}
           </div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-4">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground mb-4">
             {t("heading")}
           </h2>
           <p className="text-muted-foreground text-lg leading-relaxed">
@@ -31,7 +31,7 @@ export default function NotaryHowItWorksSection() {
           {STEPS.map(({ icon: Icon, titleKey, descKey }, index) => (
             <div key={titleKey} className="relative flex flex-col items-center text-center p-8 rounded-2xl border border-border bg-card hover:border-primary/30 transition-colors duration-200">
               {/* Step number */}
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-suliko-default-color text-white text-sm font-bold flex items-center justify-center shadow-md">
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 w-8 h-8 rounded-full bg-suliko-default-color text-white text-sm font-semibold flex items-center justify-center shadow-md">
                 {index + 1}
               </div>
 

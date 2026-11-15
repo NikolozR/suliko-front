@@ -112,7 +112,7 @@ export const ProfileContactInfo = ({
                   className={errors.email ? "border-red-500 focus-visible:ring-red-500" : ""}
                 />
                 {errors.email && (
-                  <p className="text-sm text-red-500">{errors.email.message}</p>
+                  <p className="text-sm text-red-700 dark:text-red-400">{errors.email.message}</p>
                 )}
               </div>
             ) : (

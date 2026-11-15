@@ -66,6 +66,7 @@ const VerificationCodeInput: React.FC<{
   onChange: (value: string) => void;
   disabled?: boolean;
 }> = ({ value, onChange, disabled }) => {
+  const tA = useTranslations("A11y");
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const handleChange = (index: number, digit: string) => {
@@ -107,6 +108,8 @@ const VerificationCodeInput: React.FC<{
           inputMode="numeric"
           pattern="[0-9]"
           maxLength={1}
+          aria-label={tA("digitOf", { n: index + 1, total: 6 })}
+          autoComplete={index === 0 ? "one-time-code" : "off"}
           value={value[index] || ''}
           onChange={(e) => handleChange(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
@@ -124,6 +127,7 @@ type PasswordFormData = z.infer<ReturnType<typeof createPasswordSchema>>;
 
 const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, onClose }) => {
   const t = useTranslations("Authorization");
+  const tA = useTranslations("A11y");
   const locale = useLocale();
   const [currentStep, setCurrentStep] = useState<RecoveryStep>('phone');
   const [identifier, setIdentifier] = useState<string>("");
@@ -322,8 +326,9 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
 
   return (
     <Dialog open={isOpen} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md w-full max-w-sm mx-auto">
+      <DialogContent className="sm:max-w-md w-full max-w-sm mx-auto" aria-describedby={undefined}>
         <DialogHeader>
+          <DialogTitle className="sr-only">{t("recoverPassword")}</DialogTitle>
         </DialogHeader>
         
         {error && <ErrorAlert message={error} onClose={() => setError(null)} />}
@@ -354,6 +359,7 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
                     <FormControl>
                       <Input
                         placeholder={t("phoneNumberOrEmailPlaceholder")}
+                        autoComplete="username"
                         className="border-2 border-gray-300 dark:border-gray-600 rounded-lg px-4 py-3 text-base focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-800 transition-all duration-200"
                         {...field}
                         disabled={isLoading}
@@ -479,8 +485,9 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
                 name="newPassword"
                 render={({ field }) => (
                    <FormItem>
-                     <FormControl>
-                      <div className="relative w-full">
+                    <FormLabel className="sr-only">{t("newPassword")}</FormLabel>
+                    <div className="relative w-full">
+                      <FormControl>
                         <Input
                           type={showNewPassword ? "text" : "password"}
                            placeholder={t("enterNewPassword")}
@@ -488,16 +495,18 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
                           {...field}
                           disabled={isLoading}
                         />
-                        <button
+                      </FormControl>
+                      <button
                           type="button"
                           onClick={() => setShowNewPassword(!showNewPassword)}
-                          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                          aria-label={showNewPassword ? tA("hidePassword") : tA("showPassword")}
+                          aria-pressed={showNewPassword}
+                          className="absolute right-1 top-1/2 transform -translate-y-1/2 p-1.5 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                           disabled={isLoading}
                         >
                           {showNewPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
-                      </div>
-                    </FormControl>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -508,8 +517,9 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
                 name="confirmPassword"
                 render={({ field }) => (
                    <FormItem>
-                     <FormControl>
-                      <div className="relative w-full">
+                    <FormLabel className="sr-only">{t("confirmNewPassword")}</FormLabel>
+                    <div className="relative w-full">
+                      <FormControl>
                         <Input
                           type={showConfirmPassword ? "text" : "password"}
                            placeholder={t("repeatNewPassword")}
@@ -517,16 +527,18 @@ const PasswordRecoveryModal: React.FC<PasswordRecoveryModalProps> = ({ isOpen, o
                           {...field}
                           disabled={isLoading}
                         />
-                        <button
+                      </FormControl>
+                      <button
                           type="button"
                           onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                          className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                          aria-label={showConfirmPassword ? tA("hidePassword") : tA("showPassword")}
+                          aria-pressed={showConfirmPassword}
+                          className="absolute right-1 top-1/2 transform -translate-y-1/2 p-1.5 rounded-md text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
                           disabled={isLoading}
                         >
                           {showConfirmPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
                         </button>
-                      </div>
-                    </FormControl>
+                    </div>
                     <FormMessage />
                   </FormItem>
                 )}

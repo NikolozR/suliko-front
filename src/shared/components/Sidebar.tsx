@@ -5,23 +5,14 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
-import { Button } from "@/features/ui/components/ui/button";
-import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 import { UserProfile } from "@/features/auth/types/types.User";
 import { HistoryDropdown } from "@/features/chatHistory/components/HistoryDropdown";
 import { SidebarLanguageSelector } from "./SidebarLanguageSelector";
-import { formatBalance } from "@/shared/utils/domainUtils";
 import {
   Plus,
-  PlusCircle,
-  Clock,
+  FolderOpen,
   HelpCircle,
   MessageSquare,
-  User,
-  ChevronLeft,
-  ChevronRight,
-  LogOut,
-  Wallet,
   ChevronDown,
   ChevronUp,
   FileText,
@@ -29,10 +20,16 @@ import {
   ClipboardList,
 } from "lucide-react";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
-import SulikoLogo from "./SulikoLogo";
+import { SidebarBalanceCard } from "./SidebarBalanceCard";
+import { KbdCombo } from "@/shared/components/Kbd";
+import { GO_TARGETS } from "@/shared/shortcuts/definitions";
+import { useShortcuts } from "@/shared/shortcuts/ShortcutsProvider";
 import { useLocale, useTranslations } from "next-intl";
 import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
-import { signOutEverywhere } from "@/features/auth/services/signOut";
+import { NAVIGATION } from "@office/shared/config/navigation";
+import { HUE_CLASSES } from "@office/shared/lib/hues";
+import type { OfficeNavEntry } from "@/shared/nav/officeNav";
+import { WORKSPACE_SECTIONS, officeHref as officeModuleHref, workspaceLocale } from "@/shared/nav/workspace";
 
 const NAV_ITEMS = [
   {
@@ -50,14 +47,8 @@ const NAV_ITEMS = [
     // What bureaus have assigned to this person. Always there for someone
     // signed in: the page itself says so when no bureau has added them yet.
     label: "orders",
-    href: "/orders",
+    href: "/assignments",
     icon: ClipboardList,
-    requiresAuth: true,
-  },
-  {
-    label: "profile",
-    href: "/profile",
-    icon: User,
     requiresAuth: true,
   },
   // Help, Feedback and the language are on the Profile page for someone
@@ -79,11 +70,44 @@ const NAV_ITEMS = [
   },
 ];
 
-interface SidebarProps {
-  initialUserProfile?: UserProfile | null;
+/**
+ * The Alt+digit hint of a sidebar link: shown on hover and focus, and on every
+ * link at once while Alt is held, so the digits can be read off the sidebar.
+ * Not when collapsed, where the link's title carries it.
+ */
+function ShortcutHint({ href }: { href: string }) {
+  const { altHeld } = useShortcuts();
+  const target = GO_TARGETS.find((entry) => entry.href === href);
+  if (!target) return null;
+  return (
+    <KbdCombo
+      keys={["Alt", target.digit]}
+      className={`ml-auto hidden shrink-0 transition-opacity md:inline-flex ${
+        altHeld ? "opacity-100" : "opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100"
+      }`}
+    />
+  );
 }
 
-export default function Sidebar({ initialUserProfile }: SidebarProps) {
+/** "Passport (Alt 3)" for a link that has a digit, else just the name. */
+function hintTitle(name: string, href: string): string {
+  const target = GO_TARGETS.find((entry) => entry.href === href);
+  return target ? `${name} (Alt ${target.digit})` : name;
+}
+
+interface SidebarProps {
+  initialUserProfile?: UserProfile | null;
+  /**
+   * The Office half of the one sidebar (shared/nav/workspace.ts): the modules
+   * this person may open, or null without an Office session.
+   */
+  office?: OfficeNavEntry[] | null;
+}
+
+/** Office's icon and colour for a module, from its own navigation. */
+const OFFICE_ITEMS = new Map(NAVIGATION.flatMap((section) => section.items).map((item) => [item.href, item]));
+
+export default function Sidebar({ initialUserProfile, office = null }: SidebarProps) {
   const pathname = usePathname();
   const { token } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
@@ -92,7 +116,8 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   const [isProjectsOpen, setIsProjectsOpen] = useState(true);
 
   const storeIsCollapsed = useSidebarStore((state) => state.isCollapsed!);
-  const storeSetIsCollapsed = useSidebarStore((state) => state.setIsCollapsed);
+  const mobileOpen = useSidebarStore((state) => state.mobileOpen);
+  const setMobileOpen = useSidebarStore((state) => state.setMobileOpen);
   const [isClient, setIsClient] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
 
@@ -122,22 +147,18 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
     }
   }, [initialUserProfile, userProfile, setUserProfile]);
 
-  const handleCollapseToggle = () => {
-    storeSetIsCollapsed(!storeIsCollapsed);
-  };
 
+  // The phone drawer closes on every navigation, and when the screen grows.
   useEffect(() => {
-    if (isMobile) {
-      storeSetIsCollapsed(true);
-    }
-  }, [isMobile, storeSetIsCollapsed]);
+    setMobileOpen(false);
+  }, [pathname, isMobile, setMobileOpen]);
 
   const isActive = (href: string) => {
     if (href === '/text') {
       return pathname === '/text' || pathname === '/document';
     }
-    if (href === '/orders') {
-      return pathname === '/orders' || pathname.startsWith('/orders/');
+    if (href === '/assignments') {
+      return pathname === '/assignments' || pathname.startsWith('/assignments/');
     }
     return pathname === href;
   };
@@ -154,11 +175,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
 
   // Determine effective collapsed state for rendering to prevent hydration mismatch
   // On screens < 680px, always treat as collapsed regardless of stored preference
-  const effectiveIsCollapsed = !isClient ? false : (isMobile || storeIsCollapsed);
+  // On a phone the drawer is drawn full (never folded) while it is open.
+  const effectiveIsCollapsed = !isClient ? false : isMobile ? !mobileOpen : storeIsCollapsed;
 
-  const needsEmailReminder = Boolean(
-    userProfile?.email && userProfile.email.toLowerCase().includes("example.com")
-  );
+  const officeHref = `${OFFICE_URL}/${officeLocale(locale)}/dashboard`;
+
 
   // const renderOverlay = () => {
   //   if (isMobile) {
@@ -179,48 +200,34 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
   return (
     <>
       {/* {renderOverlay()} */}
+      {/* The same frame as Suliko Office's sidebar: under the 56px top bar,
+          4rem collapsed, 14rem at md, 16rem at lg. The mark, the switch that
+          folds it and the product switch are in the top bar (shell/Topbar). */}
+      {/* Scrim behind the phone drawer. */}
+      {isMobile && mobileOpen && (
+        <div aria-hidden className="fixed inset-0 top-14 z-30 bg-black/50 md:hidden" onClick={() => setMobileOpen(false)} />
+      )}
       <aside
-        className={`sidebar-main hidden md:flex flex-col h-[100dvh] overflow-auto fixed left-0 top-0 z-40 border-r transition-all duration-300 ease-in-out ${effectiveIsCollapsed
-          ? "w-20"
-          : "w-48 md:w-56 lg:w-64"
-          } ${!effectiveIsCollapsed
-            ? "md:shadow-none shadow-xl"
-            : "md:shadow-none"
+        className={`sidebar-main ${isMobile && mobileOpen ? "flex pb-16 shadow-float-3" : "hidden"} md:flex md:pb-0 flex-col fixed inset-y-0 left-0 z-40 overflow-hidden border-r pt-14 print:hidden ${effectiveIsCollapsed
+          ? "w-16"
+          : "w-56 lg:w-64"
           }`}
       >
-        <div className={`flex items-center h-20 ${effectiveIsCollapsed ? "justify-center" : "justify-between"} p-4 mb-3`}>
-          {!effectiveIsCollapsed && (
-            <Link
-              href="/"
-              className="transition-all duration-300 cursor-pointer"
-              aria-label="Go to landing page"
-            >
-              <SulikoLogo />
-            </Link>
+        <nav className="custom_scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 py-4 space-y-0.5">
+          {office && !effectiveIsCollapsed && (
+            <h2 className="px-3 pb-2 text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+              {WORKSPACE_SECTIONS.translate[workspaceLocale(locale)]}
+            </h2>
           )}
-          <div className="flex flex-col gap-y-2 justify-between h-full">
-            <ThemeToggle />
-            <button
-              onClick={handleCollapseToggle}
-              className={`sidebar-button shrink-0 p-1.5 h-9 w-9  rounded-lg cursor-pointer transition-colors ${isMobile ? "hidden" : "block"}`}
-              aria-label={effectiveIsCollapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {effectiveIsCollapsed ? <ChevronRight className="h-6 w-6" /> : <ChevronLeft className="h-6 w-6" />}
-            </button>
-          </div>
-
-        </div>
-
-        <nav className="flex-1 px-2 pt-2 space-y-1">
           {visibleNavItems.map(({ label, href, icon: Icon, disabled }) => (
             disabled ? (
               <span
                 key={href}
-                className={`sidebar-item-disabled group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 opacity-50 cursor-not-allowed select-none ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                className={`sidebar-item-disabled group text-sm font-medium flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 opacity-50 cursor-not-allowed select-none ${effectiveIsCollapsed ? "justify-center px-0" : ""}`}
                 aria-disabled="true"
                 tabIndex={-1}
               >
-                <Icon className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"}`} />
+                <Icon className="size-4 shrink-0" />
                 {!effectiveIsCollapsed && (
                   <span className="whitespace-nowrap">{t(label)}</span>
                 )}
@@ -234,33 +241,26 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
                   resetDocumentTranslation();
                 } : undefined}
                 className={label === "newTranslation"
-                  ? `group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center" : ""}`
-                  : `sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${isActive(href)
-                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                  ? `group text-sm font-medium flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 transition-all suliko-default-bg text-primary-foreground dark:text-white font-semibold hover:opacity-90 shadow-sm ${effectiveIsCollapsed ? "justify-center px-0" : ""}`
+                  : `sidebar-item group text-sm font-medium flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 transition-colors ${isActive(href)
+                    ? "sidebar-item-active font-medium"
                     : ""
-                  } ${effectiveIsCollapsed ? "justify-center" : ""}`
+                  } ${effectiveIsCollapsed ? "justify-center px-0" : ""}`
                 }
                 aria-current={isActive(href) ? "page" : undefined}
+                title={effectiveIsCollapsed ? hintTitle(t(label), href) : undefined}
               >
                 <div className="relative flex items-center">
                   <Icon
-                    className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                      } group-hover:scale-105`}
+                    className="size-4 shrink-0"
                   />
-                  {needsEmailReminder && label === "profile" && (
-                    <span className="absolute -top-1 -right-1 h-2 w-2 rounded-full bg-amber-500 shadow-[0_0_0_2px_rgba(255,255,255,0.9)] dark:shadow-[0_0_0_2px_rgba(24,28,42,1)] animate-flicker" />
-                  )}
                 </div>
                 {!effectiveIsCollapsed && (
                   <>
                     <span className="whitespace-nowrap">
                       {t(label)}
                     </span>
-                    {needsEmailReminder && label === "profile" && (
-                      <span className="ml-auto text-[11px] font-medium text-amber-700 bg-amber-100 py-0.5 px-2 rounded-full shrink-0 animate-flicker">
-                        {t("completeEmail")}
-                      </span>
-                    )}
+                    <ShortcutHint href={href} />
                   </>
                 )}
               </Link>
@@ -278,16 +278,19 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
               <div className="flex items-center">
                 <Link
                   href="/projects"
-                  className={`sidebar-item group flex-1 min-w-0 text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/")
-                    ? "suliko-default-bg text-primary-foreground font-medium dark:text-white"
+                  className={`sidebar-item group flex-1 min-w-0 text-sm font-medium flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 transition-colors ${pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/")
+                    ? "sidebar-item-active font-medium"
                     : ""
-                    } ${effectiveIsCollapsed ? "justify-center" : ""}`}
+                    } ${effectiveIsCollapsed ? "justify-center px-0" : ""}`}
                   aria-current={pathname === "/projects" || pathname?.startsWith("/projects/") || pathname?.startsWith("/translations/") ? "page" : undefined}
+                  title={effectiveIsCollapsed ? t("projects") : undefined}
                 >
-                  <Clock className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"
-                    } group-hover:scale-105`} />
+                  <FolderOpen className="size-4 shrink-0" />
                   {!effectiveIsCollapsed && (
-                    <span className="whitespace-nowrap truncate">{t("projects")}</span>
+                    <>
+                      <span className="whitespace-nowrap truncate">{t("projects")}</span>
+                      <ShortcutHint href="/projects" />
+                    </>
                   )}
                 </Link>
                 {!effectiveIsCollapsed && (
@@ -304,121 +307,58 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
             </div>
           )}
 
-          {token && (
-            <a
-              href={`${OFFICE_URL}/${officeLocale(locale)}/dashboard`}
-              className={`sidebar-item group text-xs sm:text-sm lg:text-base flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""}`}
-            >
-              <Briefcase className="h-5 w-5 transition-transform duration-200 group-hover:scale-105" />
-              {!effectiveIsCollapsed && <span className="whitespace-nowrap">{t("office")}</span>}
-            </a>
+          {/* The Office half: the same items, order, icons and colours as
+              Office's own sidebar. Another root layout, so plain links. */}
+          {office && office.length > 0 && (
+            <div className="pt-6">
+              {!effectiveIsCollapsed ? (
+                <h2 className="px-3 pb-2 text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+                  {WORKSPACE_SECTIONS.office[workspaceLocale(locale)]}
+                </h2>
+              ) : (
+                <div className="mx-2 mb-2 border-t border-sidebar-border" />
+              )}
+              <ul className="space-y-0.5">
+                {office.map(({ href, label }) => {
+                  const item = OFFICE_ITEMS.get(href);
+                  const Icon = item?.icon ?? Briefcase;
+                  return (
+                    <li key={href}>
+                      <a
+                        href={officeModuleHref(locale, href)}
+                        title={effectiveIsCollapsed ? label : undefined}
+                        className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 text-sm font-medium transition-colors ${effectiveIsCollapsed ? "justify-center px-0" : ""}`}
+                      >
+                        <Icon className={`size-4 shrink-0 ${item ? HUE_CLASSES[item.hue].ink : ""}`} aria-hidden />
+                        {!effectiveIsCollapsed && <span className="truncate">{label}</span>}
+                        {effectiveIsCollapsed && <span className="sr-only">{label}</span>}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
           )}
+
         </nav>
 
-        <div className="mt-auto flex flex-col gap-2 p-3">
-          {token ? (
-            <>
-              {userProfile && (
-                <div className={`flex items-center gap-3 p-3 rounded-lg mb-2 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200/60 dark:border-emerald-800/40 ${effectiveIsCollapsed ? "justify-center" : ""
-                  }`}>
-                  <Link href='/price'>
-                    <Wallet className="h-5 w-5 cursor-pointer text-emerald-600 dark:text-emerald-400 shrink-0" />
-                  </Link>
-                  {!effectiveIsCollapsed && (
-                    <Link href="/price" className="flex flex-col min-w-0 w-full hover:opacity-80 transition-opacity">
-                      {userProfile.subscription?.status === 'Active' ? (
-                        <>
-                          <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70 capitalize">{userProfile.subscription.planName}</span>
-                          <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
-                            {userProfile.subscription.pagesUsed} / {userProfile.subscription.monthlyPageLimit ?? '∞'} {t('pages')}
-                            <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
-                          </span>
-                          {(() => {
-                            const limit = userProfile.subscription.monthlyPageLimit;
-                            const pct = limit ? Math.min(100, (userProfile.subscription.pagesUsed / limit) * 100) : 0;
-                            const barColor = pct < 60 ? "bg-emerald-500" : pct < 85 ? "bg-amber-500" : "bg-red-500";
-                            return (
-                              <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
-                                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
-                              </div>
-                            );
-                          })()}
-                        </>
-                      ) : (
-                        <>
-                          <span className="text-xs text-emerald-700/70 dark:text-emerald-400/70">{t('balance')}</span>
-                          <span className="font-semibold flex items-center w-full justify-between text-emerald-700 dark:text-emerald-300">
-                            {formatBalance(userProfile.balance || 0)} {t('pages')}
-                            <PlusCircle className="transition-transform duration-200 h-5 w-5 group-hover:scale-105" />
-                          </span>
-                          {(() => {
-                            const pct = Math.min(100, ((userProfile.balance || 0) / 50) * 100);
-                            const barColor = pct > 40 ? "bg-emerald-500" : pct > 10 ? "bg-amber-500" : "bg-red-500";
-                            return (
-                              <div className="mt-1.5 h-1 w-full rounded-full bg-emerald-200/60 dark:bg-emerald-900/40 overflow-hidden">
-                                <div className={`h-full rounded-full transition-all duration-500 ${barColor}`} style={{ width: `${pct}%` }} />
-                              </div>
-                            );
-                          })()}
-                        </>
-                      )}
-                    </Link>
-                  )}
-                </div>
-              )}
-              {/* <Link href="/price" className="block">
-                <Button
-                  variant="outline"
-                  className={`w-full flex items-center gap-3 text-white bg-emerald-600 hover:bg-emerald-700 border-0 py-2.5 rounded transition-all group ${
-                    effectiveIsCollapsed ? "justify-center px-0" : "justify-start px-3"
-                  }`}
-                >
-                  <PlusCircle
-                    className={`transition-transform duration-200 h-5 w-5 group-hover:scale-105`}
-                  />
-                  {!effectiveIsCollapsed && (
-                    <span className="whitespace-nowrap">
-                      {t('fillBalance')}
-                    </span>
-                  )}
-                </Button>
-              </Link> */}
-              <Button
-                className={`w-full flex items-center gap-3 dark:text-white suliko-default-bg text-primary-foreground hover:opacity-90 transition-all py-2.5 rounded group ${effectiveIsCollapsed ? "justify-center px-0" : "justify-start px-3"
-                  }`}
-                onClick={() => {
-                  resetTextTranslation();
-                  resetDocumentTranslation();
-                  signOutEverywhere(locale);
-                }}
-              >
-                <LogOut
-                  className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"} group-hover:scale-105`}
-                />
-                {!effectiveIsCollapsed && (
-                  <span className="whitespace-nowrap">
-                    {t('logout')}
-                  </span>
-                )}
-              </Button>
-            </>
-          ) : (
-            <Link
-              href="/sign-in"
-              className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2.5 transition-colors ${effectiveIsCollapsed ? "justify-center" : ""
-                }`}
+        {/* The foot, as in Office: this product's meter (the page balance, where
+            Office shows the month's orders) and the way to the other product.
+            Profile, the shortcuts and Sign out are in the top bar's user menu. */}
+        {token && (
+          <div className="shrink-0 space-y-1 border-t border-sidebar-border px-2 py-3">
+            {userProfile && <SidebarBalanceCard profile={userProfile} collapsed={effectiveIsCollapsed} />}
+            {!office && <a
+              href={officeHref}
+              title={effectiveIsCollapsed ? t("office") : undefined}
+              aria-label={effectiveIsCollapsed ? t("office") : undefined}
+              className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 text-sm font-medium transition-colors ${effectiveIsCollapsed ? "justify-center px-0" : ""}`}
             >
-              <User
-                className={`transition-transform duration-200 ${effectiveIsCollapsed ? "h-5 w-5" : "h-5 w-5"} group-hover:scale-105`}
-              />
-              {!effectiveIsCollapsed && (
-                <span className="whitespace-nowrap">
-                  {t('login')}
-                </span>
-              )}
-            </Link>
-          )}
-        </div>
+              <Briefcase className="size-4 shrink-0" aria-hidden />
+              {!effectiveIsCollapsed && <span className="truncate">{t("office")}</span>}
+            </a>}
+          </div>
+        )}
       </aside>
     </>
   );

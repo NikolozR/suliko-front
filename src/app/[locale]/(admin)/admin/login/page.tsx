@@ -1,4 +1,6 @@
 "use client";
+
+import { useHydrated } from "@/shared/hooks/useHydrated";
 import React, { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { login } from "@/features/auth/services/authorizationService";
@@ -12,6 +14,7 @@ export default function AdminLoginPage() {
 
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
+  const hydrated = useHydrated();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -124,7 +127,7 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+          <form method="post" onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             <div>
               <label
                 style={{
@@ -214,7 +217,7 @@ export default function AdminLoginPage() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || !hydrated}
               style={{
                 marginTop: 4,
                 width: "100%",

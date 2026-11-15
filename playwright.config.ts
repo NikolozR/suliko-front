@@ -20,9 +20,11 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   projects: [
-    // Setup projects — run first (as dependencies), write auth state to disk
-    { name: 'setup-user',  testMatch: /auth\.setup\.ts/,  testDir: './tests' },
-    { name: 'setup-admin', testMatch: /admin\.setup\.ts/, testDir: './tests' },
+    // Setup projects — run first (as dependencies), write auth state to disk.
+    // They type real credentials, which a trace records verbatim (and CI uploads the
+    // report as an artifact), so no trace or video for them.
+    { name: 'setup-user',  testMatch: /auth\.setup\.ts/,  testDir: './tests', use: { trace: 'off', video: 'off' } },
+    { name: 'setup-admin', testMatch: /admin\.setup\.ts/, testDir: './tests', use: { trace: 'off', video: 'off' } },
 
     // Public frontend smoke tests — no auth, no Supabase needed to pass.
     // This is the reliable "is the app healthy" signal and runs as its own CI job.
@@ -37,30 +39,38 @@ export default defineConfig({
         /referral\.spec\.ts/,
         /blog\.spec\.ts/,
         /auth\.spec\.ts/,
+        /office\.spec\.ts/,
+        /product-split\.spec\.ts/,
+        /route-progress\.spec\.ts/,
+        /seo\.spec\.ts/,
+        /access\.spec\.ts/,
+        /site-api\.spec\.ts/,
+        /a11y-basics\.spec\.ts/,
+        /notary-api\.spec\.ts/,
+        /checkout\.spec\.ts/,
+        /translate-flow\.spec\.ts/,
       ],
     },
 
-    // Route transition progress bar. Deliberately outside the CI jobs: it
-    // asserts behaviour that has to be deployed before it can pass against the
-    // live URL. Run locally with `npx playwright test --project=route-progress`
-    // (DEPLOYMENT_URL defaults to the local dev server), and fold it into the
-    // `public` project once the change is live.
+    // The same public pages on a phone: a narrow screen, touch, a mobile user agent.
+    // Only specs that make no desktop-layout assumptions (no sidebar or header-link
+    // lookups) are listed here.
     {
-      name: 'route-progress',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: /route-progress\.spec\.ts/,
+      name: 'mobile',
+      use: { ...devices['Pixel 7'] },
+      testMatch: [
+        /smoke\.spec\.ts/,
+        /public-pages\.spec\.ts/,
+        /pricing\.spec\.ts/,
+        /blog\.spec\.ts/,
+        /auth\.spec\.ts/,
+        /office\.spec\.ts/,
+        /a11y-basics\.spec\.ts/,
+      ],
     },
 
-    // Suliko Office landing page (/tms) and /api/demo-request. Outside the CI
-    // jobs until the page is deployed; fold into `public` once it is live.
-    {
-      name: 'tms',
-      use: { ...devices['Desktop Chrome'] },
-      testMatch: /tms\.spec\.ts/,
-    },
-
-    // Supabase-backed API routes — isolated so a Supabase outage on the
-    // deployment doesn't take down the public suite.
+    // The API's blog and passport-template endpoints — isolated so an API
+    // outage doesn't take down the public suite.
     {
       name: 'api',
       use: { ...devices['Desktop Chrome'] },

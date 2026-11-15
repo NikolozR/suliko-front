@@ -14,6 +14,7 @@ import ErrorAlert from "@/shared/components/ErrorAlert";
 
 export const ProfilePasswordChange: React.FC = () => {
   const t = useTranslations("Profile");
+  const tA = useTranslations("A11y");
   const { token } = useAuthStore();
   const { userProfile } = useUserStore();
   
@@ -34,27 +35,27 @@ export const ProfilePasswordChange: React.FC = () => {
 
     // Validation
     if (!currentPassword || !newPassword || !confirmPassword) {
-      setError("ყველა ველი სავალდებულოა");
+      setError(t("allFieldsRequired"));
       return;
     }
 
     if (newPassword !== confirmPassword) {
-      setError("ახალი პაროლები არ ემთხვევა");
+      setError(t("passwordsDontMatch"));
       return;
     }
 
     if (newPassword.length < 6) {
-      setError("ახალი პაროლი უნდა იყოს მინიმუმ 6 სიმბოლო");
+      setError(t("passwordTooShort"));
       return;
     }
 
     if (currentPassword === newPassword) {
-      setError("ახალი პაროლი უნდა განსხვავდებოდეს მიმდინარე პაროლისგან");
+      setError(t("passwordSameAsOld"));
       return;
     }
 
     if (!token || !userProfile) {
-      setError("მომხმარებლის მონაცემები ვერ მოიძებნა");
+      setError(t("accountDataNotFound"));
       return;
     }
 
@@ -76,7 +77,7 @@ export const ProfilePasswordChange: React.FC = () => {
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(false), 3000);
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : "პაროლის შეცვლა ვერ მოხერხდა";
+      const errorMessage = err instanceof Error ? err.message : t("passwordChangeFailed");
       setError(errorMessage);
     } finally {
       setIsLoading(false);
@@ -136,6 +137,8 @@ export const ProfilePasswordChange: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                aria-label={showCurrentPassword ? tA("hidePassword") : tA("showPassword")}
+                aria-pressed={showCurrentPassword}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 disabled={isLoading}
               >
@@ -161,6 +164,8 @@ export const ProfilePasswordChange: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowNewPassword(!showNewPassword)}
+                aria-label={showNewPassword ? tA("hidePassword") : tA("showPassword")}
+                aria-pressed={showNewPassword}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 disabled={isLoading}
               >
@@ -186,6 +191,8 @@ export const ProfilePasswordChange: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                aria-label={showConfirmPassword ? tA("hidePassword") : tA("showPassword")}
+                aria-pressed={showConfirmPassword}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
                 disabled={isLoading}
               >

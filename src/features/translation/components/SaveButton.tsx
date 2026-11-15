@@ -10,6 +10,10 @@ interface SaveButtonProps {
   className?: string;
   size?: "sm" | "default" | "lg" | "icon";
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  /** Names the button: the accessible name always, the visible text from `sm` up. */
+  label?: string;
+  savedLabel?: string;
+  savingLabel?: string;
 }
 
 const SaveButton: React.FC<SaveButtonProps> = ({
@@ -18,6 +22,9 @@ const SaveButton: React.FC<SaveButtonProps> = ({
   className = "",
   size = "sm",
   variant = "outline",
+  label,
+  savedLabel,
+  savingLabel,
 }) => {
   const [isSaving, setIsSaving] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -46,13 +53,14 @@ const SaveButton: React.FC<SaveButtonProps> = ({
       onClick={handleSave}
       disabled={disabled || isSaving}
       className={`transition-all duration-200 ${className}`}
+      aria-label={isSaving ? savingLabel ?? label : saved ? savedLabel ?? label : label}
     >
-      {saved ? (
-        <Check className="h-4 w-4 mr-1" />
-      ) : (
-        <Save className="h-4 w-4 mr-1" />
+      {saved ? <Check className="h-4 w-4" /> : <Save className="h-4 w-4" />}
+      {label && (
+        <span className="hidden sm:ml-1.5 sm:inline">
+          {isSaving ? savingLabel ?? label : saved ? savedLabel ?? label : label}
+        </span>
       )}
-      {isSaving && <span className="ml-2 text-xs">Saving...</span>}
     </Button>
   );
 };

@@ -1,0 +1,298 @@
+/* ============================================================================
+   Suliko design tokens: colour, radius, easing.
+
+   ONE file for the whole product. suliko.ge (suliko-front) and Suliko Office
+   (app.suliko.ge) each keep a copy at src/app/tokens.css and the two copies
+   must stay byte for byte the same until the apps share a codebase. Change a
+   value here, then copy the file to the other repo in the same pull request
+   pair. Layout geometry (sidebar widths, the phone bottom bar) is not a token
+   and stays in each app's globals.css.
+
+   The values are Suliko Office's audited set (contrast notes beside each).
+   ========================================================================== */
+
+:root {
+  /* Brand accent -- the ONLY blue in the system. Note this is deliberately
+     NOT --primary; --primary is a neutral. See docs/01-DESIGN-SYSTEM.md §1. */
+  --suliko-default-color: #3b59f3;
+  --suliko-default-hover-color: #11289c;
+  /* The brand blue as TEXT on a light surface (5.4:1 on white). Fills keep
+     --suliko-default-color; dark mode lightens this one only. */
+  --accent-text: #3b59f3;
+  /* The page ground. Kept as a name because suliko.ge's screens ask for it. */
+  --suliko-main-content-bg-color: var(--canvas-tint);
+
+  /* Corner radius, one rule: a card or panel is `rounded-xl`, a control (button,
+     input, select, textarea, chip) is `rounded-md`, a pill or avatar is
+     `rounded-full`. The ui primitives already follow it. */
+  --radius: 0.625rem;
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out-strong: cubic-bezier(0.77, 0, 0.175, 1);
+
+  --background: #ffffff;
+  --foreground: #0a0a0a;
+
+  --card: #ffffff;
+  --card-foreground: #0a0a0a;
+
+  --popover: #ffffff;
+  --popover-foreground: #0a0a0a;
+
+  --primary: #111111;
+  --primary-foreground: #fafafa;
+
+  --secondary: #f5f5f5;
+  --secondary-foreground: #111111;
+
+  --muted: #f5f5f5;
+  /* #8a8a8a was 3.45:1 on a card and 2.77:1 on the page (audit F04).
+     This is 6.01:1 on white and 5.27:1 on the page ground (--canvas-tint). */
+  --muted-foreground: #636363;
+
+  --accent: #f5f5f5;
+  --accent-foreground: #111111;
+
+  --destructive: #dc2626;
+
+  /* #e5e5e5 was 1.26:1 on white, so card and input edges all but vanished
+     on a bright screen. */
+  --border: #d4d4d4;
+  --input: #d4d4d4;
+  /* Focus indicator: the brand blue, drawn solid (see the focus rule below).
+     The old #b3b3b3 at 50% was about 1.4:1 on white (audit F13). */
+  --ring: #3b59f3;
+
+  /* Text links. A shade darker than the brand blue so it still passes on
+     the page ground: 6.67:1 on white. */
+  --link: #2f49e0;
+
+  /* One series palette in both themes: the same hue means the same series,
+     only lighter in dark mode. chart-1 was orange in light and indigo in
+     dark, so a legend learned in one theme lied in the other (audit F38).
+     The report charts no longer draw from these: their series follow the
+     hue palette below (revenue blue, profit green, a cost in its module's
+     hue; see reports/components/charts.tsx). Kept for a chart that has no
+     meaning to borrow a hue from. */
+  --chart-1: #ea580c;  /* orange */
+  --chart-2: #0891b2;  /* cyan */
+  --chart-3: #1e40af;  /* blue */
+  --chart-4: #ca8a04;  /* amber */
+  --chart-5: #be123c;  /* rose */
+
+  --sidebar: #f6f7f9;
+  --sidebar-foreground: #0a0a0a;
+  --sidebar-primary: #111111;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #f5f5f5;
+  --sidebar-accent-foreground: #111111;
+  --sidebar-border: #d4d4d4;
+  --sidebar-ring: #3b59f3;
+
+  --sidebar-bg-light: #fafafa;
+  --sidebar-bg-dark: #111111;
+
+  /* ---- Status palette -------------------------------------------------
+     Maps the PHP app's Bootstrap badge classes onto this system. Render every
+     status through ONE helper so a status can never look different on two
+     screens. See docs/01-DESIGN-SYSTEM.md §7.
+
+     Each one carries white pill text at 4.5:1 or better, and passes as text
+     on a white card too. The lighter 500/600 shades they replace gave white
+     text 2.15 to 3.77:1 (audit F03). */
+  --status-new: #3b59f3;          /* bg-primary   -> brand accent, 5.37:1 */
+  --status-success: #047857;      /* bg-success   -> emerald 700, 5.48:1  */
+  --status-warning: #b45309;      /* bg-warning   -> amber 700, 5.02:1    */
+  --status-pickup: #facc15;       /* bg-warning text-dark                 */
+  --status-info: #0369a1;         /* bg-info      -> sky 700, 5.93:1      */
+  --status-danger: #dc2626;       /* bg-danger, 4.83:1                    */
+  --status-neutral: #525252;      /* bg-secondary -> cancelled, 7.81:1    */
+
+  /* ---- Hue palette ------------------------------------------------------
+     Categorical colour for modules and statuses: a soft tint for fills, an
+     ink for text and icons on that tint and on a card. Every ink is 4.5:1 or
+     better on its tint and on --card, in both themes. Maps:
+       blue   Orders,        New, Reviewed
+       teal   Clients,       Confirmed, B2C
+       violet Translators,   hand-off statuses (sent / translated), B2B
+       plum   Notaries,      Being notarised
+       amber  Reports,       work in progress, due today
+       yellow                Ready for pickup
+       green  Finances,      Paid, Picked up, Delivered
+       red                   Rejected, overdue
+       grey   Calculator, Users, Settings, Cancelled, unknown */
+  --hue-blue-tint: #e8ecfe;   --hue-blue-ink: #2f49e0;    /* 5.67:1 */
+  --hue-teal-tint: #dcf3ef;   --hue-teal-ink: #0f766e;    /* 4.72:1 */
+  --hue-violet-tint: #efe8fd; --hue-violet-ink: #6d28d9;  /* 5.97:1 */
+  --hue-plum-tint: #fbe8fc;   --hue-plum-ink: #a21caf;    /* 5.43:1 */
+  --hue-amber-tint: #fdf0db;  --hue-amber-ink: #a34a06;   /* 5.27:1 */
+  --hue-yellow-tint: #fdf6c3; --hue-yellow-ink: #854d0e;  /* 6.25:1 */
+  --hue-green-tint: #def5ea;  --hue-green-ink: #047857;   /* 4.79:1 */
+  --hue-red-tint: #fde8e8;    --hue-red-ink: #c81e1e;     /* 4.89:1 */
+  --hue-grey-tint: #ededed;   --hue-grey-ink: #525252;    /* 6.67:1 */
+
+  /* A cool brand-tinted canvas instead of flat grey. muted-foreground is
+     5.27:1 on it (was 4.82:1 on #e6e6e7). */
+  --canvas-tint: #f6f7f9;
+}
+
+.dark {
+  --accent-text: #8ea2ff; /* 7.47:1 on a dark card */
+  --background: #0a0a0a;
+  --foreground: #fafafa;
+
+  /* A step lighter than the page (--canvas-tint below), so a card lifts off
+     it. At #111111 on a #14161d page the cards were the darker of the two
+     and looked sunken. On this: foreground 17.2:1, muted-foreground 8.5:1,
+     link 7.5:1. The sidebar stays #111111. */
+  --card: #15171e;
+  --card-foreground: #fafafa;
+
+  --popover: #15171e;
+  --popover-foreground: #fafafa;
+
+  --primary: #e5e5e5;
+  --primary-foreground: #111111;
+
+  --secondary: #262626;
+  --secondary-foreground: #fafafa;
+
+  --muted: #262626;
+  --muted-foreground: #b3b3b3;
+
+  --accent: #262626;
+  --accent-foreground: #fafafa;
+
+  --destructive: #ef4444;
+
+  --border: rgba(255, 255, 255, 0.12);
+  --input: rgba(255, 255, 255, 0.18);
+  --ring: #8ea2ff;
+
+  /* The brand blue is 3.52:1 on a dark card (audit F20); this is 7.47:1. */
+  --link: #8ea2ff;
+
+  --chart-1: #fb923c;
+  --chart-2: #22d3ee;
+  --chart-3: #60a5fa;
+  --chart-4: #facc15;
+  --chart-5: #fb7185;
+
+  --sidebar: #111111;
+  --sidebar-foreground: #fafafa;
+  /* Was #6366f1, an indigo used nowhere else. */
+  --sidebar-primary: #8ea2ff;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-accent: #262626;
+  --sidebar-accent-foreground: #fafafa;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-ring: #8ea2ff;
+
+  /* On a dark surface the status colours are mostly read as text (amounts,
+     "Active", notification tags), so they lighten to the 400 shades: 7.1 to
+     10.7:1 on a card (danger 4.8:1). Pills that sit on them take dark text. */
+  --status-new: #8ea2ff;
+  --status-success: #34d399;
+  --status-warning: #fbbf24;
+  --status-info: #38bdf8;
+  --status-danger: #ef4444;
+  --status-neutral: #a3a3a3;
+
+  /* Hue palette, dark: deep tints, light inks. Ratios are ink on tint; on
+     a card every ink is 6.5:1 or better. */
+  --hue-blue-tint: #1c2342;   --hue-blue-ink: #8ea2ff;    /* 6.40:1 */
+  --hue-teal-tint: #0e2f2b;   --hue-teal-ink: #2dd4bf;    /* 7.73:1 */
+  --hue-violet-tint: #251c3f; --hue-violet-ink: #b79cff;  /* 7.00:1 */
+  --hue-plum-tint: #33163a;   --hue-plum-ink: #f0a6fb;    /* 8.77:1 */
+  --hue-amber-tint: #33250c;  --hue-amber-ink: #fbbf24;   /* 8.92:1 */
+  --hue-yellow-tint: #2f2a0b; --hue-yellow-ink: #fde047;  /* 10.93:1 */
+  --hue-green-tint: #0d2e22;  --hue-green-ink: #34d399;   /* 7.63:1 */
+  --hue-red-tint: #3a1517;    --hue-red-ink: #f87171;     /* 5.84:1 */
+  --hue-grey-tint: #262626;   --hue-grey-ink: #b3b3b3;    /* 7.22:1 */
+
+  /* Darker than a card, which is what makes the cards read as raised. */
+  --canvas-tint: #0c0d11;
+}
+
+/* ---------------------------------------------------------------------------
+   Tailwind v4 theme bridge -- turns each token into a real utility class
+   (bg-suliko-default-color, text-muted-foreground, rounded-lg, ...).
+   --------------------------------------------------------------------------- */
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-suliko-default-color: var(--suliko-default-color);
+  --color-accent-text: var(--accent-text);
+  --color-suliko-default-hover-color: var(--suliko-default-hover-color);
+  --color-suliko-main-content-bg-color: var(--suliko-main-content-bg-color);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-link: var(--link);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --color-status-new: var(--status-new);
+  --color-status-success: var(--status-success);
+  --color-status-warning: var(--status-warning);
+  --color-status-pickup: var(--status-pickup);
+  --color-status-info: var(--status-info);
+  --color-status-danger: var(--status-danger);
+  --color-status-neutral: var(--status-neutral);
+
+  /* Class names must stay literal for Tailwind to keep them: look a hue up
+     in HUE_CLASSES (shared/lib/hues.ts), never glue a class name together
+     from a variable. */
+  --color-hue-blue-tint: var(--hue-blue-tint);
+  --color-hue-blue-ink: var(--hue-blue-ink);
+  --color-hue-teal-tint: var(--hue-teal-tint);
+  --color-hue-teal-ink: var(--hue-teal-ink);
+  --color-hue-violet-tint: var(--hue-violet-tint);
+  --color-hue-violet-ink: var(--hue-violet-ink);
+  --color-hue-plum-tint: var(--hue-plum-tint);
+  --color-hue-plum-ink: var(--hue-plum-ink);
+  --color-hue-amber-tint: var(--hue-amber-tint);
+  --color-hue-amber-ink: var(--hue-amber-ink);
+  --color-hue-yellow-tint: var(--hue-yellow-tint);
+  --color-hue-yellow-ink: var(--hue-yellow-ink);
+  --color-hue-green-tint: var(--hue-green-tint);
+  --color-hue-green-ink: var(--hue-green-ink);
+  --color-hue-red-tint: var(--hue-red-tint);
+  --color-hue-red-ink: var(--hue-red-ink);
+  --color-hue-grey-tint: var(--hue-grey-tint);
+  --color-hue-grey-ink: var(--hue-grey-ink);
+  --color-canvas-tint: var(--canvas-tint);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}

@@ -101,7 +101,7 @@ export default function FeedbackPageClient() {
                   {/* Email Field */}
                   <div className="space-y-2">
                     <Label htmlFor="email">
-                      {t("form.email")} <span className="text-red-500">*</span>
+                      {t("form.email")} <span className="text-red-700 dark:text-red-400">*</span>
                     </Label>
                     <Input
                       id="email"
@@ -118,7 +118,7 @@ export default function FeedbackPageClient() {
                   {/* Subject Field */}
                   <div className="space-y-2">
                     <Label htmlFor="subject">
-                      {t("form.subject")} <span className="text-red-500">*</span>
+                      {t("form.subject")} <span className="text-red-700 dark:text-red-400">*</span>
                     </Label>
                     <Select
                       value={formData.subject}
@@ -144,7 +144,7 @@ export default function FeedbackPageClient() {
                   {/* Message Field */}
                   <div className="space-y-2">
                     <Label htmlFor="message">
-                      {t("form.message")} <span className="text-red-500">*</span>
+                      {t("form.message")} <span className="text-red-700 dark:text-red-400">*</span>
                     </Label>
                     <Textarea
                       id="message"

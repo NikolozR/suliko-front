@@ -15,6 +15,7 @@ import {
   UPLOAD_RETRY_DELAYS_MS,
   UPLOAD_TIMEOUT_MS,
 } from './notaryOrderConfig';
+import { needsBlobUpload, uploadToNotaryBlob } from './notaryBlobUpload';
 
 export type OrderApiErrorKind =
   | 'auth'
@@ -349,14 +350,32 @@ async function uploadOne(
   orderId: number | string,
   item: UploadQueueItem
 ): Promise<void> {
-  const form = new FormData();
-  form.append('order_id', String(orderId));
-  form.append('document_id', String(item.documentId));
-  form.append('file', item.file, item.file.name);
+  // A file over the function's 4.5 MB body cap goes to the Blob store first;
+  // the proxy then reads it from there and forwards it to the partner.
+  let body: FormData | string;
+  let headers: Record<string, string> | undefined;
+  if (needsBlobUpload([item.file])) {
+    const stored = await uploadToNotaryBlob(item.file).catch(() => {
+      throw new OrderApiError('Could not upload the file.', { kind: 'network', ambiguous: false });
+    });
+    body = JSON.stringify({
+      order_id: String(orderId),
+      document_id: String(item.documentId),
+      blob_url: stored.url,
+      name: stored.name,
+    });
+    headers = { 'Content-Type': 'application/json' };
+  } else {
+    const form = new FormData();
+    form.append('order_id', String(orderId));
+    form.append('document_id', String(item.documentId));
+    form.append('file', item.file, item.file.name);
+    body = form;
+  }
 
   await request(
     '/files',
-    { method: 'POST', body: form },
+    { method: 'POST', body, headers },
     { timeoutMs: UPLOAD_TIMEOUT_MS, ambiguousOnNetworkError: false }
   );
 }

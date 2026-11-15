@@ -33,26 +33,6 @@ const markdownToHtml = async (content: string): Promise<string> => {
   return marked(content, { async: false });
 };
 
-/** Word-compatible wrapper, matching the single-document DOCX export. */
-const buildDocxHtml = (bodyHtml: string): string => `<!DOCTYPE html>
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:w="urn:schemas-microsoft-com:office:word"
-      xmlns="http://www.w3.org/TR/REC-html40">
-<head>
-  <meta charset="utf-8">
-  <style>
-    body  { font-family: Calibri, sans-serif; font-size: 11pt; }
-    h1    { font-size: 16pt; }
-    h2    { font-size: 14pt; }
-    h3    { font-size: 12pt; }
-    p     { margin: 0 0 8pt 0; }
-    table { border-collapse: collapse; width: 100%; }
-    td, th { border: 1pt solid #aaa; padding: 4pt 8pt; }
-  </style>
-</head>
-<body>${bodyHtml}</body>
-</html>`;
-
 const convertContent = async (
   content: string,
   format: BulkDownloadFormat,
@@ -68,9 +48,8 @@ const convertContent = async (
 
     case "docx": {
       const html = await markdownToHtml(content);
-      // @ts-expect-error html-docx-js ships no types
-      const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
-      return htmlDocx.asBlob(buildDocxHtml(html)) as Blob;
+      const { wordBlob } = await import("@/features/translation/utils/wordPage");
+      return wordBlob(html);
     }
 
     case "pdf": {

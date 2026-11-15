@@ -37,13 +37,13 @@ export default function OrderStepDetails({
             selected={!isBusiness}
             onClick={() => setClientType("individual")}
             title={t("individual")}
-            icon={<User className="h-4 w-4 text-suliko-default-color" />}
+            icon={<User className="h-4 w-4 text-accent-text" />}
           />
           <Tile
             selected={isBusiness}
             onClick={() => setClientType("business")}
             title={t("business")}
-            icon={<Building2 className="h-4 w-4 text-suliko-default-color" />}
+            icon={<Building2 className="h-4 w-4 text-accent-text" />}
           />
         </div>
       </div>
@@ -140,7 +140,7 @@ export default function OrderStepDetails({
           onToggle={() => onPatchContact({ terms: !contact.terms })}
           title={t("terms")}
         />
-        <FieldError message={errors.terms} />
+        <FieldError alert message={errors.terms} />
       </div>
     </div>
   );

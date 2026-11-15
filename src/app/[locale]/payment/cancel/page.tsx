@@ -100,7 +100,7 @@ export default function PaymentCancelPage() {
         <LandingHeader />
 
         {/* Main Content */}
-        <main className="pt-20 sm:pt-24 pb-16 flex flex-col items-center justify-center min-h-screen">
+        <main id="main-content" className="pt-20 sm:pt-24 pb-16 flex flex-col items-center justify-center min-h-screen">
           <div className="container mx-auto px-4 py-4 sm:py-8 max-w-md">
             <Card className="overflow-hidden">
               <CardContent className="p-6 sm:p-8 overflow-hidden">
@@ -176,7 +176,7 @@ export default function PaymentCancelPage() {
                   <Button
                     variant="outline"
                     className="w-full sm:w-1/2 h-auto min-h-12 sm:min-h-14 py-2 flex-col gap-0 whitespace-normal text-sm sm:text-base border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground font-medium"
-                    onClick={() => router.push('/')}
+                    onClick={() => router.push('/translate')}
                   >
                     <BilingualText text={declineText.goHome} secondClassName="mt-0 text-xs opacity-80" />
                   </Button>

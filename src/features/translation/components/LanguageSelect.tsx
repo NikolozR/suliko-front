@@ -20,6 +20,8 @@ interface LanguageSelectProps {
   onChange: (value: number) => void;
   detectOption?: string;
   languages?: CustomLanguage[];
+  /** Marks the trigger for a keyboard shortcut, see `ShortcutsProvider`. */
+  shortcut?: string;
 }
 
 type AnyLanguage = Language | CustomLanguage;
@@ -46,6 +48,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   onChange,
   detectOption,
   languages: customLanguages,
+  shortcut,
 }) => {
   const [languages, setLanguages] = useState<AnyLanguage[]>([]);
   const [loading, setLoading] = useState(true);
@@ -248,12 +251,12 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
         )}
       >
         {showPin ? (
-          <Star className="size-3.5 shrink-0 fill-suliko-default-color text-suliko-default-color" />
+          <Star className="size-3.5 shrink-0 fill-suliko-default-color text-accent-text" />
         ) : (
           <span className="size-3.5 shrink-0" />
         )}
         <span className="flex-1 truncate">{opt.label}</span>
-        {selected && <Check className="size-4 shrink-0 text-suliko-default-color" />}
+        {selected && <Check className="size-4 shrink-0 text-accent-text" />}
       </div>
     );
   };
@@ -265,6 +268,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
           type="button"
           className={triggerClasses}
           onClick={() => (open ? closeMenu() : openMenu())}
+          data-shortcut={shortcut}
           aria-haspopup="listbox"
           aria-expanded={open}
         >

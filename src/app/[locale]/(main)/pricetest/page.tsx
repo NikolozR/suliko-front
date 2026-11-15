@@ -18,8 +18,8 @@ export default function PriceTestPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center">
-      <div className="bg-card border border-border rounded-2xl shadow-lg p-8 w-full max-w-sm text-center">
-        <h1 className="text-xl font-bold text-card-foreground mb-1">Payment Mode</h1>
+      <div className="bg-card border border-border rounded-2xl shadow-float-2 p-8 w-full max-w-sm text-center">
+        <h1 className="text-xl font-semibold text-card-foreground mb-1">Payment Mode</h1>
         <p className="text-sm text-muted-foreground mb-6">
           Controls how the pricing page handles payments
         </p>

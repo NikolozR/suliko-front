@@ -41,9 +41,12 @@ const TAB_LABELS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 
 export default function AdminTabsWrapper({
   initialUsers,
+  referralUsers,
   loadError,
 }: {
   initialUsers: User[];
+  /** Everyone, our accounts included: a referral chain through one of them must stay whole. */
+  referralUsers?: User[];
   loadError: string | null;
 }) {
   const searchParams = useSearchParams();
@@ -146,7 +149,7 @@ export default function AdminTabsWrapper({
       {!loadError && (
         <>
           {activeTab === "users" && <UsersTable initialUsers={initialUsers} />}
-          {activeTab === "referrals" && <ReferralsTab users={initialUsers} />}
+          {activeTab === "referrals" && <ReferralsTab users={referralUsers ?? initialUsers} />}
         </>
       )}
     </div>

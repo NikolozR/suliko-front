@@ -3,21 +3,32 @@ import { useState } from "react";
 import { Copy, Check } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import markdownToTxt from 'markdown-to-txt'
+import { useComboText } from "@/shared/components/Kbd";
 
 interface CopyButtonProps {
   content: string;
   className?: string;
   size?: "sm" | "default" | "lg" | "icon";
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  /** Names the button: the accessible name always, the visible text from `sm` up. */
+  label?: string;
+  /** Only the icon; the label is the tooltip and the accessible name. */
+  iconOnly?: boolean;
+  copiedLabel?: string;
 }
 
 const CopyButton: React.FC<CopyButtonProps> = ({
   content,
   className = "",
   size = "sm",
-  variant = "outline"
+  variant = "outline",
+  label,
+  iconOnly = false,
+  copiedLabel,
 }) => {
   const [copied, setCopied] = useState(false);
+  const shortcutText = useComboText(["Alt", "Shift", "C"]);
+  const shortcutHint = label ? `${label} (${shortcutText})` : shortcutText;
 
   const toPlainText = (value: string): string => {
     const source = value || "";
@@ -64,18 +75,14 @@ const CopyButton: React.FC<CopyButtonProps> = ({
       variant={variant}
       size={size}
       onClick={handleCopy}
+      data-shortcut="copy"
+      title={shortcutHint}
       className={`transition-all duration-200 ${className}`}
       disabled={!content.trim()}
+      aria-label={copied ? copiedLabel ?? label : label}
     >
-      {copied ? (
-        <>
-          <Check className="h-4 w-4 mr-1" />
-        </>
-      ) : (
-        <>
-          <Copy className="h-4 w-4 mr-1" />
-        </>
-      )}
+      {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+      {label && !iconOnly && <span className="hidden sm:ml-1.5 sm:inline">{copied ? copiedLabel ?? label : label}</span>}
     </Button>
   );
 };

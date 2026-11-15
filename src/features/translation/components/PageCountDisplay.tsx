@@ -121,7 +121,7 @@ const PageCountDisplay = ({ file }: PageCountDisplayProps) => {
       ) : null} */}
       {hasRealCount ? t("pageCount.actual") : t("pageCount.estimated")}: {estimatedPageCount} {estimatedPageCount !== 1 ? t("pageCount.pages") : t("pageCount.page")}
       (~{estimatedMinutes} {estimatedMinutes !== 1 ? t("pageCount.minutes") : t("pageCount.minute")})
-      <div className="mt-1 text-suliko-default-color font-semibold">
+      <div className="mt-1 text-accent-text font-semibold">
         {t("pageCount.estimatedCost", { cost: estimatedCost })}
       </div>
     </div>

@@ -83,7 +83,7 @@ export function FolderDropZone({ onFilesSelected, disabled }: FolderDropZoneProp
       <div className="flex flex-col items-center gap-3">
         <div className="rounded-full bg-background p-3 shadow-sm">
           {scanning ? (
-            <Loader2 className="h-6 w-6 animate-spin text-suliko-default-color" />
+            <Loader2 className="h-6 w-6 animate-spin text-accent-text" />
           ) : (
             <FolderUp className="h-6 w-6 text-muted-foreground" />
           )}

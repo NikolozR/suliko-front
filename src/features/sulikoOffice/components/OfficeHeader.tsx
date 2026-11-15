@@ -3,21 +3,21 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
-import { ArrowLeft, Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { officeSignInUrl } from "../lib/officeLinks";
 import { NAV_SECTIONS, type NavSection } from "./sections";
 import { CONTAINER, PRIMARY_BUTTON } from "./tones";
-
-const APP_URL = "https://app.suliko.ge";
 
 /**
  * The page's own header rather than LandingHeader: that one has no room for
  * another control. This one carries links to the page's sections (lit up as
  * you scroll through them), a way back to the main Suliko site, language,
- * log in and the demo CTA.
+ * the Sign in button and a quiet link to the demo form.
  */
 export default function OfficeHeader() {
   const t = useTranslations("SulikoOffice.nav");
+  const signInUrl = officeSignInUrl(useLocale());
   const [menuOpen, setMenuOpen] = useState(false);
   const active = useActiveSection();
 
@@ -33,10 +33,10 @@ export default function OfficeHeader() {
   return (
     <header className="sticky top-0 z-50 border-b border-border bg-background/95 backdrop-blur-md">
       <div className={`${CONTAINER} flex h-[72px] items-center justify-between gap-4 lg:h-[84px]`}>
-        <a href="#top" aria-label={t("home")} className="flex items-center gap-3">
+        <a href="#top" aria-label={t("home")} className="flex shrink-0 items-center gap-3">
           <Image src="/Suliko_logo_black.svg" alt="" width={148} height={38} priority className="h-8 w-auto lg:h-[38px] dark:hidden" />
           <Image src="/Suliko_logo_white.svg" alt="" width={148} height={38} priority className="hidden h-8 w-auto lg:h-[38px] dark:block" />
-          <span className="rounded-lg bg-[#eef1fe] px-2.5 pt-[7px] pb-1.5 text-base leading-none text-suliko-default-color lg:text-lg dark:bg-[#3b59f3]/20 dark:text-[#c3ceff]">
+          <span className="rounded-lg bg-[#eef1fe] px-2.5 pt-[7px] pb-1.5 text-base leading-none text-accent-text lg:text-lg dark:bg-[#3b59f3]/20 dark:text-[#c3ceff]">
             Office
           </span>
         </a>
@@ -66,14 +66,14 @@ export default function OfficeHeader() {
         <nav aria-label="Main" className="hidden items-center gap-6 md:flex xl:gap-4 2xl:gap-6">
           {/* From lg up: at md the header is full and the link crowds the logo. */}
           <Link
-            href="/"
+            href="/translate"
             className="hidden items-center gap-1.5 px-1 py-3 text-base whitespace-nowrap text-muted-foreground hover:text-foreground lg:flex"
           >
-            <ArrowLeft className="h-4 w-4" aria-hidden />
-            {t("backToSuliko")}
+            {t("toTranslate")}
+            <ArrowRight className="h-4 w-4" aria-hidden />
           </Link>
           <LanguageToggle label={t("language")} />
-          <a href={APP_URL} className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-suliko-default-color">
+          <a href={signInUrl} className="px-1 py-3 text-base whitespace-nowrap text-foreground hover:text-accent-text">
             {t("login")}
           </a>
           <a href="#demo" className={`${PRIMARY_BUTTON} h-[46px] px-[22px] text-base whitespace-nowrap`}>
@@ -115,13 +115,13 @@ export default function OfficeHeader() {
                 </a>
               ))}
             </div>
-            <Link href="/" className="flex h-11 items-center gap-2 rounded-lg px-3 text-base text-muted-foreground">
-              <ArrowLeft className="h-4 w-4" aria-hidden />
-              {t("backToSuliko")}
+            <Link href="/translate" className="flex h-11 items-center gap-2 rounded-lg px-3 text-base text-muted-foreground">
+              {t("toTranslate")}
+              <ArrowRight className="h-4 w-4" aria-hidden />
             </Link>
             <LanguageToggle label={t("language")} />
             <a
-              href={APP_URL}
+              href={signInUrl}
               className="flex h-12 items-center rounded-xl border border-border px-4 text-base text-foreground"
             >
               {t("login")}

@@ -1,10 +1,11 @@
 "use client";
 
-import { ChevronRight, Globe, HelpCircle, MessageSquare, Settings2 } from "lucide-react";
+import { ChevronRight, Globe, HelpCircle, MessageSquare, Palette, Settings2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/features/ui/components/ui/card";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
+import { ThemeToggle } from "@/features/ui/components/ThemeToggle";
 
 const LINKS = [
   { label: "help", href: "/help", icon: HelpCircle },
@@ -37,6 +38,13 @@ export const ProfileLanguageAndHelp = () => {
             {t("language")}
           </span>
           <LanguageSwitcher />
+        </div>
+        <div className="flex items-center justify-between gap-4 px-3 py-2.5">
+          <span className="flex items-center gap-3 text-sm">
+            <Palette className="h-4 w-4 text-muted-foreground" />
+            {t("theme")}
+          </span>
+          <ThemeToggle />
         </div>
         {LINKS.map(({ label, href, icon: Icon }) => (
           <Link

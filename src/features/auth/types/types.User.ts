@@ -20,6 +20,8 @@ export interface UserProfile {
   roleId: string;
   balance: number;
   hasSeenRegistrationBonus?: boolean;
+  /** ISO date when the current balance expires (credits are valid for 1 month). */
+  balanceExpiresAt?: string | null;
   roleName: string;
   referralCode?: string;
   subscription?: SubscriptionInfo | null;

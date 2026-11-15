@@ -10,7 +10,7 @@ import { ThemeProvider as NextThemesProvider, type ThemeProviderProps } from 'ne
  * look unfinished. next-themes applies a forced theme in its pre-paint script,
  * so there is no flash of dark on load.
  */
-const LIGHT_ONLY = /^\/[a-z]{2}\/tms(\/|$)/
+const LIGHT_ONLY = /^\/[a-z]{2}\/office(\/|$)/
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   const pathname = usePathname()

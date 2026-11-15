@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { FileText, Loader2 } from "lucide-react";
+import { Check, FileText, Loader2 } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import ProgressBar from "@/shared/components/ProgressBar";
 import TranslationStageList from "./TranslationStageList";
@@ -38,6 +38,9 @@ export default function InProgressView({
 }: Props) {
   const t = useTranslations("DocumentTranslationCard.inProgress");
   const failed = stage === "failed" || !!failedMessage;
+  // The job is done and the page is about to move on: say so rather than
+  // leaving a spinner and a travelling bar on screen.
+  const ready = stage === "ready" && !failed;
 
   return (
     <div className="flex flex-col items-start gap-6 lg:flex-row">
@@ -45,7 +48,7 @@ export default function InProgressView({
         <div className="rounded-xl border border-border bg-background p-6">
           <div className="flex items-start gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-[9px] bg-suliko-default-color/10">
-              <FileText className="size-5 text-suliko-default-color" aria-hidden />
+              <FileText className="size-5 text-accent-text" aria-hidden />
             </span>
             <div className="min-w-0 flex-1">
               <h2 className="truncate text-[15px] font-semibold">{fileName}</h2>
@@ -53,14 +56,15 @@ export default function InProgressView({
                 {pageCount !== null ? t("pages", { count: pageCount }) : " "}
               </p>
             </div>
-            {!failed && (
-              <Loader2 className="size-5 shrink-0 animate-spin text-suliko-default-color" aria-hidden />
+            {ready && <Check className="size-5 shrink-0 text-emerald-600" strokeWidth={3} aria-hidden />}
+            {!failed && !ready && (
+              <Loader2 className="size-5 shrink-0 animate-spin text-accent-text" aria-hidden />
             )}
           </div>
 
-          {/* No bar on failure — there is no progress to show, and the
-              message below carries the outcome. */}
-          {!failed && (
+          {/* No bar on failure or when done — there is no progress to show, and
+              the message below carries the outcome. */}
+          {!failed && !ready && (
             <ProgressBar
               indeterminate
               value={0}
@@ -73,6 +77,8 @@ export default function InProgressView({
 
           {failed ? (
             <p className="mt-5 text-sm text-destructive">{failedMessage || t("failed")}</p>
+          ) : ready ? (
+            <p className="mt-5 text-sm text-muted-foreground" aria-live="polite">{t("openingResult")}</p>
           ) : (
             <p className="mt-5 text-sm text-muted-foreground">{t("leaveHint")}</p>
           )}
@@ -81,7 +87,7 @@ export default function InProgressView({
 
       <aside className="flex w-full flex-col gap-4 lg:w-[392px] lg:shrink-0">
         <div className="rounded-xl border border-border bg-background p-5">
-          <span className="mb-4 block text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+          <span className="mb-4 block text-xs font-semibold uppercase tracking-[0.05em] text-muted-foreground">
             {t("stagesLabel")}
           </span>
           <TranslationStageList stage={stage} />

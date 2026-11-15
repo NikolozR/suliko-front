@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { ArrowRightLeft } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
+import { useComboText } from "@/shared/components/Kbd";
 import LanguageSelect from "./LanguageSelect";
 
 interface LanguageSelectionPanelProps {
@@ -23,6 +24,9 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
   showSwapButton = false
 }) => {
   const t = useTranslations('CommonLanguageSelect');
+  const tShortcuts = useTranslations('Shortcuts');
+  const swapKeys = useComboText(["Alt", "S"]);
+  const tCard = useTranslations('DocumentTranslationCard');
   const [isRotating, setIsRotating] = useState(false);
   const containerClasses = layout === "horizontal"
     ? "flex gap-2 md:gap-4 flex-col sm:flex-row items-end mb-6 h-full justify-end"
@@ -59,9 +63,12 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
             type="button"
             variant="outline"
             size="icon"
-            className="h-10 w-10 border-2 hover:border-suliko-default-color hover:text-suliko-default-color transition-colors"
+            className="h-11 w-11 shrink-0 border-2 hover:border-suliko-default-color hover:text-accent-text transition-colors"
             disabled={sourceLanguageId === 0}
             onClick={handleSwapLanguages}
+            data-shortcut="swap"
+            title={`${tShortcuts("items.swap")} (${swapKeys})`}
+            aria-label={tCard('swapLanguages')}
           >
             <ArrowRightLeft className={`h-4 w-4 transition-transform duration-300 ${isRotating ? "rotate-180" : ""}`} />
           </Button>
@@ -75,6 +82,7 @@ const LanguageSelectionPanel: React.FC<LanguageSelectionPanelProps> = ({
         <LanguageSelect
           value={targetLanguageId}
           onChange={onTargetLanguageChange}
+          shortcut="target-language"
         />
       </div>
     </div>

@@ -42,7 +42,7 @@ const ErrorAlert: FC<ErrorAlertProps> = ({
         variant="destructive"
         className={cn(
           "flex items-start gap-3 bg-gray-50 dark:bg-gray-800 border-t-4 border-red-500 dark:border-red-600",
-          "shadow-lg px-4 py-3 rounded-lg relative",
+          "shadow-float-2 px-4 py-3 rounded-lg relative",
           "border-l-0 border-r-0 border-b-0"
         )}
       >

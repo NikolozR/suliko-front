@@ -34,7 +34,7 @@ export const ProfileDeleteAccount: React.FC = () => {
 
   const handleDelete = async () => {
     if (!userProfile || !token) {
-      setError("მომხმარებლის მონაცემები ვერ მოიძებნა");
+      setError(t("accountDataNotFound"));
       return;
     }
 
@@ -45,12 +45,12 @@ export const ProfileDeleteAccount: React.FC = () => {
 
       // You MUST clear auth state here in real life.
       // Redirecting alone is not enough.
-      window.location.href = "/";
+      window.location.href = "/translate";
     } catch (err) {
       const msg =
         err instanceof Error
           ? err.message
-          : "ანგარიშის წაშლა ვერ მოხერხდა";
+          : t("deleteAccountFailed");
       setError(msg);
     } finally {
       setIsDeleting(false);

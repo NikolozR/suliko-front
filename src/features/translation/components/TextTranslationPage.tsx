@@ -13,7 +13,7 @@ const TextTranslationPage = () => {
 
 
   return (
-    <div className="min-h-screen pl-8 p-4 md:p-8 bg-suliko-main-content-bg-color">
+    <div className="min-h-screen p-4 md:p-8 bg-suliko-main-content-bg-color">
       <div className="mx-auto">
         <div className="mb-8">
           {/* Was a 13-language slot-machine carousel inside a fixed 2rem box,

@@ -1,9 +1,22 @@
 import { Resend } from 'resend';
 import { NextRequest, NextResponse } from 'next/server';
 import { NOTARY_WHATSAPP } from '@/shared/constants/notary';
+import { escapeHtml, singleLine } from '@/lib/escapeHtml';
+import { clientIp, createRateLimiter } from '@/lib/rateLimit';
+import {
+  MAX_NOTARY_ATTACHMENT_BYTES,
+  deleteNotaryBlobs,
+  loadNotaryBlob,
+  parseBlobFiles,
+  type NotaryBlobFile,
+} from '@/lib/notaryBlob';
 
 const INBOX = 'info@th.com.ge';
 const FROM = 'Suliko <noreply@th.com.ge>';
+
+// 10 sends per IP address per 10 minutes. Only submissions that pass validation count.
+const limiter = createRateLimiter(10, 10 * 60 * 1000);
+const EMAIL_PATTERN = /^[^\s@<>"]+@[^\s@<>"]+\.[^\s@<>"]+$/;
 
 export async function POST(request: NextRequest) {
   const apiKey = process.env.RESEND_API_KEY?.trim();
@@ -13,6 +26,7 @@ export async function POST(request: NextRequest) {
   }
 
   const resend = new Resend(apiKey);
+  let blobFiles: NotaryBlobFile[] = [];
 
   try {
     const formData = await request.formData();
@@ -26,42 +40,65 @@ export async function POST(request: NextRequest) {
     // stands on its own, so those submissions do not need an attachment.
     const orderSummary = (formData.get('order_summary') as string) || '';
     const fileEntries = formData.getAll('files') as File[];
+    // Files too big to come through this function (Vercel refuses bodies over
+    // 4.5 MB) go to a private Blob store straight from the browser; the form
+    // then names them here, and they are read back from the store.
+    blobFiles = parseBlobFiles(formData.get('blob_files'));
 
     if (!name || !email) {
       return NextResponse.json({ error: 'Missing required fields: name, email' }, { status: 400 });
     }
-    if (fileEntries.length === 0 && !orderSummary) {
+    if (!EMAIL_PATTERN.test(email.trim())) {
+      return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
+    }
+    if (fileEntries.length === 0 && blobFiles.length === 0 && !orderSummary) {
       return NextResponse.json({ error: 'At least one file is required' }, { status: 400 });
     }
 
-    const attachments = await Promise.all(
+    if (limiter.hit(clientIp(request))) {
+      return NextResponse.json({ error: 'rate_limited' }, { status: 429 });
+    }
+
+    const attachments: { filename: string; content: Buffer }[] = await Promise.all(
       fileEntries.map(async (file) => ({
         filename: file.name,
         content: Buffer.from(await file.arrayBuffer()),
       }))
     );
+    for (const file of blobFiles) {
+      const loaded = await loadNotaryBlob(file);
+      if (!loaded) {
+        return NextResponse.json({ error: `The upload of ${file.name} expired. Please send it again.` }, { status: 410 });
+      }
+      attachments.push({ filename: loaded.name, content: loaded.buffer });
+    }
 
-    const fileList = fileEntries.map((f) => f.name).join(', ') || 'None';
+    const attachedBytes = attachments.reduce((sum, a) => sum + a.content.length, 0);
+    if (attachedBytes > MAX_NOTARY_ATTACHMENT_BYTES) {
+      return NextResponse.json({ error: 'The files are too large to send together.' }, { status: 413 });
+    }
+
+    const fileList = attachments.map((a) => a.filename).join(', ') || 'None';
 
     // 1. Forward to inbox with all details + attachments
     const inboxResult = await resend.emails.send({
       from: FROM,
       to: INBOX,
       replyTo: email,
-      subject: `[Suliko] New Notary Submission from ${name}`,
+      subject: `[Suliko] New Notary Submission from ${singleLine(name)}`,
       html: `
         <h2>New Notary File Submission</h2>
         <h3>www.suliko.ge</h3>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Phone:</strong> ${phone}</p>
-        <p><strong>Source Language:</strong> ${sourceLanguage}</p>
-        <p><strong>Target Language:</strong> ${targetLanguage}</p>
-        <p><strong>Notarial Certification:</strong> ${notarialCertification}</p>
-        <p><strong>Files:</strong> ${fileList}</p>
+        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Phone:</strong> ${escapeHtml(phone)}</p>
+        <p><strong>Source Language:</strong> ${escapeHtml(sourceLanguage)}</p>
+        <p><strong>Target Language:</strong> ${escapeHtml(targetLanguage)}</p>
+        <p><strong>Notarial Certification:</strong> ${escapeHtml(notarialCertification)}</p>
+        <p><strong>Files:</strong> ${escapeHtml(fileList)}</p>
         ${
           orderSummary
-            ? `<h3>Order details</h3><pre style="font-family:monospace;white-space:pre-wrap">${orderSummary}</pre>`
+            ? `<h3>Order details</h3><pre style="font-family:monospace;white-space:pre-wrap">${escapeHtml(orderSummary)}</pre>`
             : ''
         }
       `,
@@ -90,6 +127,8 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error('[notary-upload] unexpected error:', err);
     return NextResponse.json({ error: String(err) }, { status: 500 });
+  } finally {
+    await deleteNotaryBlobs(blobFiles);
   }
 }
 

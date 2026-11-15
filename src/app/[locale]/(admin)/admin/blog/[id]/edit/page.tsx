@@ -1,6 +1,6 @@
 import { isAdminRequest } from "@/lib/admin-auth";
 import { redirect, notFound } from "next/navigation";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getAdminBlogPost } from "@/lib/site-content-admin";
 import BlogPostForm from "../../BlogPostForm";
 
 export default async function EditBlogPostPage({
@@ -12,13 +12,8 @@ export default async function EditBlogPostPage({
 
   const { id } = await params;
 
-  const { data, error } = await supabaseAdmin
-    .from("blog_posts")
-    .select("*, blog_post_translations(*)")
-    .eq("id", id)
-    .single();
+  const post = await getAdminBlogPost(id);
+  if (!post) notFound();
 
-  if (error || !data) notFound();
-
-  return <BlogPostForm mode="edit" initialData={data} />;
+  return <BlogPostForm mode="edit" initialData={post} />;
 }

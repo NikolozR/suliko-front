@@ -1,7 +1,7 @@
 "use client";
 import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
 import { useTranslations } from "next-intl";
-import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles } from 'lucide-react';
+import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles, FileWarning } from 'lucide-react';
 import { Button } from '@/features/ui/components/ui/button';
 import { useDocumentTranslationStore } from '@/features/translation/store/documentTranslationStore';
 import { Skeleton } from '@/features/ui/components/ui/skeleton';
@@ -288,6 +288,7 @@ const SrtPreview: React.FC<{ file: File }> = ({ file }) => {
 // Word Document Preview Component
 const WordPreview: React.FC<{ file: File }> = ({ file }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
+  const tA = useTranslations("A11y");
   const [content, setContent] = useState<string>('');
   // Set instead of `content` for a file whose text is an embedded web page.
   const [embeddedPage, setEmbeddedPage] = useState<string | null>(null);
@@ -384,8 +385,9 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
             size="sm"
             type="button"
             onClick={handleZoomOut}
+            aria-label={tA("zoomOut")}
             disabled={scale <= minScale}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -397,8 +399,9 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
             size="sm"
             type="button"
             onClick={handleZoomIn}
+            aria-label={tA("zoomIn")}
             disabled={scale >= maxScale}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -408,7 +411,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
             type="button"
             onClick={handleResetZoom}
             disabled={scale === 1.0}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <RotateCcw className="h-4 w-4" />
           </Button>
@@ -421,6 +424,7 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
 // PDF Preview Component (existing functionality)
 const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, trackPageCount }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
+  const tA = useTranslations("A11y");
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [pdfModule, setPdfModule] = useState<{
     Document: PdfDocumentComponent;
@@ -480,7 +484,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
     import("react-pdf")
       .then((mod) => {
         mod.pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-          "pdfjs-dist/build/pdf.worker.min.mjs",
+          /* react-pdf's own pdfjs version (package.json pins pdfjs-dist-react-pdf to it): the top-level pdfjs-dist is Office's newer one, and a worker of another version refuses every PDF. */ "pdfjs-dist-react-pdf/build/pdf.worker.min.mjs",
           import.meta.url
         ).toString();
         if (!cancelled) {
@@ -610,8 +614,9 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
           onLoadError={onDocumentLoadError}
           loading={<PreviewLoadingState stage={stage || t('loadingPdf')} />}
           error={
-            <div className="flex justify-center items-center h-full text-red-500">
-              <p>{t('loadErrorPdf')}</p>
+            <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-muted-foreground">
+              <FileWarning className="h-8 w-8" aria-hidden />
+              <p className="text-sm">{t('loadErrorPdf')}</p>
             </div>
           }
         >
@@ -638,8 +643,9 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
             size="sm"
             type="button"
             onClick={handleZoomOut}
+            aria-label={tA("zoomOut")}
             disabled={scale <= minScale || isRendering}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -651,8 +657,9 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
             size="sm"
             type="button"
             onClick={handleZoomIn}
+            aria-label={tA("zoomIn")}
             disabled={scale >= maxScale || isRendering}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -662,7 +669,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
             type="button"
             onClick={handleResetZoom}
             disabled={scale === 1.0 || isRendering}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <RotateCcw className="h-4 w-4" />
           </Button>
@@ -685,6 +692,7 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
 // Image Preview Component
 const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
+  const tA = useTranslations("A11y");
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [scale, setScale] = useState<number>(1.0);
   const [dimensions, setDimensions] = useState<{ width: number; height: number } | null>(null);
@@ -782,8 +790,9 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
             size="sm"
             type="button"
             onClick={handleZoomOut}
+            aria-label={tA("zoomOut")}
             disabled={scale <= minScale}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomOut className="h-4 w-4" />
           </Button>
@@ -795,8 +804,9 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
             size="sm"
             type="button"
             onClick={handleZoomIn}
+            aria-label={tA("zoomIn")}
             disabled={scale >= maxScale}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <ZoomIn className="h-4 w-4" />
           </Button>
@@ -806,7 +816,7 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
             type="button"
             onClick={handleResetZoom}
             disabled={scale === 1.0}
-            className="p-2"
+            className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
             <RotateCcw className="h-4 w-4" />
           </Button>

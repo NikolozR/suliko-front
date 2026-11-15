@@ -14,6 +14,7 @@ import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 
 // Theme toggle component
 function ThemeToggle() {
+  const t = useTranslations("LandingHeader");
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -28,7 +29,7 @@ function ThemeToggle() {
       onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       className="relative p-2 rounded-md hover:bg-accent transition-colors"
       type="button"
-      aria-label="Toggle theme"
+      aria-label={t("toggleTheme")}
     >
       <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
       <Moon className="absolute top-1/2 left-1/2 h-4 w-4 -translate-x-1/2 -translate-y-1/2 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -170,14 +171,20 @@ export default function LandingHeader() {
     { id: 'about', label: t("about") },
     { id: 'pricing', label: t("pricing") },
     { id: 'faq', label: t("faq") },
-    { id: 'contact', label: t("contact") },
   ];
+
+  // The footer holds the contact details; the bar keeps to the sections a
+  // first-time visitor decides on. The menu has room for both.
+  const contactNavItem = { id: 'contact', label: t("contact") };
 
   // Blog navigation item (separate from scroll items)
   const blogNavItem = { id: 'blog', label: t("blog"), href: '/blog' };
 
   // Notary navigation item
   const notaryNavItem = { id: 'notary', label: t("notary"), href: '/notary' };
+
+  // The other product: Suliko Office, for translation bureaus
+  const officeNavItem = { id: 'office', label: t("forBureaus"), href: '/office' };
   const isNotaryPage = pathname.includes('/notary');
 
   // Handle navigation click
@@ -185,7 +192,7 @@ export default function LandingHeader() {
     const cleanSectionId = sectionId.replace('#', '');
     setIsMobileMenuOpen(false);
 
-    if (pathname === "/") {
+    if (pathname === "/translate") {
       const targetSection = document.getElementById(cleanSectionId);
       if (targetSection) {
         targetSection.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -194,7 +201,7 @@ export default function LandingHeader() {
       }
     }
 
-    router.push(`/#${cleanSectionId}`);
+    router.push(`/translate#${cleanSectionId}`);
   };
 
   // Toggle mobile menu
@@ -227,10 +234,10 @@ export default function LandingHeader() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         isBlogPage
           ? isScrolled
-            ? "bg-slate-900/95 backdrop-blur-lg border-b border-slate-700 shadow-xl"
+            ? "bg-slate-900/95 backdrop-blur-lg border-b border-slate-700 shadow-float-3"
             : "bg-slate-900/80 backdrop-blur-md"
           : isScrolled
-            ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-lg"
+            ? "bg-background/98 backdrop-blur-lg border-b border-border shadow-float-2"
             : resolvedTheme === 'dark' ? "bg-background/95 backdrop-blur-md md:bg-transparent" : "bg-background/95 backdrop-blur-md"
       } ${
         isHeaderVisible ? "translate-y-0" : "-translate-y-full"
@@ -244,7 +251,7 @@ export default function LandingHeader() {
         <div className="flex items-center justify-between h-14 sm:h-16 lg:h-20">
           
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2 relative z-50">
+          <Link href="/translate" className="flex items-center space-x-2 relative z-50">
             <Image
               src={resolvedTheme === 'dark' ? "/Suliko_logo_white.svg" : "/Suliko_logo_black.svg"}
               alt="Suliko"
@@ -273,7 +280,7 @@ export default function LandingHeader() {
           */}
           <div className="hidden xl:flex items-center justify-center flex-1">
             {/* Navigation Items */}
-            <div className="flex items-center space-x-8">
+            <div className="flex items-center space-x-6 2xl:space-x-8">
               {navItems.map((item) => (
                 <NavItem
                   key={item.id}
@@ -293,10 +300,19 @@ export default function LandingHeader() {
                   {blogNavItem.label}
                 </button>
               </Link>
+              <Link href={officeNavItem.href}>
+                <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
+                  isBlogPage
+                    ? "text-white/90 hover:text-white"
+                    : "text-foreground/80 hover:text-foreground"
+                }`}>
+                  {officeNavItem.label}
+                </button>
+              </Link>
               <Link href={notaryNavItem.href}>
                 <button className={`transition-colors duration-200 font-medium text-sm lg:text-base py-2 px-1 ${
                   isNotaryPage
-                    ? "text-suliko-default-color"
+                    ? "text-accent-text"
                     : isBlogPage
                       ? "text-white/90 hover:text-white"
                       : "text-foreground/80 hover:text-foreground"
@@ -328,15 +344,34 @@ export default function LandingHeader() {
             </Link>
           </div>
 
+          {/* Below xl the nav collapses into the menu, but the main action stays in the bar */}
+          <div className="xl:hidden flex items-center gap-2 relative z-50">
+          <Link
+            href="/document"
+            prefetch={true}
+            onMouseEnter={handleMouseEnter}
+            onClick={handleGetStartedClick}
+          >
+            <LoadingButton
+              size="sm"
+              className="text-sm whitespace-nowrap"
+              isLoading={isNavigating}
+              loadingText={t("loading") || "Loading..."}
+            >
+              {t("getStarted")}
+            </LoadingButton>
+          </Link>
+
           {/* Hamburger Menu Button */}
           <button
-            className={`xl:hidden p-2 rounded-md transition-colors relative z-50 ${
+            className={`p-2 rounded-md transition-colors ${
               isBlogPage
                 ? "text-white hover:bg-white/20 bg-white/10"
                 : "text-foreground hover:bg-accent bg-background/90 backdrop-blur-sm"
             }`}
             onClick={toggleMobileMenu}
-            aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+            aria-label={isMobileMenuOpen ? t("closeMenu") : t("openMenu")}
+            aria-expanded={isMobileMenuOpen}
             type="button"
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
@@ -357,6 +392,7 @@ export default function LandingHeader() {
               />
             </div>
           </button>
+          </div>
         </div>
 
         {/* Mobile Navigation Overlay */}
@@ -369,14 +405,15 @@ export default function LandingHeader() {
             />
             
             {/* Menu Panel */}
-            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-2xl transform transition-transform duration-300 ease-in-out z-[61]">
+            <div className="absolute top-0 right-0 h-full w-80 max-w-[85vw] bg-white dark:bg-[#1a1a1a] border-l border-border shadow-float-3 transform transition-transform duration-300 ease-in-out z-[61]">
               <div className="flex flex-col h-full bg-inherit">
                 {/* Menu Header */}
                 <div className="flex items-center justify-between p-4 border-b border-border bg-inherit">
-                  <h2 className="text-lg font-semibold text-foreground">Menu</h2>
+                  <h2 className="text-lg font-semibold text-foreground">{t("menu")}</h2>
                   <button
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="p-2 rounded-md hover:bg-accent transition-colors"
+                    aria-label={t("closeMenu")}
                     type="button"
                   >
                     <X className="h-5 w-5" />
@@ -394,6 +431,12 @@ export default function LandingHeader() {
                       {item.label}
                     </MobileNavItem>
                   ))}
+                  <MobileNavItem
+                    onClick={() => handleNavClick(`#${contactNavItem.id}`)}
+                    isBlogPage={isBlogPage}
+                  >
+                    {contactNavItem.label}
+                  </MobileNavItem>
                   <Link href={blogNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
                     <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
                       isBlogPage
@@ -401,6 +444,15 @@ export default function LandingHeader() {
                         : "text-foreground/80 hover:text-foreground hover:bg-accent"
                     }`}>
                       {blogNavItem.label}
+                    </button>
+                  </Link>
+                  <Link href={officeNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
+                    <button className={`block w-full text-left px-4 py-4 rounded-lg transition-all duration-200 text-base font-medium border border-transparent hover:border-border/50 ${
+                      isBlogPage
+                        ? "text-white/90 hover:text-white hover:bg-white/10"
+                        : "text-foreground/80 hover:text-foreground hover:bg-accent"
+                    }`}>
+                      {officeNavItem.label}
                     </button>
                   </Link>
                   <Link href={notaryNavItem.href} onClick={() => setIsMobileMenuOpen(false)}>
@@ -419,9 +471,10 @@ export default function LandingHeader() {
                 {/* Menu Footer */}
                 <div className="p-4 border-t border-border space-y-4 bg-inherit">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-foreground/60">Theme</span>
+                    <span className="text-sm text-foreground/60">{t("theme")}</span>
                     <ThemeToggle />
                   </div>
+                  <LanguageSwitcher />
                   
                   <Link 
                     href="/document" 

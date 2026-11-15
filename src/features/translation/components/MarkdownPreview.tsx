@@ -19,7 +19,7 @@ const MarkdownPreview: React.FC<MarkdownPreviewProps> = ({
         remarkPlugins={[remarkGfm]}
         components={{
           h1: ({ children }) => (
-            <h1 className="text-xl font-bold mb-4 text-foreground">
+            <h1 className="text-xl font-semibold mb-4 text-foreground">
               {children}
             </h1>
           ),

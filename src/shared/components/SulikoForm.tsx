@@ -1,12 +1,12 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
+import { useForm, type Resolver } from "react-hook-form";
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/features/ui/components/ui/form";
 import { Button } from "@/features/ui/components/ui/button";
 import { Input } from "@/features/ui/components/ui/input";
 import { useState, useMemo, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import { useHydrated } from "@/shared/hooks/useHydrated";
 import { Loader2, User } from "lucide-react";
 import {
   register,
@@ -84,6 +84,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
   // Office's "create an account" send people to. Once, on arrival.
   const openedInMode = useRef(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const hydrated = useHydrated();
   const [registrationStep, setRegistrationStep] = useState<RegistrationStep>(1);
   const [isCodeSent, setIsCodeSent] = useState(false);
   const [isSendingCode, setIsSendingCode] = useState(false);
@@ -112,7 +113,9 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
   );
 
   const form = useForm<LoginFormData | RegisterFormData>({
-    resolver: zodResolver(formSchema as z.ZodType<LoginFormData | RegisterFormData>),
+    // zod 4 types a union of two schemas apart from react-hook-form's single
+    // value type; the schema itself is unchanged.
+    resolver: zodResolver(formSchema as never) as unknown as Resolver<LoginFormData | RegisterFormData>,
     defaultValues: {
       identifier: "",
       mobile: "",
@@ -522,7 +525,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
         backdrop-blur-xl backdrop-saturate-150
         bg-white/65 dark:bg-white/[0.06]
         border border-white/60 dark:border-white/[0.12]
-        rounded-2xl shadow-2xl dark:shadow-black/40
+        rounded-2xl shadow-float-3 dark:shadow-black/40
         py-8 px-6 sm:px-8
       ">
         <Form {...form}>
@@ -575,7 +578,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                 <button
                   type="button"
                   onClick={() => setShowReferral(true)}
-                  className="cursor-pointer text-sm text-suliko-default-color underline-offset-4 hover:underline"
+                  className="cursor-pointer text-sm text-accent-text underline-offset-4 hover:underline"
                 >
                   {t("haveReferralCode")}
                 </button>
@@ -588,7 +591,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                   name="referralCode"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="font-bold dark:text-white">
+                      <FormLabel className="font-semibold dark:text-white">
                         {t("referralCode")} <span className="text-muted-foreground text-xs ml-1">({t("optional")})</span>
                       </FormLabel>
                       <FormControl>
@@ -621,6 +624,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
 
             {/* Form */}
             <form
+              method="post"
               onSubmit={(e) => {
                 e.preventDefault();
                 form.handleSubmit(
@@ -638,24 +642,25 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                     name="identifier"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel className="font-bold dark:text-white">
+                        <FormLabel className="font-semibold dark:text-white">
                           {t("phoneNumberOrEmail") || "Phone Number or Email"}{" "}
-                          <span className="text-red-500">*</span>
+                          <span className="text-red-700 dark:text-red-400">*</span>
                         </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <User
-                              size={15}
-                              className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-                            />
+                        {/* FormControl must wrap the input itself: it carries the id the label points at. */}
+                        <div className="relative">
+                          <User
+                            size={15}
+                            className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
+                          />
+                          <FormControl>
                             <Input
                               placeholder={t("phoneNumberOrEmailPlaceholder") || "Enter phone number or email"}
                               className="border-2 shadow-md dark:border-slate-600 pl-9"
                               autoComplete="username"
                               {...field}
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                         {switchedToLoginNote && (
                           <div
@@ -678,7 +683,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                   <Button
                     className="bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
                     type="submit"
-                    disabled={isSubmitting}
+                    disabled={isSubmitting || !hydrated}
                   >
                     {isSubmitting ? (
                       <span className="flex items-center gap-2">
@@ -762,7 +767,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                             setVerificationMethod(null);
                             form.setValue("mobile", "");
                           }}
-                          className="text-sm text-muted-foreground hover:text-suliko-default-color transition-colors underline"
+                          className="text-sm text-muted-foreground hover:text-accent-text transition-colors underline"
                         >
                           {t("changeVerificationMethod")}
                         </button>
@@ -790,7 +795,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                             setVerificationMethod(null);
                             form.setValue("email", "");
                           }}
-                          className="text-sm text-muted-foreground hover:text-suliko-default-color transition-colors underline"
+                          className="text-sm text-muted-foreground hover:text-accent-text transition-colors underline"
                         >
                           {t("changeVerificationMethod")}
                         </button>
@@ -858,7 +863,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
                     <Button
                       className="flex-1 bg-suliko-default-color cursor-pointer hover:bg-suliko-default-hover-color dark:text-white"
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isSubmitting || !hydrated}
                     >
                       {isSubmitting ? (
                         <span className="flex items-center gap-2">

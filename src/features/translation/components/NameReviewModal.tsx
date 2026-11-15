@@ -97,7 +97,7 @@ const NameReviewModal: React.FC<NameReviewModalProps> = ({
                     <div className="flex flex-col gap-3 lg:flex-row lg:items-start">
                       <div className="flex min-w-0 flex-1 items-start gap-2">
                         <span
-                          className="inline-flex shrink-0 items-center gap-1 rounded-md bg-muted px-2 py-1 text-[10px] font-medium text-muted-foreground"
+                          className="inline-flex shrink-0 items-center gap-1 rounded-md bg-muted px-2 py-1 text-xs font-medium text-muted-foreground"
                           title={
                             isOrg ? t("organization") : t("person")
                           }

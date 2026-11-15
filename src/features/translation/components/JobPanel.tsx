@@ -41,7 +41,7 @@ function PanelCard({ children, className }: { children: React.ReactNode; classNa
 
 function MicroLabel({ children }: { children: React.ReactNode }) {
   return (
-    <span className="mb-3 block text-[11px] font-semibold uppercase tracking-[0.05em] text-muted-foreground">
+    <span className="mb-3 block text-xs font-semibold uppercase tracking-[0.05em] text-muted-foreground">
       {children}
     </span>
   );
@@ -137,6 +137,8 @@ export function NamesBlock({ enabled, onToggle, savedCount, projectName, project
           onClick={onToggle}
           className={cn(
             "relative mt-0.5 inline-flex h-[30px] w-[52px] shrink-0 items-center rounded-full transition-colors",
+            // The look stays 30px; the tappable area is 44px.
+            "before:absolute before:inset-x-0 before:-inset-y-[7px] before:content-['']",
             "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50",
             enabled ? "bg-suliko-default-color" : "bg-muted-foreground/35"
           )}
@@ -159,7 +161,7 @@ export function NamesBlock({ enabled, onToggle, savedCount, projectName, project
           {projectId && (
             <Link
               href={`/projects/${projectId}`}
-              className="shrink-0 text-[13px] font-semibold text-suliko-default-color hover:underline"
+              className="shrink-0 text-[13px] font-semibold text-accent-text hover:underline"
             >
               {t("editGlossary")}
             </Link>
@@ -218,7 +220,7 @@ function ClampedText({ text, more, less }: { text: string; more: string; less: s
           type="button"
           onClick={() => setOpen((value) => !value)}
           aria-expanded={open}
-          className="mt-0.5 text-[13px] font-semibold text-suliko-default-color hover:underline"
+          className="relative mt-0.5 text-[13px] font-semibold text-accent-text hover:underline before:absolute before:-inset-x-3 before:-inset-y-3 before:content-['']"
         >
           {open ? less : more}
         </button>
@@ -255,7 +257,7 @@ function Disclosure({
         onClick={onToggle}
         aria-expanded={open}
         className={cn(
-          "flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2 text-left text-[13px] transition-colors",
+          "flex w-full items-center justify-between gap-3 rounded-[10px] px-3 py-2 text-left text-[13px] transition-colors pointer-coarse:min-h-11",
           "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50",
           tone === "ask"
             ? "bg-amber-50 text-amber-900 hover:bg-amber-100 dark:bg-amber-950/40 dark:text-amber-300 dark:hover:bg-amber-950/60"
@@ -388,7 +390,7 @@ export function BriefBlock({
                         aria-checked={answer === option}
                         onClick={() => onAnswer(index, answer === option ? "" : option)}
                         className={cn(
-                          "rounded-full border px-3 py-1 text-[12px] transition-colors",
+                          "rounded-full border px-3 py-1 text-[12px] transition-colors pointer-coarse:min-h-11 pointer-coarse:px-4",
                           answer === option
                             ? "border-suliko-default-color bg-suliko-default-color/10 font-semibold text-foreground"
                             : "border-border text-muted-foreground hover:bg-muted/60"
@@ -448,7 +450,7 @@ export function BriefBlock({
                   type="button"
                   onClick={() => onTermRemove(index)}
                   aria-label={t("removeTerm", { term: term.original })}
-                  className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+                  className="shrink-0 rounded p-1 text-muted-foreground hover:bg-muted hover:text-foreground pointer-coarse:p-3"
                 >
                   <X className="size-3.5" aria-hidden />
                 </button>
@@ -492,7 +494,7 @@ export function InstructionsBlock({ value, onChange }: InstructionsProps) {
         rows={3}
         placeholder={t("placeholder")}
         className={cn(
-          "mt-3 w-full resize-y rounded-[10px] border border-border bg-background px-3 py-2.5 text-[14px] leading-relaxed",
+          "mt-3 w-full resize-y rounded-[10px] border border-border bg-background px-3 py-2.5 text-base leading-relaxed md:text-[14px]",
           "placeholder:text-muted-foreground/70",
           "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
         )}
@@ -524,6 +526,12 @@ interface QuoteProps {
    * the file is uploading and being measured. Falls back to "counting".
    */
   pendingLabel?: string | null;
+  /**
+   * False before any file is chosen. There is nothing to read or count yet, so
+   * the figures stay as dashes and the button says what to do, instead of
+   * showing placeholders and "Reading the page count…" as if work was running.
+   */
+  hasFile?: boolean;
 }
 
 /**
@@ -544,6 +552,7 @@ export function QuoteBlock({
   busy = false,
   uploadPercent = null,
   pendingLabel = null,
+  hasFile = true,
 }: QuoteProps) {
   const t = useTranslations("DocumentTranslationCard.quote");
 
@@ -554,7 +563,13 @@ export function QuoteBlock({
   const leftAfter = resolved ? available - pageCount : 0;
 
   const figure = (v: React.ReactNode) =>
-    resolved ? v : <span className="inline-block h-4 w-8 animate-pulse rounded bg-white/20" />;
+    resolved ? (
+      v
+    ) : !hasFile ? (
+      <span aria-hidden>–</span>
+    ) : (
+      <span className="inline-block h-4 w-8 animate-pulse rounded bg-white/20" />
+    );
 
   return (
     // Pinned to the foot of the screen while the panel above it scrolls: the
@@ -587,7 +602,7 @@ export function QuoteBlock({
             </dt>
             <dd
               className={cn(
-                "text-[17px] font-bold tabular-nums",
+                "text-[17px] font-semibold tabular-nums",
                 isShort ? "text-[#fca5a5]" : "text-[#7ee2b8]"
               )}
             >
@@ -599,7 +614,7 @@ export function QuoteBlock({
         {isShort ? (
           <Link
             href="/price"
-            className="suliko-default-bg mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-base font-bold text-white transition-opacity hover:opacity-90"
+            className="suliko-default-bg mt-3 flex h-12 w-full items-center justify-center gap-2 rounded-[10px] text-base font-semibold text-white transition-opacity hover:opacity-90"
           >
             <Wallet className="size-[18px]" aria-hidden />
             {t("topUpCta", { count: shortBy })}
@@ -608,7 +623,7 @@ export function QuoteBlock({
           <button
             type="submit"
             disabled={onSubmitDisabled || !resolved}
-            className="suliko-default-bg relative mt-3 flex h-12 w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] px-4 text-base font-bold leading-tight text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
+            className="suliko-default-bg relative mt-3 flex h-12 w-full items-center justify-center gap-2.5 overflow-hidden rounded-[10px] px-4 text-base font-semibold leading-tight text-white transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {/* A real fill, and only while real bytes are moving. Every other
                 stage gets a spinner and a name — there is nothing honest to
@@ -626,7 +641,9 @@ export function QuoteBlock({
                 className="relative size-[18px] shrink-0 animate-spin rounded-full border-2 border-white/30 border-t-white"
               />
             )}
-            <span className="relative">{resolved ? submitLabel : pendingLabel ?? t("counting")}</span>
+            <span className="relative">
+              {resolved ? submitLabel : !hasFile ? t("chooseFile") : pendingLabel ?? t("counting")}
+            </span>
           </button>
         )}
 

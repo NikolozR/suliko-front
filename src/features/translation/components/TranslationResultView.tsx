@@ -8,14 +8,16 @@ import CopyButton from "./CopyButton";
 import DownloadButton from "./DownloadButton";
 import SuggestionsPanel from './SuggestionsPanel';
 import SuggestionsJumpButton from './SuggestionsJumpButton';
-import NewEditor, { type NewEditorHandle } from "@/features/editor/NewEditor";
+import TranslationEditor, { type TranslationEditorHandle } from "@/features/editor/TranslationEditor";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff, FileDown, Pencil } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff, FileDown, Pencil, Maximize2 } from "lucide-react";
 import React from "react";
 import { toast } from "react-hot-toast";
 import DocumentPreview from "./DocumentPreview";
+import { translationAsHtml, wordBlob } from "@/features/translation/utils/wordPage";
+import { originalPageSetup } from "@/features/translation/utils/originalPage";
 // import { Skeleton } from "@/features/ui/components/ui/skeleton";
 
 
@@ -59,7 +61,7 @@ const DocumentPreviewColumn = React.memo(function DocumentPreviewColumn({
   return (
     <div className="w-full mb-10 lg:mb-0 md:flex-1 min-w-0">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-        <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+        <div className="font-semibold text-accent-text text-sm md:text-base">
           {t("originalDocument")}
         </div>
         <Button
@@ -120,11 +122,16 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
   const tDownload = useTranslations('DownloadFormats');
+  const tWord = useTranslations('WordEditor');
+  // The full-screen button is the Word editor's: shown once it is the one in use.
+  const [editorEngine, setEditorEngine] = useState<"loading" | "word" | "simple" | "unavailable">("loading");
   const translatedSuffix = useTranslatedSuffix();
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
   const isScrolling = useRef(false);
-  const editorRef = useRef<NewEditorHandle>(null) as RefObject<NewEditorHandle>;
+  const editorRef = useRef<TranslationEditorHandle>(null) as RefObject<TranslationEditorHandle>;
+  // The Word editor scrolls its own pages; the simple editor is scrolled by the box around it.
+  const [wordScroller, setWordScroller] = useState<HTMLElement | null>(null);
   const [showDownloadModal, setShowDownloadModal] = useState(false);
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
@@ -157,7 +164,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
     const documentContainer =
       documentPreviewRef.current?.querySelector(".overflow-y-auto");
     const markdownContainer =
-      markdownPreviewRef.current?.querySelector(".overflow-y-auto");
+      wordScroller ?? markdownPreviewRef.current?.querySelector(".overflow-y-auto");
 
     if (!documentContainer || !markdownContainer) return;
 
@@ -187,7 +194,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       documentContainer.removeEventListener("scroll", handleDocumentScroll);
       markdownContainer.removeEventListener("scroll", handleMarkdownScroll);
     };
-  }, [hasTranslatedContent]);
+  }, [hasTranslatedContent, wordScroller]);
 
   // Start 10-minute editor timer on first mount of the result view
   useEffect(() => {
@@ -240,37 +247,11 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       } else if (fileType === "docx") {
         // Prefer the editor's current HTML — it's the same content the user sees and
         // what copy-paste into Word uses, so formatting is guaranteed to be correct.
-        // Fall back to converting translatedMarkdown with marked() when the ref isn't ready.
-        // eslint-disable-next-line @typescript-eslint/no-require-imports
-        const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+        // Fall back to the loaded translation when the ref isn't ready.
+        // The Word editor writes the Word file itself; the simple editor's HTML is put in one.
         const editorHtml = editorRef.current?.getHTML();
-        const bodyHtml = editorHtml && editorHtml !== "<p></p>"
-          ? editorHtml
-          : (() => {
-              const isHtml = translatedMarkdown.trimStart().startsWith("<");
-              return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
-            })();
-        const fullHtml = `<!DOCTYPE html>
-<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:w="urn:schemas-microsoft-com:office:word"
-      xmlns="http://www.w3.org/TR/REC-html40">
-<head>
-  <meta charset="utf-8">
-  <style>
-    body  { font-family: Calibri, sans-serif; font-size: 11pt; }
-    h1    { font-size: 16pt; }
-    h2    { font-size: 14pt; }
-    h3    { font-size: 12pt; }
-    p     { margin: 0 0 8pt 0; }
-    table { border-collapse: collapse; width: 100%; }
-    td, th { border: 1pt solid #aaa; padding: 4pt 8pt; }
-  </style>
-</head>
-<body>${bodyHtml}</body>
-</html>`;
-        // @ts-expect-error Type errors, nothing special
-        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
-        const blob = htmlDocx.asBlob(fullHtml);
+        const bodyHtml = editorHtml && editorHtml !== "<p></p>" ? editorHtml : translationAsHtml(translatedMarkdown);
+        const blob = (await editorRef.current?.toDocx()) ?? (await wordBlob(bodyHtml, await originalPageSetup(currentFile)));
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -281,17 +262,39 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
         URL.revokeObjectURL(url);
       } else if (fileType === "pdf") {
         try {
-          // eslint-disable-next-line @typescript-eslint/no-require-imports
-          const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
-          const editorHtml = editorRef.current?.getHTML();
-          const htmlContent = editorHtml && editorHtml !== "<p></p>"
-            ? editorHtml
-            : (() => {
-                const isHtml = translatedMarkdown.trimStart().startsWith("<");
-                return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
-              })();
-          const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
-          await generatePdfFromHtml(htmlContent, fileName);
+          // From the Word file, by the server, where the Word editor is in use: laid out as Word
+          // lays it out. From the HTML here when there is no Word file or the server cannot.
+          let sent = false;
+          const made = editorRef.current?.toPdf();
+          if (made) {
+            try {
+              const blob = await made;
+              const url = URL.createObjectURL(blob);
+              const link = document.createElement('a');
+              link.href = url;
+              link.download = fileName;
+              document.body.appendChild(link);
+              link.click();
+              document.body.removeChild(link);
+              URL.revokeObjectURL(url);
+              sent = true;
+            } catch (error) {
+              console.warn("The server could not make the PDF; making it here.", error);
+            }
+          }
+          if (!sent) {
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
+            const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
+            const editorHtml = editorRef.current?.getHTML();
+            const htmlContent = editorHtml && editorHtml !== "<p></p>"
+              ? editorHtml
+              : (() => {
+                  const isHtml = translatedMarkdown.trimStart().startsWith("<");
+                  return isHtml ? translatedMarkdown : (marked(translatedMarkdown, { async: false }) as string);
+                })();
+            const { generatePdfFromHtml } = await import("@/features/translation/utils/html2pdf-client");
+            await generatePdfFromHtml(htmlContent, fileName);
+          }
         } catch (err) {
           console.error("PDF export failed:", err);
           toast.error("Failed to generate PDF. Please try again.");
@@ -301,7 +304,7 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
       setDownloadedFormat(null);
     };
     triggerDownload();
-  }, [downloadedFormat, translatedMarkdown, currentFile?.name, translatedSuffix]);
+  }, [downloadedFormat, translatedMarkdown, currentFile, translatedSuffix]);
 
   
   return (
@@ -327,8 +330,8 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
           <div className="mb-4 border-b border-border pb-2">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div className="flex items-center gap-2 flex-wrap">
-                <Pencil className="h-4 w-4 text-suliko-default-color" aria-hidden="true" />
-                <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                <Pencil className="h-4 w-4 text-accent-text" aria-hidden="true" />
+                <div className="font-semibold text-accent-text text-sm md:text-base">
                   {t('translatedText')}
                 </div>
                 {/* {remainingSeconds > 0 ? (
@@ -374,31 +377,66 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                   <>
                     <Button
                       type="button"
-                      variant="outline"
+                      variant="default"
                       size="sm"
                       onClick={() => setShowDownloadModal(true)}
-                      className="transition-all duration-200"
+                      className="suliko-default-bg text-white transition-all duration-200 hover:opacity-90"
                       title={tButton('download')}
                       aria-label={tButton('download')}
                     >
                       <Download className="h-4 w-4" />
+                      <span className="hidden sm:ml-1.5 sm:inline">{tButton('download')}</span>
                     </Button>
                     <CopyButton
                       content={translatedMarkdown}
                       size="sm"
                       variant="outline"
+                      label={tButton('copy')}
+                      copiedLabel={tButton('copied')}
                     />
+                    {editorEngine === "word" && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => editorRef.current?.openFullScreen()}
+                        title={`${tWord("fullScreen")}: ${tWord("hint")}`}
+                        aria-label={tWord("fullScreen")}
+                      >
+                        <Maximize2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </>
                 )}
               </div>
             </div>
           </div>
           <div className="h-full max-h-[400px] md:max-h-[600px] lg:max-h-[800px] overflow-y-auto" ref={markdownPreviewRef}>
-            <NewEditor
+            <TranslationEditor
               ref={editorRef}
               translatedMarkdown={translatedMarkdown}
               onChange={onEdit}
               hoveredText={hoveredSuggestionOriginalText}
+              file={currentFile}
+              forceSimple={isOriginalFileSrt()}
+              onScroller={setWordScroller}
+              className="h-[400px] md:h-[600px] lg:h-[800px]"
+              hideHeader
+              onEngine={setEditorEngine}
+              fullScreenTitle={currentFile?.name}
+              renderOriginal={currentFile ? () => <DocumentPreview file={currentFile} /> : undefined}
+              fullScreenActions={
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => setShowDownloadModal(true)}
+                  className="suliko-default-bg text-white hover:opacity-90"
+                  aria-label={tButton('download')}
+                >
+                  <Download className="h-4 w-4" />
+                  <span className="hidden sm:ml-1.5 sm:inline">{tButton('download')}</span>
+                </Button>
+              }
             />
           </div>
         </div>

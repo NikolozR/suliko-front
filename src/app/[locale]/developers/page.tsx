@@ -21,7 +21,7 @@ export default function DevelopersPage() {
       {/* Main content */}
       <div className="relative z-10">
         <LandingHeader />
-        <main>
+        <main id="main-content">
           <DevelopersPageClient />
         </main>
         <LandingFooter />

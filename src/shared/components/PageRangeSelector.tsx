@@ -119,7 +119,7 @@ export const PageRangeSelector: React.FC<PageRangeSelectorProps> = ({
               return (
                 <Card
                   key={index}
-                  className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02] ${isSelected
+                  className={`cursor-pointer transition-all duration-200 hover:shadow-float-2 hover:scale-[1.02] ${isSelected
                     ? "border-2 border-primary bg-primary/5"
                     : "border hover:border-primary/50"
                     }`}

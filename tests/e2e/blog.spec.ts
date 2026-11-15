@@ -1,61 +1,58 @@
 import { test, expect } from '@playwright/test';
 
+// Post pages live at /en/blog/<slug>. The index links to them; the blog's own
+// nav/header links never have a slug after /blog/.
+const POST_LINK = 'main a[href^="/en/blog/"]';
+
 test.describe('Blog', () => {
 
   test('/en/blog loads with heading', async ({ page }) => {
     await page.goto('/en/blog', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('h1').first()).toBeVisible({ timeout: 30_000 });
+    await expect(page.locator('h1').first()).toHaveText('Blog', { timeout: 30_000 });
     await expect(page.locator('body')).not.toContainText('Application error');
   });
 
-  test('/en/blog shows post cards or empty state', async ({ page }) => {
-    await page.goto('/en/blog', { waitUntil: 'domcontentloaded' });
-    // Either post links or an empty/no-posts message is visible
-    const hasPosts = await page.locator('a[href*="/blog/"]').count();
-    if (hasPosts === 0) {
-      // No posts — just confirm the page itself rendered without crashing
-      await expect(page.locator('body')).not.toContainText('Application error');
-    } else {
-      await expect(page.locator('a[href*="/blog/"]').first()).toBeVisible();
-    }
+  test('index lists posts that link to post pages', async ({ page }) => {
+    await page.goto('/en/blog', { waitUntil: 'networkidle' });
+    const hrefs = await page.locator(POST_LINK).evaluateAll((links) =>
+      links.map((a) => a.getAttribute('href')),
+    );
+    // The content API test guarantees the list endpoint answers; an empty blog is a
+    // content decision, not a code fault, so skip rather than fail.
+    test.skip(hrefs.length === 0, 'the blog has no published posts');
+    for (const href of hrefs) expect(href).toMatch(/^\/en\/blog\/[a-z0-9-]+$/);
   });
 
-  test('clicking a blog post card opens the post', async ({ page }) => {
-    await page.goto('/en/blog', { waitUntil: 'domcontentloaded' });
-    const firstPost = page.locator('a[href*="/blog/"]').first();
-    if (await firstPost.count() === 0) {
-      test.skip();
-      return;
-    }
-    await firstPost.click();
-    await expect(page).toHaveURL(/\/blog\/.+/);
+  test('opening a post shows its title and body', async ({ page }) => {
+    await page.goto('/en/blog', { waitUntil: 'networkidle' });
+    const first = page.locator(POST_LINK).first();
+    test.skip((await first.count()) === 0, 'the blog has no published posts');
+
+    const href = await first.getAttribute('href');
+    await first.click();
+    await expect(page).toHaveURL(new RegExp(`${href}$`));
+    const title = page.locator('h1').first();
+    await expect(title).toBeVisible({ timeout: 30_000 });
+    expect((await title.innerText()).trim().length).toBeGreaterThan(3);
+    await expect(page.locator('article, main').first()).toContainText(/\w{3,}/);
     await expect(page.locator('body')).not.toContainText('Application error');
   });
 
-  test('blog post page shows a title', async ({ page }) => {
-    await page.goto('/en/blog', { waitUntil: 'domcontentloaded' });
-    const firstPost = page.locator('a[href*="/blog/"]').first();
-    if (await firstPost.count() === 0) {
-      test.skip();
-      return;
+  test('every listed post answers 200', async ({ page, request }) => {
+    await page.goto('/en/blog', { waitUntil: 'networkidle' });
+    const hrefs = await page.locator(POST_LINK).evaluateAll((links) =>
+      links.map((a) => a.getAttribute('href')),
+    );
+    test.skip(hrefs.length === 0, 'the blog has no published posts');
+    for (const href of hrefs) {
+      const res = await request.get(href!);
+      expect(res.status(), href!).toBe(200);
     }
-    await firstPost.click();
-    await expect(page.locator('h1').first()).toBeVisible({ timeout: 30_000 });
   });
 
-  test('blog post page has no 404 or error', async ({ page }) => {
-    await page.goto('/en/blog', { waitUntil: 'domcontentloaded' });
-    const firstPost = page.locator('a[href*="/blog/"]').first();
-    if (await firstPost.count() === 0) {
-      test.skip();
-      return;
-    }
-    const href = await firstPost.getAttribute('href');
-    if (href) {
-      const response = await page.goto(href, { waitUntil: 'domcontentloaded' });
-      expect(response?.status()).not.toBe(404);
-      await expect(page.locator('body')).not.toContainText('Application error');
-    }
+  test('an unknown post slug is a 404', async ({ page }) => {
+    const response = await page.goto('/en/blog/this-post-does-not-exist-xyz');
+    expect(response?.status()).toBe(404);
   });
 
 });

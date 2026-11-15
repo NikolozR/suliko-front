@@ -2,16 +2,20 @@
 
 import { usePathname } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { Plus, FolderOpen, HelpCircle, User, ClipboardList } from "lucide-react";
+import { Plus, FolderOpen, HelpCircle, User, ClipboardList, Briefcase } from "lucide-react";
 import { useAuthStore } from "@/features/auth/store/authStore";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
+import type { OfficeContext } from "@/shared/nav/officeNav";
+import { OfficeBottomBar } from "./shell/OfficeBottomBar";
 
-export default function MobileBottomNav() {
+export default function MobileBottomNav({ office = null }: { office?: OfficeContext | null }) {
   const pathname = usePathname();
   const { token } = useAuthStore();
   const t = useTranslations("Sidebar");
+  const locale = useLocale();
   const resetTextTranslation = useTextTranslationStore((s) => s.reset);
   const resetDocumentTranslation = useDocumentTranslationStore((s) => s.reset);
 
@@ -35,7 +39,7 @@ export default function MobileBottomNav() {
     ...(token
       ? [
           { label: t("projects"), href: "/projects" as const, icon: FolderOpen },
-          { label: t("orders"), href: "/orders" as const, icon: ClipboardList },
+          { label: t("orders"), href: "/assignments" as const, icon: ClipboardList },
           { label: t("profile"), href: "/profile" as const, icon: User },
         ]
       : [
@@ -43,6 +47,9 @@ export default function MobileBottomNav() {
           { label: t("login"), href: "/sign-in" as const, icon: User },
         ]),
   ];
+
+  // Signed in to Office: the one phone bar, the same as on Office's screens.
+  if (office && token) return <OfficeBottomBar office={office} />;
 
   return (
     <nav
@@ -60,15 +67,24 @@ export default function MobileBottomNav() {
               onClick={onClick}
               className={`flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-xs transition-colors ${
                 active
-                  ? "text-suliko-default-color font-medium"
+                  ? "text-accent-text font-medium"
                   : "text-muted-foreground"
               }`}
             >
-              <Icon className={`h-5 w-5 ${active ? "text-suliko-default-color" : ""}`} />
-              <span className="truncate max-w-[64px]">{label}</span>
+              <Icon className={`h-5 w-5 ${active ? "text-accent-text" : ""}`} />
+              <span className="max-w-full truncate px-1 text-xs leading-tight">{label}</span>
             </Link>
           );
         })}
+        {token && (
+          <a
+            href={`${OFFICE_URL}/${officeLocale(locale)}/dashboard`}
+            className="flex flex-col items-center justify-center gap-0.5 flex-1 h-full text-xs text-muted-foreground transition-colors"
+          >
+            <Briefcase className="h-5 w-5" />
+            <span className="max-w-full truncate px-1 text-xs leading-tight">{t("office")}</span>
+          </a>
+        )}
       </div>
     </nav>
   );

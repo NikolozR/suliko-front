@@ -2,12 +2,15 @@
 
 import { useRef, useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { Play, Pause, Volume2, VolumeX, Maximize } from "lucide-react";
+import { Play, Pause, Volume2, VolumeX, Maximize, ArrowRight } from "lucide-react";
+import { Link } from "@/i18n/navigation";
 import { Button } from "@/features/ui";
 import { useAutoplay } from "@/shared/components/landing/useAutoplay";
 
 export default function VideoSection() {
   const t = useTranslations("VideoSection");
+  const tLanding = useTranslations("Landing");
+  const tA = useTranslations("A11y");
   const videoRef = useRef<HTMLVideoElement>(null);
   const progressRef = useRef<HTMLInputElement>(null);
   const { ref: sectionRef, running } = useAutoplay<HTMLElement>();
@@ -117,7 +120,7 @@ export default function VideoSection() {
     <section id="video" ref={sectionRef} className="scroll-mt-24 py-20 sm:py-24 bg-background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div data-reveal className="max-w-4xl mx-auto text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-6">
+          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground mb-6">
             {t("title")}
           </h2>
           <p className="text-lg text-muted-foreground leading-relaxed">
@@ -126,16 +129,16 @@ export default function VideoSection() {
         </div>
 
         <div data-reveal className="max-w-5xl mx-auto">
-          <div className="relative bg-black rounded-2xl overflow-hidden shadow-2xl ring-1 ring-black/5">
+          <div className="relative bg-black rounded-2xl overflow-hidden shadow-float-3 ring-1 ring-black/5">
             <div className="relative w-full" style={{ aspectRatio: '16/9' }}>
               <video
                 ref={videoRef}
                 className="absolute inset-0 w-full h-full object-cover"
-                poster="/video-poster.png"
+                poster="/video-poster.webp"
                 muted
                 loop
                 playsInline
-                preload="metadata"
+                preload="none"
               >
                 <source src="/api/video2" type="video/mp4" />
                 {t("browserNotSupported")}
@@ -145,7 +148,7 @@ export default function VideoSection() {
               {!isPlaying && (
                 <button
                   onClick={togglePlay}
-                  aria-label="Play video"
+                  aria-label={t("playVideo")}
                   className="absolute inset-0 flex items-center justify-center group"
                 >
                   <div className="w-16 h-16 rounded-full bg-white/20 backdrop-blur-sm border border-white/30 flex items-center justify-center group-hover:bg-white/30 transition-colors">
@@ -165,6 +168,7 @@ export default function VideoSection() {
                     max={duration || 0}
                     value={currentTime}
                     onChange={handleProgressChange}
+                    aria-label={tA("videoProgress")}
                     className="w-full h-1 bg-white/30 rounded-lg appearance-none cursor-pointer video-slider"
                     style={{
                       background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${progressPercent}%, rgba(255,255,255,0.3) ${progressPercent}%, rgba(255,255,255,0.3) 100%)`
@@ -180,6 +184,7 @@ export default function VideoSection() {
                       variant="ghost"
                       size="sm"
                       onClick={togglePlay}
+                      aria-label={isPlaying ? tA("pause") : tA("play")}
                       className="text-white hover:bg-white/20 p-2"
                     >
                       {isPlaying ? (
@@ -201,6 +206,7 @@ export default function VideoSection() {
                       variant="ghost"
                       size="sm"
                       onClick={toggleMute}
+                      aria-label={isMuted || volume === 0 ? tA("unmute") : tA("mute")}
                       className="text-white hover:bg-white/20 p-2"
                     >
                       {isMuted || volume === 0 ? (
@@ -217,6 +223,7 @@ export default function VideoSection() {
                       step="0.1"
                       value={volume}
                       onChange={handleVolumeChange}
+                      aria-label={tA("videoVolume")}
                       className="w-20 h-1 bg-white/30 rounded-lg appearance-none cursor-pointer video-slider"
                       style={{
                         background: `linear-gradient(to right, #3b82f6 0%, #3b82f6 ${volume * 100}%, rgba(255,255,255,0.3) ${volume * 100}%, rgba(255,255,255,0.3) 100%)`
@@ -228,6 +235,7 @@ export default function VideoSection() {
                       variant="ghost"
                       size="sm"
                       onClick={toggleFullscreen}
+                      aria-label={tA("fullscreen")}
                       className="text-white hover:bg-white/20 p-2"
                     >
                       <Maximize className="h-5 w-5" />
@@ -236,6 +244,18 @@ export default function VideoSection() {
                 </div>
               </div>
             </div>
+          </div>
+
+          <div className="mt-10 flex justify-center">
+            <Link href="/document" prefetch>
+              <Button size="lg" className="group">
+                {tLanding("cta")}
+                <ArrowRight
+                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                  aria-hidden="true"
+                />
+              </Button>
+            </Link>
           </div>
         </div>
       </div>

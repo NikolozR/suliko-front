@@ -1,6 +1,8 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import { setUserBalance, deleteUser } from "@/features/auth/services/userService";
+import { setUserBalance, deleteUser, sendPasswordResetEmail } from "@/features/auth/services/userService";
+import { listPaidTotals, type UserPaidTotal } from "@/features/adminPayments/services/adminPaymentsService";
+import PaymentHistory, { money } from "./payment-history";
 
 export type User = {
   id: string;
@@ -17,16 +19,29 @@ export type User = {
   lastActivityAt?: string;
   referralCode?: string;
   referredByCode?: string;
+  /** A team or test account, as the API marks it. */
+  isInternal?: boolean;
 };
 
 type SaveState = "idle" | "confirm" | "saving" | "saved";
 type DeleteState = "idle" | "confirm" | "deleting";
+type ResetState = "idle" | "confirm" | "sending" | "sent";
 
 const SortIcon = ({ dir }: { dir: "none" | "asc" | "desc" }) => (
   <span style={{ marginLeft: 4, opacity: dir === "none" ? 0.35 : 1, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>
     {dir === "asc" ? "↑" : dir === "desc" ? "↓" : "⇅"}
   </span>
 );
+
+/** A phone sign-up has no address, so the API stores a made-up one: phone_{number}_{guid}@example.com. */
+function hasRealEmail(email?: string): boolean {
+  return !!email && !/^phone_.*@example\.com$/i.test(email);
+}
+
+/** GEL paid by one user, from confirmed card payments: the figure the Paid column sorts by. */
+function gelPaid(totals: Map<string, UserPaidTotal[]> | null, id: string): number {
+  return totals?.get(id)?.find((t) => t.currency === "GEL")?.total ?? 0;
+}
 
 export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   const [rows, setRows] = useState<User[]>(initialUsers || []);
@@ -41,6 +56,26 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   const [dateFilter, setDateFilter] = useState<{ from?: string; to?: string }>({});
   const [showRoleId, setShowRoleId] = useState(false);
   const [deleteStates, setDeleteStates] = useState<Record<string, DeleteState>>({});
+  const [resetStates, setResetStates] = useState<Record<string, ResetState>>({});
+  const [notice, setNotice] = useState<string | null>(null);
+  const [paidSort, setPaidSort] = useState<"none" | "asc" | "desc">("none");
+  const [openPayments, setOpenPayments] = useState<string | null>(null);
+  // What each user has paid, per currency, from confirmed card payments.
+  // Loaded once; the column shows "?" if it cannot be, not a misleading zero.
+  const [paidTotals, setPaidTotals] = useState<Map<string, UserPaidTotal[]> | null>(null);
+  const [paidError, setPaidError] = useState(false);
+
+  React.useEffect(() => {
+    listPaidTotals()
+      .then((totals) => {
+        const byUser = new Map<string, UserPaidTotal[]>();
+        for (const t of totals) byUser.set(t.userId, [...(byUser.get(t.userId) ?? []), t]);
+        setPaidTotals(byUser);
+      })
+      .catch(() => setPaidError(true));
+  }, []);
+
+  const paidGel = (id: string) => gelPaid(paidTotals, id);
 
   const getDeleteState = (id: string): DeleteState => deleteStates[id] ?? "idle";
   const setDeleteState = (id: string, state: DeleteState) =>
@@ -108,6 +143,36 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
 
   const handleCancelDelete = (id: string) => setDeleteState(id, "idle");
 
+  const getResetState = (id: string): ResetState => resetStates[id] ?? "idle";
+  const setResetState = (id: string, state: ResetState) =>
+    setResetStates((prev) => ({ ...prev, [id]: state }));
+
+  // Two presses, like Save and Delete: the first asks, the second changes the password and mails it.
+  const handleResetClick = async (row: User) => {
+    const current = getResetState(row.id);
+    if (current === "idle") {
+      setResetState(row.id, "confirm");
+      return;
+    }
+    if (current === "confirm") {
+      setError(null);
+      setNotice(null);
+      setResetState(row.id, "sending");
+      try {
+        const sentTo = await sendPasswordResetEmail(row.id);
+        setResetState(row.id, "sent");
+        setNotice(`New password sent to ${sentTo || row.email || "the user"}.`);
+        setTimeout(() => setResetState(row.id, "idle"), 3000);
+        setTimeout(() => setNotice(null), 8000);
+      } catch (e: unknown) {
+        setError(e instanceof Error ? e.message : "Failed to send the password email");
+        setResetState(row.id, "idle");
+      }
+    }
+  };
+
+  const handleCancelReset = (id: string) => setResetState(id, "idle");
+
   const toggleSort = (current: "none" | "asc" | "desc"): "none" | "asc" | "desc" =>
     current === "none" ? "asc" : current === "asc" ? "desc" : "none";
 
@@ -164,8 +229,12 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
         return lastActivitySort === "asc" ? av - bv : bv - av;
       });
     }
+    if (paidSort !== "none") {
+      const paid = (id: string) => gelPaid(paidTotals, id);
+      copy.sort((a, b) => (paidSort === "asc" ? paid(a.id) - paid(b.id) : paid(b.id) - paid(a.id)));
+    }
     return copy;
-  }, [filteredRows, balanceSort, dateSort, lastActivitySort]);
+  }, [filteredRows, balanceSort, dateSort, lastActivitySort, paidSort, paidTotals]);
 
   const totalPages = Math.ceil(sortedRows.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -175,7 +244,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   React.useEffect(() => { setCurrentPage(1); }, [itemsPerPage]);
 
   const exportToCSV = () => {
-    const headers = ["ID","User Name","Email","Phone Number","First Name","Last Name","Role ID","Role Name","Balance","Created At","Last Activity"];
+    const headers = ["ID","User Name","Email","Phone Number","First Name","Last Name","Role ID","Role Name","Balance","Paid (GEL)","Created At","Last Activity"];
     const esc = (v: string | number | undefined) => {
       const s = String(v ?? "");
       return s.includes(",") || s.includes('"') || s.includes("\n") ? `"${s.replace(/"/g, '""')}"` : s;
@@ -188,6 +257,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
         u.firstName || "", u.lastName || "",
         u.roleId || "", u.roleName || "",
         u.balance ?? 0,
+        paidGel(u.id),
         u.createdAt ? new Date(u.createdAt).toLocaleString() : "",
         u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleString() : "",
       ].map(esc).join(","))
@@ -411,6 +481,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
           {error}
         </div>
       )}
+      {notice && (
+        <div role="status" style={{ padding: "10px 16px", background: "rgba(34,197,94,0.08)", color: "#86efac", fontSize: 13 }}>
+          {notice}
+        </div>
+      )}
 
       {/* Table */}
       <div style={{ overflowX: "auto" }}>
@@ -426,6 +501,13 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               <th style={{ ...thStyle, textAlign: "right", cursor: "pointer", userSelect: "none" }} onClick={() => setBalanceSort(toggleSort(balanceSort))}>
                 Balance <SortIcon dir={balanceSort} />
               </th>
+              <th
+                style={{ ...thStyle, textAlign: "right", cursor: "pointer", userSelect: "none" }}
+                onClick={() => setPaidSort(toggleSort(paidSort))}
+                title="Confirmed card payments, all time"
+              >
+                Paid <SortIcon dir={paidSort} />
+              </th>
               <th style={{ ...thStyle, cursor: "pointer", userSelect: "none" }} onClick={() => setDateSort(toggleSort(dateSort))}>
                 Created <SortIcon dir={dateSort} />
               </th>
@@ -438,9 +520,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
           <tbody>
             {displayedRows.map((u: User, i) => {
               const state = getSaveState(u.id);
+              const paid = paidTotals?.get(u.id) ?? [];
+              const name = `${u.firstName || ""} ${u.lastName || ""}`.trim() || u.userName || u.id;
               return (
+                <React.Fragment key={u.id}>
                 <tr
-                  key={u.id}
                   style={{
                     animation: `fadeUp 0.3s ease ${Math.min(i * 30, 300)}ms both`,
                     transition: "background 0.12s",
@@ -506,6 +590,37 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       onBlur={(e) => (e.target.style.borderColor = "#2a2d3a")}
                     />
                   </td>
+                  <td style={{ ...tdStyle, textAlign: "right" }}>
+                    <button
+                      onClick={() => setOpenPayments(openPayments === u.id ? null : u.id)}
+                      title="Show payments"
+                      style={{
+                        background: openPayments === u.id ? "rgba(251,191,36,0.12)" : "transparent",
+                        border: `1px solid ${openPayments === u.id ? "#fbbf24" : "transparent"}`,
+                        borderRadius: 6,
+                        padding: "3px 8px",
+                        cursor: "pointer",
+                        textAlign: "right",
+                        fontFamily: "'JetBrains Mono', monospace",
+                        fontSize: 12,
+                        color: paid.length ? "#86efac" : "#475569",
+                      }}
+                    >
+                      {paidError
+                        ? "?"
+                        : paidTotals === null
+                          ? "…"
+                          : paid.length
+                            ? paid.map((t) => money(t.total, t.currency)).join(" + ")
+                            : "–"}
+                      {paid.length > 0 && (
+                        <span style={{ display: "block", fontSize: 10, color: "#475569" }}>
+                          {paid.reduce((n, t) => n + t.payments, 0)} payment
+                          {paid.reduce((n, t) => n + t.payments, 0) === 1 ? "" : "s"}
+                        </span>
+                      )}
+                    </button>
+                  </td>
                   <td style={tdStyle}>
                     <span style={monoStyle}>
                       {u.createdAt ? new Date(u.createdAt).toLocaleDateString() : "–"}
@@ -516,7 +631,8 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       {u.lastActivityAt ? new Date(u.lastActivityAt).toLocaleDateString() : "–"}
                     </span>
                   </td>
-                  <td style={{ ...tdStyle, textAlign: "right" }}>
+                  {/* No width cap here: tdStyle's 180px clipped the buttons. */}
+                  <td style={{ ...tdStyle, textAlign: "right", maxWidth: "none", overflow: "visible" }}>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", gap: 6 }}>
                       {state === "confirm" && (
                         <button
@@ -570,6 +686,59 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                         {state === "saving" ? "Saving…" : state === "saved" ? "✓ Saved" : state === "confirm" ? "Confirm?" : "Save"}
                       </button>
                       {(() => {
+                        const rs = getResetState(u.id);
+                        const noEmail = !hasRealEmail(u.email);
+                        return (
+                          <>
+                            {rs === "confirm" && (
+                              <button
+                                onClick={() => handleCancelReset(u.id)}
+                                style={{
+                                  background: "transparent",
+                                  border: "1px solid #2a2d3a",
+                                  borderRadius: 6,
+                                  padding: "5px 10px",
+                                  color: "#64748b",
+                                  fontSize: 12,
+                                  cursor: "pointer",
+                                }}
+                              >
+                                Cancel
+                              </button>
+                            )}
+                            <button
+                              disabled={rs === "sending" || noEmail}
+                              title={noEmail ? "This user signed up with a phone number and has no email address" : "Set a new password and email it to the user"}
+                              onClick={() => handleResetClick(u)}
+                              style={{
+                                background:
+                                  rs === "sent" ? "rgba(34,197,94,0.15)" : rs === "confirm" ? "#38bdf8" : "rgba(56,189,248,0.08)",
+                                border: `1px solid ${
+                                  rs === "sent" ? "rgba(34,197,94,0.4)" : rs === "confirm" ? "#38bdf8" : "rgba(56,189,248,0.25)"
+                                }`,
+                                borderRadius: 6,
+                                padding: "5px 12px",
+                                color: rs === "sent" ? "#86efac" : rs === "confirm" ? "#0f1117" : "#7dd3fc",
+                                fontSize: 12,
+                                fontWeight: rs === "confirm" ? 700 : 500,
+                                cursor: rs === "sending" || noEmail ? "not-allowed" : "pointer",
+                                transition: "all 0.15s",
+                                opacity: rs === "sending" || noEmail ? 0.5 : 1,
+                                whiteSpace: "nowrap",
+                              }}
+                            >
+                              {rs === "sending"
+                                ? "Sending…"
+                                : rs === "sent"
+                                  ? "✓ Email sent"
+                                  : rs === "confirm"
+                                    ? "Send now?"
+                                    : "Email password reset"}
+                            </button>
+                          </>
+                        );
+                      })()}
+                      {(() => {
                         const ds = getDeleteState(u.id);
                         return (
                           <>
@@ -614,12 +783,20 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                     </div>
                   </td>
                 </tr>
+                {openPayments === u.id && (
+                  <tr style={{ background: "#0d0f1a" }}>
+                    <td colSpan={showRoleId ? 11 : 10} style={{ padding: 0 }}>
+                      <PaymentHistory userId={u.id} name={name} />
+                    </td>
+                  </tr>
+                )}
+                </React.Fragment>
               );
             })}
             {sortedRows.length === 0 && (
               <tr>
                 <td
-                  colSpan={showRoleId ? 10 : 9}
+                  colSpan={showRoleId ? 11 : 10}
                   style={{ padding: "40px", textAlign: "center", color: "#475569", fontSize: 14 }}
                 >
                   No users found

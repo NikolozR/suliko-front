@@ -79,7 +79,7 @@ export default function OrderStepUpload({ state, onPatchDocument }: Props) {
           <div key={doc.id} className="space-y-2">
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-2 text-sm font-semibold text-foreground">
-                <FileText className="h-4 w-4 text-suliko-default-color" />
+                <FileText className="h-4 w-4 text-accent-text" />
                 {t("document")} #{index + 1}
               </span>
               <span className="text-xs text-muted-foreground">
@@ -152,7 +152,7 @@ export default function OrderStepUpload({ state, onPatchDocument }: Props) {
             {docRejections.length > 0 && (
               <ul className="space-y-1">
                 {docRejections.map((message) => (
-                  <li key={message} className="text-xs text-red-500">
+                  <li key={message} className="text-xs text-red-700 dark:text-red-400">
                     {message}
                   </li>
                 ))}

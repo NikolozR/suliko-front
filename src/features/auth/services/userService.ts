@@ -135,6 +135,41 @@ export const deleteUser = async (userId: string) => {
   }
 };
 
+/**
+ * Admin only: sets a new random password for the user and emails it to them. The password is
+ * only in the email; the API never returns it. Resolves to the address it was sent to.
+ */
+export const sendPasswordResetEmail = async (userId: string): Promise<string> => {
+  const { refreshToken, token } = useAuthStore.getState();
+  if (!token) throw new Error("No token found");
+
+  const endpoint = `${API_BASE_URL}/User/${encodeURIComponent(userId)}/send-password-reset`;
+  const headers = new Headers();
+  headers.set("Authorization", `Bearer ${token}`);
+
+  let response = await fetch(endpoint, { headers, method: "POST" });
+
+  if (response.status === 401 && refreshToken) {
+    try {
+      const newTokens = (await reaccessToken(refreshToken)) as { token: string; refreshToken: string };
+      const { setToken, setRefreshToken } = useAuthStore.getState();
+      setToken(newTokens.token);
+      setRefreshToken(newTokens.refreshToken);
+      headers.set("Authorization", `Bearer ${newTokens.token}`);
+      response = await fetch(endpoint, { headers, method: "POST" });
+    } catch (error) {
+      useAuthStore.getState().reset();
+      throw new Error("Failed to refresh token " + error);
+    }
+  }
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(data?.error || data?.message || `Failed to send the password email (${response.status}).`);
+  }
+  return typeof data?.email === "string" ? data.email : "";
+};
+
 // Admin only: the API rejects this for non-admins. Users can no longer set balances via PUT /User.
 export const setUserBalance = async (userId: string, balance: number) => {
   const { refreshToken, token } = useAuthStore.getState();

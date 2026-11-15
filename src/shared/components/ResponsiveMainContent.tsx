@@ -28,12 +28,12 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
       root.style.setProperty('--sidebar-width-md', '0');
       root.style.setProperty('--sidebar-width-lg', '0');
     } else if (isCollapsed) {
-      root.style.setProperty('--sidebar-width', '4rem');
+      root.style.setProperty('--sidebar-width', '4rem'); // w-16
       root.style.setProperty('--sidebar-width-md', '4rem');
       root.style.setProperty('--sidebar-width-lg', '4rem');
     } else {
-      root.style.setProperty('--sidebar-width', '12rem'); // w-48
-      root.style.setProperty('--sidebar-width-md', '14rem'); // md:w-56
+      root.style.setProperty('--sidebar-width', '14rem'); // w-56
+      root.style.setProperty('--sidebar-width-md', '14rem');
       root.style.setProperty('--sidebar-width-lg', '16rem'); // lg:w-64
     }
   }, [isCollapsed, isMounted]);
@@ -41,7 +41,7 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
   if (!isMounted) {
     // Server-side render with collapsed state to prevent layout shift
     return (
-      <main className="sidebar-content pt-10" style={{ marginLeft: '4rem', transition: 'margin-left 300ms ease' }}>
+      <main id="main-content" className="sidebar-content pt-14" style={{ marginLeft: '4rem', transition: 'margin-left 300ms ease' }}>
         {children}
       </main>
     );
@@ -49,7 +49,7 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
 
   return (
     <>
-      <main className="sidebar-content pt-10 pb-20 md:pb-0">
+      <main id="main-content" className="sidebar-content pt-14 pb-20 md:pb-0">
         {children}
       </main>
       <WelcomeModal 

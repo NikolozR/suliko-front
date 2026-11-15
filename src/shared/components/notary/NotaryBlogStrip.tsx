@@ -28,7 +28,7 @@ export default function NotaryBlogStrip({ posts }: Props) {
             <BookOpen className="h-3.5 w-3.5" />
             {t("sectionBadge")}
           </div>
-          <h2 className="mb-4 text-3xl font-bold text-foreground sm:text-4xl">
+          <h2 className="mb-4 text-3xl font-semibold text-foreground sm:text-4xl">
             {t("heading")}
           </h2>
           <p className="text-lg leading-relaxed text-muted-foreground">

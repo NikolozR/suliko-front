@@ -108,7 +108,7 @@ export default function BookDemoBubble() {
           ref={panelRef}
           role="dialog"
           aria-labelledby="book-demo-bubble-title"
-          className="w-[calc(100vw-3rem)] max-w-[320px] rounded-2xl border border-border bg-background p-4 shadow-xl motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-200"
+          className="w-[calc(100vw-3rem)] max-w-[320px] rounded-2xl border border-border bg-background p-4 shadow-float-3 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-bottom-2 motion-safe:duration-200"
         >
           <div className="flex items-start justify-between gap-3">
             <p
@@ -154,7 +154,7 @@ export default function BookDemoBubble() {
         onClick={() => setIsOpen((open) => !open)}
         aria-expanded={isOpen}
         aria-label={t("openLabel")}
-        className="flex h-[56px] w-[56px] items-center justify-center rounded-full bg-suliko-default-color text-white shadow-lg transition-transform duration-200 hover:scale-105 active:scale-95 motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-50"
+        className="flex h-[56px] w-[56px] items-center justify-center rounded-full bg-suliko-default-color text-white shadow-float-2 transition-transform duration-200 hover:scale-105 active:scale-95 motion-safe:animate-in motion-safe:fade-in motion-safe:zoom-in-50"
       >
         {isOpen ? (
           <X className="h-[22px] w-[22px]" aria-hidden="true" />

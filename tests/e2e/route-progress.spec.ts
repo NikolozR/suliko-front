@@ -9,8 +9,8 @@ import { test, expect } from '@playwright/test';
  * current URL, a prevented default, a failed route, a query-string-only
  * transition — left it parked at 90% for the rest of the session.
  *
- * Not part of the CI `public` project: it exercises behaviour that must be
- * deployed before it can pass against the live URL.
+ * Part of the CI `public` project. A change to the bar has to be deployed
+ * before it can pass against the live URL.
  */
 
 const BAR = '[data-testid="route-progress"]';

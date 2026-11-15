@@ -1,6 +1,8 @@
 'use client';
 
 import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import { PACKAGES, isPlanKey, savingsGel } from "../packages";
 import { PricingCard } from "./PricingCard";
 import { PaymentModal } from "./PaymentModal";
 import { PayAsYouGoModal } from "./PayAsYouGoModal";
@@ -27,6 +29,12 @@ export function PricingGrid() {
   const { token } = useAuthStore();
   const router = useRouter();
   const t = useTranslations("Pricing");
+  // A link from the landing page names the plan the visitor picked there.
+  const params = useSearchParams();
+  const requested = params.get("plan");
+  // The landing page's Pay as you go card sends how many pages the visitor chose.
+  const requestedPages = Math.min(5000, Math.max(1, Number(params.get("pages")) || 1));
+  const highlighted = isPlanKey(requested) ? requested : "professional";
 
 
   /**
@@ -51,15 +59,15 @@ export function PricingGrid() {
   };
 
   const handleSelectPackage = (amount: number) => startCheckout(amount);
-  const handleStarterPackage = () => startCheckout(20);
-  const handleProfessionalPackage = () => startCheckout(50);
+  const handleStarterPackage = () => startCheckout(PACKAGES.starter.price);
+  const handleProfessionalPackage = () => startCheckout(PACKAGES.professional.price);
   const handleSelectPayAsYouGo = () => {
     if (!token) {
       toast.error(t("signInToPay"));
       router.push("/sign-in");
       return;
     }
-    setPayAsYouGoAmount(1);
+    setPayAsYouGoAmount(requestedPages);
     setShowAmountDialog(true);
   };
 
@@ -72,11 +80,28 @@ export function PricingGrid() {
 
   return (
     <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-        <PricingCard type="starter" onSelect={handleStarterPackage} />
-        <PricingCard type="professional" onSelect={handleProfessionalPackage} />
-        <PricingCard type="payAsYouGo" onSelect={handleSelectPayAsYouGo} />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto pt-3">
+        <PricingCard
+          type="starter"
+          onSelect={handleStarterPackage}
+          savingsGel={savingsGel(PACKAGES.starter)}
+          highlighted={highlighted === "starter"}
+        />
+        <PricingCard
+          type="professional"
+          onSelect={handleProfessionalPackage}
+          savingsGel={savingsGel(PACKAGES.professional)}
+          highlighted={highlighted === "professional"}
+        />
+        <PricingCard
+          type="payAsYouGo"
+          onSelect={handleSelectPayAsYouGo}
+          highlighted={highlighted === "payAsYouGo"}
+        />
       </div>
+      <p className="mx-auto mt-8 max-w-2xl text-center text-sm text-muted-foreground">
+        {t("landing.includedAll")}
+      </p>
 
       <PaymentModal
         isOpen={showPaymentModal}
@@ -91,7 +116,7 @@ export function PricingGrid() {
       <Dialog open={showAmountDialog} onOpenChange={setShowAmountDialog}>
         <DialogContent className="max-w-sm mx-auto p-6">
           <DialogHeader>
-            <DialogTitle className="text-center text-suliko-default-color">
+            <DialogTitle className="text-center text-accent-text">
               {t("payAsYouGoModal.title")}
             </DialogTitle>
           </DialogHeader>
@@ -102,13 +127,16 @@ export function PricingGrid() {
               </Label>
               <Input
                 id="payasyougo-amount"
-                type="number"
-                min={1}
-                step={1}
+                // Text with a numeric keypad, not type="number": a whole number of
+                // pages needs no spinner, no "e", and no wheel that changes it.
+                type="text"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                autoComplete="off"
                 value={payAsYouGoAmount}
                 onChange={(e) => {
-                  const val = Math.max(1, Math.floor(Number(e.target.value)));
-                  setPayAsYouGoAmount(isNaN(val) ? 1 : val);
+                  const val = Math.max(1, Number(e.target.value.replace(/\D/g, "")) || 1);
+                  setPayAsYouGoAmount(val);
                 }}
                 className="mt-2"
               />

@@ -1,8 +1,7 @@
 import { isAdminRequest } from "@/lib/admin-auth";
 import { redirect } from "next/navigation";
-import { supabaseAdmin } from "@/lib/supabase-admin";
+import { getAdminPassportTemplate } from "@/lib/site-content-admin";
 import PassportTemplateForm from "../../PassportTemplateForm";
-import type { PassportTemplate } from "@/lib/passport-types";
 
 export default async function EditPassportTemplatePage({
   params,
@@ -13,13 +12,8 @@ export default async function EditPassportTemplatePage({
 
   const { id } = await params;
 
-  const { data, error } = await supabaseAdmin
-    .from("passport_templates")
-    .select("*")
-    .eq("id", id)
-    .single();
+  const template = await getAdminPassportTemplate(id);
+  if (!template) redirect("/en/admin/passport-templates");
 
-  if (error || !data) redirect("/en/admin/passport-templates");
-
-  return <PassportTemplateForm initial={data as PassportTemplate} />;
+  return <PassportTemplateForm initial={template} />;
 }

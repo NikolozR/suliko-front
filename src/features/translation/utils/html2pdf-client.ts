@@ -15,37 +15,101 @@ const loadHtml2Pdf = async (): Promise<Html2PdfFactory> => {
 };
 
 /**
+ * Runs `draw` (anything that calls html2canvas) with the page set up so text lands where it belongs.
+ *
+ * html2canvas finds where to draw a line of text by measuring, in this page, a 1x1 picture it sets
+ * on the baseline of some sample text. The site's CSS reset (Tailwind's preflight) makes every
+ * picture a block, which drops that one onto a line of its own: every line was drawn about a third
+ * of a line too low, and the last line of a document was cut through at the bottom of the PDF.
+ *
+ * The rule names html2canvas's own picture, so nothing on the page changes. It goes in the page's
+ * head for the length of the drawing: html2pdf sanitizes the HTML it is given, and a style at the
+ * start of it does not survive that.
+ */
+export const withHtml2CanvasBaselineFix = async <T,>(draw: () => Promise<T>): Promise<T> => {
+  const style = document.createElement("style");
+  style.textContent =
+    'img[src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"] { display: inline !important; }';
+  document.head.appendChild(style);
+  try {
+    return await draw();
+  } finally {
+    style.remove();
+  }
+};
+
+/**
+ * The look of a generated PDF. Every rule names `.pdf-document`, the box the content is drawn in:
+ * html2pdf puts that box into the live page for the length of the drawing, so a rule for `body`
+ * or `*` would restyle the whole site while a PDF is being made.
+ *
+ * Text is Calibri 11 pt (what the Word editor and the Word file use; Carlito stands in where
+ * Calibri is not installed), dark unless the document gives it a colour of its own. Calibri has
+ * no Georgian letters: those come from the site's own font.
+ * `hr.page-break` is where the original document's page ended: the next page starts a new sheet.
+ *
+ * The site's CSS reset takes from headings, paragraphs and lists what makes them look like a
+ * document (headings came out as plain text in the site's titling face, lists without bullets or
+ * numbers). They get it back here as the editor shows them.
+ */
+const PDF_STYLES = `
+  .pdf-document {
+    font-family: Calibri, Carlito, 'Segoe UI', Arial, 'Secondary Font', sans-serif;
+    font-size: 11pt;
+    line-height: 1.22;
+    color: #111;
+    background-color: #fff;
+  }
+  .pdf-document, .pdf-document * { box-sizing: border-box; }
+  .pdf-document hr.page-break {
+    page-break-before: always;
+    visibility: hidden;
+    height: 0;
+    margin: 0;
+    border: none;
+  }
+  .pdf-document :is(h1, h2, h3, h4, h5, h6) { page-break-after: avoid; }
+  .pdf-document :is(p, li, blockquote, pre) { orphans: 3; widows: 3; }
+  /* A table is not kept whole: one taller than a sheet would jump to the next and leave a blank
+     page behind it. Its rows stay whole (tr is in the pagebreak list below). */
+  .pdf-document :is(figure, img) { page-break-inside: avoid; }
+  .pdf-document table { border-collapse: collapse; }
+
+  .pdf-document :is(h1, h2, h3, h4, h5, h6) { font-family: inherit; font-weight: 700; line-height: 1.2; }
+  .pdf-document h1 { font-size: 16pt; margin: 12pt 0 4pt; }
+  .pdf-document h2 { font-size: 14pt; margin: 10pt 0 4pt; }
+  .pdf-document h3 { font-size: 12pt; margin: 8pt 0 4pt; }
+  .pdf-document :is(h4, h5, h6) { font-size: 11pt; margin: 6pt 0 4pt; }
+  .pdf-document p { margin: 0 0 4pt; }
+  .pdf-document ul { list-style: disc; padding-left: 0.5in; margin: 0 0 4pt; }
+  .pdf-document ol { list-style: decimal; padding-left: 0.5in; margin: 0 0 4pt; }
+  .pdf-document li { margin: 0; }
+  .pdf-document blockquote { border-left: 3px solid #ccc; margin: 0.5em 0; padding-left: 1em; color: #555; }
+`;
+
+/** What `<ol type>` means. CSS cannot tell "a" from "A" in it, so it is set on each list. */
+const LIST_NUMBERING: Record<string, string> = {
+  "1": "decimal",
+  a: "lower-alpha",
+  A: "upper-alpha",
+  i: "lower-roman",
+  I: "upper-roman",
+};
+
+/**
  * Styling and layout for generated PDFs.
  *
  * Shared by the single-file download and the bulk zip so a document exported on its own and
  * the same document exported inside a batch come out identical.
  */
 const buildPdfDocument = (htmlContent: string, filename: string) => {
-  const styles = `
-    <style>
-      * { box-sizing: border-box; color: #111 !important; }
-      body {
-        font-family: Georgia, 'Times New Roman', serif;
-        font-size: 13px;
-        line-height: 1.6;
-        color: #111;
-        background-color: #fff;
-      }
-      hr.page-break {
-        page-break-before: always;
-        visibility: hidden;
-        height: 0;
-        margin: 0;
-        border: none;
-      }
-      h1, h2, h3, h4, h5, h6 { page-break-after: avoid; }
-      p, li, blockquote, pre { orphans: 3; widows: 3; }
-      table, figure, img { page-break-inside: avoid; }
-    </style>
-  `;
+  // html2pdf sanitizes the HTML it is given, and a style at the very start of it is thrown away
+  // there. Inside the box it is kept.
+  const source = `<div class="pdf-document"><style>${PDF_STYLES}</style>${htmlContent}</div>`;
 
   const options = {
-    margin: [15, 12, 15, 12] as const,
+    // One inch on every side: the Word editor's page.
+    margin: [25.4, 25.4, 25.4, 25.4] as const,
     filename,
     image: {
       type: "jpeg" as const,
@@ -64,6 +128,10 @@ const buildPdfDocument = (htmlContent: string, filename: string) => {
           'style',
           'background-color:#fff !important; color:#111 !important;'
         );
+        clonedDoc.querySelectorAll<HTMLOListElement>(".pdf-document ol[type]").forEach((list) => {
+          const numbering = LIST_NUMBERING[list.getAttribute("type") ?? ""];
+          if (numbering) list.style.listStyleType = numbering;
+        });
       },
     },
     jsPDF: {
@@ -73,10 +141,15 @@ const buildPdfDocument = (htmlContent: string, filename: string) => {
     },
     pagebreak: {
       mode: ["css"] as const,
+      // The page is drawn as one tall picture and cut into sheets, so whatever lies across the
+      // edge of a sheet is cut through: the last line of a page came out half on it and half on the
+      // next. An element that crosses an edge and would fit on a sheet is moved to the next one
+      // whole. (Only a paragraph taller than a sheet is still cut, where it must be.)
+      avoid: ["p", "li", "tr", "h1", "h2", "h3", "h4", "h5", "h6", "blockquote", "pre", "figure", "img"],
     },
   };
 
-  return { options, source: styles + htmlContent };
+  return { options, source };
 };
 
 export const generatePdfFromHtml = async (
@@ -87,7 +160,7 @@ export const generatePdfFromHtml = async (
   const { options, source } = buildPdfDocument(htmlContent, filename);
 
   try {
-    await html2pdf().set(options).from(source).save();
+    await withHtml2CanvasBaselineFix(() => html2pdf().set(options).from(source).save());
   } catch (error) {
     console.error("PDF generation failed:", error);
     throw new Error("Failed to generate PDF");
@@ -106,7 +179,7 @@ export const generatePdfBlobFromHtml = async (
   const { options, source } = buildPdfDocument(htmlContent, filename);
 
   try {
-    return await html2pdf().set(options).from(source).outputPdf("blob");
+    return await withHtml2CanvasBaselineFix(() => html2pdf().set(options).from(source).outputPdf("blob"));
   } catch (error) {
     console.error("PDF generation failed:", error);
     throw new Error("Failed to generate PDF");

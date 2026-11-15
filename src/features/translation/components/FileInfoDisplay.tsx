@@ -36,7 +36,7 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
 }) => {
   const t = useTranslations("DocumentTranslationCard");
   const ext = file?.name.split(".").pop()?.toLowerCase() || "";
-  const { icon: IconComponent, className: iconClass } = fileIconConfig[ext] ?? { icon: FileText, className: "text-suliko-default-color" };
+  const { icon: IconComponent, className: iconClass } = fileIconConfig[ext] ?? { icon: FileText, className: "text-accent-text" };
 
   return (
     <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border/50">

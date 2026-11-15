@@ -6,8 +6,12 @@ import OfficeJourney from "./OfficeJourney";
 import OfficeFeatures from "./OfficeFeatures";
 import OfficeSecurity from "./OfficeSecurity";
 import OfficeFaq from "./OfficeFaq";
+import OfficeSignInBand from "./OfficeSignInBand";
 import OfficeDemoSection from "./OfficeDemoSection";
 import OfficeSpotlight from "./OfficeSpotlight";
+import OfficeCompare from "./OfficeCompare";
+import OfficeOffer from "./OfficeOffer";
+import OfficeTranslateBand from "./OfficeTranslateBand";
 import NewOrderDemo from "./demo/NewOrderDemo";
 import PayoutsDemo from "./demo/PayoutsDemo";
 import ReportsDemo from "./demo/ReportsDemo";
@@ -15,14 +19,14 @@ import ScrollReveal from "@/shared/components/ScrollReveal";
 
 /**
  * Landing page for Suliko Office, the translation management system at
- * app.suliko.ge. Server-rendered, apart from the header (language switch,
+ * office.suliko.ge. Server-rendered, apart from the header (language switch,
  * mobile menu), the product demos and the demo-request form.
  */
 export default function SulikoOfficePage() {
   return (
     <div id="top" className="office-page min-h-screen overflow-x-clip text-foreground">
       <OfficeHeader />
-      <main>
+      <main id="main-content">
         <OfficeHero />
         <OfficePains />
         <OfficeSpotlight id="pricing" demo={<NewOrderDemo />} />
@@ -30,9 +34,13 @@ export default function SulikoOfficePage() {
         <OfficeFeatures />
         <OfficeSpotlight id="payouts" demo={<PayoutsDemo />} reverse />
         <OfficeSpotlight id="reports" demo={<ReportsDemo />} band />
+        <OfficeCompare />
         <OfficeSecurity />
+        <OfficeOffer />
         <OfficeFaq />
         <OfficeDemoSection />
+        <OfficeTranslateBand />
+        <OfficeSignInBand />
       </main>
       <LandingFooter />
       <ScrollReveal />

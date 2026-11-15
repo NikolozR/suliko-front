@@ -8,6 +8,7 @@ import {
   CardContent,
 } from "@/features/ui/components/ui/card";
 import { Type } from "lucide-react";
+import { useComboText } from "@/shared/components/Kbd";
 import { Textarea } from "@/features/ui/components/ui/textarea";
 import LanguageSelectionPanel from "./LanguageSelectionPanel";
 import TranslationSubmitButton from "./TranslationSubmitButton";
@@ -54,6 +55,8 @@ type DownloadFormatOption = { value: string; label: string; extension: string; i
 const TextTranslationCard = () => {
   const t = useTranslations('TextTranslationCard');
   const tButton = useTranslations('TranslationButton');
+  const downloadKeys = useComboText(["Alt", "Shift", "D"]);
+  const tA = useTranslations('A11y');
   const translatedSuffix = useTranslatedSuffix();
   const [textLoading, setTextLoading] = useState(false);
   const router = useRouter();
@@ -165,10 +168,8 @@ const TextTranslationCard = () => {
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       } else if (fileType === "docx") {
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset=\"utf-8\"></head><body>${translatedText}</body></html>`;
-        // @ts-expect-error Type errors, nothing special
-        const htmlDocx = (await import("html-docx-js/dist/html-docx")).default;
-        const blob = htmlDocx.asBlob(fullHtml);
+        const { wordBlob } = await import("@/features/translation/utils/wordPage");
+        const blob = await wordBlob(translatedText);
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
@@ -180,6 +181,7 @@ const TextTranslationCard = () => {
       } else if (fileType === "pdf") {
         const { jsPDF } = await import("jspdf");
         const html2canvas = (await import("html2canvas")).default;
+        const { withHtml2CanvasBaselineFix } = await import("@/features/translation/utils/html2pdf-client");
 
         // --- Create isolated wrapper ---
         const wrapper = document.createElement("div");
@@ -225,12 +227,12 @@ const TextTranslationCard = () => {
           await new Promise(r => requestAnimationFrame(r));
 
           // --- Render to canvas ---
-          const canvas = await html2canvas(wrapper, {
+          const canvas = await withHtml2CanvasBaselineFix(() => html2canvas(wrapper, {
             scale: 2,
             backgroundColor: "#ffffff",
             useCORS: true,
             logging: false,
-          });
+          }));
 
           const imgData = canvas.toDataURL("image/png");
 
@@ -418,13 +420,15 @@ const TextTranslationCard = () => {
               />
               <div className={translatedText ? "flex flex-col md:flex-row gap-4 md:gap-8 items-stretch md:items-start" : undefined}>
                 <div className="w-full flex-1 min-w-0">
-                  <div className="font-semibold mb-2 text-suliko-default-color text-sm md:text-base">
+                  <div className="font-semibold mb-2 text-accent-text text-sm md:text-base">
                     {t('yourText')}
                   </div>
                   <div className="h-[300px] max-h-[300px] flex flex-col overflow-y-auto w-full">
                     <Textarea
                       ref={textareaRef}
-                      className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm"
+                      data-shortcut="input"
+                      className="w-full flex-1 border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-base md:text-sm"
+                      aria-label={tA('textToTranslate')}
                       placeholder={t('textIputPlaceholder')}
                       value={currentTextValue}
                       onChange={(e) => {
@@ -433,7 +437,7 @@ const TextTranslationCard = () => {
                         clearErrors("currentTextValue");
                       }}
                       onKeyDown={(e) => {
-                        if (e.shiftKey && e.key === "Enter") {
+                        if ((e.shiftKey || e.ctrlKey || e.metaKey) && e.key === "Enter") {
                           e.preventDefault();
                           handleSubmit(onSubmit, handleFormError)();
                         }
@@ -453,7 +457,7 @@ const TextTranslationCard = () => {
                   )}
                   {/* Cost display for input text */}
                   {currentTextValue && currentTextValue.length > 0 && (
-                    <div className="mt-2 text-suliko-default-color font-semibold text-sm">
+                    <div className="mt-2 text-accent-text font-semibold text-sm">
                       Pages to be used: {(currentTextValue.length / 2500).toFixed(2)}
                     </div>
                   )}
@@ -461,7 +465,7 @@ const TextTranslationCard = () => {
                 {translatedText && (
                   <div className="w-full flex-1 min-w-0">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-2">
-                      <div className="font-semibold text-suliko-default-color text-sm md:text-base">
+                      <div className="font-semibold text-accent-text text-sm md:text-base">
                         {t('result')}
                       </div>
                       <div className="flex items-center gap-2 shrink-0">
@@ -471,24 +475,30 @@ const TextTranslationCard = () => {
                           size="sm"
                           onClick={() => setShowDownloadModal(true)}
                           className="transition-all duration-200"
-                          title={tButton('download')}
+                          title={`${tButton('download')} (${downloadKeys})`}
+                          aria-label={tButton('download')}
+                          data-shortcut="download"
                         >
                           <Download className="h-4 w-4" />
+                          <span className="hidden sm:ml-1.5 sm:inline">{tButton('download')}</span>
                         </Button>
                         <CopyButton
                           content={translatedText}
                           size="sm"
                           variant="outline"
+                          label={tButton('copy')}
+                          copiedLabel={tButton('copied')}
                         />
                       </div>
                     </div>
                     <Textarea
                       ref={translatedRef}
-                      className="w-full flex-1 h-[300px] max-h-[300px] border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-sm md:text-base bg-slate-50 dark:bg-input/30 border-slate-200 dark:border-slate-700"
+                      className="w-full flex-1 h-[300px] max-h-[300px] border-2 focus:border-suliko-default-color focus:ring-suliko-default-color overflow-y-auto text-base bg-slate-50 dark:bg-input/30 border-slate-200 dark:border-slate-700"
                       value={translatedText}
                       onChange={(e) => {
                         setTranslatedText(e.target.value);
                       }}
+                      aria-label={tA('translatedText')}
                       placeholder={t('result')}
                     />
                     {/* Character and word count display for translated text */}
@@ -504,7 +514,7 @@ const TextTranslationCard = () => {
                     )}
                     {/* Spacer to match "Pages to be used" height in input section */}
                     {currentTextValue && currentTextValue.length > 0 && (
-                      <div className="mt-2 text-suliko-default-color font-semibold text-sm opacity-0 pointer-events-none">
+                      <div className="mt-2 text-accent-text font-semibold text-sm opacity-0 pointer-events-none">
                         Pages to be used: 0.00
                       </div>
                     )}
@@ -576,6 +586,7 @@ const TextTranslationCard = () => {
               size="sm"
               className="absolute top-2 right-2"
               onClick={() => setShowDownloadModal(false)}
+              aria-label={tA("close")}
             >
               <X className="h-4 w-4" />
             </Button>

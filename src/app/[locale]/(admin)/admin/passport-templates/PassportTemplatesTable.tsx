@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { Pencil, Trash2, Plus, Eye, EyeOff } from "lucide-react";
 import type { PassportTemplate } from "@/lib/passport-types";
+import { deletePassportTemplate, savePassportTemplate } from "@/lib/site-content-client";
 
 interface Props {
   initialTemplates: PassportTemplate[];
@@ -19,22 +20,24 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
   async function handleDelete(id: string) {
     if (!confirm("Delete this template permanently?")) return;
     setDeleting(id);
-    await fetch(`/api/passport-templates/${id}`, { method: "DELETE" });
-    setTemplates((prev) => prev.filter((t) => t.id !== id));
+    try {
+      await deletePassportTemplate(id);
+      setTemplates((prev) => prev.filter((t) => t.id !== id));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Delete failed");
+    }
     setDeleting(null);
   }
 
   async function handleToggleActive(id: string, currentActive: boolean) {
     setToggling(id);
-    const res = await fetch(`/api/passport-templates/${id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ is_active: !currentActive }),
-    });
-    if (res.ok) {
+    try {
+      await savePassportTemplate(id, { is_active: !currentActive });
       setTemplates((prev) =>
         prev.map((t) => (t.id === id ? { ...t, is_active: !currentActive } : t))
       );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Save failed");
     }
     setToggling(null);
   }

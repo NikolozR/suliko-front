@@ -4,9 +4,9 @@ import { useState } from "react";
 import { Download, Check } from "lucide-react";
 import { Button } from "@/features/ui/components/ui/button";
 import { saveAs } from "file-saver";
-// @ts-expect-error Type errors, nothing special
-import htmlDocx from "html-docx-js/dist/html-docx";
+import { wordBlob } from "@/features/translation/utils/wordPage";
 import { generatePdfFromHtml } from "@/features/translation/utils/html2pdf-client";
+import { useComboText } from "@/shared/components/Kbd";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 
 
@@ -35,10 +35,12 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   className = "",
   size = "sm",
   variant = "outline",
+  label,
 }) => {
   const [downloaded, setDownloaded] = useState(false);
   const [isConverting, setIsConverting] = useState(false);
   const translatedSuffix = useTranslatedSuffix();
+  const shortcutText = useComboText(["Alt", "Shift", "D"]);
 
   const getMimeType = (type: string) => {
     switch (type) {
@@ -90,9 +92,7 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       } else if (fileType === "pdf") {
         await generatePdfFromHtml(content, fileName);
       } else if (fileType === "docx") {
-        const fullHtml = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body>${content}</body></html>`;
-        const blob = htmlDocx.asBlob(fullHtml);
-        saveAs(blob, fileName);
+        saveAs(await wordBlob(content), fileName);
       }
 
       setDownloaded(true);
@@ -107,9 +107,9 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
   const isLoading = isConverting;
   
   const buttonIcon = downloaded ? (
-    <Check className="h-4 w-4 mr-1" />
+    <Check className={`h-4 w-4 ${label ? "sm:mr-1.5" : "mr-1"}`} />
   ) : (
-    <Download className="h-4 w-4 mr-1" />
+    <Download className={`h-4 w-4 ${label ? "sm:mr-1.5" : "mr-1"}`} />
   );
 
   return (
@@ -118,10 +118,14 @@ const DownloadButton: React.FC<DownloadButtonProps> = ({
       variant={variant}
       size={size}
       onClick={handleDownload}
+      data-shortcut="download"
+      title={label ? `${label} (${shortcutText})` : shortcutText}
       className={`transition-all duration-200 ${className}`}
       disabled={!content.trim() || isLoading}
+      aria-label={label}
     >
       {buttonIcon}
+      {label && <span className="hidden sm:inline">{label}</span>}
     </Button>
   );
 };

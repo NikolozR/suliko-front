@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
-/** Sign-in to Suliko Office (app.suliko.ge) through suliko.ge. See OfficeSsoGateway. */
+/** Sign-in to Suliko Office (office.suliko.ge) through suliko.ge. See OfficeSsoGateway. */
 export default function OfficeSsoPage() {
   return (
     <div className="relative flex justify-center items-center min-h-[100dvh] w-full overflow-y-auto">
