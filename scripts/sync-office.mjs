@@ -59,7 +59,9 @@ function destFor(rel) {
   if (rel === "src/app/[locale]/error.tsx") return "src/app/app/[locale]/error.tsx";
   const page = rel.match(/^src\/app\/\[locale\]\/\(app\)\/(.*)$/);
   if (page) return `src/app/app/[locale]/(office)/${page[1]}`;
-  if (rel.startsWith("src/app/")) return null;
+  // Another screen's component a moved page imports (settings uses onboarding's
+  // plan choice): kept at its own path under src/office, which is not a route.
+  if (rel.startsWith("src/app/")) return rel.endsWith(".css") ? null : `src/office/${rel.slice("src/".length)}`;
   return `src/office/${rel.slice("src/".length)}`;
 }
 
