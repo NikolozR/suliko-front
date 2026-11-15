@@ -2,7 +2,8 @@
 
 import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { Maximize2, Minimize2 } from "lucide-react";
+import { ArrowLeft, Columns2, Maximize2, X } from "lucide-react";
+import { createPortal } from "react-dom";
 import {
   forwardRef,
   useCallback,
@@ -10,6 +11,7 @@ import {
   useImperativeHandle,
   useRef,
   useState,
+  type ReactNode,
 } from "react";
 import { Button } from "@/features/ui/components/ui/button";
 import { originalPageSetup } from "@/features/translation/utils/originalPage";
@@ -45,6 +47,8 @@ export interface TranslationEditorHandle extends NewEditorHandle {
   toPdf(): Promise<Blob> | null;
   /** Prints the document as the Word editor lays it out (the browser can save that as a PDF). */
   print(): void;
+  /** Opens the full-screen editor (the Word editor only; does nothing otherwise). */
+  openFullScreen(): void;
 }
 
 interface TranslationEditorProps {
@@ -78,6 +82,17 @@ interface TranslationEditorProps {
   onOpened?: (html: string) => void;
   /** The screen already says what the editor is: leave out the line above it. */
   hideHint?: boolean;
+  /**
+   * The page draws the full-screen button itself (an icon next to its own actions) and calls
+   * `openFullScreen()`: the editor's own row with the hint and the button is left out.
+   */
+  hideHeader?: boolean;
+  /** Told which editor is in use, so the page shows its full-screen button only for Word. */
+  onEngine?: (engine: "loading" | "word" | "simple" | "unavailable") => void;
+  /** Full screen: the name at the top (the file's), the page's actions, and the original. */
+  fullScreenTitle?: string;
+  fullScreenActions?: ReactNode;
+  renderOriginal?: () => ReactNode;
 }
 
 /** The simple editor can be asked for with `?classic=1` (or kept with `suliko:classic-editor`). */
@@ -117,6 +132,11 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
       onUnavailable,
       onOpened,
       hideHint = false,
+      hideHeader = false,
+      onEngine,
+      fullScreenTitle,
+      fullScreenActions,
+      renderOriginal,
     },
     ref,
   ) {
@@ -129,6 +149,8 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
     );
     const [sfdt, setSfdt] = useState<string | null>(null);
     const [fullScreen, setFullScreen] = useState(false);
+    // Full screen: the original beside the translation (on a phone, instead of it).
+    const [showOriginal, setShowOriginal] = useState(false);
 
     // The HTML for this document as it stands: what was loaded, then what the editor wrote.
     const latestHtml = useRef("");
@@ -291,18 +313,56 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
         // Keep the document that was opened.
       }
       setFullScreen((full) => !full);
+      setShowOriginal(false);
     };
     useEffect(() => {
       if (!fullScreen) return;
       const onKey = (event: KeyboardEvent) => {
-        if (event.key === "Escape") toggleFullScreen();
+        if (event.key !== "Escape") return;
+        // Esc first closes what the Word editor or the page has open (a menu, a dialog, the
+        // download choice), as before; only then does it leave full screen.
+        // The Word editor keeps its menus and dialogs in the page while closed, and shows
+        // tooltips as open popups: only a visible one that is not a tooltip counts.
+        const open = [
+          ...document.querySelectorAll(
+            ".e-popup-open, .e-dialog:not(.e-popup-close), [role=dialog][data-state=open], [role=menu]",
+          ),
+        ].some((element) => {
+          if (element.classList.contains("e-tooltip-wrap")) return false;
+          const box = element.getBoundingClientRect();
+          return box.width > 0 && box.height > 0 && getComputedStyle(element).visibility !== "hidden";
+        });
+        if (open) return;
+        event.preventDefault();
+        toggleFullScreen();
       };
       const overflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-      window.addEventListener("keydown", onKey);
+      // Capture: the Word editor keeps Esc to itself while it has the focus. And it types
+      // through a hidden frame of its own (iframe.e-de-text-target), whose keys never reach
+      // this window: that frame is listened to as well, once the editor has made it.
+      window.addEventListener("keydown", onKey, true);
+      const frames = new Set<Window>();
+      const watch = window.setInterval(() => {
+        document.querySelectorAll<HTMLIFrameElement>("iframe.e-de-text-target").forEach((frame) => {
+          const inner = frame.contentWindow;
+          if (inner && !frames.has(inner)) {
+            frames.add(inner);
+            inner.addEventListener("keydown", onKey, true);
+          }
+        });
+      }, 300);
       return () => {
         document.body.style.overflow = overflow;
-        window.removeEventListener("keydown", onKey);
+        window.removeEventListener("keydown", onKey, true);
+        window.clearInterval(watch);
+        frames.forEach((inner) => {
+          try {
+            inner.removeEventListener("keydown", onKey, true);
+          } catch {
+            // The frame is gone with the editor.
+          }
+        });
       };
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [fullScreen]);
@@ -326,13 +386,21 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
           return docx ? docx.then((word) => docxToPdf(word)) : null;
         },
         print: () => wordRef.current?.print(),
+        openFullScreen: () => {
+          if (engine === "word" && !fullScreen) toggleFullScreen();
+        },
       }),
-      [engine],
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      [engine, fullScreen],
     );
 
     useEffect(() => {
       if (engine !== "word") onScroller?.(null);
     }, [engine, onScroller]);
+
+    useEffect(() => {
+      onEngine?.(engine);
+    }, [engine, onEngine]);
 
     if (engine === "simple") {
       return (
@@ -353,53 +421,111 @@ const TranslationEditor = forwardRef<TranslationEditorHandle, TranslationEditorP
     if (engine === "unavailable") return null;
     if (engine === "loading" || !sfdt) return <EditorSkeleton className={className} />;
 
+    const editor = (
+      <WordEditor
+        key={fullScreen ? "full" : "compact"}
+        sfdt={sfdt}
+        mode={fullScreen ? "full" : "compact"}
+        onChange={edited}
+        onOpened={() => {
+          // What was opened, as HTML: the suggestions' quotes are looked for in it, and
+          // whoever opened a Word file has no HTML of it otherwise.
+          try {
+            const html = wordRef.current?.getHTML();
+            if (html === undefined) return;
+            if (!latestHtml.current) latestHtml.current = html;
+            onOpenedRef.current?.(html);
+          } catch {
+            // Nothing to tell.
+          }
+        }}
+        scrollerRef={onScroller}
+        handle={wordRef}
+      />
+    );
+
+    if (fullScreen) {
+      // A focus mode over the whole window, drawn at the top of the page (a portal), so
+      // nothing around the editor (a card's animation, the shell) can clip or shift it.
+      const original = renderOriginal ? renderOriginal() : null;
+      return createPortal(
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={fullScreenTitle ?? t("fullScreenTitle")}
+          className="fixed inset-0 z-50 flex flex-col bg-background"
+        >
+          <div className="flex shrink-0 items-center gap-2 border-b px-3 py-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={toggleFullScreen}
+              aria-label={t("exitFullScreen")}
+              title={t("exitFullScreen")}
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <span className="min-w-0 flex-1 truncate text-sm font-semibold">
+              {fullScreenTitle ?? t("fullScreenTitle")}
+            </span>
+            {original && (
+              <Button
+                type="button"
+                variant={showOriginal ? "secondary" : "outline"}
+                size="sm"
+                onClick={() => setShowOriginal((shown) => !shown)}
+                aria-pressed={showOriginal}
+                title={showOriginal ? t("hideOriginal") : t("showOriginal")}
+              >
+                <Columns2 className="h-4 w-4" />
+                <span className="hidden sm:ml-1.5 sm:inline">{t("original")}</span>
+              </Button>
+            )}
+            {fullScreenActions && <div className="flex items-center gap-2">{fullScreenActions}</div>}
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              onClick={toggleFullScreen}
+              aria-label={t("exitFullScreen")}
+              title={`${t("exitFullScreen")} (Esc)`}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          <div className={`min-h-0 flex-1 ${showOriginal && original ? "grid md:grid-cols-2" : "flex"}`}>
+            {showOriginal && original && (
+              <div className="min-h-0 overflow-auto border-r p-3">{original}</div>
+            )}
+            {/* On a phone the original takes the place of the translation; the editor stays
+                mounted (hidden) so its edits are kept. */}
+            <div className={`min-h-0 flex-1 ${showOriginal && original ? "hidden md:block" : ""}`}>{editor}</div>
+          </div>
+        </div>,
+        document.body,
+      );
+    }
+
     return (
-      <div
-        className={
-          fullScreen
-            ? "fixed inset-0 z-[100] flex flex-col bg-background"
-            : `flex ${className} min-h-[320px] flex-col`
-        }
-      >
-        <div className="flex items-center justify-between gap-2 pb-2">
-          <span className={fullScreen ? "px-3 pt-2 text-sm font-semibold" : "text-xs text-muted-foreground"}>
-            {fullScreen ? t("fullScreenTitle") : hideHint ? "" : t("hint")}
-          </span>
-          <Button
-            type="button"
-            variant="outline"
-            size="sm"
-            onClick={toggleFullScreen}
-            className={fullScreen ? "mr-3 mt-2" : ""}
-            title={fullScreen ? t("exitFullScreen") : t("fullScreen")}
-            aria-label={fullScreen ? t("exitFullScreen") : t("fullScreen")}
-          >
-            {fullScreen ? <Minimize2 className="mr-1 h-4 w-4" /> : <Maximize2 className="mr-1 h-4 w-4" />}
-            <span className="hidden sm:inline">{fullScreen ? t("exitFullScreen") : t("fullScreen")}</span>
-          </Button>
-        </div>
-        <div className="min-h-0 flex-1">
-          <WordEditor
-            key={fullScreen ? "full" : "compact"}
-            sfdt={sfdt}
-            mode={fullScreen ? "full" : "compact"}
-            onChange={edited}
-            onOpened={() => {
-              // What was opened, as HTML: the suggestions' quotes are looked for in it, and
-              // whoever opened a Word file has no HTML of it otherwise.
-              try {
-                const html = wordRef.current?.getHTML();
-                if (html === undefined) return;
-                if (!latestHtml.current) latestHtml.current = html;
-                onOpenedRef.current?.(html);
-              } catch {
-                // Nothing to tell.
-              }
-            }}
-            scrollerRef={onScroller}
-            handle={wordRef}
-          />
-        </div>
+      <div className={`flex ${className} min-h-[320px] flex-col`}>
+        {!hideHeader && (
+          <div className="flex items-center justify-between gap-2 pb-2">
+            <span className="text-xs text-muted-foreground">{hideHint ? "" : t("hint")}</span>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={toggleFullScreen}
+              title={t("fullScreen")}
+              aria-label={t("fullScreen")}
+            >
+              <Maximize2 className="mr-1 h-4 w-4" />
+              <span className="hidden sm:inline">{t("fullScreen")}</span>
+            </Button>
+          </div>
+        )}
+        <div className="min-h-0 flex-1">{editor}</div>
       </div>
     );
   },

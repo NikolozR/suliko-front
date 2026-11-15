@@ -419,7 +419,10 @@
     "fullScreen": "Pełny ekran",
     "exitFullScreen": "Zamknij pełny ekran",
     "fullScreenTitle": "Tłumaczenie",
-    "simpleEditorNotice": "Nie udało się otworzyć edytora w stylu Worda, dlatego widać prosty edytor. Twoje tłumaczenie pozostaje bez zmian."
+    "simpleEditorNotice": "Nie udało się otworzyć edytora w stylu Worda, dlatego widać prosty edytor. Twoje tłumaczenie pozostaje bez zmian.",
+    "original": "Oryginał",
+    "showOriginal": "Pokaż oryginał obok",
+    "hideOriginal": "Ukryj oryginał"
   },
   "DocumentTranslationCard": {
     "swapLanguages": "Zamień języki",
