@@ -89,7 +89,7 @@ export function SendToOrder({
     }
   };
 
-  const orderHref = `/orders/${note.slug}/${note.orderId}`;
+  const orderHref = `/assignments/${note.slug}/${note.orderId}`;
 
   return (
     <>

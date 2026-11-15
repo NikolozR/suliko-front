@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { CLEAN_NAMES } from "./office/i18n/office-path";
+
 /**
  * Suliko Office's addresses on this site (/app/...), during phase 3 of making
  * Suliko Translate and Suliko Office one system: its modules move into this app
@@ -12,7 +14,7 @@ import { NextRequest, NextResponse } from "next/server";
  */
 
 /** Modules whose pages are in src/app/app/[locale]/(office). Add one per move. */
-const MOVED_MODULES = ["calculator", "clients", "notaries", "translators", "finances", "reports", "settings", "billing", "users", "dashboard", "notifications", "account"] as const;
+const MOVED_MODULES = ["calculator", "clients", "notaries", "translators", "finances", "reports", "settings", "billing", "users", "dashboard", "notifications", "account", "translations"] as const;
 
 const OFFICE_LOCALES = ["ka", "en"];
 const SESSION_COOKIE = "suliko_session";
@@ -61,9 +63,33 @@ function buildCsp(nonce: string, isDev: boolean): string {
 }
 
 /** /ka/clients/2 -> { locale: "ka", module: "clients" }; also pl, which Office lacks. */
+/** Clean address segment -> Office module: "orders" -> "translations". */
+const MODULE_OF_CLEAN: Record<string, string> = Object.fromEntries(
+  Object.entries(CLEAN_NAMES).map(([module, clean]) => [clean, module]),
+);
+/** Office module -> its clean segment: "translations" -> "orders", else itself. */
+const cleanName = (module: string) => CLEAN_NAMES[module] ?? module;
+
+/** /ka/clients/2 -> { locale: "ka", module: "clients" }; /ka/orders -> "translations". Also pl. */
 function parseClean(pathname: string): { locale: string | null; module: string | null } {
-  const [, locale, module] = pathname.split("/");
-  return ["ka", "en", "pl"].includes(locale) ? { locale, module: module ?? null } : { locale: null, module: null };
+  const [, locale, segment] = pathname.split("/");
+  if (!["ka", "en", "pl"].includes(locale)) return { locale: null, module: null };
+  // An Office module's own name is no clean address when it has another one:
+  // /ka/translations/<id> is Translate's result page.
+  if (segment && CLEAN_NAMES[segment]) return { locale, module: null };
+  return { locale, module: segment ? (MODULE_OF_CLEAN[segment] ?? segment) : null };
+}
+
+/**
+ * Translate's bureau assignments were /{locale}/orders until Office's orders
+ * took that address; they are /{locale}/assignments now. An old assignment
+ * address has a bureau's slug after /orders (/ka/orders/demo-bureau/117), an
+ * Office order a number or "new".
+ */
+function oldAssignmentPath(pathname: string): string | null {
+  const m = /^\/(ka|en|pl)\/orders\/([^/]+)(\/.*)?$/.exec(pathname);
+  if (!m || /^\d+$/.test(m[2]) || m[2] === "new") return null;
+  return `/${m[1]}/assignments/${m[2]}${m[3] ?? ""}`;
 }
 
 /** Whether this request might be an Office address: /app/..., or /{locale}/{moved module}. */
@@ -109,31 +135,41 @@ export function officeZone(request: NextRequest): NextResponse | null {
       return null;
     }
     if (!locale || !isMoved(module)) return null;
-    const clean = `${pathname.slice("/app".length)}${search}`;
+    // /app/ka/translations/12 -> /ka/orders/12
+    const rest = pathname.slice(`/app/${locale}/${module}`.length);
+    const clean = `/${locale}/${cleanName(module)}${rest}${search}`;
     if (enabledModules().has(module)) {
       // A page load goes to the clean address. A page-data request or a form
       // post from an old tab is answered in place.
       const pageLoad = (request.method === "GET" || request.method === "HEAD") && request.headers.get("rsc") !== "1";
       if (pageLoad) return NextResponse.redirect(new URL(clean, request.url), 308);
-      return serveHere(request, locale, clean);
+      return serveHere(request, locale, clean, `${pathname}${search}`);
     }
     return zone ? NextResponse.rewrite(new URL(`${zone}${pathname}${search}`)) : null;
   }
 
   // ── Clean address /{ka|en|pl}/{moved module}/... ──────────────────────────
+  const assignment = oldAssignmentPath(pathname);
+  if (assignment) return NextResponse.redirect(new URL(`${assignment}${search}`, request.url), 308);
+
   const { locale, module } = parseClean(pathname);
   if (!locale || !isMoved(module)) return null;
+  const segment = cleanName(module);
+  const rest = pathname.slice(`/${locale}/${segment}`.length);
   if (!enabledModules().has(module)) {
+    // Before Office's orders are switched on, /ka/orders is still what it was:
+    // Translate's bureau assignments, at their new address.
+    if (segment === "orders" && !rest) return NextResponse.redirect(new URL(`/${locale}/assignments${search}`, request.url), 307);
     // Not switched on yet: the Office deployment answers, at its own address.
-    return NextResponse.redirect(new URL(`/app/${locale === "en" ? "en" : "ka"}${pathname.slice(locale.length + 1)}${search}`, request.url), 307);
+    return NextResponse.redirect(new URL(`/app/${locale === "en" ? "en" : "ka"}/${module}${rest}${search}`, request.url), 307);
   }
   // Office has no Polish: its screens open in English.
-  if (locale === "pl") return NextResponse.redirect(new URL(`/en${pathname.slice(3)}${search}`, request.url), 307);
-  return serveHere(request, locale, `${pathname}${search}`);
+  if (locale === "pl") return NextResponse.redirect(new URL(`/en/${segment}${rest}${search}`, request.url), 307);
+  return serveHere(request, locale, `${pathname}${search}`, `/app/${locale}/${module}${rest}${search}`);
 }
 
 /** Serve a moved module's page from this app: Office's middleware, then the internal rewrite. */
-function serveHere(request: NextRequest, locale: string, clean: string): NextResponse {
+function serveHere(request: NextRequest, locale: string, clean: string, internal = `/app${clean}`): NextResponse {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const csp = buildCsp(nonce, process.env.NODE_ENV === "development");
 
@@ -156,7 +192,9 @@ function serveHere(request: NextRequest, locale: string, clean: string): NextRes
   headers.set("x-next-intl-locale", locale);
 
   // The pages live under src/app/app/[locale]/(office).
-  const target = new URL(`/app${clean}`, request.url);
+  // The pages live under src/app/app/[locale]/(office) and (editor), in their
+  // Office folder names (orders: translations).
+  const target = new URL(internal, request.url);
   const response = NextResponse.rewrite(target, { request: { headers } });
   response.headers.set("Content-Security-Policy", csp);
   return response;

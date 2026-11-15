@@ -41,7 +41,7 @@ export const TRANSLATE_NAV: readonly TranslateNavItem[] = [
   {
     // What bureaus have assigned to this person as a translator. Not "Orders":
     // that is Office's list of the bureau's own orders.
-    href: "/orders",
+    href: "/assignments",
     label: { ka: "ბიუროების შეკვეთები", en: "Bureau assignments", pl: "Zlecenia od biur" },
     icon: ClipboardList,
   },

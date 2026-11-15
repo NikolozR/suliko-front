@@ -68,7 +68,7 @@ export function useOrderSource(): OrderSourceState {
 
   useEffect(() => {
     if (!named || !slug || !orderId || !fileId) return;
-    const back = `/orders/${slug}/${orderId}`;
+    const back = `/assignments/${slug}/${orderId}`;
     if (!signedIn) {
       setState({ status: "signedOut", back });
       return;

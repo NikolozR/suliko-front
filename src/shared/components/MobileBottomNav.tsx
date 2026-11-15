@@ -39,7 +39,7 @@ export default function MobileBottomNav({ office = null }: { office?: OfficeCont
     ...(token
       ? [
           { label: t("projects"), href: "/projects" as const, icon: FolderOpen },
-          { label: t("orders"), href: "/orders" as const, icon: ClipboardList },
+          { label: t("orders"), href: "/assignments" as const, icon: ClipboardList },
           { label: t("profile"), href: "/profile" as const, icon: User },
         ]
       : [

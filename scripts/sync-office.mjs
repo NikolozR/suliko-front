@@ -52,6 +52,16 @@ for (const mod of modules) {
     const full = path.join(dir, f);
     if (fs.statSync(full).isFile() && /\.(tsx?|css)$/.test(full)) walk(full);
   }
+  // Office's full-screen editor pages are a route group of their own, (editor),
+  // with its own layout: orders' Word editor is /translations/<id>/.../editor/<file>.
+  const editorDir = path.join(appDir, "(editor)", mod);
+  if (fs.existsSync(editorDir)) {
+    walk(path.join(appDir, "(editor)", "layout.tsx"));
+    for (const f of fs.readdirSync(editorDir, { recursive: true })) {
+      const full = path.join(editorDir, f);
+      if (fs.statSync(full).isFile() && /\.(tsx?|css)$/.test(full)) walk(full);
+    }
+  }
 }
 
 function destFor(rel) {
@@ -59,6 +69,8 @@ function destFor(rel) {
   if (rel === "src/app/[locale]/error.tsx") return "src/app/app/[locale]/error.tsx";
   const page = rel.match(/^src\/app\/\[locale\]\/\(app\)\/(.*)$/);
   if (page) return `src/app/app/[locale]/(office)/${page[1]}`;
+  const editor = rel.match(/^src\/app\/\[locale\]\/\(editor\)\/(.*)$/);
+  if (editor) return `src/app/app/[locale]/(editor)/${editor[1]}`;
   // Another screen's component a moved page imports (settings uses onboarding's
   // plan choice): kept at its own path under src/office, which is not a route.
   // The one shell's shared definitions: this app has its own (src/shared/nav).
