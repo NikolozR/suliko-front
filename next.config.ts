@@ -51,15 +51,22 @@ const nextConfig: NextConfig = {
   // here: a Vercel function refuses request bodies over 4.5 MB, and these are
   // documents of up to 20 MB.
   async rewrites() {
-    return [
-      { source: "/api/gemini-upload", destination: `${API_BASE_URL}/Document/gemini-upload` },
-      ...(officeZone
+    return {
+      beforeFiles: [],
+      afterFiles: [
+        { source: "/api/gemini-upload", destination: `${API_BASE_URL}/Document/gemini-upload` },
+      ],
+      // Fallback, not afterFiles: an Office module moved into this app is a
+      // dynamic route (/app/[locale]/calculator), and afterFiles rewrites are
+      // applied before dynamic routes, so they would still send it to the
+      // Office deployment. A fallback applies only when nothing here matched.
+      fallback: officeZone
         ? [
             { source: OFFICE_PATH, destination: `${OFFICE_ZONE_URL}${OFFICE_PATH}` },
             { source: `${OFFICE_PATH}/:path*`, destination: `${OFFICE_ZONE_URL}${OFFICE_PATH}/:path*` },
           ]
-        : []),
-    ];
+        : [],
+    };
   },
   // The Suliko Office landing page was /tms until October 2026. Old links,
   // bookmarks and search results keep working.

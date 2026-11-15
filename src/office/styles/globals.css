@@ -1,0 +1,638 @@
+/* ============================================================================
+   Suliko Office — globals.css
+   Drop into src/app/globals.css of the new Next.js app.
+   Tailwind v4, CSS-first. No tailwind.config.js.
+
+   Token values extracted from suliko-front/src/app/globals.css and verified
+   against the deployed https://suliko.ge computed styles (2026-09-13).
+
+   Deliberate differences from the reference project, both explained in
+   docs/01-DESIGN-SYSTEM.md §3:
+     - Body text uses BPG Arial (--font-body); only h1-h4 use BPG Mrgvlovani Caps (--font-display)
+       (matches the DEPLOYED site, not the older repo rule).
+     - No `html { font-size: 80% }`. A data-dense app needs a 16px root.
+   ========================================================================== */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "../../app/tokens.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ---------------------------------------------------------------------------
+   Fonts -- loaded by next/font in app/[locale]/layout.tsx, which preloads them
+   and sets --font-body / --font-display on <html>. WOFF2, subset to Latin,
+   Cyrillic, Georgian and punctuation: 23 KB + 20 KB where the TTFs were
+   149 KB + 95 KB (audit F36). See the note there to rebuild them.
+   --------------------------------------------------------------------------- */
+
+/* Body/UI text is BPG Arial; only headings get the Mrgvlovani caps display face. */
+* {
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+}
+
+:is(h1, h2, h3, h4) {
+  font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
+  /* The display face has a regular weight only. Faked bold smears its
+     Mkhedruli strokes together, so headings stand out by size and face. */
+  font-synthesis-weight: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Georgian (Mkhedruli) line metrics.
+
+   The display face (bpg_mrgvlovani_caps) needs a 1.38 line-height, measured and
+   consistent from 24px to 60px. Tailwind's leading-none/tight/snug are all
+   below that, so the glyph ink overflows its line box and any ancestor with
+   `overflow: hidden` slices the descenders off.
+
+   It shows up intermittently in Safari because `font-display: swap` means the
+   line box is first computed against the fallback sans-serif, which does fit
+   1.25 -- the clipping only appears once the Georgian face swaps in, so whether
+   you see it depends on the font cache.
+
+   Scoped to lang="ka", and only to the leadings that are actually too tight,
+   so Latin locales and looser leadings are untouched. Specificity beats the
+   bare utility class, so no !important is needed.
+   --------------------------------------------------------------------------- */
+html[lang='ka'] .leading-none,
+html[lang='ka'] .leading-tight,
+html[lang='ka'] .leading-snug {
+  line-height: 1.45;
+}
+
+/* Tailwind's font-size utilities carry their own line-height (`text-2xl` is
+   1.2), so headings need covering by element too -- not just the leading-*
+   classes. The element selector outranks the utility class, and 1.45 leaves
+   headroom over the 1.38-1.40 the face actually needs at every size. */
+html[lang='ka'] :is(h1, h2, h3, h4) {
+  line-height: 1.45;
+}
+
+/* Negative tracking crowds Mkhedruli, which has no capital/lowercase contrast
+   to absorb it. */
+html[lang='ka'] .tracking-tight,
+html[lang='ka'] .tracking-tighter {
+  letter-spacing: normal;
+}
+
+/* Georgian words run long and have no hyphenation rules here, so an
+   unbreakable word spills out of its column instead of wrapping. */
+html[lang='ka'] :is(h1, h2, h3, h4) {
+  overflow-wrap: break-word;
+}
+
+/* ---------------------------------------------------------------------------
+   Design tokens: colour, radius and easing, and the bridge that turns them
+   into utility classes, are in tokens.css. That file is shared with suliko.ge
+   (suliko-front) and the two copies must stay the same. Only layout geometry
+   is set here.
+   --------------------------------------------------------------------------- */
+
+:root {
+  /* Sidebar geometry (consumed by .sidebar-content below) */
+  --sidebar-width: 4rem;
+  --sidebar-width-md: 14rem;
+  --sidebar-width-lg: 16rem;
+
+  /* How much of the bottom of the screen the phone's bottom bar takes
+     (shell/bottom-bar.tsx): nothing here, its 56px plus the home-indicator
+     inset below md (set further down). Main's bottom padding, the scroll
+     padding and whatever sticks to the bottom of the screen (the order
+     form's total bar) all read it, so none of them ends up under the bar. */
+  --bottom-bar: 0px;
+}
+
+
+/* The dashboard's two short order lists on phones: two lines per order.
+     client                                       when
+     #number   status                            total
+   `when` is the due date (red with a warning sign when late, "today" in
+   amber) or the order date. The eye and pencil are left off; the row is the
+   link. */
+@media (max-width: 767px) {
+  table.stack-mobile.stack-brief tr {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "client client when"
+      "id status total";
+    gap: 0.375rem 0.75rem;
+    align-items: center;
+  }
+  table.stack-mobile.stack-brief td[data-area="client"] { grid-area: client; }
+  table.stack-mobile.stack-brief td[data-area="when"] { grid-area: when; justify-self: end; }
+  table.stack-mobile.stack-brief td[data-area="id"] { grid-area: id; }
+  table.stack-mobile.stack-brief td[data-area="status"] { grid-area: status; justify-self: start; }
+  table.stack-mobile.stack-brief td[data-area="total"] { grid-area: total; text-align: right; }
+  table.stack-mobile.stack-brief td[data-area]::before { display: none; }
+}
+
+/* Below md the bottom bar is on screen. 767px is one short of the md
+   breakpoint the bar's own `md:hidden` uses. */
+@media (max-width: 767px) {
+  :root {
+    --bottom-bar: calc(3.5rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* A screen that brings a bar of its own for the same strip (the order
+     form's Total and Create button, `data-form-bar`) takes the navigation
+     bar's place instead of stacking on top of it: one bar, not two. */
+  :root:has([data-form-bar]) {
+    --bottom-bar: 0px;
+  }
+  body:has([data-form-bar]) nav[data-bottom-bar] {
+    display: none;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* The top bar is fixed and 56px tall. Without this, a field focused or
+       scrolled to (a failed submit, a #comments link) landed underneath it
+       (audit F12). */
+    scroll-padding-top: 72px;
+    /* The same at the other end on a phone, for the bottom bar. */
+    scroll-padding-bottom: var(--bottom-bar);
+    /* Room for the scrollbar whether or not the page needs one. Without it
+       a short page (Clients) was 15px wider than a long one (Orders), and
+       the top bar and every card edge jumped on the way between them. */
+    scrollbar-gutter: stable;
+  }
+}
+
+/* While a menu or a dialog is open, Radix locks the page's scroll and pads the
+   body by the scrollbar's width, so that nothing moves when the scrollbar
+   goes. With the gutter above the room is still there, and that padding
+   would squeeze the page by 15px every time a menu opened. Unlayered and
+   one element more specific than the rule Radix injects, to win over its
+   own !important. */
+html body[data-scroll-locked] {
+  margin-right: 0 !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Focus indicator -- one solid 2px ring in the brand blue on everything a
+   keyboard can reach: 5.37:1 on white, 7.47:1 in dark (WCAG 2.4.7, 1.4.11).
+   Unlayered on purpose: it has to win over the components' faint
+   `focus-visible:ring-ring/50` and `outline-none` utilities, which live in
+   Tailwind's layers. Elements focused only by script (tabindex="-1", such as
+   menu items, which show their own highlight) are left alone.
+   --------------------------------------------------------------------------- */
+
+:where(a, button, input, select, textarea, summary, [tabindex]:not([tabindex='-1'])):focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+  box-shadow: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Native <select>: one arrow of our own, with room to breathe.
+
+   macOS draws its own arrow flush against the right edge, and with no say in
+   the padding it sat on the border and clipped long text. Turning the system
+   look off and drawing one chevron makes every browser and every select
+   (about 40, some with classes of their own) look the same. Unlayered on
+   purpose, like the focus ring above: the padding has to win over the
+   components' `px-*` utilities, which would otherwise put the text under the
+   arrow. The chevron is muted-foreground in light and dark.
+   --------------------------------------------------------------------------- */
+
+select:not([multiple]):not([size]) {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23636363' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.625rem center;
+  background-size: 1rem 1rem;
+  padding-right: 2.25rem;
+}
+
+.dark select:not([multiple]):not([size]) {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23b3b3b3' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+}
+
+/* ---------------------------------------------------------------------------
+   A name in a table cell (a client, a translator, a notary). Table cells do
+   not wrap, so one 100-character company name stretched the Orders table to
+   1770px and pushed Status, Total and Actions off screen (audit F09). This
+   wraps it onto two lines at most within 22rem, the rest behind an ellipsis.
+   Give the element a `title` with the full name.
+   --------------------------------------------------------------------------- */
+
+@utility clamp-name {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 8rem;
+  max-width: 22rem;
+  min-height: 1.5rem;
+}
+
+/* ---------------------------------------------------------------------------
+   Links in a table cell: at least 24px tall (WCAG 2.5.8).
+   A name, an email or a phone number in a row is one line of text, 16 to 20px
+   high, so the hit area was the text. The link becomes an inline flex box with
+   a 24px floor: the row has the room (cells pad 8px or more), so rows do not
+   grow, and the area is real layout, not a pseudo-element that could overlap
+   its neighbour. In `base`, so any class on the link (`block`, `flex`, a
+   button's own size) still wins.
+   --------------------------------------------------------------------------- */
+
+@layer base {
+  td a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 1.5rem;
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Brand surfaces
+   --------------------------------------------------------------------------- */
+
+@layer utilities {
+  /* Flat brand blue: the top bar, the active sidebar item, the auth card heads.
+     (It was a radial gradient before the restyle.) */
+  .suliko-default-bg {
+    background-color: #3b59f3;
+    background-image: none;
+  }
+
+  .suliko-default-bg-dark {
+    background-image: radial-gradient(circle, #181c2a, #232a45, #1a2337, #232a45, #2d355a);
+  }
+
+  /* Sidebar layout */
+  .sidebar-content {
+    margin-left: var(--sidebar-width, 4rem);
+    transition: margin-left 300ms ease;
+  }
+
+  @media (min-width: 768px) {
+    .sidebar-content {
+      margin-left: var(--sidebar-width-md, var(--sidebar-width, 14rem));
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .sidebar-content {
+      margin-left: var(--sidebar-width-lg, var(--sidebar-width, 16rem));
+    }
+  }
+}
+
+/* ---------------------------------------------------------------------------
+   Sidebar -- the !important + transition:none is a deliberate anti-flash fix.
+   Without it the sidebar repaints on hydration when next-themes resolves.
+   --------------------------------------------------------------------------- */
+
+.sidebar-main {
+  background-color: var(--sidebar) !important;
+  border-color: var(--sidebar-border) !important;
+  color: var(--sidebar-foreground) !important;
+  transition: none !important;
+}
+
+html:not(.dark) .sidebar-main {
+  background-color: var(--sidebar-bg-light) !important;
+}
+
+html.dark .sidebar-main {
+  background-color: var(--sidebar-bg-dark) !important;
+}
+
+.sidebar-button,
+.sidebar-item:not(.suliko-default-bg) {
+  background-color: transparent !important;
+  color: var(--sidebar-foreground) !important;
+}
+
+.sidebar-button:hover,
+.sidebar-item:not(.suliko-default-bg):hover {
+  background-color: var(--sidebar-accent) !important;
+  color: var(--sidebar-accent-foreground) !important;
+}
+
+/* ---------------------------------------------------------------------------
+   Motion
+   --------------------------------------------------------------------------- */
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeUp { animation: fadeUp 0.35s var(--ease-out-strong) both; }
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fadeInUp { animation: fadeInUp 0.4s var(--ease-out-strong) forwards; }
+
+@keyframes slideInFromTop {
+  0%   { transform: translate(-50%, -100%); opacity: 0; }
+  100% { transform: translate(-50%, 0);     opacity: 1; }
+}
+.animate-slideInFromTop { animation: slideInFromTop 0.2s var(--ease-out-strong) forwards; }
+
+@keyframes slideUpScale {
+  0%   { opacity: 0; transform: translateY(12px) scale(0.98); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.animate-slideUpScale { animation: slideUpScale 0.24s ease-out forwards; }
+
+/* Navigation progress bar: quick to start, then creeps, never reaching the
+   end on its own. Arrival snaps it to 100% and fades it out. */
+@keyframes navProgress {
+  0%   { transform: scaleX(0); }
+  20%  { transform: scaleX(0.4); }
+  100% { transform: scaleX(0.9); }
+}
+.animate-navProgress { animation: navProgress 8s cubic-bezier(0.1, 0.6, 0.2, 1) forwards; }
+
+@keyframes accordion-down {
+  from { height: 0; }
+  to   { height: var(--radix-accordion-content-height); }
+}
+@keyframes accordion-up {
+  from { height: var(--radix-accordion-content-height); }
+  to   { height: 0; }
+}
+.animate-accordion-down { animation: accordion-down 0.2s ease-out; }
+.animate-accordion-up   { animation: accordion-up   0.2s ease-out; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto !important; }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  /* Keep loading spinners visible */
+  .animate-spin { animation: spin 1s linear infinite !important; }
+}
+
+/* ---------------------------------------------------------------------------
+   Data-table scrollbar (tables scroll horizontally on narrow screens)
+   --------------------------------------------------------------------------- */
+
+.custom_scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #6b7280 transparent;
+}
+.custom_scroll::-webkit-scrollbar { height: 6px; }
+.custom_scroll::-webkit-scrollbar-track { background-color: transparent; border-radius: 10px; }
+.custom_scroll::-webkit-scrollbar-thumb { background-color: #6b7280; border-radius: 10px; }
+.custom_scroll::-webkit-scrollbar-thumb:hover { background-color: #4b5563; }
+
+/* ---------------------------------------------------------------------------
+   Tables as cards on phones
+   ---------------------------------------------------------------------------
+   A <Table className="stack-mobile"> keeps its columns from md up. Below
+   that, a dozen columns scrolled sideways are unreadable, so each row
+   becomes a card: a two-column grid of values, each under its column's
+   name taken from the cell's data-label. Per cell:
+     data-full           spans the whole card (the client's name, a button)
+     data-mobile-hidden  left off the card (page counts, the edit icon)
+   Unlayered on purpose, so it wins over the cells' Tailwind padding and
+   alignment utilities. */
+
+@media (max-width: 767px) {
+  table.stack-mobile thead { display: none; }
+  table.stack-mobile,
+  table.stack-mobile tbody { display: block; }
+  table.stack-mobile tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.625rem 1rem;
+    padding: 0.875rem 1rem;
+  }
+  table.stack-mobile td {
+    display: block;
+    padding: 0;
+    max-width: none;
+    min-width: 0;
+    text-align: left;
+    white-space: normal;
+  }
+  table.stack-mobile td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 0.125rem;
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--muted-foreground);
+  }
+  table.stack-mobile td[data-full] { grid-column: 1 / -1; }
+  table.stack-mobile td[data-full]::before { display: none; }
+  table.stack-mobile td[data-mobile-hidden] { display: none; }
+  table.stack-mobile td > .flex.justify-end { justify-content: flex-start; }
+  table.stack-mobile td .inline-flex.justify-end { justify-content: flex-start; }
+}
+
+/* Orders list on phones: two lines per order, ranked by use.
+     client (+ first language pair)                 total
+     № number   due date                          status
+   Identity, value, state. The order date, profit, translator and the
+   page counts are left off the card (the row opens the order, which has
+   them); a client with several language pairs shows the first only. */
+@media (max-width: 767px) {
+  table.stack-mobile.stack-orders tr {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas:
+      "client client total"
+      "number due status";
+    gap: 0.375rem 0.75rem;
+    align-items: center;
+  }
+  table.stack-mobile.stack-orders td[data-area="client"] { grid-area: client; align-self: start; }
+  table.stack-mobile.stack-orders td[data-area="total"] { grid-area: total; align-self: start; text-align: right; }
+  table.stack-mobile.stack-orders td[data-area="number"] { grid-area: number; font-size: 0.8125rem; }
+  table.stack-mobile.stack-orders td[data-area="due"] { grid-area: due; }
+  table.stack-mobile.stack-orders td[data-area="status"] { grid-area: status; justify-self: end; max-width: 100%; }
+  table.stack-mobile.stack-orders td[data-area="date"],
+  table.stack-mobile.stack-orders td[data-area="profit"],
+  table.stack-mobile.stack-orders td[data-area="translator"] { display: none; }
+  table.stack-mobile.stack-orders td[data-area="client"] ul li:nth-child(n + 2) { display: none; }
+  /* A bare value says what it is: no label above any of them. The two that
+     could be mistaken for each other keep a word in front of the value. */
+  table.stack-mobile.stack-orders td[data-area]::before { display: none; }
+  table.stack-mobile.stack-orders td[data-area="number"]::before {
+    content: "№ ";
+    display: inline;
+    margin: 0;
+    font-size: inherit;
+  }
+  table.stack-mobile.stack-orders td[data-area="due"]::before {
+    content: attr(data-label) " ";
+    display: inline;
+    margin: 0;
+    font-size: inherit;
+    color: var(--muted-foreground);
+  }
+}
+
+/* A sideways-scrolling strip (tabs, filters) fades at the edge that has more
+   to scroll to, and the fade goes away at the end. Browsers without scroll
+   timelines keep the fixed fade on the right edge. */
+@property --fade-start {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 0px;
+}
+@property --fade-end {
+  syntax: "<length>";
+  inherits: false;
+  initial-value: 28px;
+}
+.scroll-fade-x {
+  mask-image: linear-gradient(
+    to right,
+    transparent 0,
+    #000 var(--fade-start),
+    #000 calc(100% - var(--fade-end)),
+    transparent 100%
+  );
+}
+@supports (animation-timeline: scroll()) {
+  .scroll-fade-x {
+    animation: scroll-fade-x linear both;
+    animation-timeline: scroll(self inline);
+  }
+}
+@keyframes scroll-fade-x {
+  0% { --fade-start: 0px; --fade-end: 28px; }
+  5% { --fade-start: 28px; }
+  95% { --fade-end: 28px; }
+  100% { --fade-start: 28px; --fade-end: 0px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scroll-fade-x { animation: none; }
+}
+
+/* Invoices: a zero page margin makes browsers drop their own header and footer
+   (page title, address, date); the document supplies its own padding. */
+@page {
+  margin: 0;
+}
+
+/* First-run tips (features/onboarding-tips): an element with an unseen tip gets
+   a thin brand-blue outline and a soft streak of light that passes across it
+   every few seconds (staggered by --tip-delay). Nothing floats, so nothing can
+   overlap the top bar or a dialog. */
+@keyframes tip-sweep {
+  0% {
+    transform: translateX(-130%);
+  }
+  55%,
+  100% {
+    transform: translateX(260%);
+  }
+}
+[data-tip-glow] {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgb(59 89 243 / 0.55);
+}
+[data-tip-glow]::after {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 40%;
+  pointer-events: none;
+  background: linear-gradient(100deg, transparent, rgb(59 89 243 / 0.28), transparent);
+  animation: tip-sweep 3.4s ease-in-out infinite;
+  animation-delay: var(--tip-delay, 0s);
+}
+.dark [data-tip-glow] {
+  box-shadow: 0 0 0 1px rgb(142 162 255 / 0.6);
+}
+.dark [data-tip-glow]::after {
+  background: linear-gradient(100deg, transparent, rgb(142 162 255 / 0.3), transparent);
+}
+/* On the blue active item the streak is white. */
+[aria-current][data-tip-glow] {
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.6);
+}
+[aria-current][data-tip-glow]::after {
+  background: linear-gradient(100deg, transparent, rgb(255 255 255 / 0.35), transparent);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-tip-glow]::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+/* A button with a tip (New order, Translate, Invite): the sidebar's outline and
+   sweep are blue on a blue button, so it gets a ring that floats clear of the
+   button instead, and breathes. Outline, not a shadow: the gap is the page. */
+@keyframes tip-ring-button {
+  0%,
+  100% {
+    outline-offset: 3px;
+    outline-color: rgb(59 89 243 / 0.65);
+  }
+  50% {
+    outline-offset: 6px;
+    outline-color: rgb(59 89 243 / 0.2);
+  }
+}
+[data-tip-glow]:not([data-tip^="nav-"]) {
+  overflow: visible;
+  box-shadow: none;
+  outline: 1.5px solid rgb(59 89 243 / 0.65);
+  outline-offset: 3px;
+  animation: tip-ring-button 2.2s ease-in-out infinite;
+}
+[data-tip-glow]:not([data-tip^="nav-"])::after {
+  display: none;
+}
+.dark [data-tip-glow]:not([data-tip^="nav-"]) {
+  box-shadow: none;
+  outline-color: rgb(142 162 255 / 0.7);
+  animation-name: tip-ring-button-dark;
+}
+@keyframes tip-ring-button-dark {
+  0%,
+  100% {
+    outline-offset: 3px;
+    outline-color: rgb(142 162 255 / 0.7);
+  }
+  50% {
+    outline-offset: 6px;
+    outline-color: rgb(142 162 255 / 0.2);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-tip-glow]:not([data-tip^="nav-"]) {
+    animation: none;
+  }
+}
+
+/* Phones: iOS zooms the page when a focused field is set below 16px. Inputs
+   and textareas already are 16px (`text-base md:text-sm`); native selects are
+   set per call site (`text-xs`, `text-sm`), so this one rule covers all 50 of
+   them. Unlayered, so it wins over the utilities. */
+@media (max-width: 767px) {
+  select {
+    font-size: 16px;
+  }
+}

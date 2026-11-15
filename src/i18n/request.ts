@@ -16,7 +16,17 @@ function getDefaultLocaleForDomain(hostname: string): 'ka' | 'en' {
  
 export default getRequestConfig(async ({requestLocale}) => {
   const requested = await requestLocale;
-  
+
+  // Suliko Office's pages (/app, see office-zone.ts) have their own messages,
+  // in Georgian and English only.
+  if ((await headers()).get('x-suliko-zone') === 'office') {
+    const officeLocale = requested === 'en' ? 'en' : 'ka';
+    return {
+      locale: officeLocale,
+      messages: (await import(`../office/messages/${officeLocale}.json`)).default
+    };
+  }
+
   // Get default locale based on domain
   const headersList = await headers();
   const hostname = headersList.get('host') || '';

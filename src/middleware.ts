@@ -2,6 +2,7 @@ import createMiddleware from 'next-intl/middleware';
 import {routing} from './i18n/routing';
 import {NextRequest, NextResponse} from 'next/server';
 import {HOME_PRODUCT, PRODUCTS} from './shared/constants/products';
+import {isOfficePath, officeZone} from './office-zone';
 
 // Helper function to get default locale based on domain (server-side)
 function getDefaultLocaleForDomain(hostname: string): 'ka' | 'en' {
@@ -21,6 +22,11 @@ const intlMiddleware = createMiddleware({
 });
 
 export default function middleware(request: NextRequest) {
+  // Suliko Office (/app): its moved modules, or on to its own deployment.
+  if (isOfficePath(request.nextUrl.pathname)) {
+    return officeZone(request) ?? NextResponse.next();
+  }
+
   const hostname = request.headers.get('host') || '';
   
   // Determine default locale based on domain
@@ -64,7 +70,6 @@ export default function middleware(request: NextRequest) {
 }
 
 export const config = {
-  // `app`: Suliko Office, served under /app by the Office deployment (see
-  // next.config.ts). It has its own locales and sign-in gate.
-  matcher: '/((?!api|trpc|_next|_vercel|payment|app/|app$|.*\\..*).*)'
+  // /app is Suliko Office: see office-zone.ts.
+  matcher: '/((?!api|trpc|_next|_vercel|payment|.*\\..*).*)'
 };
