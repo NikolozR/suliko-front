@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
  */
 
 /** Modules whose pages are in src/app/app/[locale]/(office). Add one per move. */
-const MOVED_MODULES = ["calculator"] as const;
+const MOVED_MODULES = ["calculator", "clients", "notaries", "translators"] as const;
 
 const OFFICE_LOCALES = ["ka", "en"];
 const SESSION_COOKIE = "suliko_session";
