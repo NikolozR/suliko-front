@@ -65,12 +65,19 @@ function destFor(rel) {
   return `src/office/${rel.slice("src/".length)}`;
 }
 
+// Files changed here after the move (they say so at the top). The sync never
+// overwrites them; bring Office's later changes over by hand if any.
+const OWNED = new Set([
+  // The one sidebar: Translate's section above Office's (shared/nav/workspace.ts).
+  "src/office/shared/components/shell/sidebar.tsx",
+]);
+
 // ── copy ────────────────────────────────────────────────────────────────────
 let copied = 0;
 for (const abs of seen) {
   const rel = path.relative(OFFICE, abs).split(path.sep).join("/");
   const dest = destFor(rel);
-  if (!dest) continue;
+  if (!dest || OWNED.has(dest)) continue;
   let src = rd(abs).replace(/(from\s+|import\s*\(\s*|import\s+)(["'])@\//g, "$1$2@office/");
   const directive = /^["']use (client|server)["'];?\r?\n/.exec(src);
   src = directive ? directive[0] + HEADER + src.slice(directive[0].length) : HEADER + src;

@@ -1,8 +1,14 @@
 "use client";
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
+// Moved from Suliko Office (app.suliko.ge), then changed here for the one
+// sidebar (shared/nav/workspace.ts). Owned by suliko-front: scripts/sync-office.mjs
+// leaves it alone.
 
-import { Inbox, Languages } from "lucide-react";
+import {
+  officeLocaleOf,
+  TRANSLATE_NAV,
+  WORKSPACE_SECTIONS,
+  workspaceLocale,
+} from "@/shared/nav/workspace";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
 import { useEffect, useState, useSyncExternalStore } from "react";
@@ -72,8 +78,6 @@ export function Sidebar({
   usage = null,
   open = false,
   onNavigate,
-  translateUrl,
-  assignedOrdersUrl,
 }: SidebarProps) {
   const t = useTranslations("nav");
   const tShell = useTranslations("shell");
@@ -105,6 +109,48 @@ export function Sidebar({
       inert={hidden}
     >
       <nav className="custom_scroll flex-1 overflow-y-auto px-2 py-4">
+        {/* The one sidebar: Translate's section first (other root layout, so
+            plain links), then Office's. */}
+        <div className="mb-6">
+          {!collapsed && (
+            <h2 className="text-muted-foreground px-3 pb-2 text-xs font-semibold tracking-wide uppercase">
+              {WORKSPACE_SECTIONS.translate[workspaceLocale(locale)]}
+            </h2>
+          )}
+          <ul className="space-y-0.5">
+            {TRANSLATE_NAV.map((item) => {
+              const Icon = item.icon;
+              const label = item.label[workspaceLocale(locale)];
+              return (
+                <li key={item.href}>
+                  <a
+                    href={`/${officeLocaleOf(locale)}${item.href}`}
+                    title={collapsed ? label : undefined}
+                    className={cn(
+                      "group relative flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 text-sm font-medium",
+                      "transition-colors duration-150",
+                      item.primary
+                        ? "suliko-default-bg text-white shadow-sm hover:opacity-90"
+                        : "sidebar-item",
+                      collapsed && "justify-center px-0",
+                    )}
+                  >
+                    <Icon className="size-4 shrink-0" aria-hidden />
+                    {!collapsed && <span className="truncate">{label}</span>}
+                    {collapsed && <span className="sr-only">{label}</span>}
+                  </a>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+        {!collapsed ? (
+          <h2 className="text-muted-foreground px-3 pb-2 text-xs font-semibold tracking-wide uppercase">
+            {WORKSPACE_SECTIONS.office[workspaceLocale(locale)]}
+          </h2>
+        ) : (
+          <div className="border-sidebar-border mx-2 mb-2 border-t" />
+        )}
         {NAVIGATION.map((section, sectionIndex) => {
           const visible = section.items.filter(
             (item) =>
@@ -235,37 +281,6 @@ export function Sidebar({
             )}
           </Link>
         )}
-        {assignedOrdersUrl && (
-          <a
-            href={assignedOrdersUrl}
-            // Always, not only when collapsed: the label is short, and this
-            // says where the link goes and what will be there.
-            title={t("assignedOrdersHint")}
-            className={cn(
-              "sidebar-item group flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 text-sm font-medium",
-              "transition-colors duration-150",
-              "focus-visible:ring-ring/50 outline-none focus-visible:ring-[3px]",
-              collapsed && "justify-center px-0",
-            )}
-          >
-            <Inbox className="size-4 shrink-0" aria-hidden />
-            {!collapsed && <span className="truncate">{t("assignedOrders")}</span>}
-            {collapsed && <span className="sr-only">{t("assignedOrders")}</span>}
-          </a>
-        )}
-        <a
-          href={translateUrl}
-          title={collapsed ? t("translate") : undefined}
-          className={cn(
-            "sidebar-item group flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 text-sm font-medium",
-            "transition-colors duration-150",
-            "focus-visible:ring-ring/50 outline-none focus-visible:ring-[3px]",
-            collapsed && "justify-center px-0",
-          )}
-        >
-          <Languages className="size-4 shrink-0" aria-hidden />
-          {!collapsed && <span className="truncate">{t("translate")}</span>}
-        </a>
       </div>
     </aside>
   );
