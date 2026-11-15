@@ -12,7 +12,7 @@ import TranslationEditor, { type TranslationEditorHandle } from "@/features/edit
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff, FileDown, Pencil } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff, FileDown, Pencil, Maximize2 } from "lucide-react";
 import React from "react";
 import { toast } from "react-hot-toast";
 import DocumentPreview from "./DocumentPreview";
@@ -122,6 +122,9 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
   const tButton = useTranslations('TranslationButton');
   const t = useTranslations('DocumentTranslationCard');
   const tDownload = useTranslations('DownloadFormats');
+  const tWord = useTranslations('WordEditor');
+  // The full-screen button is the Word editor's: shown once it is the one in use.
+  const [editorEngine, setEditorEngine] = useState<"loading" | "word" | "simple" | "unavailable">("loading");
   const translatedSuffix = useTranslatedSuffix();
   const documentPreviewRef = useRef<HTMLDivElement>(null);
   const markdownPreviewRef = useRef<HTMLDivElement>(null);
@@ -391,6 +394,18 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
                       label={tButton('copy')}
                       copiedLabel={tButton('copied')}
                     />
+                    {editorEngine === "word" && (
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        onClick={() => editorRef.current?.openFullScreen()}
+                        title={`${tWord("fullScreen")}: ${tWord("hint")}`}
+                        aria-label={tWord("fullScreen")}
+                      >
+                        <Maximize2 className="h-4 w-4" />
+                      </Button>
+                    )}
                   </>
                 )}
               </div>
@@ -406,6 +421,22 @@ const TranslationResultView: React.FC<TranslationResultViewProps> = ({
               forceSimple={isOriginalFileSrt()}
               onScroller={setWordScroller}
               className="h-[400px] md:h-[600px] lg:h-[800px]"
+              hideHeader
+              onEngine={setEditorEngine}
+              fullScreenTitle={currentFile?.name}
+              renderOriginal={currentFile ? () => <DocumentPreview file={currentFile} /> : undefined}
+              fullScreenActions={
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={() => setShowDownloadModal(true)}
+                  className="suliko-default-bg text-white hover:opacity-90"
+                  aria-label={tButton('download')}
+                >
+                  <Download className="h-4 w-4" />
+                  <span className="hidden sm:ml-1.5 sm:inline">{tButton('download')}</span>
+                </Button>
+              }
             />
           </div>
         </div>

@@ -399,7 +399,10 @@
     "fullScreen": "Full screen",
     "exitFullScreen": "Exit full screen",
     "fullScreenTitle": "Translation",
-    "simpleEditorNotice": "The Word-style editor could not be opened, so the simple editor is shown. Your translation is unchanged."
+    "simpleEditorNotice": "The Word-style editor could not be opened, so the simple editor is shown. Your translation is unchanged.",
+    "original": "Original",
+    "showOriginal": "Show the original alongside",
+    "hideOriginal": "Hide the original"
   },
   "DocumentTranslationCard": {
     "swapLanguages": "Swap languages",
