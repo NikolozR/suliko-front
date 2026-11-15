@@ -15,6 +15,8 @@ import { useDocumentTranslationStore } from "@/features/translation/store/docume
 import { useSidebarStore } from "@/shared/store/sidebarStore";
 import { useShortcuts } from "@/shared/shortcuts/ShortcutsProvider";
 import SulikoLogoWhite from "../../../../public/Suliko_logo_white.svg";
+import type { OfficeContext } from "@/shared/nav/officeNav";
+import { OfficeActionsSlot, OfficeSwitcherSlot } from "./OfficeTopbarParts";
 
 /** A control on the gradient bar: white, with a faint white wash on hover. */
 const BAR_BUTTON =
@@ -23,6 +25,12 @@ const BAR_BUTTON =
 interface TopbarProps {
   /** What the server saw, so the first paint already shows the right side. */
   initiallySignedIn: boolean;
+  /**
+   * Office's half of the shell, for someone signed in to Office: the bar then
+   * carries the same organisation switcher, search and notifications as on
+   * Office's screens.
+   */
+  office?: OfficeContext | null;
 }
 
 /**
@@ -34,7 +42,7 @@ interface TopbarProps {
  * user menu with Profile, the shortcuts, the theme and Sign out, or Sign in
  * for a visitor.
  */
-export default function Topbar({ initiallySignedIn }: TopbarProps) {
+export default function Topbar({ initiallySignedIn, office = null }: TopbarProps) {
   const t = useTranslations("Sidebar");
   const { token } = useAuthStore();
   const [isClient, setIsClient] = useState(false);
@@ -63,12 +71,17 @@ export default function Topbar({ initiallySignedIn }: TopbarProps) {
       <Link
         href="/text"
         aria-label={t("home")}
-        className="flex shrink-0 items-center rounded-md px-1.5 py-1 hover:bg-white/15"
+        // As on Office's bar: with the organisation switcher beside it, the mark
+        // gives way on a phone so the organisation's name has the room.
+        className={`${office ? "hidden sm:flex" : "flex"} shrink-0 items-center rounded-md px-1.5 py-1 hover:bg-white/15`}
       >
         <Image src={SulikoLogoWhite} alt="Suliko" width={80} height={20} priority />
       </Link>
 
+      {signedIn && office && <OfficeSwitcherSlot office={office} />}
+
       <div className="ml-auto flex shrink-0 items-center gap-1">
+        {signedIn && office && <OfficeActionsSlot office={office} />}
         {signedIn ? (
           <UserMenu />
         ) : (

@@ -4,7 +4,8 @@ import MobileBottomNav from "@/shared/components/MobileBottomNav";
 import { cookies } from "next/headers";
 import { getUserProfile } from "@/features/auth/services/userService";
 import ResponsiveMainContent from "@/shared/components/ResponsiveMainContent";
-import { officeNav } from "@/shared/nav/officeNav";
+import { officeContext } from "@/shared/nav/officeNav";
+import { ZoneGuard } from "@office/shared/components/zone-guard";
 import { getLocale } from "next-intl/server";
 import ShortcutsDialog from "@/shared/components/ShortcutsDialog";
 import { ShortcutsProvider } from "@/shared/shortcuts/ShortcutsProvider";
@@ -37,13 +38,17 @@ export default async function MainLayout({
   }
 
   // The Office half of the one sidebar, when this person is signed in to Office.
-  const office = userProfile ? await officeNav(await getLocale()) : null;
+  const office = userProfile ? await officeContext(await getLocale()) : null;
+  // Office's modules this app serves (office-zone.ts). A navigation from here
+  // to any other /app page is a page load: the Office deployment answers it.
+  const localOffice = (process.env.OFFICE_LOCAL_MODULES ?? "").split(",").map((m) => m.trim()).filter(Boolean);
 
   return (
     <ShortcutsProvider>
       <div className="relative">
-        <Topbar initiallySignedIn={Boolean(userProfile)} />
-        <Sidebar initialUserProfile={userProfile} office={office} />
+        <ZoneGuard owns={{ only: localOffice }} />
+        <Topbar initiallySignedIn={Boolean(userProfile)} office={office} />
+        <Sidebar initialUserProfile={userProfile} office={office?.nav ?? null} />
         <ResponsiveMainContent>
           {children}
         </ResponsiveMainContent>
