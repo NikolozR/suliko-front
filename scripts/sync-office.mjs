@@ -61,6 +61,8 @@ function destFor(rel) {
   if (page) return `src/app/app/[locale]/(office)/${page[1]}`;
   // Another screen's component a moved page imports (settings uses onboarding's
   // plan choice): kept at its own path under src/office, which is not a route.
+  // The one shell's shared definitions: this app has its own (src/shared/nav).
+  if (rel.startsWith("src/shared/nav/")) return null;
   if (rel.startsWith("src/app/")) return rel.endsWith(".css") ? null : `src/office/${rel.slice("src/".length)}`;
   return `src/office/${rel.slice("src/".length)}`;
 }

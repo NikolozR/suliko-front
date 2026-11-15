@@ -12,7 +12,7 @@ import { NextRequest, NextResponse } from "next/server";
  */
 
 /** Modules whose pages are in src/app/app/[locale]/(office). Add one per move. */
-const MOVED_MODULES = ["calculator", "clients", "notaries", "translators", "finances", "reports", "settings", "billing", "users"] as const;
+const MOVED_MODULES = ["calculator", "clients", "notaries", "translators", "finances", "reports", "settings", "billing", "users", "dashboard", "notifications", "account"] as const;
 
 const OFFICE_LOCALES = ["ka", "en"];
 const SESSION_COOKIE = "suliko_session";
@@ -96,6 +96,14 @@ export function officeZone(request: NextRequest): NextResponse | null {
   // ── Old address /app/{ka|en}/{module}/... ─────────────────────────────────
   if (isOfficePath(pathname)) {
     const { locale, module } = parse(pathname);
+    // The bare /app and /app/ka: Office's home, the dashboard. (The bare /app
+    // has answered 404 since a moved module gave this app an /app folder.)
+    if (!module) {
+      const lang = locale ?? "ka";
+      if (enabledModules().has("dashboard")) return NextResponse.redirect(new URL(`/${lang}/dashboard${search}`, request.url), 307);
+      if (!locale) return NextResponse.redirect(new URL(`/app/ka${search}`, request.url), 307);
+      return null;
+    }
     if (!locale || !isMoved(module)) return null;
     const clean = `${pathname.slice("/app".length)}${search}`;
     if (enabledModules().has(module)) {
