@@ -129,6 +129,10 @@ adapt("src/app/app/[locale]/layout.tsx", [
   ['(process.env.OFFICE_MOVED_MODULES ?? "")', '(process.env.OFFICE_LOCAL_MODULES ?? "")'],
   ["<ZoneGuard owns={{ except: moved }} />", "<ZoneGuard owns={{ only: moved }} />"],
 ]);
+adapt("src/office/shared/lib/revalidate.ts", [
+  // The cached pages are /app/ka/..., not /ka/... (which are Translate's).
+  ["const localised = path === \"/\" ? `/${locale}` : `/${locale}${path}`;", "const localised = path === \"/\" ? `/app/${locale}` : `/app/${locale}${path}`;"],
+]);
 adapt("src/office/styles/globals.css", [['@import "./tokens.css";', '@import "../../app/tokens.css";']]);
 
 console.log(`moved ${modules.join(", ")}: ${copied} files, messages, stylesheet`);
