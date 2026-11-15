@@ -12,6 +12,8 @@ interface CopyButtonProps {
   variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
   /** Names the button: the accessible name always, the visible text from `sm` up. */
   label?: string;
+  /** Only the icon; the label is the tooltip and the accessible name. */
+  iconOnly?: boolean;
   copiedLabel?: string;
 }
 
@@ -21,6 +23,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({
   size = "sm",
   variant = "outline",
   label,
+  iconOnly = false,
   copiedLabel,
 }) => {
   const [copied, setCopied] = useState(false);
@@ -79,7 +82,7 @@ const CopyButton: React.FC<CopyButtonProps> = ({
       aria-label={copied ? copiedLabel ?? label : label}
     >
       {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
-      {label && <span className="hidden sm:ml-1.5 sm:inline">{copied ? copiedLabel ?? label : label}</span>}
+      {label && !iconOnly && <span className="hidden sm:ml-1.5 sm:inline">{copied ? copiedLabel ?? label : label}</span>}
     </Button>
   );
 };

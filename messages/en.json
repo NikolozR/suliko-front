@@ -384,7 +384,9 @@
     "save": "Save",
     "saved": "Saved",
     "saving": "Saving…",
-    "retry": "Retry"
+    "retry": "Retry",
+    "savedAt": "Saved · {time}",
+    "saveFailed": "Could not save"
   },
   "DownloadFormats": {
     "chooseFormat": "Choose download format",

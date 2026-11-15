@@ -1,5 +1,5 @@
 "use client";
-import { ChangeEvent, useRef, useEffect, useState, type RefObject } from "react";
+import { ChangeEvent, useCallback, useRef, useEffect, useState, type RefObject } from "react";
 import { useTranslations } from "next-intl";
 import { generateLocalizedFilename, useTranslatedSuffix } from "@/shared/utils/filenameUtils";
 import DocumentPreview from "@/features/translation/components/DocumentPreview";
@@ -12,11 +12,9 @@ import TranslationEditor, { type TranslationEditorHandle } from "@/features/edit
 import { useChatSuggestionsStore } from "../store/chatSuggestionsStore";
 import { Button } from "@/features/ui/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/features/ui/components/ui/dialog";
-import { FileText, File, Download, X, Eye, EyeOff,  FileDown, Maximize2 } from "lucide-react";
+import { FileText, File, Download, X, Eye, EyeOff,  FileDown, Maximize2, Check, Loader2, AlertCircle } from "lucide-react";
 import React from "react";
 import { getChatDocument, saveChatDocument, updateChatDocumentContent } from "../services/chatService";
-import SaveButton from "@/features/translation/components/SaveButton";
-import toast from "react-hot-toast";
 import { SendToOrder, type OrderExportFormat } from "@/features/orders/components/SendToOrder";
 import { translationAsHtml, wordBlob } from "@/features/translation/utils/wordPage";
 import { originalPageSetup } from "@/features/translation/utils/originalPage";
@@ -71,8 +69,9 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   const [hideOriginalDocument, setHideOriginalDocument] = useState(false);
   type DownloadFormatOption = { value: string; label: string; extension: string; icon: React.ReactNode };
   const [downloadedFormat, setDownloadedFormat] = useState<DownloadFormatOption | null>(null);
-  const [editorDeadline, setEditorDeadline] = useState<number | null>(null);
-  const [remainingSeconds, setRemainingSeconds] = useState<number>(600);
+  // Saved as the person works: a moment after an edit, with no time limit. What the header says.
+  const [saveState, setSaveState] = useState<"idle" | "pending" | "saving" | "saved" | "failed">("idle");
+  const [savedAt, setSavedAt] = useState<Date | null>(null);
   const { hoveredSuggestionOriginalText, suggestions } = useChatSuggestionsStore();
   const suggestionsPanelRef = useRef<HTMLDivElement>(null);
 
@@ -154,39 +153,84 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
     return generatePdfBlobFromHtml(translationHtml(editorRef.current, translatedMarkdown), name);
   };
 
-  useEffect(() => {
-    if (remainingSeconds <= 0) return;
-
-    const autosaveInterval = setInterval(async () => {
-      try {
-        await saveToChatRef.current();
-        toast.success("Autosaved.", { id: "autosave", duration: 1500 });
-      } catch {
-        toast.error("Autosave failed.", { id: "autosave" });
-      }
-    }, 10000);
-
-    return () => clearInterval(autosaveInterval);
-  }, [chatId, translatedMarkdown, remainingSeconds]);
-
-
-  useEffect(() => {
-    if (editorDeadline === null) {
-      setEditorDeadline(Date.now() + 10 * 60 * 1000);
+  /** Saves now, telling the header how it went. */
+  const saveNow = useCallback(async () => {
+    setSaveState("saving");
+    try {
+      await saveToChatRef.current();
+      setSavedAt(new Date());
+      setSaveState("saved");
+    } catch {
+      setSaveState("failed");
     }
-  }, [editorDeadline]);
+  }, []);
 
+  // An edit is saved about two seconds after the person stops typing. The first text is what
+  // was opened, not an edit.
+  const openedText = useRef<string | null>(null);
   useEffect(() => {
-    if (editorDeadline === null) return;
-    const intervalId = setInterval(() => {
-      const secondsLeft = Math.max(0, Math.floor((editorDeadline - Date.now()) / 1000));
-      setRemainingSeconds(secondsLeft);
-      if (secondsLeft <= 0) {
-        clearInterval(intervalId);
-      }
-    }, 1000);
-    return () => clearInterval(intervalId);
-  }, [editorDeadline]);
+    if (!translatedMarkdown) return;
+    if (openedText.current === null) {
+      openedText.current = translatedMarkdown;
+      return;
+    }
+    if (translatedMarkdown === openedText.current && saveState === "idle") return;
+    setSaveState("pending");
+    const timer = window.setTimeout(() => void saveNow(), 2000);
+    return () => window.clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [translatedMarkdown, saveNow]);
+
+  // Leaving with an edit not saved yet: the browser asks first.
+  useEffect(() => {
+    if (saveState !== "pending" && saveState !== "saving" && saveState !== "failed") return;
+    const warn = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    window.addEventListener("beforeunload", warn);
+    return () => window.removeEventListener("beforeunload", warn);
+  }, [saveState]);
+
+  const saveStatus =
+    saveState === "idle" ? null : (
+      <span
+        role="status"
+        aria-live="polite"
+        className={`flex items-center gap-1 text-xs whitespace-nowrap ${saveState === "failed" ? "text-destructive" : "text-muted-foreground"}`}
+      >
+        {saveState === "failed" ? (
+          <>
+            <AlertCircle className="h-3.5 w-3.5" aria-hidden />
+            {tButton("saveFailed")}
+            <button type="button" onClick={() => void saveNow()} className="ml-1 underline underline-offset-2">
+              {tButton("retry")}
+            </button>
+          </>
+        ) : saveState === "saved" && savedAt ? (
+          <>
+            <Check className="h-3.5 w-3.5" aria-hidden />
+            {/* Short beside the title (the header row holds the actions too): the words on
+                wide screens, always for screen readers and in the tooltip. */}
+            <span className="hidden 2xl:inline">
+              {tButton("savedAt", { time: savedAt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) })}
+            </span>
+            <span className="2xl:hidden" aria-hidden title={tButton("savedAt", { time: savedAt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) })}>
+              {savedAt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" })}
+            </span>
+            <span className="sr-only 2xl:hidden">
+              {tButton("savedAt", { time: savedAt.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" }) })}
+            </span>
+          </>
+        ) : (
+          <>
+            <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+            <span className="hidden 2xl:inline">{tButton("saving")}</span>
+            <span className="sr-only 2xl:hidden">{tButton("saving")}</span>
+          </>
+        )}
+      </span>
+    );
 
   // const formatTime = (totalSeconds: number) => {
   //   const minutes = Math.floor(totalSeconds / 60);
@@ -279,23 +323,6 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
   }, [downloadedFormat, translatedMarkdown, currentFile, translatedSuffix]);
 
 
-  const handleSaveDocument = async (): Promise<void> => {
-    try {
-      await saveToChat();
-      toast.success("Changes saved successfully.");
-    } catch (error: unknown) {
-      const message =
-        error instanceof Error
-          ? error.message
-          : "Failed to save changes. Please try again.";
-
-      toast.error(message);
-
-      throw error; // IMPORTANT → so SaveButton knows it failed
-    }
-  };
-
-
   return (
     <>
       <SendToOrder chatId={chatId} build={buildForOrder} />
@@ -358,6 +385,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
                 <FileText className="h-4 w-4 text-muted-foreground" />
                 {t('translatedText')}
               </div>
+              {saveStatus}
               {/* {remainingSeconds > 0 ? (
                 <span className={`text-xs flex items-center gap-1 px-2 py-0.5 rounded-full ${remainingSeconds <= 120
                   ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 font-medium animate-pulse"
@@ -414,13 +442,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
                     variant="outline"
                     label={tButton('copy')}
                     copiedLabel={tButton('copied')}
-                  />
-                  <SaveButton
-                    disabled={remainingSeconds <= 0}
-                    onSave={handleSaveDocument}
-                    label={tButton('save')}
-                    savedLabel={tButton('saved')}
-                    savingLabel={tButton('saving')}
+                    iconOnly
                   />
                   {editorEngine === "word" && (
                     <Button
@@ -465,13 +487,7 @@ const ChatTranslationResultView: React.FC<ChatTranslationResultViewProps> = ({
                     <Download className="h-4 w-4" />
                     <span className="hidden sm:ml-1.5 sm:inline">{tButton('download')}</span>
                   </Button>
-                  <SaveButton
-                    disabled={remainingSeconds <= 0}
-                    onSave={handleSaveDocument}
-                    label={tButton('save')}
-                    savedLabel={tButton('saved')}
-                    savingLabel={tButton('saving')}
-                  />
+                  {saveStatus}
                 </>
               }
             />

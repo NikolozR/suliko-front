@@ -404,7 +404,9 @@
     "save": "Zapisz",
     "saved": "Zapisano",
     "saving": "Zapisywanie…",
-    "retry": "Spróbuj ponownie"
+    "retry": "Spróbuj ponownie",
+    "savedAt": "Zapisano · {time}",
+    "saveFailed": "Nie udało się zapisać"
   },
   "DownloadFormats": {
     "chooseFormat": "Wybierz format pobierania",
