@@ -15,21 +15,10 @@ import { sfdtToHtml } from "./sfdtToHtml";
 // ever imported where the editor is shown, never for the rest of the site.
 // The Fluent 2 theme, which is Office's own look and, unlike Material, fetches
 // no web font from Google.
-import "@syncfusion/ej2-base/styles/fluent2.css";
-import "@syncfusion/ej2-buttons/styles/fluent2.css";
-import "@syncfusion/ej2-inputs/styles/fluent2.css";
-import "@syncfusion/ej2-popups/styles/fluent2.css";
-import "@syncfusion/ej2-lists/styles/fluent2.css";
-import "@syncfusion/ej2-navigations/styles/fluent2.css";
-import "@syncfusion/ej2-splitbuttons/styles/fluent2.css";
-import "@syncfusion/ej2-dropdowns/styles/fluent2.css";
-import "@syncfusion/ej2-calendars/styles/fluent2.css";
-import "@syncfusion/ej2-notifications/styles/fluent2.css";
-import "@syncfusion/ej2-ribbon/styles/fluent2.css";
-import "@syncfusion/ej2-documenteditor/styles/fluent2.css";
+import "@syncfusion/ej2-fluent2-theme/styles/fluent2.css";
 
 // The licence key is version-specific (it must be for the major version
-// installed, 34) and is meant to be in the browser's code: it is a public
+// installed, 35) and is meant to be in the browser's code: it is a public
 // build-time setting, not a secret. Without one the editor runs in evaluation
 // mode and says so on the page.
 const licenseKey = process.env.NEXT_PUBLIC_SYNCFUSION_LICENSE_KEY;
