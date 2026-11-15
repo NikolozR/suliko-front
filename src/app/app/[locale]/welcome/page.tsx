@@ -3,7 +3,7 @@
 import { KeyRound, ShieldCheck } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { ChangePasswordForm } from "@office/app/[locale]/(app)/account/change-password-form";
+import { ChangePasswordForm } from "@/app/app/[locale]/(office)/account/change-password-form";
 import { groupsForPlan } from "@office/features/users/permission-catalogue";
 import { redirectTo } from "@office/i18n/navigation";
 import { requireSession } from "@office/shared/auth/guards";

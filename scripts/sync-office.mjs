@@ -187,6 +187,18 @@ if (modules.includes("onboarding")) {
     ['"@office/app/[locale]/onboarding/plan-choice"', '"@/app/app/[locale]/onboarding/plan-choice"'],
   ]);
 }
+adapt("src/office/shared/auth/sso.ts", [
+  // Without a Next basePath here, redirect() does not add /app: the start
+  // route is the Office deployment's, at /app/api/auth/sso/start.
+  ["  return `/api/auth/sso/start?${query.toString()}`;", "  return withBasePath(`/api/auth/sso/start?${query.toString()}`);"],
+  ["  return withBasePath(ssoStartPath(locale, next, options));", "  return ssoStartPath(locale, next, options);"],
+]);
+if (modules.includes("welcome")) {
+  // Welcome reuses the account page's password form, a route file here.
+  adapt("src/app/app/[locale]/welcome/page.tsx", [
+    ['"@office/app/[locale]/(app)/account/change-password-form"', '"@/app/app/[locale]/(office)/account/change-password-form"'],
+  ]);
+}
 adapt("src/office/styles/globals.css", [['@import "./tokens.css";', '@import "../../app/tokens.css";']]);
 
 console.log(`moved ${modules.join(", ")}: ${copied} files, messages, stylesheet`);

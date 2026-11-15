@@ -185,7 +185,7 @@ export function ssoStartPath(
   if (options.forceSignIn) query.set("prompt", "login");
   if (options.register) query.set("mode", "register");
   if (options.retry) query.set("retry", "1");
-  return `/api/auth/sso/start?${query.toString()}`;
+  return withBasePath(`/api/auth/sso/start?${query.toString()}`);
 }
 
 /** The same, for a plain `<a href>`, which Next does not prefix. */
@@ -194,7 +194,7 @@ export function ssoStartHref(
   next: string | null,
   options: GatewayOptions = {},
 ): string {
-  return withBasePath(ssoStartPath(locale, next, options));
+  return ssoStartPath(locale, next, options);
 }
 
 // ── Signing out of both ─────────────────────────────────────────────────────
