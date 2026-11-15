@@ -4,13 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useTheme } from "next-themes";
-import { ExternalLink, Keyboard, LogOut, Moon, PanelLeft, Sun, User } from "lucide-react";
+import { Keyboard, LogOut, Moon, PanelLeft, Sun, User } from "lucide-react";
 
 import { Link } from "@/i18n/navigation";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUser } from "@/features/auth/hooks/useUser";
 import { signOutEverywhere } from "@/features/auth/services/signOut";
-import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
 import { useTextTranslationStore } from "@/features/translation/store/textTranslationStore";
 import { useDocumentTranslationStore } from "@/features/translation/store/documentTranslationStore";
 import { useSidebarStore } from "@/shared/store/sidebarStore";
@@ -37,7 +36,6 @@ interface TopbarProps {
  */
 export default function Topbar({ initiallySignedIn }: TopbarProps) {
   const t = useTranslations("Sidebar");
-  const locale = useLocale();
   const { token } = useAuthStore();
   const [isClient, setIsClient] = useState(false);
   const isCollapsed = useSidebarStore((state) => state.isCollapsed!);
@@ -48,7 +46,6 @@ export default function Topbar({ initiallySignedIn }: TopbarProps) {
   // As the sidebar does: until the browser has read its own token, go by what
   // the server saw, or every load would paint Sign in first and then swap it.
   const signedIn = Boolean(token) || (!isClient && initiallySignedIn);
-  const officeHref = `${OFFICE_URL}/${officeLocale(locale)}/dashboard`;
 
   return (
     <header className="suliko-default-bg fixed inset-x-0 top-0 z-50 flex h-14 items-center gap-2 px-3 text-white print:hidden">
@@ -70,27 +67,6 @@ export default function Topbar({ initiallySignedIn }: TopbarProps) {
       >
         <Image src={SulikoLogoWhite} alt="Suliko" width={80} height={20} priority />
       </Link>
-
-      {/* Not on a phone: the bottom bar carries the way to Office there, and
-          the two names do not fit beside the mark at 375px. */}
-      {signedIn && (
-        <div
-          role="group"
-          aria-label={t("products")}
-          className="ml-1 hidden min-w-0 items-center gap-0.5 rounded-md bg-white/10 p-0.5 text-sm sm:flex"
-        >
-          <span aria-current="true" className="truncate rounded bg-white/20 px-2.5 py-1 font-medium">
-            {t("translate")}
-          </span>
-          <a
-            href={officeHref}
-            className="flex items-center gap-1 truncate rounded px-2.5 py-1 text-white/85 transition-colors hover:bg-white/15 hover:text-white"
-          >
-            {t("officeShort")}
-            <ExternalLink className="size-3 shrink-0 opacity-70" aria-hidden />
-          </a>
-        </div>
-      )}
 
       <div className="ml-auto flex shrink-0 items-center gap-1">
         {signedIn ? (

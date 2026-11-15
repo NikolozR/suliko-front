@@ -4,6 +4,8 @@ import MobileBottomNav from "@/shared/components/MobileBottomNav";
 import { cookies } from "next/headers";
 import { getUserProfile } from "@/features/auth/services/userService";
 import ResponsiveMainContent from "@/shared/components/ResponsiveMainContent";
+import { officeNav } from "@/shared/nav/officeNav";
+import { getLocale } from "next-intl/server";
 import ShortcutsDialog from "@/shared/components/ShortcutsDialog";
 import { ShortcutsProvider } from "@/shared/shortcuts/ShortcutsProvider";
 
@@ -34,11 +36,14 @@ export default async function MainLayout({
     }
   }
 
+  // The Office half of the one sidebar, when this person is signed in to Office.
+  const office = userProfile ? await officeNav(await getLocale()) : null;
+
   return (
     <ShortcutsProvider>
       <div className="relative">
         <Topbar initiallySignedIn={Boolean(userProfile)} />
-        <Sidebar initialUserProfile={userProfile} />
+        <Sidebar initialUserProfile={userProfile} office={office} />
         <ResponsiveMainContent>
           {children}
         </ResponsiveMainContent>

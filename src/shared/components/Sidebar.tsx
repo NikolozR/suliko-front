@@ -26,6 +26,10 @@ import { GO_TARGETS } from "@/shared/shortcuts/definitions";
 import { useShortcuts } from "@/shared/shortcuts/ShortcutsProvider";
 import { useLocale, useTranslations } from "next-intl";
 import { OFFICE_URL, officeLocale } from "@/features/sulikoOffice/lib/officeLinks";
+import { NAVIGATION } from "@office/shared/config/navigation";
+import { HUE_CLASSES } from "@office/shared/lib/hues";
+import type { OfficeNavEntry } from "@/shared/nav/officeNav";
+import { WORKSPACE_SECTIONS, officeHref as officeModuleHref, workspaceLocale } from "@/shared/nav/workspace";
 
 const NAV_ITEMS = [
   {
@@ -93,9 +97,17 @@ function hintTitle(name: string, href: string): string {
 
 interface SidebarProps {
   initialUserProfile?: UserProfile | null;
+  /**
+   * The Office half of the one sidebar (shared/nav/workspace.ts): the modules
+   * this person may open, or null without an Office session.
+   */
+  office?: OfficeNavEntry[] | null;
 }
 
-export default function Sidebar({ initialUserProfile }: SidebarProps) {
+/** Office's icon and colour for a module, from its own navigation. */
+const OFFICE_ITEMS = new Map(NAVIGATION.flatMap((section) => section.items).map((item) => [item.href, item]));
+
+export default function Sidebar({ initialUserProfile, office = null }: SidebarProps) {
   const pathname = usePathname();
   const { token } = useAuthStore();
   const { userProfile, setUserProfile } = useUserStore();
@@ -197,6 +209,11 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
           }`}
       >
         <nav className="custom_scroll min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 py-4 space-y-0.5">
+          {office && !effectiveIsCollapsed && (
+            <h2 className="px-3 pb-2 text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+              {WORKSPACE_SECTIONS.translate[workspaceLocale(locale)]}
+            </h2>
+          )}
           {visibleNavItems.map(({ label, href, icon: Icon, disabled }) => (
             disabled ? (
               <span
@@ -285,6 +302,39 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
             </div>
           )}
 
+          {/* The Office half: the same items, order, icons and colours as
+              Office's own sidebar. Another root layout, so plain links. */}
+          {office && office.length > 0 && (
+            <div className="pt-6">
+              {!effectiveIsCollapsed ? (
+                <h2 className="px-3 pb-2 text-xs font-semibold tracking-wide uppercase text-muted-foreground">
+                  {WORKSPACE_SECTIONS.office[workspaceLocale(locale)]}
+                </h2>
+              ) : (
+                <div className="mx-2 mb-2 border-t border-sidebar-border" />
+              )}
+              <ul className="space-y-0.5">
+                {office.map(({ href, label }) => {
+                  const item = OFFICE_ITEMS.get(href);
+                  const Icon = item?.icon ?? Briefcase;
+                  return (
+                    <li key={href}>
+                      <a
+                        href={officeModuleHref(locale, href)}
+                        title={effectiveIsCollapsed ? label : undefined}
+                        className={`sidebar-item group flex items-center gap-3 rounded-md px-3 py-2 pointer-coarse:py-3.5 text-sm font-medium transition-colors ${effectiveIsCollapsed ? "justify-center px-0" : ""}`}
+                      >
+                        <Icon className={`size-4 shrink-0 ${item ? HUE_CLASSES[item.hue].ink : ""}`} aria-hidden />
+                        {!effectiveIsCollapsed && <span className="truncate">{label}</span>}
+                        {effectiveIsCollapsed && <span className="sr-only">{label}</span>}
+                      </a>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          )}
+
         </nav>
 
         {/* The foot, as in Office: this product's meter (the page balance, where
@@ -293,7 +343,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
         {token && (
           <div className="shrink-0 space-y-1 border-t border-sidebar-border px-2 py-3">
             {userProfile && <SidebarBalanceCard profile={userProfile} collapsed={effectiveIsCollapsed} />}
-            <a
+            {!office && <a
               href={officeHref}
               title={effectiveIsCollapsed ? t("office") : undefined}
               aria-label={effectiveIsCollapsed ? t("office") : undefined}
@@ -301,7 +351,7 @@ export default function Sidebar({ initialUserProfile }: SidebarProps) {
             >
               <Briefcase className="size-4 shrink-0" aria-hidden />
               {!effectiveIsCollapsed && <span className="truncate">{t("office")}</span>}
-            </a>
+            </a>}
           </div>
         )}
       </aside>
