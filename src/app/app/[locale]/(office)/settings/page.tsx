@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { PlanChoice } from "@office/app/[locale]/onboarding/plan-choice";
+import { PlanChoice } from "@/app/app/[locale]/onboarding/plan-choice";
 import { listOptions } from "@office/features/options/api";
 import {
   getGeneral,

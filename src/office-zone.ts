@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { CLEAN_NAMES, enabledLocalModules, moduleOfClean, MOVED_MODULES } from "./office/i18n/office-path";
+import { CLEAN_NAMES, enabledLocalModules, moduleOfClean, MOVED_MODULES, PUBLIC_MODULES } from "./office/i18n/office-path";
 
 /**
  * Suliko Office's addresses on this site (/app/...), during phase 3 of making
@@ -160,17 +160,29 @@ export function officeZone(request: NextRequest): NextResponse | null {
   }
   // Office has no Polish: its screens open in English.
   if (locale === "pl") return NextResponse.redirect(new URL(`/en/${segment}${rest}${search}`, request.url), 307);
-  return serveHere(request, locale, `${pathname}${search}`, `/app/${locale}/${module}${rest}${search}`);
+  return serveHere(request, locale, `${pathname}${search}`, `/app/${locale}/${module}${rest}${search}`, module);
+}
+
+/** Office's sign-in page: here once it has moved and is switched on, else on the Office deployment. */
+function loginPath(locale: string): string {
+  return enabledModules().has("login") ? `/${locale}/login` : `/app/${locale}/login`;
 }
 
 /** Serve a moved module's page from this app: Office's middleware, then the internal rewrite. */
-function serveHere(request: NextRequest, locale: string, clean: string, internal = `/app${clean}`): NextResponse {
+function serveHere(
+  request: NextRequest,
+  locale: string,
+  clean: string,
+  internal = `/app${clean}`,
+  module: string | null = parse(internal.split("?")[0]).module,
+): NextResponse {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const csp = buildCsp(nonce, process.env.NODE_ENV === "development");
 
-  if (!request.cookies.has(SESSION_COOKIE)) {
-    // Sign-in is still the Office deployment's, under /app.
-    const login = new URL(`/app/${locale}/login`, request.url);
+  // The sign-in screens open without a session; everything else sends the
+  // visitor to sign in first, coming back here afterwards.
+  if (!request.cookies.has(SESSION_COOKIE) && !(module && PUBLIC_MODULES.includes(module))) {
+    const login = new URL(loginPath(locale), request.url);
     login.searchParams.set("from", clean);
     const redirect = NextResponse.redirect(login);
     redirect.headers.set("Content-Security-Policy", csp);
