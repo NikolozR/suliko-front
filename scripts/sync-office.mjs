@@ -46,7 +46,16 @@ for (const f of ["layout.tsx", "error.tsx", "(app)/layout.tsx", "(app)/error.tsx
   walk(path.join(appDir, f));
 }
 for (const mod of modules) {
-  const dir = path.join(appDir, "(app)", mod);
+  // A folder of the signed-in app, (app); or a sign-in screen, (auth), with
+  // that group's layout; or a screen with a layout of its own under [locale]
+  // (onboarding, welcome).
+  let dir = path.join(appDir, "(app)", mod);
+  if (!fs.existsSync(dir) && fs.existsSync(path.join(appDir, "(auth)", mod))) {
+    dir = path.join(appDir, "(auth)", mod);
+    walk(path.join(appDir, "(auth)", "layout.tsx"));
+  } else if (!fs.existsSync(dir) && ["onboarding", "welcome"].includes(mod)) {
+    dir = path.join(appDir, mod);
+  }
   if (!fs.existsSync(dir)) throw new Error(`no such module: ${mod}`);
   for (const f of fs.readdirSync(dir, { recursive: true })) {
     const full = path.join(dir, f);
@@ -71,6 +80,11 @@ function destFor(rel) {
   if (page) return `src/app/app/[locale]/(office)/${page[1]}`;
   const editor = rel.match(/^src\/app\/\[locale\]\/\(editor\)\/(.*)$/);
   if (editor) return `src/app/app/[locale]/(editor)/${editor[1]}`;
+  // Sign-in screens, (auth), and the screens with a layout of their own.
+  const auth = rel.match(/^src\/app\/\[locale\]\/\(auth\)\/(.*)$/);
+  if (auth) return `src/app/app/[locale]/(auth)/${auth[1]}`;
+  const own = rel.match(/^src\/app\/\[locale\]\/(onboarding|welcome)\/(.*)$/);
+  if (own && modules.includes(own[1])) return `src/app/app/[locale]/${own[1]}/${own[2]}`;
   // Another screen's component a moved page imports (settings uses onboarding's
   // plan choice): kept at its own path under src/office, which is not a route.
   // The one shell's shared definitions: this app has its own (src/shared/nav).
@@ -88,6 +102,8 @@ const OWNED = new Set([
   "src/office/shared/components/shell/bottom-bar.tsx",
   // Clean addresses: /ka/clients for a moved module, /app/ka/... for the rest.
   "src/office/i18n/navigation.ts",
+  // Syncfusion 35 here (#258): Fluent 2 theme from ej2-fluent2-theme.
+  "src/office/features/orders/components/word-editor.tsx",
 ]);
 
 // ── copy ────────────────────────────────────────────────────────────────────
@@ -165,6 +181,12 @@ adapt("src/office/shared/lib/revalidate.ts", [
   // The cached pages are /app/ka/..., not /ka/... (which are Translate's).
   ["const localised = path === \"/\" ? `/${locale}` : `/${locale}${path}`;", "const localised = path === \"/\" ? `/app/${locale}` : `/app/${locale}${path}`;"],
 ]);
+if (modules.includes("onboarding")) {
+  // Onboarding's plan choice is a route file here now, no longer under src/office.
+  adapt("src/app/app/[locale]/(office)/settings/page.tsx", [
+    ['"@office/app/[locale]/onboarding/plan-choice"', '"@/app/app/[locale]/onboarding/plan-choice"'],
+  ]);
+}
 adapt("src/office/styles/globals.css", [['@import "./tokens.css";', '@import "../../app/tokens.css";']]);
 
 console.log(`moved ${modules.join(", ")}: ${copied} files, messages, stylesheet`);
