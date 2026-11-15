@@ -60,31 +60,75 @@ function buildCsp(nonce: string, isDev: boolean): string {
   ].join("; ");
 }
 
+/** /ka/clients/2 -> { locale: "ka", module: "clients" }; also pl, which Office lacks. */
+function parseClean(pathname: string): { locale: string | null; module: string | null } {
+  const [, locale, module] = pathname.split("/");
+  return ["ka", "en", "pl"].includes(locale) ? { locale, module: module ?? null } : { locale: null, module: null };
+}
+
+/** Whether this request might be an Office address: /app/..., or /{locale}/{moved module}. */
+export function isOfficeRequest(pathname: string): boolean {
+  if (isOfficePath(pathname)) return true;
+  const { module } = parseClean(pathname);
+  return module !== null && (MOVED_MODULES as readonly string[]).includes(module);
+}
+
 /**
- * Handle a request under /app. Returns the response, or null to let it go on
- * to this site's rewrites (which pass it to the Office deployment).
+ * Office's addresses on this site.
+ *
+ * A moved, switched-on module has a clean address, /ka/clients: served here by
+ * an internal rewrite to its pages (src/app/app/[locale]/(office)), with what
+ * Office's own middleware does (CSP with nonce, sign-in gate, Office's messages).
+ * Its old address /app/ka/clients redirects there (bookmarks, emails, links in
+ * pages still on the Office deployment).
+ *
+ * A moved module not switched on, and every module not moved, stays at
+ * /app/... on the Office deployment.
+ *
+ * Returns the response, or null to let the request go on (to this site's
+ * fallback rewrite, which passes /app/... to the Office deployment).
  */
 export function officeZone(request: NextRequest): NextResponse | null {
   const { pathname, search } = request.nextUrl;
-  const { locale, module } = parse(pathname);
-  const moved = module !== null && (MOVED_MODULES as readonly string[]).includes(module);
+  const zone = (process.env.OFFICE_ZONE_URL ?? "").replace(/\/$/, "");
+  const isMoved = (m: string | null): m is string => m !== null && (MOVED_MODULES as readonly string[]).includes(m);
 
-  if (!moved || !locale) return null;
-
-  if (!enabledModules().has(module)) {
-    // Moved here but not switched on: still the Office deployment's.
-    const zone = (process.env.OFFICE_ZONE_URL ?? "").replace(/\/$/, "");
+  // ── Old address /app/{ka|en}/{module}/... ─────────────────────────────────
+  if (isOfficePath(pathname)) {
+    const { locale, module } = parse(pathname);
+    if (!locale || !isMoved(module)) return null;
+    const clean = `${pathname.slice("/app".length)}${search}`;
+    if (enabledModules().has(module)) {
+      // A page load goes to the clean address. A page-data request or a form
+      // post from an old tab is answered in place.
+      const pageLoad = (request.method === "GET" || request.method === "HEAD") && request.headers.get("rsc") !== "1";
+      if (pageLoad) return NextResponse.redirect(new URL(clean, request.url), 308);
+      return serveHere(request, locale, clean);
+    }
     return zone ? NextResponse.rewrite(new URL(`${zone}${pathname}${search}`)) : null;
   }
 
-  // ── Served by this app: what Office's own middleware does ────────────────
+  // ── Clean address /{ka|en|pl}/{moved module}/... ──────────────────────────
+  const { locale, module } = parseClean(pathname);
+  if (!locale || !isMoved(module)) return null;
+  if (!enabledModules().has(module)) {
+    // Not switched on yet: the Office deployment answers, at its own address.
+    return NextResponse.redirect(new URL(`/app/${locale === "en" ? "en" : "ka"}${pathname.slice(locale.length + 1)}${search}`, request.url), 307);
+  }
+  // Office has no Polish: its screens open in English.
+  if (locale === "pl") return NextResponse.redirect(new URL(`/en${pathname.slice(3)}${search}`, request.url), 307);
+  return serveHere(request, locale, `${pathname}${search}`);
+}
+
+/** Serve a moved module's page from this app: Office's middleware, then the internal rewrite. */
+function serveHere(request: NextRequest, locale: string, clean: string): NextResponse {
   const nonce = Buffer.from(crypto.randomUUID()).toString("base64");
   const csp = buildCsp(nonce, process.env.NODE_ENV === "development");
 
   if (!request.cookies.has(SESSION_COOKIE)) {
-    // Sign-in is still the Office deployment's: its login page is under /app too.
+    // Sign-in is still the Office deployment's, under /app.
     const login = new URL(`/app/${locale}/login`, request.url);
-    login.searchParams.set("from", `${pathname.slice("/app".length)}${search}`);
+    login.searchParams.set("from", clean);
     const redirect = NextResponse.redirect(login);
     redirect.headers.set("Content-Security-Policy", csp);
     return redirect;
@@ -93,13 +137,15 @@ export function officeZone(request: NextRequest): NextResponse | null {
   const headers = new Headers(request.headers);
   headers.set("x-nonce", nonce);
   headers.set("content-security-policy", csp);
-  // Office's code reads where the request is without the /app.
-  headers.set("x-pathname", `${pathname.slice("/app".length)}${search}`);
+  // Office's code reads where the request is: the clean address.
+  headers.set("x-pathname", clean);
   // Tells i18n/request.ts to load Office's messages.
   headers.set("x-suliko-zone", "office");
   headers.set("x-next-intl-locale", locale);
 
-  const response = NextResponse.next({ request: { headers } });
+  // The pages live under src/app/app/[locale]/(office).
+  const target = new URL(`/app${clean}`, request.url);
+  const response = NextResponse.rewrite(target, { request: { headers } });
   response.headers.set("Content-Security-Policy", csp);
   return response;
 }

@@ -1,5 +1,7 @@
 import { ClipboardList, FileText, FolderOpen, Plus, type LucideIcon } from "lucide-react";
 
+import { officePath } from "@office/i18n/office-path";
+
 /**
  * One sidebar for Suliko (phase 3, step 4 of making Translate and Office one
  * system): Translate's screens and Office's show the same two sections in the
@@ -61,7 +63,11 @@ export function officeLocaleOf(locale: string): "ka" | "en" {
   return locale === "en" ? "en" : "ka";
 }
 
-/** An Office module's address on suliko.ge: `clients` -> `/app/ka/clients`. */
+/**
+ * An Office module's address on suliko.ge: `clients` -> `/ka/clients` once it has
+ * moved here, `/app/ka/clients` while the Office deployment answers it.
+ * (app.suliko.ge's copy of this file keeps the /app form: it has no moved list.)
+ */
 export function officeHref(locale: string, module: string): string {
-  return `/app/${officeLocaleOf(locale)}/${module}`;
+  return officePath(`/${module}`, officeLocaleOf(locale));
 }
