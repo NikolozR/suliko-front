@@ -8,6 +8,7 @@ import { getUnreadCount } from "@office/features/notifications/api";
 import { redirectTo } from "@office/i18n/navigation";
 import { planAllows } from "@office/shared/auth/plans";
 import { getSession } from "@office/shared/auth/session";
+import { signInAgain } from "@office/shared/auth/guards";
 import { sulikoSiteUrl } from "@office/shared/auth/sso";
 import { AppShell } from "@office/shared/components/shell/app-shell";
 import { FlashToast } from "@office/shared/components/shell/flash-toast";
@@ -33,9 +34,8 @@ export default async function AppLayout({
 
   const session = await getSession();
 
-  if (!session) {
-    redirectTo("/login", locale);
-  }
+  // An ended session: sign in again and come back to this page (guards.ts).
+  if (!session) return signInAgain(locale);
 
   // Password accepted, second factor still owed. The API refuses every
   // endpoint in this state, so rendering the shell would just show a page

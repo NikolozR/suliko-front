@@ -120,6 +120,11 @@ const OWNED = new Set([
   "src/office/features/orders/components/translation-screen.tsx",
   // One control density: sizes from the --btn-* variables (src/app/globals.css).
   "src/office/shared/components/ui/button.tsx",
+  // requireSession keeps the page to come back to after signing in again
+  // (adminEntryPath already goes through withBasePath here).
+  "src/office/shared/auth/guards.ts",
+  // Its ended-session check also keeps the page to come back to (signInAgain).
+  "src/app/app/[locale]/(office)/layout.tsx",
   // A thin wrapper now: the renderer is src/shared/components/pdf/PdfPages.tsx.
   "src/office/features/orders/components/pdf-pages.tsx",
   // Phone: the status tiles fade at the right edge, so it shows more scroll in.
@@ -183,10 +188,6 @@ adapt("src/office/shared/lib/api.ts", [
   ['requireEnv("API_BASE_URL")', 'requireEnv("OFFICE_API_BASE_URL")'],
   ['import { redirect } from "next/navigation";', 'import { redirect } from "next/navigation";\nimport { withBasePath } from "@office/shared/lib/base-path";'],
   ["redirect(`/${locale}/two-factor?step_up=1&next=${encodeURIComponent(current)}`);", "redirect(withBasePath(`/${locale}/two-factor?step_up=1&next=${encodeURIComponent(current)}`));"],
-]);
-adapt("src/office/shared/auth/guards.ts", [
-  ['import { redirect } from "next/navigation";', 'import { redirect } from "next/navigation";\nimport { withBasePath } from "@office/shared/lib/base-path";'],
-  ["redirect(adminEntryPath(locale, path));", "redirect(withBasePath(adminEntryPath(locale, path)));"],
 ]);
 adapt("src/app/app/[locale]/layout.tsx", [
   ['import "../globals.css";', 'import "@office/styles/globals.css";'],

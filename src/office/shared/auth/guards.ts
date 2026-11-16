@@ -1,7 +1,7 @@
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
+// Owned by suliko-front: requireSession keeps the page to come back to.
 import "server-only";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { withBasePath } from "@office/shared/lib/base-path";
 
@@ -26,8 +26,24 @@ import { getSession, type Session } from "@office/shared/auth/session";
 /** The session, or a redirect to login. For pages that need the user. */
 export async function requireSession(locale: string): Promise<Session> {
   const session = await getSession();
-  if (!session) redirectTo("/login", locale);
+  if (!session) return signInAgain(locale);
   return session;
+}
+
+/**
+ * The cookie was there but the session has ended: sign in again and come back
+ * to this page, not to the dashboard. (No cookie at all is caught earlier, by
+ * office-zone.ts, which passes `from` too.) Used by the (office) layout as well.
+ */
+export async function signInAgain(locale: string): Promise<never> {
+  let from = "";
+  try {
+    // Set by office-zone.ts on every page request: the clean address.
+    from = (await headers()).get("x-pathname") ?? "";
+  } catch {
+    // Not in a request: nowhere to come back to.
+  }
+  redirectTo(from ? `/login?from=${encodeURIComponent(from)}` : "/login", locale);
 }
 
 /**
