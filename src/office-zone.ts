@@ -3,34 +3,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { CLEAN_NAMES, enabledLocalModules, moduleOfClean, MOVED_MODULES, PUBLIC_MODULES } from "./office/i18n/office-path";
 
 /**
- * Suliko Office's addresses on this site (/app/...), during phase 3 of making
- * Suliko Translate and Suliko Office one system: its modules move into this app
- * one by one (scripts/sync-office.mjs).
- *
- * A module this app has code for answers here only when it is listed in
- * OFFICE_LOCAL_MODULES (comma-separated, e.g. "calculator"); unlisted, it is
- * passed on to the Office deployment like every module that has not moved, so
- * a move goes live, and can be undone, with one environment variable.
+ * Suliko Office's addresses on this site. All of Office's code lives in this
+ * app now (scripts/sync-office.mjs; the moved modules: office/i18n/office-path.ts):
+ * its screens at clean addresses (/ka/clients), its server routes at /app/api,
+ * its static files in public/app. Old /app/{locale}/... addresses redirect.
+ * Nothing is passed on to the former Office deployment any more.
  */
-
-/** Modules whose pages are in src/app/app/[locale]/(office). Add one per move. */
-// The moved modules and the switch: office/i18n/office-path.ts.
 
 const OFFICE_LOCALES = ["ka", "en"];
 const SESSION_COOKIE = "suliko_session";
 
 function enabledModules(): Set<string> {
   return new Set(enabledLocalModules());
-}
-
-/** Office's server route groups answered by this app (OFFICE_LOCAL_API, comma-separated). */
-function enabledApi(): Set<string> {
-  return new Set(
-    (process.env.OFFICE_LOCAL_API ?? "")
-      .split(",")
-      .map((g) => g.trim())
-      .filter(Boolean),
-  );
 }
 
 /** /app/ka/calculator/x -> { locale: "ka", module: "calculator" } */
@@ -107,33 +91,20 @@ export function isOfficeRequest(pathname: string): boolean {
 /**
  * Office's addresses on this site.
  *
- * A moved, switched-on module has a clean address, /ka/clients: served here by
- * an internal rewrite to its pages (src/app/app/[locale]/(office)), with what
- * Office's own middleware does (CSP with nonce, sign-in gate, Office's messages).
- * Its old address /app/ka/clients redirects there (bookmarks, emails, links in
- * pages still on the Office deployment).
+ * A module has a clean address, /ka/clients: served here by an internal rewrite
+ * to its pages (src/app/app/[locale]/(office)), with what Office's own
+ * middleware did (CSP with nonce, sign-in gate, Office's messages). Its old
+ * address /app/ka/clients redirects there (bookmarks, emails).
  *
- * A moved module not switched on, and every module not moved, stays at
- * /app/... on the Office deployment.
- *
- * Returns the response, or null to let the request go on (to this site's
- * fallback rewrite, which passes /app/... to the Office deployment).
+ * Returns the response, or null to let the request go on (an /app/api route,
+ * a static file in public/app, or this app's 404).
  */
 export function officeZone(request: NextRequest): NextResponse | null {
   const { pathname, search } = request.nextUrl;
-  const zone = (process.env.OFFICE_ZONE_URL ?? "").replace(/\/$/, "");
   const isMoved = (m: string | null): m is string => m !== null && (MOVED_MODULES as readonly string[]).includes(m);
 
-  // ── Office's server routes /app/api/{group}/... ───────────────────────────
-  // This app has them all (src/app/app/api), but answers only for the groups
-  // listed in OFFICE_LOCAL_API (auth, files, invoice, invoice-template,
-  // export); the rest go on to the Office deployment as before. Sign-in runs
-  // through here, so each group is switched on, and back off, on its own.
-  const api = /^\/app\/api\/([^/?#]+)/.exec(pathname);
-  if (api) {
-    if (enabledApi().has(api[1])) return null;
-    return zone ? NextResponse.rewrite(new URL(`${zone}${pathname}${search}`)) : null;
-  }
+  // ── Office's server routes /app/api/... (src/app/app/api) ─────────────────
+  if (pathname.startsWith("/app/api/")) return null;
 
   // ── Old address /app/{ka|en}/{module}/... ─────────────────────────────────
   if (isOfficePath(pathname)) {
@@ -169,7 +140,7 @@ export function officeZone(request: NextRequest): NextResponse | null {
       if (pageLoad) return NextResponse.redirect(new URL(clean, request.url), 308);
       return serveHere(request, locale, clean, `${pathname}${search}`);
     }
-    return zone ? NextResponse.rewrite(new URL(`${zone}${pathname}${search}`)) : null;
+    return null;
   }
 
   // ── Clean address /{ka|en|pl}/{moved module}/... ──────────────────────────
@@ -180,21 +151,14 @@ export function officeZone(request: NextRequest): NextResponse | null {
   if (!locale || !isMoved(module)) return null;
   const segment = cleanName(module);
   const rest = pathname.slice(`/${locale}/${segment}`.length);
-  if (!enabledModules().has(module)) {
-    // Before Office's orders are switched on, /ka/orders is still what it was:
-    // Translate's bureau assignments, at their new address.
-    if (segment === "orders" && !rest) return NextResponse.redirect(new URL(`/${locale}/assignments${search}`, request.url), 307);
-    // Not switched on yet: the Office deployment answers, at its own address.
-    return NextResponse.redirect(new URL(`/app/${locale === "en" ? "en" : "ka"}/${module}${rest}${search}`, request.url), 307);
-  }
   // Office has no Polish: its screens open in English.
   if (locale === "pl") return NextResponse.redirect(new URL(`/en/${segment}${rest}${search}`, request.url), 307);
   return serveHere(request, locale, `${pathname}${search}`, `/app/${locale}/${module}${rest}${search}`, module);
 }
 
-/** Office's sign-in page: here once it has moved and is switched on, else on the Office deployment. */
+/** Office's sign-in page. */
 function loginPath(locale: string): string {
-  return enabledModules().has("login") ? `/${locale}/login` : `/app/${locale}/login`;
+  return `/${locale}/login`;
 }
 
 /** Serve a moved module's page from this app: Office's middleware, then the internal rewrite. */
