@@ -18,6 +18,7 @@ import SulikoLogoWhite from "../../../../public/Suliko_logo_white.svg";
 import type { OfficeContext } from "@/shared/nav/officeNav";
 import { OfficeActionsSlot, OfficeSwitcherSlot } from "./OfficeTopbarParts";
 import { NotificationBell } from "@/features/notifications/components/NotificationBell";
+import { SearchButton } from "@/features/search/components/SearchButton";
 
 /** A control on the gradient bar: white, with a faint white wash on hover. */
 const BAR_BUTTON =
@@ -89,6 +90,8 @@ export default function Topbar({ initiallySignedIn, office = null }: TopbarProps
 
       <div className="ml-auto flex shrink-0 items-center gap-1">
         {signedIn && office && <OfficeActionsSlot office={office} />}
+        {/* Office's own box serves those signed in to Office. */}
+        {signedIn && !office && <SearchButton />}
         {/* Office's own bell serves those signed in to Office; this one is the Translate feed. */}
         {signedIn && !office && <NotificationBell />}
         {signedIn ? (
