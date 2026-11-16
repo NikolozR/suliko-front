@@ -17,7 +17,13 @@
     "create": "Utwórz",
     "creating": "Tworzenie...",
     "delete": "Usuń",
-    "deleting": "Usuwanie..."
+    "deleting": "Usuwanie...",
+    "loadFailedTitle": "Nie udało się tego wczytać",
+    "loadFailedBody": "Sprawdź połączenie i spróbuj ponownie.",
+    "signedOutTitle": "Wylogowano",
+    "signedOutBody": "Zaloguj się ponownie, aby zobaczyć tę stronę.",
+    "signIn": "Zaloguj się",
+    "tryAgain": "Spróbuj ponownie"
   },
   "Authorization": {
     "title": "Autoryzacja",
@@ -1077,6 +1083,7 @@
     "menu": "Menu",
     "openMenu": "Otwórz menu",
     "closeMenu": "Zamknij menu",
+    "resetZoom": "Przywróć powiększenie",
     "toggleTheme": "Zmień motyw",
     "theme": "Motyw"
   },
@@ -2436,6 +2443,7 @@
     "openMenu": "Otwórz menu",
     "closeMenu": "Zamknij menu",
     "menu": "Menu",
+    "resetZoom": "Przywróć powiększenie",
     "toggleTheme": "Zmień motyw"
   }
 }

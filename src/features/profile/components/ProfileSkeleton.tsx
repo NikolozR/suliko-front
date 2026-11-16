@@ -3,7 +3,7 @@ import { Skeleton } from "@/features/ui/components/ui/skeleton";
 
 export const ProfileSkeleton = () => {
   return (
-    <div className="container mx-auto px-4 py-8 max-w-3xl">
+    <div className="max-w-3xl px-4 py-6 md:px-6">
       {/* Hero Skeleton */}
       <div className="rounded-2xl border border-border/60 bg-card p-6 md:p-8 mb-8 space-y-6">
         <div className="flex items-center gap-6 md:gap-8">

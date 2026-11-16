@@ -7,6 +7,7 @@ import { FileIcon } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/shared/lib/utils";
+import { LoadError } from "@/shared/components/LoadError";
 
 /** How many recent translations the sidebar lists; the rest are under "View all". */
 const RECENT_COUNT = 3;
@@ -19,7 +20,8 @@ interface HistoryDropdownProps {
 export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
+  const [attempt, setAttempt] = useState(0);
   const t = useTranslations("Projects");
 
   useEffect(() => {
@@ -30,7 +32,8 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
         setChats(response.data.chats.slice(0, RECENT_COUNT));
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Failed to load history");
+        console.error("[history] load failed", err);
+        setError(err);
       } finally {
         setLoading(false);
       }
@@ -50,7 +53,7 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
     return () => {
       window.removeEventListener("translations-updated", handleTranslationsUpdated);
     };
-  }, [isOpen]);
+  }, [isOpen, attempt]);
 
   // Nothing fits in the collapsed rail, and its messages would be cut off.
   if (!isOpen || isCollapsed) return null;
@@ -65,9 +68,7 @@ export function HistoryDropdown({ isCollapsed, isOpen }: HistoryDropdownProps) {
 
   if (error) {
     return (
-      <div className="px-3 py-3 text-xs text-destructive/80">
-        {error}
-      </div>
+      <LoadError compact error={error} onRetry={() => setAttempt((n) => n + 1)} />
     );
   }
 

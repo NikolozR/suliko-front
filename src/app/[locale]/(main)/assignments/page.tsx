@@ -30,7 +30,7 @@ export default function OrdersPage() {
   }, []);
 
   return (
-    <div className="container mx-auto p-6 max-w-3xl">
+    <div className="max-w-3xl px-4 py-6 md:px-6">
       <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
       <p className="text-sm text-muted-foreground mt-1 mb-8">{t("subtitle")}</p>
 

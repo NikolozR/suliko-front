@@ -35,6 +35,7 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
   id = "file-upload-change"
 }) => {
   const t = useTranslations("DocumentTranslationCard");
+  const tA = useTranslations("A11y");
   const ext = file?.name.split(".").pop()?.toLowerCase() || "";
   const { icon: IconComponent, className: iconClass } = fileIconConfig[ext] ?? { icon: FileText, className: "text-accent-text" };
 
@@ -82,6 +83,8 @@ const FileInfoDisplay: React.FC<FileInfoDisplayProps> = ({
           variant="ghost"
           size="sm"
           onClick={onRemoveFile}
+          aria-label={tA("removeFile")}
+          title={tA("removeFile")}
           className="text-destructive hover:text-destructive"
         >
           <X className="h-4 w-4" />

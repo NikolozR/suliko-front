@@ -81,7 +81,7 @@ export function AssignToProjectBanner({ chatId, projectId, onAssigned }: Props) 
           {doneName ? <Check className="h-4 w-4 text-emerald-600" /> : <Folder className="h-4 w-4 text-primary" />}
           {doneName ? t("assignedTo", { name: doneName }) : t("assignTitle")}
         </div>
-        <button type="button" onClick={dismiss} aria-label={t("assignSkip")} className="text-muted-foreground hover:text-foreground">
+        <button type="button" onClick={dismiss} aria-label={t("assignSkip")} className="-m-2 grid size-8 shrink-0 place-items-center rounded-md text-muted-foreground hover:bg-muted hover:text-foreground pointer-coarse:size-11">
           <X className="h-4 w-4" />
         </button>
       </div>

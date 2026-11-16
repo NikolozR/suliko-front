@@ -16,18 +16,19 @@ import { Card } from "@/features/ui/components/ui/card";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
 import { Button } from "@/features/ui/components/ui/button";
 import { useTranslations } from "next-intl";
-import { Plus, ArrowRight, AlertCircle, FolderPlus } from "lucide-react";
+import { Plus, ArrowRight, FolderPlus } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { TranslationCard } from "@/features/projects/components/TranslationCard";
 import { ProjectFolderCard } from "@/features/projects/components/ProjectFolderCard";
 import { CreateProjectDialog } from "@/features/projects/components/CreateProjectDialog";
 import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
+import { LoadError } from "@/shared/components/LoadError";
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [chats, setChats] = useState<Chat[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<unknown>(null);
   const [showCreateProject, setShowCreateProject] = useState(false);
   const t = useTranslations("Projects");
   const tTitles = useTranslations("PageTitles");
@@ -43,7 +44,8 @@ export default function ProjectsPage() {
       setChats(chatsRes.data.chats);
       setError(null);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load projects");
+      console.error("[projects] load failed", err);
+      setError(err);
     } finally {
       setLoading(false);
     }
@@ -106,7 +108,7 @@ export default function ProjectsPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto p-6 max-w-3xl">
+      <div className="max-w-3xl px-4 py-6 md:px-6">
         <Skeleton className="h-8 w-56 mb-8" />
         <div className="space-y-3">
           {[1, 2, 3].map((i) => (
@@ -128,11 +130,14 @@ export default function ProjectsPage() {
 
   if (error) {
     return (
-      <div className="container mx-auto p-6 max-w-3xl">
-        <div className="flex items-center gap-3 p-4 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200/60 dark:border-red-800/40 text-red-700 dark:text-red-400">
-          <AlertCircle className="h-5 w-5 shrink-0" />
-          <p className="text-sm">{error}</p>
-        </div>
+      <div className="max-w-3xl px-4 py-6 md:px-6">
+        <LoadError
+          error={error}
+          onRetry={() => {
+            setLoading(true);
+            void fetchData();
+          }}
+        />
       </div>
     );
   }
@@ -140,7 +145,7 @@ export default function ProjectsPage() {
   const isEmpty = projects.length === 0 && chats.length === 0;
 
   return (
-    <div className="container mx-auto p-6 max-w-3xl">
+    <div className="max-w-3xl px-4 py-6 md:px-6">
       <div className="flex items-center justify-between mb-8 gap-4">
         <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
         <Button onClick={() => setShowCreateProject(true)} size="sm" className="gap-2 shrink-0">
