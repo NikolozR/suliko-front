@@ -2452,5 +2452,31 @@
     "menu": "მენიუ",
     "resetZoom": "მასშტაბის აღდგენა",
     "toggleTheme": "თემის შეცვლა"
+  },
+  "Notifications": {
+    "justNow": "ახლახან",
+    "minutesAgo": "{count} წუთის წინ",
+    "hoursAgo": "{count} საათის წინ",
+    "daysAgo": "{count} დღის წინ",
+    "title": "შეტყობინებები",
+    "bell": "შეტყობინებები",
+    "bellUnread": "შეტყობინებები, წაუკითხავი: {count}",
+    "markAllRead": "ყველას წაკითხულად მონიშვნა",
+    "empty": "ჯერ არაფერია. აქ გამოჩნდება გადახდები, დასრულებული პაკეტები და თქვენი ბალანსი.",
+    "loading": "იტვირთება...",
+    "loadError": "შეტყობინებები ვერ ჩაიტვირთა. სცადეთ ცოტა ხანში.",
+    "unreadMark": "წაუკითხავი:",
+    "unknown": "თქვენს ანგარიშზე ახალი ცნობაა.",
+    "batchFinished": "თქვენი პაკეტი დასრულდა: ნათარგმნია {completed} დოკუმენტი.",
+    "batchFinishedNamed": "თქვენი პაკეტი „{name}“ დასრულდა: ნათარგმნია {completed} დოკუმენტი.",
+    "batchFinishedErrors": "თქვენი პაკეტი დასრულდა: ნათარგმნია {completed}, ვერ შესრულდა {failed}. შეგიძლიათ ხელახლა სცადოთ.",
+    "batchFinishedErrorsNamed": "თქვენი პაკეტი „{name}“ დასრულდა: ნათარგმნია {completed}, ვერ შესრულდა {failed}. შეგიძლიათ ხელახლა სცადოთ.",
+    "paymentSucceeded": "თქვენი გადახდა {amount} {currency} შესრულდა.",
+    "paymentFailed": "თქვენი გადახდა {amount} {currency} ვერ შესრულდა. თანხა არ ჩამოგჭრიათ.",
+    "lowBalance": "ბალანსი იწურება: დარჩა {balance} გვერდი. შეავსეთ, რომ თარგმნა გააგრძელოთ.",
+    "subscriptionRenewed": "თქვენი გეგმა განახლდა.",
+    "subscriptionRenewedNamed": "თქვენი გეგმა {plan} განახლდა.",
+    "subscriptionRenewalFailed": "გეგმის განახლება ვერ მოხერხდა. შეამოწმეთ შენახული ბარათი.",
+    "subscriptionRenewalFailedNamed": "გეგმის {plan} განახლება ვერ მოხერხდა. შეამოწმეთ შენახული ბარათი."
   }
 }

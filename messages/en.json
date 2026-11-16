@@ -2452,5 +2452,31 @@
     "menu": "Menu",
     "resetZoom": "Reset zoom",
     "toggleTheme": "Switch theme"
+  },
+  "Notifications": {
+    "justNow": "just now",
+    "minutesAgo": "{count, plural, one {# minute ago} other {# minutes ago}}",
+    "hoursAgo": "{count, plural, one {# hour ago} other {# hours ago}}",
+    "daysAgo": "{count, plural, one {# day ago} other {# days ago}}",
+    "title": "Notifications",
+    "bell": "Notifications",
+    "bellUnread": "Notifications, {count, plural, one {# unread} other {# unread}}",
+    "markAllRead": "Mark all as read",
+    "empty": "Nothing yet. Payments, finished batches and your balance will show up here.",
+    "loading": "Loading...",
+    "loadError": "Notifications could not be loaded. Try again in a moment.",
+    "unreadMark": "Unread:",
+    "unknown": "There is an update on your account.",
+    "batchFinished": "Your batch is done: {completed, plural, one {# document} other {# documents}} translated.",
+    "batchFinishedNamed": "Your batch “{name}” is done: {completed, plural, one {# document} other {# documents}} translated.",
+    "batchFinishedErrors": "Your batch finished: {completed} translated, {failed} did not work. You can retry those.",
+    "batchFinishedErrorsNamed": "Your batch “{name}” finished: {completed} translated, {failed} did not work. You can retry those.",
+    "paymentSucceeded": "Your payment of {amount} {currency} went through.",
+    "paymentFailed": "Your payment of {amount} {currency} did not go through. Nothing was charged.",
+    "lowBalance": "Your balance is low: {balance, plural, one {# page} other {# pages}} left. Top up to keep translating.",
+    "subscriptionRenewed": "Your plan was renewed.",
+    "subscriptionRenewedNamed": "Your {plan} plan was renewed.",
+    "subscriptionRenewalFailed": "We could not renew your plan. Check your saved card.",
+    "subscriptionRenewalFailedNamed": "We could not renew your {plan} plan. Check your saved card."
   }
 }
