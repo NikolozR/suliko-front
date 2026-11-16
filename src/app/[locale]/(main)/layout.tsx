@@ -1,3 +1,4 @@
+import MaintenanceBanner from "@/shared/components/MaintenanceBanner";
 import Sidebar from "@/shared/components/Sidebar";
 import Topbar from "@/shared/components/shell/Topbar";
 import MobileBottomNav from "@/shared/components/MobileBottomNav";
