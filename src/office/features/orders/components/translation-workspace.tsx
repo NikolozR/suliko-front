@@ -2,7 +2,7 @@
 // Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
 // here: app.suliko.ge's copy is frozen.
 
-import { FileDown, Loader2, Maximize2, Printer, Save } from "lucide-react";
+import { FileDown, Loader2, Maximize2, Printer } from "lucide-react";
 import { useTranslations } from "next-intl";
 import dynamic from "next/dynamic";
 import { useState } from "react";
@@ -12,6 +12,7 @@ import { editorHref, workspaceHref } from "@office/features/orders/components/or
 import { Note, Pane, SyncToggle } from "@office/features/orders/components/workspace-parts";
 import { useSyncedScroll, useSyncPreference } from "@office/features/orders/use-synced-scroll";
 import { useWordDocument } from "@office/features/orders/use-word-document";
+import { SaveStatus } from "@office/features/orders/components/save-status";
 import { Link } from "@office/i18n/navigation";
 import { ToggleChip } from "@office/shared/components/form/toggle-chip";
 import { Button } from "@office/shared/components/ui/button";
@@ -95,8 +96,14 @@ export function TranslationWorkspace({
         </div>
 
         <p className="text-muted-foreground min-w-0 flex-1 truncate text-xs" title={file.name}>
-          {word.dirty ? (
-            <span className="text-hue-amber-ink font-medium">{t("unsaved")}</span>
+          {canWrite && (word.dirty || word.saving || word.savedAt || word.error) ? (
+            <SaveStatus
+              dirty={word.dirty}
+              saving={word.saving}
+              savedAt={word.savedAt}
+              failed={word.error !== null}
+              onRetry={() => void word.save()}
+            />
           ) : canWrite ? (
             t("editHint")
           ) : (
@@ -118,20 +125,10 @@ export function TranslationWorkspace({
             <FileDown /> {t("word")}
           </Button>
           <Button variant="outline" size="sm" asChild>
-            <Link href={editorHref(orderId, documentId, file.id)}>
+            <Link href={editorHref(orderId, documentId, word.fileId)}>
               <Maximize2 /> {t("fullScreen")}
             </Link>
           </Button>
-          {canWrite && (
-            <Button
-              variant="brand"
-              size="sm"
-              disabled={!word.dirty || word.saving}
-              onClick={() => void word.save()}
-            >
-              {word.saving ? <Loader2 className="animate-spin" /> : <Save />} {t("save")}
-            </Button>
-          )}
         </div>
       </div>
 

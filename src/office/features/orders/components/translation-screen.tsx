@@ -2,7 +2,7 @@
 // Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
 // here: app.suliko.ge's copy is frozen.
 
-import { ArrowLeft, FileDown, Loader2, PanelLeft, Printer, Save } from "lucide-react";
+import { ArrowLeft, FileDown, PanelLeft, Printer } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -12,6 +12,7 @@ import { WordEditor } from "@office/features/orders/components/translation-works
 import { SyncToggle } from "@office/features/orders/components/workspace-parts";
 import { useSyncedScroll, useSyncPreference } from "@office/features/orders/use-synced-scroll";
 import { useWordDocument } from "@office/features/orders/use-word-document";
+import { SaveStatus } from "@office/features/orders/components/save-status";
 import { Link } from "@office/i18n/navigation";
 import { ToggleChip } from "@office/shared/components/form/toggle-chip";
 import { Button } from "@office/shared/components/ui/button";
@@ -61,7 +62,7 @@ export function TranslationScreen({
     <div className="bg-background flex h-dvh flex-col">
       <header className="border-border flex flex-wrap items-center gap-2 border-b px-3 py-2">
         <Button variant="ghost" size="sm" asChild>
-          <Link href={workspaceHref(orderId, documentId, file.id)}>
+          <Link href={workspaceHref(orderId, documentId, word.fileId)}>
             <ArrowLeft /> {t("backToComparison")}
           </Link>
         </Button>
@@ -70,10 +71,14 @@ export function TranslationScreen({
           {file.name}
         </span>
         <span className="text-xs" role="status">
-          {word.dirty ? (
-            <span className="text-hue-amber-ink font-medium">{t("unsaved")}</span>
-          ) : (
-            <span className="text-muted-foreground">{canWrite ? t("saved") : null}</span>
+          {canWrite && (
+            <SaveStatus
+              dirty={word.dirty}
+              saving={word.saving}
+              savedAt={word.savedAt}
+              failed={word.error !== null}
+              onRetry={() => void word.save()}
+            />
           )}
         </span>
 
@@ -101,16 +106,6 @@ export function TranslationScreen({
           <Button variant="outline" size="sm" onClick={() => void word.downloadWord()}>
             <FileDown /> {t("word")}
           </Button>
-          {canWrite && (
-            <Button
-              variant="brand"
-              size="sm"
-              disabled={!word.dirty || word.saving}
-              onClick={() => void word.save()}
-            >
-              {word.saving ? <Loader2 className="animate-spin" /> : <Save />} {t("save")}
-            </Button>
-          )}
         </div>
       </header>
 
