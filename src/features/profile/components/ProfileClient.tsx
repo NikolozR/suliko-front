@@ -22,12 +22,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ProfileDeleteAccount } from "./ProfileDelete";
-import { ProfileSavedCards } from "./";
 import { ProfileSectionNav, PROFILE_SECTIONS, type ProfileSection } from "./ProfileSectionNav";
-import { ProfileBalanceCard } from "./ProfileBalanceCard";
-import { ProfileRecentPayments } from "./ProfileRecentPayments";
-import { ProfileSubscription } from "./ProfileSubscription";
-import { CouponRedeemCard } from "@/features/promoCodes";
+import { PagesWallet } from "./PagesWallet";
 
 const makeProfileUpdateSchema = (t: (key: "firstNameRequired" | "emailRequired" | "emailInvalid") => string) =>
   z.object({
@@ -221,17 +217,7 @@ export default function ProfileClient() {
             </>
           )}
 
-          {section === "billing" && (
-            <>
-              <ProfileBalanceCard userProfile={userProfile} />
-              <ProfileRecentPayments />
-              {userProfile.subscription && (
-                <ProfileSubscription subscription={userProfile.subscription} onChanged={originalFetchUserProfile} />
-              )}
-              <ProfileSavedCards />
-              <CouponRedeemCard />
-            </>
-          )}
+          {section === "billing" && <PagesWallet />}
 
           {section === "security" && (
             <>

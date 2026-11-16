@@ -125,6 +125,8 @@ const OWNED = new Set([
   "src/office/shared/auth/guards.ts",
   // Its ended-session check also keeps the page to come back to (signInAgain).
   "src/app/app/[locale]/(office)/layout.tsx",
+  // One Billing: the person's translation pages beside the Office package.
+  "src/app/app/[locale]/(office)/billing/page.tsx",
   // A thin wrapper now: the renderer is src/shared/components/pdf/PdfPages.tsx.
   "src/office/features/orders/components/pdf-pages.tsx",
   // Phone: the status tiles fade at the right edge, so it shows more scroll in.

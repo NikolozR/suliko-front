@@ -131,7 +131,8 @@ export const NAVIGATION: NavSection[] = [
         labelKey: "billing",
         icon: CreditCard,
         hue: "grey",
-        permission: "tenant.billing",
+        // For everyone: their own translation pages are here too (the Office
+        // package section is for those with tenant.billing).
       },
       {
         href: "settings",

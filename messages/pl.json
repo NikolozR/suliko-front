@@ -700,7 +700,10 @@
     "updateFailed": "Nie udało się zaktualizować profilu. Spróbuj ponownie.",
     "deleteAccountFailed": "Nie udało się usunąć konta. Spróbuj ponownie.",
     "profileNotFound": "Nie znaleziono profilu",
-    "profileNotFoundBody": "Nie znaleziono informacji o koncie."
+    "profileNotFoundBody": "Nie znaleziono informacji o koncie.",
+    "billingPackageTitle": "Pakiet Office",
+    "billingPagesTitle": "Strony tłumaczeń",
+    "billingPagesHint": "Twoje saldo stron w Suliko Translate: doładowania, płatności i zapisane karty."
   },
   "LanguageSwitcher": {
     "english": "English",

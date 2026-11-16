@@ -700,7 +700,10 @@
     "updateFailed": "Unable to update your profile. Try again.",
     "deleteAccountFailed": "Unable to delete the account. Try again.",
     "profileNotFound": "Profile not found",
-    "profileNotFoundBody": "Account information not found."
+    "profileNotFoundBody": "Account information not found.",
+    "billingPackageTitle": "Office package",
+    "billingPagesTitle": "Translation pages",
+    "billingPagesHint": "Your own balance of pages for Suliko Translate: top-ups, payments and saved cards."
   },
   "LanguageSwitcher": {
     "english": "English",
