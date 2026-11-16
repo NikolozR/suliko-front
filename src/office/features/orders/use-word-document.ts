@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 
 import { startDownload } from "@office/features/orders/components/workspace-parts";
-import type { WordEditorHandle } from "@office/features/orders/components/word-editor";
+import type { WordEditorHandle } from "@/features/editor/WordEditor";
 import { saveWordDocumentAction } from "@office/features/orders/translation-actions";
 import { useRouter } from "@office/i18n/navigation";
 

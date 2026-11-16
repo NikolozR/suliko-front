@@ -110,8 +110,12 @@ const OWNED = new Set([
   "src/office/shared/components/shell/bottom-bar.tsx",
   // Clean addresses: /ka/clients for a moved module, /app/ka/... for the rest.
   "src/office/i18n/navigation.ts",
-  // Syncfusion 35 here (#258): Fluent 2 theme from ej2-fluent2-theme.
+  // Deleted here: Office uses Translate's editor (src/features/editor/WordEditor.tsx).
+  // Listed so the sync never brings Office's copy back.
   "src/office/features/orders/components/word-editor.tsx",
+  // They import Translate's editor instead of Office's copy.
+  "src/office/features/orders/components/translation-workspace.tsx",
+  "src/office/features/orders/use-word-document.ts",
   // One control density: sizes from the --btn-* variables (src/app/globals.css).
   "src/office/shared/components/ui/button.tsx",
   // Phone: the status tiles fade at the right edge, so it shows more scroll in.

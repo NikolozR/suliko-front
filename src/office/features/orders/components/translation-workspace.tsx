@@ -17,7 +17,7 @@ import { ToggleChip } from "@office/shared/components/form/toggle-chip";
 import { Button } from "@office/shared/components/ui/button";
 
 /** Loaded when the page is: the editor is a large piece of code and only this page and the full-screen one show it. */
-export const WordEditor = dynamic(() => import("@office/features/orders/components/word-editor"), {
+export const WordEditor = dynamic(() => import("@/features/editor/WordEditor"), {
   ssr: false,
   loading: () => <EditorLoading />,
 });
