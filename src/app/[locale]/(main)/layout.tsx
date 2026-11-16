@@ -47,6 +47,7 @@ export default async function MainLayout({
 
   return (
     <ShortcutsProvider>
+      <MaintenanceBanner />
       <div className="relative">
         <ZoneGuard owns={{ only: localOffice }} />
         {/* Which Office modules have clean addresses here (office/i18n/navigation.ts), before anything renders. */}
