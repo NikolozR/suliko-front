@@ -1,4 +1,3 @@
-import MaintenanceBanner from "@/shared/components/MaintenanceBanner";
 import Sidebar from "@/shared/components/Sidebar";
 import Topbar from "@/shared/components/shell/Topbar";
 import MobileBottomNav from "@/shared/components/MobileBottomNav";
@@ -47,7 +46,6 @@ export default async function MainLayout({
 
   return (
     <ShortcutsProvider>
-      <MaintenanceBanner />
       <div className="relative">
         <ZoneGuard owns={{ only: localOffice }} />
         {/* Which Office modules have clean addresses here (office/i18n/navigation.ts), before anything renders. */}
