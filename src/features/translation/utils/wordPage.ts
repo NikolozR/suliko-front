@@ -61,6 +61,21 @@ function tightenNestedParagraphs(html: string): string {
 }
 
 /**
+ * Definition lists (`<dl>`, a "Version / Date / Author" block) as plain
+ * paragraphs: the term in bold, its description indented under it. Word has no
+ * such list, and the server's converter refuses the whole document (422
+ * "unreadable") when one comes before a numbered list, so the Word editor could
+ * not open it. Looks the same in Word.
+ */
+export function flattenDefinitionLists(html: string): string {
+  return html.replace(/<dl\b[^>]*>([\s\S]*?)<\/dl>/gi, (_, inner: string) =>
+    inner
+      .replace(/<dt\b[^>]*>([\s\S]*?)<\/dt>/gi, "<p><strong>$1</strong></p>")
+      .replace(/<dd\b[^>]*>([\s\S]*?)<\/dd>/gi, '<p style="margin-left:18pt">$1</p>'),
+  );
+}
+
+/**
  * The translation's HTML as a page Word opens with the look of the editor.
  *
  * Spaced like a printed document rather than a web page, so the translation
@@ -85,7 +100,7 @@ export const wordPage = (bodyHtml: string) => `<!DOCTYPE html>
     td, th { border: 1pt solid #aaa; padding: 1pt 4pt; vertical-align: top; }
   </style>
 </head>
-<body>${tightenNestedParagraphs(bodyHtml)}</body>
+<body>${tightenNestedParagraphs(flattenDefinitionLists(bodyHtml))}</body>
 </html>`;
 
 const WORD_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
