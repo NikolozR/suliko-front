@@ -10,6 +10,7 @@ import { useDocumentTitle } from "@/shared/hooks/useDocumentTitle";
 import { fetchAssignments, type OrdersLoad } from "@/features/orders/api";
 import { DueBadge, SentChip } from "@/features/orders/components/OrderBadges";
 import type { AssignedOrder } from "@/features/orders/types";
+import { PageHeader } from "@office/shared/components/page-header";
 
 /** The orders translation bureaus have assigned to this translator. */
 export default function OrdersPage() {
@@ -31,8 +32,7 @@ export default function OrdersPage() {
 
   return (
     <div className="max-w-3xl px-4 py-6 md:px-6">
-      <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-      <p className="text-sm text-muted-foreground mt-1 mb-8">{t("subtitle")}</p>
+      <PageHeader icon={ClipboardList} hue="blue" title={t("title")} description={t("subtitle")} />
 
       {result === null && (
         <div className="space-y-3" aria-label={t("loading")}>

@@ -116,6 +116,8 @@ const OWNED = new Set([
   "src/office/shared/components/ui/button.tsx",
   // Phone: the status tiles fade at the right edge, so it shows more scroll in.
   "src/office/features/dashboard/components/status-pipeline.tsx",
+  // Orders have their own icon (FileStack); 文A is Translate.
+  "src/office/shared/config/navigation.ts",
 ]);
 
 // ── copy ────────────────────────────────────────────────────────────────────

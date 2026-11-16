@@ -16,7 +16,8 @@ import { Card } from "@/features/ui/components/ui/card";
 import { Skeleton } from "@/features/ui/components/ui/skeleton";
 import { Button } from "@/features/ui/components/ui/button";
 import { useTranslations } from "next-intl";
-import { Plus, ArrowRight, FolderPlus } from "lucide-react";
+import { Plus, ArrowRight, FolderPlus, FolderOpen } from "lucide-react";
+import { PageHeader } from "@office/shared/components/page-header";
 import { Link } from "@/i18n/navigation";
 import { TranslationCard } from "@/features/projects/components/TranslationCard";
 import { ProjectFolderCard } from "@/features/projects/components/ProjectFolderCard";
@@ -146,13 +147,17 @@ export default function ProjectsPage() {
 
   return (
     <div className="max-w-3xl px-4 py-6 md:px-6">
-      <div className="flex items-center justify-between mb-8 gap-4">
-        <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
-        <Button onClick={() => setShowCreateProject(true)} size="sm" className="gap-2 shrink-0">
-          <FolderPlus className="h-4 w-4" />
-          {t("newProject")}
-        </Button>
-      </div>
+      <PageHeader
+        icon={FolderOpen}
+        hue="blue"
+        title={t("title")}
+        actions={
+          <Button onClick={() => setShowCreateProject(true)} size="sm" className="gap-2 shrink-0">
+            <FolderPlus className="h-4 w-4" />
+            {t("newProject")}
+          </Button>
+        }
+      />
 
       {isEmpty ? (
         <div className="flex flex-col items-center justify-center py-16 text-center">

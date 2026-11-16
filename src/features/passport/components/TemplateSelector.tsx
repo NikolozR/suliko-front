@@ -37,19 +37,23 @@ export default function TemplateSelector({
     {}
   );
 
-  if (loading) {
+  // Loading and empty: the same labelled, framed box as the list and as the
+  // upload box beside it, not a line of text floating in an empty column.
+  if (loading || templates.length === 0) {
     return (
-      <div className="flex items-center justify-center p-6 text-muted-foreground gap-2">
-        <Loader2 className="h-4 w-4 animate-spin" />
-        <span className="text-sm">{t("loadingTemplates")}</span>
-      </div>
-    );
-  }
-
-  if (templates.length === 0) {
-    return (
-      <div className="text-center p-6 text-muted-foreground text-sm">
-        {t("noTemplates")}
+      <div className="w-full">
+        <label className="text-sm font-medium mb-2 block">{t("selectTemplate")}</label>
+        <div
+          role="status"
+          className="flex min-h-48 flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-6 text-center text-sm text-muted-foreground"
+        >
+          {loading ? (
+            <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
+          ) : (
+            <FileText className="h-6 w-6 opacity-50" aria-hidden />
+          )}
+          <span>{loading ? t("loadingTemplates") : t("noTemplates")}</span>
+        </div>
       </div>
     );
   }

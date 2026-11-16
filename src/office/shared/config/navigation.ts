@@ -7,7 +7,7 @@ import {
   CreditCard,
   Globe,
   LayoutDashboard,
-  Languages,
+  FileStack,
   Settings,
   ShieldCheck,
   Users,
@@ -69,7 +69,8 @@ export const NAVIGATION: NavSection[] = [
       {
         href: "translations",
         labelKey: "translations",
-        icon: Languages,
+        // Orders: a stack of documents. The 文A icon means Suliko Translate.
+        icon: FileStack,
         hue: "blue",
         permission: "orders.read",
         hasActivityDot: true,
