@@ -1,9 +1,10 @@
 "use client";
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
+// Owned by suliko-front: the bell is the one bell (Translate's feed and Office's).
 
-import { Bell, PanelLeft, Search, Sparkles } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { PanelLeft, Search, Sparkles } from "lucide-react";
+import { useLocale, useTranslations } from "next-intl";
+
+import { OfficeScreenBell } from "@/features/notifications/components/OfficeScreenBell";
 
 import { useTips } from "@office/features/onboarding-tips/tips-provider";
 import { Link } from "@office/i18n/navigation";
@@ -13,7 +14,6 @@ import { type Plan, planAllows } from "@office/shared/auth/plans";
 import { Button } from "@office/shared/components/ui/button";
 import { OrganisationSwitcher } from "@office/shared/components/shell/organisation-switcher";
 import { UserMenu } from "@office/shared/components/shell/user-menu";
-import { cn } from "@office/shared/lib/utils";
 
 interface TopbarProps {
   onToggleSidebar: () => void;
@@ -51,6 +51,7 @@ export function Topbar({
   tenantSlug,
 }: TopbarProps) {
   const t = useTranslations("shell");
+  const locale = useLocale();
   const tTips = useTranslations("tips");
   const tips = useTips();
 
@@ -114,28 +115,9 @@ export function Topbar({
           </Button>
         )}
 
-        {planAllows(plan, "notifications") && (
-          <Button
-            variant="ghost"
-            size="icon"
-            asChild
-            className="relative text-white hover:bg-white/15 hover:text-white"
-          >
-            <Link href="/notifications" aria-label={t("notifications")}>
-              <Bell className="size-[1.1rem]" />
-              {unreadCount > 0 && (
-                <span
-                  className={cn(
-                    "bg-destructive absolute top-1 right-1 flex min-w-4 items-center justify-center",
-                    "rounded-full px-1 text-xs leading-4 font-semibold text-white",
-                  )}
-                >
-                  {unreadCount > 99 ? "99+" : unreadCount}
-                </span>
-              )}
-            </Link>
-          </Button>
-        )}
+        <OfficeScreenBell
+          office={planAllows(plan, "notifications") ? { unread: unreadCount, href: `/${locale}/notifications` } : undefined}
+        />
 
         <UserMenu name={userName} login={userLogin} />
       </div>

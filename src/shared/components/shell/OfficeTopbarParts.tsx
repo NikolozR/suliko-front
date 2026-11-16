@@ -2,7 +2,7 @@
 
 import { useEffect, useState, type ReactNode } from "react";
 import { NextIntlClientProvider } from "next-intl";
-import { Bell, Search } from "lucide-react";
+import { Search } from "lucide-react";
 
 import { OrganisationSwitcher } from "@office/shared/components/shell/organisation-switcher";
 import { QuickSearch } from "@office/shared/components/shell/quick-search";
@@ -10,6 +10,7 @@ import { Toaster } from "@office/shared/components/ui/sonner";
 import { planAllows } from "@office/shared/auth/plans";
 import type { OfficeContext } from "@/shared/nav/officeNav";
 import { officeHref } from "@/shared/nav/workspace";
+import { OfficeScreenBell } from "@/features/notifications/components/OfficeScreenBell";
 
 /**
  * Office's pieces of the top bar, drawn on Translate's screens so the bar is
@@ -73,20 +74,11 @@ export function OfficeActionsSlot({ office }: { office: OfficeContext }) {
         <kbd className="hidden rounded border border-white/30 px-1.5 text-xs text-white/80 md:inline">Ctrl K</kbd>
       </button>
 
-      {planAllows(office.plan, "notifications") && (
-        <a
-          href={officeHref(office.locale, "notifications")}
-          aria-label={notificationsLabel}
-          className={`${BAR_BUTTON} relative size-9 pointer-coarse:size-11`}
-        >
-          <Bell className="size-[1.1rem]" aria-hidden />
-          {office.unread > 0 && (
-            <span className="bg-destructive absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-full px-1 text-xs leading-4 font-semibold text-white">
-              {office.unread > 99 ? "99+" : office.unread}
-            </span>
-          )}
-        </a>
-      )}
+      {/* The one bell: Translate's feed and, on a plan with notifications, Office's. */}
+      <OfficeScreenBell
+        texts={{ locale: office.notificationsLocale, messages: office.notificationsMessages }}
+        office={planAllows(office.plan, "notifications") ? { unread: office.unread, href: officeHref(office.locale, "notifications") } : undefined}
+      />
 
       <QuickSearch
         open={open}

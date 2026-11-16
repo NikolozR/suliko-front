@@ -2454,6 +2454,12 @@
     "toggleTheme": "თემის შეცვლა"
   },
   "Notifications": {
+    "officeLink": "Office-ის შეტყობინებები",
+    "officeUnread": "ახალი: {count}",
+    "seeAll": "თარგმნის ყველა",
+    "sourceLabel": "რომელი შეტყობინებები",
+    "sourceOffice": "Office",
+    "sourceTranslate": "თარგმნა",
     "justNow": "ახლახან",
     "minutesAgo": "{count} წუთის წინ",
     "hoursAgo": "{count} საათის წინ",

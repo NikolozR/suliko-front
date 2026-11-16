@@ -2,25 +2,44 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { Bell } from "lucide-react";
-import { useNow, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 
-import { Link } from "@/i18n/navigation";
-import { describeNotification, relativeAge } from "../describe";
 import { useNotificationFeed } from "../hooks/useNotificationFeed";
+import { NotificationList } from "./NotificationList";
 
 /** A control on the gradient bar: white, with a faint white wash on hover (as Topbar's). */
 const BAR_BUTTON =
   "inline-flex shrink-0 cursor-pointer items-center justify-center rounded-md text-white transition-colors hover:bg-white/15";
 
+/** Office's half of the one bell, for someone signed in to Office. */
+export interface OfficeBellPart {
+  /** Unread in Office's own feed. */
+  unread: number;
+  /** Office's notifications page (a clean address, with its language). */
+  href: string;
+}
+
+function Badge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span
+      aria-hidden
+      className="bg-destructive absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-full px-1 text-xs leading-4 font-semibold text-white"
+    >
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
+
 /**
- * The bell for someone with Translate only (Office's own bell serves those
- * signed in to Office). A badge with the unread count, and a panel with the
- * latest entries: payments, finished batches, balance, renewals.
- * Shows nothing until the API has a feed to read.
+ * The one bell on every screen. Its badge counts Translate's feed and, for
+ * someone signed in to Office, Office's own; its panel lists the latest
+ * Translate entries (payments, finished batches, balance, renewals) and links
+ * to Office's page for Office's. When the API has no Translate feed it is only
+ * a link to Office's page (or nothing, for someone without Office).
  */
-export function NotificationBell() {
+export function NotificationBell({ office }: { office?: OfficeBellPart }) {
   const t = useTranslations("Notifications");
-  const now = useNow({ updateInterval: 60_000 });
   const { available, unread, items, error, load, markRead, markAllRead } = useNotificationFeed();
   const [open, setOpen] = useState(false);
   const panelId = useId();
@@ -51,7 +70,24 @@ export function NotificationBell() {
     };
   }, [open]);
 
-  if (!available) return null;
+  const officeUnread = office?.unread ?? 0;
+
+  if (!available) {
+    if (!office) return null;
+    // No Translate feed (yet): the bell is Office's, as it always was.
+    return (
+      <a
+        href={office.href}
+        aria-label={officeUnread > 0 ? t("bellUnread", { count: officeUnread }) : t("bell")}
+        className={`${BAR_BUTTON} relative size-9 pointer-coarse:size-11`}
+      >
+        <Bell className="size-[1.1rem]" aria-hidden />
+        <Badge count={officeUnread} />
+      </a>
+    );
+  }
+
+  const total = unread + officeUnread;
 
   return (
     <div ref={root} className="relative">
@@ -59,20 +95,13 @@ export function NotificationBell() {
         ref={button}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        aria-label={unread > 0 ? t("bellUnread", { count: unread }) : t("bell")}
+        aria-label={total > 0 ? t("bellUnread", { count: total }) : t("bell")}
         aria-expanded={open}
         aria-controls={panelId}
         className={`${BAR_BUTTON} relative size-9 pointer-coarse:size-11`}
       >
         <Bell className="size-[1.1rem]" aria-hidden />
-        {unread > 0 && (
-          <span
-            aria-hidden
-            className="bg-destructive absolute top-1 right-1 flex min-w-4 items-center justify-center rounded-full px-1 text-xs leading-4 font-semibold text-white"
-          >
-            {unread > 99 ? "99+" : unread}
-          </span>
-        )}
+        <Badge count={total} />
       </button>
 
       {open && (
@@ -95,7 +124,7 @@ export function NotificationBell() {
             )}
           </div>
 
-          <div className="max-h-[calc(70vh-2.75rem)] overflow-y-auto">
+          <div className="max-h-[calc(70vh-5.5rem)] overflow-y-auto">
             {error ? (
               <p className="text-muted-foreground px-3 py-6 text-center text-sm">{t("loadError")}</p>
             ) : items === null ? (
@@ -103,52 +132,25 @@ export function NotificationBell() {
             ) : items.length === 0 ? (
               <p className="text-muted-foreground px-3 py-6 text-center text-sm">{t("empty")}</p>
             ) : (
-              <ul>
-                {items.map((n) => {
-                  const body = (
-                    <>
-                      <span
-                        aria-hidden
-                        className={`mt-1.5 size-2 shrink-0 rounded-full ${n.isRead ? "bg-transparent" : "bg-suliko-default-color"}`}
-                      />
-                      <span className="min-w-0 flex-1">
-                        <span className={`block text-sm ${n.isRead ? "" : "font-medium"}`}>
-                          {n.isRead ? null : <span className="sr-only">{t("unreadMark")} </span>}
-                          {describeNotification(n, t)}
-                        </span>
-                        {n.createdAt && (
-                          <span className="text-muted-foreground block text-xs">
-                            {relativeAge(n.createdAt, now, t)}
-                          </span>
-                        )}
-                      </span>
-                    </>
-                  );
-                  const row = "border-border hover:bg-accent flex w-full items-start gap-2.5 border-b px-3 py-2.5 text-left last:border-b-0";
-                  return (
-                    <li key={n.id}>
-                      {n.link ? (
-                        <Link
-                          href={n.link}
-                          onClick={() => {
-                            if (!n.isRead) void markRead(n.id);
-                            setOpen(false);
-                          }}
-                          className={row}
-                        >
-                          {body}
-                        </Link>
-                      ) : (
-                        <button type="button" onClick={() => !n.isRead && void markRead(n.id)} className={`${row} cursor-pointer`}>
-                          {body}
-                        </button>
-                      )}
-                    </li>
-                  );
-                })}
-              </ul>
+              <NotificationList items={items} onRead={(id) => void markRead(id)} onNavigate={() => setOpen(false)} />
             )}
           </div>
+
+          {office && (
+            <div className="border-border flex items-center justify-between gap-3 border-t px-3 py-2 text-sm">
+              <a href={office.href} className="text-link font-medium hover:underline">
+                {t("officeLink")}
+              </a>
+              {officeUnread > 0 && (
+                <span className="bg-suliko-default-color rounded-full px-2 py-0.5 text-xs font-semibold text-white">
+                  {t("officeUnread", { count: officeUnread })}
+                </span>
+              )}
+              <a href={`${office.href}?source=translate`} className="text-muted-foreground hover:text-foreground text-xs hover:underline">
+                {t("seeAll")}
+              </a>
+            </div>
+          )}
         </div>
       )}
     </div>
