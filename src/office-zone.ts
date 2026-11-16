@@ -150,6 +150,14 @@ export function officeZone(request: NextRequest): NextResponse | null {
       if (!locale) return NextResponse.redirect(new URL(`/app/ka${search}`, request.url), 307);
       return null;
     }
+    // A clean address with /app put in front (the sign-in callback does that to
+    // where the person was headed): /app/ka/orders/12 -> /ka/orders/12,
+    // /app/ka/admin/workspaces -> /ka/admin/workspaces. Office has no such
+    // folder and would answer 404.
+    const cleanRead = locale ? moduleOfClean(pathname.slice(`/app/${locale}/`.length)) : null;
+    if (locale && cleanRead && enabledModules().has(cleanRead.module)) {
+      return NextResponse.redirect(new URL(`${pathname.slice("/app".length)}${search}`, request.url), 308);
+    }
     if (!locale || !isMoved(module)) return null;
     // /app/ka/translations/12 -> /ka/orders/12
     const rest = pathname.slice(`/app/${locale}/${module}`.length);
