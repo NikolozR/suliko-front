@@ -57,7 +57,7 @@ function useSectionFromHash(): [ProfileSection, (s: ProfileSection) => void] {
   return [section, setSection];
 }
 
-export default function ProfileClient({ hasOffice = false }: { hasOffice?: boolean }) {
+export default function ProfileClient({ hasOffice = false, officeSection = null }: { hasOffice?: boolean; officeSection?: React.ReactNode }) {
   const t = useTranslations("Profile");
   const locale = useLocale();
   const [section, setSection] = useSectionFromHash();
@@ -233,6 +233,8 @@ export default function ProfileClient({ hasOffice = false }: { hasOffice?: boole
           {section === "security" && (
             <>
               <ProfilePasswordChange />
+              {/* Office's part of the one Account: two-factor, leaving the organisation. */}
+              {officeSection}
               <ProfileDeleteAccount />
             </>
           )}

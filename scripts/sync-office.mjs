@@ -125,6 +125,9 @@ const OWNED = new Set([
   "src/office/shared/auth/guards.ts",
   // Its ended-session check also keeps the page to come back to (signInAgain).
   "src/app/app/[locale]/(office)/layout.tsx",
+  // One Account: /account goes to Profile; the menu's Account too.
+  "src/app/app/[locale]/(office)/account/page.tsx",
+  "src/office/shared/components/shell/user-menu.tsx",
   // One Billing: the person's translation pages beside the Office package.
   "src/app/app/[locale]/(office)/billing/page.tsx",
   // A thin wrapper now: the renderer is src/shared/components/pdf/PdfPages.tsx.
