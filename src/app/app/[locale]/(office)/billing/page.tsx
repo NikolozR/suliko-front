@@ -6,7 +6,6 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getBillingOverview } from "@office/features/billing/api";
 import { UpgradePackage } from "@office/features/billing/components/upgrade-package";
 import { monthLabel, usedPercent } from "@office/features/billing/lib";
-import { requirePermission } from "@office/shared/auth/guards";
 import { ApiUnavailable } from "@office/shared/components/data/api-unavailable";
 import { PageHeader } from "@office/shared/components/page-header";
 import { Button } from "@office/shared/components/ui/button";
@@ -25,6 +24,10 @@ import { formatMoneyString } from "@office/shared/lib/money";
 import { pageTitle } from "@office/shared/lib/page-title";
 import { tolerate } from "@office/shared/lib/tolerate";
 import { cn } from "@office/shared/lib/utils";
+import { NextIntlClientProvider } from "next-intl";
+import { requireSession } from "@office/shared/auth/guards";
+import { PagesWallet } from "@/features/profile/components/PagesWallet";
+import { translateMessages } from "@/shared/i18n/translateMessages";
 
 export const generateMetadata = pageTitle("billing");
 
@@ -45,10 +48,17 @@ export default async function BillingPage({ params }: { params: Promise<{ locale
   const { locale } = await params;
   setRequestLocale(locale);
 
-  const session = await requirePermission("tenant.billing", locale);
+  // Everyone signed in has their own translation pages; the Office package
+  // (usage, packages, invoices) is for those allowed to see the organisation's billing.
+  const session = await requireSession(locale);
+  const canSeePackage = session.permissions.includes("tenant.billing");
+  const wallet = await translateMessages(locale, ["Profile", "Payments", "Coupon", "Common", "A11y", "Sidebar"]);
+  const walletText = wallet.Profile as Record<string, string>;
   const t = await getTranslations("billing");
   const tNav = await getTranslations("nav");
-  const overview = await tolerate(getBillingOverview());
+  const overview = canSeePackage
+    ? await tolerate(getBillingOverview())
+    : { data: null, error: null };
 
   const usage = overview.data?.usage;
   const packages = overview.data?.packages ?? [];
@@ -75,244 +85,263 @@ export default async function BillingPage({ params }: { params: Promise<{ locale
     <>
       <PageHeader {...sectionMark("billing")} title={tNav("billing")} description={t("subtitle")} />
 
-      {overview.error && (
-        <div className="mb-6">
-          <ApiUnavailable
-            error={overview.error}
-            what={t("unavailable")}
-            endpoints={["GET /api/v1/billing"]}
-          />
-        </div>
-      )}
-
-      <div className="grid gap-6 lg:grid-cols-2">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-base">{t("planTitle")}</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <DetailList>
-              <Detail label={t("organisation")} value={session.tenantName ?? session.tenantSlug} />
-              <Detail
-                label={t("plan")}
-                value={session.plan === "freelancer" ? t("planFreelancer") : t("planBureau")}
+      {canSeePackage && (
+        <section aria-labelledby="billing-package" className="mb-10">
+          <h2 id="billing-package" className="mb-3 text-lg font-semibold">
+            {walletText.billingPackageTitle}
+          </h2>
+          {overview.error && (
+            <div className="mb-6">
+              <ApiUnavailable
+                error={overview.error}
+                what={t("unavailable")}
+                endpoints={["GET /api/v1/billing"]}
               />
-              {usage && (
-                <Detail label={t("package")} value={t("packageValue", { tier: usage.tier })} />
-              )}
-            </DetailList>
-
-            {usage && (
-              <div className="space-y-2 border-t pt-4">
-                <div className="flex items-baseline justify-between gap-3">
-                  <h3 className="text-sm font-semibold">
-                    {t("usageTitle", { month: monthLabel(usage.period, locale) })}
-                  </h3>
-                  <span className="text-lg font-semibold tabular-nums">
-                    {t("usageFigure", { orders: usage.orders, included: usage.included })}
-                  </span>
-                </div>
-                <div
-                  role="progressbar"
-                  aria-valuemin={0}
-                  aria-valuemax={usage.included}
-                  aria-valuenow={Math.min(usage.orders, usage.included)}
-                  className="bg-muted h-2 overflow-hidden rounded-full"
-                >
-                  <div
-                    className={cn(
-                      "h-full rounded-full transition-[width]",
-                      usage.level === "ok" && "bg-status-success",
-                      usage.level === "near" && "bg-status-warning",
-                      usage.level === "limit" && "bg-destructive",
-                    )}
-                    style={{ width: `${percent}%` }}
-                  />
-                </div>
-                {usage.level !== "ok" && (
-                  <p
-                    className={cn(
-                      "text-sm",
-                      usage.level === "near" ? "text-status-warning" : "text-destructive",
-                    )}
-                  >
-                    {usage.blocked
-                      ? upgradeTo.size > 0
-                        ? t("levelLimit")
-                        : t("levelLimitTop")
-                      : t("levelNear", { remaining: usage.remaining })}
-                  </p>
-                )}
-                {usage.free_month && (
-                  <p role="status" className="text-status-success text-sm font-medium">
-                    {t("freeMonth")}
-                  </p>
-                )}
+            </div>
+          )}
+    
+          <div className="grid gap-6 lg:grid-cols-2">
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-base">{t("planTitle")}</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <DetailList>
+                  <Detail label={t("organisation")} value={session.tenantName ?? session.tenantSlug} />
                   <Detail
-                    label={t("fee")}
-                    value={usage.free_month ? t("freeThisMonth") : priceText(usage.monthly_price)}
+                    label={t("plan")}
+                    value={session.plan === "freelancer" ? t("planFreelancer") : t("planBureau")}
                   />
+                  {usage && (
+                    <Detail label={t("package")} value={t("packageValue", { tier: usage.tier })} />
+                  )}
                 </DetailList>
-                <p className="text-muted-foreground text-xs">{t("usageNote")}</p>
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {usage && (
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-base">{t("pricingTitle")}</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <p className="text-muted-foreground text-sm">{t("pricingBody")}</p>
-              <ul className="divide-border border-border divide-y rounded-md border text-sm">
-                {packages.map((pack) => (
-                  <li key={pack.tier} className="space-y-2 px-3 py-2.5">
-                    <div className="flex items-center justify-between gap-3">
-                      <span>
-                        <span className="font-medium">
-                          {t("upTo", { count: pack.orders_included })}
-                        </span>
-                        {pack.tier === usage.tier && (
-                          <span className="text-muted-foreground block text-xs">
-                            {t("yourPackage")}
-                          </span>
-                        )}
-                      </span>
-                      <span
-                        className={cn(
-                          "shrink-0 text-right",
-                          pack.monthly_price !== null
-                            ? "font-semibold tabular-nums"
-                            : "text-muted-foreground",
-                        )}
-                      >
-                        {priceText(pack.monthly_price)}
+    
+                {usage && (
+                  <div className="space-y-2 border-t pt-4">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <h3 className="text-sm font-semibold">
+                        {t("usageTitle", { month: monthLabel(usage.period, locale) })}
+                      </h3>
+                      <span className="text-lg font-semibold tabular-nums">
+                        {t("usageFigure", { orders: usage.orders, included: usage.included })}
                       </span>
                     </div>
-                    {upgradeTo.has(pack.tier) && (
-                      <UpgradePackage
-                        pack={pack}
-                        termsVersion={termsVersion}
-                        highlight={usage.blocked && pack.tier === Math.min(...upgradeTo)}
+                    <div
+                      role="progressbar"
+                      aria-valuemin={0}
+                      aria-valuemax={usage.included}
+                      aria-valuenow={Math.min(usage.orders, usage.included)}
+                      className="bg-muted h-2 overflow-hidden rounded-full"
+                    >
+                      <div
+                        className={cn(
+                          "h-full rounded-full transition-[width]",
+                          usage.level === "ok" && "bg-status-success",
+                          usage.level === "near" && "bg-status-warning",
+                          usage.level === "limit" && "bg-destructive",
+                        )}
+                        style={{ width: `${percent}%` }}
                       />
+                    </div>
+                    {usage.level !== "ok" && (
+                      <p
+                        className={cn(
+                          "text-sm",
+                          usage.level === "near" ? "text-status-warning" : "text-destructive",
+                        )}
+                      >
+                        {usage.blocked
+                          ? upgradeTo.size > 0
+                            ? t("levelLimit")
+                            : t("levelLimitTop")
+                          : t("levelNear", { remaining: usage.remaining })}
+                      </p>
                     )}
-                  </li>
-                ))}
-              </ul>
-              <p className="text-muted-foreground text-xs">{t("onlySuliko")}</p>
-              <Button asChild variant="outline" size="sm">
-                <a href={`mailto:${SALES_EMAIL}?subject=${encodeURIComponent(t("emailSubject"))}`}>
-                  <Mail /> {t("contactButton")}
-                </a>
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-
-        {usage && (
-          <Card className="lg:col-span-2">
-            <CardHeader>
-              <CardTitle className="text-base">{t("invoicesTitle")}</CardTitle>
-              <p className="text-muted-foreground text-sm">{t("invoicesBody")}</p>
-            </CardHeader>
-            <CardContent className="p-0">
-              {months.length === 0 ? (
-                <p className="text-muted-foreground px-6 pb-6 text-sm">{t("noInvoices")}</p>
-              ) : (
-                <div className="custom_scroll">
-                  <Table className="stack-mobile">
-                    <TableHeader>
-                      <TableRow>
-                        <TableHead>{t("col.month")}</TableHead>
-                        <TableHead className="w-32 text-right">{t("col.orders")}</TableHead>
-                        <TableHead className="w-32 text-right">{t("col.total")}</TableHead>
-                        <TableHead className="w-44">{t("col.status")}</TableHead>
-                      </TableRow>
-                    </TableHeader>
-                    <TableBody>
-                      {months.map(({ period, invoice }) =>
-                        invoice ? (
-                          <TableRow key={invoice.id}>
-                            <TableCell data-full className="font-medium">
-                              {monthLabel(invoice.period, locale)}
-                              {invoice.note && (
-                                <span className="text-muted-foreground block text-xs font-normal">
-                                  {invoice.note}
-                                </span>
-                              )}
-                            </TableCell>
-                            <TableCell
-                              data-label={t("col.orders")}
-                              className="text-right tabular-nums"
-                            >
-                              {invoice.orders_counted} / {invoice.orders_included}
-                            </TableCell>
-                            <TableCell
-                              data-label={t("col.total")}
-                              className="text-right font-medium tabular-nums"
-                            >
-                              {formatMoneyString(invoice.total)}
-                            </TableCell>
-                            <TableCell data-label={t("col.status")} className="text-sm">
-                              <span
-                                className={cn(
-                                  invoice.status === "paid" && "text-status-success",
-                                  invoice.status === "sent" && "text-status-warning",
-                                  invoice.status === "waived" && "text-muted-foreground",
-                                )}
-                              >
-                                {t(`status.${invoice.status}`)}
+                    {usage.free_month && (
+                      <p role="status" className="text-status-success text-sm font-medium">
+                        {t("freeMonth")}
+                      </p>
+                    )}
+                    <DetailList>
+                      <Detail
+                        label={t("fee")}
+                        value={usage.free_month ? t("freeThisMonth") : priceText(usage.monthly_price)}
+                      />
+                    </DetailList>
+                    <p className="text-muted-foreground text-xs">{t("usageNote")}</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+    
+            {usage && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-base">{t("pricingTitle")}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <p className="text-muted-foreground text-sm">{t("pricingBody")}</p>
+                  <ul className="divide-border border-border divide-y rounded-md border text-sm">
+                    {packages.map((pack) => (
+                      <li key={pack.tier} className="space-y-2 px-3 py-2.5">
+                        <div className="flex items-center justify-between gap-3">
+                          <span>
+                            <span className="font-medium">
+                              {t("upTo", { count: pack.orders_included })}
+                            </span>
+                            {pack.tier === usage.tier && (
+                              <span className="text-muted-foreground block text-xs">
+                                {t("yourPackage")}
                               </span>
-                            </TableCell>
+                            )}
+                          </span>
+                          <span
+                            className={cn(
+                              "shrink-0 text-right",
+                              pack.monthly_price !== null
+                                ? "font-semibold tabular-nums"
+                                : "text-muted-foreground",
+                            )}
+                          >
+                            {priceText(pack.monthly_price)}
+                          </span>
+                        </div>
+                        {upgradeTo.has(pack.tier) && (
+                          <UpgradePackage
+                            pack={pack}
+                            termsVersion={termsVersion}
+                            highlight={usage.blocked && pack.tier === Math.min(...upgradeTo)}
+                          />
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="text-muted-foreground text-xs">{t("onlySuliko")}</p>
+                  <Button asChild variant="outline" size="sm">
+                    <a href={`mailto:${SALES_EMAIL}?subject=${encodeURIComponent(t("emailSubject"))}`}>
+                      <Mail /> {t("contactButton")}
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+    
+            {usage && (
+              <Card className="lg:col-span-2">
+                <CardHeader>
+                  <CardTitle className="text-base">{t("invoicesTitle")}</CardTitle>
+                  <p className="text-muted-foreground text-sm">{t("invoicesBody")}</p>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {months.length === 0 ? (
+                    <p className="text-muted-foreground px-6 pb-6 text-sm">{t("noInvoices")}</p>
+                  ) : (
+                    <div className="custom_scroll">
+                      <Table className="stack-mobile">
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>{t("col.month")}</TableHead>
+                            <TableHead className="w-32 text-right">{t("col.orders")}</TableHead>
+                            <TableHead className="w-32 text-right">{t("col.total")}</TableHead>
+                            <TableHead className="w-44">{t("col.status")}</TableHead>
                           </TableRow>
-                        ) : (
-                          <TableRow key={`free-${period}`}>
-                            <TableCell data-full className="font-medium">
-                              {monthLabel(period, locale)}
-                            </TableCell>
-                            <TableCell
-                              data-label={t("col.orders")}
-                              className="text-muted-foreground text-right"
-                            >
-                              –
-                            </TableCell>
-                            <TableCell
-                              data-label={t("col.total")}
-                              className="text-right font-medium tabular-nums"
-                            >
-                              {formatMoneyString("0.00")}
-                            </TableCell>
-                            <TableCell data-label={t("col.status")} className="text-sm">
-                              <span className="text-status-success">{t("status.free")}</span>
-                            </TableCell>
-                          </TableRow>
-                        ),
-                      )}
-                    </TableBody>
-                  </Table>
-                </div>
-              )}
-              <p className="text-muted-foreground px-6 py-4 text-xs">{t("howToPay")}</p>
-            </CardContent>
-          </Card>
-        )}
+                        </TableHeader>
+                        <TableBody>
+                          {months.map(({ period, invoice }) =>
+                            invoice ? (
+                              <TableRow key={invoice.id}>
+                                <TableCell data-full className="font-medium">
+                                  {monthLabel(invoice.period, locale)}
+                                  {invoice.note && (
+                                    <span className="text-muted-foreground block text-xs font-normal">
+                                      {invoice.note}
+                                    </span>
+                                  )}
+                                </TableCell>
+                                <TableCell
+                                  data-label={t("col.orders")}
+                                  className="text-right tabular-nums"
+                                >
+                                  {invoice.orders_counted} / {invoice.orders_included}
+                                </TableCell>
+                                <TableCell
+                                  data-label={t("col.total")}
+                                  className="text-right font-medium tabular-nums"
+                                >
+                                  {formatMoneyString(invoice.total)}
+                                </TableCell>
+                                <TableCell data-label={t("col.status")} className="text-sm">
+                                  <span
+                                    className={cn(
+                                      invoice.status === "paid" && "text-status-success",
+                                      invoice.status === "sent" && "text-status-warning",
+                                      invoice.status === "waived" && "text-muted-foreground",
+                                    )}
+                                  >
+                                    {t(`status.${invoice.status}`)}
+                                  </span>
+                                </TableCell>
+                              </TableRow>
+                            ) : (
+                              <TableRow key={`free-${period}`}>
+                                <TableCell data-full className="font-medium">
+                                  {monthLabel(period, locale)}
+                                </TableCell>
+                                <TableCell
+                                  data-label={t("col.orders")}
+                                  className="text-muted-foreground text-right"
+                                >
+                                  –
+                                </TableCell>
+                                <TableCell
+                                  data-label={t("col.total")}
+                                  className="text-right font-medium tabular-nums"
+                                >
+                                  {formatMoneyString("0.00")}
+                                </TableCell>
+                                <TableCell data-label={t("col.status")} className="text-sm">
+                                  <span className="text-status-success">{t("status.free")}</span>
+                                </TableCell>
+                              </TableRow>
+                            ),
+                          )}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  )}
+                  <p className="text-muted-foreground px-6 py-4 text-xs">{t("howToPay")}</p>
+                </CardContent>
+              </Card>
+            )}
+    
+            {/* A free first month is a bureau's offer, not a freelancer's. */}
+            {session.plan !== "freelancer" && (
+              <Card className="lg:col-span-2">
+                <CardContent className="flex items-start gap-3 pt-6">
+                  <ShieldCheck className="text-status-success mt-0.5 size-5 shrink-0" aria-hidden />
+                  <div>
+                    <h2 className="font-semibold">{t("trialTitle")}</h2>
+                    <p className="text-muted-foreground mt-1 text-sm">{t("trialBody")}</p>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+            </section>
+      )}
 
-        {/* A free first month is a bureau's offer, not a freelancer's. */}
-        {session.plan !== "freelancer" && (
-          <Card className="lg:col-span-2">
-            <CardContent className="flex items-start gap-3 pt-6">
-              <ShieldCheck className="text-status-success mt-0.5 size-5 shrink-0" aria-hidden />
-              <div>
-                <h2 className="font-semibold">{t("trialTitle")}</h2>
-                <p className="text-muted-foreground mt-1 text-sm">{t("trialBody")}</p>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+      <section aria-labelledby="billing-pages">
+        <h2 id="billing-pages" className="mb-1 text-lg font-semibold">
+          {walletText.billingPagesTitle}
+        </h2>
+        <p className="text-muted-foreground mb-3 text-sm">{walletText.billingPagesHint}</p>
+        <NextIntlClientProvider locale={locale} messages={wallet}>
+          <div className="max-w-3xl">
+            <PagesWallet />
+          </div>
+        </NextIntlClientProvider>
+      </section>
     </>
   );
 }

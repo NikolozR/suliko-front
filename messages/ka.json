@@ -700,7 +700,11 @@
     "updateFailed": "პროფილის განახლებისას მოხდა შეცდომა. გთხოვთ, სცადეთ თავიდან.",
     "deleteAccountFailed": "ანგარიშის წაშლა ვერ მოხერხდა",
     "profileNotFound": "პროფილი ვერ მოიძებნა",
-    "profileNotFoundBody": "მომხმარებლის ინფორმაცია ვერ მოიძებნა"
+    "profileNotFoundBody": "მომხმარებლის ინფორმაცია ვერ მოიძებნა",
+    "billingPackageTitle": "ოფისის პაკეტი",
+    "billingPagesTitle": "თარგმნის გვერდები",
+    "billingPagesHint": "თქვენი გვერდების ბალანსი Suliko Translate-ისთვის: შევსება, გადახდები და შენახული ბარათები.",
+    "billingOfficeLink": "ოფისის პაკეტი და ორგანიზაციის ბილინგი: გახსნა"
   },
   "LanguageSwitcher": {
     "english": "English",

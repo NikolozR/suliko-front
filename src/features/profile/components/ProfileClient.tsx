@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import {
@@ -22,12 +23,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { ProfileDeleteAccount } from "./ProfileDelete";
-import { ProfileSavedCards } from "./";
 import { ProfileSectionNav, PROFILE_SECTIONS, type ProfileSection } from "./ProfileSectionNav";
-import { ProfileBalanceCard } from "./ProfileBalanceCard";
-import { ProfileRecentPayments } from "./ProfileRecentPayments";
-import { ProfileSubscription } from "./ProfileSubscription";
-import { CouponRedeemCard } from "@/features/promoCodes";
+import { PagesWallet } from "./PagesWallet";
 
 const makeProfileUpdateSchema = (t: (key: "firstNameRequired" | "emailRequired" | "emailInvalid") => string) =>
   z.object({
@@ -60,8 +57,9 @@ function useSectionFromHash(): [ProfileSection, (s: ProfileSection) => void] {
   return [section, setSection];
 }
 
-export default function ProfileClient() {
+export default function ProfileClient({ hasOffice = false }: { hasOffice?: boolean }) {
   const t = useTranslations("Profile");
+  const locale = useLocale();
   const [section, setSection] = useSectionFromHash();
   const profileUpdateSchema = useMemo(() => makeProfileUpdateSchema(t), [t]);
   const { token } = useAuthStore();
@@ -223,13 +221,12 @@ export default function ProfileClient() {
 
           {section === "billing" && (
             <>
-              <ProfileBalanceCard userProfile={userProfile} />
-              <ProfileRecentPayments />
-              {userProfile.subscription && (
-                <ProfileSubscription subscription={userProfile.subscription} onChanged={originalFetchUserProfile} />
+              <PagesWallet />
+              {hasOffice && (
+                <Link href={`/${locale}/billing`} className="inline-block text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
+                  {t("billingOfficeLink")} →
+                </Link>
               )}
-              <ProfileSavedCards />
-              <CouponRedeemCard />
             </>
           )}
 
