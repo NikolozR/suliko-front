@@ -1,6 +1,5 @@
 import SulikoForm from "@/shared/components/SulikoForm";
 import AuroraBackground from "@/shared/components/AuroraBackground";
-import MaintenanceBanner from "@/shared/components/MaintenanceBanner";
 import CrispChatButton from "@/shared/components/CrispChatButton";
 
 export default function SignIn() {

@@ -1,3 +1,4 @@
+import MaintenanceBanner from "@/shared/components/MaintenanceBanner";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -10,5 +11,10 @@ export default function AuthorizationLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <>{children}</>;
+  return (
+    <>
+      <MaintenanceBanner />
+      {children}
+    </>
+  );
 } 
