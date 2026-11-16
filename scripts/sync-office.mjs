@@ -42,6 +42,13 @@ function walk(file) {
   }
 }
 const appDir = path.join(OFFICE, "src/app/[locale]");
+// Office's server routes (sign-in, files, invoices, exports): always all of
+// them. Served here only for the names in OFFICE_LOCAL_API (office-zone.ts).
+const apiDir = path.join(OFFICE, "src/app/api");
+for (const f of fs.readdirSync(apiDir, { recursive: true })) {
+  const full = path.join(apiDir, f);
+  if (fs.statSync(full).isFile() && /\.tsx?$/.test(full)) walk(full);
+}
 for (const f of ["layout.tsx", "error.tsx", "(app)/layout.tsx", "(app)/error.tsx", "(app)/not-found.tsx"]) {
   walk(path.join(appDir, f));
 }
@@ -75,6 +82,7 @@ for (const mod of modules) {
 
 function destFor(rel) {
   if (rel === "src/app/[locale]/layout.tsx") return "src/app/app/[locale]/layout.tsx";
+  if (rel.startsWith("src/app/api/")) return `src/app/app/api/${rel.slice("src/app/api/".length)}`;
   if (rel === "src/app/[locale]/error.tsx") return "src/app/app/[locale]/error.tsx";
   const page = rel.match(/^src\/app\/\[locale\]\/\(app\)\/(.*)$/);
   if (page) return `src/app/app/[locale]/(office)/${page[1]}`;

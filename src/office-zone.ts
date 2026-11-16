@@ -23,6 +23,16 @@ function enabledModules(): Set<string> {
   return new Set(enabledLocalModules());
 }
 
+/** Office's server route groups answered by this app (OFFICE_LOCAL_API, comma-separated). */
+function enabledApi(): Set<string> {
+  return new Set(
+    (process.env.OFFICE_LOCAL_API ?? "")
+      .split(",")
+      .map((g) => g.trim())
+      .filter(Boolean),
+  );
+}
+
 /** /app/ka/calculator/x -> { locale: "ka", module: "calculator" } */
 function parse(pathname: string): { locale: string | null; module: string | null } {
   const [, , locale, module] = pathname.split("/");
@@ -113,6 +123,17 @@ export function officeZone(request: NextRequest): NextResponse | null {
   const { pathname, search } = request.nextUrl;
   const zone = (process.env.OFFICE_ZONE_URL ?? "").replace(/\/$/, "");
   const isMoved = (m: string | null): m is string => m !== null && (MOVED_MODULES as readonly string[]).includes(m);
+
+  // ── Office's server routes /app/api/{group}/... ───────────────────────────
+  // This app has them all (src/app/app/api), but answers only for the groups
+  // listed in OFFICE_LOCAL_API (auth, files, invoice, invoice-template,
+  // export); the rest go on to the Office deployment as before. Sign-in runs
+  // through here, so each group is switched on, and back off, on its own.
+  const api = /^\/app\/api\/([^/?#]+)/.exec(pathname);
+  if (api) {
+    if (enabledApi().has(api[1])) return null;
+    return zone ? NextResponse.rewrite(new URL(`${zone}${pathname}${search}`)) : null;
+  }
 
   // ── Old address /app/{ka|en}/{module}/... ─────────────────────────────────
   if (isOfficePath(pathname)) {
