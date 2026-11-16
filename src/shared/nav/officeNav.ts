@@ -9,6 +9,8 @@ import { planAllows, type Plan } from "@office/shared/auth/plans";
 import { getSession } from "@office/shared/auth/session";
 import { NAVIGATION } from "@office/shared/config/navigation";
 
+import { translateMessages } from "@/shared/i18n/translateMessages";
+
 import { officeLocaleOf } from "./workspace";
 
 /** One Office item for Translate's sidebar: module and its label. Serialisable. */
@@ -36,6 +38,10 @@ export interface OfficeContext {
   tenantSlug: string;
   tenantName: string;
   unread: number;
+  /** Translate's "Notifications" texts, for the one bell (a Translate component on this bar). */
+  notificationsMessages: AbstractIntlMessages;
+  /** The language of those texts: Translate's own, which may be one Office has none of. */
+  notificationsLocale: string;
 }
 
 /** The namespaces Office ships to every page (its i18n/client-messages.tsx). */
@@ -86,6 +92,8 @@ export async function officeContext(locale: string): Promise<OfficeContext | nul
       tenantSlug: session.tenantSlug ?? "",
       tenantName: session.tenantName ?? session.tenantSlug ?? "",
       unread,
+      notificationsMessages: await translateMessages(locale, ["Notifications"]),
+      notificationsLocale: locale,
     };
   } catch (error) {
     console.error("[office-context] could not read the Office session", error);

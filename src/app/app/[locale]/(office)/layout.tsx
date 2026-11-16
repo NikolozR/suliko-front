@@ -1,5 +1,7 @@
 // Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
 // here: app.suliko.ge's copy is frozen.
+import { TranslateNotificationTexts } from "@/features/notifications/components/OfficeScreenBell";
+import { translateMessages } from "@/shared/i18n/translateMessages";
 import { setRequestLocale } from "next-intl/server";
 import { Suspense } from "react";
 
@@ -97,6 +99,7 @@ export default async function AppLayout({
   }
 
   return (
+    <TranslateNotificationTexts locale={locale} messages={await translateMessages(locale, ["Notifications"])}>
     <AppShell
       permissions={session.permissions}
       plan={session.plan}
@@ -126,5 +129,6 @@ export default async function AppLayout({
         <FlashToast />
       </Suspense>
     </AppShell>
+    </TranslateNotificationTexts>
   );
 }

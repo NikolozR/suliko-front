@@ -2454,6 +2454,12 @@
     "toggleTheme": "Zmień motyw"
   },
   "Notifications": {
+    "officeLink": "Powiadomienia Office",
+    "officeUnread": "nowe: {count}",
+    "seeAll": "Wszystkie z Tłumaczeń",
+    "sourceLabel": "Które powiadomienia",
+    "sourceOffice": "Office",
+    "sourceTranslate": "Tłumaczenia",
     "justNow": "przed chwilą",
     "minutesAgo": "{count, plural, one {# minutę temu} few {# minuty temu} many {# minut temu} other {# minuty temu}}",
     "hoursAgo": "{count, plural, one {# godzinę temu} few {# godziny temu} many {# godzin temu} other {# godziny temu}}",

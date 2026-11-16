@@ -2454,6 +2454,12 @@
     "toggleTheme": "Switch theme"
   },
   "Notifications": {
+    "officeLink": "Office notifications",
+    "officeUnread": "{count} new",
+    "seeAll": "All in Translate",
+    "sourceLabel": "Which notifications",
+    "sourceOffice": "Office",
+    "sourceTranslate": "Translate",
     "justNow": "just now",
     "minutesAgo": "{count, plural, one {# minute ago} other {# minutes ago}}",
     "hoursAgo": "{count, plural, one {# hour ago} other {# hours ago}}",

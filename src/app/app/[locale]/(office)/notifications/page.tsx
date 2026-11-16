@@ -1,8 +1,8 @@
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
+// Owned by suliko-front: a second source tab, Translate's feed beside Office's.
 import {
   AtSign, Bell, CircleDollarSign, FilePlus2, MessageSquare, Settings2,
 } from "lucide-react";
+import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import {
@@ -29,6 +29,8 @@ import { tolerate } from "@office/shared/lib/tolerate";
 import { SegmentedCount, SegmentedNav, segmentedItem } from "@office/shared/components/segmented";
 import { cn } from "@office/shared/lib/utils";
 import { pageTitle } from "@office/shared/lib/page-title";
+import { TranslateFeedPage } from "@/features/notifications/components/TranslateFeedPage";
+import { translateMessages } from "@/shared/i18n/translateMessages";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -163,6 +165,42 @@ export default async function NotificationsPage({ params, searchParams }: PagePr
   const ts = await getTranslations("statuses");
   const query = await searchParams;
 
+  // The one bell has two feeds: Office's (this page) and Translate's (payments,
+  // finished batches, balance, renewals), kept by suliko.ge's API.
+  const source = one(query.source) === "translate" ? "translate" : "office";
+  // Translate's texts; this page loads only Office's.
+  const trMessages = await translateMessages(locale, ["Notifications"]);
+  const tTr = (key: string) => String((trMessages.Notifications as Record<string, unknown>)[key] ?? key);
+  const sources = (
+    <SegmentedNav label={tTr("sourceLabel")} className="mb-4">
+      {(["office", "translate"] as const).map((key) => {
+        const selected = key === source;
+        return (
+          <RowLink
+            key={key}
+            href={key === "office" ? "/notifications" : "/notifications?source=translate"}
+            aria-current={selected ? "page" : undefined}
+            className={segmentedItem(selected)}
+          >
+            {key === "office" ? tTr("sourceOffice") : tTr("sourceTranslate")}
+          </RowLink>
+        );
+      })}
+    </SegmentedNav>
+  );
+
+  if (source === "translate") {
+    return (
+      <>
+        <PageHeader {...sectionMark("notifications")} title={t("notifications")} description={tn("description")} />
+        {sources}
+        <NextIntlClientProvider locale={locale} messages={trMessages}>
+          <TranslateFeedPage />
+        </NextIntlClientProvider>
+      </>
+    );
+  }
+
   const rawTab = one(query.tab);
   const tab: NotificationTab = NOTIFICATION_TABS.includes(rawTab as NotificationTab)
     ? (rawTab as NotificationTab)
@@ -209,6 +247,8 @@ export default async function NotificationsPage({ params, searchParams }: PagePr
         description={tn("description")}
         actions={<MarkAllRead unread={feed.unread} />}
       />
+
+      {sources}
 
       <SegmentedNav label={tn("filterLabel")} className="mb-4">
         {NOTIFICATION_TABS.map((key) => {
