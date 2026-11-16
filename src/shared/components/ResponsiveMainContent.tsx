@@ -39,9 +39,10 @@ export default function ResponsiveMainContent({ children }: ResponsiveMainConten
   }, [isCollapsed, isMounted]);
 
   if (!isMounted) {
-    // Server-side render with collapsed state to prevent layout shift
+    // Before hydration: the width comes from the --sidebar-width variables, which
+    // the (main) layout's inline script has already set from the saved setting.
     return (
-      <main id="main-content" className="sidebar-content pt-14" style={{ marginLeft: '4rem', transition: 'margin-left 300ms ease' }}>
+      <main id="main-content" className="sidebar-content pt-14 pb-20 md:pb-0">
         {children}
       </main>
     );

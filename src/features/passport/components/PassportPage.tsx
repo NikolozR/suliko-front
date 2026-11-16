@@ -1,6 +1,8 @@
 "use client";
 import React, { useState, useCallback, useRef, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { FileText } from "lucide-react";
+import { PageHeader } from "@office/shared/components/page-header";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { Link } from "@/i18n/navigation";
 import { Download, Loader2, ArrowLeft, CheckCircle2, ZoomIn, ZoomOut } from "lucide-react";
@@ -203,10 +205,7 @@ export default function PassportPage() {
 
   return (
     <div className="max-w-6xl px-4 py-6 md:px-6">
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight mb-2">{t("title")}</h1>
-        <p className="text-muted-foreground text-sm">{t("description")}</p>
-      </div>
+      <PageHeader icon={FileText} hue="blue" title={t("title")} description={t("description")} />
 
       {error && (
         <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/20 text-destructive text-sm">
