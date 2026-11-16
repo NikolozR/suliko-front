@@ -6,7 +6,6 @@ export default function SignIn() {
   return (
     <div className="relative flex justify-center items-center min-h-[100dvh] w-full overflow-y-auto">
       <AuroraBackground />
-      <MaintenanceBanner />
       <div className="relative flex items-center justify-center w-full min-h-[100dvh]">
         <SulikoForm />
       </div>
