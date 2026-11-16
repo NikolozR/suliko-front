@@ -9,6 +9,8 @@ import { planAllows, type Plan } from "@office/shared/auth/plans";
 import { getSession } from "@office/shared/auth/session";
 import { NAVIGATION } from "@office/shared/config/navigation";
 
+import { translateSearchTexts } from "@/features/search/texts";
+import type { TranslateSearchTexts } from "@/features/search/types";
 import { translateMessages } from "@/shared/i18n/translateMessages";
 
 import { officeLocaleOf } from "./workspace";
@@ -42,6 +44,8 @@ export interface OfficeContext {
   notificationsMessages: AbstractIntlMessages;
   /** The language of those texts: Translate's own, which may be one Office has none of. */
   notificationsLocale: string;
+  /** Translate's half of the search box, as words. */
+  searchTexts: TranslateSearchTexts;
 }
 
 /** The namespaces Office ships to every page (its i18n/client-messages.tsx). */
@@ -94,6 +98,7 @@ export async function officeContext(locale: string): Promise<OfficeContext | nul
       unread,
       notificationsMessages: await translateMessages(locale, ["Notifications"]),
       notificationsLocale: locale,
+      searchTexts: await translateSearchTexts(locale),
     };
   } catch (error) {
     console.error("[office-context] could not read the Office session", error);

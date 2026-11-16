@@ -3,11 +3,14 @@
 import { createContext, useContext, type ReactNode } from "react";
 import { NextIntlClientProvider, type AbstractIntlMessages } from "next-intl";
 
+import type { TranslateSearchTexts } from "@/features/search/types";
 import { NotificationBell, type OfficeBellPart } from "./NotificationBell";
 
 interface Texts {
   locale: string;
   messages: AbstractIntlMessages;
+  /** Translate's half of the search box, as words. */
+  search?: TranslateSearchTexts;
 }
 
 const TextsContext = createContext<Texts | null>(null);
@@ -20,9 +23,15 @@ const TextsContext = createContext<Texts | null>(null);
 export function TranslateNotificationTexts({
   locale,
   messages,
+  search,
   children,
 }: Texts & { children: ReactNode }) {
-  return <TextsContext.Provider value={{ locale, messages }}>{children}</TextsContext.Provider>;
+  return <TextsContext.Provider value={{ locale, messages, search }}>{children}</TextsContext.Provider>;
+}
+
+/** Translate's half of the search box on an Office screen, or null. */
+export function useTranslateSearchTexts(): TranslateSearchTexts | null {
+  return useContext(TextsContext)?.search ?? null;
 }
 
 /** The one bell, drawn where only Office's messages are loaded. */

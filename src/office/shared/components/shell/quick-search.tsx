@@ -1,16 +1,18 @@
 "use client";
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
+// Owned by suliko-front: the one search. Translate's pages and the person's own
+// translations sit beside Office's screens, orders and clients (features/search).
 
 import {
   ArrowRight,
   FileText,
+  Languages,
   Loader2,
   Plus,
   Search,
   UserPlus,
   UsersRound,
 } from "lucide-react";
+import { useRouter as useNextRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import {
   useEffect,
@@ -21,6 +23,8 @@ import {
   type ReactNode,
 } from "react";
 
+import { useTranslationSearch } from "@/features/search/hooks/useTranslationSearch";
+import type { TranslateSearchTexts } from "@/features/search/types";
 import {
   quickSearchAction,
   type QuickSearchResult,
@@ -48,6 +52,8 @@ interface Item {
   icon: ReactNode;
   label: string;
   detail?: ReactNode;
+  /** An address in Translate (with its language): opened outside Office's router. */
+  translateHref?: string;
 }
 
 /**
@@ -68,6 +74,7 @@ export function QuickSearch({
   permissions,
   plan,
   scope,
+  translate,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -75,11 +82,14 @@ export function QuickSearch({
   plan: Plan;
   /** The organisation's slug: recently opened orders are kept per organisation. */
   scope: string;
+  /** Translate's half of the box (pages, your translations); absent: Office only. */
+  translate?: TranslateSearchTexts | null;
 }) {
   const t = useTranslations("shell.search");
   const tShell = useTranslations("shell");
   const tNav = useTranslations("nav");
   const router = useRouter();
+  const nextRouter = useNextRouter();
   const [query, setQuery] = useState("");
   const [result, setResult] = useState<QuickSearchResult>(EMPTY);
   const [active, setActive] = useState(0);
@@ -136,6 +146,20 @@ export function QuickSearch({
 
   const typed = query.trim() !== "";
 
+  // Translate's half: its pages by label, and the person's translations by name.
+  const { hits } = useTranslationSearch(translate ? query : "");
+  const translateItem = (key: string, href: string, label: string, icon: ReactNode, detail?: ReactNode): Item => ({
+    key,
+    href,
+    icon,
+    label,
+    detail,
+    translateHref: `/${translate?.locale ?? "ka"}${href}`,
+  });
+  const translatePages: Item[] = (translate?.pages ?? [])
+    .filter((p) => !typed || p.label.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()))
+    .map((p) => translateItem(`tpage-${p.key}`, p.href, p.label, <Languages className="size-4" />));
+
   // What the box offers before anything is typed.
   const starters: { title: string; items: Item[] }[] = [
     {
@@ -172,6 +196,7 @@ export function QuickSearch({
           : []),
       ],
     },
+    ...(translate ? [{ title: translate.pagesTitle, items: translatePages }] : []),
   ];
 
   const found: { title: string; items: Item[] }[] = [
@@ -209,6 +234,23 @@ export function QuickSearch({
         ) : undefined,
       })),
     },
+    ...(translate
+      ? [
+          { title: translate.pagesTitle, items: translatePages },
+          {
+            title: translate.translationsTitle,
+            items: hits.map((hit) =>
+              translateItem(
+                `tchat-${hit.chatId}`,
+                `/translations/${hit.chatId}`,
+                hit.title,
+                <FileText className="size-4" />,
+                hit.targetLanguage ? <span className="text-muted-foreground text-xs">{hit.targetLanguage}</span> : undefined,
+              ),
+            ),
+          },
+        ]
+      : []),
   ];
 
   const groups = (typed ? found : starters).filter(
@@ -220,7 +262,8 @@ export function QuickSearch({
   const go = (item: Item) => {
     onOpenChange(false);
     startNavigationProgress();
-    router.push(item.href);
+    if (item.translateHref) nextRouter.push(item.translateHref);
+    else router.push(item.href);
   };
 
   const onKeyDown = (event: React.KeyboardEvent) => {

@@ -125,6 +125,9 @@ const OWNED = new Set([
   "src/office/shared/auth/guards.ts",
   // Its ended-session check also keeps the page to come back to (signInAgain).
   "src/app/app/[locale]/(office)/layout.tsx",
+  // One search: Translate's pages and translations in Office's box.
+  "src/office/shared/components/shell/quick-search.tsx",
+  "src/office/shared/components/shell/app-shell.tsx",
   // One bell: Translate's feed and Office's in one (features/notifications).
   "src/office/shared/components/shell/topbar.tsx",
   "src/app/app/[locale]/(office)/notifications/page.tsx",

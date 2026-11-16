@@ -58,7 +58,6 @@ export function OfficeActionsSlot({ office }: { office: OfficeContext }) {
   }, []);
 
   const searchLabel = office.locale === "ka" ? "ძებნა" : "Search";
-  const notificationsLabel = office.locale === "ka" ? "შეტყობინებები" : "Notifications";
 
   return (
     <OfficeIntl office={office}>
@@ -86,6 +85,7 @@ export function OfficeActionsSlot({ office }: { office: OfficeContext }) {
         permissions={office.permissions}
         plan={office.plan}
         scope={office.tenantSlug}
+        translate={office.searchTexts}
       />
       {/* The switcher reports through Office's toasts. */}
       <Toaster richColors closeButton position="top-center" />

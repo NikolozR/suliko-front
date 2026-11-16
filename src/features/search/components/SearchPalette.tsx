@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import {
   ArrowRight,
   BadgeDollarSign,
@@ -20,9 +20,8 @@ import { useTranslations } from "next-intl";
 import { useRouter } from "@/i18n/navigation";
 import { Dialog, DialogContent, DialogTitle } from "@/features/ui/components/ui/dialog";
 import { cn } from "@/shared/lib/utils";
-import { searchTranslations, type TranslationHit } from "../services/searchService";
-
-const DEBOUNCE_MS = 250;
+import { SEARCH_PAGES } from "../pages";
+import { useTranslationSearch } from "../hooks/useTranslationSearch";
 
 interface Item {
   key: string;
@@ -32,18 +31,17 @@ interface Item {
   detail?: ReactNode;
 }
 
-/** Translate's own pages, by the key their label has in the Search texts. */
-const PAGES = [
-  { key: "text", href: "/text", icon: Plus },
-  { key: "passport", href: "/passport", icon: FileText },
-  { key: "projects", href: "/projects", icon: FolderOpen },
-  { key: "history", href: "/history", icon: History },
-  { key: "orders", href: "/assignments", icon: ClipboardList },
-  { key: "billing", href: "/profile#billing", icon: CreditCard },
-  { key: "profile", href: "/profile", icon: User },
-  { key: "price", href: "/price", icon: BadgeDollarSign },
-  { key: "help", href: "/help", icon: CircleHelp },
-] as const;
+const ICONS = {
+  text: Plus,
+  passport: FileText,
+  projects: FolderOpen,
+  history: History,
+  orders: ClipboardList,
+  billing: CreditCard,
+  profile: User,
+  price: BadgeDollarSign,
+  help: CircleHelp,
+} as const;
 
 /**
  * Ctrl+K: jump to a page of Translate or to one of your own translations,
@@ -55,67 +53,32 @@ export function SearchPalette({ open, onOpenChange }: { open: boolean; onOpenCha
   const t = useTranslations("Search");
   const router = useRouter();
   const [query, setQuery] = useState("");
-  const [hits, setHits] = useState<TranslationHit[]>([]);
-  const [pending, setPending] = useState(false);
-  const [failed, setFailed] = useState(false);
   const [active, setActive] = useState(0);
-  const latest = useRef("");
+  const { hits, pending, failed } = useTranslationSearch(query);
 
   // A fresh box each time it opens.
   useEffect(() => {
     if (open) {
       setQuery("");
-      setHits([]);
-      setFailed(false);
       setActive(0);
     }
   }, [open]);
 
-  useEffect(() => {
-    const trimmed = query.trim();
-    latest.current = trimmed;
-    if (!trimmed) {
-      setHits([]);
-      setPending(false);
-      setFailed(false);
-      return;
-    }
-    const controller = new AbortController();
-    setPending(true);
-    const timer = window.setTimeout(async () => {
-      try {
-        const found = await searchTranslations(trimmed, controller.signal);
-        // Only the answer to what is in the box now.
-        if (latest.current === trimmed) {
-          setHits(found);
-          setFailed(false);
-          setActive(0);
-        }
-      } catch (error) {
-        if ((error as Error).name !== "AbortError" && latest.current === trimmed) {
-          setHits([]);
-          setFailed(true);
-        }
-      } finally {
-        if (latest.current === trimmed) setPending(false);
-      }
-    }, DEBOUNCE_MS);
-    return () => {
-      window.clearTimeout(timer);
-      controller.abort();
-    };
-  }, [query]);
+  // New results start at the top.
+  useEffect(() => setActive(0), [hits]);
 
   const typed = query.trim() !== "";
 
   const pages: Item[] = useMemo(() => {
     const needle = query.trim().toLocaleLowerCase();
-    return PAGES.map((p) => ({
+    return SEARCH_PAGES.map((p) => {
+      const Icon = ICONS[p.key];
+      return {
       key: `page-${p.key}`,
       href: p.href,
-      icon: <p.icon className="size-4" />,
+      icon: <Icon className="size-4" />,
       label: t(`pages.${p.key}`),
-    })).filter((item) => !needle || item.label.toLocaleLowerCase().includes(needle));
+    }; }).filter((item) => !needle || item.label.toLocaleLowerCase().includes(needle));
   }, [query, t]);
 
   const groups: { title: string; items: Item[] }[] = [
