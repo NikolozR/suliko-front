@@ -410,6 +410,8 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
             size="sm"
             type="button"
             onClick={handleResetZoom}
+            aria-label={tA("resetZoom")}
+            title={tA("resetZoom")}
             disabled={scale === 1.0}
             className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
@@ -668,6 +670,8 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
             size="sm"
             type="button"
             onClick={handleResetZoom}
+            aria-label={tA("resetZoom")}
+            title={tA("resetZoom")}
             disabled={scale === 1.0 || isRendering}
             className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >
@@ -815,6 +819,8 @@ const ImagePreview: React.FC<{ file: File }> = ({ file }) => {
             size="sm"
             type="button"
             onClick={handleResetZoom}
+            aria-label={tA("resetZoom")}
+            title={tA("resetZoom")}
             disabled={scale === 1.0}
             className="p-2 pointer-coarse:min-h-11 pointer-coarse:min-w-11"
           >

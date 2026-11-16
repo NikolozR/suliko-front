@@ -30,7 +30,7 @@ export function StatusPipeline({ countOf }: { countOf: (status: string) => numbe
   return (
     // The padding, cancelled by the margin, is room for a column's focus
     // ring: a scroll container clips whatever pokes out of it.
-    <ol className="custom_scroll -m-1 flex gap-2 p-1 md:grid md:grid-cols-3 md:gap-3 xl:grid-cols-6 xl:gap-4">
+    <ol className="custom_scroll -m-1 flex gap-2 p-1 pr-8 [mask-image:linear-gradient(to_right,black_calc(100%-2.5rem),transparent)] md:mask-none md:pr-1 md:grid md:grid-cols-3 md:gap-3 xl:grid-cols-6 xl:gap-4">
       {DASHBOARD_STATUS_ORDER.map((status, index) => {
         const hue = HUE_CLASSES[getStatusHue(status)];
         const count = countOf(status);

@@ -112,6 +112,10 @@ const OWNED = new Set([
   "src/office/i18n/navigation.ts",
   // Syncfusion 35 here (#258): Fluent 2 theme from ej2-fluent2-theme.
   "src/office/features/orders/components/word-editor.tsx",
+  // One control density: sizes from the --btn-* variables (src/app/globals.css).
+  "src/office/shared/components/ui/button.tsx",
+  // Phone: the status tiles fade at the right edge, so it shows more scroll in.
+  "src/office/features/dashboard/components/status-pipeline.tsx",
 ]);
 
 // ── copy ────────────────────────────────────────────────────────────────────

@@ -17,7 +17,13 @@
     "create": "შექმნა",
     "creating": "იქმნება...",
     "delete": "წაშლა",
-    "deleting": "იშლება..."
+    "deleting": "იშლება...",
+    "loadFailedTitle": "ჩატვირთვა ვერ მოხერხდა",
+    "loadFailedBody": "შეამოწმეთ კავშირი და სცადეთ ხელახლა.",
+    "signedOutTitle": "თქვენ გამოსული ხართ",
+    "signedOutBody": "ამ გვერდის სანახავად ხელახლა შედით.",
+    "signIn": "შესვლა",
+    "tryAgain": "ხელახლა ცდა"
   },
   "Authorization": {
     "title": "ავტორიზაცია",
@@ -1077,6 +1083,7 @@
     "menu": "მენიუ",
     "openMenu": "მენიუს გახსნა",
     "closeMenu": "მენიუს დახურვა",
+    "resetZoom": "მასშტაბის აღდგენა",
     "toggleTheme": "თემის შეცვლა",
     "theme": "თემა"
   },
@@ -2436,6 +2443,7 @@
     "openMenu": "მენიუს გახსნა",
     "closeMenu": "მენიუს დახურვა",
     "menu": "მენიუ",
+    "resetZoom": "მასშტაბის აღდგენა",
     "toggleTheme": "თემის შეცვლა"
   }
 }

@@ -27,6 +27,7 @@ function formatElapsed(sec: number): string {
 
 export default function PassportPage() {
   const t = useTranslations("Passport");
+  const tA = useTranslations("A11y");
   const { token } = useAuthStore();
 
   const PROCESSING_MESSAGES = [
@@ -135,7 +136,8 @@ export default function PassportPage() {
       if (err instanceof Error && err.message === "QUOTA_EXCEEDED") {
         setError(t("errorQuota"));
       } else {
-        setError(err instanceof Error ? err.message : t("errorExtraction"));
+        console.error("[passport] extraction failed", err);
+        setError(t("errorExtraction"));
       }
     }
 
@@ -160,7 +162,8 @@ export default function PassportPage() {
       if (err instanceof Error && err.message === "QUOTA_EXCEEDED") {
         setError(t("errorQuota"));
       } else {
-        setError(err instanceof Error ? err.message : t("errorGeneration"));
+        console.error("[passport] generation failed", err);
+        setError(t("errorGeneration"));
       }
     }
 
@@ -186,7 +189,7 @@ export default function PassportPage() {
   if (!token) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
-        <h1 className="text-2xl font-bold mb-3">{t("title")}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight mb-3">{t("title")}</h1>
         <p className="text-muted-foreground mb-6 max-w-md">{t("description")}</p>
         <Link
           href="/sign-in"
@@ -199,9 +202,9 @@ export default function PassportPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="max-w-6xl px-4 py-6 md:px-6">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold mb-2">{t("title")}</h1>
+        <h1 className="text-2xl font-semibold tracking-tight mb-2">{t("title")}</h1>
         <p className="text-muted-foreground text-sm">{t("description")}</p>
       </div>
 
@@ -318,9 +321,11 @@ export default function PassportPage() {
                   <span className="text-xs font-medium text-muted-foreground">{t("originalDocument")}</span>
                   <div className="flex items-center gap-1">
                     <button
+                      type="button"
                       onClick={() => setImgZoom((z) => Math.max(0.5, z - 0.25))}
-                      className="p-1 rounded hover:bg-accent transition-colors"
-                      title="Zoom out"
+                      className="grid size-8 place-items-center rounded-md hover:bg-accent transition-colors pointer-coarse:size-11"
+                      title={tA("zoomOut")}
+                      aria-label={tA("zoomOut")}
                     >
                       <ZoomOut className="h-3.5 w-3.5 text-muted-foreground" />
                     </button>
@@ -328,9 +333,11 @@ export default function PassportPage() {
                       {Math.round(imgZoom * 100)}%
                     </span>
                     <button
+                      type="button"
                       onClick={() => setImgZoom((z) => Math.min(3, z + 0.25))}
-                      className="p-1 rounded hover:bg-accent transition-colors"
-                      title="Zoom in"
+                      className="grid size-8 place-items-center rounded-md hover:bg-accent transition-colors pointer-coarse:size-11"
+                      title={tA("zoomIn")}
+                      aria-label={tA("zoomIn")}
                     >
                       <ZoomIn className="h-3.5 w-3.5 text-muted-foreground" />
                     </button>
