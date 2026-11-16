@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
+import { useAuthStore } from "@/features/auth";
 import {
   FeedUnavailableError,
   getUnreadCount,
@@ -37,7 +38,12 @@ export function useNotificationFeed() {
     }
   }, []);
 
+  // The token is read from the browser's storage, which on an Office screen
+  // arrives after the first render: ask again as soon as it is there.
+  const token = useAuthStore((state) => state.token);
+
   useEffect(() => {
+    if (!token) return;
     void refreshCount();
     const tick = () => {
       if (document.visibilityState === "visible") void refreshCount();
@@ -48,7 +54,7 @@ export function useNotificationFeed() {
       window.clearInterval(timer);
       document.removeEventListener("visibilitychange", tick);
     };
-  }, [refreshCount]);
+  }, [refreshCount, token]);
 
   const load = useCallback(async () => {
     setError(false);
