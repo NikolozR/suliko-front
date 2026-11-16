@@ -116,6 +116,8 @@ const OWNED = new Set([
   // They import Translate's editor instead of Office's copy.
   "src/office/features/orders/components/translation-workspace.tsx",
   "src/office/features/orders/use-word-document.ts",
+  // Saves as the person corrects, with SaveStatus (save-status.tsx, ours) instead of a Save button.
+  "src/office/features/orders/components/translation-screen.tsx",
   // One control density: sizes from the --btn-* variables (src/app/globals.css).
   "src/office/shared/components/ui/button.tsx",
   // Phone: the status tiles fade at the right edge, so it shows more scroll in.
