@@ -118,6 +118,8 @@ const OWNED = new Set([
   "src/office/features/orders/use-word-document.ts",
   // One control density: sizes from the --btn-* variables (src/app/globals.css).
   "src/office/shared/components/ui/button.tsx",
+  // A thin wrapper now: the renderer is src/shared/components/pdf/PdfPages.tsx.
+  "src/office/features/orders/components/pdf-pages.tsx",
   // Phone: the status tiles fade at the right edge, so it shows more scroll in.
   "src/office/features/dashboard/components/status-pipeline.tsx",
   // Orders have their own icon (FileStack); 文A is Translate.

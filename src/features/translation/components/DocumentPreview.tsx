@@ -1,5 +1,5 @@
 "use client";
-import React, { createContext, useContext, useEffect, useState, useRef } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useState, useRef } from 'react';
 import { useTranslations } from "next-intl";
 import { ZoomIn, ZoomOut, RotateCcw, FileText, File, Subtitles, FileWarning } from 'lucide-react';
 import { Button } from '@/features/ui/components/ui/button';
@@ -7,8 +7,7 @@ import { useDocumentTranslationStore } from '@/features/translation/store/docume
 import { Skeleton } from '@/features/ui/components/ui/skeleton';
 import { embeddedPageOf } from '@/features/translation/utils/wordPage';
 import Image from 'next/image';
-import 'react-pdf/dist/Page/AnnotationLayer.css';
-import 'react-pdf/dist/Page/TextLayer.css';
+import { PdfPages } from '@/shared/components/pdf/PdfPages';
 
 interface DocumentPreviewProps {
   file: File | null;
@@ -20,26 +19,8 @@ interface DocumentPreviewProps {
   trackPageCount?: boolean;
 }
 
-type PdfDocumentComponent = React.ComponentType<{
-  file: string;
-  onLoadSuccess: ({ numPages }: { numPages: number }) => void;
-  onLoadError: (error: Error) => void;
-  loading?: React.ReactNode;
-  error?: React.ReactNode;
-  children?: React.ReactNode;
-}>;
-
 /** How wide a PDF's page is drawn at 100%, where there is room for it. */
 const PDF_PAGE_WIDTH = 600;
-
-type PdfPageComponent = React.ComponentType<{
-  pageNumber: number;
-  width: number;
-  scale: number;
-  renderTextLayer: boolean;
-  renderAnnotationLayer: boolean;
-  className?: string;
-}>;
 
 // Helper function to get file type
 const getFileType = (file: File): string => {
@@ -427,11 +408,9 @@ const WordPreview: React.FC<{ file: File }> = ({ file }) => {
 const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, trackPageCount }) => {
   const t = useTranslations("DocumentTranslationCard.documentPreview");
   const tA = useTranslations("A11y");
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
-  const [pdfModule, setPdfModule] = useState<{
-    Document: PdfDocumentComponent;
-    Page: PdfPageComponent;
-  } | null>(null);
+  // The PDF's bytes, drawn by the app's one page renderer (PdfPages, pdf.js).
+  const [data, setData] = useState<ArrayBuffer | null>(null);
+  const [failed, setFailed] = useState(false);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [containerWidth, setContainerWidth] = useState<number>(PDF_PAGE_WIDTH);
   const [scale, setScale] = useState<number>(1.0);
@@ -481,46 +460,26 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
 
   useEffect(() => {
     let cancelled = false;
-    setStage("Preparing preview...");
-
-    import("react-pdf")
-      .then((mod) => {
-        mod.pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-          /* react-pdf's own pdfjs version (package.json pins pdfjs-dist-react-pdf to it): the top-level pdfjs-dist is Office's newer one, and a worker of another version refuses every PDF. */ "pdfjs-dist-react-pdf/build/pdf.worker.min.mjs",
-          import.meta.url
-        ).toString();
-        if (!cancelled) {
-          setPdfModule({
-            Document: mod.Document as unknown as PdfDocumentComponent,
-            Page: mod.Page as unknown as PdfPageComponent,
-          });
-        }
+    setData(null);
+    setFailed(false);
+    setNumPages(null);
+    if (!file) return;
+    setIsRendering(true);
+    setStage("Rendering pages...");
+    file
+      .arrayBuffer()
+      .then((bytes) => {
+        if (!cancelled) setData(bytes);
       })
-      .catch((error) => {
-        console.error("Failed to load PDF viewer:", error);
+      .catch(() => {
+        if (!cancelled) {
+          setFailed(true);
+          setIsRendering(false);
+        }
       });
-
     return () => {
       cancelled = true;
     };
-  }, []);
-
-  useEffect(() => {
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setFileUrl(url);
-      setNumPages(null);
-      setIsRendering(true);
-      setStage("Rendering pages...");
-
-      return () => {
-        URL.revokeObjectURL(url);
-        setFileUrl(null);
-      };
-    } else {
-      setFileUrl(null);
-      setNumPages(null);
-    }
   }, [file]);
 
   const lastWidthRef = useRef<number>(PDF_PAGE_WIDTH);
@@ -574,20 +533,25 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
     }
   }, [shouldResetZoom, setShouldResetZoom]);
 
-  const onDocumentLoadSuccess = ({ numPages: nextNumPages }: { numPages: number }) => {
+  const onDocumentLoadSuccess = useCallback((nextNumPages: number) => {
     setNumPages(nextNumPages);
     // The real page count from the PDF parser, for the loading progress calculation.
     if (trackPageCount) setRealPageCount(nextNumPages);
     setIsRendering(false);
     setStage("Ready");
-  };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [trackPageCount]);
 
-  const onDocumentLoadError = (error: Error) => {
-    console.error('PDF load error:', error.message);
+  const onDocumentLoadError = useCallback(() => {
+    setFailed(true);
     setIsRendering(false);
-  };
+  }, []);
 
-  if (!fileUrl) {
+  // PdfPages fits a page to the box at zoom 1; here 100% is a page's usual
+  // width, or the box's where that is narrower (a phone).
+  const zoom = (scale * Math.min(containerWidth, PDF_PAGE_WIDTH)) / Math.max(containerWidth, 1);
+
+  if (!file) {
     return (
       <div className="mt-4 p-4 border rounded-md text-center text-muted-foreground">
         {t('noPdfPreview')}
@@ -595,46 +559,26 @@ const PdfPreview: React.FC<{ file: File; trackPageCount: boolean }> = ({ file, t
     );
   }
 
-  if (!pdfModule) {
-    return <PreviewLoadingState stage={stage} />;
-  }
-
-  const PdfDocument = pdfModule.Document;
-  const PdfPage = pdfModule.Page;
-
   return (
     <div className="w-full h-full flex flex-col">
-      <div
-        ref={setContainer}
-        // The scrollbar's room is kept from the start, so that its arrival
-        // does not narrow the box and draw every page a second time.
-        className="flex-1 min-h-0 border rounded-md bg-slate-50 dark:bg-slate-800 overflow-y-auto [scrollbar-gutter:stable] mb-4"
-      >
-        <PdfDocument
-          file={fileUrl}
-          onLoadSuccess={onDocumentLoadSuccess}
-          onLoadError={onDocumentLoadError}
-          loading={<PreviewLoadingState stage={stage || t('loadingPdf')} />}
-          error={
-            <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-muted-foreground">
-              <FileWarning className="h-8 w-8" aria-hidden />
-              <p className="text-sm">{t('loadErrorPdf')}</p>
-            </div>
-          }
-        >
-          {numPages && Array.from(new Array(numPages), (_, index) => (
-            <PdfPage
-              key={`page_${index + 1}`}
-              pageNumber={index + 1}
-              // A page's usual width, or the box's where that is narrower (a phone).
-              width={Math.min(containerWidth, PDF_PAGE_WIDTH)}
-              scale={scale}
-              renderTextLayer={true}
-              renderAnnotationLayer={true}
-              className="flex justify-center mb-2 shadow-md"
-            />
-          ))}
-        </PdfDocument>
+      <div className="flex-1 min-h-0 border rounded-md overflow-hidden mb-4">
+        {failed ? (
+          <div className="flex h-full flex-col items-center justify-center gap-2 p-6 text-center text-muted-foreground">
+            <FileWarning className="h-8 w-8" aria-hidden />
+            <p className="text-sm">{t('loadErrorPdf')}</p>
+          </div>
+        ) : data ? (
+          <PdfPages
+            data={data}
+            zoom={zoom}
+            scrollerRef={setContainer}
+            onLoaded={onDocumentLoadSuccess}
+            onFailed={onDocumentLoadError}
+            loadingLabel={t('loadingPdf')}
+          />
+        ) : (
+          <PreviewLoadingState stage={stage} />
+        )}
       </div>
 
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2 p-3 bg-muted/30 rounded-lg shrink-0">

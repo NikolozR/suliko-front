@@ -36,10 +36,10 @@ const isPdf = (name: string) => /\.pdf$/i.test(name);
 export async function learnPdfPages(fileId: string, file: File): Promise<void> {
   if (!isPdf(file.name) || useOrderFilePages.getState().pages[fileId]) return;
   try {
-    const { pdfjs } = await import("react-pdf");
-    // The same worker the document viewer sets up.
+    const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+    // The app's one pdf.js (pdfjs-dist), as the page renderer (PdfPages) uses it.
     pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-      /* react-pdf's own pdfjs version (package.json pins pdfjs-dist-react-pdf to it): the top-level pdfjs-dist is Office's newer one, and a worker of another version refuses every PDF. */ "pdfjs-dist-react-pdf/build/pdf.worker.min.mjs",
+      "pdfjs-dist/legacy/build/pdf.worker.min.mjs",
       import.meta.url,
     ).toString();
     const opened = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;

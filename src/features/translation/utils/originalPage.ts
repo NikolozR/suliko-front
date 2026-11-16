@@ -48,9 +48,9 @@ function asPaper(width: number, height: number): { width: number; height: number
 const PAGES_MEASURED = 8;
 
 async function pdfPage(file: File): Promise<WordPageSetup | null> {
-  const { pdfjs } = await import("react-pdf");
-  // The same worker the document viewer sets up.
-  pdfjs.GlobalWorkerOptions.workerSrc = new URL(/* react-pdf's own pdfjs version (package.json pins pdfjs-dist-react-pdf to it): the top-level pdfjs-dist is Office's newer one, and a worker of another version refuses every PDF. */ "pdfjs-dist-react-pdf/build/pdf.worker.min.mjs", import.meta.url).toString();
+  const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  // The app's one pdf.js (pdfjs-dist), as the page renderer (PdfPages) uses it.
+  pdfjs.GlobalWorkerOptions.workerSrc = new URL("pdfjs-dist/legacy/build/pdf.worker.min.mjs", import.meta.url).toString();
   const pdf = await pdfjs.getDocument({ data: await file.arrayBuffer() }).promise;
   try {
     const first = (await pdf.getPage(1)).getViewport({ scale: 1 });
