@@ -209,7 +209,7 @@
     "completeEmail": "Add your email",
     "passport": "Passport",
     "office": "Suliko Office",
-    "orders": "Bureau assignments",
+    "orders": "Orders",
     "toggleSidebar": "Collapse or expand the menu",
     "home": "Home: new translation",
     "userMenu": "Account menu",
@@ -2411,7 +2411,10 @@
     "discardBody": "Your corrections will be lost. The file in the order stays as it was.",
     "discard": "Close without saving",
     "previewLoading": "Opening the file…",
-    "previewFailed": "Could not open this file here. You can still download it."
+    "previewFailed": "Could not open this file here. You can still download it.",
+    "viewLabel": "Which orders",
+    "viewOffice": "My office",
+    "viewBureaus": "From bureaus"
   },
   "TranslateMeta": {
     "title": "Suliko Translate: Translate Documents in Minutes, First 10 Pages Free",

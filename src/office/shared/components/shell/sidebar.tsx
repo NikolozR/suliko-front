@@ -118,7 +118,8 @@ export function Sidebar({
             </h2>
           )}
           <ul className="space-y-0.5">
-            {TRANSLATE_NAV.map((item) => {
+            {/* Bureau assignments are Orders' "From bureaus" view here. */}
+            {TRANSLATE_NAV.filter((item) => item.href !== "/assignments").map((item) => {
               const Icon = item.icon;
               const label = item.label[workspaceLocale(locale)];
               return (

@@ -118,6 +118,8 @@ const OWNED = new Set([
   "src/office/features/dashboard/components/status-pipeline.tsx",
   // Orders have their own icon (FileStack); 文A is Translate.
   "src/office/shared/config/navigation.ts",
+  // One Orders: the "From bureaus" view (Translate's assignments) is wired in here.
+  "src/app/app/[locale]/(office)/translations/(list)/page.tsx",
 ]);
 
 // ── copy ────────────────────────────────────────────────────────────────────
