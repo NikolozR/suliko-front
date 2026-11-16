@@ -703,7 +703,8 @@
     "profileNotFoundBody": "მომხმარებლის ინფორმაცია ვერ მოიძებნა",
     "billingPackageTitle": "ოფისის პაკეტი",
     "billingPagesTitle": "თარგმნის გვერდები",
-    "billingPagesHint": "თქვენი გვერდების ბალანსი Suliko Translate-ისთვის: შევსება, გადახდები და შენახული ბარათები."
+    "billingPagesHint": "თქვენი გვერდების ბალანსი Suliko Translate-ისთვის: შევსება, გადახდები და შენახული ბარათები.",
+    "billingOfficeLink": "ოფისის პაკეტი და ორგანიზაციის ბილინგი: გახსნა"
   },
   "LanguageSwitcher": {
     "english": "English",

@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { useLocale, useTranslations } from "next-intl";
 import { useAuthStore } from "@/features/auth/store/authStore";
 import { useUserStore } from "@/features/auth/store/userStore";
 import {
@@ -56,8 +57,9 @@ function useSectionFromHash(): [ProfileSection, (s: ProfileSection) => void] {
   return [section, setSection];
 }
 
-export default function ProfileClient() {
+export default function ProfileClient({ hasOffice = false }: { hasOffice?: boolean }) {
   const t = useTranslations("Profile");
+  const locale = useLocale();
   const [section, setSection] = useSectionFromHash();
   const profileUpdateSchema = useMemo(() => makeProfileUpdateSchema(t), [t]);
   const { token } = useAuthStore();
@@ -217,7 +219,16 @@ export default function ProfileClient() {
             </>
           )}
 
-          {section === "billing" && <PagesWallet />}
+          {section === "billing" && (
+            <>
+              <PagesWallet />
+              {hasOffice && (
+                <Link href={`/${locale}/billing`} className="inline-block text-sm font-medium text-blue-600 hover:underline dark:text-blue-400">
+                  {t("billingOfficeLink")} →
+                </Link>
+              )}
+            </>
+          )}
 
           {section === "security" && (
             <>

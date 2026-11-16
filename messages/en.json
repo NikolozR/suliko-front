@@ -703,7 +703,8 @@
     "profileNotFoundBody": "Account information not found.",
     "billingPackageTitle": "Office package",
     "billingPagesTitle": "Translation pages",
-    "billingPagesHint": "Your own balance of pages for Suliko Translate: top-ups, payments and saved cards."
+    "billingPagesHint": "Your own balance of pages for Suliko Translate: top-ups, payments and saved cards.",
+    "billingOfficeLink": "Office package and organisation billing: open"
   },
   "LanguageSwitcher": {
     "english": "English",
