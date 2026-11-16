@@ -31,6 +31,19 @@ export function isOfficePath(pathname: string): boolean {
  * Office's content security policy, the same as on its own deployment
  * (app.suliko.ge middleware.ts), with a fresh nonce per request.
  */
+/**
+ * Translate's API (suliko.ge's), which pieces of Translate on an Office screen
+ * talk to from the browser: the billing page's payments and cards, the bell's
+ * notifications. Without it here, those requests are blocked.
+ */
+function translateApiOrigin(): string {
+  try {
+    return new URL(process.env.NEXT_PUBLIC_API_BASE_URL ?? "https://content.api24.ge/api").origin;
+  } catch {
+    return "";
+  }
+}
+
 function buildCsp(nonce: string, isDev: boolean): string {
   const apiOrigin = process.env.NEXT_PUBLIC_OFFICE_API_ORIGIN ?? "";
   return [
@@ -40,7 +53,7 @@ function buildCsp(nonce: string, isDev: boolean): string {
     `img-src 'self' data: blob:`,
     `frame-src 'self' blob:`,
     `font-src 'self' data:`,
-    `connect-src 'self' ${apiOrigin}`.trim(),
+    `connect-src 'self' ${apiOrigin} ${translateApiOrigin()}`.replace(/\s+/g, " ").trim(),
     `frame-ancestors 'none'`,
     `base-uri 'self'`,
     `form-action 'self'`,
