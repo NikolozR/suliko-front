@@ -164,6 +164,10 @@ export default function Sidebar({ initialUserProfile, office = null }: SidebarPr
   };
 
   const visibleNavItems = NAV_ITEMS.filter(item => {
+    // Signed in to Office, bureau assignments are Orders' "From bureaus" view.
+    if (office && item.href === '/assignments') {
+      return false;
+    }
     if (item.signedOutOnly) {
       return !signedIn;
     }

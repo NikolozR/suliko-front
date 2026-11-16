@@ -209,7 +209,7 @@
     "completeEmail": "Uzupełnij e-mail",
     "passport": "Paszport",
     "office": "Suliko Office",
-    "orders": "Zlecenia od biur",
+    "orders": "Zamówienia",
     "toggleSidebar": "Zwiń lub rozwiń menu",
     "home": "Start: nowe tłumaczenie",
     "userMenu": "Menu konta",
@@ -2411,7 +2411,10 @@
     "discardBody": "Twoje poprawki przepadną. Plik w zamówieniu zostanie bez zmian.",
     "discard": "Zamknij bez zapisywania",
     "previewLoading": "Otwieranie pliku…",
-    "previewFailed": "Nie udało się otworzyć pliku tutaj. Nadal możesz go pobrać."
+    "previewFailed": "Nie udało się otworzyć pliku tutaj. Nadal możesz go pobrać.",
+    "viewLabel": "Które zamówienia",
+    "viewOffice": "Moje biuro",
+    "viewBureaus": "Od biur"
   },
   "TranslateMeta": {
     "title": "Suliko Translate: tłumaczenie dokumentów w kilka minut, pierwsze 10 stron za darmo",

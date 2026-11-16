@@ -56,6 +56,10 @@ import {
 } from "@office/shared/components/segmented";
 import { cn } from "@office/shared/lib/utils";
 import { pageTitle } from "@office/shared/lib/page-title";
+import { NextIntlClientProvider } from "next-intl";
+import { AssignmentsList } from "@/features/orders/components/AssignmentsList";
+import { OrdersSourceSwitch } from "@/features/orders/components/OrdersSourceSwitch";
+import { ordersMessages } from "@/features/orders/translateMessages";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -144,6 +148,34 @@ export default async function OrdersPage({ params, searchParams }: PageProps) {
   const ts = await getTranslations("statuses");
   const tt = await getTranslations("enums.clientType");
   const query = await searchParams;
+
+  // One Orders: this office's own, and (a second view) the ones translation
+  // bureaus have assigned to this person, which used to be Translate's
+  // separate "Bureau orders" page. Those are Translate's components, with its texts.
+  const translateMessages = await ordersMessages(locale);
+  const sourceSwitch = (active: "office" | "bureaus", officeCount?: number) => (
+    <NextIntlClientProvider locale={locale} messages={translateMessages}>
+      <OrdersSourceSwitch
+        active={active}
+        officeHref={`/${locale}/orders`}
+        bureausHref={`/${locale}/orders?view=bureaus`}
+        officeCount={officeCount}
+      />
+    </NextIntlClientProvider>
+  );
+  if (one(query.view) === "bureaus") {
+    return (
+      <>
+        <PageHeader {...sectionMark("translations")} title={t("translations")} />
+        {sourceSwitch("bureaus")}
+        <NextIntlClientProvider locale={locale} messages={translateMessages}>
+          <div className="max-w-3xl">
+            <AssignmentsList />
+          </div>
+        </NextIntlClientProvider>
+      </>
+    );
+  }
 
   const search = one(query.search);
   const rawType = one(query.client_type);
@@ -292,6 +324,7 @@ export default async function OrdersPage({ params, searchParams }: PageProps) {
           title={t("translations")}
           actions={newOrder()}
         />
+        {sourceSwitch("office")}
         <ApiUnavailable
           error={result.error}
           what={to("title")}
@@ -358,6 +391,7 @@ export default async function OrdersPage({ params, searchParams }: PageProps) {
           </div>
         }
       />
+      {sourceSwitch("office", tabCounts.get(undefined))}
 
       <div className="mb-3 flex items-center gap-2 sm:flex-wrap">
         <SegmentedNav label={tl("title")} className="min-w-0">

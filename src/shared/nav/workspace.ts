@@ -39,8 +39,8 @@ export const TRANSLATE_NAV: readonly TranslateNavItem[] = [
   },
   { href: "/passport", label: { ka: "პასპორტი", en: "Passport", pl: "Paszport" }, icon: FileText },
   {
-    // What bureaus have assigned to this person as a translator. Not "Orders":
-    // that is Office's list of the bureau's own orders.
+    // What bureaus have assigned to this person as a translator. Signed in to
+    // Office it is Orders' "From bureaus" view, and the sidebars leave this out.
     href: "/assignments",
     label: { ka: "ბიუროების შეკვეთები", en: "Bureau assignments", pl: "Zlecenia od biur" },
     icon: ClipboardList,
