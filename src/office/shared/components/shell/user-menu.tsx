@@ -1,6 +1,5 @@
 "use client";
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
+// Owned by suliko-front: Account opens Profile, the one account page.
 
 import { CircleUser, LogOut, Monitor, Moon, RotateCcw, Sparkles, Sun } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
@@ -8,7 +7,6 @@ import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
 
 import { useTips } from "@office/features/onboarding-tips/tips-provider";
-import { Link } from "@office/i18n/navigation";
 import { routing, type Locale } from "@office/i18n/routing";
 import { useLocaleSwitch } from "@office/shared/components/shell/use-locale-switch";
 import { cn } from "@office/shared/lib/utils";
@@ -139,10 +137,10 @@ export function UserMenu({ name, login }: { name: string; login: string }) {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DropdownMenuItem asChild>
-            <Link href="/account">
+            <a href={`/${locale}/profile`}>
               <CircleUser className="size-4" />
               {t("account")}
-            </Link>
+            </a>
           </DropdownMenuItem>
           {tips.enabled && (
             <>
