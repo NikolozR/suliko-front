@@ -2452,5 +2452,31 @@
     "menu": "Menu",
     "resetZoom": "Przywróć powiększenie",
     "toggleTheme": "Zmień motyw"
+  },
+  "Notifications": {
+    "justNow": "przed chwilą",
+    "minutesAgo": "{count, plural, one {# minutę temu} few {# minuty temu} many {# minut temu} other {# minuty temu}}",
+    "hoursAgo": "{count, plural, one {# godzinę temu} few {# godziny temu} many {# godzin temu} other {# godziny temu}}",
+    "daysAgo": "{count, plural, one {# dzień temu} other {# dni temu}}",
+    "title": "Powiadomienia",
+    "bell": "Powiadomienia",
+    "bellUnread": "Powiadomienia, nieprzeczytane: {count}",
+    "markAllRead": "Oznacz wszystkie jako przeczytane",
+    "empty": "Na razie nic. Pojawią się tu płatności, ukończone partie i saldo.",
+    "loading": "Wczytywanie...",
+    "loadError": "Nie udało się wczytać powiadomień. Spróbuj za chwilę.",
+    "unreadMark": "Nieprzeczytane:",
+    "unknown": "Na Twoim koncie jest nowa informacja.",
+    "batchFinished": "Twoja partia jest gotowa: przetłumaczono {completed}.",
+    "batchFinishedNamed": "Twoja partia „{name}” jest gotowa: przetłumaczono {completed}.",
+    "batchFinishedErrors": "Twoja partia zakończona: przetłumaczono {completed}, nie udało się {failed}. Możesz ponowić.",
+    "batchFinishedErrorsNamed": "Twoja partia „{name}” zakończona: przetłumaczono {completed}, nie udało się {failed}. Możesz ponowić.",
+    "paymentSucceeded": "Płatność {amount} {currency} przeszła.",
+    "paymentFailed": "Płatność {amount} {currency} nie przeszła. Nic nie pobrano.",
+    "lowBalance": "Saldo jest niskie: zostało {balance} stron. Doładuj, aby tłumaczyć dalej.",
+    "subscriptionRenewed": "Twój plan został odnowiony.",
+    "subscriptionRenewedNamed": "Twój plan {plan} został odnowiony.",
+    "subscriptionRenewalFailed": "Nie udało się odnowić planu. Sprawdź zapisaną kartę.",
+    "subscriptionRenewalFailedNamed": "Nie udało się odnowić planu {plan}. Sprawdź zapisaną kartę."
   }
 }
