@@ -132,6 +132,9 @@ fs.mkdirSync(path.join(FRONT, "src/office/messages"), { recursive: true });
 for (const l of ["ka", "en"]) {
   fs.copyFileSync(path.join(OFFICE, `messages/${l}.json`), path.join(FRONT, `src/office/messages/${l}.json`));
 }
+// Office's static files (app manifest, service worker, icons), which its layout
+// links to under /app: served here from public/app.
+fs.cpSync(path.join(OFFICE, "public"), path.join(FRONT, "public/app"), { recursive: true });
 fs.mkdirSync(path.join(FRONT, "src/office/styles"), { recursive: true });
 fs.copyFileSync(path.join(OFFICE, "src/app/globals.css"), path.join(FRONT, "src/office/styles/globals.css"));
 

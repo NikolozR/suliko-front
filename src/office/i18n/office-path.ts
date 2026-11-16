@@ -28,19 +28,13 @@ export const PUBLIC_MODULES: readonly string[] = [
 ];
 
 /**
- * The moved modules this deployment serves: those of MOVED_MODULES that
- * OFFICE_LOCAL_MODULES switches on. A name in the variable whose code has not
- * moved yet is ignored, so the variable can hold the final list from the start.
+ * The Office modules this app serves at clean addresses: all of them.
  * Server only (the browser reads window.__sulikoLocal, written from this).
  */
 export function enabledLocalModules(): string[] {
-  const listed = new Set(
-    (process.env.OFFICE_LOCAL_MODULES ?? "")
-      .split(",")
-      .map((m) => m.trim())
-      .filter(Boolean),
-  );
-  return MOVED_MODULES.filter((m) => listed.has(m));
+  // Every Office module has moved and is served here: the OFFICE_LOCAL_MODULES
+  // switch of the move is gone with the Office deployment.
+  return [...MOVED_MODULES];
 }
 
 export function localModules(): string[] {
