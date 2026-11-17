@@ -5,6 +5,7 @@ import { Link } from "@/i18n/navigation";
 import { ArrowRight } from "lucide-react";
 import { BOOK_DEMO_URL } from "@/shared/constants/booking";
 import { useAutoplay } from "./useAutoplay";
+import MetalCta from "./MetalCta";
 
 /** The page's last word before the footer: the free pages, and one button. */
 export default function ClosingCtaSection() {
@@ -32,17 +33,19 @@ export default function ClosingCtaSection() {
         </h2>
         <p className="relative max-w-xl text-base leading-relaxed text-slate-300 sm:text-lg">{t("subtitle")}</p>
         <div className="relative mt-2 flex flex-col items-center gap-4 sm:flex-row sm:gap-6">
-          <Link
-            href="/document"
-            className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-white px-7 py-3.5 text-base font-semibold text-suliko-default-hover-color transition-colors hover:bg-blue-50"
-          >
-            <span
-              aria-hidden="true"
-              className="lp-sheen absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(59,89,243,0),rgba(59,89,243,0.18),rgba(59,89,243,0))]"
-            />
-            <span className="relative">{t("cta")}</span>
-            <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
-          </Link>
+          <MetalCta preset="chromatic" radius={12}>
+            <Link
+              href="/document"
+              className="group relative inline-flex items-center gap-2.5 overflow-hidden rounded-xl bg-white px-7 py-3.5 text-base font-semibold text-suliko-default-hover-color transition-colors hover:bg-blue-50"
+            >
+              <span
+                aria-hidden="true"
+                className="lp-sheen absolute inset-y-0 left-0 w-14 bg-[linear-gradient(90deg,rgba(59,89,243,0),rgba(59,89,243,0.18),rgba(59,89,243,0))]"
+              />
+              <span className="relative">{t("cta")}</span>
+              <ArrowRight className="relative h-4 w-4 transition-transform group-hover:translate-x-0.5" aria-hidden />
+            </Link>
+          </MetalCta>
           <a
             href={BOOK_DEMO_URL}
             target="_blank"

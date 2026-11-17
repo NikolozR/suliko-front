@@ -1250,6 +1250,13 @@ html.dark .sidebar-main {
 .lp-drift { animation: lp-drift 12s ease-in-out infinite alternate; }
 .lp-sheen { animation: lp-sheen 3.6s ease-in-out infinite; }
 
+/*
+  MetalCta (metal-fx) hides its whole host, button included, until its first
+  GL frame. The button has its own fill, so it must never wait for that: only
+  the metal ring is allowed to arrive late.
+*/
+.lp-metal-keep { opacity: 1 !important; visibility: visible !important; }
+
 [data-paused] :is([class^="lp-"], [class*=" lp-"]) { animation-play-state: paused !important; }
 
 @media (prefers-reduced-motion: reduce) {
