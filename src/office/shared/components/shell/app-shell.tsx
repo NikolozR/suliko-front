@@ -1,10 +1,10 @@
 "use client";
-// Moved from Suliko Office (app.suliko.ge) by scripts/sync-office.mjs. Edit it
-// here: app.suliko.ge's copy is frozen.
+// Owned by suliko-front: the search box also finds Translate's pages and translations.
 
 import { useTranslations } from "next-intl";
 import { Suspense, useCallback, useEffect, useState, type ReactNode } from "react";
 
+import { useTranslateSearchTexts } from "@/features/notifications/components/OfficeScreenBell";
 import { TipsProvider, type TipsInitial } from "@office/features/onboarding-tips/tips-provider";
 import type { OrgChoice } from "@office/shared/auth/actions";
 import type { Permission } from "@office/shared/auth/permissions";
@@ -91,6 +91,7 @@ export function AppShell({
   assignedOrdersUrl,
 }: AppShellProps) {
   const tShell = useTranslations("shell");
+  const translateSearch = useTranslateSearchTexts();
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -194,6 +195,7 @@ export function AppShell({
         permissions={permissions}
         plan={plan}
         scope={tenantSlug}
+        translate={translateSearch}
       />
 
       {/* Scrim. Only below `md`, where the panel covers the page. */}
