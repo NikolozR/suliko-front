@@ -1,4 +1,4 @@
-import { isAdminRequest } from "@/lib/admin-auth";
+import { requireAdminPage } from "@/features/admin/access";
 import { redirect, notFound } from "next/navigation";
 import { getAdminBlogPost } from "@/lib/site-content-admin";
 import BlogPostForm from "../../BlogPostForm";
@@ -8,7 +8,7 @@ export default async function EditBlogPostPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (!(await isAdminRequest())) redirect("/en/admin/login");
+  await requireAdminPage("/admin/blog");
 
   const { id } = await params;
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { cookies } from "next/headers";
+import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import { API_BASE_URL } from "@/shared/constants/api";
 import { isAdminRequest } from "@/lib/admin-auth";
@@ -107,6 +108,7 @@ export default async function AdminDashboardPage({
   // Our own accounts (the team's, and tests) are left out of every figure and the
   // users table unless asked for with ?internal=show.
   const showInternal = query.internal === "show";
+  const locale = await getLocale();
   const cookieStore = await cookies();
   const token = cookieStore.get("token")?.value;
 
@@ -129,7 +131,7 @@ export default async function AdminDashboardPage({
           You need to log in with authorized admin credentials to access this panel.
         </p>
         <Link
-          href="/en/admin/login"
+          href={`/${locale}/sign-in?next=%2Fadmin`}
           style={{
             display: "inline-block",
             background: "var(--accent-text)",

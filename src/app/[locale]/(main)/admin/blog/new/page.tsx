@@ -1,9 +1,8 @@
-import { isAdminRequest } from "@/lib/admin-auth";
-import { redirect } from "next/navigation";
+import { requireAdminPage } from "@/features/admin/access";
 import BlogPostForm from "../BlogPostForm";
 
 export default async function NewBlogPostPage() {
-  if (!(await isAdminRequest())) redirect("/en/admin/login");
+  await requireAdminPage("/admin/blog/new");
 
   return <BlogPostForm mode="new" />;
 }

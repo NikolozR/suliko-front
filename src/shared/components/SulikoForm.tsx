@@ -68,6 +68,9 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
   const router = useRouter();
   const searchParams = useSearchParams();
   const refFromUrl = searchParams.get("ref") ?? "";
+  // `?next=/admin`: where to go after signing in. Only a path on this site.
+  const nextParam = searchParams.get("next") ?? "";
+  const returnPath = /^\/(?!\/)[^\s\\:]*$/.test(nextParam) ? nextParam : null;
   const { setToken, setRefreshToken, triggerWelcomeModal } = useAuthStore();
   const fetchUserProfile = useUserStore((state) => state.fetchUserProfile);
   const setUserProfile = useUserStore((state) => state.setUserProfile);
@@ -76,7 +79,7 @@ const SulikoForm: React.FC<SulikoFormProps> = ({ onSignedIn, subtitle, registerS
     if (onSignedIn) {
       await onSignedIn();
     } else {
-      router.push("/document");
+      router.push(returnPath ?? "/document");
     }
   };
   const [isLoginMode, setIsLoginMode] = useState(true);

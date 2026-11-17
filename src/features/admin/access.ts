@@ -1,5 +1,8 @@
 import "server-only";
 
+import { getLocale } from "next-intl/server";
+
+import { redirect } from "@/i18n/navigation";
 import { isAdminRequest } from "@/lib/admin-auth";
 import { getSession } from "@office/shared/auth/session";
 import { translateMessages } from "@/shared/i18n/translateMessages";
@@ -27,4 +30,15 @@ export async function adminAccess(): Promise<AdminAccess> {
 export async function adminNavLabels(locale: string): Promise<Record<string, string>> {
   const all = await translateMessages(locale, ["AdminNav"]);
   return (all.AdminNav ?? {}) as Record<string, string>;
+}
+
+/**
+ * For an admin page that only an admin may open: anyone else is sent to the
+ * normal sign-in, in their language, and brought back to `returnTo` (a path
+ * without the language) once signed in.
+ */
+export async function requireAdminPage(returnTo: string): Promise<void> {
+  if (await isAdminRequest()) return;
+  const locale = await getLocale();
+  redirect({ href: { pathname: "/sign-in", query: { next: returnTo } }, locale });
 }
