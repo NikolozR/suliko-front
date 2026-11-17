@@ -28,7 +28,7 @@ type DeleteState = "idle" | "confirm" | "deleting";
 type ResetState = "idle" | "confirm" | "sending" | "sent";
 
 const SortIcon = ({ dir }: { dir: "none" | "asc" | "desc" }) => (
-  <span style={{ marginLeft: 4, opacity: dir === "none" ? 0.35 : 1, fontSize: 11, fontFamily: "'JetBrains Mono', monospace" }}>
+  <span style={{ marginLeft: 4, opacity: dir === "none" ? 0.35 : 1, fontSize: 11, fontFamily: "ui-monospace, monospace" }}>
     {dir === "asc" ? "↑" : dir === "desc" ? "↓" : "⇅"}
   </span>
 );
@@ -277,18 +277,18 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
     textAlign: "left",
     fontSize: 11,
     fontWeight: 600,
-    color: "#64748b",
+    color: "var(--muted-foreground)",
     textTransform: "uppercase",
     letterSpacing: "0.08em",
     whiteSpace: "nowrap",
-    background: "#13151f",
+    background: "var(--card)",
   };
 
   const tdStyle: React.CSSProperties = {
     padding: "11px 14px",
     fontSize: 13,
-    color: "#cbd5e1",
-    borderTop: "1px solid #1e2130",
+    color: "var(--foreground)",
+    borderTop: "1px solid var(--muted)",
     whiteSpace: "nowrap",
     maxWidth: 180,
     overflow: "hidden",
@@ -296,16 +296,16 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
   };
 
   const monoStyle: React.CSSProperties = {
-    fontFamily: "'JetBrains Mono', monospace",
+    fontFamily: "ui-monospace, monospace",
     fontSize: 12,
-    color: "#94a3b8",
+    color: "var(--muted-foreground)",
   };
 
   return (
     <div
       style={{
-        background: "#13151f",
-        border: "1px solid #2a2d3a",
+        background: "var(--card)",
+        border: "1px solid var(--border)",
         borderRadius: 12,
         overflow: "hidden",
       }}
@@ -314,7 +314,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       <div
         style={{
           padding: "14px 16px",
-          borderBottom: "1px solid #2a2d3a",
+          borderBottom: "1px solid var(--border)",
           display: "flex",
           alignItems: "center",
           gap: 10,
@@ -324,7 +324,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
         {/* Search */}
         <div style={{ position: "relative", flex: "1 1 240px", minWidth: 200 }}>
           <svg
-            style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: "#64748b" }}
+            style={{ position: "absolute", left: 11, top: "50%", transform: "translateY(-50%)", color: "var(--muted-foreground)" }}
             width="14" height="14" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24"
           >
             <circle cx="11" cy="11" r="8" /><path d="m21 21-4.35-4.35" />
@@ -332,11 +332,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
           <input
             style={{
               width: "100%",
-              background: "#0f1117",
-              border: "1px solid #2a2d3a",
+              background: "var(--background)",
+              border: "1px solid var(--border)",
               borderRadius: 8,
               padding: "9px 12px 9px 32px",
-              color: "#f8fafc",
+              color: "var(--foreground)",
               fontSize: 13,
               outline: "none",
               boxSizing: "border-box",
@@ -344,41 +344,39 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
             placeholder="Search name, phone, email, username…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            onFocus={(e) => (e.target.style.borderColor = "#fbbf24")}
-            onBlur={(e) => (e.target.style.borderColor = "#2a2d3a")}
+            onFocus={(e) => (e.target.style.borderColor = "var(--accent-text)")}
+            onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
           />
         </div>
 
         {/* Date filters */}
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span style={{ fontSize: 11, color: "#64748b", letterSpacing: "0.05em" }}>FROM</span>
+          <span style={{ fontSize: 11, color: "var(--muted-foreground)", letterSpacing: "0.05em" }}>FROM</span>
           <input
             type="date"
             style={{
-              background: "#0f1117",
-              border: "1px solid #2a2d3a",
+              background: "var(--background)",
+              border: "1px solid var(--border)",
               borderRadius: 8,
               padding: "8px 10px",
-              color: "#f8fafc",
+              color: "var(--foreground)",
               fontSize: 12,
               outline: "none",
-              colorScheme: "dark",
             }}
             value={dateFilter.from || ""}
             onChange={(e) => setDateFilter((p) => ({ ...p, from: e.target.value }))}
           />
-          <span style={{ fontSize: 11, color: "#64748b", letterSpacing: "0.05em" }}>TO</span>
+          <span style={{ fontSize: 11, color: "var(--muted-foreground)", letterSpacing: "0.05em" }}>TO</span>
           <input
             type="date"
             style={{
-              background: "#0f1117",
-              border: "1px solid #2a2d3a",
+              background: "var(--background)",
+              border: "1px solid var(--border)",
               borderRadius: 8,
               padding: "8px 10px",
-              color: "#f8fafc",
+              color: "var(--foreground)",
               fontSize: 12,
               outline: "none",
-              colorScheme: "dark",
             }}
             value={dateFilter.to || ""}
             onChange={(e) => setDateFilter((p) => ({ ...p, to: e.target.value }))}
@@ -388,10 +386,10 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               onClick={() => setDateFilter({})}
               style={{
                 background: "transparent",
-                border: "1px solid #2a2d3a",
+                border: "1px solid var(--border)",
                 borderRadius: 8,
                 padding: "8px 10px",
-                color: "#94a3b8",
+                color: "var(--muted-foreground)",
                 fontSize: 12,
                 cursor: "pointer",
               }}
@@ -406,11 +404,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
           <button
             onClick={() => setShowRoleId((v) => !v)}
             style={{
-              background: showRoleId ? "rgba(251,191,36,0.12)" : "transparent",
-              border: `1px solid ${showRoleId ? "#fbbf24" : "#2a2d3a"}`,
+              background: showRoleId ? "color-mix(in srgb, var(--accent-text) 12%, transparent)" : "transparent",
+              border: `1px solid ${showRoleId ? "var(--accent-text)" : "var(--border)"}`,
               borderRadius: 8,
               padding: "7px 12px",
-              color: showRoleId ? "#fbbf24" : "#64748b",
+              color: showRoleId ? "var(--accent-text)" : "var(--muted-foreground)",
               fontSize: 12,
               cursor: "pointer",
               transition: "all 0.15s",
@@ -422,11 +420,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
             value={itemsPerPage}
             onChange={(e) => setItemsPerPage(Number(e.target.value))}
             style={{
-              background: "#0f1117",
-              border: "1px solid #2a2d3a",
+              background: "var(--background)",
+              border: "1px solid var(--border)",
               borderRadius: 8,
               padding: "7px 10px",
-              color: "#94a3b8",
+              color: "var(--muted-foreground)",
               fontSize: 12,
               cursor: "pointer",
             }}
@@ -442,11 +440,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               display: "flex",
               alignItems: "center",
               gap: 6,
-              background: "rgba(34,197,94,0.1)",
-              border: "1px solid rgba(34,197,94,0.3)",
+              background: "color-mix(in srgb, var(--status-success) 10%, transparent)",
+              border: "1px solid color-mix(in srgb, var(--status-success) 30%, transparent)",
               borderRadius: 8,
               padding: "7px 14px",
-              color: "#86efac",
+              color: "var(--status-success)",
               fontSize: 12,
               fontWeight: 500,
               cursor: "pointer",
@@ -465,9 +463,9 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       <div
         style={{
           padding: "8px 16px",
-          borderBottom: "1px solid #1e2130",
+          borderBottom: "1px solid var(--muted)",
           fontSize: 12,
-          color: "#475569",
+          color: "var(--muted-foreground)",
           display: "flex",
           justifyContent: "space-between",
         }}
@@ -477,12 +475,12 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
       </div>
 
       {error && (
-        <div style={{ padding: "10px 16px", background: "rgba(239,68,68,0.08)", color: "#fca5a5", fontSize: 13 }}>
+        <div style={{ padding: "10px 16px", background: "color-mix(in srgb, var(--destructive) 8%, transparent)", color: "var(--destructive)", fontSize: 13 }}>
           {error}
         </div>
       )}
       {notice && (
-        <div role="status" style={{ padding: "10px 16px", background: "rgba(34,197,94,0.08)", color: "#86efac", fontSize: 13 }}>
+        <div role="status" style={{ padding: "10px 16px", background: "color-mix(in srgb, var(--status-success) 8%, transparent)", color: "var(--status-success)", fontSize: 13 }}>
           {notice}
         </div>
       )}
@@ -532,15 +530,15 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                   className="admin-table-row"
                 >
                   <td style={tdStyle}>
-                    <div style={{ ...monoStyle, fontSize: 13, color: "#e2e8f0" }}>{u.userName || "–"}</div>
-                    <div style={{ ...monoStyle, fontSize: 10, color: "#475569", marginTop: 2 }}>{u.id}</div>
+                    <div style={{ ...monoStyle, fontSize: 13, color: "var(--foreground)" }}>{u.userName || "–"}</div>
+                    <div style={{ ...monoStyle, fontSize: 10, color: "var(--muted-foreground)", marginTop: 2 }}>{u.id}</div>
                   </td>
                   <td style={tdStyle}>
                     {u.firstName || u.lastName
                       ? `${u.firstName || ""} ${u.lastName || ""}`.trim()
-                      : <span style={{ color: "#475569" }}>–</span>}
+                      : <span style={{ color: "var(--muted-foreground)" }}>–</span>}
                   </td>
-                  <td style={tdStyle}>{u.email || <span style={{ color: "#475569" }}>–</span>}</td>
+                  <td style={tdStyle}>{u.email || <span style={{ color: "var(--muted-foreground)" }}>–</span>}</td>
                   <td style={tdStyle}>
                     <span style={monoStyle}>{u.phoneNUmber || u.phoneNumber || "–"}</span>
                   </td>
@@ -553,19 +551,19 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                     {u.roleName ? (
                       <span
                         style={{
-                          background: "rgba(251,191,36,0.1)",
-                          border: "1px solid rgba(251,191,36,0.2)",
+                          background: "color-mix(in srgb, var(--accent-text) 10%, transparent)",
+                          border: "1px solid color-mix(in srgb, var(--accent-text) 20%, transparent)",
                           borderRadius: 4,
                           padding: "2px 7px",
                           fontSize: 11,
-                          color: "#fbbf24",
+                          color: "var(--accent-text)",
                           fontWeight: 500,
                         }}
                       >
                         {u.roleName}
                       </span>
                     ) : (
-                      <span style={{ color: "#475569" }}>–</span>
+                      <span style={{ color: "var(--muted-foreground)" }}>–</span>
                     )}
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
@@ -574,20 +572,20 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       step="0.01"
                       style={{
                         width: 96,
-                        background: "#0f1117",
-                        border: "1px solid #2a2d3a",
+                        background: "var(--background)",
+                        border: "1px solid var(--border)",
                         borderRadius: 6,
                         padding: "5px 8px",
-                        color: "#fbbf24",
+                        color: "var(--accent-text)",
                         fontSize: 13,
                         textAlign: "right",
-                        fontFamily: "'JetBrains Mono', monospace",
+                        fontFamily: "ui-monospace, monospace",
                         outline: "none",
                       }}
                       value={typeof u.balance === "number" ? u.balance : 0}
                       onChange={(e) => handleBalanceChange(u.id, e.target.value)}
-                      onFocus={(e) => (e.target.style.borderColor = "#fbbf24")}
-                      onBlur={(e) => (e.target.style.borderColor = "#2a2d3a")}
+                      onFocus={(e) => (e.target.style.borderColor = "var(--accent-text)")}
+                      onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
                     />
                   </td>
                   <td style={{ ...tdStyle, textAlign: "right" }}>
@@ -595,15 +593,15 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                       onClick={() => setOpenPayments(openPayments === u.id ? null : u.id)}
                       title="Show payments"
                       style={{
-                        background: openPayments === u.id ? "rgba(251,191,36,0.12)" : "transparent",
-                        border: `1px solid ${openPayments === u.id ? "#fbbf24" : "transparent"}`,
+                        background: openPayments === u.id ? "color-mix(in srgb, var(--accent-text) 12%, transparent)" : "transparent",
+                        border: `1px solid ${openPayments === u.id ? "var(--accent-text)" : "transparent"}`,
                         borderRadius: 6,
                         padding: "3px 8px",
                         cursor: "pointer",
                         textAlign: "right",
-                        fontFamily: "'JetBrains Mono', monospace",
+                        fontFamily: "ui-monospace, monospace",
                         fontSize: 12,
-                        color: paid.length ? "#86efac" : "#475569",
+                        color: paid.length ? "var(--status-success)" : "var(--muted-foreground)",
                       }}
                     >
                       {paidError
@@ -614,7 +612,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                             ? paid.map((t) => money(t.total, t.currency)).join(" + ")
                             : "–"}
                       {paid.length > 0 && (
-                        <span style={{ display: "block", fontSize: 10, color: "#475569" }}>
+                        <span style={{ display: "block", fontSize: 10, color: "var(--muted-foreground)" }}>
                           {paid.reduce((n, t) => n + t.payments, 0)} payment
                           {paid.reduce((n, t) => n + t.payments, 0) === 1 ? "" : "s"}
                         </span>
@@ -639,10 +637,10 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                           onClick={() => handleCancelSave(u.id)}
                           style={{
                             background: "transparent",
-                            border: "1px solid #2a2d3a",
+                            border: "1px solid var(--border)",
                             borderRadius: 6,
                             padding: "5px 10px",
-                            color: "#64748b",
+                            color: "var(--muted-foreground)",
                             fontSize: 12,
                             cursor: "pointer",
                           }}
@@ -656,25 +654,25 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                         style={{
                           background:
                             state === "saved"
-                              ? "rgba(34,197,94,0.15)"
+                              ? "color-mix(in srgb, var(--status-success) 15%, transparent)"
                               : state === "confirm"
-                              ? "#f59e0b"
-                              : "rgba(251,191,36,0.1)",
+                              ? "var(--accent-text)"
+                              : "color-mix(in srgb, var(--accent-text) 10%, transparent)",
                           border: `1px solid ${
                             state === "saved"
-                              ? "rgba(34,197,94,0.4)"
+                              ? "color-mix(in srgb, var(--status-success) 40%, transparent)"
                               : state === "confirm"
-                              ? "#f59e0b"
-                              : "rgba(251,191,36,0.25)"
+                              ? "var(--accent-text)"
+                              : "color-mix(in srgb, var(--accent-text) 25%, transparent)"
                           }`,
                           borderRadius: 6,
                           padding: "5px 12px",
                           color:
                             state === "saved"
-                              ? "#86efac"
+                              ? "var(--status-success)"
                               : state === "confirm"
-                              ? "#0f1117"
-                              : "#fbbf24",
+                              ? "var(--background)"
+                              : "var(--accent-text)",
                           fontSize: 12,
                           fontWeight: state === "confirm" ? 700 : 500,
                           cursor: state === "saving" ? "not-allowed" : "pointer",
@@ -695,10 +693,10 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                                 onClick={() => handleCancelReset(u.id)}
                                 style={{
                                   background: "transparent",
-                                  border: "1px solid #2a2d3a",
+                                  border: "1px solid var(--border)",
                                   borderRadius: 6,
                                   padding: "5px 10px",
-                                  color: "#64748b",
+                                  color: "var(--muted-foreground)",
                                   fontSize: 12,
                                   cursor: "pointer",
                                 }}
@@ -712,13 +710,13 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                               onClick={() => handleResetClick(u)}
                               style={{
                                 background:
-                                  rs === "sent" ? "rgba(34,197,94,0.15)" : rs === "confirm" ? "#38bdf8" : "rgba(56,189,248,0.08)",
+                                  rs === "sent" ? "color-mix(in srgb, var(--status-success) 15%, transparent)" : rs === "confirm" ? "var(--status-info)" : "color-mix(in srgb, var(--status-info) 8%, transparent)",
                                 border: `1px solid ${
-                                  rs === "sent" ? "rgba(34,197,94,0.4)" : rs === "confirm" ? "#38bdf8" : "rgba(56,189,248,0.25)"
+                                  rs === "sent" ? "color-mix(in srgb, var(--status-success) 40%, transparent)" : rs === "confirm" ? "var(--status-info)" : "color-mix(in srgb, var(--status-info) 25%, transparent)"
                                 }`,
                                 borderRadius: 6,
                                 padding: "5px 12px",
-                                color: rs === "sent" ? "#86efac" : rs === "confirm" ? "#0f1117" : "#7dd3fc",
+                                color: rs === "sent" ? "var(--status-success)" : rs === "confirm" ? "var(--background)" : "var(--status-info)",
                                 fontSize: 12,
                                 fontWeight: rs === "confirm" ? 700 : 500,
                                 cursor: rs === "sending" || noEmail ? "not-allowed" : "pointer",
@@ -747,10 +745,10 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                                 onClick={() => handleCancelDelete(u.id)}
                                 style={{
                                   background: "transparent",
-                                  border: "1px solid #2a2d3a",
+                                  border: "1px solid var(--border)",
                                   borderRadius: 6,
                                   padding: "5px 10px",
-                                  color: "#64748b",
+                                  color: "var(--muted-foreground)",
                                   fontSize: 12,
                                   cursor: "pointer",
                                 }}
@@ -762,11 +760,11 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                               disabled={ds === "deleting"}
                               onClick={() => handleDeleteClick(u.id)}
                               style={{
-                                background: ds === "confirm" ? "rgba(239,68,68,0.9)" : "rgba(239,68,68,0.08)",
-                                border: `1px solid ${ds === "confirm" ? "rgba(239,68,68,0.9)" : "rgba(239,68,68,0.25)"}`,
+                                background: ds === "confirm" ? "color-mix(in srgb, var(--destructive) 90%, transparent)" : "color-mix(in srgb, var(--destructive) 8%, transparent)",
+                                border: `1px solid ${ds === "confirm" ? "color-mix(in srgb, var(--destructive) 90%, transparent)" : "color-mix(in srgb, var(--destructive) 25%, transparent)"}`,
                                 borderRadius: 6,
                                 padding: "5px 12px",
-                                color: ds === "confirm" ? "#fff" : "#f87171",
+                                color: ds === "confirm" ? "#fff" : "var(--destructive)",
                                 fontSize: 12,
                                 fontWeight: ds === "confirm" ? 700 : 500,
                                 cursor: ds === "deleting" ? "not-allowed" : "pointer",
@@ -784,7 +782,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                   </td>
                 </tr>
                 {openPayments === u.id && (
-                  <tr style={{ background: "#0d0f1a" }}>
+                  <tr style={{ background: "var(--background)" }}>
                     <td colSpan={showRoleId ? 11 : 10} style={{ padding: 0 }}>
                       <PaymentHistory userId={u.id} name={name} />
                     </td>
@@ -797,7 +795,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               <tr>
                 <td
                   colSpan={showRoleId ? 11 : 10}
-                  style={{ padding: "40px", textAlign: "center", color: "#475569", fontSize: 14 }}
+                  style={{ padding: "40px", textAlign: "center", color: "var(--muted-foreground)", fontSize: 14 }}
                 >
                   No users found
                 </td>
@@ -815,7 +813,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
             alignItems: "center",
             justifyContent: "space-between",
             padding: "14px 16px",
-            borderTop: "1px solid #1e2130",
+            borderTop: "1px solid var(--muted)",
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
@@ -824,10 +822,10 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               disabled={currentPage === 1}
               style={{
                 background: "transparent",
-                border: "1px solid #2a2d3a",
+                border: "1px solid var(--border)",
                 borderRadius: 7,
                 padding: "6px 12px",
-                color: currentPage === 1 ? "#374151" : "#94a3b8",
+                color: currentPage === 1 ? "var(--border)" : "var(--muted-foreground)",
                 fontSize: 12,
                 cursor: currentPage === 1 ? "not-allowed" : "pointer",
               }}
@@ -845,15 +843,15 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
                   key={pageNum}
                   onClick={() => setCurrentPage(pageNum)}
                   style={{
-                    background: currentPage === pageNum ? "#f59e0b" : "transparent",
-                    border: `1px solid ${currentPage === pageNum ? "#f59e0b" : "#2a2d3a"}`,
+                    background: currentPage === pageNum ? "var(--accent-text)" : "transparent",
+                    border: `1px solid ${currentPage === pageNum ? "var(--accent-text)" : "var(--border)"}`,
                     borderRadius: 7,
                     padding: "6px 11px",
-                    color: currentPage === pageNum ? "#0f1117" : "#64748b",
+                    color: currentPage === pageNum ? "var(--background)" : "var(--muted-foreground)",
                     fontSize: 12,
                     fontWeight: currentPage === pageNum ? 700 : 400,
                     cursor: "pointer",
-                    fontFamily: "'JetBrains Mono', monospace",
+                    fontFamily: "ui-monospace, monospace",
                   }}
                 >
                   {pageNum}
@@ -865,10 +863,10 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               disabled={currentPage === totalPages}
               style={{
                 background: "transparent",
-                border: "1px solid #2a2d3a",
+                border: "1px solid var(--border)",
                 borderRadius: 7,
                 padding: "6px 12px",
-                color: currentPage === totalPages ? "#374151" : "#94a3b8",
+                color: currentPage === totalPages ? "var(--border)" : "var(--muted-foreground)",
                 fontSize: 12,
                 cursor: currentPage === totalPages ? "not-allowed" : "pointer",
               }}
@@ -876,7 +874,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
               Next →
             </button>
           </div>
-          <div style={{ fontSize: 12, color: "#475569", fontFamily: "'JetBrains Mono', monospace" }}>
+          <div style={{ fontSize: 12, color: "var(--muted-foreground)", fontFamily: "ui-monospace, monospace" }}>
             {startIndex + 1}–{Math.min(startIndex + itemsPerPage, sortedRows.length)} of {sortedRows.length}
           </div>
         </div>
@@ -888,7 +886,7 @@ export default function UsersTable({ initialUsers }: { initialUsers: User[] }) {
           to { opacity: 1; transform: translateY(0); }
         }
         .admin-table-row:hover td {
-          background: rgba(251, 191, 36, 0.03);
+          background: color-mix(in srgb, var(--accent-text) 3%, transparent);
         }
       `}</style>
     </div>

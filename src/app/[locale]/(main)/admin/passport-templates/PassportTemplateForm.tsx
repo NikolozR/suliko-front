@@ -113,10 +113,10 @@ export default function PassportTemplateForm({ initial }: Props) {
   const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "10px 14px",
-    background: "#1a1d28",
-    border: "1px solid #2a2d3a",
+    background: "var(--muted)",
+    border: "1px solid var(--border)",
     borderRadius: 8,
-    color: "#f1f5f9",
+    color: "var(--foreground)",
     fontSize: 14,
     outline: "none",
   };
@@ -124,7 +124,7 @@ export default function PassportTemplateForm({ initial }: Props) {
   const labelStyle: React.CSSProperties = {
     display: "block",
     marginBottom: 6,
-    color: "#94a3b8",
+    color: "var(--muted-foreground)",
     fontSize: 12,
     fontWeight: 600,
     textTransform: "uppercase",
@@ -138,10 +138,10 @@ export default function PassportTemplateForm({ initial }: Props) {
           onClick={() => router.push(`/${locale}/admin/passport-templates`)}
           style={{
             background: "transparent",
-            border: "1px solid #2a2d3a",
+            border: "1px solid var(--border)",
             borderRadius: 8,
             padding: "8px",
-            color: "#94a3b8",
+            color: "var(--muted-foreground)",
             cursor: "pointer",
             display: "flex",
             alignItems: "center",
@@ -149,7 +149,7 @@ export default function PassportTemplateForm({ initial }: Props) {
         >
           <ArrowLeft size={16} />
         </button>
-        <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 18, color: "#f8fafc", margin: 0 }}>
+        <h2 style={{ fontFamily: "inherit", fontWeight: 700, fontSize: 18, color: "var(--foreground)", margin: 0 }}>
           {isEdit ? "Edit Template" : "New Passport Template"}
         </h2>
       </div>
@@ -158,10 +158,10 @@ export default function PassportTemplateForm({ initial }: Props) {
         <div
           style={{
             padding: "10px 14px",
-            background: "rgba(239,68,68,0.1)",
-            border: "1px solid rgba(239,68,68,0.3)",
+            background: "color-mix(in srgb, var(--destructive) 10%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--destructive) 30%, transparent)",
             borderRadius: 8,
-            color: "#f87171",
+            color: "var(--destructive)",
             fontSize: 13,
             marginBottom: 20,
           }}
@@ -197,13 +197,13 @@ export default function PassportTemplateForm({ initial }: Props) {
         <label style={labelStyle}>DOCX Template File</label>
         <div
           style={{
-            border: "2px dashed #2a2d3a",
+            border: "2px dashed var(--border)",
             borderRadius: 8,
             padding: "24px",
             textAlign: "center",
             position: "relative",
             cursor: "pointer",
-            background: uploading ? "#1a1d28" : "transparent",
+            background: uploading ? "var(--muted)" : "transparent",
           }}
         >
           <input
@@ -219,17 +219,17 @@ export default function PassportTemplateForm({ initial }: Props) {
             }}
           />
           {uploading ? (
-            <div style={{ color: "#f59e0b", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <div style={{ color: "var(--accent-text)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
               <Loader2 size={16} className="animate-spin" style={{ animation: "spin 1s linear infinite" }} />
               Uploading & parsing...
             </div>
           ) : docxUrl ? (
-            <div style={{ color: "#4ade80", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <div style={{ color: "var(--status-success)", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
               <Upload size={16} />
               {docxFileName || "Template uploaded"} (click to replace)
             </div>
           ) : (
-            <div style={{ color: "#64748b" }}>
+            <div style={{ color: "var(--muted-foreground)" }}>
               <Upload size={20} style={{ margin: "0 auto 8px" }} />
               <div style={{ fontSize: 14 }}>Click or drag to upload .docx template</div>
               <div style={{ fontSize: 12, marginTop: 4 }}>
@@ -247,8 +247,8 @@ export default function PassportTemplateForm({ initial }: Props) {
           </label>
           <div
             style={{
-              background: "#1a1d28",
-              border: "1px solid #2a2d3a",
+              background: "var(--muted)",
+              border: "1px solid var(--border)",
               borderRadius: 8,
               overflow: "hidden",
             }}
@@ -259,10 +259,10 @@ export default function PassportTemplateForm({ initial }: Props) {
                 gridTemplateColumns: "32px 1fr 1.5fr 1.5fr 80px",
                 gap: 0,
                 padding: "8px 12px",
-                borderBottom: "1px solid #2a2d3a",
+                borderBottom: "1px solid var(--border)",
                 fontSize: 11,
                 fontWeight: 600,
-                color: "#64748b",
+                color: "var(--muted-foreground)",
                 textTransform: "uppercase",
                 letterSpacing: "0.05em",
               }}
@@ -281,7 +281,7 @@ export default function PassportTemplateForm({ initial }: Props) {
                   gridTemplateColumns: "32px 1fr 1.5fr 1.5fr 80px",
                   gap: 0,
                   padding: "8px 12px",
-                  borderBottom: i < fields.length - 1 ? "1px solid #1e2130" : "none",
+                  borderBottom: i < fields.length - 1 ? "1px solid var(--muted)" : "none",
                   alignItems: "center",
                 }}
               >
@@ -292,7 +292,7 @@ export default function PassportTemplateForm({ initial }: Props) {
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: i === 0 ? "#2a2d3a" : "#64748b",
+                      color: i === 0 ? "var(--border)" : "var(--muted-foreground)",
                       cursor: i === 0 ? "default" : "pointer",
                       padding: 0,
                       fontSize: 10,
@@ -300,14 +300,14 @@ export default function PassportTemplateForm({ initial }: Props) {
                   >
                     ▲
                   </button>
-                  <GripVertical size={12} style={{ color: "#2a2d3a" }} />
+                  <GripVertical size={12} style={{ color: "var(--border)" }} />
                   <button
                     onClick={() => moveField(i, 1)}
                     disabled={i === fields.length - 1}
                     style={{
                       background: "transparent",
                       border: "none",
-                      color: i === fields.length - 1 ? "#2a2d3a" : "#64748b",
+                      color: i === fields.length - 1 ? "var(--border)" : "var(--muted-foreground)",
                       cursor: i === fields.length - 1 ? "default" : "pointer",
                       padding: 0,
                       fontSize: 10,
@@ -319,8 +319,8 @@ export default function PassportTemplateForm({ initial }: Props) {
                 <code
                   style={{
                     fontSize: 12,
-                    color: "#f59e0b",
-                    background: "#0f1117",
+                    color: "var(--accent-text)",
+                    background: "var(--background)",
                     padding: "2px 6px",
                     borderRadius: 4,
                     width: "fit-content",
@@ -354,9 +354,9 @@ export default function PassportTemplateForm({ initial }: Props) {
                   onClick={() => removeField(i)}
                   style={{
                     background: "transparent",
-                    border: "1px solid rgba(239,68,68,0.2)",
+                    border: "1px solid color-mix(in srgb, var(--destructive) 20%, transparent)",
                     borderRadius: 4,
-                    color: "#f87171",
+                    color: "var(--destructive)",
                     fontSize: 11,
                     padding: "4px 8px",
                     cursor: "pointer",
@@ -378,11 +378,11 @@ export default function PassportTemplateForm({ initial }: Props) {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            background: "#f59e0b",
-            color: "#0f1117",
+            background: "var(--accent-text)",
+            color: "var(--background)",
             padding: "10px 24px",
             borderRadius: 8,
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "inherit",
             fontWeight: 700,
             fontSize: 14,
             border: "none",
@@ -398,9 +398,9 @@ export default function PassportTemplateForm({ initial }: Props) {
           style={{
             padding: "10px 24px",
             background: "transparent",
-            border: "1px solid #2a2d3a",
+            border: "1px solid var(--border)",
             borderRadius: 8,
-            color: "#94a3b8",
+            color: "var(--muted-foreground)",
             fontSize: 14,
             cursor: "pointer",
           }}

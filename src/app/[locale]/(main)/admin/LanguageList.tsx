@@ -11,8 +11,8 @@ interface Language {
 }
 
 const panelStyle: React.CSSProperties = {
-  background: "#13151f",
-  border: "1px solid #2a2d3a",
+  background: "var(--card)",
+  border: "1px solid var(--border)",
   borderRadius: 12,
   overflow: "hidden",
   marginBottom: 16,
@@ -23,18 +23,18 @@ const thStyle: React.CSSProperties = {
   textAlign: "left",
   fontSize: 11,
   fontWeight: 600,
-  color: "#64748b",
+  color: "var(--muted-foreground)",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
-  background: "#0f1117",
-  borderBottom: "1px solid #2a2d3a",
+  background: "var(--background)",
+  borderBottom: "1px solid var(--border)",
 };
 
 const tdStyle: React.CSSProperties = {
   padding: "12px 16px",
   fontSize: 13,
-  color: "#cbd5e1",
-  borderTop: "1px solid #1e2130",
+  color: "var(--foreground)",
+  borderTop: "1px solid var(--muted)",
 };
 
 export default function LanguageList() {
@@ -97,7 +97,7 @@ export default function LanguageList() {
       <div
         style={{
           padding: "14px 16px",
-          borderBottom: "1px solid #2a2d3a",
+          borderBottom: "1px solid var(--border)",
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
@@ -105,10 +105,10 @@ export default function LanguageList() {
       >
         <span
           style={{
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "inherit",
             fontWeight: 700,
             fontSize: 15,
-            color: "#f8fafc",
+            color: "var(--foreground)",
           }}
         >
           System Languages
@@ -116,10 +116,10 @@ export default function LanguageList() {
             <span
               style={{
                 marginLeft: 8,
-                fontFamily: "'JetBrains Mono', monospace",
+                fontFamily: "ui-monospace, monospace",
                 fontWeight: 400,
                 fontSize: 12,
-                color: "#64748b",
+                color: "var(--muted-foreground)",
               }}
             >
               ({languages.length})
@@ -130,10 +130,10 @@ export default function LanguageList() {
           onClick={fetchLanguages}
           style={{
             background: "transparent",
-            border: "1px solid #2a2d3a",
+            border: "1px solid var(--border)",
             borderRadius: 7,
             padding: "6px 12px",
-            color: "#64748b",
+            color: "var(--muted-foreground)",
             fontSize: 12,
             cursor: "pointer",
             display: "flex",
@@ -142,12 +142,12 @@ export default function LanguageList() {
             transition: "color 0.15s, border-color 0.15s",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#fbbf24";
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(251,191,36,0.4)";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--accent-text)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "color-mix(in srgb, var(--accent-text) 40%, transparent)";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLButtonElement).style.color = "#64748b";
-            (e.currentTarget as HTMLButtonElement).style.borderColor = "#2a2d3a";
+            (e.currentTarget as HTMLButtonElement).style.color = "var(--muted-foreground)";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "var(--border)";
           }}
         >
           <svg width="12" height="12" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -159,16 +159,16 @@ export default function LanguageList() {
 
       {/* Feedback */}
       {successMsg && (
-        <div style={{ padding: "10px 16px", background: "rgba(34,197,94,0.08)", borderBottom: "1px solid rgba(34,197,94,0.15)", color: "#86efac", fontSize: 13 }}>
+        <div style={{ padding: "10px 16px", background: "color-mix(in srgb, var(--status-success) 8%, transparent)", borderBottom: "1px solid color-mix(in srgb, var(--status-success) 15%, transparent)", color: "var(--status-success)", fontSize: 13 }}>
           ✓ {successMsg}
         </div>
       )}
       {error && (
-        <div style={{ padding: "10px 16px", background: "rgba(239,68,68,0.08)", borderBottom: "1px solid rgba(239,68,68,0.15)", color: "#fca5a5", fontSize: 13, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ padding: "10px 16px", background: "color-mix(in srgb, var(--destructive) 8%, transparent)", borderBottom: "1px solid color-mix(in srgb, var(--destructive) 15%, transparent)", color: "var(--destructive)", fontSize: 13, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           <span>{error}</span>
           <button
             onClick={fetchLanguages}
-            style={{ background: "rgba(239,68,68,0.2)", border: "none", borderRadius: 6, padding: "4px 10px", color: "#fca5a5", fontSize: 12, cursor: "pointer" }}
+            style={{ background: "color-mix(in srgb, var(--destructive) 20%, transparent)", border: "none", borderRadius: 6, padding: "4px 10px", color: "var(--destructive)", fontSize: 12, cursor: "pointer" }}
           >
             Retry
           </button>
@@ -177,11 +177,11 @@ export default function LanguageList() {
 
       {/* Loading */}
       {loading ? (
-        <div style={{ padding: "32px", textAlign: "center", color: "#475569", fontSize: 14 }}>
+        <div style={{ padding: "32px", textAlign: "center", color: "var(--muted-foreground)", fontSize: 14 }}>
           Loading languages…
         </div>
       ) : languages.length === 0 ? (
-        <div style={{ padding: "32px", textAlign: "center", color: "#475569", fontSize: 14 }}>
+        <div style={{ padding: "32px", textAlign: "center", color: "var(--muted-foreground)", fontSize: 14 }}>
           No languages found
         </div>
       ) : (
@@ -198,7 +198,7 @@ export default function LanguageList() {
             {languages.map((lang) => (
               <tr key={lang.id} style={{ transition: "background 0.12s" }} className="admin-table-row">
                 <td style={tdStyle}>
-                  <span style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 12, color: "#475569" }}>{lang.id}</span>
+                  <span style={{ fontFamily: "ui-monospace, monospace", fontSize: 12, color: "var(--muted-foreground)" }}>{lang.id}</span>
                 </td>
                 <td style={tdStyle}>{lang.name}</td>
                 <td style={tdStyle}>{lang.nameGeo}</td>
@@ -210,10 +210,10 @@ export default function LanguageList() {
                           onClick={() => setConfirmId(null)}
                           style={{
                             background: "transparent",
-                            border: "1px solid #2a2d3a",
+                            border: "1px solid var(--border)",
                             borderRadius: 6,
                             padding: "5px 10px",
-                            color: "#64748b",
+                            color: "var(--muted-foreground)",
                             fontSize: 12,
                             cursor: "pointer",
                           }}
@@ -223,11 +223,11 @@ export default function LanguageList() {
                         <button
                           onClick={() => deleteLanguage(lang.id)}
                           style={{
-                            background: "rgba(239,68,68,0.15)",
-                            border: "1px solid rgba(239,68,68,0.4)",
+                            background: "color-mix(in srgb, var(--destructive) 15%, transparent)",
+                            border: "1px solid color-mix(in srgb, var(--destructive) 40%, transparent)",
                             borderRadius: 6,
                             padding: "5px 12px",
-                            color: "#fca5a5",
+                            color: "var(--destructive)",
                             fontSize: 12,
                             fontWeight: 600,
                             cursor: "pointer",
@@ -242,10 +242,10 @@ export default function LanguageList() {
                         onClick={() => setConfirmId(lang.id)}
                         style={{
                           background: "transparent",
-                          border: "1px solid rgba(239,68,68,0.25)",
+                          border: "1px solid color-mix(in srgb, var(--destructive) 25%, transparent)",
                           borderRadius: 6,
                           padding: "5px 12px",
-                          color: "#f87171",
+                          color: "var(--destructive)",
                           fontSize: 12,
                           cursor: deletingId === lang.id ? "not-allowed" : "pointer",
                           opacity: deletingId === lang.id ? 0.5 : 1,
@@ -253,13 +253,13 @@ export default function LanguageList() {
                         }}
                         onMouseEnter={(e) => {
                           if (deletingId !== lang.id) {
-                            (e.currentTarget as HTMLButtonElement).style.background = "rgba(239,68,68,0.1)";
-                            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(239,68,68,0.5)";
+                            (e.currentTarget as HTMLButtonElement).style.background = "color-mix(in srgb, var(--destructive) 10%, transparent)";
+                            (e.currentTarget as HTMLButtonElement).style.borderColor = "color-mix(in srgb, var(--destructive) 50%, transparent)";
                           }
                         }}
                         onMouseLeave={(e) => {
                           (e.currentTarget as HTMLButtonElement).style.background = "transparent";
-                          (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(239,68,68,0.25)";
+                          (e.currentTarget as HTMLButtonElement).style.borderColor = "color-mix(in srgb, var(--destructive) 25%, transparent)";
                         }}
                       >
                         {deletingId === lang.id ? "Deleting…" : "Delete"}
@@ -275,7 +275,7 @@ export default function LanguageList() {
 
       <style>{`
         .admin-table-row:hover td {
-          background: rgba(251, 191, 36, 0.03);
+          background: color-mix(in srgb, var(--accent-text) 3%, transparent);
         }
       `}</style>
     </div>

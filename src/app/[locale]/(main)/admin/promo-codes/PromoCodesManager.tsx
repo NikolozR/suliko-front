@@ -34,8 +34,8 @@ function generateCode(): string {
 }
 
 const card: React.CSSProperties = {
-  background: "#13151f",
-  border: "1px solid #2a2d3a",
+  background: "var(--card)",
+  border: "1px solid var(--border)",
   borderRadius: 12,
   padding: "20px 24px",
 };
@@ -43,7 +43,7 @@ const card: React.CSSProperties = {
 const label: React.CSSProperties = {
   display: "block",
   fontSize: 11,
-  color: "#64748b",
+  color: "var(--muted-foreground)",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
   marginBottom: 6,
@@ -51,14 +51,13 @@ const label: React.CSSProperties = {
 
 const input: React.CSSProperties = {
   width: "100%",
-  background: "#0f1117",
-  border: "1px solid #2a2d3a",
+  background: "var(--background)",
+  border: "1px solid var(--border)",
   borderRadius: 8,
   padding: "9px 12px",
-  color: "#f8fafc",
+  color: "var(--foreground)",
   fontSize: 14,
   outline: "none",
-  colorScheme: "dark",
 };
 
 const ghostButton: React.CSSProperties = {
@@ -67,9 +66,9 @@ const ghostButton: React.CSSProperties = {
   gap: 5,
   padding: "5px 10px",
   background: "transparent",
-  border: "1px solid #2a2d3a",
+  border: "1px solid var(--border)",
   borderRadius: 6,
-  color: "#94a3b8",
+  color: "var(--muted-foreground)",
   fontSize: 12,
   cursor: "pointer",
   whiteSpace: "nowrap",
@@ -79,12 +78,12 @@ const primaryButton: React.CSSProperties = {
   display: "inline-flex",
   alignItems: "center",
   gap: 6,
-  background: "#f59e0b",
-  color: "#0f1117",
+  background: "var(--accent-text)",
+  color: "var(--background)",
   border: "none",
   padding: "10px 18px",
   borderRadius: 8,
-  fontFamily: "'Syne', sans-serif",
+  fontFamily: "inherit",
   fontWeight: 700,
   fontSize: 13,
   cursor: "pointer",
@@ -94,11 +93,11 @@ function ErrorBox({ message }: { message: string }) {
   return (
     <div
       style={{
-        background: "rgba(239,68,68,0.08)",
-        border: "1px solid rgba(239,68,68,0.25)",
+        background: "color-mix(in srgb, var(--destructive) 8%, transparent)",
+        border: "1px solid color-mix(in srgb, var(--destructive) 25%, transparent)",
         borderRadius: 10,
         padding: "12px 16px",
-        color: "#fca5a5",
+        color: "var(--destructive)",
         fontSize: 13,
         marginBottom: 16,
       }}
@@ -118,9 +117,9 @@ function TypeBadge({ type }: { type: PromoCodeType }) {
         borderRadius: 4,
         fontSize: 11,
         fontWeight: 600,
-        background: referral ? "rgba(96,165,250,0.12)" : "rgba(251,191,36,0.12)",
-        color: referral ? "#93c5fd" : "#fbbf24",
-        border: `1px solid ${referral ? "rgba(96,165,250,0.3)" : "rgba(251,191,36,0.3)"}`,
+        background: referral ? "color-mix(in srgb, var(--status-info) 12%, transparent)" : "color-mix(in srgb, var(--accent-text) 12%, transparent)",
+        color: referral ? "var(--status-info)" : "var(--accent-text)",
+        border: `1px solid ${referral ? "color-mix(in srgb, var(--status-info) 30%, transparent)" : "color-mix(in srgb, var(--accent-text) 30%, transparent)"}`,
       }}
     >
       {referral ? "Referral" : "Coupon"}
@@ -143,7 +142,7 @@ function StatusToggle({ code, busy, onToggle }: { code: PromoCode; busy: boolean
           height: 20,
           borderRadius: 999,
           border: "none",
-          background: on ? "#22c55e" : "#334155",
+          background: on ? "var(--status-success)" : "var(--border)",
           cursor: busy ? "wait" : "pointer",
           opacity: busy ? 0.6 : 1,
           transition: "background 0.15s",
@@ -158,15 +157,15 @@ function StatusToggle({ code, busy, onToggle }: { code: PromoCode; busy: boolean
             width: 16,
             height: 16,
             borderRadius: "50%",
-            background: "#f8fafc",
+            background: "var(--foreground)",
             transition: "left 0.15s",
           }}
         />
       </button>
       {code.isExpired ? (
-        <span style={{ fontSize: 12, color: "#f87171" }}>Expired</span>
+        <span style={{ fontSize: 12, color: "var(--destructive)" }}>Expired</span>
       ) : (
-        <span style={{ fontSize: 12, color: on ? "#4ade80" : "#64748b" }}>{on ? "On" : "Off"}</span>
+        <span style={{ fontSize: 12, color: on ? "var(--status-success)" : "var(--muted-foreground)" }}>{on ? "On" : "Off"}</span>
       )}
     </div>
   );
@@ -209,8 +208,8 @@ function CreateForm({ onCreated }: { onCreated: (code: PromoCode) => void }) {
 
   return (
     <form onSubmit={submit} style={{ ...card, marginBottom: 32 }}>
-      <div style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 16, marginBottom: 4 }}>New code</div>
-      <p style={{ color: "#64748b", fontSize: 13, margin: "0 0 18px" }}>
+      <div style={{ fontFamily: "inherit", fontWeight: 700, fontSize: 16, marginBottom: 4 }}>New code</div>
+      <p style={{ color: "var(--muted-foreground)", fontSize: 13, margin: "0 0 18px" }}>
         {type === "Referral"
           ? "Entered at sign-up. Adds pages to the new user's balance."
           : "Entered by an existing user from the balance page. Each user can use it once."}
@@ -221,7 +220,7 @@ function CreateForm({ onCreated }: { onCreated: (code: PromoCode) => void }) {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 16, alignItems: "end" }}>
         <div>
           <span style={label}>Type</span>
-          <div style={{ display: "flex", background: "#0f1117", border: "1px solid #2a2d3a", borderRadius: 8, padding: 3 }}>
+          <div style={{ display: "flex", background: "var(--background)", border: "1px solid var(--border)", borderRadius: 8, padding: 3 }}>
             {(["Coupon", "Referral"] as PromoCodeType[]).map((t) => (
               <button
                 key={t}
@@ -233,8 +232,8 @@ function CreateForm({ onCreated }: { onCreated: (code: PromoCode) => void }) {
                   padding: "6px 8px",
                   borderRadius: 6,
                   border: "none",
-                  background: type === t ? "#f59e0b" : "transparent",
-                  color: type === t ? "#0f1117" : "#94a3b8",
+                  background: type === t ? "var(--accent-text)" : "transparent",
+                  color: type === t ? "var(--background)" : "var(--muted-foreground)",
                   fontWeight: 600,
                   fontSize: 13,
                   cursor: "pointer",
@@ -256,7 +255,7 @@ function CreateForm({ onCreated }: { onCreated: (code: PromoCode) => void }) {
               placeholder="Auto-generate"
               maxLength={32}
               autoComplete="off"
-              style={{ ...input, fontFamily: "'JetBrains Mono', monospace", letterSpacing: "0.05em" }}
+              style={{ ...input, fontFamily: "ui-monospace, monospace", letterSpacing: "0.05em" }}
             />
             <button type="button" onClick={() => setCode(generateCode())} title="Generate a random code" style={{ ...ghostButton, padding: "0 10px" }}>
               <Shuffle size={14} />
@@ -295,7 +294,7 @@ function CreateForm({ onCreated }: { onCreated: (code: PromoCode) => void }) {
           {saving ? "Creating…" : "Create"}
         </button>
       </div>
-      <p style={{ color: "#475569", fontSize: 12, margin: "12px 0 0" }}>
+      <p style={{ color: "var(--muted-foreground)", fontSize: 12, margin: "12px 0 0" }}>
         Valid through the end of the chosen day (Tbilisi time). Leave the code empty to generate one.
       </p>
     </form>
@@ -333,7 +332,7 @@ function DetailsPanel({ code, onUpdated }: { code: PromoCode; onUpdated: (code: 
   };
 
   return (
-    <div style={{ padding: "16px 12px 20px 40px", background: "#0f1117", borderBottom: "1px solid #1a1d28" }}>
+    <div style={{ padding: "16px 12px 20px 40px", background: "var(--background)", borderBottom: "1px solid var(--muted)" }}>
       <div style={{ display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap", marginBottom: 18 }}>
         <div style={{ width: 120 }}>
           <span style={label}>Pages</span>
@@ -346,27 +345,27 @@ function DetailsPanel({ code, onUpdated }: { code: PromoCode; onUpdated: (code: 
         <button onClick={save} disabled={!dirty || saving} style={{ ...primaryButton, padding: "9px 16px", opacity: !dirty || saving ? 0.4 : 1 }}>
           {saving ? "Saving…" : "Save"}
         </button>
-        <span style={{ fontSize: 12, color: "#475569" }}>Changing pages only affects future uses.</span>
+        <span style={{ fontSize: 12, color: "var(--muted-foreground)" }}>Changing pages only affects future uses.</span>
       </div>
       {saveError && <ErrorBox message={saveError} />}
 
-      <div style={{ fontSize: 12, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>
         Used by
       </div>
       {loadError && <ErrorBox message={loadError} />}
-      {!loadError && redemptions === null && <div style={{ color: "#64748b", fontSize: 13 }}>Loading…</div>}
-      {redemptions?.length === 0 && <div style={{ color: "#64748b", fontSize: 13 }}>Nobody has used this code yet.</div>}
+      {!loadError && redemptions === null && <div style={{ color: "var(--muted-foreground)", fontSize: 13 }}>Loading…</div>}
+      {redemptions?.length === 0 && <div style={{ color: "var(--muted-foreground)", fontSize: 13 }}>Nobody has used this code yet.</div>}
       {redemptions && redemptions.length > 0 && (
         <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
           <tbody>
             {redemptions.map((r) => {
               const name = [r.firstName, r.lastName].filter(Boolean).join(" ");
               return (
-                <tr key={`${r.userId}-${r.redeemedAt}`} style={{ borderTop: "1px solid #1a1d28" }}>
-                  <td style={{ padding: "8px 0", color: "#f1f5f9" }}>{name || r.userName || r.userId}</td>
-                  <td style={{ padding: "8px 12px", color: "#94a3b8" }}>{r.email && !r.email.endsWith("@example.com") ? r.email : r.userName}</td>
-                  <td style={{ padding: "8px 12px", color: "#94a3b8", fontFamily: "'JetBrains Mono', monospace" }}>+{r.amount}</td>
-                  <td style={{ padding: "8px 0", color: "#64748b", textAlign: "right" }}>
+                <tr key={`${r.userId}-${r.redeemedAt}`} style={{ borderTop: "1px solid var(--muted)" }}>
+                  <td style={{ padding: "8px 0", color: "var(--foreground)" }}>{name || r.userName || r.userId}</td>
+                  <td style={{ padding: "8px 12px", color: "var(--muted-foreground)" }}>{r.email && !r.email.endsWith("@example.com") ? r.email : r.userName}</td>
+                  <td style={{ padding: "8px 12px", color: "var(--muted-foreground)", fontFamily: "ui-monospace, monospace" }}>+{r.amount}</td>
+                  <td style={{ padding: "8px 0", color: "var(--muted-foreground)", textAlign: "right" }}>
                     {new Date(r.redeemedAt).toLocaleString("en-GB", { timeZone: TZ, dateStyle: "medium", timeStyle: "short" })}
                   </td>
                 </tr>
@@ -424,10 +423,10 @@ export default function PromoCodesManager() {
   return (
     <div>
       <div style={{ marginBottom: 24 }}>
-        <h1 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 800, fontSize: 30, letterSpacing: "-0.02em", margin: 0 }}>
+        <h1 style={{ fontFamily: "inherit", fontWeight: 800, fontSize: 30, letterSpacing: "-0.02em", margin: 0 }}>
           Promo Codes
         </h1>
-        <p style={{ color: "#64748b", marginTop: 6, fontSize: 14 }}>
+        <p style={{ color: "var(--muted-foreground)", marginTop: 6, fontSize: 14 }}>
           Referral codes for new sign-ups and coupons for existing users. Both add pages to the balance.
         </p>
       </div>
@@ -436,10 +435,10 @@ export default function PromoCodesManager() {
 
       {error && <ErrorBox message={error} />}
 
-      {codes === null && !error && <div style={{ color: "#64748b", fontSize: 14 }}>Loading…</div>}
+      {codes === null && !error && <div style={{ color: "var(--muted-foreground)", fontSize: 14 }}>Loading…</div>}
 
       {codes?.length === 0 && (
-        <div style={{ color: "#64748b", padding: "32px 0", textAlign: "center", fontSize: 14 }}>
+        <div style={{ color: "var(--muted-foreground)", padding: "32px 0", textAlign: "center", fontSize: 14 }}>
           No codes yet. Create your first one above.
         </div>
       )}
@@ -448,14 +447,14 @@ export default function PromoCodesManager() {
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13, minWidth: 760 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #2a2d3a" }}>
+              <tr style={{ borderBottom: "1px solid var(--border)" }}>
                 {["", "Code", "Type", "Pages", "Expires", "Used", "Status"].map((h) => (
                   <th
                     key={h}
                     style={{
                       textAlign: "left",
                       padding: "8px 12px",
-                      color: "#64748b",
+                      color: "var(--muted-foreground)",
                       fontWeight: 600,
                       textTransform: "uppercase",
                       fontSize: 11,
@@ -474,20 +473,20 @@ export default function PromoCodesManager() {
                 const signUpLink = `${typeof window !== "undefined" ? window.location.origin : ""}/${locale}/sign-in?ref=${c.code}`;
                 return (
                   <React.Fragment key={c.id}>
-                    <tr style={{ borderBottom: open ? "none" : "1px solid #1a1d28", opacity: c.isActive && !c.isExpired ? 1 : 0.6 }}>
+                    <tr style={{ borderBottom: open ? "none" : "1px solid var(--muted)", opacity: c.isActive && !c.isExpired ? 1 : 0.6 }}>
                       <td style={{ padding: "12px 4px 12px 12px", width: 28 }}>
                         <button
                           onClick={() => setExpanded(open ? null : c.id)}
                           aria-expanded={open}
                           aria-label={open ? "Hide details" : "Show details"}
-                          style={{ background: "transparent", border: "none", color: "#64748b", cursor: "pointer", display: "flex", padding: 2 }}
+                          style={{ background: "transparent", border: "none", color: "var(--muted-foreground)", cursor: "pointer", display: "flex", padding: 2 }}
                         >
                           {open ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
                         </button>
                       </td>
                       <td style={{ padding: "12px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                          <span style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 500, color: "#f8fafc", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
+                          <span style={{ fontFamily: "ui-monospace, monospace", fontWeight: 500, color: "var(--foreground)", letterSpacing: "0.04em", whiteSpace: "nowrap" }}>
                             {c.code}
                           </span>
                           <button onClick={() => copy(`${c.id}-code`, c.code)} style={ghostButton} title="Copy code">
@@ -505,11 +504,11 @@ export default function PromoCodesManager() {
                       <td style={{ padding: "12px" }}>
                         <TypeBadge type={c.type} />
                       </td>
-                      <td style={{ padding: "12px", color: "#f1f5f9", fontFamily: "'JetBrains Mono', monospace" }}>{c.amount}</td>
-                      <td style={{ padding: "12px", color: c.isExpired ? "#f87171" : "#94a3b8", whiteSpace: "nowrap" }}>{formatDate(c.expiresAt)}</td>
-                      <td style={{ padding: "12px", color: "#94a3b8", whiteSpace: "nowrap" }}>
+                      <td style={{ padding: "12px", color: "var(--foreground)", fontFamily: "ui-monospace, monospace" }}>{c.amount}</td>
+                      <td style={{ padding: "12px", color: c.isExpired ? "var(--destructive)" : "var(--muted-foreground)", whiteSpace: "nowrap" }}>{formatDate(c.expiresAt)}</td>
+                      <td style={{ padding: "12px", color: "var(--muted-foreground)", whiteSpace: "nowrap" }}>
                         {c.redemptionCount}
-                        {c.redemptionCount > 0 && <span style={{ color: "#475569" }}> · {c.totalCredited} pages</span>}
+                        {c.redemptionCount > 0 && <span style={{ color: "var(--muted-foreground)" }}> · {c.totalCredited} pages</span>}
                       </td>
                       <td style={{ padding: "12px" }}>
                         <StatusToggle code={c} busy={toggling === c.id} onToggle={() => toggle(c)} />

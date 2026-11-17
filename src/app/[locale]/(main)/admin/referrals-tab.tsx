@@ -44,10 +44,10 @@ export default function ReferralsTab({ users }: { users: User[] }) {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           style={{
-            background: "#1a1d2e",
-            border: "1px solid #2a2d3a",
+            background: "var(--muted)",
+            border: "1px solid var(--border)",
             borderRadius: 8,
-            color: "#f8fafc",
+            color: "var(--foreground)",
             fontSize: 13,
             padding: "8px 14px",
             width: "100%",
@@ -56,7 +56,7 @@ export default function ReferralsTab({ users }: { users: User[] }) {
             fontFamily: "inherit",
           }}
         />
-        <div role="group" aria-label="View" style={{ display: "flex", border: "1px solid #2a2d3a", borderRadius: 8, overflow: "hidden" }}>
+        <div role="group" aria-label="View" style={{ display: "flex", border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden" }}>
           {(["tree", "list"] as View[]).map((v) => (
             <button
               key={v}
@@ -64,9 +64,9 @@ export default function ReferralsTab({ users }: { users: User[] }) {
               aria-pressed={view === v}
               onClick={() => setView(v)}
               style={{
-                background: view === v ? "rgba(251,191,36,0.12)" : "transparent",
+                background: view === v ? "color-mix(in srgb, var(--accent-text) 12%, transparent)" : "transparent",
                 border: "none",
-                color: view === v ? "#fbbf24" : "#64748b",
+                color: view === v ? "var(--accent-text)" : "var(--muted-foreground)",
                 cursor: "pointer",
                 fontSize: 13,
                 fontWeight: view === v ? 600 : 500,
@@ -91,16 +91,16 @@ export default function ReferralsTab({ users }: { users: User[] }) {
           <div
             key={s.label}
             style={{
-              background: "#13151f",
-              border: "1px solid #2a2d3a",
-              borderLeft: "3px solid #f59e0b",
+              background: "var(--card)",
+              border: "1px solid var(--border)",
+              borderLeft: "3px solid var(--accent-text)",
               borderRadius: 10,
               padding: "12px 18px",
               minWidth: 160,
             }}
           >
-            <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>{s.label}</div>
-            <div style={{ fontFamily: "'JetBrains Mono', monospace", fontWeight: 500, fontSize: 24, color: "#f8fafc" }}>{s.value}</div>
+            <div style={{ fontSize: 11, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 4 }}>{s.label}</div>
+            <div style={{ fontFamily: "ui-monospace, monospace", fontWeight: 500, fontSize: 24, color: "var(--foreground)" }}>{s.value}</div>
           </div>
         ))}
       </div>
@@ -112,7 +112,7 @@ export default function ReferralsTab({ users }: { users: User[] }) {
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #2a2d3a" }}>
+              <tr style={{ borderBottom: "1px solid var(--border)" }}>
                 {["User", "Their Code", "Referred By", "# Referred", ""].map((h) => (
                   <th
                     key={h}
@@ -120,7 +120,7 @@ export default function ReferralsTab({ users }: { users: User[] }) {
                       textAlign: "left",
                       padding: "8px 12px",
                       fontSize: 11,
-                      color: "#64748b",
+                      color: "var(--muted-foreground)",
                       textTransform: "uppercase",
                       letterSpacing: "0.08em",
                       fontWeight: 600,
@@ -142,28 +142,28 @@ export default function ReferralsTab({ users }: { users: User[] }) {
                   <React.Fragment key={u.id}>
                     <tr
                       style={{
-                        borderBottom: "1px solid #1e2132",
+                        borderBottom: "1px solid var(--border)",
                         transition: "background 0.12s",
-                        background: isExpanded ? "rgba(251,191,36,0.04)" : "transparent",
+                        background: isExpanded ? "color-mix(in srgb, var(--accent-text) 4%, transparent)" : "transparent",
                       }}
                       onMouseEnter={(e) => { if (!isExpanded) (e.currentTarget as HTMLTableRowElement).style.background = "rgba(255,255,255,0.02)"; }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = isExpanded ? "rgba(251,191,36,0.04)" : "transparent"; }}
+                      onMouseLeave={(e) => { (e.currentTarget as HTMLTableRowElement).style.background = isExpanded ? "color-mix(in srgb, var(--accent-text) 4%, transparent)" : "transparent"; }}
                     >
                       {/* User */}
                       <td style={{ padding: "10px 12px" }}>
-                        <div style={{ color: "#f8fafc", fontWeight: 500 }}>{displayName(u)}</div>
-                        <div style={{ color: "#64748b", fontSize: 11, marginTop: 2 }}>{u.email}</div>
+                        <div style={{ color: "var(--foreground)", fontWeight: 500 }}>{displayName(u)}</div>
+                        <div style={{ color: "var(--muted-foreground)", fontSize: 11, marginTop: 2 }}>{u.email}</div>
                       </td>
 
                       {/* Their code */}
                       <td style={{ padding: "10px 12px" }}>
                         <code
                           style={{
-                            background: "rgba(251,191,36,0.1)",
-                            color: "#fbbf24",
+                            background: "color-mix(in srgb, var(--accent-text) 10%, transparent)",
+                            color: "var(--accent-text)",
                             borderRadius: 4,
                             padding: "2px 8px",
-                            fontFamily: "'JetBrains Mono', monospace",
+                            fontFamily: "ui-monospace, monospace",
                             fontSize: 13,
                             fontWeight: 600,
                             letterSpacing: "0.08em",
@@ -177,15 +177,15 @@ export default function ReferralsTab({ users }: { users: User[] }) {
                       <td style={{ padding: "10px 12px" }}>
                         {referrer ? (
                           <div>
-                            <div style={{ color: "#94a3b8" }}>{displayName(referrer)}</div>
-                            <div style={{ color: "#475569", fontSize: 11, marginTop: 2 }}>{referrer.email}</div>
+                            <div style={{ color: "var(--muted-foreground)" }}>{displayName(referrer)}</div>
+                            <div style={{ color: "var(--muted-foreground)", fontSize: 11, marginTop: 2 }}>{referrer.email}</div>
                           </div>
                         ) : u.referredByCode ? (
-                          <span style={{ color: "#475569", fontFamily: "'JetBrains Mono', monospace", fontSize: 12 }}>
-                            {u.referredByCode} <span style={{ color: "#334155" }}>(deleted?)</span>
+                          <span style={{ color: "var(--muted-foreground)", fontFamily: "ui-monospace, monospace", fontSize: 12 }}>
+                            {u.referredByCode} <span style={{ color: "var(--border)" }}>(deleted?)</span>
                           </span>
                         ) : (
-                          <span style={{ color: "#334155" }}>–</span>
+                          <span style={{ color: "var(--border)" }}>–</span>
                         )}
                       </td>
 
@@ -193,10 +193,10 @@ export default function ReferralsTab({ users }: { users: User[] }) {
                       <td style={{ padding: "10px 12px" }}>
                         <span
                           style={{
-                            fontFamily: "'JetBrains Mono', monospace",
+                            fontFamily: "ui-monospace, monospace",
                             fontWeight: 600,
                             fontSize: 15,
-                            color: referredUsers.length > 0 ? "#34d399" : "#334155",
+                            color: referredUsers.length > 0 ? "var(--status-success)" : "var(--border)",
                           }}
                         >
                           {referredUsers.length}
@@ -210,9 +210,9 @@ export default function ReferralsTab({ users }: { users: User[] }) {
                             onClick={() => setExpandedId(isExpanded ? null : u.id)}
                             style={{
                               background: "transparent",
-                              border: "1px solid #2a2d3a",
+                              border: "1px solid var(--border)",
                               borderRadius: 6,
-                              color: "#94a3b8",
+                              color: "var(--muted-foreground)",
                               cursor: "pointer",
                               fontSize: 12,
                               padding: "4px 10px",
@@ -230,10 +230,10 @@ export default function ReferralsTab({ users }: { users: User[] }) {
 
                     {/* Expanded: list of referred users */}
                     {isExpanded && (
-                      <tr style={{ background: "#0d0f1a" }}>
+                      <tr style={{ background: "var(--background)" }}>
                         <td colSpan={5} style={{ padding: "0 0 0 40px" }}>
-                          <div style={{ padding: "12px 12px 12px 0", borderLeft: "2px solid #f59e0b", marginLeft: 12, paddingLeft: 16 }}>
-                            <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
+                          <div style={{ padding: "12px 12px 12px 0", borderLeft: "2px solid var(--accent-text)", marginLeft: 12, paddingLeft: 16 }}>
+                            <div style={{ fontSize: 11, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 10 }}>
                               Users referred by {displayName(u)}
                             </div>
                             <table style={{ borderCollapse: "collapse", width: "100%", maxWidth: 600 }}>
@@ -245,7 +245,7 @@ export default function ReferralsTab({ users }: { users: User[] }) {
                                       style={{
                                         textAlign: "left",
                                         fontSize: 11,
-                                        color: "#475569",
+                                        color: "var(--muted-foreground)",
                                         padding: "4px 12px 6px 0",
                                         fontWeight: 600,
                                         textTransform: "uppercase",
@@ -259,10 +259,10 @@ export default function ReferralsTab({ users }: { users: User[] }) {
                               </thead>
                               <tbody>
                                 {referredUsers.map((ru) => (
-                                  <tr key={ru.id} style={{ borderTop: "1px solid #1a1d2e" }}>
-                                    <td style={{ padding: "6px 12px 6px 0", color: "#cbd5e1", fontSize: 13 }}>{displayName(ru)}</td>
-                                    <td style={{ padding: "6px 12px 6px 0", color: "#64748b", fontSize: 13 }}>{ru.email}</td>
-                                    <td style={{ padding: "6px 12px 6px 0", color: "#64748b", fontSize: 12, fontFamily: "'JetBrains Mono', monospace" }}>{fmt(ru.createdAt)}</td>
+                                  <tr key={ru.id} style={{ borderTop: "1px solid var(--muted)" }}>
+                                    <td style={{ padding: "6px 12px 6px 0", color: "var(--foreground)", fontSize: 13 }}>{displayName(ru)}</td>
+                                    <td style={{ padding: "6px 12px 6px 0", color: "var(--muted-foreground)", fontSize: 13 }}>{ru.email}</td>
+                                    <td style={{ padding: "6px 12px 6px 0", color: "var(--muted-foreground)", fontSize: 12, fontFamily: "ui-monospace, monospace" }}>{fmt(ru.createdAt)}</td>
                                   </tr>
                                 ))}
                               </tbody>
@@ -277,7 +277,7 @@ export default function ReferralsTab({ users }: { users: User[] }) {
 
               {rows.length === 0 && (
                 <tr>
-                  <td colSpan={5} style={{ padding: "32px 12px", color: "#475569", textAlign: "center", fontSize: 14 }}>
+                  <td colSpan={5} style={{ padding: "32px 12px", color: "var(--muted-foreground)", textAlign: "center", fontSize: 14 }}>
                     No users match your search.
                   </td>
                 </tr>

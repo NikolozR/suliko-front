@@ -122,19 +122,19 @@ function TiptapEditor({
     borderRadius: 4,
     padding: "4px 6px",
     cursor: "pointer",
-    color: active ? "#f59e0b" : "#94a3b8",
+    color: active ? "var(--accent-text)" : "var(--muted-foreground)",
     display: "inline-flex",
     alignItems: "center",
   });
 
   const Divider = () => (
-    <span style={{ width: 1, height: 18, background: "#2a2d3a", display: "inline-block", margin: "0 4px" }} />
+    <span style={{ width: 1, height: 18, background: "var(--border)", display: "inline-block", margin: "0 4px" }} />
   );
 
   return (
-    <div style={{ border: "1px solid #2a2d3a", borderRadius: 8, overflow: "hidden" }}>
+    <div style={{ border: "1px solid var(--border)", borderRadius: 8, overflow: "hidden" }}>
       {/* Toolbar */}
-      <div style={{ background: "#13151f", borderBottom: "1px solid #2a2d3a", padding: "6px 10px", display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center" }}>
+      <div style={{ background: "var(--card)", borderBottom: "1px solid var(--border)", padding: "6px 10px", display: "flex", flexWrap: "wrap", gap: 2, alignItems: "center" }}>
         <button style={btnStyle()} onClick={() => editor.chain().focus().undo().run()} title="Undo"><Undo size={14} /></button>
         <button style={btnStyle()} onClick={() => editor.chain().focus().redo().run()} title="Redo"><Redo size={14} /></button>
         <Divider />
@@ -160,18 +160,18 @@ function TiptapEditor({
       </div>
 
       {/* Editor area */}
-      <div style={{ background: "#0d0f18", minHeight: 320, padding: "12px 16px" }}>
+      <div style={{ background: "var(--background)", minHeight: 320, padding: "12px 16px" }}>
         <style>{`
-          .tiptap-editor .ProseMirror { outline: none; color: #e2e8f0; font-size: 14px; line-height: 1.7; }
-          .tiptap-editor .ProseMirror p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: #475569; pointer-events: none; float: left; height: 0; }
-          .tiptap-editor .ProseMirror h2 { font-size: 20px; font-weight: 700; margin: 16px 0 8px; color: #f1f5f9; }
-          .tiptap-editor .ProseMirror h3 { font-size: 16px; font-weight: 700; margin: 12px 0 6px; color: #f1f5f9; }
-          .tiptap-editor .ProseMirror blockquote { border-left: 3px solid #f59e0b; padding-left: 12px; color: #94a3b8; margin: 12px 0; }
+          .tiptap-editor .ProseMirror { outline: none; color: var(--foreground); font-size: 14px; line-height: 1.7; }
+          .tiptap-editor .ProseMirror p.is-editor-empty:first-child::before { content: attr(data-placeholder); color: var(--muted-foreground); pointer-events: none; float: left; height: 0; }
+          .tiptap-editor .ProseMirror h2 { font-size: 20px; font-weight: 700; margin: 16px 0 8px; color: var(--foreground); }
+          .tiptap-editor .ProseMirror h3 { font-size: 16px; font-weight: 700; margin: 12px 0 6px; color: var(--foreground); }
+          .tiptap-editor .ProseMirror blockquote { border-left: 3px solid var(--accent-text); padding-left: 12px; color: var(--muted-foreground); margin: 12px 0; }
           .tiptap-editor .ProseMirror ul { padding-left: 20px; list-style: disc; }
           .tiptap-editor .ProseMirror ol { padding-left: 20px; list-style: decimal; }
           .tiptap-editor .ProseMirror img { max-width: 100%; border-radius: 6px; margin: 8px 0; }
-          .tiptap-editor .ProseMirror a { color: #f59e0b; text-decoration: underline; }
-          .tiptap-editor .ProseMirror mark { background: #f59e0b33; color: #fbbf24; border-radius: 2px; padding: 0 2px; }
+          .tiptap-editor .ProseMirror a { color: var(--accent-text); text-decoration: underline; }
+          .tiptap-editor .ProseMirror mark { background: #f59e0b33; color: var(--accent-text); border-radius: 2px; padding: 0 2px; }
         `}</style>
         <div className="tiptap-editor">
           <EditorContent editor={editor} />
@@ -183,11 +183,11 @@ function TiptapEditor({
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  background: "#0d0f18",
-  border: "1px solid #2a2d3a",
+  background: "var(--background)",
+  border: "1px solid var(--border)",
   borderRadius: 8,
   padding: "9px 12px",
-  color: "#f1f5f9",
+  color: "var(--foreground)",
   fontSize: 13,
   fontFamily: "inherit",
   boxSizing: "border-box",
@@ -197,7 +197,7 @@ const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: 12,
   fontWeight: 600,
-  color: "#64748b",
+  color: "var(--muted-foreground)",
   textTransform: "uppercase",
   letterSpacing: "0.07em",
   marginBottom: 6,
@@ -304,7 +304,7 @@ export default function BlogPostForm({ initialData, mode }: Props) {
     <div style={{ maxWidth: 900 }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-        <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 22, color: "#f8fafc", margin: 0 }}>
+        <h2 style={{ fontFamily: "inherit", fontWeight: 700, fontSize: 22, color: "var(--foreground)", margin: 0 }}>
           {mode === "new" ? "New Post" : "Edit Post"}
         </h2>
         <div style={{ display: "flex", gap: 10 }}>
@@ -319,11 +319,11 @@ export default function BlogPostForm({ initialData, mode }: Props) {
             disabled={saving}
             style={{
               padding: "8px 20px",
-              background: saving ? "#92400e" : "#f59e0b",
-              color: "#0f1117",
+              background: saving ? "var(--background)" : "var(--accent-text)",
+              color: "var(--background)",
               border: "none",
               borderRadius: 8,
-              fontFamily: "'Syne', sans-serif",
+              fontFamily: "inherit",
               fontWeight: 700,
               fontSize: 13,
               cursor: saving ? "not-allowed" : "pointer",
@@ -335,7 +335,7 @@ export default function BlogPostForm({ initialData, mode }: Props) {
       </div>
 
       {error && (
-        <div style={{ background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 8, padding: "10px 14px", color: "#fca5a5", fontSize: 13, marginBottom: 20 }}>
+        <div style={{ background: "color-mix(in srgb, var(--destructive) 8%, transparent)", border: "1px solid color-mix(in srgb, var(--destructive) 25%, transparent)", borderRadius: 8, padding: "10px 14px", color: "var(--destructive)", fontSize: 13, marginBottom: 20 }}>
           {error}
         </div>
       )}
@@ -344,7 +344,7 @@ export default function BlogPostForm({ initialData, mode }: Props) {
         {/* Left: per-locale content */}
         <div>
           {/* Locale tabs */}
-          <div style={{ display: "flex", gap: 0, borderBottom: "1px solid #2a2d3a", marginBottom: 20 }}>
+          <div style={{ display: "flex", gap: 0, borderBottom: "1px solid var(--border)", marginBottom: 20 }}>
             {LOCALES.map(({ id, label }) => (
               <button
                 key={id}
@@ -353,11 +353,11 @@ export default function BlogPostForm({ initialData, mode }: Props) {
                   padding: "8px 18px",
                   background: "transparent",
                   border: "none",
-                  borderBottom: activeLocale === id ? "2px solid #f59e0b" : "2px solid transparent",
-                  color: activeLocale === id ? "#fbbf24" : "#64748b",
+                  borderBottom: activeLocale === id ? "2px solid var(--accent-text)" : "2px solid transparent",
+                  color: activeLocale === id ? "var(--accent-text)" : "var(--muted-foreground)",
                   cursor: "pointer",
                   fontSize: 13,
-                  fontFamily: "'Syne', sans-serif",
+                  fontFamily: "inherit",
                   fontWeight: activeLocale === id ? 700 : 500,
                   marginBottom: -1,
                 }}
@@ -381,7 +381,7 @@ export default function BlogPostForm({ initialData, mode }: Props) {
             <div>
               <label style={labelStyle}>Slug</label>
               <input
-                style={{ ...inputStyle, fontFamily: "monospace", color: "#94a3b8" }}
+                style={{ ...inputStyle, fontFamily: "ui-monospace, monospace", color: "var(--muted-foreground)" }}
                 value={t.slug}
                 onChange={(e) => updateTranslation(activeLocale, "slug", slugify(e.target.value))}
                 placeholder="url-slug"
@@ -458,7 +458,7 @@ export default function BlogPostForm({ initialData, mode }: Props) {
           <div>
             <label style={labelStyle}>Cover Image</label>
             {coverImage && (
-              <div style={{ marginBottom: 8, borderRadius: 6, overflow: "hidden", border: "1px solid #2a2d3a" }}>
+              <div style={{ marginBottom: 8, borderRadius: 6, overflow: "hidden", border: "1px solid var(--border)" }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={coverImage} alt="Cover" style={{ width: "100%", display: "block", maxHeight: 160, objectFit: "cover" }} />
               </div>
@@ -467,10 +467,10 @@ export default function BlogPostForm({ initialData, mode }: Props) {
               style={{
                 display: "block",
                 padding: "8px 12px",
-                background: "#13151f",
-                border: "1px dashed #2a2d3a",
+                background: "var(--card)",
+                border: "1px dashed var(--border)",
                 borderRadius: 8,
-                color: "#64748b",
+                color: "var(--muted-foreground)",
                 fontSize: 12,
                 textAlign: "center",
                 cursor: "pointer",
@@ -482,7 +482,7 @@ export default function BlogPostForm({ initialData, mode }: Props) {
             {coverImage && (
               <button
                 onClick={() => setCoverImage("")}
-                style={{ ...inputStyle, marginTop: 6, color: "#f87171", cursor: "pointer", textAlign: "center", width: "auto", padding: "5px 10px", fontSize: 11 }}
+                style={{ ...inputStyle, marginTop: 6, color: "var(--destructive)", cursor: "pointer", textAlign: "center", width: "auto", padding: "5px 10px", fontSize: 11 }}
               >
                 Remove cover
               </button>

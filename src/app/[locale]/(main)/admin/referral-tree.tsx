@@ -120,11 +120,11 @@ function allKeys(nodes: ReferralNode[], into = new Set<string>()) {
 }
 
 const chipStyle: React.CSSProperties = {
-  background: "rgba(251,191,36,0.1)",
-  color: "#fbbf24",
+  background: "color-mix(in srgb, var(--accent-text) 10%, transparent)",
+  color: "var(--accent-text)",
   borderRadius: 4,
   padding: "2px 8px",
-  fontFamily: "'JetBrains Mono', monospace",
+  fontFamily: "ui-monospace, monospace",
   fontSize: 12,
   fontWeight: 600,
   letterSpacing: "0.08em",
@@ -133,9 +133,9 @@ const chipStyle: React.CSSProperties = {
 
 const toolButton: React.CSSProperties = {
   background: "transparent",
-  border: "1px solid #2a2d3a",
+  border: "1px solid var(--border)",
   borderRadius: 6,
-  color: "#94a3b8",
+  color: "var(--muted-foreground)",
   cursor: "pointer",
   fontSize: 12,
   padding: "4px 10px",
@@ -170,8 +170,8 @@ function Branch({
                 padding: "7px 10px",
                 marginTop: 4,
                 borderRadius: 8,
-                background: hit ? "rgba(251,191,36,0.08)" : level === 0 ? "#13151f" : "transparent",
-                border: level === 0 ? "1px solid #2a2d3a" : "1px solid transparent",
+                background: hit ? "color-mix(in srgb, var(--accent-text) 8%, transparent)" : level === 0 ? "var(--card)" : "transparent",
+                border: level === 0 ? "1px solid var(--border)" : "1px solid transparent",
               }}
             >
               {n.children.length > 0 ? (
@@ -196,21 +196,21 @@ function Branch({
                   {isOpen ? "▾" : "▸"}
                 </button>
               ) : (
-                <span style={{ width: 24, flexShrink: 0, textAlign: "center", color: "#334155" }}>•</span>
+                <span style={{ width: 24, flexShrink: 0, textAlign: "center", color: "var(--border)" }}>•</span>
               )}
 
               <div style={{ minWidth: 0, flex: 1 }}>
                 {n.user ? (
                   <>
-                    <div style={{ color: "#f8fafc", fontWeight: 500, fontSize: 13 }}>{displayName(n.user)}</div>
-                    <div style={{ color: "#64748b", fontSize: 11, marginTop: 2 }}>
+                    <div style={{ color: "var(--foreground)", fontWeight: 500, fontSize: 13 }}>{displayName(n.user)}</div>
+                    <div style={{ color: "var(--muted-foreground)", fontSize: 11, marginTop: 2 }}>
                       {n.user.email ? `${n.user.email} · ` : ""}joined {fmt(n.user.createdAt)}
                     </div>
                   </>
                 ) : (
                   <>
-                    <div style={{ color: "#94a3b8", fontWeight: 500, fontSize: 13 }}>No user owns this code</div>
-                    <div style={{ color: "#64748b", fontSize: 11, marginTop: 2 }}>
+                    <div style={{ color: "var(--muted-foreground)", fontWeight: 500, fontSize: 13 }}>No user owns this code</div>
+                    <div style={{ color: "var(--muted-foreground)", fontSize: 11, marginTop: 2 }}>
                       A promo code, or its owner was deleted
                     </div>
                   </>
@@ -222,9 +222,9 @@ function Branch({
               <span
                 title="Referred directly · everyone in this branch"
                 style={{
-                  fontFamily: "'JetBrains Mono', monospace",
+                  fontFamily: "ui-monospace, monospace",
                   fontSize: 12,
-                  color: n.children.length ? "#34d399" : "#334155",
+                  color: n.children.length ? "var(--status-success)" : "var(--border)",
                   whiteSpace: "nowrap",
                   minWidth: 92,
                   textAlign: "right",
@@ -239,7 +239,7 @@ function Branch({
             </div>
 
             {isOpen && (
-              <ul style={{ margin: 0, marginLeft: 21, paddingLeft: 16, borderLeft: "1px solid #2a2d3a" }}>
+              <ul style={{ margin: 0, marginLeft: 21, paddingLeft: 16, borderLeft: "1px solid var(--border)" }}>
                 <Branch nodes={n.children} level={level + 1} open={open} toggle={toggle} query={query} />
               </ul>
             )}
@@ -270,7 +270,7 @@ export default function ReferralTree({ roots, query }: { roots: ReferralNode[]; 
 
   if (roots.length === 0) {
     return (
-      <div style={{ padding: "32px 12px", color: "#475569", textAlign: "center", fontSize: 14 }}>
+      <div style={{ padding: "32px 12px", color: "var(--muted-foreground)", textAlign: "center", fontSize: 14 }}>
         Nobody has referred anyone yet.
       </div>
     );
@@ -288,7 +288,7 @@ export default function ReferralTree({ roots, query }: { roots: ReferralNode[]; 
       </div>
 
       {shown.length === 0 ? (
-        <div style={{ padding: "32px 12px", color: "#475569", textAlign: "center", fontSize: 14 }}>
+        <div style={{ padding: "32px 12px", color: "var(--muted-foreground)", textAlign: "center", fontSize: 14 }}>
           No one in the referral tree matches your search.
         </div>
       ) : (
