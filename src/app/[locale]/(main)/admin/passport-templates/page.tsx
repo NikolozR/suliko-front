@@ -11,7 +11,7 @@ export default async function AdminPassportTemplatesPage() {
   if (!templates) {
     return (
       <div style={{ padding: 32 }}>
-        <p style={{ color: "#f87171", fontFamily: "monospace", fontSize: 13, background: "#1a0a0a", padding: 16, borderRadius: 8, border: "1px solid #7f1d1d" }}>
+        <p style={{ color: "var(--destructive)", fontFamily: "ui-monospace, monospace", fontSize: 13, background: "color-mix(in srgb, var(--destructive) 8%, transparent)", padding: 16, borderRadius: 8, border: "1px solid #7f1d1d" }}>
           ⚠ The templates could not be loaded from the API. Reload the page to try again.
         </p>
       </div>

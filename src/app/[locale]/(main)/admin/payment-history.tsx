@@ -20,11 +20,11 @@ function when(value: string | null) {
 }
 
 const STATUS: Record<string, { label: string; color: string; background: string }> = {
-  succeeded: { label: "Paid", color: "#86efac", background: "rgba(34,197,94,0.12)" },
-  failed: { label: "Failed", color: "#fca5a5", background: "rgba(239,68,68,0.12)" },
-  refunded: { label: "Refunded", color: "#fcd34d", background: "rgba(245,158,11,0.12)" },
-  created: { label: "Not finished", color: "#94a3b8", background: "rgba(148,163,184,0.1)" },
-  pending: { label: "Pending", color: "#94a3b8", background: "rgba(148,163,184,0.1)" },
+  succeeded: { label: "Paid", color: "var(--status-success)", background: "color-mix(in srgb, var(--status-success) 12%, transparent)" },
+  failed: { label: "Failed", color: "var(--destructive)", background: "color-mix(in srgb, var(--destructive) 12%, transparent)" },
+  refunded: { label: "Refunded", color: "var(--status-warning)", background: "color-mix(in srgb, var(--status-warning) 12%, transparent)" },
+  created: { label: "Not finished", color: "var(--muted-foreground)", background: "color-mix(in srgb, var(--muted-foreground) 10%, transparent)" },
+  pending: { label: "Pending", color: "var(--muted-foreground)", background: "color-mix(in srgb, var(--muted-foreground) 10%, transparent)" },
 };
 
 /**
@@ -56,34 +56,34 @@ export default function PaymentHistory({ userId, name }: { userId: string; name:
   const th: React.CSSProperties = {
     textAlign: "left",
     fontSize: 11,
-    color: "#475569",
+    color: "var(--muted-foreground)",
     padding: "4px 14px 6px 0",
     fontWeight: 600,
     textTransform: "uppercase",
     letterSpacing: "0.06em",
     whiteSpace: "nowrap",
   };
-  const td: React.CSSProperties = { padding: "7px 14px 7px 0", fontSize: 13, color: "#cbd5e1", whiteSpace: "nowrap" };
-  const mono: React.CSSProperties = { fontFamily: "'JetBrains Mono', monospace", fontSize: 12 };
+  const td: React.CSSProperties = { padding: "7px 14px 7px 0", fontSize: 13, color: "var(--foreground)", whiteSpace: "nowrap" };
+  const mono: React.CSSProperties = { fontFamily: "ui-monospace, monospace", fontSize: 12 };
 
   return (
-    <div style={{ borderLeft: "2px solid #f59e0b", marginLeft: 12, padding: "12px 16px" }}>
+    <div style={{ borderLeft: "2px solid var(--accent-text)", marginLeft: 12, padding: "12px 16px" }}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 10, flexWrap: "wrap" }}>
-        <div style={{ fontSize: 11, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+        <div style={{ fontSize: 11, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.08em" }}>
           Payments of {name}
         </div>
-        <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "#94a3b8", cursor: "pointer" }}>
+        <label style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12, color: "var(--muted-foreground)", cursor: "pointer" }}>
           <input type="checkbox" checked={all} onChange={(e) => setAll(e.target.checked)} />
           Show failed and unfinished
         </label>
       </div>
 
       {error ? (
-        <div style={{ color: "#fca5a5", fontSize: 13 }}>{error}</div>
+        <div style={{ color: "var(--destructive)", fontSize: 13 }}>{error}</div>
       ) : payments === null ? (
-        <div style={{ color: "#475569", fontSize: 13 }}>Loading…</div>
+        <div style={{ color: "var(--muted-foreground)", fontSize: 13 }}>Loading…</div>
       ) : payments.length === 0 ? (
-        <div style={{ color: "#475569", fontSize: 13 }}>
+        <div style={{ color: "var(--muted-foreground)", fontSize: 13 }}>
           {all ? "No payment attempts." : "No confirmed payments."}
         </div>
       ) : (
@@ -102,19 +102,19 @@ export default function PaymentHistory({ userId, name }: { userId: string; name:
               {payments.map((p) => {
                 const status = STATUS[p.status] ?? {
                   label: p.status,
-                  color: "#94a3b8",
-                  background: "rgba(148,163,184,0.1)",
+                  color: "var(--muted-foreground)",
+                  background: "color-mix(in srgb, var(--muted-foreground) 10%, transparent)",
                 };
                 return (
-                  <tr key={p.orderId} style={{ borderTop: "1px solid #1a1d2e" }}>
-                    <td style={{ ...td, ...mono, color: "#94a3b8" }}>{when(p.createdAt)}</td>
+                  <tr key={p.orderId} style={{ borderTop: "1px solid var(--muted)" }}>
+                    <td style={{ ...td, ...mono, color: "var(--muted-foreground)" }}>{when(p.createdAt)}</td>
                     <td style={td}>
                       {p.pages !== null ? `${p.pages.toLocaleString("en-US")} pages` : "–"}
                       {p.description && (
-                        <span style={{ color: "#475569", fontSize: 12, marginLeft: 8 }}>{p.description}</span>
+                        <span style={{ color: "var(--muted-foreground)", fontSize: 12, marginLeft: 8 }}>{p.description}</span>
                       )}
                     </td>
-                    <td style={{ ...td, ...mono, textAlign: "right", color: "#f8fafc" }}>
+                    <td style={{ ...td, ...mono, textAlign: "right", color: "var(--foreground)" }}>
                       {money(p.amount, p.currency)}
                     </td>
                     <td style={td}>
@@ -132,12 +132,12 @@ export default function PaymentHistory({ userId, name }: { userId: string; name:
                       </span>
                     </td>
                     <td
-                      style={{ ...td, ...mono, fontSize: 11, color: "#475569", maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis" }}
+                      style={{ ...td, ...mono, fontSize: 11, color: "var(--muted-foreground)", maxWidth: 220, overflow: "hidden", textOverflow: "ellipsis" }}
                       title={p.orderId}
                     >
                       {p.orderId}
                     </td>
-                    <td style={{ ...td, color: "#64748b", fontSize: 12 }}>{p.provider}</td>
+                    <td style={{ ...td, color: "var(--muted-foreground)", fontSize: 12 }}>{p.provider}</td>
                   </tr>
                 );
               })}

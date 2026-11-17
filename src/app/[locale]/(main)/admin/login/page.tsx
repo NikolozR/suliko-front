@@ -44,7 +44,7 @@ export default function AdminLoginPage() {
     <div
       style={{
         minHeight: "100vh",
-        background: "#0f1117",
+        background: "var(--background)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
@@ -58,8 +58,8 @@ export default function AdminLoginPage() {
           position: "absolute",
           inset: 0,
           backgroundImage: `
-            linear-gradient(rgba(251,191,36,0.03) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(251,191,36,0.03) 1px, transparent 1px)
+            linear-gradient(color-mix(in srgb, var(--accent-text) 3%, transparent) 1px, transparent 1px),
+            linear-gradient(90deg, color-mix(in srgb, var(--accent-text) 3%, transparent) 1px, transparent 1px)
           `,
           backgroundSize: "40px 40px",
           pointerEvents: "none",
@@ -74,7 +74,7 @@ export default function AdminLoginPage() {
           transform: "translate(-50%, -50%)",
           width: 600,
           height: 400,
-          background: "radial-gradient(ellipse, rgba(251,191,36,0.07) 0%, transparent 70%)",
+          background: "radial-gradient(ellipse, color-mix(in srgb, var(--accent-text) 7%, transparent) 0%, transparent 70%)",
           pointerEvents: "none",
         }}
       />
@@ -87,25 +87,25 @@ export default function AdminLoginPage() {
           width: "100%",
           maxWidth: 400,
           margin: "0 24px",
-          background: "#13151f",
+          background: "var(--card)",
           borderRadius: 16,
-          border: "1px solid #2a2d3a",
+          border: "1px solid var(--border)",
           overflow: "hidden",
           animation: "fadeUp 0.35s cubic-bezier(0.23,1,0.32,1) both",
         }}
       >
         {/* Amber top accent bar */}
-        <div style={{ height: 3, background: "linear-gradient(90deg, #f59e0b, #fbbf24, #fde68a)" }} />
+        <div style={{ height: 3, background: "linear-gradient(90deg, var(--accent-text), var(--accent-text), var(--accent-text))" }} />
 
         <div style={{ padding: "40px 36px" }}>
           {/* Heading */}
           <div style={{ marginBottom: 32 }}>
             <div
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "inherit",
                 fontWeight: 800,
                 fontSize: 26,
-                color: "#f8fafc",
+                color: "var(--foreground)",
                 letterSpacing: "-0.02em",
                 lineHeight: 1.1,
               }}
@@ -114,10 +114,10 @@ export default function AdminLoginPage() {
             </div>
             <div
               style={{
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "inherit",
                 fontWeight: 400,
                 fontSize: 11,
-                color: "#fbbf24",
+                color: "var(--accent-text)",
                 letterSpacing: "0.22em",
                 marginTop: 5,
                 textTransform: "uppercase",
@@ -134,7 +134,7 @@ export default function AdminLoginPage() {
                   display: "block",
                   fontSize: 12,
                   fontWeight: 500,
-                  color: "#64748b",
+                  color: "var(--muted-foreground)",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
                   marginBottom: 8,
@@ -148,19 +148,19 @@ export default function AdminLoginPage() {
                 placeholder="5XX XXX XXX"
                 style={{
                   width: "100%",
-                  background: "#0f1117",
-                  border: "1px solid #2a2d3a",
+                  background: "var(--background)",
+                  border: "1px solid var(--border)",
                   borderRadius: 8,
                   padding: "12px 14px",
-                  color: "#f8fafc",
+                  color: "var(--foreground)",
                   fontSize: 15,
                   outline: "none",
                   boxSizing: "border-box",
-                  fontFamily: "'JetBrains Mono', monospace",
+                  fontFamily: "ui-monospace, monospace",
                   transition: "border-color 0.15s",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#fbbf24")}
-                onBlur={(e) => (e.target.style.borderColor = "#2a2d3a")}
+                onFocus={(e) => (e.target.style.borderColor = "var(--accent-text)")}
+                onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
 
@@ -170,7 +170,7 @@ export default function AdminLoginPage() {
                   display: "block",
                   fontSize: 12,
                   fontWeight: 500,
-                  color: "#64748b",
+                  color: "var(--muted-foreground)",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
                   marginBottom: 8,
@@ -185,29 +185,29 @@ export default function AdminLoginPage() {
                 placeholder="••••••••"
                 style={{
                   width: "100%",
-                  background: "#0f1117",
-                  border: "1px solid #2a2d3a",
+                  background: "var(--background)",
+                  border: "1px solid var(--border)",
                   borderRadius: 8,
                   padding: "12px 14px",
-                  color: "#f8fafc",
+                  color: "var(--foreground)",
                   fontSize: 15,
                   outline: "none",
                   boxSizing: "border-box",
                   transition: "border-color 0.15s",
                 }}
-                onFocus={(e) => (e.target.style.borderColor = "#fbbf24")}
-                onBlur={(e) => (e.target.style.borderColor = "#2a2d3a")}
+                onFocus={(e) => (e.target.style.borderColor = "var(--accent-text)")}
+                onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
 
             {error && (
               <div
                 style={{
-                  background: "rgba(239,68,68,0.1)",
-                  border: "1px solid rgba(239,68,68,0.3)",
+                  background: "color-mix(in srgb, var(--destructive) 10%, transparent)",
+                  border: "1px solid color-mix(in srgb, var(--destructive) 30%, transparent)",
                   borderRadius: 8,
                   padding: "10px 14px",
-                  color: "#fca5a5",
+                  color: "var(--destructive)",
                   fontSize: 13,
                 }}
               >
@@ -221,20 +221,20 @@ export default function AdminLoginPage() {
               style={{
                 marginTop: 4,
                 width: "100%",
-                background: loading ? "#92400e" : "#f59e0b",
-                color: "#0f1117",
+                background: loading ? "var(--background)" : "var(--accent-text)",
+                color: "var(--background)",
                 border: "none",
                 borderRadius: 8,
                 padding: "13px",
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "inherit",
                 fontWeight: 700,
                 fontSize: 15,
                 cursor: loading ? "not-allowed" : "pointer",
                 letterSpacing: "0.04em",
                 transition: "background 0.15s, transform 0.1s",
               }}
-              onMouseEnter={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "#fbbf24")}
-              onMouseLeave={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "#f59e0b")}
+              onMouseEnter={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "var(--accent-text)")}
+              onMouseLeave={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "var(--accent-text)")}
             >
               {loading ? "Authenticating..." : "Enter Panel"}
             </button>

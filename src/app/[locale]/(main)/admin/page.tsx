@@ -40,10 +40,10 @@ function Revenue({ gel, others }: { gel: number; others: { currency: string; amo
     <>
       <span style={{ whiteSpace: "nowrap" }}>
         {gel.toLocaleString("en-US", { maximumFractionDigits: 2 })}
-        <span style={{ fontSize: "0.6em", marginLeft: 6, color: "#94a3b8" }}>₾</span>
+        <span style={{ fontSize: "0.6em", marginLeft: 6, color: "var(--muted-foreground)" }}>₾</span>
       </span>
       {rest.length > 0 && (
-        <div style={{ fontSize: 14, color: "#94a3b8", marginTop: 8 }}>
+        <div style={{ fontSize: 14, color: "var(--muted-foreground)", marginTop: 8 }}>
           {rest.map((o) => `+ ${money(o.amount, o.currency)}`).join("  ")}
         </div>
       )}
@@ -55,23 +55,23 @@ function StatCard({ label, value, delay }: StatItem) {
   return (
     <div
       style={{
-        background: "#13151f",
-        border: "1px solid #2a2d3a",
-        borderLeft: "3px solid #f59e0b",
+        background: "var(--card)",
+        border: "1px solid var(--border)",
+        borderLeft: "3px solid var(--accent-text)",
         borderRadius: 12,
         padding: "20px 24px",
         animation: `fadeUp 0.35s cubic-bezier(0.23,1,0.32,1) ${delay} both`,
       }}
     >
-      <div style={{ fontSize: 12, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
+      <div style={{ fontSize: 12, color: "var(--muted-foreground)", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 8 }}>
         {label}
       </div>
       <div
         style={{
-          fontFamily: "'JetBrains Mono', monospace",
+          fontFamily: "ui-monospace, monospace",
           fontWeight: 500,
           fontSize: 32,
-          color: "#f8fafc",
+          color: "var(--foreground)",
           lineHeight: 1,
         }}
       >
@@ -115,28 +115,28 @@ export default async function AdminDashboardPage({
       <div style={{ maxWidth: 480 }}>
         <div
           style={{
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "inherit",
             fontWeight: 700,
             fontSize: 28,
-            color: "#f8fafc",
+            color: "var(--foreground)",
             letterSpacing: "-0.02em",
             marginBottom: 12,
           }}
         >
           Access Restricted
         </div>
-        <p style={{ color: "#64748b", marginBottom: 24, lineHeight: 1.6 }}>
+        <p style={{ color: "var(--muted-foreground)", marginBottom: 24, lineHeight: 1.6 }}>
           You need to log in with authorized admin credentials to access this panel.
         </p>
         <Link
           href="/en/admin/login"
           style={{
             display: "inline-block",
-            background: "#f59e0b",
-            color: "#0f1117",
+            background: "var(--accent-text)",
+            color: "var(--background)",
             padding: "10px 24px",
             borderRadius: 8,
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "inherit",
             fontWeight: 700,
             fontSize: 14,
             textDecoration: "none",
@@ -281,31 +281,31 @@ export default async function AdminDashboardPage({
       <div style={{ marginBottom: 32 }}>
         <h1
           style={{
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "inherit",
             fontWeight: 800,
             fontSize: 30,
-            color: "#f8fafc",
+            color: "var(--foreground)",
             letterSpacing: "-0.02em",
             margin: 0,
           }}
         >
           Dashboard
         </h1>
-        <p style={{ color: "#64748b", marginTop: 6, fontSize: 14 }}>
+        <p style={{ color: "var(--muted-foreground)", marginTop: 6, fontSize: 14 }}>
           Welcome back. Here&apos;s what&apos;s happening.
         </p>
-        <p style={{ color: "#64748b", marginTop: 10, fontSize: 13 }}>
+        <p style={{ color: "var(--muted-foreground)", marginTop: 10, fontSize: 13 }}>
           {showInternal ? (
             <>
               Showing everyone, including our own accounts.{" "}
-              <Link href={switchHref(false)} style={{ color: "#fbbf24" }}>
+              <Link href={switchHref(false)} style={{ color: "var(--accent-text)" }}>
                 Hide our accounts
               </Link>
             </>
           ) : (
             <>
               Our own accounts are hidden ({hiddenCount} left out of the users, stats and revenue).{" "}
-              <Link href={switchHref(true)} style={{ color: "#fbbf24" }}>
+              <Link href={switchHref(true)} style={{ color: "var(--accent-text)" }}>
                 Show our accounts
               </Link>
             </>
@@ -319,10 +319,10 @@ export default async function AdminDashboardPage({
       {/* Usage this period */}
       <h2
         style={{
-          fontFamily: "'Syne', sans-serif",
+          fontFamily: "inherit",
           fontWeight: 700,
           fontSize: 18,
-          color: "#f8fafc",
+          color: "var(--foreground)",
           letterSpacing: "-0.01em",
           marginBottom: 16,
         }}
@@ -334,10 +334,10 @@ export default async function AdminDashboardPage({
       {/* Money in */}
       <h2
         style={{
-          fontFamily: "'Syne', sans-serif",
+          fontFamily: "inherit",
           fontWeight: 700,
           fontSize: 18,
-          color: "#f8fafc",
+          color: "var(--foreground)",
           letterSpacing: "-0.01em",
           marginBottom: 16,
         }}
@@ -359,10 +359,10 @@ export default async function AdminDashboardPage({
       <section id="languages">
         <h2
           style={{
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "inherit",
             fontWeight: 700,
             fontSize: 18,
-            color: "#f8fafc",
+            color: "var(--foreground)",
             letterSpacing: "-0.01em",
             marginBottom: 16,
             display: "flex",
@@ -370,7 +370,7 @@ export default async function AdminDashboardPage({
             gap: 10,
           }}
         >
-          <svg width="18" height="18" fill="none" stroke="#fbbf24" strokeWidth={2} viewBox="0 0 24 24">
+          <svg width="18" height="18" fill="none" stroke="var(--accent-text)" strokeWidth={2} viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
           </svg>
           Languages

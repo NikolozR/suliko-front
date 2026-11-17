@@ -6,11 +6,11 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
-  background: "#0f1117",
-  border: "1px solid #2a2d3a",
+  background: "var(--background)",
+  border: "1px solid var(--border)",
   borderRadius: 8,
   padding: "11px 14px",
-  color: "#f8fafc",
+  color: "var(--foreground)",
   fontSize: 14,
   outline: "none",
   boxSizing: "border-box",
@@ -22,7 +22,7 @@ const labelStyle: React.CSSProperties = {
   display: "block",
   fontSize: 11,
   fontWeight: 600,
-  color: "#64748b",
+  color: "var(--muted-foreground)",
   textTransform: "uppercase",
   letterSpacing: "0.08em",
   marginBottom: 8,
@@ -89,25 +89,25 @@ export default function LanguageManager() {
   return (
     <div
       style={{
-        background: "#13151f",
-        border: "1px solid #2a2d3a",
+        background: "var(--card)",
+        border: "1px solid var(--border)",
         borderRadius: 12,
         overflow: "hidden",
       }}
     >
       {/* Header */}
-      <div style={{ padding: "14px 16px", borderBottom: "1px solid #2a2d3a" }}>
+      <div style={{ padding: "14px 16px", borderBottom: "1px solid var(--border)" }}>
         <span
           style={{
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "inherit",
             fontWeight: 700,
             fontSize: 15,
-            color: "#f8fafc",
+            color: "var(--foreground)",
           }}
         >
           Add Language
         </span>
-        <p style={{ color: "#475569", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
+        <p style={{ color: "var(--muted-foreground)", fontSize: 13, marginTop: 4, marginBottom: 0 }}>
           ID is auto-assigned as next available integer.
         </p>
       </div>
@@ -129,8 +129,8 @@ export default function LanguageManager() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. English"
-                onFocus={(e) => (e.target.style.borderColor = "#fbbf24")}
-                onBlur={(e) => (e.target.style.borderColor = "#2a2d3a")}
+                onFocus={(e) => (e.target.style.borderColor = "var(--accent-text)")}
+                onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
             <div>
@@ -140,8 +140,8 @@ export default function LanguageManager() {
                 value={nameGeo}
                 onChange={(e) => setNameGeo(e.target.value)}
                 placeholder="e.g. ინგლისური"
-                onFocus={(e) => (e.target.style.borderColor = "#fbbf24")}
-                onBlur={(e) => (e.target.style.borderColor = "#2a2d3a")}
+                onFocus={(e) => (e.target.style.borderColor = "var(--accent-text)")}
+                onBlur={(e) => (e.target.style.borderColor = "var(--border)")}
               />
             </div>
           </div>
@@ -151,28 +151,28 @@ export default function LanguageManager() {
               type="submit"
               disabled={loading}
               style={{
-                background: loading ? "#92400e" : "#f59e0b",
-                color: "#0f1117",
+                background: loading ? "var(--background)" : "var(--accent-text)",
+                color: "var(--background)",
                 border: "none",
                 borderRadius: 8,
                 padding: "10px 20px",
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "inherit",
                 fontWeight: 700,
                 fontSize: 14,
                 cursor: loading ? "not-allowed" : "pointer",
                 transition: "background 0.15s",
               }}
-              onMouseEnter={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "#fbbf24")}
-              onMouseLeave={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "#f59e0b")}
+              onMouseEnter={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "var(--accent-text)")}
+              onMouseLeave={(e) => !loading && ((e.target as HTMLButtonElement).style.background = "var(--accent-text)")}
             >
               {loading ? "Saving…" : "Save Language"}
             </button>
 
             {message && (
-              <span style={{ fontSize: 13, color: "#86efac" }}>✓ {message}</span>
+              <span style={{ fontSize: 13, color: "var(--status-success)" }}>✓ {message}</span>
             )}
             {error && (
-              <span style={{ fontSize: 13, color: "#fca5a5" }}>⚠ {error}</span>
+              <span style={{ fontSize: 13, color: "var(--destructive)" }}>⚠ {error}</span>
             )}
           </div>
         </form>

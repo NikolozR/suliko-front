@@ -89,7 +89,7 @@ export default function AdminTabsWrapper({
           display: "flex",
           gap: 4,
           marginBottom: 24,
-          borderBottom: "1px solid #2a2d3a",
+          borderBottom: "1px solid var(--border)",
           paddingBottom: 0,
         }}
       >
@@ -106,20 +106,20 @@ export default function AdminTabsWrapper({
                 padding: "9px 18px",
                 background: "transparent",
                 border: "none",
-                borderBottom: active ? "2px solid #fbbf24" : "2px solid transparent",
-                color: active ? "#fbbf24" : "#64748b",
+                borderBottom: active ? "2px solid var(--accent-text)" : "2px solid transparent",
+                color: active ? "var(--accent-text)" : "var(--muted-foreground)",
                 cursor: "pointer",
                 fontSize: 14,
-                fontFamily: "'Syne', sans-serif",
+                fontFamily: "inherit",
                 fontWeight: active ? 700 : 500,
                 marginBottom: -1,
                 transition: "color 0.15s, border-color 0.15s",
               }}
               onMouseEnter={(e) => {
-                if (!active) (e.currentTarget as HTMLButtonElement).style.color = "#94a3b8";
+                if (!active) (e.currentTarget as HTMLButtonElement).style.color = "var(--muted-foreground)";
               }}
               onMouseLeave={(e) => {
-                if (!active) (e.currentTarget as HTMLButtonElement).style.color = "#64748b";
+                if (!active) (e.currentTarget as HTMLButtonElement).style.color = "var(--muted-foreground)";
               }}
             >
               {t.icon}
@@ -133,11 +133,11 @@ export default function AdminTabsWrapper({
       {loadError && (
         <div
           style={{
-            background: "rgba(239,68,68,0.08)",
-            border: "1px solid rgba(239,68,68,0.25)",
+            background: "color-mix(in srgb, var(--destructive) 8%, transparent)",
+            border: "1px solid color-mix(in srgb, var(--destructive) 25%, transparent)",
             borderRadius: 10,
             padding: "14px 18px",
-            color: "#fca5a5",
+            color: "var(--destructive)",
             fontSize: 14,
           }}
         >

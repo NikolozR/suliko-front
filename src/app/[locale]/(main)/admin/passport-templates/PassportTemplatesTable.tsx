@@ -45,7 +45,7 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
   return (
     <div>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <h2 style={{ fontFamily: "'Syne', sans-serif", fontWeight: 700, fontSize: 18, color: "#f8fafc", margin: 0 }}>
+        <h2 style={{ fontFamily: "inherit", fontWeight: 700, fontSize: 18, color: "var(--foreground)", margin: 0 }}>
           Passport Templates
         </h2>
         <Link
@@ -54,11 +54,11 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
             display: "inline-flex",
             alignItems: "center",
             gap: 6,
-            background: "#f59e0b",
-            color: "#0f1117",
+            background: "var(--accent-text)",
+            color: "var(--background)",
             padding: "8px 16px",
             borderRadius: 8,
-            fontFamily: "'Syne', sans-serif",
+            fontFamily: "inherit",
             fontWeight: 700,
             fontSize: 13,
             textDecoration: "none",
@@ -70,21 +70,21 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
       </div>
 
       {templates.length === 0 ? (
-        <div style={{ color: "#64748b", padding: "32px 0", textAlign: "center", fontSize: 14 }}>
+        <div style={{ color: "var(--muted-foreground)", padding: "32px 0", textAlign: "center", fontSize: 14 }}>
           No passport templates yet. Create your first one.
         </div>
       ) : (
         <div style={{ overflowX: "auto" }}>
           <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 13 }}>
             <thead>
-              <tr style={{ borderBottom: "1px solid #2a2d3a" }}>
+              <tr style={{ borderBottom: "1px solid var(--border)" }}>
                 {["Name", "Country", "Fields", "Status", "Created", ""].map((h) => (
                   <th
                     key={h}
                     style={{
                       textAlign: "left",
                       padding: "8px 12px",
-                      color: "#64748b",
+                      color: "var(--muted-foreground)",
                       fontWeight: 600,
                       textTransform: "uppercase",
                       fontSize: 11,
@@ -99,19 +99,19 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
             </thead>
             <tbody>
               {templates.map((tmpl) => (
-                <tr key={tmpl.id} style={{ borderBottom: "1px solid #1a1d28" }}>
-                  <td style={{ padding: "12px", color: "#f1f5f9" }}>
+                <tr key={tmpl.id} style={{ borderBottom: "1px solid var(--muted)" }}>
+                  <td style={{ padding: "12px", color: "var(--foreground)" }}>
                     <span style={{ fontWeight: 600 }}>{tmpl.name}</span>
                   </td>
-                  <td style={{ padding: "12px", color: "#94a3b8", whiteSpace: "nowrap" }}>
+                  <td style={{ padding: "12px", color: "var(--muted-foreground)", whiteSpace: "nowrap" }}>
                     {tmpl.country}
                   </td>
-                  <td style={{ padding: "12px", color: "#94a3b8" }}>
+                  <td style={{ padding: "12px", color: "var(--muted-foreground)" }}>
                     <span
                       style={{
                         display: "inline-block",
-                        background: "#1e2130",
-                        border: "1px solid #2a2d3a",
+                        background: "var(--muted)",
+                        border: "1px solid var(--border)",
                         borderRadius: 4,
                         padding: "2px 7px",
                         fontSize: 11,
@@ -132,9 +132,9 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
                         borderRadius: 20,
                         fontSize: 11,
                         fontWeight: 600,
-                        background: tmpl.is_active ? "rgba(34,197,94,0.12)" : "rgba(100,116,139,0.15)",
-                        color: tmpl.is_active ? "#4ade80" : "#64748b",
-                        border: `1px solid ${tmpl.is_active ? "rgba(34,197,94,0.25)" : "rgba(100,116,139,0.3)"}`,
+                        background: tmpl.is_active ? "color-mix(in srgb, var(--status-success) 12%, transparent)" : "color-mix(in srgb, var(--muted-foreground) 15%, transparent)",
+                        color: tmpl.is_active ? "var(--status-success)" : "var(--muted-foreground)",
+                        border: `1px solid ${tmpl.is_active ? "color-mix(in srgb, var(--status-success) 25%, transparent)" : "color-mix(in srgb, var(--muted-foreground) 30%, transparent)"}`,
                         cursor: "pointer",
                         opacity: toggling === tmpl.id ? 0.5 : 1,
                       }}
@@ -143,7 +143,7 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
                       {tmpl.is_active ? "Active" : "Inactive"}
                     </button>
                   </td>
-                  <td style={{ padding: "12px", color: "#64748b", whiteSpace: "nowrap" }}>
+                  <td style={{ padding: "12px", color: "var(--muted-foreground)", whiteSpace: "nowrap" }}>
                     {new Date(tmpl.created_at).toLocaleDateString("en-GB")}
                   </td>
                   <td style={{ padding: "12px", whiteSpace: "nowrap" }}>
@@ -156,9 +156,9 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
                           gap: 4,
                           padding: "5px 10px",
                           background: "transparent",
-                          border: "1px solid #2a2d3a",
+                          border: "1px solid var(--border)",
                           borderRadius: 6,
-                          color: "#94a3b8",
+                          color: "var(--muted-foreground)",
                           fontSize: 12,
                           textDecoration: "none",
                           cursor: "pointer",
@@ -176,9 +176,9 @@ export default function PassportTemplatesTable({ initialTemplates }: Props) {
                           gap: 4,
                           padding: "5px 10px",
                           background: "transparent",
-                          border: "1px solid rgba(239,68,68,0.3)",
+                          border: "1px solid color-mix(in srgb, var(--destructive) 30%, transparent)",
                           borderRadius: 6,
-                          color: "#f87171",
+                          color: "var(--destructive)",
                           fontSize: 12,
                           cursor: "pointer",
                           opacity: deleting === tmpl.id ? 0.5 : 1,
