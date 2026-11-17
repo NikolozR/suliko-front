@@ -3,7 +3,10 @@ import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/features/ui/components/ui/dialog';
 import { Button } from '@/features/ui/components/ui/button';
-import { Copy, CheckCircle } from 'lucide-react';
+import { Copy, CheckCircle, Briefcase } from 'lucide-react';
+import { useLocale } from 'next-intl';
+import { useHasOffice } from '@/features/onboarding/components/FirstRunCard';
+import { OFFICE_URL, officeLocale } from '@/features/sulikoOffice/lib/officeLinks';
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -12,6 +15,8 @@ interface WelcomeModalProps {
 
 const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) => {
   const t = useTranslations('WelcomeModal');
+  const locale = useLocale();
+  const hasOffice = useHasOffice();
   const [emailCopied, setEmailCopied] = useState(false);
 
   const copyEmail = async () => {
@@ -37,6 +42,18 @@ const WelcomeModal: React.FC<WelcomeModalProps> = ({ isOpen, onClose }) => {
           <p>{t('thankYou')}</p>
           
           <p className="font-semibold text-green-600 dark:text-green-400">{t('freePages')}</p>
+
+          {!hasOffice && (
+            <div className="border-border rounded-lg border p-3">
+              <p className="mb-2 text-sm">{t('officeIntro')}</p>
+              <Button asChild variant="outline" size="sm">
+                <a href={`${OFFICE_URL}/${officeLocale(locale)}/dashboard`}>
+                  <Briefcase className="h-4 w-4" />
+                  {t('openOffice')}
+                </a>
+              </Button>
+            </div>
+          )}
           
           <p>{t('betaNotice')}</p>
           

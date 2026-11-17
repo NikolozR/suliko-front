@@ -4,6 +4,7 @@ import MobileBottomNav from "@/shared/components/MobileBottomNav";
 import { cookies } from "next/headers";
 import { getUserProfile } from "@/features/auth/services/userService";
 import ResponsiveMainContent from "@/shared/components/ResponsiveMainContent";
+import { OfficePresenceProvider } from "@/features/onboarding/components/FirstRunCard";
 import { officeContext } from "@/shared/nav/officeNav";
 import { ZoneGuard } from "@office/shared/components/zone-guard";
 import { enabledLocalModules } from "@office/i18n/office-path";
@@ -48,6 +49,7 @@ export default async function MainLayout({
 
   return (
     <ShortcutsProvider>
+      <OfficePresenceProvider hasOffice={Boolean(office)}>
       <div className="relative">
         <ZoneGuard owns={{ only: localOffice }} />
         {/* Which Office modules have clean addresses here (office/i18n/navigation.ts), before anything renders. */}
@@ -63,6 +65,7 @@ export default async function MainLayout({
         </ResponsiveMainContent>
         <MobileBottomNav office={office} />
       </div>
+      </OfficePresenceProvider>
       <ShortcutsDialog />
     </ShortcutsProvider>
   );
