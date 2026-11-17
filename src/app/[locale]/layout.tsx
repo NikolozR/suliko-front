@@ -58,7 +58,7 @@ const geistMono = Geist_Mono({
 });
 
 const DOMAIN_KA = "https://suliko.ge";
-const DOMAIN_EN = "https://suliko.io";
+const DOMAIN_EN = "https://suliko.ai";
 const DOMAIN_PL = "https://suliko.ge/pl";
 
 function getCanonical(locale: string): string {
@@ -127,7 +127,9 @@ const organizationSchema = {
   taxID: COMPANY_ID,
   url: "https://suliko.ge",
   logo: "https://suliko.ge/Suliko_logo_black.svg",
+  alternateName: ["Suliko AI", "suliko.ai"],
   sameAs: [
+    "https://suliko.ai",
     "https://www.facebook.com/profile.php?id=61564358761003",
     "https://www.linkedin.com/company/suliko-ai/",
   ],

@@ -47,8 +47,8 @@ export default function PricingSection() {
   const [isPayAsYouGoModalOpen, setIsPayAsYouGoModalOpen] = useState(false);
   const [payPages, setPayPages] = useState(10);
 
-  // Choose email based on current hostname: use info@suliko.io for suliko.io, otherwise use info@suliko.ge
-  const email = typeof window !== 'undefined' && window.location.hostname.endsWith('suliko.io') ? 'info@suliko.io' : 'info@suliko.ge';
+  // Choose email based on current hostname: use info@suliko.ai for suliko.ai (and legacy suliko.io), otherwise use info@suliko.ge
+  const email = typeof window !== 'undefined' && window.location.hostname.endsWith('suliko.ai') || window.location.hostname.endsWith('suliko.io') ? 'info@suliko.ai' : 'info@suliko.ge';
 
   const cheaperPct = (p: { pages: number; price: number }) =>
     Math.round((1 - p.price / p.pages / PAY_AS_YOU_GO_PER_PAGE) * 100);

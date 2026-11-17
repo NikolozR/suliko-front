@@ -69,7 +69,7 @@ export default function HeroDemo() {
 
   useEffect(() => {
     const h = window.location.hostname;
-    if (h.endsWith(".io")) setHost("suliko.io");
+    if (h.endsWith(".io")) setHost("suliko.ai");
     else if (h.endsWith(".ai")) setHost("suliko.ai");
   }, []);
 

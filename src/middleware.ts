@@ -9,7 +9,7 @@ function getDefaultLocaleForDomain(hostname: string): 'ka' | 'en' {
   if (hostname.includes('suliko.ge')) {
     return 'ka';
   }
-  if (hostname.includes('suliko.io')) {
+  if (hostname.includes('suliko.ai') || hostname.includes('suliko.io')) {
     return 'en';
   }
   return 'en'; // fallback

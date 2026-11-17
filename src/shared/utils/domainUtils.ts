@@ -1,6 +1,6 @@
 /**
  * Get the current domain/hostname
- * @returns The current hostname (e.g., 'suliko.ge', 'suliko.io', 'localhost')
+ * @returns The current hostname (e.g., 'suliko.ge', 'suliko.ai', 'localhost')
  */
 export function getCurrentDomain(): string {
   if (typeof window === 'undefined') {
@@ -19,23 +19,28 @@ export function isSulikoGe(): boolean {
 }
 
 /**
- * Check if the current domain is suliko.io
- * @returns true if the domain is suliko.io
+ * Check if the current domain is suliko.ai (the English/EUR site).
+ * suliko.io is the former address and still counts, so it behaves identically
+ * until its redirect is switched on.
+ * @returns true if the domain is suliko.ai or the legacy suliko.io
  */
-export function isSulikoIo(): boolean {
+export function isSulikoAi(): boolean {
   const domain = getCurrentDomain();
-  return domain.includes('suliko.io') || domain === 'suliko.io';
+  return domain.includes('suliko.ai') || domain.includes('suliko.io');
 }
+
+/** @deprecated suliko.io moved to suliko.ai; use isSulikoAi. */
+export const isSulikoIo = isSulikoAi;
 
 /**
  * Get the required verification method based on the domain
- * @returns 'phone' for suliko.ge, 'email' for suliko.io, null for other domains
+ * @returns 'phone' for suliko.ge, 'email' for suliko.ai, null for other domains
  */
 export function getRequiredVerificationMethod(): 'phone' | 'email' | null {
   if (isSulikoGe()) {
     return 'phone';
   }
-  if (isSulikoIo()) {
+  if (isSulikoAi()) {
     return 'email';
   }
   return null;
@@ -44,7 +49,7 @@ export function getRequiredVerificationMethod(): 'phone' | 'email' | null {
 /**
  * Get the default locale based on the domain
  * @param hostname Optional hostname, defaults to current window location
- * @returns 'ka' for suliko.ge, 'en' for suliko.io, 'ka' as fallback
+ * @returns 'ka' for suliko.ge, 'en' for suliko.ai, 'ka' as fallback
  */
 export function getDefaultLocale(hostname?: string): 'ka' | 'en' {
   const domain = hostname || (typeof window !== 'undefined' ? window.location.hostname : '');
@@ -52,7 +57,7 @@ export function getDefaultLocale(hostname?: string): 'ka' | 'en' {
   if (domain.includes('suliko.ge') || domain === 'suliko.ge') {
     return 'ka';
   }
-  if (domain.includes('suliko.io') || domain === 'suliko.io') {
+  if (domain.includes('suliko.ai') || domain.includes('suliko.io')) {
     return 'en';
   }
   // Default fallback

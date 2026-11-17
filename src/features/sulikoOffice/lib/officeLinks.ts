@@ -33,7 +33,7 @@ export const OFFICE_ORIGINS: readonly string[] = [
   FORMER_OFFICE_URL,
   // Served here, Office's addresses are this site's own.
   ...(OFFICE_PATH
-    ? ["https://suliko.ge", "https://www.suliko.ge", "https://suliko.io", "https://www.suliko.io"]
+    ? ["https://suliko.ge", "https://www.suliko.ge", "https://suliko.io", "https://www.suliko.io", "https://suliko.ai", "https://www.suliko.ai"]
     : []),
   ...(process.env.NODE_ENV === "development"
     ? ["http://localhost:3000", ...(OFFICE_PATH && typeof window !== "undefined" ? [window.location.origin] : [])]

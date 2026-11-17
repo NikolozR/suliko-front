@@ -18,7 +18,7 @@ export function ContactPaymentModal({ isOpen, onClose }: ContactPaymentModalProp
   const contactPhone = NOTARY_PHONE;
   const contactPhoneHref = NOTARY_PHONE;
   const whatsappHref = `https://wa.me/${NOTARY_WHATSAPP}`;
-  const contactEmail = "info@suliko.io";
+  const contactEmail = "info@suliko.ai";
   const bankAccount = "GE42BG0000000607709128";
 
   const handleCopyBankAccount = async () => {

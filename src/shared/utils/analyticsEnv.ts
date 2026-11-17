@@ -37,6 +37,8 @@ export const ANALYTICS_ALLOWED_HOSTS: readonly string[] = [
   'www.suliko.ge',
   'suliko.io',
   'www.suliko.io',
+  'suliko.ai',
+  'www.suliko.ai',
 ]
 
 /**
