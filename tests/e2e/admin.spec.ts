@@ -13,43 +13,15 @@ test.skip(
 
 test.use({ storageState: 'playwright/.auth/admin.json' });
 
-test.describe('Admin login page (UI only)', () => {
-  // A signed-in admin is redirected away from the login page, so look at it signed out.
+test.describe('Old admin login address', () => {
+  // A signed-in admin goes straight to the console, so look at it signed out.
   test.use({ storageState: { cookies: [], origins: [] } });
 
-  test.beforeEach(async ({ page }) => {
+  test('goes to the normal sign-in, with the console to come back to', async ({ page }) => {
     await page.goto('/en/admin/login', { waitUntil: 'domcontentloaded' });
+    await expect(page).toHaveURL(/\/en\/sign-in\?next=%2Fadmin/, { timeout: 20_000 });
+    await expect(page.locator('input[name="identifier"]')).toBeVisible({ timeout: 20_000 });
   });
-
-  test('SULIKO brand heading is visible', async ({ page }) => {
-    // The admin layout's sidebar shows the brand too, and so does the <title>.
-    await expect(page.getByRole('main').getByText('SULIKO', { exact: true })).toBeVisible({ timeout: 8_000 });
-  });
-
-  test('Admin Access label is visible', async ({ page }) => {
-    await expect(page.getByText('Admin Access')).toBeVisible();
-  });
-
-  test('phone input is visible', async ({ page }) => {
-    await expect(page.locator('input[placeholder="5XX XXX XXX"]')).toBeVisible();
-  });
-
-  test('password input is visible', async ({ page }) => {
-    await expect(page.locator('input[type="password"]')).toBeVisible();
-  });
-
-  test('Enter Panel button is visible', async ({ page }) => {
-    await expect(page.getByRole('button', { name: /Enter Panel/i })).toBeVisible();
-  });
-
-  test('wrong credentials show error message', async ({ page }) => {
-    await page.locator('input[placeholder="5XX XXX XXX"]').fill('000000000');
-    await page.locator('input[type="password"]').fill('wrongpass');
-    await page.getByRole('button', { name: /Enter Panel/i }).click();
-    // The inline error box (red text); its wording depends on the API's answer.
-    await expect(page.locator('div[style*="252, 165, 165"]')).toBeVisible({ timeout: 10_000 });
-  });
-
 });
 
 test.describe('Admin dashboard', () => {
