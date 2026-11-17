@@ -1437,3 +1437,31 @@ html.dark .sidebar-main {
   /* Without its lift-off the stamp would sit on the seal for good. */
   .lp-stamp { display: none; }
 }
+
+/*
+ * ---- Merchant landing (international, English) -------------------------------------------
+ * Added for src/shared/components/merchant/*. Purely additive: nothing above this point was
+ * changed. See `mcp__ccd_turn__wrap_up`/memory note "suliko-merchant-site" for the background.
+ */
+@media (prefers-reduced-motion: reduce) {
+  [data-merchant-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+.bg-dot-grid {
+  background-image: radial-gradient(circle, color-mix(in srgb, var(--foreground) 14%, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+.bg-dot-grid-dark {
+  background-image: radial-gradient(circle, rgba(255, 255, 255, 0.14) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+.glow-blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+  pointer-events: none;
+}

@@ -1,7 +1,16 @@
 import dynamic from "next/dynamic";
+import { getLocale } from "next-intl/server";
 import LandingHeader from "@/shared/components/LandingHeader";
 import HeroSection from "@/shared/components/HeroSection";
 import LandingClientExtras from "./_LandingClientExtras";
+import MerchantHeader from "@/shared/components/merchant/MerchantHeader";
+import MerchantHero from "@/shared/components/merchant/MerchantHero";
+import MerchantHowItWorks from "@/shared/components/merchant/MerchantHowItWorks";
+import MerchantFeatures from "@/shared/components/merchant/MerchantFeatures";
+import MerchantOfficeSection from "@/shared/components/merchant/MerchantOfficeSection";
+import MerchantDevelopers from "@/shared/components/merchant/MerchantDevelopers";
+import MerchantClosingCta from "@/shared/components/merchant/MerchantClosingCta";
+import MerchantFooter from "@/shared/components/merchant/MerchantFooter";
 
 // Below the fold: split into their own chunks, but still rendered on the
 // server, so the HTML carries every section (crawlers, first paint) and there
@@ -79,7 +88,43 @@ const faqSchema = {
   ],
 };
 
-export default function LandingPage() {
+/**
+ * The international (English) visitor gets the new Legora-style landing — one document moving
+ * through upload, translate, format, export, then into Suliko Office — built in
+ * `shared/components/merchant/`. Georgian and Polish keep the original landing exactly as it was;
+ * nothing about it moved or changed. See memory note "suliko-merchant-site" for the brief.
+ *
+ * Real pricing (`PricingSection`) is reused as-is in both versions rather than restyled, so the
+ * numbers shown are never a copy that can drift from the one place they're actually maintained.
+ */
+export default async function LandingPage() {
+  const locale = await getLocale();
+
+  if (locale === "en") {
+    return (
+      <>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+        <div id="top" className="min-h-screen bg-background">
+          <MerchantHeader />
+          <main>
+            <MerchantHero />
+            <MerchantHowItWorks />
+            <MerchantFeatures />
+            <MerchantOfficeSection />
+            <MerchantDevelopers />
+            <PricingSection />
+            <MerchantClosingCta />
+          </main>
+          <MerchantFooter />
+          <LandingClientExtras />
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       <script
