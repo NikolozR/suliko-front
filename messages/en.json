@@ -2522,5 +2522,16 @@
     "topUpHint": "You start with free pages; add more when you need them.",
     "office": "Try Suliko Office",
     "officeHint": "Orders, clients and invoices for translators and bureaus."
+  },
+  "AdminNav": {
+    "nav": "Admin sections",
+    "users": "Users and payments",
+    "referrals": "Referrals",
+    "promoCodes": "Promo codes",
+    "languages": "Languages",
+    "blog": "Blog",
+    "passportTemplates": "Passport templates",
+    "workspaces": "Workspaces",
+    "platformBilling": "Platform billing"
   }
 }
