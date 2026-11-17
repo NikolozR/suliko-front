@@ -6,6 +6,7 @@ import { ArrowRight, Zap } from "lucide-react";
 import { useState } from "react";
 import { LoadingButton } from "@/features/ui/components/loading";
 import HeroDemo from "@/shared/components/landing/HeroDemo";
+import MetalCta from "@/shared/components/landing/MetalCta";
 
 export default function HeroSection() {
   const t = useTranslations("Landing");
@@ -71,20 +72,22 @@ export default function HeroSection() {
                 onMouseEnter={handleMouseEnter}
                 onClick={handleGetStartedClick}
               >
-                <LoadingButton
-                  size="lg"
-                  className="w-full sm:w-auto group"
-                  isLoading={isNavigating}
-                  loadingText={t("loading")}
-                >
-                  <span className="flex items-center gap-2">
-                    {t("cta")}
-                    <ArrowRight
-                      className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                      aria-hidden="true"
-                    />
-                  </span>
-                </LoadingButton>
+                <MetalCta preset="silver" className="w-full sm:w-auto">
+                  <LoadingButton
+                    size="lg"
+                    className="w-full sm:w-auto group"
+                    isLoading={isNavigating}
+                    loadingText={t("loading")}
+                  >
+                    <span className="flex items-center gap-2">
+                      {t("cta")}
+                      <ArrowRight
+                        className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
+                        aria-hidden="true"
+                      />
+                    </span>
+                  </LoadingButton>
+                </MetalCta>
               </Link>
             </div>
 
