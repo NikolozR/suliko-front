@@ -2522,5 +2522,16 @@
     "topUpHint": "Zaczynasz z darmowymi stronami; dokup, gdy będzie trzeba.",
     "office": "Wypróbuj Suliko Office",
     "officeHint": "Zlecenia, klienci i faktury dla tłumaczy i biur."
+  },
+  "AdminNav": {
+    "nav": "Sekcje administracji",
+    "users": "Użytkownicy i płatności",
+    "referrals": "Polecenia",
+    "promoCodes": "Kody promocyjne",
+    "languages": "Języki",
+    "blog": "Blog",
+    "passportTemplates": "Szablony paszportów",
+    "workspaces": "Przestrzenie robocze",
+    "platformBilling": "Rozliczenia platformy"
   }
 }
