@@ -2484,5 +2484,30 @@
     "subscriptionRenewedNamed": "Twój plan {plan} został odnowiony.",
     "subscriptionRenewalFailed": "Nie udało się odnowić planu. Sprawdź zapisaną kartę.",
     "subscriptionRenewalFailedNamed": "Nie udało się odnowić planu {plan}. Sprawdź zapisaną kartę."
+  },
+  "Search": {
+    "title": "Szukaj",
+    "button": "Szukaj...",
+    "placeholder": "Znajdź stronę lub swoje tłumaczenie",
+    "hint": "Wpisz część nazwy pliku, aby znaleźć tłumaczenie.",
+    "pagesTitle": "Strony",
+    "translations": "Twoje tłumaczenia",
+    "searching": "Szukam...",
+    "nothing": "Nic nie znaleziono.",
+    "failed": "Nie udało się połączyć z wyszukiwaniem. Spróbuj za chwilę.",
+    "keyMove": "przesuń",
+    "keyOpen": "otwórz",
+    "keyClose": "zamknij",
+    "pages": {
+      "text": "Nowe tłumaczenie",
+      "passport": "Paszport",
+      "projects": "Projekty",
+      "history": "Historia",
+      "orders": "Zlecenia",
+      "billing": "Płatności i doładowanie",
+      "profile": "Profil",
+      "price": "Cennik",
+      "help": "Pomoc"
+    }
   }
 }

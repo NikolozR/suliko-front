@@ -2484,5 +2484,30 @@
     "subscriptionRenewedNamed": "Your {plan} plan was renewed.",
     "subscriptionRenewalFailed": "We could not renew your plan. Check your saved card.",
     "subscriptionRenewalFailedNamed": "We could not renew your {plan} plan. Check your saved card."
+  },
+  "Search": {
+    "title": "Search",
+    "button": "Search...",
+    "placeholder": "Find a page or one of your translations",
+    "hint": "Type part of a file name to find a translation.",
+    "pagesTitle": "Pages",
+    "translations": "Your translations",
+    "searching": "Searching...",
+    "nothing": "Nothing found.",
+    "failed": "Search could not be reached. Try again in a moment.",
+    "keyMove": "move",
+    "keyOpen": "open",
+    "keyClose": "close",
+    "pages": {
+      "text": "New translation",
+      "passport": "Passport",
+      "projects": "Projects",
+      "history": "History",
+      "orders": "Orders",
+      "billing": "Billing and top-up",
+      "profile": "Profile",
+      "price": "Pricing",
+      "help": "Help"
+    }
   }
 }
