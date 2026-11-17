@@ -1,10 +1,9 @@
-import { isAdminRequest } from "@/lib/admin-auth";
-import { redirect } from "next/navigation";
+import { requireAdminPage } from "@/features/admin/access";
 import { getAdminBlogPosts } from "@/lib/site-content-admin";
 import BlogPostsTable, { PostRow } from "./BlogPostsTable";
 
 export default async function AdminBlogPage() {
-  if (!(await isAdminRequest())) redirect("/en/admin/login");
+  await requireAdminPage("/admin/blog");
 
   const posts: PostRow[] = (await getAdminBlogPosts()) ?? [];
 

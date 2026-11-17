@@ -1,9 +1,8 @@
-import { isAdminRequest } from "@/lib/admin-auth";
-import { redirect } from "next/navigation";
+import { requireAdminPage } from "@/features/admin/access";
 import PassportTemplateForm from "../PassportTemplateForm";
 
 export default async function NewPassportTemplatePage() {
-  if (!(await isAdminRequest())) redirect("/en/admin/login");
+  await requireAdminPage("/admin/passport-templates/new");
 
   return <PassportTemplateForm />;
 }

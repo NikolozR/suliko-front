@@ -10,15 +10,15 @@ test.describe('Admin panel is closed to visitors', () => {
     await expect(page.locator('table')).toHaveCount(0);
   });
 
-  test('/en/admin/blog redirects to the admin login', async ({ page }) => {
+  test('/en/admin/blog sends a visitor to the normal sign-in, to come back afterwards', async ({ page }) => {
     await page.goto('/en/admin/blog', { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(/\/admin\/login/, { timeout: 20_000 });
+    await expect(page).toHaveURL(/\/en\/sign-in\?next=%2Fadmin%2Fblog/, { timeout: 20_000 });
   });
 
-  test('admin login page has its phone and password fields', async ({ page }) => {
+  test('the old admin login address goes to the normal sign-in', async ({ page }) => {
     await page.goto('/en/admin/login', { waitUntil: 'domcontentloaded' });
-    await expect(page.locator('input[placeholder="5XX XXX XXX"]')).toBeVisible({ timeout: 20_000 });
-    await expect(page.locator('input[type="password"]')).toBeVisible();
-    await expect(page.getByRole('button', { name: /Enter Panel/i })).toBeVisible();
+    await expect(page).toHaveURL(/\/en\/sign-in\?next=%2Fadmin/, { timeout: 20_000 });
+    await expect(page.locator('input[name="identifier"]')).toBeVisible({ timeout: 20_000 });
+    await expect(page.locator('input[name="password"]')).toBeVisible();
   });
 });

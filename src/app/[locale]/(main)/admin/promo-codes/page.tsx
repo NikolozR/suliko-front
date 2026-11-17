@@ -1,9 +1,8 @@
-import { isAdminRequest } from "@/lib/admin-auth";
-import { redirect } from "next/navigation";
+import { requireAdminPage } from "@/features/admin/access";
 import PromoCodesManager from "./PromoCodesManager";
 
 export default async function AdminPromoCodesPage() {
-  if (!(await isAdminRequest())) redirect("/en/admin/login");
+  await requireAdminPage("/admin/promo-codes");
 
   return <PromoCodesManager />;
 }

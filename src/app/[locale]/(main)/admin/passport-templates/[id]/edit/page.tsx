@@ -1,4 +1,4 @@
-import { isAdminRequest } from "@/lib/admin-auth";
+import { requireAdminPage } from "@/features/admin/access";
 import { redirect } from "next/navigation";
 import { getAdminPassportTemplate } from "@/lib/site-content-admin";
 import PassportTemplateForm from "../../PassportTemplateForm";
@@ -8,7 +8,7 @@ export default async function EditPassportTemplatePage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  if (!(await isAdminRequest())) redirect("/en/admin/login");
+  await requireAdminPage("/admin/passport-templates");
 
   const { id } = await params;
 
