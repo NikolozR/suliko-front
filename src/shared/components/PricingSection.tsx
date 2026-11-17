@@ -50,6 +50,13 @@ export default function PricingSection() {
   // Choose email based on current hostname: use info@suliko.ai for suliko.ai (and legacy suliko.io), otherwise use info@suliko.ge
   const email = typeof window !== 'undefined' && /suliko\.(ai|io)$/.test(window.location.hostname) ? 'info@suliko.ai' : 'info@suliko.ge';
 
+  // English shows the same number with a euro sign instead of a lari one
+  // (never a real conversion - the price actually charged at checkout stays
+  // in lari either way). Scoped to this landing section's own strings only.
+  const toEuro = (text: string) =>
+    locale === "en" ? text.replace(/₾/g, "€").replace(/\bGEL\b/g, "EUR") : text;
+  const priceFor = (raw: string) => (locale === "en" ? toEuro(raw) : formatPriceFromString(raw));
+
   const cheaperPct = (p: { pages: number; price: number }) =>
     Math.round((1 - p.price / p.pages / PAY_AS_YOU_GO_PER_PAGE) * 100);
 
@@ -67,15 +74,15 @@ export default function PricingSection() {
   const translatorPlans: Plan[] = [
     {
       name: t("starter.title"),
-      price: formatPriceFromString(t("starter.price")),
+      price: priceFor(t("starter.price")),
       period: t("starter.period"),
       description: t("starter.description"),
       icon: Star,
       features: [
         t("starter.features.0"),
-        t("landing.savesVsPayAsYouGo", { amount: savingsGel(PACKAGES.starter), plan: t("payAsYouGo.title") }),
+        toEuro(t("landing.savesVsPayAsYouGo", { amount: savingsGel(PACKAGES.starter), plan: t("payAsYouGo.title") })),
       ],
-      perPage: t("landing.starterPerPage"),
+      perPage: toEuro(t("landing.starterPerPage")),
       cheaperPct: cheaperPct(PACKAGES.starter),
       priceGel: PACKAGES.starter.price,
       cta: t("landing.starterCta"),
@@ -86,17 +93,17 @@ export default function PricingSection() {
     },
     {
       name: t("professional.title"),
-      price: formatPriceFromString(t("professional.price")),
+      price: priceFor(t("professional.price")),
       period: t("professional.period"),
       description: t("landing.professionalDescription"),
       icon: Zap,
       features: [
         t("professional.features.0"),
-        t("landing.savesVsPayAsYouGo", { amount: savingsGel(PACKAGES.professional), plan: t("payAsYouGo.title") }),
+        toEuro(t("landing.savesVsPayAsYouGo", { amount: savingsGel(PACKAGES.professional), plan: t("payAsYouGo.title") })),
         t("professional.features.3"),
         t("professional.features.4"),
       ],
-      perPage: t("landing.professionalPerPage"),
+      perPage: toEuro(t("landing.professionalPerPage")),
       cheaperPct: cheaperPct(PACKAGES.professional),
       priceGel: PACKAGES.professional.price,
       cta: t("landing.professionalCta"),
@@ -107,12 +114,12 @@ export default function PricingSection() {
     },
     {
       name: t("payAsYouGo.title"),
-      price: formatPriceFromString(t("payAsYouGo.price")),
+      price: priceFor(t("payAsYouGo.price")),
       period: t("landing.payAsYouGoPeriod"),
       description: t("payAsYouGo.description"),
       icon: CreditCard,
       features: [
-        t("payAsYouGo.features.0"),
+        toEuro(t("payAsYouGo.features.0")),
         t("payAsYouGo.features.1"),
       ],
       cta: t("landing.payAsYouGoCta"),
@@ -128,7 +135,7 @@ export default function PricingSection() {
   const businessPlans: Plan[] = [
     {
       name: t("business.title"),
-      price: formatPriceFromString(t("business.price")),
+      price: priceFor(t("business.price")),
       period: t("business.period"),
       description: t("business.description"),
       icon: Building2,
@@ -147,7 +154,7 @@ export default function PricingSection() {
     },
     {
       name: t("enterpriseBusiness.title"),
-      price: formatPriceFromString(t("enterpriseBusiness.price")),
+      price: priceFor(t("enterpriseBusiness.price")),
       period: t("enterpriseBusiness.period"),
       description: t("enterpriseBusiness.description"),
       icon: Users,
@@ -381,15 +388,15 @@ export default function PricingSection() {
                       </Button>
                     </div>
                     <p className="text-center text-sm font-semibold text-foreground">
-                      {t("landing.payAsYouGoTotal", { amount: payPages * PAY_AS_YOU_GO_PER_PAGE })}
+                      {toEuro(t("landing.payAsYouGoTotal", { amount: payPages * PAY_AS_YOU_GO_PER_PAGE }))}
                     </p>
                     {payPages > PACKAGES.starter.price && (
                       <p className="text-center text-sm text-green-600 dark:text-green-400">
-                        {t("landing.cheaperHint", {
+                        {toEuro(t("landing.cheaperHint", {
                           plan: payPages <= PACKAGES.starter.pages ? t("starter.title") : t("professional.title"),
                           pages: payPages <= PACKAGES.starter.pages ? PACKAGES.starter.pages : PACKAGES.professional.pages,
                           price: payPages <= PACKAGES.starter.pages ? PACKAGES.starter.price : PACKAGES.professional.price,
-                        })}
+                        }))}
                       </p>
                     )}
                   </div>
