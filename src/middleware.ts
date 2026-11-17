@@ -50,10 +50,16 @@ export default function middleware(request: NextRequest) {
   // browsers or search engines holding on to the old one, and in one hop from
   // `/` rather than two. The query string stays, so UTM tags and ad click ids
   // reach the page.
+  //
+  // English is the one exception: its bare address is itself the international
+  // landing page (`[locale]/page.tsx`), not a redirect to either product — so a
+  // request for it is left alone here and falls through to the locale-prefixing
+  // logic and intlMiddleware below, same as any other English page.
   const localeRoot = routing.locales.find((locale) => pathname === `/${locale}` || pathname === `/${locale}/`);
-  if (pathname === '/' || localeRoot) {
+  const rootLocale = localeRoot ?? (pathname === '/' ? defaultLocale : undefined);
+  if (rootLocale && rootLocale !== 'en') {
     const url = request.nextUrl.clone();
-    url.pathname = `/${localeRoot ?? defaultLocale}/${HOME_PRODUCT}`;
+    url.pathname = `/${rootLocale}/${HOME_PRODUCT}`;
     return NextResponse.redirect(url, 307);
   }
 
