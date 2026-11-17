@@ -43,7 +43,7 @@ function walk(file) {
 }
 const appDir = path.join(OFFICE, "src/app/[locale]");
 // Office's server routes (sign-in, files, invoices, exports): always all of
-// them. Served here only for the names in OFFICE_LOCAL_API (office-zone.ts).
+// them. All are served here (office-zone.ts).
 const apiDir = path.join(OFFICE, "src/app/api");
 for (const f of fs.readdirSync(apiDir, { recursive: true })) {
   const full = path.join(apiDir, f);
@@ -207,7 +207,7 @@ adapt("src/app/app/[locale]/layout.tsx", [
 ]);
 adapt("src/app/app/[locale]/layout.tsx", [
   // Office's build owns every module except the moved ones; this one owns
-  // only the moved ones that are switched on (OFFICE_LOCAL_MODULES).
+  // only the moved ones (every module now).
   // Only modules whose code has moved: office/i18n/office-path.ts.
   [
     'const moved = (process.env.OFFICE_MOVED_MODULES ?? "")\n    .split(",")\n    .map((m) => m.trim())\n    .filter(Boolean);',

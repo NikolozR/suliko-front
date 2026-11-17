@@ -82,7 +82,7 @@ export default async function LocaleLayout({
 
   // Modules already moved into suliko.ge's own app (phase 3): every page of
   // them is answered there, so this build must not navigate to them in place.
-  // Keep it the same as OFFICE_LOCAL_MODULES on suliko-front.
+  // All of them now (office/i18n/office-path.ts).
   const moved = enabledLocalModules();
 
   return (

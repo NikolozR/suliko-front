@@ -9,9 +9,9 @@ import { createElement, forwardRef, type ComponentProps } from "react";
 /**
  * Addresses of Office's screens on suliko.ge.
  *
- * A module that has moved into this app (and is switched on, OFFICE_LOCAL_MODULES)
- * has a clean address: /ka/clients. One still answered by the Office deployment
- * keeps /app/ka/orders until it moves. Office's code writes locale-less paths
+ * Every Office module is served in this app
+ * at a clean address: /ka/clients. The old /app/ka/orders form
+ * redirects to it. Office's code writes locale-less paths
  * ("/clients/2") and these helpers put the right prefix in front, as next-intl's
  * did before; they replace createNavigation, whose prefix is the same for every
  * page.
