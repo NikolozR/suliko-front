@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Menu, X, ArrowRight } from "lucide-react";
+import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 
 const NAV = [
   { href: "#product", label: "Product" },
@@ -61,6 +62,7 @@ export default function MerchantHeader() {
         </nav>
 
         <div className="hidden items-center gap-5 lg:flex">
+          <LanguageSwitcher />
           <Link
             href="/sign-in"
             className={`text-[14.5px] font-medium ${
@@ -101,6 +103,9 @@ export default function MerchantHeader() {
               </a>
             ))}
           </nav>
+          <div className="mt-4">
+            <LanguageSwitcher />
+          </div>
           <div className="mt-4 flex items-center gap-3">
             <Link href="/sign-in" className="text-[14.5px] font-medium text-muted-foreground">
               Sign in
