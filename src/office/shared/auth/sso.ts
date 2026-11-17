@@ -219,6 +219,8 @@ export function sulikoSiteOrigins(): string[] {
     "https://www.suliko.ge",
     "https://suliko.io",
     "https://www.suliko.io",
+    "https://suliko.ai",
+    "https://www.suliko.ai",
   ];
 }
 

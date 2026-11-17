@@ -30,10 +30,10 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
       title: `${post.title} | Suliko Blog`,
       description: post.excerpt,
       alternates: {
-        canonical: `https://suliko.io/blog/${slug}`,
+        canonical: `https://suliko.ai/blog/${slug}`,
         languages: {
-          en: `https://suliko.io/blog/${slug}`,
-          "x-default": `https://suliko.io/blog/${slug}`,
+          en: `https://suliko.ai/blog/${slug}`,
+          "x-default": `https://suliko.ai/blog/${slug}`,
         },
       },
       openGraph: {
@@ -90,9 +90,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     publisher: {
       "@type": "Organization",
       name: "Suliko",
-      logo: { "@type": "ImageObject", url: "https://suliko.io/Suliko_logo_black.svg" },
+      logo: { "@type": "ImageObject", url: "https://suliko.ai/Suliko_logo_black.svg" },
     },
-    mainEntityOfPage: { "@type": "WebPage", "@id": `https://suliko.io/blog/${post.slug}` },
+    mainEntityOfPage: { "@type": "WebPage", "@id": `https://suliko.ai/blog/${post.slug}` },
   };
 
   return (

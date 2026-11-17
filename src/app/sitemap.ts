@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { getAllPostSlugs } from "@/lib/blog";
 
 const DOMAIN_KA = "https://suliko.ge";
-const DOMAIN_EN = "https://suliko.io";
+const DOMAIN_EN = "https://suliko.ai";
 const DOMAIN_PL = "https://suliko.ge"; // pl uses path prefix: /pl/
 
 // The legal pages are listed so a card processor's review — and a search engine —

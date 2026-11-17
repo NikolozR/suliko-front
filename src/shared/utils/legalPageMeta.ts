@@ -9,7 +9,7 @@ export function canonicalFor(locale: string, path: string): string {
     locale === "ka"
       ? "https://suliko.ge"
       : locale === "en"
-      ? "https://suliko.io"
+      ? "https://suliko.ai"
       : "https://suliko.ge/pl";
 
   return `${domain}${path}`;

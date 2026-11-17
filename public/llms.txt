@@ -1,0 +1,15 @@
+# Suliko
+
+> Suliko is an AI-powered document translation service for legal, technical and business documents in 50+ languages, with a Georgian-language focus. Operated by Suliko Solutions LLC (Georgia). English site: suliko.ai (formerly suliko.io), Georgian site: suliko.ge.
+
+## Main pages
+- [Suliko (English)](https://suliko.ai/en): product overview, pricing in EUR
+- [Suliko (Georgian)](https://suliko.ge/ka): product overview, pricing in GEL
+- [Blog](https://suliko.ai/en/blog): guides on document and legal translation
+- [About](https://suliko.ai/en/about): company details
+
+## Contact
+- Email: info@suliko.ai (suliko.ge: info@suliko.ge)
+
+## Notes
+- suliko.io is the former address of suliko.ai and redirects to it.
