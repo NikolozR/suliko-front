@@ -1035,6 +1035,8 @@
     "title": "Cześć!",
     "thankYou": "Dziękujemy za korzystanie z Suliko.",
     "freePages": "🎉 Witamy! Otrzymujesz 10 stron do bezpłatnego tłumaczenia jako nowy użytkownik.",
+    "officeIntro": "Pracujesz z klientami? Suliko Office prowadzi Twoje zlecenia, klientów i faktury, z tym samym logowaniem.",
+    "openOffice": "Otwórz Suliko Office",
     "betaNotice": "Proszę pamiętać, że strona internetowa działa w trybie beta, więc mogą wystąpić pewne problemy.",
     "workingOnIssues": "Codziennie pracujemy nad naprawianiem tych problemów, a Twoja opinia jest bardzo ważna!",
     "reportIssues": "Proszę, jeśli odkryjesz jakikolwiek rodzaj problemu (czy to w tłumaczeniu, czy techniczny), napisz do nas tutaj:",
@@ -2509,5 +2511,16 @@
       "price": "Cennik",
       "help": "Pomoc"
     }
+  },
+  "FirstRun": {
+    "title": "Na początek",
+    "subtitle": "Trzy rzeczy, które większość osób robi najpierw.",
+    "close": "Zamknij kartę",
+    "translate": "Przetłumacz dokument",
+    "translateHint": "Wgraj plik i odbierz go przetłumaczony.",
+    "topUp": "Doładuj strony",
+    "topUpHint": "Zaczynasz z darmowymi stronami; dokup, gdy będzie trzeba.",
+    "office": "Wypróbuj Suliko Office",
+    "officeHint": "Zlecenia, klienci i faktury dla tłumaczy i biur."
   }
 }

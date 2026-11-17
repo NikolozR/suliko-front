@@ -6,6 +6,7 @@ import { PageHeader } from "@office/shared/components/page-header";
 import { usePathname, Link } from "@/i18n/navigation";
 import TextTranslationCard from "./TextTranslationCard";
 import { useUserStore } from "@/features/auth/store/userStore";
+import { FirstRunCard } from "@/features/onboarding/components/FirstRunCard";
 
 const TextTranslationPage = () => {
   const t = useTranslations('MainContent');
@@ -28,6 +29,8 @@ const TextTranslationPage = () => {
           title={userProfile?.firstName ? t('greeting', { name: userProfile.firstName }) : t('greetingAnonymous')}
           description={t('description')}
         />
+
+        <FirstRunCard />
 
         {/* Navigation Tabs */}
         <div className="w-full mb-6">
