@@ -352,7 +352,9 @@
     "selectLanguagePlaceholder": "Select Language",
     "automaticDetection": "Automatic Detection",
     "searchPlaceholder": "Search language…",
-    "noResults": "No languages found"
+    "noResults": "No languages found",
+    "addFavorite": "Add to favourites",
+    "removeFavorite": "Remove from favourites"
   },
   "NameReviewModal": {
     "title": "Confirm name translations",

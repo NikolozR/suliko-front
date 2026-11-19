@@ -6,7 +6,6 @@ import { useAuthStore } from "@/features/auth/store/authStore";
 import { AuthModal } from "@/features/auth";
 import { useLocale, useTranslations } from "next-intl";
 import { LoadingSpinner } from "@/features/ui/components/loading";
-import { Input } from "@/features/ui/components/ui/input";
 import { cn } from "@/shared/lib/utils";
 import { Check, ChevronDown, Search, Star } from "lucide-react";
 
@@ -26,8 +25,20 @@ interface LanguageSelectProps {
 
 type AnyLanguage = Language | CustomLanguage;
 
-// English and Georgian are pinned as the two "hot" choices (English first),
-// everything else is listed alphabetically.
+// Favourites (the stars) come first, the rest alphabetically. Until the person
+// stars something, English and Georgian are the favourites (English first).
+const FAVORITES_KEY = "suliko-favorite-languages-v1";
+
+const readStoredFavorites = (): number[] | null => {
+  try {
+    const raw = window.localStorage.getItem(FAVORITES_KEY);
+    const parsed: unknown = raw ? JSON.parse(raw) : null;
+    return Array.isArray(parsed) && parsed.every((n) => typeof n === "number") ? parsed : null;
+  } catch {
+    return null;
+  }
+};
+
 const getLanguageSortRank = (name: string): number => {
   const normalized = name.toLowerCase();
   if (normalized.includes("english")) return 0;
@@ -41,7 +52,6 @@ const getRawName = (lang: AnyLanguage): string =>
 const getId = (lang: AnyLanguage): number =>
   "id" in lang ? lang.id : lang.value;
 
-const isPinned = (lang: AnyLanguage): boolean => getLanguageSortRank(getRawName(lang)) < 2;
 
 const LanguageSelect: React.FC<LanguageSelectProps> = ({
   value,
@@ -57,12 +67,18 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
+  // null = never starred anything, so the defaults apply.
+  const [storedFavorites, setStoredFavorites] = useState<number[] | null>(null);
   const locale = useLocale();
   const t = useTranslations("CommonLanguageSelect");
 
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setStoredFavorites(readStoredFavorites());
+  }, []);
 
   useEffect(() => {
     if (customLanguages) {
@@ -99,20 +115,49 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
 
   const normalizedQuery = query.trim().toLowerCase();
 
-  // Pin English then Georgian, then sort the rest alphabetically by the
-  // *displayed* label using the active locale's collation — so the Georgian
-  // UI orders by the Georgian alphabet, not by the English name.
+  // The starred languages: the person's own, or English and Georgian until
+  // they star something.
+  const favoriteIds = useMemo(
+    () =>
+      new Set<number>(
+        storedFavorites ??
+          languages.filter((lang) => getLanguageSortRank(getRawName(lang)) < 2).map(getId)
+      ),
+    [storedFavorites, languages]
+  );
+
+  // Favourites first (English, then Georgian, then the rest of them by name),
+  // then everything else alphabetically by the *displayed* label using the
+  // active locale's collation, so the Georgian UI orders by the Georgian
+  // alphabet, not by the English name.
   const sortedLanguages = useMemo(() => {
     const collator = new Intl.Collator(locale, { sensitivity: "base", numeric: true });
     return [...languages].sort((a, b) => {
-      const rankA = getLanguageSortRank(getRawName(a));
-      const rankB = getLanguageSortRank(getRawName(b));
-      if (rankA !== rankB) return rankA - rankB;
-      if (rankA === 2) return collator.compare(getDisplayLabel(a), getDisplayLabel(b));
-      return 0;
+      const favA = favoriteIds.has(getId(a));
+      const favB = favoriteIds.has(getId(b));
+      if (favA !== favB) return favA ? -1 : 1;
+      if (favA) {
+        const rankA = getLanguageSortRank(getRawName(a));
+        const rankB = getLanguageSortRank(getRawName(b));
+        if (rankA !== rankB) return rankA - rankB;
+      }
+      return collator.compare(getDisplayLabel(a), getDisplayLabel(b));
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [languages, locale]);
+  }, [languages, locale, favoriteIds]);
+
+  const toggleFavorite = (id: number) => {
+    const next = new Set(favoriteIds);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    const list = [...next];
+    setStoredFavorites(list);
+    try {
+      window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(list));
+    } catch {
+      // Private mode or full storage: the stars last for this visit only.
+    }
+  };
 
   const filtered = useMemo(
     () =>
@@ -123,8 +168,8 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
     [sortedLanguages, normalizedQuery]
   );
 
-  const pinned = normalizedQuery ? [] : filtered.filter(isPinned);
-  const rest = normalizedQuery ? filtered : filtered.filter((lang) => !isPinned(lang));
+  const pinned = normalizedQuery ? [] : filtered.filter((lang) => favoriteIds.has(getId(lang)));
+  const rest = normalizedQuery ? filtered : filtered.filter((lang) => !favoriteIds.has(getId(lang)));
 
   const showDetect =
     !!detectOption && (!normalizedQuery || detectOption.toLowerCase().includes(normalizedQuery));
@@ -236,7 +281,7 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
   ) => {
     const selected = opt.id === value;
     const active = index === activeIndex;
-    const showPin = !opt.isDetect && !normalizedQuery && index < restStartIndex;
+    const favorite = !opt.isDetect && favoriteIds.has(opt.id);
     return (
       <div
         key={`${opt.id}-${opt.isDetect ? "detect" : "lang"}`}
@@ -250,10 +295,30 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
           active ? "bg-accent text-accent-foreground" : "text-popover-foreground"
         )}
       >
-        {showPin ? (
-          <Star className="size-3.5 shrink-0 fill-suliko-default-color text-accent-text" />
+        {opt.isDetect ? (
+          <span className="size-6 shrink-0" />
         ) : (
-          <span className="size-3.5 shrink-0" />
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-pressed={favorite}
+            aria-label={`${favorite ? t("removeFavorite") : t("addFavorite")}: ${opt.label}`}
+            // The row is the click target for choosing; the star must not choose.
+            onMouseDown={(e) => e.preventDefault()}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleFavorite(opt.id);
+            }}
+            className="relative -ml-1 flex size-6 shrink-0 items-center justify-center rounded-full text-muted-foreground/60 transition-colors hover:bg-muted hover:text-accent-text before:absolute before:-inset-2 before:content-['']"
+          >
+            <Star
+              className={cn(
+                "size-3.5 transition-colors",
+                favorite && "fill-suliko-default-color text-accent-text"
+              )}
+              aria-hidden
+            />
+          </button>
         )}
         <span className="flex-1 truncate">{opt.label}</span>
         {selected && <Check className="size-4 shrink-0 text-accent-text" />}
@@ -280,9 +345,9 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
 
         {open && (
           <div className="absolute left-0 right-0 top-full z-50 mt-1 overflow-hidden rounded-md border bg-popover text-popover-foreground shadow-md">
-            <div className="flex items-center gap-2 border-b px-2">
+            <div className="flex items-center gap-2 border-b px-3 transition-shadow focus-within:shadow-[inset_0_-2px_0_var(--accent-text)]">
               <Search className="size-4 shrink-0 text-muted-foreground" />
-              <Input
+              <input
                 ref={inputRef}
                 value={query}
                 onChange={(e) => {
@@ -291,8 +356,12 @@ const LanguageSelect: React.FC<LanguageSelectProps> = ({
                 }}
                 onKeyDown={handleKeyDown}
                 placeholder={t("searchPlaceholder")}
-                className="h-9 border-0 bg-transparent px-0 shadow-none focus-visible:ring-0"
+                className="h-10 w-full min-w-0 bg-transparent text-base outline-none placeholder:text-muted-foreground md:text-sm"
                 aria-label={t("searchPlaceholder")}
+                // The page-wide keyboard ring would be clipped by this box, so the row
+                // shows focus with an accent underline instead (inline: it has to beat
+                // the unlayered global rule).
+                style={{ outline: "none" }}
               />
             </div>
 

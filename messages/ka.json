@@ -352,7 +352,9 @@
     "selectLanguagePlaceholder": "აირჩიეთ ენა",
     "automaticDetection": "ავტომატური ამოცნობა",
     "searchPlaceholder": "ენის ძებნა…",
-    "noResults": "ენა ვერ მოიძებნა"
+    "noResults": "ენა ვერ მოიძებნა",
+    "addFavorite": "რჩეულებში დამატება",
+    "removeFavorite": "რჩეულებიდან ამოღება"
   },
   "TranslationLoadingOverlay": {
     "progress": "პროგრესი",
