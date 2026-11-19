@@ -556,6 +556,7 @@
       "title": "Potwierdź nazwy",
       "body": "Sprawdzisz pisownię każdej osoby i organizacji, aby była taka sama we wszystkich dokumentach.",
       "savedCount": "Zapisane nazwy: {count} w {project}",
+      "moreInfo": "Co to jest?",
       "editGlossary": "Edytuj glosariusz"
     },
     "instructions": {

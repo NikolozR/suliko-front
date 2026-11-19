@@ -537,6 +537,7 @@
       "title": "Confirm names first",
       "body": "You'll review how every person and organisation is spelled, so they stay the same across all your documents.",
       "savedCount": "{count} names saved in {project}",
+      "moreInfo": "What is this?",
       "editGlossary": "Edit glossary"
     },
     "instructions": {
