@@ -67,7 +67,8 @@ test.describe('Public pages', () => {
     await email.fill('not-an-email');
     await email.press('Enter');
     expect(await email.evaluate((el) => (el as HTMLInputElement).validity.valid)).toBe(false);
-    await page.waitForLoadState('networkidle');
+    // The page never goes network-idle (looping video, trackers): give a stray request a moment instead.
+    await page.waitForTimeout(1_000);
     expect(sent).toBe(0);
   });
 

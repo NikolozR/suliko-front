@@ -701,10 +701,10 @@
     "deleteAccountFailed": "ანგარიშის წაშლა ვერ მოხერხდა",
     "profileNotFound": "პროფილი ვერ მოიძებნა",
     "profileNotFoundBody": "მომხმარებლის ინფორმაცია ვერ მოიძებნა",
-    "billingPackageTitle": "ოფისის პაკეტი",
+    "billingPackageTitle": "Office-ის პაკეტი",
     "billingPagesTitle": "თარგმნის გვერდები",
     "billingPagesHint": "თქვენი გვერდების ბალანსი Suliko Translate-ისთვის: შევსება, გადახდები და შენახული ბარათები.",
-    "billingOfficeLink": "ოფისის პაკეტი და ორგანიზაციის ბილინგი: გახსნა"
+    "billingOfficeLink": "Office-ის პაკეტი და ორგანიზაციის ბილინგი: გახსნა"
   },
   "LanguageSwitcher": {
     "english": "English",
@@ -2458,7 +2458,7 @@
   "Notifications": {
     "officeLink": "Office-ის შეტყობინებები",
     "officeUnread": "ახალი: {count}",
-    "seeAll": "თარგმნის ყველა",
+    "seeAll": "ყველა თარგმნის შეტყობინება",
     "sourceLabel": "რომელი შეტყობინებები",
     "sourceOffice": "Office",
     "sourceTranslate": "თარგმნა",
