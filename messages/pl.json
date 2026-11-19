@@ -352,7 +352,9 @@
     "selectLanguagePlaceholder": "Wybierz język",
     "automaticDetection": "Automatyczne wykrywanie",
     "searchPlaceholder": "Szukaj języka…",
-    "noResults": "Nie znaleziono języków"
+    "noResults": "Nie znaleziono języków",
+    "addFavorite": "Dodaj do ulubionych",
+    "removeFavorite": "Usuń z ulubionych"
   },
   "TranslationLoadingOverlay": {
     "progress": "Postęp",
