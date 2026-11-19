@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
-import { Check, ChevronDown, CircleHelp, Wallet, X } from "lucide-react";
+import { Check, ChevronDown, CircleHelp, Plus, Wallet, X } from "lucide-react";
 import { Link } from "@/i18n/navigation";
 import { cn } from "@/shared/lib/utils";
 import type { DocumentAnalysis, TermTranslationItem } from "../types/types.Translation";
@@ -59,12 +59,13 @@ interface DeliverableProps {
  */
 export function DeliverableSelect({ value, onChange }: DeliverableProps) {
   const t = useTranslations("DocumentTranslationCard.deliverable");
+  const current = DELIVERABLES.find((d) => d.format === value) ?? DELIVERABLES[0];
 
   return (
-    <PanelCard>
+    <PanelCard className="p-4">
       <MicroLabel>{t("label")}</MicroLabel>
-      <div role="radiogroup" aria-label={t("label")} className="flex flex-col gap-2.5">
-        {DELIVERABLES.map(({ format, titleKey, descKey }) => {
+      <div role="radiogroup" aria-label={t("label")} className="flex gap-1 rounded-xl bg-muted p-1">
+        {DELIVERABLES.map(({ format, titleKey }) => {
           const selected = value === format;
           return (
             <button
@@ -74,32 +75,21 @@ export function DeliverableSelect({ value, onChange }: DeliverableProps) {
               aria-checked={selected}
               onClick={() => onChange(format)}
               className={cn(
-                "flex w-full items-start gap-3 rounded-[10px] border p-3.5 text-left transition-colors",
+                "flex-1 rounded-lg px-3 py-2 text-sm font-medium transition-[background-color,box-shadow,color] duration-150",
                 "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50",
                 selected
-                  ? "border-[1.5px] border-suliko-default-color bg-suliko-default-color/[0.04]"
-                  : "border-border hover:bg-muted/60"
+                  ? "bg-background text-foreground shadow-sm ring-1 ring-border"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <span
-                aria-hidden
-                className={cn(
-                  "mt-0.5 size-[18px] shrink-0 rounded-full border transition-colors",
-                  selected
-                    ? "border-[5px] border-suliko-default-color"
-                    : "border-[1.5px] border-muted-foreground/50"
-                )}
-              />
-              <span className="min-w-0">
-                <span className="block text-[15px] font-semibold leading-snug">{t(titleKey)}</span>
-                <span className="mt-1 block text-[13px] leading-relaxed text-muted-foreground">
-                  {t(descKey)}
-                </span>
-              </span>
+              {t(titleKey)}
             </button>
           );
         })}
       </div>
+      <p className="mt-2.5 text-[13px] leading-snug text-muted-foreground" aria-live="polite">
+        {t(current.descKey)}
+      </p>
     </PanelCard>
   );
 }
@@ -120,14 +110,24 @@ interface NamesProps {
  */
 export function NamesBlock({ enabled, onToggle, savedCount, projectName, projectId }: NamesProps) {
   const t = useTranslations("DocumentTranslationCard.names");
+  const [infoOpen, setInfoOpen] = useState(false);
 
   return (
-    <PanelCard>
-      <div className="flex items-start justify-between gap-4">
-        <div className="min-w-0">
+    <PanelCard className="p-4">
+      <div className="flex items-center justify-between gap-4">
+        <div className="flex min-w-0 items-center gap-1.5">
           {/* h5, not h3: see the brief's title below. */}
           <h5 className="text-[15px] font-semibold leading-snug">{t("title")}</h5>
-          <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{t("body")}</p>
+          <button
+            type="button"
+            onClick={() => setInfoOpen((value) => !value)}
+            aria-expanded={infoOpen}
+            aria-controls="names-info"
+            aria-label={t("moreInfo")}
+            className="relative text-muted-foreground hover:text-foreground before:absolute before:-inset-3 before:content-['']"
+          >
+            <CircleHelp className="size-4" aria-hidden />
+          </button>
         </div>
         <button
           type="button"
@@ -151,6 +151,11 @@ export function NamesBlock({ enabled, onToggle, savedCount, projectName, project
           />
         </button>
       </div>
+      {infoOpen && (
+        <p id="names-info" className="mt-2.5 text-[13px] leading-relaxed text-muted-foreground">
+          {t("body")}
+        </p>
+      )}
 
       {typeof savedCount === "number" && projectName && (
         <div className="mt-4 flex items-center justify-between gap-3 border-t border-border pt-3.5">
@@ -478,31 +483,47 @@ interface InstructionsProps {
  */
 export function InstructionsBlock({ value, onChange }: InstructionsProps) {
   const t = useTranslations("DocumentTranslationCard.instructions");
+  const [open, setOpen] = useState(value.length > 0);
   const nearLimit = value.length > MAX_INSTRUCTIONS_LENGTH * 0.9;
 
   return (
-    <PanelCard>
-      <label htmlFor="translator-instructions" className="block text-[15px] font-semibold leading-snug">
+    <PanelCard className="p-4">
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls="translator-instructions-panel"
+        className="flex w-full items-center gap-2 text-left text-[15px] font-semibold leading-snug focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
+      >
+        <Plus
+          className={cn("size-4 text-accent-text transition-transform duration-150", open && "rotate-45")}
+          aria-hidden
+        />
         {t("title")}
-      </label>
-      <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground">{t("body")}</p>
-      <textarea
-        id="translator-instructions"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        maxLength={MAX_INSTRUCTIONS_LENGTH}
-        rows={3}
-        placeholder={t("placeholder")}
-        className={cn(
-          "mt-3 w-full resize-y rounded-[10px] border border-border bg-background px-3 py-2.5 text-base leading-relaxed md:text-[14px]",
-          "placeholder:text-muted-foreground/70",
-          "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
-        )}
-      />
-      {nearLimit && (
-        <p className="mt-1 text-right text-[12px] tabular-nums text-muted-foreground">
-          {value.length}/{MAX_INSTRUCTIONS_LENGTH}
-        </p>
+      </button>
+      {open && (
+        <div id="translator-instructions-panel">
+          <p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{t("body")}</p>
+          <textarea
+            id="translator-instructions"
+            aria-label={t("title")}
+            value={value}
+            onChange={(e) => onChange(e.target.value)}
+            maxLength={MAX_INSTRUCTIONS_LENGTH}
+            rows={3}
+            placeholder={t("placeholder")}
+            className={cn(
+              "mt-3 w-full resize-y rounded-[10px] border border-border bg-background px-3 py-2.5 text-base leading-relaxed md:text-[14px]",
+              "placeholder:text-muted-foreground/70",
+              "focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-suliko-default-color/50"
+            )}
+          />
+          {nearLimit && (
+            <p className="mt-1 text-right text-[12px] tabular-nums text-muted-foreground">
+              {value.length}/{MAX_INSTRUCTIONS_LENGTH}
+            </p>
+          )}
+        </div>
       )}
     </PanelCard>
   );
