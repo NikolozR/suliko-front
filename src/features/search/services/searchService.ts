@@ -12,6 +12,18 @@ export interface TranslationHit {
 const PER_GROUP = 6;
 
 /**
+ * Older projects were saved with the unfilled template as their title
+ * ("Translate {fileNameWithoutExtension} to {targetLanguage}", the API forgot
+ * to fill it in). Show the file name for those, and never match on the text.
+ */
+const UNFILLED_TITLE = /{(?:fileNameWithoutExtension|targetLanguage)}|((?:fileNameWithoutExtension|targetLanguage))/;
+
+export function displayTitle(title: string | null | undefined, fileName: string): string {
+  const t = (title ?? "").trim();
+  return !t || UNFILLED_TITLE.test(t) ? fileName : t;
+}
+
+/**
  * The person's own translations whose file name or title contains `query`,
  * newest activity first. The API does the search (`search` on the history
  * list); the same test is repeated here so an API that does not know the
@@ -32,11 +44,11 @@ export async function searchTranslations(query: string, signal?: AbortSignal): P
   const body = await response.json();
   const chats: Chat[] = body?.data?.chats ?? [];
   return chats
-    .filter((c) => `${c.title ?? ""} ${c.originalFileName ?? ""}`.toLocaleLowerCase().includes(needle))
+    .filter((c) => `${displayTitle(c.title, c.originalFileName ?? "")} ${c.originalFileName ?? ""}`.toLocaleLowerCase().includes(needle))
     .slice(0, PER_GROUP)
     .map((c) => ({
       chatId: c.chatId,
-      title: c.title || c.originalFileName,
+      title: displayTitle(c.title, c.originalFileName),
       fileName: c.originalFileName,
       fileType: c.fileType,
       targetLanguage: c.targetLanguageName,
