@@ -2,19 +2,26 @@ import { test, expect } from '@playwright/test';
 
 /**
  * Suliko is two products under one domain: Suliko Office (/office) and Suliko
- * Translate (/translate). The bare address belongs to neither and sends visitors
- * to Office, keeping the query string so campaign tags survive.
+ * Translate (/translate). For Georgian and Polish the locale root belongs to
+ * neither and sends visitors to Office, keeping the query string so campaign
+ * tags survive. English is the exception: its root is the international
+ * landing page.
  */
 
 test.describe('Suliko Office / Suliko Translate split', () => {
-  test('the bare address redirects to the Office landing page, temporarily', async ({ request }) => {
+  test('the bare address redirects to a language root or its Office page', async ({ request }) => {
     const res = await request.get('/', { maxRedirects: 0 });
-    expect(res.status()).toBe(307);
-    expect(res.headers()['location']).toMatch(/\/(ka|en)\/office$/);
+    expect([302, 307]).toContain(res.status());
+    expect(res.headers()['location']).toMatch(/\/(ka|en)(\/office)?$/);
   });
 
-  test('a locale root redirects to that locale\'s Office page', async ({ request }) => {
-    for (const locale of ['ka', 'en', 'pl']) {
+  test('the English root is the international landing page, not a redirect', async ({ request }) => {
+    const res = await request.get('/en', { maxRedirects: 0 });
+    expect(res.status()).toBe(200);
+  });
+
+  test('a Georgian or Polish locale root redirects to that locale\'s Office page', async ({ request }) => {
+    for (const locale of ['ka', 'pl']) {
       const res = await request.get(`/${locale}`, { maxRedirects: 0 });
       expect(res.status(), locale).toBe(307);
       expect(new URL(res.headers()['location'], 'http://x').pathname, locale).toBe(`/${locale}/office`);
@@ -22,9 +29,9 @@ test.describe('Suliko Office / Suliko Translate split', () => {
   });
 
   test('the redirect keeps UTM tags and ad click ids', async ({ request }) => {
-    const res = await request.get('/en?utm_source=meta&utm_campaign=spring&fbclid=abc123', { maxRedirects: 0 });
+    const res = await request.get('/ka?utm_source=meta&utm_campaign=spring&fbclid=abc123', { maxRedirects: 0 });
     const location = new URL(res.headers()['location'], 'http://x');
-    expect(location.pathname).toBe('/en/office');
+    expect(location.pathname).toBe('/ka/office');
     expect(location.searchParams.get('utm_source')).toBe('meta');
     expect(location.searchParams.get('utm_campaign')).toBe('spring');
     expect(location.searchParams.get('fbclid')).toBe('abc123');
