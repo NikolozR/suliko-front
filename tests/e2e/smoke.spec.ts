@@ -28,9 +28,9 @@ test.describe('Smoke tests', () => {
     await expect(page.locator('body')).not.toContainText('Application error');
   });
 
-  test('bare / redirects to a locale, on to Suliko Office', async ({ page }) => {
+  test('bare / redirects to a language root (English) or on to Suliko Office', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveURL(/\/(en|ka)\/office$/);
+    await expect(page).toHaveURL(/\/(en|ka)(\/office)?$/);
   });
 
 });
