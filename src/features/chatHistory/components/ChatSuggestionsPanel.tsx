@@ -31,10 +31,13 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
     currentTargetLanguageId,
     chatId,
     isTranslating,
+    setJobId,
   } = useChatEditingStore();
 
   const [isGettingSuggestions, setIsGettingSuggestions] = useState(false);
   const [suggestionsNotAvailable, setSuggestionsNotAvailable] = useState(false);
+  // The review ran to the end and found nothing to improve.
+  const [reviewedClean, setReviewedClean] = useState(false);
   const t = useTranslations();
 
   const {
@@ -64,6 +67,7 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
     if (!jobId || isGettingSuggestions) return;
     setIsGettingSuggestions(true);
     setSuggestionsNotAvailable(false);
+    setReviewedClean(false);
     try {
       const [{ settingUpChatSuggestions }, { regenerateSuggestions }] = await Promise.all([
         import("@/features/chatHistory/utils/settingUpSuggestions"),
@@ -78,20 +82,25 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
         return;
       }
 
+      let reviewJobId = jobId;
       try {
-        await regenerateSuggestions({
+        const started = await regenerateSuggestions({
           jobId,
           chatId,
           targetLanguageId: currentTargetLanguageId,
           // The reader's language, not the translation's.
           outputLanguageId: uiOutputLanguageId(),
         });
+        // An older translation's job has expired, so the review runs on a new one.
+        reviewJobId = started.jobId;
+        if (reviewJobId !== jobId) setJobId(reviewJobId);
       } catch {
         setSuggestionsNotAvailable(true);
         return;
       }
 
-      await settingUpChatSuggestions(jobId, { waitForNew: true });
+      const outcome = await settingUpChatSuggestions(reviewJobId, { waitForNew: true });
+      if (outcome === "nothing") setReviewedClean(true);
     } catch {
       // suggestions remain empty — user can retry
     } finally {
@@ -204,7 +213,9 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
           <p className="text-sm text-muted-foreground">
             {suggestionsNotAvailable
               ? t("SuggestionsPanel.suggestionsNotAvailable", { default: "Suggestions are not available for this document." })
-              : t("SuggestionsPanel.noSuggestions", { default: "No suggestions available." })
+              : reviewedClean
+                ? t("SuggestionsPanel.nothingToSuggest", { default: "The translation looks good. There is nothing to suggest." })
+                : t("SuggestionsPanel.noSuggestions", { default: "No suggestions available." })
             }
           </p>
           {!suggestionsNotAvailable && (
@@ -222,7 +233,9 @@ const ChatSuggestionsPanel: React.FC<ChatSuggestionsPanelProps> = ({ isSuggestio
               ) : (
                 <>
                   <Sparkles className="h-4 w-4" />
-                  {t("SuggestionsPanel.getSuggestions", { default: "Get Suggestions" })}
+                  {reviewedClean
+                    ? t("SuggestionsPanel.checkAgain", { default: "Check again" })
+                    : t("SuggestionsPanel.getSuggestions", { default: "Get Suggestions" })}
                 </>
               )}
             </button>

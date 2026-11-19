@@ -48,6 +48,13 @@ export async function pollSuggestions(
           setSuggestions(filtered);
           return "success";
         }
+        // The review finished and found nothing: the translation is good as it is.
+        // Right after a regenerate the previous review's status can still be showing, so
+        // the first answer is not believed then.
+        if (response.nothingToSuggest && (!waitForNew || attempt > 0)) {
+          setSuggestions([]);
+          return "nothing";
+        }
         // The review runs after the job completes, so "nothing yet" is the
         // normal answer for the first few polls. Returning "empty" here made
         // the translation page regenerate on top of a review still in flight.

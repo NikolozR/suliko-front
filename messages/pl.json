@@ -572,6 +572,8 @@
       "failed": "Nie udało się wcześniej przeczytać dokumentu. Nadal możesz go przetłumaczyć jak zwykle.",
       "untitled": "Dokument",
       "writtenIn": "Język: {language}",
+      "sameLanguage": "Ten dokument jest już w wybranym języku docelowym. Wybierz inny język docelowy.",
+      "bilingual": "Dwa języki: zostanie tylko język docelowy",
       "tables": "{count, plural, one {# tabela} few {# tabele} many {# tabel} other {# tabeli}}",
       "stamps": "Pieczęcie",
       "signatures": "Podpisy",
@@ -617,7 +619,8 @@
     },
     "translateError": {
       "insufficientBalance": "Za mało stron na ten dokument. Doładuj, aby kontynuować.",
-      "fileChanged": "Plik zmienił się od pomiaru. Prześlij go ponownie."
+      "fileChanged": "Plik zmienił się od pomiaru. Prześlij go ponownie.",
+      "sameLanguage": "Ten dokument jest już w wybranym języku docelowym. Wybierz inny język docelowy."
     },
     "inProgress": {
       "pages": "{count, plural, one {# strona} few {# strony} many {# stron} other {# stron}}",
@@ -812,6 +815,8 @@
   "SuggestionsPanel": {
     "title": "Sugestie",
     "noSuggestions": "Brak dostępnych sugestii.",
+    "nothingToSuggest": "Tłumaczenie wygląda dobrze. Nie ma nic do zasugerowania.",
+    "checkAgain": "Sprawdź ponownie",
     "generateMore": "Generuj więcej sugestii",
     "generating": "Generowanie więcej sugestii...",
     "allLoaded": "Wszystkie sugestie załadowane",

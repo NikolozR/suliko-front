@@ -77,6 +77,11 @@ export interface SuggestionsResponse {
   suggestionsStatus?: string;
   /** True while more suggestions may still arrive for this job. */
   isGenerating?: boolean;
+  /** The review finished and found nothing to improve: the translation is good as it is. */
+  nothingToSuggest?: boolean;
+  /** The review job has expired (translations older than a couple of hours). */
+  expired?: boolean;
+  canRegenerate?: boolean;
 }
 
 export interface SuggestionsResponseProcessing {
@@ -167,6 +172,11 @@ export interface DocumentAnalysis {
   documentType: string | null;
   summary: string | null;
   detectedSourceLanguage: string | null;
+  /** The document is already in the target language, so translating it would change nothing. */
+  sameLanguageAsTarget?: boolean;
+  /** The same content is carried in two languages; the translation keeps only the target's. */
+  isBilingual?: boolean;
+  detectedSourceLanguageId?: number | null;
   domain: string | null;
   register: string | null;
   layout: {

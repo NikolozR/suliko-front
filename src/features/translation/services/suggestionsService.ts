@@ -133,7 +133,7 @@ export async function regenerateSuggestions(params: {
   chatId: string;
   targetLanguageId: number;
   outputLanguageId: number;
-}): Promise<void> {
+}): Promise<{ jobId: string }> {
   const endpoint = `/Document/translate/suggestions/regenerate/${params.jobId}`;
   const { token, refreshToken } = useAuthStore.getState();
 
@@ -174,5 +174,14 @@ export async function regenerateSuggestions(params: {
 
   if (response.status < 200 || response.status >= 300) {
     throw new Error("Failed to regenerate suggestions");
+  }
+
+  // For a translation whose review job has expired the server starts a new one and
+  // says so here: that is the id to poll from now on.
+  try {
+    const data = (await response.json()) as { jobId?: unknown };
+    return { jobId: typeof data?.jobId === "string" && data.jobId ? data.jobId : params.jobId };
+  } catch {
+    return { jobId: params.jobId };
   }
 }
