@@ -1316,3 +1316,34 @@ html.dark .sidebar-main {
 @media (prefers-reduced-motion: reduce) {
   [data-slot="skeleton"]::after { animation: none; }
 }
+
+/* A light that travels once around an element's edge: "something is happening
+   here". Put it on a `relative` element with rounded corners. Reduced motion
+   gets a still, faint ring instead of the moving light. */
+@property --beam-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+@keyframes beam-turn {
+  to { --beam-angle: 360deg; }
+}
+.border-beam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: conic-gradient(from var(--beam-angle), transparent 0 62%, var(--accent-text) 84%, transparent 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  animation: beam-turn 2.6s linear infinite;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .border-beam::before {
+    animation: none;
+    background: color-mix(in srgb, var(--accent-text) 35%, transparent);
+  }
+}

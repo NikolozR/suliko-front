@@ -58,11 +58,11 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileCli
   return (
     <Label htmlFor={id} className="w-full block h-full">
       <div
-        className={`group w-full h-full rounded-xl border p-4 sm:p-8 text-center cursor-pointer flex flex-col items-center justify-center transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[var(--ease-out-strong)] focus-within:ring-2 focus-within:ring-ring/40 ${
+        className={`group relative w-full h-full rounded-xl border p-4 sm:p-8 text-center cursor-pointer flex flex-col items-center justify-center transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[var(--ease-out-strong)] focus-within:ring-2 focus-within:ring-ring/40 ${
           isRejected
             ? "border-destructive bg-destructive/10"
             : isDragOver
-              ? "border-accent-text bg-accent-text/10 shadow-[0_0_0_4px_color-mix(in_srgb,var(--accent-text)_15%,transparent)] scale-[1.01]"
+              ? "border-beam border-accent-text bg-accent-text/10 shadow-[0_0_0_4px_color-mix(in_srgb,var(--accent-text)_15%,transparent)] scale-[1.01]"
               : "border-border bg-muted/40 hover:border-accent-text/60 hover:bg-accent-text/5"
         }`}
         onDragOver={handleDragOver}
