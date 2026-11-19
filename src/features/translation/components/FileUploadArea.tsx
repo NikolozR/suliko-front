@@ -58,29 +58,40 @@ const FileUploadArea: React.FC<FileUploadAreaProps> = ({ onFileChange, onFileCli
   return (
     <Label htmlFor={id} className="w-full block h-full">
       <div
-        className={`w-full h-full border-2 border-dashed rounded-lg p-4 sm:p-8 text-center cursor-pointer flex flex-col items-center justify-center transition-all duration-200 ${
+        className={`group w-full h-full rounded-xl border p-4 sm:p-8 text-center cursor-pointer flex flex-col items-center justify-center transition-[border-color,background-color,box-shadow,transform] duration-200 ease-[var(--ease-out-strong)] focus-within:ring-2 focus-within:ring-ring/40 ${
           isRejected
             ? "border-destructive bg-destructive/10"
             : isDragOver
-              ? "border-suliko-default-color bg-suliko-default-color/10 scale-[1.02]"
-              : "border-gray-300 hover:border-suliko-default-color"
+              ? "border-accent-text bg-accent-text/10 shadow-[0_0_0_4px_color-mix(in_srgb,var(--accent-text)_15%,transparent)] scale-[1.01]"
+              : "border-border bg-muted/40 hover:border-accent-text/60 hover:bg-accent-text/5"
         }`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
       >
         <div className="cursor-pointer">
-          {isRejected ? (
-            <FileX className="mx-auto h-8 w-8 sm:h-12 sm:w-12 text-destructive" aria-hidden />
-          ) : (
-            <Upload className={`mx-auto h-8 w-8 sm:h-12 sm:w-12 transition-all duration-200 ${
-              isDragOver ? "text-accent-text -translate-y-1" : "text-muted-foreground"
-            }`} />
-          )}
+          <span
+            className={`mx-auto flex h-12 w-12 items-center justify-center rounded-full transition-colors duration-200 sm:h-14 sm:w-14 ${
+              isRejected
+                ? "bg-destructive/15 text-destructive"
+                : isDragOver
+                  ? "bg-accent-text/15 text-accent-text"
+                  : "bg-card text-muted-foreground ring-1 ring-border group-hover:text-accent-text"
+            }`}
+          >
+            {isRejected ? (
+              <FileX className="h-6 w-6" aria-hidden />
+            ) : (
+              <Upload
+                className={`h-6 w-6 transition-transform duration-200 motion-reduce:transition-none ${isDragOver ? "-translate-y-0.5" : ""}`}
+                aria-hidden
+              />
+            )}
+          </span>
           <p
             aria-live="polite"
-            className={`mt-4 text-sm transition-colors ${
-              isRejected ? "text-destructive" : isDragOver ? "text-accent-text" : "text-muted-foreground"
+            className={`mt-4 text-sm font-medium transition-colors ${
+              isRejected ? "text-destructive" : isDragOver ? "text-accent-text" : "text-foreground"
             }`}
           >
             {isRejected ? t('dropRejected') : isDragOver ? t('dropFiles') : t('dragAndDrop')}
