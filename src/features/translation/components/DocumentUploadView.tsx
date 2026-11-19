@@ -10,7 +10,7 @@ const DocumentPreview = dynamic(() => import("./DocumentPreview"), {
   loading: () => (
     <div className="h-full p-4">
       <Skeleton className="h-6 w-48 mb-3" />
-      <Skeleton className="h-[260px] w-full rounded-lg" />
+      <Skeleton className="h-[260px] w-full rounded-xl" />
     </div>
   ),
 });
