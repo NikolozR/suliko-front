@@ -22,6 +22,15 @@ setup('authenticate as admin', async ({ page }) => {
     'TEST_ADMIN_PHONE and TEST_ADMIN_PASSWORD env vars are not set, skipping admin authentication',
   );
 
+  // What the sign-in requests answered (status and path only, never a body or a
+  // credential): the form shows one generic error for every kind of failure.
+  const loginAnswers: string[] = [];
+  page.on('response', (res) => {
+    if (res.request().method() === 'POST' && /login|session/i.test(res.url())) {
+      loginAnswers.push(`${res.status()} ${new URL(res.url()).pathname}`);
+    }
+  });
+
   await page.goto('/en/sign-in?next=%2Fadmin', { waitUntil: 'domcontentloaded' });
   await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 20_000 });
 
@@ -43,7 +52,8 @@ setup('authenticate as admin', async ({ page }) => {
     const errorMsg = await page.locator(errorBox).first().textContent({ timeout: 2_000 }).catch(() => null);
     throw new Error(
       `Admin login failed: "${errorMsg ?? 'no error shown — the auth backend is likely slow/unreachable or the account is invalid'}". ` +
-      `Check that TEST_ADMIN_PHONE / TEST_ADMIN_PASSWORD belong to an admin account on the live backend.`
+      `Check that TEST_ADMIN_PHONE / TEST_ADMIN_PASSWORD belong to an admin account on the live backend. ` +
+      `Sign-in requests answered: ${loginAnswers.join(', ') || 'none seen'}.`
     );
   }
 

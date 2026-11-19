@@ -25,6 +25,15 @@ setup('authenticate as test user', async ({ page }) => {
     throw new Error('TEST_USER_PHONE and TEST_USER_PASSWORD env vars are required');
   }
 
+  // What the sign-in requests answered (status and path only, never a body or a
+  // credential): the form shows one generic error for every kind of failure.
+  const loginAnswers: string[] = [];
+  page.on('response', (res) => {
+    if (res.request().method() === 'POST' && /login|session/i.test(res.url())) {
+      loginAnswers.push(`${res.status()} ${new URL(res.url()).pathname}`);
+    }
+  });
+
   await page.goto('/en/sign-in', { waitUntil: 'domcontentloaded' });
   await page.locator('input[name="identifier"]').waitFor({ state: 'visible', timeout: 20_000 });
 
@@ -55,7 +64,8 @@ setup('authenticate as test user', async ({ page }) => {
     const apiError = await page.locator(apiErrorAlert).first().textContent({ timeout: 2_000 }).catch(() => null);
     throw new Error(
       `Login failed: "${apiError ?? 'no error shown — the auth backend is likely slow/unreachable or the test account is invalid'}". ` +
-      `Verify the test account exists on the live backend with phone="${phone}" and the correct password.`
+      `Verify the test account exists on the live backend with phone="${phone}" and the correct password. ` +
+      `Sign-in requests answered: ${loginAnswers.join(', ') || 'none seen'}.`
     );
   }
 
