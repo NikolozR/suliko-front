@@ -45,7 +45,7 @@ export default function InProgressView({
   return (
     <div className="flex flex-col items-start gap-6 lg:flex-row">
       <div className="w-full min-w-0 lg:flex-1">
-        <div className="rounded-xl border border-border bg-background p-6">
+        <div className={`relative rounded-xl border border-border bg-background p-6 ${!failed && !ready ? "border-beam" : ""}`}>
           <div className="flex items-start gap-3">
             <span className="flex size-10 shrink-0 items-center justify-center rounded-[9px] bg-suliko-default-color/10">
               <FileText className="size-5 text-accent-text" aria-hidden />
