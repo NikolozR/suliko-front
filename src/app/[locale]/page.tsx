@@ -41,7 +41,7 @@ export default async function LocaleRoot({ params }: { params: Promise<{ locale:
   return (
     <div id="top" className="min-h-screen bg-background">
       <MerchantHeader />
-      <main>
+      <main id="main-content">
         <MerchantHero />
         <MerchantHowItWorks />
         <MerchantFeatures />
