@@ -1294,3 +1294,12 @@ html.dark .sidebar-main {
   filter: blur(64px);
   pointer-events: none;
 }
+
+/* A screen easing in when you open it. */
+@keyframes page-enter {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+.page-enter {
+  animation: page-enter 220ms var(--ease-out-strong) backwards;
+}
