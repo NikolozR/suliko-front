@@ -909,6 +909,8 @@ const DocumentTranslationCard = () => {
         // figure so the panel stops showing a number the server disagrees with.
         setError(t("translateError.insufficientBalance"));
         fetchUserProfile().catch(() => {});
+      } else if (err instanceof DocumentTranslateError && err.reason === "sameLanguage") {
+        setError(t("translateError.sameLanguage"));
       } else if (err instanceof DocumentTranslateError && err.reason === "fileChanged") {
         // The URI no longer matches what was measured, so the prepared upload
         // is void — drop it and make the user pick the file again.
@@ -1253,7 +1255,7 @@ const DocumentTranslationCard = () => {
                       uploadPercent={submitStage === "uploading" ? uploadPercent : null}
                       hasFile={!!hasFile}
                       onSubmitDisabled={
-                        isLoading || isDetectingNames || (token ? !hasFile : false)
+                        isLoading || isDetectingNames || (token ? !hasFile : false) || !!analysis?.sameLanguageAsTarget
                       }
                       etaMin={quoteEtaMin}
                       etaMax={quoteEtaMax}

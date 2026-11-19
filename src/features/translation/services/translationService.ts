@@ -56,7 +56,7 @@ export class DocumentTranslateError extends Error {
   constructor(
     message: string,
     readonly status: number,
-    readonly reason: "insufficientBalance" | "fileChanged" | "unknown",
+    readonly reason: "insufficientBalance" | "fileChanged" | "sameLanguage" | "unknown",
   ) {
     super(message);
     this.name = "DocumentTranslateError";
@@ -235,6 +235,14 @@ export const translateDocumentWithUri = async (
   }
 
   if (response.status < 200 || response.status >= 300) {
+    // 409 SAME_LANGUAGE: the document is already in the target language. Nothing was
+    // charged and no job exists.
+    if (response.status === 409) {
+      const body = await response.clone().json().catch(() => null) as { code?: string; message?: string } | null;
+      if (body?.code === "SAME_LANGUAGE") {
+        throw new DocumentTranslateError(body.message ?? "Same language", 409, "sameLanguage");
+      }
+    }
     const message = await readErrorMessage(response, "Translation failed");
     throw new DocumentTranslateError(
       message,

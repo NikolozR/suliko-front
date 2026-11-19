@@ -553,6 +553,8 @@
       "failed": "We couldn't read the document in advance. You can still translate it as usual.",
       "untitled": "Document",
       "writtenIn": "Written in {language}",
+      "sameLanguage": "This document is already in the target language you chose. Choose a different target language.",
+      "bilingual": "Two languages: only the target language is kept",
       "tables": "{count, plural, one {# table} other {# tables}}",
       "stamps": "Stamps",
       "signatures": "Signatures",
@@ -597,7 +599,8 @@
     },
     "translateError": {
       "insufficientBalance": "Not enough pages left for this document. Top up to continue.",
-      "fileChanged": "This file changed since we measured it. Please upload it again."
+      "fileChanged": "This file changed since we measured it. Please upload it again.",
+      "sameLanguage": "This document is already in the target language you chose. Choose a different target language."
     },
     "inProgress": {
       "pages": "{count, plural, one {# page} other {# pages}}",
@@ -812,6 +815,8 @@
   "SuggestionsPanel": {
     "title": "Suggestions",
     "noSuggestions": "No suggestions available.",
+    "nothingToSuggest": "The translation looks good. There is nothing to suggest.",
+    "checkAgain": "Check again",
     "generateMore": "Generate more suggestions",
     "generating": "Generating more suggestions...",
     "allLoaded": "All suggestions loaded",

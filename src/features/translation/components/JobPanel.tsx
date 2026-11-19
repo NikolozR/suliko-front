@@ -339,10 +339,19 @@ export function BriefBlock({
       <h5 className="line-clamp-2 text-[15px] font-semibold leading-snug" title={documentType}>
         {documentType}
       </h5>
+      {analysis.sameLanguageAsTarget && (
+        <p
+          role="status"
+          className="mt-3 rounded-[10px] border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-[13px] leading-relaxed text-foreground"
+        >
+          {t("sameLanguage")}
+        </p>
+      )}
       {analysis.summary && <ClampedText text={analysis.summary} more={t("more")} less={t("less")} />}
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         {analysis.detectedSourceLanguage && <Chip>{t("writtenIn", { language: analysis.detectedSourceLanguage })}</Chip>}
+        {analysis.isBilingual && <Chip>{t("bilingual")}</Chip>}
         {analysis.register && <Chip>{analysis.register}</Chip>}
         {layout.tables > 0 && <Chip>{t("tables", { count: layout.tables })}</Chip>}
         {layout.hasStamps && <Chip>{t("stamps")}</Chip>}

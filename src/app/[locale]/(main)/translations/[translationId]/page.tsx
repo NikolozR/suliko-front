@@ -415,7 +415,16 @@ export default function TranslationDetailPage() {
           setHasGeneratedMore(true);
           return;
         }
+        // Reviewed already and nothing to improve: nothing to start.
+        if (fetchResult === "nothing") {
+          setHasGeneratedMore(true);
+          return;
+        }
+        // An older translation: its review job has expired. A new review is a model call,
+        // so it starts when the person asks for it (the panel's button), not on every visit.
+        if (fetchResult === "not_found") return;
         // Suggestions not ready — trigger generation then poll
+        let pollJobId = chat.jobId;
         try {
           const { regenerateSuggestions } = await import(
             "@/features/translation/services/suggestionsService"
@@ -430,16 +439,17 @@ export default function TranslationDetailPage() {
           // this store value is a placeholder that is never set.
           const targetLanguageId =
             useChatEditingStore.getState().currentTargetLanguageId || 1;
-          await regenerateSuggestions({
+          const started = await regenerateSuggestions({
             jobId: chat.jobId,
             chatId: chat.chatId,
             targetLanguageId,
             outputLanguageId: uiOutputLanguageId(),
           });
+          pollJobId = started.jobId;
         } catch {
           // might already be generating — continue polling
         }
-        await settingUpChatSuggestions(chat.jobId, { waitForNew: true });
+        await settingUpChatSuggestions(pollJobId, { waitForNew: true });
         setHasGeneratedMore(true);
       } catch {
         setSuggestions([]);
