@@ -1303,3 +1303,25 @@ html.dark .sidebar-main {
 .page-enter {
   animation: page-enter 220ms var(--ease-out-strong) backwards;
 }
+
+/* Loading placeholders: a soft light sweep across the shape. Still (no sweep)
+   for people who asked for reduced motion. */
+@keyframes skeleton-sweep {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+[data-slot="skeleton"] {
+  position: relative;
+  overflow: hidden;
+  animation: none;
+}
+[data-slot="skeleton"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--foreground) 7%, transparent), transparent);
+  animation: skeleton-sweep 1.4s var(--ease-in-out-strong) infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-slot="skeleton"]::after { animation: none; }
+}
