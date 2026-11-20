@@ -72,7 +72,8 @@ export async function createBogPayment(
     orderDescription: options?.orderDescription ?? `Suliko ${amount} ${currency}`,
     // The server pairs this with the request's Origin to bring the customer back to
     // the domain and language they started on.
-    locale: getCurrentLocale(),
+    // The bank's page and the return address know ka, en and pl: Armenian readers get English.
+    locale: getCurrentLocale() === "hy" ? "en" : getCurrentLocale(),
   };
 
   return authedJson<BogCheckoutResponse>("/Payment/bog-create", {
@@ -93,7 +94,7 @@ export async function getBogPaymentStatus(orderId: string): Promise<BogPaymentSt
 function getCurrentLocale(): string {
   if (typeof window === "undefined") return "ka";
   const first = window.location.pathname.split("/").filter(Boolean)[0];
-  return ["en", "ka", "pl"].includes(first || "") ? (first as string) : "ka";
+  return ["en", "ka", "pl", "hy"].includes(first || "") ? (first as string) : "ka";
 }
 
 /**
@@ -162,7 +163,7 @@ export async function createPayment(amount: number, currency?: string, country?:
   const path = isBrowser ? window.location.pathname : '';
   const localeFromPath = (() => {
     const first = path.split('/').filter(Boolean)[0];
-    return ['en', 'ka', 'pl'].includes(first || '') ? `/${first}` : '';
+    return ['en', 'ka', 'pl', 'hy'].includes(first || '') ? `/${first}` : '';
   })();
   const acceptUrl = `${baseUrl}${localeFromPath}/payment/success`;
   const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;
@@ -247,7 +248,7 @@ export async function createFlittPayment(
   const path = isBrowser ? window.location.pathname : "";
   const localeFromPath = (() => {
     const first = path.split("/").filter(Boolean)[0];
-    return ["en", "ka", "pl"].includes(first || "") ? `/${first}` : "";
+    return ["en", "ka", "pl", "hy"].includes(first || "") ? `/${first}` : "";
   })();
   const acceptUrl = `${baseUrl}${localeFromPath}/payment/success`;
   const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;
@@ -324,7 +325,7 @@ export async function createFlittSubscription(
   const path = isBrowser ? window.location.pathname : "";
   const localeFromPath = (() => {
     const first = path.split("/").filter(Boolean)[0];
-    return ["en", "ka", "pl"].includes(first || "") ? `/${first}` : "";
+    return ["en", "ka", "pl", "hy"].includes(first || "") ? `/${first}` : "";
   })();
   const acceptUrl = `${baseUrl}${localeFromPath}/payment/success`;
   const cancelUrl = `${baseUrl}${localeFromPath}/payment/cancel`;

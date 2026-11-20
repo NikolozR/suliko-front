@@ -29,7 +29,7 @@ export interface OfficeNavEntry {
  */
 export interface OfficeContext {
   nav: OfficeNavEntry[];
-  locale: "ka" | "en";
+  locale: "ka" | "en" | "hy";
   /** Office's messages the top bar's pieces use (they are Office components). */
   messages: AbstractIntlMessages;
   timeZone: string;

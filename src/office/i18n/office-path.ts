@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-const LOCALES = ["ka", "en"];
+const LOCALES = ["ka", "en", "hy"];
 
 /**
  * Office modules whose code has moved into this app (pages in
@@ -71,7 +71,7 @@ export function moduleOfClean(path: string): { module: string; clean: string } |
 export function officePath(href: string, locale: string): string {
   if (!href.startsWith("/")) return href; // absolute URL, mailto:, #anchor, relative
   // Already prefixed (a pathname read back from the address bar): take it apart.
-  const prefixed = /^\/(?:app\/)?(ka|en)(?=\/|\?|#|$)/.exec(href);
+  const prefixed = /^\/(?:app\/)?(ka|en|hy)(?=\/|\?|#|$)/.exec(href);
   if (prefixed) {
     locale = prefixed[1];
     href = href.slice(prefixed[0].length) || "/";

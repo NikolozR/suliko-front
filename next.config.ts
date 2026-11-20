@@ -58,7 +58,7 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       { source: "/tms", destination: "/office", permanent: true },
-      { source: "/:locale(en|ka|pl)/tms", destination: "/:locale/office", permanent: true },
+      { source: "/:locale(en|ka|pl|hy)/tms", destination: "/:locale/office", permanent: true },
     ];
   },
   async headers() {

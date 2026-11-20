@@ -10,7 +10,7 @@ import { CLEAN_NAMES, enabledLocalModules, moduleOfClean, MOVED_MODULES, PUBLIC_
  * Nothing is passed on to the former Office deployment any more.
  */
 
-const OFFICE_LOCALES = ["ka", "en"];
+const OFFICE_LOCALES = ["ka", "en", "hy"];
 const SESSION_COOKIE = "suliko_session";
 
 function enabledModules(): Set<string> {
@@ -64,14 +64,14 @@ function buildCsp(nonce: string, isDev: boolean): string {
   ].join("; ");
 }
 
-/** /ka/clients/2 -> { locale: "ka", module: "clients" }; also pl, which Office lacks. */
+/** /ka/clients/2 -> { locale: "ka", module: "clients" }; also pl (which Office lacks) and hy. */
 /** Office module -> its clean segment: "translations" -> "orders", else itself. */
 const cleanName = (module: string) => CLEAN_NAMES[module] ?? module;
 
 /** /ka/clients/2 -> { locale: "ka", module: "clients" }; /ka/orders -> "translations". Also pl. */
 function parseClean(pathname: string): { locale: string | null; module: string | null } {
   const [, locale, segment] = pathname.split("/");
-  if (!["ka", "en", "pl"].includes(locale)) return { locale: null, module: null };
+  if (!["ka", "en", "pl", "hy"].includes(locale)) return { locale: null, module: null };
   // A clean address that is not the module's name: /ka/orders/12 (translations),
   // /ka/admin/workspaces/billing (admin).
   const read = moduleOfClean(pathname.slice(locale.length + 2));
@@ -89,7 +89,7 @@ function parseClean(pathname: string): { locale: string | null; module: string |
  * Office order a number or "new".
  */
 function oldAssignmentPath(pathname: string): string | null {
-  const m = /^\/(ka|en|pl)\/orders\/([^/]+)(\/.*)?$/.exec(pathname);
+  const m = /^\/(ka|en|pl|hy)\/orders\/([^/]+)(\/.*)?$/.exec(pathname);
   if (!m || /^\d+$/.test(m[2]) || m[2] === "new") return null;
   return `/${m[1]}/assignments/${m[2]}${m[3] ?? ""}`;
 }
@@ -128,7 +128,7 @@ export function officeZone(request: NextRequest): NextResponse | null {
     // (/app/api/..., /app/_next/..., /app/manifest.webmanifest) is the Office
     // deployment's and must pass. (Matching on `!module` alone sent the sign-in
     // callback and file downloads to the dashboard.)
-    if (/^\/app(?:\/(?:ka|en))?\/?$/.test(pathname)) {
+    if (/^\/app(?:\/(?:ka|en|hy))?\/?$/.test(pathname)) {
       const lang = locale ?? "ka";
       if (enabledModules().has("dashboard")) return NextResponse.redirect(new URL(`/${lang}/dashboard${search}`, request.url), 307);
       if (!locale) return NextResponse.redirect(new URL(`/app/ka${search}`, request.url), 307);

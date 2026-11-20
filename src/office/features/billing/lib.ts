@@ -11,7 +11,7 @@ export function monthLabel(period: string, locale: string): string {
   const [year, month] = period.split("-").map(Number);
   if (!year || !month) return period;
   return new Date(Date.UTC(year, month - 1, 1)).toLocaleDateString(
-    locale === "ka" ? "ka-GE" : "en-GB",
+    locale === "ka" ? "ka-GE" : locale === "hy" ? "hy-AM" : "en-GB",
     { month: "long", year: "numeric", timeZone: "UTC" },
   );
 }

@@ -60,10 +60,12 @@ const geistMono = Geist_Mono({
 const DOMAIN_KA = "https://suliko.ge";
 const DOMAIN_EN = "https://suliko.ai";
 const DOMAIN_PL = "https://suliko.ge/pl";
+const DOMAIN_HY = "https://suliko.ge/hy";
 
 function getCanonical(locale: string): string {
   if (locale === "ka") return DOMAIN_KA;
   if (locale === "en") return DOMAIN_EN;
+  if (locale === "hy") return DOMAIN_HY;
   return DOMAIN_PL;
 }
 
@@ -88,6 +90,7 @@ export async function generateMetadata({
         ka: DOMAIN_KA,
         en: DOMAIN_EN,
         pl: DOMAIN_PL,
+        hy: DOMAIN_HY,
         "x-default": DOMAIN_KA,
       },
     },

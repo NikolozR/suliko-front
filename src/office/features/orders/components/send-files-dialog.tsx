@@ -122,7 +122,7 @@ function SendForm({
   const [target, setTarget] = useState<Target>("client");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [message, setMessage] = useState("");
-  const [language, setLanguage] = useState<MailLanguage>(locale === "en" ? "en" : "ka");
+  const [language, setLanguage] = useState<MailLanguage>(locale === "ka" ? "ka" : "en");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 

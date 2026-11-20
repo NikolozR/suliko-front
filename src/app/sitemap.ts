@@ -49,6 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ka: `${DOMAIN_KA}${path}`,
         en: `${DOMAIN_EN}${path}`,
         pl: `${DOMAIN_PL}/pl${path}`,
+        hy: `${DOMAIN_PL}/hy${path}`,
         "x-default": `${DOMAIN_KA}${path}`,
       },
     },

@@ -6,7 +6,7 @@ import type { AbstractIntlMessages } from "next-intl";
  * with these. Server only.
  */
 export async function ordersMessages(locale: string): Promise<AbstractIntlMessages> {
-  const lang = locale === "en" || locale === "pl" ? locale : "ka";
+  const lang = locale === "en" || locale === "pl" || locale === "hy" ? locale : "ka";
   const all = (await import(`../../../messages/${lang}.json`)).default as Record<string, AbstractIntlMessages>;
   return { Orders: all.Orders, Sidebar: all.Sidebar, A11y: all.A11y, Common: all.Common };
 }

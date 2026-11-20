@@ -158,7 +158,7 @@ export function ImportWizard({ history }: { history: ImportBatch[] }) {
     ? mappingProblems(analysis.fields, mapping)
     : { missingRequired: false, clash: false };
   const when = (iso: string) =>
-    new Date(iso).toLocaleString(locale === "ka" ? "ka-GE" : "en-GB", {
+    new Date(iso).toLocaleString(locale === "ka" ? "ka-GE" : locale === "hy" ? "hy-AM" : "en-GB", {
       dateStyle: "medium",
       timeStyle: "short",
     });

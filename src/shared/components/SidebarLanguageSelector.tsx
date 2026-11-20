@@ -10,7 +10,7 @@ import {
   SelectItem,
   SelectTrigger,
 } from "@/features/ui";
-import { UKFlag, GeorgianFlag, PolishFlag } from "./flags/FlagIcon";
+import { UKFlag, GeorgianFlag, PolishFlag, ArmenianFlag } from "./flags/FlagIcon";
 
 interface SidebarLanguageSelectorProps {
   isCollapsed: boolean;
@@ -32,6 +32,7 @@ export function SidebarLanguageSelector({ isCollapsed }: SidebarLanguageSelector
     en: t('english'),
     ka: t('georgian'),
     pl: t('polish'),
+    hy: t('armenian'),
   };
 
   const getFlagIcon = (locale: string) => {
@@ -42,6 +43,8 @@ export function SidebarLanguageSelector({ isCollapsed }: SidebarLanguageSelector
         return <GeorgianFlag className="h-5 w-5 shrink-0" />;
       case 'pl':
         return <PolishFlag className="h-5 w-5 shrink-0" />;
+      case 'hy':
+        return <ArmenianFlag className="h-5 w-5 shrink-0" />;
       default:
         return null;
     }

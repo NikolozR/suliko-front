@@ -21,7 +21,7 @@ import { useEffect } from "react";
  */
 export type ZoneOwnership = { only: string[] } | { except: string[] };
 
-const OFFICE_PATH = /^\/app\/(?:ka|en)\/([^/?#]+)/;
+const OFFICE_PATH = /^\/app\/(?:ka|en|hy)\/([^/?#]+)/;
 
 function isOwned(pathname: string, owns: ZoneOwnership): boolean {
   const match = OFFICE_PATH.exec(pathname);
