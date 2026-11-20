@@ -187,6 +187,13 @@ export const translateDocumentUserContent = async (
   }
 
   if (response.status < 200 || response.status >= 300) {
+    // 409 SAME_LANGUAGE (subtitle files too): already in the target language, nothing charged.
+    if (response.status === 409) {
+      const body = await response.clone().json().catch(() => null) as { code?: string; message?: string } | null;
+      if (body?.code === "SAME_LANGUAGE") {
+        throw new DocumentTranslateError(body.message ?? "Same language", 409, "sameLanguage");
+      }
+    }
     throw new Error(await readErrorMessage(response, "Translation failed"));
   } else {
     const data = await response.json();
