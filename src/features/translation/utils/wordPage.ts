@@ -11,10 +11,19 @@
  * sends Markdown or HTML, and the editor writes HTML.
  */
 export function translationAsHtml(content: string): string {
-  if (content.trimStart().startsWith("<")) return content;
+  if (content.trimStart().startsWith("<")) return withoutFontTags(content);
   // eslint-disable-next-line @typescript-eslint/no-require-imports
   const { marked } = require("marked") as { marked: (src: string, options?: { async?: false }) => string };
-  return marked(content, { async: false }) as string;
+  return withoutFontTags(marked(content, { async: false }) as string);
+}
+
+/**
+ * Subtitle files colour their lines with <font color=...> (often a pale cyan or white meant for a
+ * dark video). The translation keeps those tags, and on a white page the text turns almost
+ * invisible. The words stay; the tag goes.
+ */
+export function withoutFontTags(html: string): string {
+  return html.replace(/<\/?font\b[^>]*>/gi, "");
 }
 
 /** A sheet of paper and its margins, in points (1/72 inch). */
