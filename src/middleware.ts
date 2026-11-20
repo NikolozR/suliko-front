@@ -29,7 +29,7 @@ export default function middleware(request: NextRequest) {
 
   // Signed in to Office, the bureau assignments list is Orders' "From bureaus"
   // view. (An assignment's own page stays where it is.)
-  const assignments = /^\/(ka|en|pl)\/assignments\/?$/.exec(request.nextUrl.pathname);
+  const assignments = /^\/(ka|en|pl|hy)\/assignments\/?$/.exec(request.nextUrl.pathname);
   if (assignments && request.cookies.has('suliko_session')) {
     const lang = assignments[1] === 'pl' ? 'en' : assignments[1];
     return NextResponse.redirect(new URL(`/${lang}/orders?view=bureaus`, request.url), 307);

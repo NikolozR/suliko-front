@@ -10,11 +10,11 @@ import { defineRouting } from "next-intl/routing";
  * Georgian, and switches to English from the menu.
  */
 export const routing = defineRouting({
-  locales: ["ka", "en"],
+  locales: ["ka", "en", "hy"],
   defaultLocale: "ka",
   // Under suliko.ge Office's pages are /app/ka/..., /app/en/...: the prefix
   // carries the /app, so Link and redirect produce full addresses.
-  localePrefix: { mode: "always", prefixes: { ka: "/app/ka", en: "/app/en" } },
+  localePrefix: { mode: "always", prefixes: { ka: "/app/ka", en: "/app/en", hy: "/app/hy" } },
   localeDetection: false,
 });
 

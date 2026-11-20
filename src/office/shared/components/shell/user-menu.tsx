@@ -29,7 +29,7 @@ function initials(name: string, login: string): string {
   return (letters || Array.from(login)[0] || "?").toUpperCase();
 }
 
-const LOCALE_LABELS: Record<Locale, string> = { ka: "ქართული", en: "English" };
+const LOCALE_LABELS: Record<Locale, string> = { ka: "ქართული", en: "English", hy: "Հայերեն" };
 
 /** A small segmented control: one row of a label and its choices. */
 function PreferenceRow({

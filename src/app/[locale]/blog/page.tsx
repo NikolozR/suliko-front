@@ -17,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const domain = locale === 'ka' ? 'https://suliko.ge' : locale === 'en' ? 'https://suliko.ai' : 'https://suliko.ge/pl';
+  const domain = locale === 'ka' ? 'https://suliko.ge' : locale === 'en' ? 'https://suliko.ai' : locale === 'hy' ? 'https://suliko.ge/hy' : 'https://suliko.ge/pl';
 
   return {
     title: 'Blog | Suliko',

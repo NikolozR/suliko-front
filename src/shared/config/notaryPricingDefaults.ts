@@ -11,7 +11,7 @@
  * `getPairPrice` in `notaryPricing.ts`).
  */
 
-export type LocaleCode = 'en' | 'ka' | 'pl';
+export type LocaleCode = 'en' | 'ka' | 'pl' | 'hy';
 
 export interface PricingLanguage {
   code: string;

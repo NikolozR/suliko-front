@@ -17,7 +17,7 @@ import { officePath } from "@office/i18n/office-path";
  * is a plain <a> (a full page load), never a client-side <Link>.
  */
 
-export type WorkspaceLocale = "ka" | "en" | "pl";
+export type WorkspaceLocale = "ka" | "en" | "pl" | "hy";
 
 type Labels = Record<WorkspaceLocale, string>;
 
@@ -33,34 +33,34 @@ export interface TranslateNavItem {
 export const TRANSLATE_NAV: readonly TranslateNavItem[] = [
   {
     href: "/text",
-    label: { ka: "ახალი თარგმანი", en: "New translation", pl: "Nowe tłumaczenie" },
+    label: { ka: "ახალი თარგმანი", en: "New translation", pl: "Nowe tłumaczenie", hy: "Նոր թարգմանություն" },
     icon: Plus,
     primary: true,
   },
-  { href: "/passport", label: { ka: "პასპორტი", en: "Passport", pl: "Paszport" }, icon: FileText },
+  { href: "/passport", label: { ka: "პასპორტი", en: "Passport", pl: "Paszport", hy: "Անձնագիր" }, icon: FileText },
   {
     // What bureaus have assigned to this person as a translator. Signed in to
     // Office it is Orders' "From bureaus" view, and the sidebars leave this out.
     href: "/assignments",
-    label: { ka: "ბიუროების შეკვეთები", en: "Bureau assignments", pl: "Zlecenia od biur" },
+    label: { ka: "ბიუროების შეკვეთები", en: "Bureau assignments", pl: "Zlecenia od biur", hy: "Բյուրոների պատվերներ" },
     icon: ClipboardList,
   },
   // Last, as on Translate's own sidebar, where it opens the list of projects.
-  { href: "/projects", label: { ka: "პროექტები", en: "Projects", pl: "Projekty" }, icon: FolderOpen },
+  { href: "/projects", label: { ka: "პროექტები", en: "Projects", pl: "Projekty", hy: "Նախագծեր" }, icon: FolderOpen },
 ];
 
 export const WORKSPACE_SECTIONS: Record<"translate" | "office", Labels> = {
-  translate: { ka: "თარგმნა", en: "Translate", pl: "Tłumaczenie" },
-  office: { ka: "ოფისი", en: "Office", pl: "Biuro" },
+  translate: { ka: "თარგმნა", en: "Translate", pl: "Tłumaczenie", hy: "Թարգմանություն" },
+  office: { ka: "ოფისი", en: "Office", pl: "Biuro", hy: "Գրասենյակ" },
 };
 
 export function workspaceLocale(locale: string): WorkspaceLocale {
-  return locale === "en" || locale === "pl" ? locale : "ka";
+  return locale === "en" || locale === "pl" || locale === "hy" ? locale : "ka";
 }
 
-/** Office has Georgian and English only. */
-export function officeLocaleOf(locale: string): "ka" | "en" {
-  return locale === "en" ? "en" : "ka";
+/** Office has Georgian, English and Armenian. */
+export function officeLocaleOf(locale: string): "ka" | "en" | "hy" {
+  return locale === "en" || locale === "hy" ? locale : "ka";
 }
 
 /**

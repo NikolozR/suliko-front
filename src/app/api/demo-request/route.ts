@@ -28,7 +28,7 @@ const DemoRequest = z.object({
   team: z.enum(['', ...Object.keys(TEAM_SIZES)] as [string, ...string[]]).optional().default(''),
   orders: z.enum(['', ...Object.keys(ORDER_VOLUMES)] as [string, ...string[]]).optional().default(''),
   message: optionalText(2000),
-  locale: z.enum(['en', 'ka', 'pl']).optional().default('en'),
+  locale: z.enum(['en', 'ka', 'pl', 'hy']).optional().default('en'),
   /** Honeypot: hidden from people, filled in by naive bots. */
   website: z.string().optional().default(''),
 });

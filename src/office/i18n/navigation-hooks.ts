@@ -9,7 +9,7 @@ import { officePath } from "./office-path";
 /** The path without its prefix: "/clients/2", whichever address the page has. */
 export function usePathname(): string {
   const pathname = useNextPathname() ?? "/";
-  return pathname.replace(/^\/(?:app\/)?(?:ka|en)(?=\/|$)/, "") || "/";
+  return pathname.replace(/^\/(?:app\/)?(?:ka|en|hy)(?=\/|$)/, "") || "/";
 }
 
 type NavigateOptions = { locale?: string; scroll?: boolean };
