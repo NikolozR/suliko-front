@@ -29,6 +29,8 @@ export function PricingCard({ type, onSelect, highlighted = false, savingsGel }:
         })
       );
     }
+    // Pay as you go says it in its own list below.
+    if (type === 'starter' || type === 'professional') lines.push(t("noExpiry"));
     if (type === 'professional') {
       lines.push(t("professional.features.3"), t("professional.features.4"));
     }
@@ -66,7 +68,8 @@ export function PricingCard({ type, onSelect, highlighted = false, savingsGel }:
           </span>
         </div>
         <div className="text-center mb-6">
-          <p className="text-card-foreground">
+          {/* What the buyer actually gets, so it reads as the second headline of the card. */}
+          <p className="text-lg font-semibold text-card-foreground">
             {t(`${type}.documents`)}
           </p>
         </div>
