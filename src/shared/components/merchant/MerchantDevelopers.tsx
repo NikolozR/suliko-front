@@ -1,8 +1,10 @@
 import { ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import MerchantReveal from "./MerchantReveal";
 
 export default function MerchantDevelopers() {
+  const t = useTranslations("Merchant.dev");
   return (
     <section id="developers" className="relative overflow-hidden bg-white py-24 sm:py-28">
       <div className="glow-blob left-1/2 top-1/2 h-96 w-96 -translate-x-1/2 -translate-y-1/2 bg-[#3b59f3]/[0.07]" />
@@ -11,20 +13,19 @@ export default function MerchantDevelopers() {
         <div className="grid items-center gap-12 lg:grid-cols-2">
           <MerchantReveal>
             <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-suliko-default-color">
-              For developers
+              {t("eyebrow")}
             </p>
             <h2 className="mt-3 text-balance text-[clamp(1.7rem,3.4vw,2.6rem)] font-medium tracking-[-0.02em] text-foreground">
-              Translation API for developers
+              {t("title")}
             </h2>
             <p className="mt-4 text-[15px] leading-relaxed text-muted-foreground">
-              Integrate AI translation into your own application in a few lines of code. Translate
-              articles, on-site text and more with one request.
+              {t("body")}
             </p>
             <Link
               href="/developers"
               className="mt-7 inline-flex items-center gap-2 rounded-full border border-border px-5 py-3 text-[14.5px] font-semibold text-foreground transition hover:border-foreground/30"
             >
-              Read the docs <ArrowRight className="h-4 w-4" />
+              {t("cta")} <ArrowRight className="h-4 w-4" />
             </Link>
           </MerchantReveal>
 

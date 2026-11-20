@@ -2,9 +2,11 @@
 
 import { useState } from "react";
 import { X, Play } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 /** Opens the full 25 s narrated promo cut (with music) in a lightbox. */
 export default function MerchantWatchDemo() {
+  const t = useTranslations("Merchant.hero");
   const [open, setOpen] = useState(false);
 
   return (
@@ -16,7 +18,7 @@ export default function MerchantWatchDemo() {
         <span className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 ring-1 ring-white/30">
           <Play className="h-3.5 w-3.5 translate-x-px fill-current" />
         </span>
-        Watch the full video
+        {t("watch")}
       </button>
 
       {open && (
@@ -30,7 +32,7 @@ export default function MerchantWatchDemo() {
           >
             <button
               onClick={() => setOpen(false)}
-              aria-label="Close"
+              aria-label={t("close")}
               className="absolute right-3 top-3 z-10 flex h-9 w-9 items-center justify-center rounded-full bg-black/60 text-white hover:bg-black/80"
             >
               <X className="h-5 w-5" />

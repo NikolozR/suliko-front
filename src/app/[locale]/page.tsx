@@ -17,7 +17,7 @@ import LandingClientExtras from "./translate/_LandingClientExtras";
  * string); this is just the fallback for any request that reaches the route
  * without passing through middleware.
  *
- * English is the one exception, and middleware knows to leave it alone: this is
+ * English and Armenian are the exceptions, and middleware knows to leave them alone: this is
  * where the international landing page actually lives — one document moving
  * through upload, translate, format-in-Suliko and export in the core app, then
  * into Suliko Office, then a look at the API. Office and Translate both keep
@@ -33,7 +33,7 @@ import LandingClientExtras from "./translate/_LandingClientExtras";
 export default async function LocaleRoot({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
 
-  if (locale !== "en") {
+  if (locale !== "en" && locale !== "hy") {
     redirect({ href: `/${HOME_PRODUCT}`, locale });
     return null;
   }

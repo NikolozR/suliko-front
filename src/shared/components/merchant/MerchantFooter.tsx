@@ -1,41 +1,43 @@
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 const COLUMNS = [
   {
-    title: "Product",
+    key: "product",
     links: [
-      { label: "Translate", href: "/document" },
-      { label: "Suliko Office", href: "/office" },
-      { label: "Developers", href: "/developers" },
-      { label: "Pricing", href: "/price" },
+      { key: "translate", href: "/document" },
+      { key: "office", href: "/office" },
+      { key: "developers", href: "/developers" },
+      { key: "pricing", href: "/price" },
     ],
   },
   {
-    title: "Company",
+    key: "company",
     links: [
-      { label: "About", href: "/about" },
-      { label: "Blog", href: "/blog" },
+      { key: "about", href: "/about" },
+      { key: "blog", href: "/blog" },
     ],
   },
   {
-    title: "Support",
+    key: "support",
     links: [
-      { label: "Help center", href: "/help" },
-      { label: "Contact", href: "/feedback" },
+      { key: "help", href: "/help" },
+      { key: "contact", href: "/feedback" },
     ],
   },
   {
-    title: "Legal",
+    key: "legal",
     links: [
-      { label: "Privacy", href: "/privacy" },
-      { label: "Terms", href: "/terms" },
-      { label: "Refund policy", href: "/refund-policy" },
+      { key: "privacy", href: "/privacy" },
+      { key: "terms", href: "/terms" },
+      { key: "refund", href: "/refund-policy" },
     ],
   },
 ] as const;
 
 export default function MerchantFooter() {
+  const t = useTranslations("Merchant.footer");
   return (
     <footer className="border-t border-border bg-white py-14">
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
@@ -43,17 +45,17 @@ export default function MerchantFooter() {
           <div className="lg:col-span-1">
             <Image src="/Suliko_logo_black.svg" alt="Suliko" width={112} height={29} className="h-6 w-auto" />
             <p className="mt-4 text-[13.5px] leading-relaxed text-muted-foreground">
-              AI document translation, and the system to run a translation business on.
+              {t("tagline")}
             </p>
           </div>
           {COLUMNS.map((col) => (
-            <div key={col.title}>
-              <h4 className="text-[13px] font-semibold text-foreground">{col.title}</h4>
+            <div key={col.key}>
+              <h4 className="text-[13px] font-semibold text-foreground">{t(col.key)}</h4>
               <ul className="mt-3 space-y-2.5">
                 {col.links.map((l) => (
-                  <li key={l.label}>
+                  <li key={l.key}>
                     <Link href={l.href} className="text-[13.5px] text-muted-foreground hover:text-foreground">
-                      {l.label}
+                      {t(l.key)}
                     </Link>
                   </li>
                 ))}
@@ -63,8 +65,8 @@ export default function MerchantFooter() {
         </div>
 
         <div className="mt-12 flex flex-col gap-3 border-t border-border pt-6 text-[13px] text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 Suliko. All rights reserved.</span>
-          <span className="text-muted-foreground/70">Translate and Suliko Office, in one place.</span>
+          <span>{t("copyright")}</span>
+          <span className="text-muted-foreground/70">{t("inOnePlace")}</span>
         </div>
       </div>
     </footer>

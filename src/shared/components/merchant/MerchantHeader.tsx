@@ -4,21 +4,23 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { Menu, X, ArrowRight } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 
 const NAV = [
-  { href: "#product", label: "Product" },
-  { href: "#how-it-works", label: "How it works" },
-  { href: "#office", label: "Suliko Office" },
-  { href: "#developers", label: "Developers" },
-  { href: "#pricing", label: "Pricing" },
-];
+  { href: "#product", key: "product" },
+  { href: "#how-it-works", key: "howItWorks" },
+  { href: "#office", key: "office" },
+  { href: "#developers", key: "developers" },
+  { href: "#pricing", key: "pricing" },
+] as const;
 
 /**
  * The international (English) landing page's own header — a new, sharper design,
  * kept apart from `LandingHeader` so that one stays untouched for other locales.
  */
 export default function MerchantHeader() {
+  const t = useTranslations("Merchant.nav");
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -56,7 +58,7 @@ export default function MerchantHeader() {
                 scrolled ? "text-muted-foreground hover:text-foreground" : "text-white/85 hover:text-white"
               }`}
             >
-              {l.label}
+              {t(l.key)}
             </a>
           ))}
         </nav>
@@ -69,19 +71,19 @@ export default function MerchantHeader() {
               scrolled ? "text-muted-foreground hover:text-foreground" : "text-white/85 hover:text-white"
             }`}
           >
-            Sign in
+            {t("signIn")}
           </Link>
           <Link
             href="/document"
             className="inline-flex items-center gap-1.5 rounded-full bg-suliko-default-color px-4 py-2 text-[14.5px] font-semibold text-white transition hover:bg-suliko-default-hover-color"
           >
-            Start free
+            {t("startFree")}
             <ArrowRight className="h-3.5 w-3.5" />
           </Link>
         </div>
 
         <button
-          aria-label={open ? "Close menu" : "Open menu"}
+          aria-label={open ? t("closeMenu") : t("openMenu")}
           onClick={() => setOpen((v) => !v)}
           className={`-mr-2 p-2 lg:hidden ${scrolled || open ? "text-foreground" : "text-white"}`}
         >
@@ -99,7 +101,7 @@ export default function MerchantHeader() {
                 onClick={() => setOpen(false)}
                 className="border-b border-border py-3.5 text-[15px] font-medium text-foreground"
               >
-                {l.label}
+                {t(l.key)}
               </a>
             ))}
           </nav>
@@ -108,13 +110,13 @@ export default function MerchantHeader() {
           </div>
           <div className="mt-4 flex items-center gap-3">
             <Link href="/sign-in" className="text-[14.5px] font-medium text-muted-foreground">
-              Sign in
+              {t("signIn")}
             </Link>
             <Link
               href="/document"
               className="ml-auto inline-flex items-center gap-1.5 rounded-full bg-suliko-default-color px-4 py-2.5 text-[14.5px] font-semibold text-white"
             >
-              Start free <ArrowRight className="h-3.5 w-3.5" />
+              {t("startFree")} <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>
         </div>
