@@ -1,35 +1,24 @@
 import { Upload, FileCheck2, DownloadCloud } from "lucide-react";
+import { useTranslations } from "next-intl";
 import MerchantReveal from "./MerchantReveal";
 
 const STEPS = [
-  {
-    icon: Upload,
-    title: "Upload",
-    body: "Drop in a PNG, JPG, PDF, DOCX or TXT file. Suliko reads it and keeps the layout.",
-  },
-  {
-    icon: FileCheck2,
-    title: "Translate, format & review",
-    body:
-      "Read the original and the translation side by side, with smart suggestions for every segment. Format it right in Suliko — bold, headings, lists — no need to open Word.",
-  },
-  {
-    icon: DownloadCloud,
-    title: "Export",
-    body: "Download in Word, PDF or plain text, formatted like the file you uploaded.",
-  },
-];
+  { icon: Upload, key: "upload" },
+  { icon: FileCheck2, key: "translate" },
+  { icon: DownloadCloud, key: "export" },
+] as const;
 
 export default function MerchantHowItWorks() {
+  const t = useTranslations("Merchant.how");
   return (
     <section id="how-it-works" className="bg-white py-24 sm:py-28">
       <div className="mx-auto max-w-5xl px-5 sm:px-8">
         <MerchantReveal className="text-center">
           <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-suliko-default-color">
-            How it works
+            {t("eyebrow")}
           </p>
           <h2 className="mt-3 text-balance text-[clamp(1.7rem,3.4vw,2.6rem)] font-medium tracking-[-0.02em] text-foreground">
-            From upload to finished file in three steps
+            {t("title")}
           </h2>
         </MerchantReveal>
 
@@ -44,7 +33,7 @@ export default function MerchantHowItWorks() {
           />
           <ol className="grid gap-8 sm:grid-cols-3">
             {STEPS.map((s, i) => (
-              <MerchantReveal key={s.title} delay={i * 90}>
+              <MerchantReveal key={s.key} delay={i * 90}>
                 <li className="group relative h-full rounded-2xl border border-border bg-card p-7 transition-all duration-300 hover:-translate-y-1 hover:border-suliko-default-color/30 hover:shadow-[0_18px_40px_-18px_rgba(59,89,243,.3)]">
                   <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl bg-white ring-1 ring-border shadow-[0_6px_16px_-6px_rgba(16,24,40,.15)]">
                     <s.icon className="h-6 w-6 text-suliko-default-color" />
@@ -52,8 +41,8 @@ export default function MerchantHowItWorks() {
                       {i + 1}
                     </span>
                   </div>
-                  <h3 className="mt-5 text-[1.15rem] font-semibold text-foreground">{s.title}</h3>
-                  <p className="mt-2 text-[14.5px] leading-relaxed text-muted-foreground">{s.body}</p>
+                  <h3 className="mt-5 text-[1.15rem] font-semibold text-foreground">{t(`${s.key}.title`)}</h3>
+                  <p className="mt-2 text-[14.5px] leading-relaxed text-muted-foreground">{t(`${s.key}.body`)}</p>
                 </li>
               </MerchantReveal>
             ))}

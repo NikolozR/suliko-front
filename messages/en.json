@@ -2542,5 +2542,142 @@
     "passportTemplates": "Passport templates",
     "workspaces": "Workspaces",
     "platformBilling": "Platform billing"
+  },
+  "Merchant": {
+    "nav": {
+      "product": "Product",
+      "howItWorks": "How it works",
+      "office": "Suliko Office",
+      "developers": "Developers",
+      "pricing": "Pricing",
+      "signIn": "Sign in",
+      "startFree": "Start free",
+      "openMenu": "Open menu",
+      "closeMenu": "Close menu"
+    },
+    "hero": {
+      "title": "Translation, without the wait.",
+      "subtitle": "AI document translation that keeps your layout, and Suliko Office to run the business behind it.",
+      "cta": "Start free: 10 pages on us",
+      "watch": "Watch the full video",
+      "close": "Close",
+      "stats": {
+        "documents": "Documents translated",
+        "languages": "Languages supported",
+        "accuracy": "Accuracy rate"
+      }
+    },
+    "how": {
+      "eyebrow": "How it works",
+      "title": "From upload to finished file in three steps",
+      "upload": {
+        "title": "Upload",
+        "body": "Drop in a PNG, JPG, PDF, DOCX or TXT file. Suliko reads it and keeps the layout."
+      },
+      "translate": {
+        "title": "Translate, format & review",
+        "body": "Read the original and the translation side by side, with smart suggestions for every segment. Format it right in Suliko (bold, headings, lists), no need to open Word."
+      },
+      "export": {
+        "title": "Export",
+        "body": "Download in Word, PDF or plain text, formatted like the file you uploaded."
+      }
+    },
+    "features": {
+      "eyebrow": "Why Suliko",
+      "title": "An assistant for translators, not a replacement",
+      "subtitle": "The intelligent assistant that helps translators work faster and businesses scale, without sacrificing quality.",
+      "copilot": {
+        "title": "Translator's Copilot",
+        "body": "Earn 3–10x more by speeding up the work you already do, with suggestions on every segment."
+      },
+      "languages": {
+        "title": "50+ languages",
+        "body": "Georgian, English, French, Turkish, Polish, Ukrainian, Arabic and more, fine-tuned on legal, medical and business text."
+      },
+      "format": {
+        "title": "Format in Suliko",
+        "body": "Bold, headings, lists: edit and format the translation right in Suliko. No round-trip through Word to make it presentable."
+      },
+      "privacy": {
+        "title": "Private by default",
+        "body": "Encrypted in transit (TLS 1.3) and at rest. Your documents are never used to train our models."
+      }
+    },
+    "office": {
+      "eyebrow": "Suliko Office",
+      "title": "Run your translation bureau from one screen",
+      "body": "Orders, translators, notaries, payments and clients in one system. Built and used daily by a working bureau. The document you just translated in Suliko lands here as a tracked order automatically.",
+      "cta": "Explore Suliko Office",
+      "note": "Its own page, with the full tour, live demo and sign-in.",
+      "orders": {
+        "title": "Orders & statuses",
+        "body": "Every order from first request to pickup, with a status the whole team can see."
+      },
+      "people": {
+        "title": "Translators & notaries",
+        "body": "Your translators and notaries with their language pairs, so each order goes to the right person."
+      },
+      "pricing": {
+        "title": "Automatic pricing",
+        "body": "Translation and notary costs calculated from language pair, document type, pages and urgency."
+      },
+      "finance": {
+        "title": "Finance",
+        "body": "Client payments, translator and notary payouts, expenses and profit, reconciled automatically."
+      },
+      "reports": {
+        "title": "Reports",
+        "body": "Revenue, profit and volume by week and month, broken down by language pair and source."
+      },
+      "team": {
+        "title": "Team & roles",
+        "body": "Five roles, with staff access to what they need. Two-factor login and a full audit log."
+      },
+      "mock": {
+        "title": "Suliko Office: Orders",
+        "month": "This month: 124",
+        "serviceAgreement": "Service Agreement",
+        "powerOfAttorney": "Power of Attorney",
+        "birthCertificate": "Birth Certificate",
+        "diplomaSupplement": "Diploma Supplement",
+        "beingNotarised": "Being notarised",
+        "completed": "Completed",
+        "readyForPickup": "Ready for pickup",
+        "withTranslator": "With translator"
+      }
+    },
+    "dev": {
+      "eyebrow": "For developers",
+      "title": "Translation API for developers",
+      "body": "Integrate AI translation into your own application in a few lines of code. Translate articles, on-site text and more with one request.",
+      "cta": "Read the docs"
+    },
+    "closing": {
+      "title": "Your first 10 pages are on us",
+      "body": "Upload a document now and see the translation next to the original in a couple of minutes.",
+      "cta": "Start translating",
+      "demo": "Book a demo"
+    },
+    "footer": {
+      "tagline": "AI document translation, and the system to run a translation business on.",
+      "product": "Product",
+      "translate": "Translate",
+      "office": "Suliko Office",
+      "developers": "Developers",
+      "pricing": "Pricing",
+      "company": "Company",
+      "about": "About",
+      "blog": "Blog",
+      "support": "Support",
+      "help": "Help center",
+      "contact": "Contact",
+      "legal": "Legal",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "refund": "Refund policy",
+      "copyright": "© 2026 Suliko. All rights reserved.",
+      "inOnePlace": "Translate and Suliko Office, in one place."
+    }
   }
 }
