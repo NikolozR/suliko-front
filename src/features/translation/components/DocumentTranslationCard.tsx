@@ -34,11 +34,7 @@ import NameReviewModal from "./NameReviewModal";
 import {
   NameTranslationItem,
   DEFAULT_DOCUMENT_OUTPUT_FORMAT,
-  type DocumentBrief,
-  type TermTranslationItem,
 } from "../types/types.Translation";
-import { useDocumentAnalysis } from "../hooks/useDocumentAnalysis";
-import { uiOutputLanguageId } from "../utils/outputLanguage";
 import { moveChatToProject, uploadOriginalForChat } from "@/features/chatHistory";
 import { getProjectNames, saveProjectNames, type ProjectNameTranslation } from "@/features/projects";
 // DISABLED: Unused import - Splitting functionality is kept in repository but not used
@@ -48,7 +44,7 @@ import { MAX_DOCUMENT_UPLOAD_BYTES, formatBytes, isAcceptedDocumentName } from "
 import { prepareDocumentUpload, PrepareUploadError } from "../services/prepareUploadService";
 import type { PrepareUploadResponse } from "../types/types.Translation";
 import LanguageSelect from "./LanguageSelect";
-import { BriefBlock, DeliverableSelect, InstructionsBlock, NamesBlock, QuoteBlock } from "./JobPanel";
+import { DeliverableSelect, InstructionsBlock, NamesBlock, QuoteBlock } from "./JobPanel";
 import InProgressView from "./InProgressView";
 import { useJobStage } from "../hooks/useJobStage";
 import { Button } from "@/features/ui/components/ui/button";
@@ -361,59 +357,16 @@ const DocumentTranslationCard = () => {
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
-  // Read the document as soon as the server holds it, so the brief is there
-  // before the user decides to pay.
-  const isSrtSelected = watch("isSrt");
-  const {
-    status: analysisStatus,
-    analysis,
-    waitForResult: waitForAnalysis,
-  } = useDocumentAnalysis({
-    fileUri: prepared?.fileUri,
-    mimeType: prepared?.mimeType,
-    sourceLanguageId: currentSourceLanguageId,
-    targetLanguageId: currentTargetLanguageId,
-    outputLanguageId: uiOutputLanguageId(),
-    enabled: !!token && !isOcrOnly && !isSrtSelected && !activeJob,
-  });
-
-  // The user's working copy of the brief, reset whenever a new analysis lands.
-  const [briefTerms, setBriefTerms] = useState<TermTranslationItem[]>([]);
-  const [briefAnswers, setBriefAnswers] = useState<Record<number, string>>({});
-  useEffect(() => {
-    setBriefTerms(analysis?.terms ?? []);
-    setBriefAnswers({});
-  }, [analysis]);
-
-  /** What the user confirmed, in the shape translate-with-uri takes. */
-  const buildBrief = (): DocumentBrief | undefined => {
-    if (!analysis) return undefined;
-    return {
-      documentType: analysis.documentType ?? undefined,
-      domain: analysis.domain ?? undefined,
-      register: analysis.register ?? undefined,
-      terms: briefTerms
-        .map(({ original, translation }) => ({ original, translation: translation.trim() }))
-        .filter((term) => term.translation),
-      answers: analysis.questions
-        .map((q, i) => ({ question: q.question, answer: (briefAnswers[i] ?? "").trim() }))
-        .filter((a) => a.answer),
-    };
-  };
-
   /**
-   * Names for the review modal. The analysis already found them in the file
-   * the server holds; the old endpoint, which uploads the file again and makes
-   * two model calls, is only the fallback for when the analysis failed.
+   * Names for the review modal. The document is no longer read in advance (the brief that did it
+   * was removed: it spent model tokens on a summary nobody asked for and held the page up), so
+   * the names come from the name search, which has a time budget.
    */
   const NAME_SEARCH_BUDGET_MS = 25_000;
   const detectNames = async (data: DocumentFormData): Promise<NameTranslationItem[]> => {
-    const analysed = await waitForAnalysis();
-    if (analysed) return analysed.names;
-
-    // The fallback re-uploads the file and makes two model calls: about 100 s on 20 pages, with the
-    // translate button stuck on "Finding names". Names are a refinement, so it gets a budget; past
-    // it the translation goes ahead without a names review rather than waiting out the search.
+    // It re-uploads the file and makes two model calls: about 100 s on 20 pages, with the translate
+    // button stuck on "Finding names". Names are a refinement, so it gets a budget; past it the
+    // translation goes ahead without a names review rather than waiting out the search.
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), NAME_SEARCH_BUDGET_MS);
     try {
@@ -866,8 +819,6 @@ const DocumentTranslationCard = () => {
           // something went wrong and we have nothing prepared.
           prepared,
           instructions,
-          brief: buildBrief(),
-          templateId: analysis?.matchedTemplateId ?? undefined,
           onUploadProgress: (fraction) => setUploadPercent(Math.round(fraction * 100)),
           onStarting: () => setSubmitStage("starting"),
         }
@@ -1222,23 +1173,6 @@ const DocumentTranslationCard = () => {
                   </div>
 
                   <aside className="flex w-full flex-col gap-4 lg:w-[392px] lg:shrink-0">
-                    <BriefBlock
-                      status={analysisStatus}
-                      analysis={analysis}
-                      terms={briefTerms}
-                      onTermChange={(index, translation) =>
-                        setBriefTerms((terms) =>
-                          terms.map((term, i) => (i === index ? { ...term, translation } : term))
-                        )
-                      }
-                      onTermRemove={(index) =>
-                        setBriefTerms((terms) => terms.filter((_, i) => i !== index))
-                      }
-                      answers={briefAnswers}
-                      onAnswer={(index, answer) =>
-                        setBriefAnswers((answers) => ({ ...answers, [index]: answer }))
-                      }
-                    />
                     {!isOcrOnly && !watch("isSrt") && (
                       <DeliverableSelect value={outputFormat} onChange={setOutputFormat} />
                     )}
@@ -1272,7 +1206,7 @@ const DocumentTranslationCard = () => {
                       uploadPercent={submitStage === "uploading" ? uploadPercent : null}
                       hasFile={!!hasFile}
                       onSubmitDisabled={
-                        isLoading || isDetectingNames || (token ? !hasFile : false) || !!analysis?.sameLanguageAsTarget
+                        isLoading || isDetectingNames || (token ? !hasFile : false)
                       }
                       etaMin={quoteEtaMin}
                       etaMax={quoteEtaMax}
