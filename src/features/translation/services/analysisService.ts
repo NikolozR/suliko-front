@@ -1,6 +1,7 @@
 import { API_BASE_URL } from "@/shared/constants/api";
 import { reaccessToken, useAuthStore } from "@/features/auth";
 import { DocumentAnalysis } from "@/features/translation/types/types.Translation";
+import { sendWithOneRetry } from "../utils/sendWithOneRetry";
 
 export interface AnalyzeDocumentParams {
   fileUri: string;
@@ -39,14 +40,14 @@ export async function analyzeDocument(params: AnalyzeDocumentParams): Promise<Do
     });
 
   try {
-    let response = await send(token);
+    let response = await sendWithOneRetry(send, token, signal);
 
     if (response.status === 401 && refreshToken) {
       const next = (await reaccessToken(refreshToken)) as { token: string; refreshToken: string };
       const { setToken, setRefreshToken } = useAuthStore.getState();
       setToken(next.token);
       setRefreshToken(next.refreshToken);
-      response = await send(next.token);
+      response = await sendWithOneRetry(send, next.token, signal);
     }
 
     if (!response.ok) return null;

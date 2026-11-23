@@ -28,7 +28,8 @@ const normalizeType = (type?: string): NameTranslationType =>
 export const suggestNameTranslations = async (
   file: File,
   sourceLanguageId: number,
-  targetLanguageId: number
+  targetLanguageId: number,
+  signal?: AbortSignal
 ): Promise<NameTranslationItem[]> => {
   const endpoint = "/Document/suggest-name-translations";
 
@@ -50,6 +51,7 @@ export const suggestNameTranslations = async (
     method: "POST",
     headers,
     body: formData,
+    signal,
   });
 
   if (response.status === 401 && token && refreshToken) {
@@ -63,6 +65,7 @@ export const suggestNameTranslations = async (
         method: "POST",
         headers,
         body: formData,
+        signal,
       });
     } catch {
       useAuthStore.getState().reset();
