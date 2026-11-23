@@ -46,6 +46,10 @@ export interface JobStatusResponse {
    */
   sectionsDone?: number | null;
   sectionsTotal?: number | null;
+  /** A request is waiting to be retried because the AI model is overloaded. */
+  busy?: boolean;
+  /** Requests answered by the backup model. Kept after the job completes. */
+  backupSections?: number;
 }
 
 export interface JobResultResponseOnError {

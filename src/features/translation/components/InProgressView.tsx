@@ -34,6 +34,10 @@ interface Props {
   stage: JobStage | null;
   sectionsDone?: number | null;
   sectionsTotal?: number | null;
+  /** The AI model is overloaded and a request is waiting to be retried. */
+  busy?: boolean;
+  /** Requests the backup model has answered so far. */
+  backupSections?: number;
   chatId: string;
   failedMessage?: string | null;
 }
@@ -44,6 +48,8 @@ export default function InProgressView({
   stage,
   sectionsDone = null,
   sectionsTotal = null,
+  busy = false,
+  backupSections = 0,
   chatId,
   failedMessage,
 }: Props) {
@@ -102,6 +108,13 @@ export default function InProgressView({
           {!failed && !ready && (
             <>
               <ProgressBar value={percent} size="md" tone="brand" className="mt-5" label={headline} />
+              {(busy || backupSections > 0) && (
+                // What the user is told when the model is overloaded: a retry in progress, and
+                // whether the backup model had to step in. Amber, not red: nothing has failed.
+                <p className="mt-3 text-[13px] text-amber-600 dark:text-amber-400" aria-live="polite">
+                  {busy ? t("busy") : t("backup")}
+                </p>
+              )}
               <p className="mt-2 text-[13px] text-muted-foreground" aria-live="polite">
                 {runningLong
                   ? t("runningLong")

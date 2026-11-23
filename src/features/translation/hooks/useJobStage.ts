@@ -21,6 +21,10 @@ interface JobState {
   /** Sections back / total, only while a long document is translated in ranges. */
   sectionsDone: number | null;
   sectionsTotal: number | null;
+  /** The AI model is overloaded and a request is waiting to be retried. */
+  busy: boolean;
+  /** Requests the backup model answered; the page tells the user. */
+  backupSections: number;
   outcome: JobOutcome;
   /** The server's message on failure, so the caller can show a real reason. */
   message: string | null;
@@ -34,6 +38,8 @@ export function useJobStage(jobId: string | null): JobState {
     stage: null,
     sectionsDone: null,
     sectionsTotal: null,
+    busy: false,
+    backupSections: 0,
     outcome: "running",
     message: null,
   });
@@ -44,7 +50,7 @@ export function useJobStage(jobId: string | null): JobState {
 
   useEffect(() => {
     if (!jobId) {
-      setState({ stage: null, sectionsDone: null, sectionsTotal: null, outcome: "running", message: null });
+      setState({ stage: null, sectionsDone: null, sectionsTotal: null, busy: false, backupSections: 0, outcome: "running", message: null });
       return;
     }
 
@@ -58,7 +64,7 @@ export function useJobStage(jobId: string | null): JobState {
         if (cancelled.current) return;
 
         if (status.status === "Completed") {
-          setState({ stage: status.stage ?? "ready", sectionsDone: null, sectionsTotal: null, outcome: "completed", message: null });
+          setState({ stage: status.stage ?? "ready", sectionsDone: null, sectionsTotal: null, busy: false, backupSections: status.backupSections ?? 0, outcome: "completed", message: null });
           return; // terminal — stop polling
         }
         if (status.status === "Failed") {
@@ -66,6 +72,8 @@ export function useJobStage(jobId: string | null): JobState {
             stage: status.stage ?? "failed",
             sectionsDone: null,
             sectionsTotal: null,
+            busy: false,
+            backupSections: 0,
             outcome: "failed",
             message: status.message || null,
           });
@@ -78,6 +86,8 @@ export function useJobStage(jobId: string | null): JobState {
           stage: status.stage ?? prev.stage,
           sectionsDone: status.sectionsTotal ? status.sectionsDone ?? 0 : null,
           sectionsTotal: status.sectionsTotal ?? null,
+          busy: status.busy === true,
+          backupSections: status.backupSections ?? 0,
           outcome: "running",
           message: null,
         }));

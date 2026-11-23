@@ -1171,6 +1171,8 @@ const DocumentTranslationCard = () => {
                   stage={job.stage}
                   sectionsDone={job.sectionsDone}
                   sectionsTotal={job.sectionsTotal}
+                  busy={job.busy}
+                  backupSections={job.backupSections}
                   chatId={activeJob.chatId}
                   failedMessage={job.outcome === "failed" ? job.message : null}
                 />

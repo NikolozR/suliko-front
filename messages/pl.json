@@ -635,7 +635,10 @@
       "workingBuilding": "Budujemy plik",
       "sectionsDone": "Gotowe sekcje: {done} z {total}",
       "estimate": "Dokument tej wielkości zwykle zajmuje około {minutes} min. To jest szacunek.",
-      "runningLong": "To trwa dłużej niż zwykle. Proces nadal trwa i możesz opuścić tę stronę."
+      "runningLong": "To trwa dłużej niż zwykle. Proces nadal trwa i możesz opuścić tę stronę.",
+      "busy": "Usługa AI jest zajęta. Ponawiamy próbę, może to potrwać jeszcze kilka sekund.",
+      "backup": "Część dokumentu jest tłumaczona przez model zapasowy.",
+      "backupNote": "Część dokumentu została przetłumaczona przez model zapasowy, ponieważ główny był przeciążony. Jeśli dokument jest uwierzytelniony, sprawdź tłumaczenie uważnie."
     },
     "originalUnavailable": "Oryginalny plik nie jest już dostępny dla tego tłumaczenia. Nadal możesz czytać, edytować i pobrać przetłumaczony tekst."
   },
