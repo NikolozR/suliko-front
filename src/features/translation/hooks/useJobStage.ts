@@ -18,6 +18,9 @@ export type JobOutcome = "running" | "completed" | "failed";
 
 interface JobState {
   stage: JobStage | null;
+  /** Sections back / total, only while a long document is translated in ranges. */
+  sectionsDone: number | null;
+  sectionsTotal: number | null;
   outcome: JobOutcome;
   /** The server's message on failure, so the caller can show a real reason. */
   message: string | null;
@@ -29,6 +32,8 @@ const ERROR_INTERVAL_MS = 5000;
 export function useJobStage(jobId: string | null): JobState {
   const [state, setState] = useState<JobState>({
     stage: null,
+    sectionsDone: null,
+    sectionsTotal: null,
     outcome: "running",
     message: null,
   });
@@ -39,7 +44,7 @@ export function useJobStage(jobId: string | null): JobState {
 
   useEffect(() => {
     if (!jobId) {
-      setState({ stage: null, outcome: "running", message: null });
+      setState({ stage: null, sectionsDone: null, sectionsTotal: null, outcome: "running", message: null });
       return;
     }
 
@@ -53,12 +58,14 @@ export function useJobStage(jobId: string | null): JobState {
         if (cancelled.current) return;
 
         if (status.status === "Completed") {
-          setState({ stage: status.stage ?? "ready", outcome: "completed", message: null });
+          setState({ stage: status.stage ?? "ready", sectionsDone: null, sectionsTotal: null, outcome: "completed", message: null });
           return; // terminal — stop polling
         }
         if (status.status === "Failed") {
           setState({
             stage: status.stage ?? "failed",
+            sectionsDone: null,
+            sectionsTotal: null,
             outcome: "failed",
             message: status.message || null,
           });
@@ -69,6 +76,8 @@ export function useJobStage(jobId: string | null): JobState {
           // Keep the last known stage if a poll comes back without one, so the
           // list does not flicker back to nothing on a single odd response.
           stage: status.stage ?? prev.stage,
+          sectionsDone: status.sectionsTotal ? status.sectionsDone ?? 0 : null,
+          sectionsTotal: status.sectionsTotal ?? null,
           outcome: "running",
           message: null,
         }));

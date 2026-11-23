@@ -610,7 +610,12 @@
       "startingUp": "Starting up…",
       "openFullView": "Open full view",
       "failed": "The translation failed. Please try again.",
-      "openingResult": "Done. Opening your translation…"
+      "openingResult": "Done. Opening your translation…",
+      "workingStarting": "Getting your document ready",
+      "workingBuilding": "Building your file",
+      "sectionsDone": "{done} of {total} sections done",
+      "estimate": "Usually about {minutes} min for a document this size. This is an estimate.",
+      "runningLong": "This is taking longer than usual. It is still running, and you can leave this page."
     },
     "originalUnavailable": "The original file is no longer available for this translation. You can still read, edit and download the translated text."
   },

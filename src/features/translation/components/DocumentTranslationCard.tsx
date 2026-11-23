@@ -1169,6 +1169,8 @@ const DocumentTranslationCard = () => {
                   fileName={activeJob.fileName}
                   pageCount={prepared?.pageCount ?? null}
                   stage={job.stage}
+                  sectionsDone={job.sectionsDone}
+                  sectionsTotal={job.sectionsTotal}
                   chatId={activeJob.chatId}
                   failedMessage={job.outcome === "failed" ? job.message : null}
                 />
