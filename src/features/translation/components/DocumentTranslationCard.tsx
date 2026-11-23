@@ -53,7 +53,6 @@ import InProgressView from "./InProgressView";
 import { useJobStage } from "../hooks/useJobStage";
 import { Button } from "@/features/ui/components/ui/button";
 import { ArrowRightLeft } from "lucide-react";
-import { countPages } from "@/features/translation/services/countPagesService";
 import { useSuggestionsStore } from "../store/suggestionsStore";
 import { useOrderHandOffStore, useOrderOfFile, useOrderSource } from "@/features/orders/orderSource";
 import { noteOrderTranslation } from "@/features/orders/orderTranslations";
@@ -586,42 +585,41 @@ const DocumentTranslationCard = () => {
     // until this returns — and the old failure mode, where someone who never
     // scrolled the preview was quoted 1 page for a 200-page PDF, disappears.
     setPrepared(null);
+    const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
+    // A Word file's page count comes from prepare-upload, which measures the
+    // file before converting it. It used to be fetched by a second upload of
+    // the same file to /Document/count-pages, run alongside this one.
+    const countsWordPages = fileExtension === "docx" && !!token;
+    if (countsWordPages) {
+      setIsCountingPages(true);
+      setRealPageCount(null);
+    }
     if (token && !isSrtFile) {
       setIsPreparing(true);
       setPreparePercent(0);
       prepareDocumentUpload(file, {
         onProgress: (fraction) => setPreparePercent(Math.round(fraction * 100)),
       })
-        .then((result) => setPrepared(result))
+        .then((result) => {
+          setPrepared(result);
+          if (countsWordPages) setRealPageCount(result.pageCount ?? null);
+        })
         .catch((err) => {
           setPrepared(null);
+          if (countsWordPages) setRealPageCount(null);
           setError(
             err instanceof PrepareUploadError
               ? err.message
               : t("progress.unexpectedError")
           );
         })
-        .finally(() => setIsPreparing(false));
+        .finally(() => {
+          setIsPreparing(false);
+          if (countsWordPages) setIsCountingPages(false);
+        });
     }
 
-    const { setRealPageCount, setIsCountingPages } = useDocumentTranslationStore.getState();
-
-    if (fileExtension === "docx" && token) {
-      // Count DOCX pages if authenticated
-      setIsCountingPages(true);
-      setRealPageCount(null);
-
-      try {
-        const pageCountResult = await countPages(file);
-        const pageCount = pageCountResult.pageCount || pageCountResult.pages || null;
-        setRealPageCount(pageCount);
-      } catch (err) {
-        console.error("Failed to count DOCX pages:", err);
-        setRealPageCount(null);
-      } finally {
-        setIsCountingPages(false);
-      }
-    } else if (fileExtension !== "pdf") {
+    if (!countsWordPages && fileExtension !== "pdf") {
       // For non-PDF/non-DOCX, reset page count
       setRealPageCount(null);
       setIsCountingPages(false);
