@@ -630,7 +630,12 @@
       "startingUp": "Uruchamiam…",
       "openFullView": "Otwórz pełny widok",
       "failed": "Tłumaczenie nie powiodło się. Spróbuj ponownie.",
-      "openingResult": "Gotowe. Otwieramy tłumaczenie…"
+      "openingResult": "Gotowe. Otwieramy tłumaczenie…",
+      "workingStarting": "Przygotowujemy dokument",
+      "workingBuilding": "Budujemy plik",
+      "sectionsDone": "Gotowe sekcje: {done} z {total}",
+      "estimate": "Dokument tej wielkości zwykle zajmuje około {minutes} min. To jest szacunek.",
+      "runningLong": "To trwa dłużej niż zwykle. Proces nadal trwa i możesz opuścić tę stronę."
     },
     "originalUnavailable": "Oryginalny plik nie jest już dostępny dla tego tłumaczenia. Nadal możesz czytać, edytować i pobrać przetłumaczony tekst."
   },

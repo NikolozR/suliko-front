@@ -15,12 +15,17 @@ import type { JobStage } from "../types/types.Translation";
  * progress thresholds of 10/25/50/85 — and `progress` was itself partly a
  * simulated curve, so the steps advanced on a timer rather than on anything
  * the job had done.
+ *
+ * "verifying" is not a step any more: the accuracy check now runs after the
+ * translation is delivered and reports through the suggestions, so a job never
+ * reports it. Jobs that stored it before still render, as the translating step.
  */
-const STEPS = ["queued", "translating", "verifying", "rebuilding"] as const;
+const STEPS = ["queued", "translating", "rebuilding"] as const;
 type Step = (typeof STEPS)[number];
 
 const stepIndex = (stage: JobStage): number => {
   if (stage === "ready") return STEPS.length;
+  if (stage === "verifying") return STEPS.indexOf("translating");
   const i = STEPS.indexOf(stage as Step);
   return i === -1 ? 0 : i;
 };
@@ -28,6 +33,8 @@ const stepIndex = (stage: JobStage): number => {
 interface Props {
   /** Null for jobs created before the backend reported stages. */
   stage: JobStage | null;
+  /** A line under the active step, such as "Section 3 of 6". */
+  detail?: string | null;
   className?: string;
 }
 
@@ -36,7 +43,7 @@ interface Props {
  * progress-derived UI as the fallback for pre-deploy jobs rather than showing
  * two competing accounts of the same job.
  */
-export default function TranslationStageList({ stage, className }: Props) {
+export default function TranslationStageList({ stage, detail, className }: Props) {
   const t = useTranslations("Translation.stage");
   if (!stage) return null;
 
@@ -62,15 +69,20 @@ export default function TranslationStageList({ stage, className }: Props) {
               {done && <Check className="size-3.5" strokeWidth={3} />}
               {active && <Loader2 className="size-[18px] animate-spin" />}
             </span>
-            <span
-              className={cn(
-                "text-sm",
-                active && "font-semibold text-foreground",
-                done && "text-muted-foreground",
-                !done && !active && "text-muted-foreground opacity-60"
+            <span className="flex min-w-0 flex-col">
+              <span
+                className={cn(
+                  "text-sm",
+                  active && "font-semibold text-foreground",
+                  done && "text-muted-foreground",
+                  !done && !active && "text-muted-foreground opacity-60"
+                )}
+              >
+                {t(step)}
+              </span>
+              {active && detail && (
+                <span className="text-xs text-muted-foreground" aria-live="polite">{detail}</span>
               )}
-            >
-              {t(step)}
             </span>
           </li>
         );

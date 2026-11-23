@@ -39,6 +39,13 @@ export interface JobStatusResponse {
   estimatedRemainingMinutes: number;
   /** Null for jobs started before the backend began reporting stages. */
   stage?: JobStage | null;
+  /**
+   * Sections of a long document that are back, while it is being translated in
+   * page ranges. Absent for a document sent as one request: there is no honest
+   * count to give.
+   */
+  sectionsDone?: number | null;
+  sectionsTotal?: number | null;
 }
 
 export interface JobResultResponseOnError {
