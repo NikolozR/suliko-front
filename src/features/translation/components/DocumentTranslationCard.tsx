@@ -30,6 +30,7 @@ import { EmailPromptModal } from "@/shared/components/EmailPromptModal";
 import { startTranslationProject } from "../utils/startTranslationProject";
 import { DocumentTranslateError } from "../services/translationService";
 import { suggestNameTranslations } from "../services/nameTranslationService";
+import { useNameSearch } from "../hooks/useNameSearch";
 import NameReviewModal from "./NameReviewModal";
 import {
   NameTranslationItem,
@@ -357,16 +358,29 @@ const DocumentTranslationCard = () => {
     setValue("currentSourceLanguageId", currentSourceLanguageId);
   }, [currentTargetLanguageId, currentSourceLanguageId, setValue]);
 
+  // The names are looked for as soon as the server holds the file, so the review dialog is usually
+  // ready when translate is pressed. Only when the review is on: it is the only thing that uses them.
+  const { waitForResult: waitForNames } = useNameSearch({
+    fileUri: prepared?.fileUri,
+    mimeType: prepared?.mimeType,
+    sourceLanguageId: currentSourceLanguageId,
+    targetLanguageId: currentTargetLanguageId,
+    enabled: !!token && !isOcrOnly && !watch("isSrt") && !activeJob && (nameDetectionEnabled || !!projectId),
+  });
+
   /**
-   * Names for the review modal. The document is no longer read in advance (the brief that did it
-   * was removed: it spent model tokens on a summary nobody asked for and held the page up), so
-   * the names come from the name search, which has a time budget.
+   * Names for the review modal, from the dedicated name search (one small call, about 5 s on 20
+   * pages). Only if that failed does the old search run: it re-uploads the file and makes two
+   * model calls, so it gets a time budget.
    */
   const NAME_SEARCH_BUDGET_MS = 25_000;
   const detectNames = async (data: DocumentFormData): Promise<NameTranslationItem[]> => {
-    // It re-uploads the file and makes two model calls: about 100 s on 20 pages, with the translate
-    // button stuck on "Finding names". Names are a refinement, so it gets a budget; past it the
-    // translation goes ahead without a names review rather than waiting out the search.
+    const found = await waitForNames();
+    if (found) return found;
+
+    // The dedicated search failed (null; "no names" is an empty list and ends here). The old
+    // search takes about 100 s on 20 pages with the button stuck on "Finding names", and names are
+    // a refinement, so past the budget the translation goes ahead without a names review.
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), NAME_SEARCH_BUDGET_MS);
     try {
