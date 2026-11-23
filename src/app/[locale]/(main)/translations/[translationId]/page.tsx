@@ -10,6 +10,7 @@ import { settingUpChatSuggestions } from "@/features/chatHistory/utils/settingUp
 import { getStatus, getResult } from "@/features/translation/services/jobService";
 import type { AutoFix, JobStage, VerificationSummary } from "@/features/translation/types/types.Translation";
 import TranslationStageList from "@/features/translation/components/TranslationStageList";
+import BackupModelNote from "@/features/translation/components/BackupModelNote";
 import { useUserStore } from "@/features/auth/store/userStore";
 import { useTranslations } from "next-intl";
 import { Card } from "@/features/ui/components/ui/card";
@@ -658,6 +659,7 @@ export default function TranslationDetailPage() {
           translatedMarkdown={translatedMarkdown}
           onEdit={setTranslatedMarkdownWithoutZoomReset}
         />
+        <BackupModelNote jobId={chat.jobId} />
         <AssignToProjectBanner
           chatId={chat.chatId}
           projectId={chat.projectId}

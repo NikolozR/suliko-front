@@ -615,7 +615,10 @@
       "workingBuilding": "Building your file",
       "sectionsDone": "{done} of {total} sections done",
       "estimate": "Usually about {minutes} min for a document this size. This is an estimate.",
-      "runningLong": "This is taking longer than usual. It is still running, and you can leave this page."
+      "runningLong": "This is taking longer than usual. It is still running, and you can leave this page.",
+      "busy": "The AI service is busy. Retrying, this can take a few more seconds.",
+      "backup": "Part of your document is being translated by a backup model.",
+      "backupNote": "Part of this document was translated by a backup model, because the main one was overloaded. If this document is certified, check the translation carefully."
     },
     "originalUnavailable": "The original file is no longer available for this translation. You can still read, edit and download the translated text."
   },
