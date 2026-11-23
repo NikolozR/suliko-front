@@ -65,10 +65,20 @@ export function useDocumentAnalysis({
     return () => controller.abort();
   }, [enabled, fileUri, mimeType, sourceLanguageId, targetLanguageId, outputLanguageId]);
 
-  const waitForResult = useCallback(
-    async () => (pending.current ? pending.current : null),
-    []
-  );
+  // Waits for the analysis the page is showing, which is not always the one that was in flight
+  // when asked: a new language pair cancels the old request and starts another, and a cancelled
+  // request answers null. Following the newest request stops that from reading as "the
+  // analysis failed".
+  const waitForResult = useCallback(async () => {
+    let request = pending.current;
+    while (request) {
+      const result = await request;
+      if (result) return result;
+      if (pending.current === request) return null;
+      request = pending.current;
+    }
+    return null;
+  }, []);
 
   return { status, analysis, waitForResult };
 }

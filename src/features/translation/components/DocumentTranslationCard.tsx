@@ -406,14 +406,29 @@ const DocumentTranslationCard = () => {
    * the server holds; the old endpoint, which uploads the file again and makes
    * two model calls, is only the fallback for when the analysis failed.
    */
+  const NAME_SEARCH_BUDGET_MS = 25_000;
   const detectNames = async (data: DocumentFormData): Promise<NameTranslationItem[]> => {
     const analysed = await waitForAnalysis();
     if (analysed) return analysed.names;
-    return suggestNameTranslations(
-      data.currentFile[0],
-      data.currentSourceLanguageId,
-      data.currentTargetLanguageId
-    );
+
+    // The fallback re-uploads the file and makes two model calls: about 100 s on 20 pages, with the
+    // translate button stuck on "Finding names". Names are a refinement, so it gets a budget; past
+    // it the translation goes ahead without a names review rather than waiting out the search.
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), NAME_SEARCH_BUDGET_MS);
+    try {
+      return await suggestNameTranslations(
+        data.currentFile[0],
+        data.currentSourceLanguageId,
+        data.currentTargetLanguageId,
+        controller.signal
+      );
+    } catch (err) {
+      if ((err as Error)?.name === "AbortError") return [];
+      throw err;
+    } finally {
+      clearTimeout(timer);
+    }
   };
 
 
