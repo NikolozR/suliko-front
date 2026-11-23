@@ -23,7 +23,7 @@ interface JobState {
   message: string | null;
 }
 
-const RUNNING_INTERVAL_MS = 3000;
+const RUNNING_INTERVAL_MS = 1500;
 const ERROR_INTERVAL_MS = 5000;
 
 export function useJobStage(jobId: string | null): JobState {
