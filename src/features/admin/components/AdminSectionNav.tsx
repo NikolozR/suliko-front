@@ -14,6 +14,7 @@ interface Entry {
 const ENTRIES: Entry[] = [
   { key: "users", href: "/admin", group: "translate" },
   { key: "referrals", href: "/admin?tab=referrals", group: "translate" },
+  { key: "revenue", href: "/admin/revenue", group: "translate" },
   { key: "promoCodes", href: "/admin/promo-codes", group: "translate" },
   { key: "languages", href: "/admin#languages", group: "translate" },
   { key: "blog", href: "/admin/blog", group: "translate" },
