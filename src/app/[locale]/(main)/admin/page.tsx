@@ -8,6 +8,7 @@ import { User as TableUser } from "./users-table";
 import AdminTabsWrapper from "./AdminTabsWrapper";
 import LanguageManager from "./LanguageManager";
 import LanguageList from "./LanguageList";
+import UserTrendChart from "./user-trend";
 
 type AdminStats = {
   pagesUsedToday: number;
@@ -317,6 +318,9 @@ export default async function AdminDashboardPage({
 
       {/* Overview stats */}
       <StatGrid stats={overviewStats} />
+
+      {/* Users over time, week over week and month over month */}
+      <UserTrendChart includeInternal={showInternal} />
 
       {/* Usage this period */}
       <h2
