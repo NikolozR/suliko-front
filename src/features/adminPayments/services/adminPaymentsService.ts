@@ -27,7 +27,7 @@ export interface UserPaidTotal {
   lastPaidAt: string;
 }
 
-const fetchWithAuth = async (endpoint: string): Promise<Response> => {
+export const fetchWithAuth = async (endpoint: string): Promise<Response> => {
   const { token, refreshToken, setToken, setRefreshToken, reset } = useAuthStore.getState();
   if (!token) throw new Error("No token found");
 
